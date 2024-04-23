@@ -154,7 +154,7 @@ taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.join();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 100);
 });
 executor.run(taskflow).wait();
@@ -177,14 +177,14 @@ taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.join();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 100);
   
   // spawn another 100 asynchronous tasks and join
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.join();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 200);
 });
 executor.run(taskflow).wait();
