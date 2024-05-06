@@ -33,7 +33,7 @@
 // TF_VERSION / 100 % 1000 is the minor version
 // TF_VERSION / 100000 is the major version
 
-// current version: 3.7.0
+// current version: 3.8.0
 #define TF_VERSION 300700
 
 #define TF_MAJOR_VERSION TF_VERSION/100000
@@ -57,7 +57,7 @@ namespace detail { }
 Release notes are available here: https://taskflow.github.io/taskflow/Releases.html
 */
 constexpr const char* version() {
-  return "3.7.0";
+  return "3.8.0";
 }
 
 

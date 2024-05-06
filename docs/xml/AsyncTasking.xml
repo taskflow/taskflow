@@ -49,7 +49,7 @@ If you do not need the return value or use a future to synchronize the execution
 </simplesect>
 You can name an asynchronous task using the overloads, tf::Executor::async(const std::string&amp; name, F&amp;&amp; f) and tf::Executor::silent_async(const std::string&amp; name, F&amp;&amp; f), that take a string in the first argument. Assigned names will appear in the observers of the executor.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.async(</highlight><highlight class="stringliteral">&quot;async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
-<codeline><highlight class="normal">executor.silent_async(</highlight><highlight class="stringliteral">&quot;sileng<sp/>async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
+<codeline><highlight class="normal">executor.silent_async(</highlight><highlight class="stringliteral">&quot;silent<sp/>async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="AsyncTasking_1LaunchAsynchronousTasksFromAnSubflow">
@@ -109,7 +109,7 @@ You can assign an asynchronous task a name using the two overloads, tf::Subflow:
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.join();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -125,14 +125,14 @@ You can assign an asynchronous task a name using the two overloads, tf::Subflow:
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.join();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>another<sp/>100<sp/>asynchronous<sp/>tasks<sp/>and<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.join();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>200);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
