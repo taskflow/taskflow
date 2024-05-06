@@ -16,6 +16,6 @@ foreach(sycl_example IN LISTS TF_SYCL_EXAMPLES)
   target_compile_options(${sycl_example} PRIVATE ${TF_SYCL_OPTIONS})
   target_link_options(${sycl_example} PRIVATE ${TF_SYCL_OPTIONS})
   target_link_libraries(${sycl_example}
-    ${PROJECT_NAME} Threads::Threads tf::default_settings
+    ${PROJECT_NAME} ${ATOMIC_LIBRARY} Threads::Threads tf::default_settings
   )
 endforeach()

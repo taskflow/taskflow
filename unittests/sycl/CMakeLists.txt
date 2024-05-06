@@ -12,7 +12,7 @@ foreach(sycl_test IN LISTS TF_SYCL_TESTS)
   target_compile_options(${sycl_test} PRIVATE ${TF_SYCL_OPTIONS})
   target_link_options(${sycl_test} PRIVATE ${TF_SYCL_OPTIONS})
   target_link_libraries(${sycl_test}
-    ${PROJECT_NAME} Threads::Threads tf::default_settings
+    ${PROJECT_NAME} ${ATOMIC_LIBRARY} Threads::Threads tf::default_settings
   )
   target_include_directories(${sycl_test} PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
   
