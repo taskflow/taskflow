@@ -1,20 +1,16 @@
 namespace tf {
 
-/** @page release-3-7-0 Release 3.7.0 (Master)
+/** @page release-3-7-0 Release 3.7.0 (2024/05/07)
 
-%Taskflow 3.7.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+%Taskflow 3.7.0 is the 8th release in the 3.x line! 
+This release includes several new changes, such as exception support, improved scheduling algorithms,
+documentation, examples, and unit tests. 
 
 @tableofcontents
 
 @section release-3-7-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.7.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.7.0">here</a>.
 
 @section release-3-7-0_system_requirements System Requirements
 
@@ -26,7 +22,7 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 @li AppleClang Xcode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler at least v19.0.1 with -std=c++17
-@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -36,6 +32,10 @@ This release introduces a new exception interface to help identify C++ errors
 in taskflow programs.
 Additionally, this release enhances the scheduling performance through integration
 of C++20 atomic-wait into scheduler, executor, and notifier.
+
+@note
+When compiling %Taskflow with C++20, applications should see improved performance due
+to the new atomic-wait/-notification algorithm powered by C++20.
 
 @section release-3-7-0_new_features New Features
 

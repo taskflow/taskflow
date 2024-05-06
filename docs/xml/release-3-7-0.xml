@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-7-0" kind="page">
     <compoundname>release-3-7-0</compoundname>
-    <title>Release 3.7.0 (Master)</title>
+    <title>Release 3.7.0 (2024/05/07)</title>
     <tableofcontents>
       <tocsect>
         <name>Download</name>
@@ -50,10 +50,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.7.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
+<para>Taskflow 3.7.0 is the 8th release in the 3.x line! This release includes several new changes, such as exception support, improved scheduling algorithms, documentation, examples, and unit tests.</para>
 <sect1 id="release-3-7-0_1release-3-7-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<para>Taskflow 3.7.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.7.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_system_requirements">
 <title>System Requirements</title>
@@ -71,7 +71,7 @@
 </listitem>
 <listitem><para>Intel C++ Compiler at least v19.0.1 with -std=c++17 </para>
 </listitem>
-<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</para>
+<listitem><para>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17</para>
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
@@ -79,6 +79,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-7-0_1release-3-7-0_summary">
 <title>Release Summary</title>
 <para>This release introduces a new exception interface to help identify C++ errors in taskflow programs. Additionally, this release enhances the scheduling performance through integration of C++20 atomic-wait into scheduler, executor, and notifier.</para>
+<para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to the new atomic-wait/-notification algorithm powered by C++20.</para>
+</simplesect>
+</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_new_features">
 <title>New Features</title>
