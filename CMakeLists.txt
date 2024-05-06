@@ -19,7 +19,7 @@ cmake_minimum_required (VERSION 3.18)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Taskflow VERSION 3.7.0 LANGUAGES CXX)
+project(Taskflow VERSION 3.8.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
