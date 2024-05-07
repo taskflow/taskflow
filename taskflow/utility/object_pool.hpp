@@ -625,10 +625,6 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
       //s = static_cast<Block*>(std::malloc(sizeof(Block)));
       s = new Block();
 
-      if(s == nullptr) {
-        throw std::bad_alloc();
-      }
-
       s->heap = &h;
       s->i = 0;
       s->u = 0;
