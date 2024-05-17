@@ -1037,12 +1037,15 @@ class Executor {
   
   std::mutex _wsq_mutex;
   std::mutex _taskflows_mutex;
+  
+  std::vector<std::thread> _threads;
+  std::vector<Worker> _workers;
 
 #ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies {0};
   std::atomic_flag _all_spawned = ATOMIC_FLAG_INIT;
 
-  std::atomic_flag _done{ATOMIC_FLAG_INIT}; 
+  std::atomic_flag _done = ATOMIC_FLAG_INIT; 
   std::atomic<uint64_t> _state {0ull};
   static const uint64_t _EPOCH_INC{1ull << 32};
   static const uint64_t _NUM_WAITERS_MASK{(1ull << 32) - 1};
@@ -1056,12 +1059,9 @@ class Executor {
 #endif
   
   std::unordered_map<std::thread::id, size_t> _wids;
-  std::vector<std::thread> _threads;
-  std::vector<Worker> _workers;
   std::list<Taskflow> _taskflows;
 
   TaskQueue<Node*> _wsq;
-
 
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
@@ -1349,23 +1349,28 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   explore_task:
 
   _explore_task(worker, t);
+
+  if(t) {
+    return true;
+  }
   
   // The last thief who successfully stole a task will wake up
   // another thief worker to avoid starvation.
-  if(t) {
-#ifdef __cpp_lib_atomic_wait
-
-#else
-    _notifier.notify(false);
-#endif
-    return true;
-  }
+//  if(t) {
+//#ifdef __cpp_lib_atomic_wait
+//
+//#else
+//    _notifier.notify(false);
+//#endif
+//    return true;
+//  }
 
 #ifdef __cpp_lib_atomic_wait
   for(uint64_t cur_state = _state.load(std::memory_order_acquire);;) {
 
     uint64_t new_state = cur_state + _NUM_WAITERS_INC;
-
+    
+    // TODO: CAS with relaxed??
     if(_state.compare_exchange_weak(cur_state, new_state, std::memory_order_acquire)) {
 
       if(_done.test(std::memory_order_relaxed)) {
