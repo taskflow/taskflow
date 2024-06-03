@@ -2317,7 +2317,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       f._topologies.pop();
       tpg = f._topologies.front().get();
 
-      // decrement the topology but since this is not the last we don't notify
+      // decrement the topology
       _decrement_topology();
 
       // set up topology needs to be under the lock or it can
