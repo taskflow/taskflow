@@ -17,7 +17,6 @@
     <innerclass refid="structtf_1_1TaskParams" prot="public">tf::TaskParams</innerclass>
     <innerclass refid="structtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
-    <innerclass refid="structtf_1_1NodeDeleter" prot="private">tf::NodeDeleter</innerclass>
     <innerclass refid="classtf_1_1TaskQueue" prot="public">tf::TaskQueue</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
@@ -449,19 +448,6 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="564" column="16" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="564" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a6e7c9182ac3f60e339a7497c16633d28" prot="private" static="no" mutable="no">
-        <type>ObjectPool&lt; Node &gt;</type>
-        <definition>ObjectPool&lt;Node&gt; tf::node_pool</definition>
-        <argsstring></argsstring>
-        <name>node_pool</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="773" column="19" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="773" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
         <definition>constexpr std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
@@ -628,6 +614,47 @@
         <inbodydescription>
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" line="1026" column="22" bodyfile="/home/thuang295/Code/taskflow/taskflow/utility/small_vector.hpp" bodystart="1026" bodyend="1028"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a7f414301de196737b08e62431691feba" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type>TF_FORCE_INLINE Node *</type>
+        <definition>TF_FORCE_INLINE Node* tf::animate</definition>
+        <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
+        <name>animate</name>
+        <param>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="779" column="22" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="779" bodyend="782"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>TF_FORCE_INLINE void</type>
+        <definition>TF_FORCE_INLINE void tf::recycle</definition>
+        <argsstring>(Node *ptr)</argsstring>
+        <name>recycle</name>
+        <param>
+          <type>Node *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" line="787" column="22" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/graph.hpp" bodystart="787" bodyend="790"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

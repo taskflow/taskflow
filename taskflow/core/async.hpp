@@ -21,7 +21,7 @@ auto Executor::async(P&& params, F&& f) {
   std::packaged_task<R()> p(std::forward<F>(f));
   auto fu{p.get_future()};
 
-  auto node = node_pool.animate(
+  auto node = animate(
     std::forward<P>(params), nullptr, nullptr, 0, 
     // handle
     std::in_place_type_t<Node::Async>{}, 
@@ -49,7 +49,7 @@ void Executor::silent_async(P&& params, F&& f) {
 
   _increment_topology();
   
-  auto node = node_pool.animate(
+  auto node = animate(
     std::forward<P>(params), nullptr, nullptr, 0, 
     // handle
     std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
@@ -88,7 +88,7 @@ inline void Executor::_tear_down_async(Node* node) {
   else {
     _decrement_topology();
   }
-  node_pool.recycle(node);
+  recycle(node);
 }
 
 // ----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ tf::AsyncTask Executor::silent_dependent_async(
   size_t num_dependents = sizeof...(Tasks);
   
   // create a task before scheduling the node to retain a shared ownership first
-  AsyncTask task(node_pool.animate(
+  AsyncTask task(animate(
     std::forward<P>(params), nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
@@ -154,7 +154,7 @@ tf::AsyncTask Executor::silent_dependent_async(
 
   size_t num_dependents = std::distance(first, last);
   
-  AsyncTask task(node_pool.animate(
+  AsyncTask task(animate(
     std::forward<P>(params), nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
@@ -197,7 +197,7 @@ auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
 
   size_t num_dependents = sizeof...(tasks);
 
-  AsyncTask task(node_pool.animate(
+  AsyncTask task(animate(
     std::forward<P>(params), nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{},
     [p=make_moc(std::move(p))] () mutable { p.object(); }
@@ -237,7 +237,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
 
   size_t num_dependents = std::distance(first, last);
 
-  AsyncTask task(node_pool.animate(
+  AsyncTask task(animate(
     std::forward<P>(params), nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{},
     [p=make_moc(std::move(p))] () mutable { p.object(); }
@@ -317,7 +317,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node) {
   
   // now the executor no longer needs to retain ownership
   if(handle->use_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-    node_pool.recycle(node);
+    recycle(node);
   }
 
   _decrement_topology();

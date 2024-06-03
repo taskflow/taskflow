@@ -209,9 +209,9 @@
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="205" column="13" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="423" bodyend="425"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskQueue_1ab90cef7de0b45650b67971db0ccbef76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>TF_FORCE_INLINE void</type>
-        <definition>TF_FORCE_INLINE void tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::push</definition>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a644a03868c0d424d979f91e15c864a15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::push</definition>
         <argsstring>(T item, unsigned priority)</argsstring>
         <name>push</name>
         <param>
@@ -247,7 +247,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="217" column="26" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="319" bodyend="333"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="217" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="319" bodyend="333"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a3df0b3554e814385d23ee603941391df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -264,9 +264,9 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </inbodydescription>
         <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="225" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="337" bodyend="344"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskQueue_1ab486c2b496bc5ebc84122924921e5632" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>TF_FORCE_INLINE T</type>
-        <definition>TF_FORCE_INLINE T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::pop</definition>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a569a76254aea3f1f411e28aa57f7a810" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::pop</definition>
         <argsstring>(unsigned priority)</argsstring>
         <name>pop</name>
         <param>
@@ -290,7 +290,7 @@ Only the owner thread can pop out an item from the queue. The return can be a <c
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="235" column="23" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="348" bodyend="375"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="235" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="348" bodyend="375"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a23e13cb9f98316b26c00ce494aa2f0c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -337,9 +337,9 @@ Any threads can try to steal an item from the queue. The return can be a <comput
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1TaskQueue_1a512796f5396f152af2f8249bc5519596" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>TF_NO_INLINE Array *</type>
-        <definition>TF_NO_INLINE TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array * tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::resize_array</definition>
+      <memberdef kind="function" id="classtf_1_1TaskQueue_1a824bec00bad35fd3a5f2836a293f4b90" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>Array *</type>
+        <definition>TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array * tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::resize_array</definition>
         <argsstring>(Array *a, unsigned p, std::int64_t b, std::int64_t t)</argsstring>
         <name>resize_array</name>
         <param>
@@ -364,7 +364,7 @@ Any threads can try to steal an item from the queue. The return can be a <comput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="256" column="24" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="429" bodyend="438"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="256" column="11" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="429" bodyend="438"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -431,9 +431,9 @@ This class implements the work-stealing queue described in the paper, <ulink url
       <member refid="classtf_1_1TaskQueue_1adfdf70255e24d62c46b31b09c47d78f7" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>empty</name></member>
       <member refid="classtf_1_1TaskQueue_1af57eb2ebc4d92120d7eaf868ec57b524" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>empty</name></member>
       <member refid="classtf_1_1TaskQueue_1a3df0b3554e814385d23ee603941391df" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>pop</name></member>
-      <member refid="classtf_1_1TaskQueue_1ab486c2b496bc5ebc84122924921e5632" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>pop</name></member>
-      <member refid="classtf_1_1TaskQueue_1ab90cef7de0b45650b67971db0ccbef76" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>push</name></member>
-      <member refid="classtf_1_1TaskQueue_1a512796f5396f152af2f8249bc5519596" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>resize_array</name></member>
+      <member refid="classtf_1_1TaskQueue_1a569a76254aea3f1f411e28aa57f7a810" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>pop</name></member>
+      <member refid="classtf_1_1TaskQueue_1a644a03868c0d424d979f91e15c864a15" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>push</name></member>
+      <member refid="classtf_1_1TaskQueue_1a824bec00bad35fd3a5f2836a293f4b90" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>resize_array</name></member>
       <member refid="classtf_1_1TaskQueue_1ad598bef2211bf4cc99d66d80a12ebb6a" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>size</name></member>
       <member refid="classtf_1_1TaskQueue_1a0386ad90ced931025d14ea955ce40d8c" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>size</name></member>
       <member refid="classtf_1_1TaskQueue_1a23e13cb9f98316b26c00ce494aa2f0c6" prot="public" virt="non-virtual"><scope>tf::TaskQueue</scope><name>steal</name></member>

@@ -2,7 +2,7 @@
 
 #include "../utility/traits.hpp"
 #include "../utility/iterator.hpp"
-#include "../utility/object_pool.hpp"
+//#include "../utility/object_pool.hpp"
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
@@ -591,7 +591,7 @@ class Node {
     FINISHED = 2
   };
 
-  TF_ENABLE_POOLABLE_ON_THIS;
+  //TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
   constexpr static int CONDITIONED = 1;
@@ -770,7 +770,24 @@ class Node {
 /**
 @private
 */
-inline ObjectPool<Node> node_pool;
+//inline ObjectPool<Node> _task_pool;
+
+/**
+@private
+*/
+template <typename... ArgsT>
+TF_FORCE_INLINE Node* animate(ArgsT&&... args) {
+  return new Node(std::forward<ArgsT>(args)...);
+  //return _task_pool.animate(std::forward<ArgsT>(args)...);
+}
+
+/**
+@private
+*/
+TF_FORCE_INLINE void recycle(Node* ptr) {
+  delete ptr;
+  //_task_pool.recycle(ptr);
+}
 
 // ----------------------------------------------------------------------------
 // Definition for Node::Static
@@ -941,7 +958,7 @@ inline Node::~Node() {
 
     //auto& np = Graph::_node_pool();
     for(i=0; i<nodes.size(); ++i) {
-      node_pool.recycle(nodes[i]);
+      recycle(nodes[i]);
     }
   }
 }
@@ -1061,19 +1078,6 @@ inline SmallVector<Node*> Node::_release_all() {
 }
 
 // ----------------------------------------------------------------------------
-// Node Deleter
-// ----------------------------------------------------------------------------
-
-/**
-@private
-*/
-struct NodeDeleter {
-  void operator ()(Node* ptr) {
-    node_pool.recycle(ptr);
-  }
-};
-
-// ----------------------------------------------------------------------------
 // Graph definition
 // ----------------------------------------------------------------------------
 
@@ -1102,7 +1106,7 @@ inline void Graph::clear() {
 // Procedure: clear
 inline void Graph::_clear() {
   for(auto node : _nodes) {
-    node_pool.recycle(node);
+    recycle(node);
   }
   _nodes.clear();
 }
@@ -1115,7 +1119,7 @@ inline void Graph::_clear_detached() {
   });
 
   for(auto itr = mid; itr != _nodes.end(); ++itr) {
-    node_pool.recycle(*itr);
+    recycle(*itr);
   }
   _nodes.resize(std::distance(_nodes.begin(), mid));
 }
@@ -1132,7 +1136,7 @@ inline void Graph::_merge(Graph&& g) {
 inline void Graph::_erase(Node* node) {
   if(auto I = std::find(_nodes.begin(), _nodes.end(), node); I != _nodes.end()) {
     _nodes.erase(I);
-    node_pool.recycle(node);
+    recycle(node);
   }
 }
 
@@ -1151,7 +1155,7 @@ inline bool Graph::empty() const {
 */
 template <typename ...ArgsT>
 Node* Graph::_emplace_back(ArgsT&&... args) {
-  _nodes.push_back(node_pool.animate(std::forward<ArgsT>(args)...));
+  _nodes.push_back(animate(std::forward<ArgsT>(args)...));
   return _nodes.back();
 }
 

@@ -2442,7 +2442,7 @@ void Runtime::_silent_async(Worker& w, P&& params, F&& f) {
 
   _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
 
-  auto node = node_pool.animate(
+  auto node = animate(
     std::forward<P>(params), _parent->_topology, _parent, 0,
     std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
   );
@@ -2489,7 +2489,7 @@ auto Runtime::_async(Worker& w, P&& params, F&& f) {
   std::packaged_task<R()> p(std::forward<F>(f));
   auto fu{p.get_future()};
 
-  auto node = node_pool.animate(
+  auto node = animate(
     std::forward<P>(params), _parent->_topology, _parent, 0, 
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p))] () mutable { p.object(); }

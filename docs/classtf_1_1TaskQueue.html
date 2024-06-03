@@ -142,8 +142,8 @@
             </dt>
             <dd>queries the capacity of the queue at a specific priority value</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab90cef7de0b45650b67971db0ccbef76" class="m-doc">push</a>(</span><span class="m-doc-wrap">T item,
-              unsigned priority) -&gt; TF_FORCE_INLINE void</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a644a03868c0d424d979f91e15c864a15" class="m-doc">push</a>(</span><span class="m-doc-wrap">T item,
+              unsigned priority)</span>
             </dt>
             <dd>inserts an item to the queue</dd>
             <dt>
@@ -151,7 +151,7 @@
             </dt>
             <dd>pops out an item from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab486c2b496bc5ebc84122924921e5632" class="m-doc">pop</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; TF_FORCE_INLINE T</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a569a76254aea3f1f411e28aa57f7a810" class="m-doc">pop</a>(</span><span class="m-doc-wrap">unsigned priority) -&gt; T</span>
             </dt>
             <dd>pops out an item with a specific priority value from the queue</dd>
             <dt>
@@ -186,12 +186,12 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="ab90cef7de0b45650b67971db0ccbef76"><div>
+          <section class="m-doc-details" id="a644a03868c0d424d979f91e15c864a15"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE void tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab90cef7de0b45650b67971db0ccbef76" class="m-doc-self">push</a>(</span><span class="m-doc-wrap">T item,
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a644a03868c0d424d979f91e15c864a15" class="m-doc-self">push</a>(</span><span class="m-doc-wrap">T item,
               unsigned priority)</span></span>
             </h3>
             <p>inserts an item to the queue</p>
@@ -222,12 +222,12 @@
             <p>pops out an item from the queue</p>
 <p>Only the owner thread can pop out an item from the queue. The return can be a <code>nullptr</code> if this operation failed (empty queue).</p>
           </div></section>
-          <section class="m-doc-details" id="ab486c2b496bc5ebc84122924921e5632"><div>
+          <section class="m-doc-details" id="a569a76254aea3f1f411e28aa57f7a810"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T, unsigned TF_MAX_PRIORITY&gt;
               </div>
-              <span class="m-doc-wrap-bumper">TF_FORCE_INLINE T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab486c2b496bc5ebc84122924921e5632" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />TaskQueue&lt;T, TF_MAX_PRIORITY&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a569a76254aea3f1f411e28aa57f7a810" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">unsigned priority)</span></span>
             </h3>
             <p>pops out an item with a specific priority value from the queue</p>
             <table class="m-table m-fullwidth m-flat">

@@ -135,7 +135,7 @@ inline void AsyncTask::_decref() {
   if(_node && std::get_if<Node::DependentAsync>(&(_node->_handle))->use_count.fetch_sub(
       1, std::memory_order_acq_rel
     ) == 1) {
-    node_pool.recycle(_node);
+    recycle(_node);
   }
 }
 

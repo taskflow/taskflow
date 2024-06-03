@@ -75,14 +75,25 @@
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
+<para><simplesect kind="note"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
+</simplesect>
+</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
 <title>Release Summary</title>
+<para>This releases improves the core scheduling performance with C++20 features, including atomic flag and atomic notification.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_new_features">
 <title>New Features</title>
 <sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
 <title>Taskflow Core</title>
+<para><itemizedlist>
+<listitem><para>enhanced the core scheduling using C++20 atomic notification</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>compile<sp/>your<sp/>taskflow<sp/>program<sp/>with<sp/>C++20<sp/>enabled</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>my_taskflow.cpp<sp/></highlight></codeline>
+</programlisting></para>
 </sect2>
 <sect2 id="release-3-8-0_1release-3-8-0_utilities">
 <title>Utilities</title>
@@ -93,6 +104,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_breaking_changes">
 <title>Breaking Changes</title>
+<para><itemizedlist>
+<listitem><para>removed the support of object pool for fast resource release</para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_documentation">
 <title>Documentation</title>

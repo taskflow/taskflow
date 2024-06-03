@@ -30,17 +30,34 @@ To use %Taskflow v3.8.0, you need a compiler that supports C++17:
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
+@note
+Although %Taskflow supports primarily C++17, you can enable C++20 compilation
+through `-std=c++20` to achieve better performance due to new C++20 features.
+
 @section release-3-8-0_summary Release Summary
+
+This releases improves the core scheduling performance with C++20 features, 
+including atomic flag and atomic notification.
 
 @section release-3-8-0_new_features New Features
 
 @subsection release-3-8-0_taskflow_core Taskflow Core
+
++ enhanced the core scheduling using C++20 atomic notification
+
+@code{.shell-session}
+# compile your taskflow program with C++20 enabled
+~$ g++ -std=c++20 my_taskflow.cpp 
+@endcode
+
 
 @subsection release-3-8-0_utilities Utilities
 
 @section release-3-8-0_bug_fixes Bug Fixes 
 
 @section release-3-8-0_breaking_changes Breaking Changes
+
++ removed the support of object pool for fast resource release
 
 @section release-3-8-0_documentation Documentation
 
