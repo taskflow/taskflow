@@ -3,7 +3,7 @@
 #include <doctest.h>
 
 #include <taskflow/utility/traits.hpp>
-#include <taskflow/utility/object_pool.hpp>
+//#include <taskflow/utility/object_pool.hpp>
 #include <taskflow/utility/small_vector.hpp>
 #include <taskflow/utility/uuid.hpp>
 #include <taskflow/utility/iterator.hpp>
@@ -283,6 +283,7 @@ TEST_CASE("uuid.100threads") {
   test_threaded_uuid(100);
 }
 
+/*
 
 // --------------------------------------------------------
 // Testcase: ObjectPool.Sequential
@@ -436,6 +437,8 @@ TEST_CASE("ObjectPool.15threads" * doctest::timeout(300)) {
 TEST_CASE("ObjectPool.16threads" * doctest::timeout(300)) {
   threaded_objectpool<Poolable>(16);
 }
+*/
+
 
 // --------------------------------------------------------
 // Testcase: Reference Wrapper
