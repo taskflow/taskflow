@@ -1366,15 +1366,12 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 //  }
 
 #ifdef __cpp_lib_atomic_wait
-  uint64_t cur_state = _state.load(std::memory_order_relaxed);
-
-  while(1) {
+  for(uint64_t cur_state = _state.load(std::memory_order_acquire);;) {
 
     uint64_t new_state = cur_state + _NUM_WAITERS_INC;
     
-    if(_state.compare_exchange_weak(cur_state, new_state, 
-                                    std::memory_order_relaxed,
-                                    std::memory_order_relaxed)) {
+    // TODO: CAS with relaxed??
+    if(_state.compare_exchange_weak(cur_state, new_state, std::memory_order_acquire)) {
 
       if(_done.test(std::memory_order_relaxed)) {
         _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
@@ -1399,7 +1396,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
         }
       }
 
-      _state.wait(new_state, std::memory_order_acquire);
+      _state.wait(new_state, std::memory_order_relaxed);
       _state.fetch_sub(_NUM_WAITERS_INC, std::memory_order_relaxed);
       goto explore_task;
     }
@@ -1490,7 +1487,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     worker._wsq.push(node, p);
 #ifdef __cpp_lib_atomic_wait
     // we load the state first as load is much faster than fetch_add
-    if((_state.load(std::memory_order_relaxed) & _NUM_WAITERS_MASK) != 0) {
+    if((_state.load(std::memory_order_acquire) & _NUM_WAITERS_MASK) != 0) {
       _state.fetch_add(_EPOCH_INC, std::memory_order_release);
       _state.notify_one();
     }
@@ -1506,7 +1503,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   }
 #ifdef __cpp_lib_atomic_wait
   // we load the state first as load is much faster than fetch_add
-  if((_state.load(std::memory_order_relaxed) & _NUM_WAITERS_MASK) != 0) {
+  if((_state.load(std::memory_order_acquire) & _NUM_WAITERS_MASK) != 0) {
     _state.fetch_add(_EPOCH_INC, std::memory_order_release);
     _state.notify_one();
   }
@@ -1532,7 +1529,7 @@ inline void Executor::_schedule(Node* node) {
 
 #ifdef __cpp_lib_atomic_wait
   // we load the state first as load is much faster than fetch_add
-  if((_state.load(std::memory_order_relaxed) & _NUM_WAITERS_MASK) != 0) {
+  if((_state.load(std::memory_order_acquire) & _NUM_WAITERS_MASK) != 0) {
     _state.fetch_add(_EPOCH_INC, std::memory_order_release);
     _state.notify_one();
   }
@@ -1565,7 +1562,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
       worker._wsq.push(nodes[i], p);
 #ifdef __cpp_lib_atomic_wait
       // we load the state first as load is much faster than fetch_add
-      if((_state.load(std::memory_order_relaxed) & _NUM_WAITERS_MASK) != 0) {
+      if((_state.load(std::memory_order_acquire) & _NUM_WAITERS_MASK) != 0) {
         _state.fetch_add(_EPOCH_INC, std::memory_order_release);
         _state.notify_one();
       }
@@ -1585,15 +1582,14 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
     }
   }
 #ifdef __cpp_lib_atomic_wait
-  size_t W = (_state.fetch_add(_EPOCH_INC, std::memory_order_release) & _NUM_WAITERS_MASK);
-  if(num_nodes >= _workers.size()) {
-    _state.notify_all();
-  }
-  else {
-    size_t K = std::min(num_nodes, W);
-    for(size_t k=0; k<K; k++) {
+  uint64_t num_waiters = (_state.fetch_add(_EPOCH_INC, std::memory_order_release) & _NUM_WAITERS_MASK);
+  if(num_nodes < num_waiters) {
+    for(uint64_t k = 0; k < num_waiters - num_nodes; ++k) {
       _state.notify_one();
     }
+  }
+  else {
+    _state.notify_all();
   }
 #else
   _notifier.notify_n(num_nodes);
@@ -1623,15 +1619,14 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   }
 
 #ifdef __cpp_lib_atomic_wait
-  size_t W = (_state.fetch_add(_EPOCH_INC, std::memory_order_release) & _NUM_WAITERS_MASK);
-  if(num_nodes >= _workers.size()) {
-    _state.notify_all();
-  }
-  else {
-    size_t K = std::min(num_nodes, W);
-    for(size_t k=0; k<K; k++) {
+  uint64_t num_waiters = (_state.fetch_add(_EPOCH_INC, std::memory_order_release) & _NUM_WAITERS_MASK);
+  if(num_nodes < num_waiters) {
+    for(uint64_t k = 0; k < num_waiters - num_nodes; ++k) {
       _state.notify_one();
     }
+  }
+  else {
+    _state.notify_all();
   }
 #else
   _notifier.notify_n(num_nodes);

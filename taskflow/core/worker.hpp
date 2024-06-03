@@ -63,10 +63,15 @@ class Worker {
     size_t _vtm;
     Executor* _executor;
     std::thread* _thread;
-    Notifier::Waiter* _waiter;
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
     Node* _cache;
+
+#ifndef __cpp_lib_atomic_wait
+    Notifier::Waiter* _waiter;
+#else
+    alignas (2*TF_CACHELINE_SIZE) std::atomic<bool> _has_task = false;
+#endif
 };
 
 // ----------------------------------------------------------------------------
