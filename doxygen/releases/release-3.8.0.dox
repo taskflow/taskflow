@@ -36,8 +36,12 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-8-0_summary Release Summary
 
-This releases improves the core scheduling performance with C++20 features, 
-including atomic flag and atomic notification.
+This releases enhances the scheduling performance through a new C++20 atomic wait/notification-based
+scheduling algorithm.
+
+@note
+When compiling %Taskflow with C++20, applications should see improved performance due
+to the new atomic-wait/-notification algorithm powered by C++20.
 
 @section release-3-8-0_new_features New Features
 

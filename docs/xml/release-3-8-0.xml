@@ -81,7 +81,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
 <title>Release Summary</title>
-<para>This releases improves the core scheduling performance with C++20 features, including atomic flag and atomic notification.</para>
+<para>This releases enhances the scheduling performance through a new C++20 atomic wait/notification-based scheduling algorithm.</para>
+<para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to the new atomic-wait/-notification algorithm powered by C++20.</para>
+</simplesect>
+</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_new_features">
 <title>New Features</title>

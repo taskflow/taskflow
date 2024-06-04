@@ -30,12 +30,6 @@ To use %Taskflow v3.7.0, you need a compiler that supports C++17:
 
 This release introduces a new exception interface to help identify C++ errors 
 in taskflow programs.
-Additionally, this release enhances the scheduling performance through integration
-of C++20 atomic-wait into scheduler, executor, and notifier.
-
-@note
-When compiling %Taskflow with C++20, applications should see improved performance due
-to the new atomic-wait/-notification algorithm powered by C++20.
 
 @section release-3-7-0_new_features New Features
 
