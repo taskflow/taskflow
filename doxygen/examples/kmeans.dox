@@ -245,7 +245,7 @@ The taskflow graph is illustrated below:
 @dotfile images/kmeans_2.dot
 
 The scheduler starts with @c init, moves on to @c clean_up, and then enters the
-parallel-for task @c paralle-for that spawns a subflow of 12 workers to perform 
+parallel-for task @c parallel-for that spawns a subflow of 12 workers to perform 
 parallel iterations.
 When @c parallel-for completes, it updates the cluster centroids and checks if
 they have converged through a condition task.

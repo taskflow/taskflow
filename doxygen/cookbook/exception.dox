@@ -93,7 +93,7 @@ try {
   executor.run(taskflow).get();
 }
 catch(const std::runtime_error& e) {
-  // catched either B's or C's exception
+  // caught either B's or C's exception
   std::cout << e.what() << std::endl;
 }
 @endcode
@@ -129,7 +129,7 @@ executor and (1) propagated to the its parent task if the parent task exists or
 tf::Taskflow taskflow;
 tf::Executor executor;
 
-// execption will be silently ignored
+// exception will be silently ignored
 executor.silent_async([](){ throw std::runtime_error("exception"); });
 
 // exception will be propagated to the parent tf::Runtime task and then its Taskflow

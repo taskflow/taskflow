@@ -222,7 +222,7 @@ tf::Pipe{tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) {
 
 At each pipe, we use tf::Executor::corun to execute the corresponding taskflow
 and wait until the execution completes.
-This is important because we want te caller thread, which is the worker that invokes
+This is important because we want the caller thread, which is the worker that invokes
 the pipe callable, to not block (i.e., `executor.run(taskflows[pf.pipe()]).wait()`) 
 but participate in the work-stealing loop of the scheduler to avoid deadlock.
 
