@@ -111,7 +111,7 @@ tell the compiler to include the [headers](./taskflow/).
 
 ```bash
 ~$ git clone https://github.com/taskflow/taskflow.git  # clone it only once
-~$ g++ -std=c++17 examples/simple.cpp -I. -O2 -pthread -o simple
+~$ g++ -std=c++20 examples/simple.cpp -I. -O2 -pthread -o simple
 ~$ ./simple
 TaskA
 TaskC 
@@ -387,6 +387,9 @@ To use Taskflow, you only need a compiler that supports C++17:
 + Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
 
 Taskflow works on Linux, Windows, and Mac OS X.
+
+Although %Taskflow supports primarily C++17, you can enable C++20 compilation
+through `-std=c++20` to achieve better performance due to new C++20 features.
 
 # Learn More about Taskflow
 

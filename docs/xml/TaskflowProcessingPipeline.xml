@@ -214,7 +214,7 @@
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">corun</ref>(taskflows[pf.pipe()]);</highlight></codeline>
 <codeline><highlight class="normal">}}</highlight></codeline>
 </programlisting></para>
-<para>At each pipe, we use <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> to execute the corresponding taskflow and wait until the execution completes. This is important because we want te caller thread, which is the worker that invokes the pipe callable, to not block (i.e., <computeroutput>executor.run(taskflows[pf.pipe()]).wait()</computeroutput>) but participate in the work-stealing loop of the scheduler to avoid deadlock.</para>
+<para>At each pipe, we use <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> to execute the corresponding taskflow and wait until the execution completes. This is important because we want the caller thread, which is the worker that invokes the pipe callable, to not block (i.e., <computeroutput>executor.run(taskflows[pf.pipe()]).wait()</computeroutput>) but participate in the work-stealing loop of the scheduler to avoid deadlock.</para>
 </sect2>
 <sect2 id="TaskflowProcessingPipeline_1TaskflowPipelineDefineTheTaskGraph">
 <title>Define the Task Graph</title>

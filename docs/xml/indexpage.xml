@@ -86,7 +86,7 @@
 </programlisting></para>
 <para>Taskflow is <emphasis>header-only</emphasis> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++17<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">TaskA</highlight></codeline>
 <codeline><highlight class="normal">TaskC<sp/></highlight></codeline>
@@ -298,6 +298,9 @@
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
+<para><simplesect kind="note"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
+</simplesect>
+</para>
 </sect1>
 <sect1 id="index_1QuickStartGetInvolved">
 <title>Get Involved</title>
@@ -310,7 +313,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Watch our <ulink url="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</ulink> and <ulink url="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</ulink></para>
 </listitem></itemizedlist>
 </para>
-<para>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. If you are using Taskflow, please cite the following paper we publised at 2022 IEEE TPDS:</para>
+<para>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. If you are using Taskflow, please cite the following paper we published at 2022 IEEE TPDS:</para>
 <para><itemizedlist>
 <listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022</para>
 </listitem></itemizedlist>

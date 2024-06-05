@@ -1184,6 +1184,8 @@ inline int Executor::this_worker_id() const {
 inline void Executor::_spawn(size_t N) {
 
 #ifdef __cpp_lib_atomic_wait
+  // we cannot declare _all_spawned here because the main thread
+  // may finish real quick before other threads access _all_spawned
 #else
   std::mutex mutex;
   std::condition_variable cond;
@@ -1204,10 +1206,8 @@ inline void Executor::_spawn(size_t N) {
 #ifdef __cpp_lib_atomic_wait
       // wait for the caller thread to initialize the ID mapping
       _all_spawned.wait(false, std::memory_order_acquire);
-      w._thread = &_threads[w._id];
 #else
       // update the ID mapping of this thread
-      w._thread = &_threads[w._id];
       {
         std::scoped_lock lock(mutex);
         _wids[std::this_thread::get_id()] = w._id;

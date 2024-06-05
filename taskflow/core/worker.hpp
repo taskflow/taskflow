@@ -42,11 +42,6 @@ class Worker {
     inline size_t id() const { return _id; }
 
     /**
-    @brief acquires a pointer access to the underlying thread
-    */
-    inline std::thread* thread() const { return _thread; }
-
-    /**
     @brief queries the size of the queue (i.e., number of enqueued tasks to
            run) associated with the worker
     */
@@ -62,15 +57,12 @@ class Worker {
     size_t _id;
     size_t _vtm;
     Executor* _executor;
-    std::thread* _thread;
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
     Node* _cache;
 
 #ifndef __cpp_lib_atomic_wait
     Notifier::Waiter* _waiter;
-#else
-    alignas (2*TF_CACHELINE_SIZE) std::atomic<bool> _has_task = false;
 #endif
 };
 
