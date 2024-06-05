@@ -47,41 +47,41 @@ The whole process has the following steps:
   1. Token 1 is not a deferred token and then 1 is finished.
      Now the execution sequence is {1}.
   2. Token 2 defers to 8. We insert DT[2]={8} and TD[8]={2}.
-     The black cicle 2 in the above image illustrates this step.
+     The black circle 2 in the above image illustrates this step.
   3. Token 3 is not a deferred token and then 3 is finished.
      Now the execution sequence is {1,3}.
   4. Token 4 is not a deferred token and then 4 is finished.
      Now the execution sequence is {1,3,4}.
   5. Token 5 defers to 2 and 7. We insert DT[5]={2,7}, TD[2]={5}, and TD[7]={5}.
-     The black cicle 5 in the above image illustrates this step.
+     The black circle 5 in the above image illustrates this step.
   6. Token 6 is not a deferred token and then 6 is finished.
      Now the execution sequence is {1,3,4,6}.
   7. Token 7 is not a deferred token and then 7 is finished.
      Now the execution sequence is {1,3,4,6,7}.
      Since TD[7]={5}, we directly remove 7 from DT[5].
-     The black cicle 7 in the above image illustrates this step.
+     The black circle 7 in the above image illustrates this step.
   8. Token 8 is not a deferred token and then 8 is finished.
      Now the execution sequence is {1,3,4,6,7,8}.
      Since TD[8]={2}, we directly remove 8 from DT[2] and find out DT[2] is empty.
      Now token 2 is no longer a deferred token and we move 2 to RT.
-     The black cicle 8 in the above image illustrates this step.
+     The black circle 8 in the above image illustrates this step.
   9. RT is not empty and has a token 2. Then we finish running 2.
      Now the execution sequence is {1,3,4,6,7,8,2}.
      Since TD[2]={5}, we directly remove 2 from DT[5] and find out DT[5] is empty.
      Now token 5 is no longer a deferred token and we move 5 to RT.
-     The black cicle 9 in the above image illustrates this step.
+     The black circle 9 in the above image illustrates this step.
   10. RT is not empty and has a token 5.
      Then we run 5 and find out token 5 defers the second time, defers to 9.
      We insert DT[5]={9} and TD[9]={5}.
-     The black cicle 20 in the above image illustrates this step.
+     The black circle 20 in the above image illustrates this step.
   11. Token 9 is not a deferred token and then 9 is finished.
       Now the execution sequence is {1,3,4,6,7,8,2,9}.
       Since TD[9]={5}, we directly remove 9 from DT[5] and find out DT[5] is empty.
       Now token 5 is no longer a deferred token and we move 5 to RT.
-      The black cicle 11 in the above image illustrates this step.
+      The black circle 11 in the above image illustrates this step.
   12. RT is not empty and has a token 5. Then we finish running 5.
       Now the execution sequence is {1,3,4,6,7,8,2,9,5}.
-      The black cicle 12 in the above image illustrates this step.
+      The black circle 12 in the above image illustrates this step.
   13. Token 10 is not a deferred token and then 10 is finished.
       Now the execution sequence is {1,3,4,6,7,8,2,9,5,10}.
 
@@ -199,7 +199,7 @@ Debrief:
 @li Line  64    defines the pipeline taskflow graph using composition
 @li Line  67    executes the taskflow 
 
-The following is one of the possible outcomes of the exmaple.
+The following is one of the possible outcomes of the example.
 
 @code{.bash}
 stage 1: Non-deferred token 0

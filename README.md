@@ -381,7 +381,7 @@ To use Taskflow, you only need a compiler that supports C++17:
 + GNU C++ Compiler at least v8.4 with -std=c++17
 + Clang C++ Compiler at least v6.0 with -std=c++17
 + Microsoft Visual Studio at least v19.27 with /std:c++17
-+ AppleClang Xode Version at least v12.0 with -std=c++17
++ AppleClang Xcode Version at least v12.0 with -std=c++17
 + Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 + Intel C++ Compiler at least v19.0.1 with -std=c++17
 + Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
@@ -406,7 +406,7 @@ to learn more about Taskflow. To get involved:
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
 and heterogeneous computing. 
-If you are using Taskflow, please cite the following paper we publised at 2021 IEEE TPDS:
+If you are using Taskflow, please cite the following paper we published at 2021 IEEE TPDS:
 
 + Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <i>IEEE Transactions on Parallel and Distributed Systems (TPDS)</i>, vol. 33, no. 6, pp. 1303-1320, June 2022
 

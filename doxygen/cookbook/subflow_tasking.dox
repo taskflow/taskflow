@@ -31,7 +31,7 @@ All methods you find in tf::Taskflow are applicable for tf::Subflow.
  9:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // subflow task B1
 10:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // subflow task B2
 11:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // subflow task B3
-12:   B1.precede(B3);  // B1 runs bofore B3
+12:   B1.precede(B3);  // B1 runs before B3
 13:   B2.precede(B3);  // B2 runs before B3
 14: }).name("B");
 15:
@@ -120,7 +120,7 @@ you can detach a subflow from its parent task, allowing its execution to flow in
  8:   tf::Task B1 = subflow.emplace([] () {}).name("B1");  // static task B1
  9:   tf::Task B2 = subflow.emplace([] () {}).name("B2");  // static task B2
 10:   tf::Task B3 = subflow.emplace([] () {}).name("B3");  // static task B3
-11:   B1.precede(B3);    // B1 runs bofore B3
+11:   B1.precede(B3);    // B1 runs before B3
 12:   B2.precede(B3);    // B2 runs before B3
 13:   subflow.detach();  // detach this subflow
 14: }).name("B");

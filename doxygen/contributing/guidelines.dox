@@ -163,7 +163,7 @@ either take lead or contribute:
 | Adding Benchmarks | need contributors | enhance the [benchmark pool](https://github.com/taskflow/taskflow/tree/master/benchmarks) to provide more parallel computing instances that can help profile %Taskflow |
 | Developing Algorithms | need contributors | enhance our generic @ref Algorithms collection by adding more parallel algorithm skeletons that can help developers quickly describe common parallel workloads (e.g., C++ 17/20 parallel algorithms) |
 | Developing Kernels Algorithms | need contributors | enhance our %cudaFlow by providing common GPU kernels (e.g., reduce, sort, scan, prefix_sum, etc.) that developers can quickly leverage when describing GPU work using cudaFlows |
-| Integrating OpenCL| need leaders | design another task type, @em clFlow, to support OpenCL in a task-graph fasion and schedule OpenCL tasks using graph parallelism |
+| Integrating OpenCL| need leaders | design another task type, @em clFlow, to support OpenCL in a task-graph fashion and schedule OpenCL tasks using graph parallelism |
 | Supporting pipeline | need leaders | design a tasking interface to support pipeline of a data stream over a taskflow graph, where we may resemble [tbb::parallel_pipeline](https://www.threadingbuildingblocks.org/docs/help/tbb_userguide/Working_on_the_Assembly_Line_pipeline.html) |
 | Diagnosing %Taskflow | need contributors | devise API and algorithms to diagnose if the given taskflow is properly conditioned under our @ref TaskSchedulingPolicy, for example, tf::Taskflow::diagnose, under two modes, before running and on the running |
 
