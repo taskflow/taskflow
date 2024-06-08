@@ -725,7 +725,7 @@ void complete_linear_chain(unsigned W) {
   tf::Executor executor0(W);
   tf::Executor executor1(W);
 
-  int N = 1000;
+  int N = 2000;
   std::vector<tf::CachelineAligned<int>> results(2*N);
   std::vector<tf::AsyncTask> tasks;
 

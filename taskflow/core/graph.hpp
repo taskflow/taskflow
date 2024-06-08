@@ -2,7 +2,7 @@
 
 #include "../utility/traits.hpp"
 #include "../utility/iterator.hpp"
-//#include "../utility/object_pool.hpp"
+#include "../utility/object_pool.hpp"
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
@@ -591,7 +591,7 @@ class Node {
     FINISHED = 2
   };
 
-  //TF_ENABLE_POOLABLE_ON_THIS;
+  TF_ENABLE_POOLABLE_ON_THIS;
 
   // state bit flag
   constexpr static int CONDITIONED = 1;
@@ -770,23 +770,23 @@ class Node {
 /**
 @private
 */
-//inline ObjectPool<Node> _task_pool;
+inline ObjectPool<Node> _task_pool;
 
 /**
 @private
 */
 template <typename... ArgsT>
 TF_FORCE_INLINE Node* animate(ArgsT&&... args) {
-  return new Node(std::forward<ArgsT>(args)...);
-  //return _task_pool.animate(std::forward<ArgsT>(args)...);
+  //return new Node(std::forward<ArgsT>(args)...);
+  return _task_pool.animate(std::forward<ArgsT>(args)...);
 }
 
 /**
 @private
 */
 TF_FORCE_INLINE void recycle(Node* ptr) {
-  delete ptr;
-  //_task_pool.recycle(ptr);
+  //delete ptr;
+  _task_pool.recycle(ptr);
 }
 
 // ----------------------------------------------------------------------------
