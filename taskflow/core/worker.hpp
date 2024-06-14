@@ -2,7 +2,12 @@
 
 #include "declarations.hpp"
 #include "tsq.hpp"
+
+#ifdef __cpp_lib_atomic_wait
+#include "notifier-tw.hpp"
+#else
 #include "notifier.hpp"
+#endif
 
 /**
 @file worker.hpp
