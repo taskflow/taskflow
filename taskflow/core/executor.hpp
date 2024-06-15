@@ -1052,7 +1052,7 @@ class Executor {
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
   //Notifier _notifier;
-  #ifdef EventCount
+  #ifdef EVENTCOUNT
     EventCount _notifier;
   #else 
     Notifier _notifier;
