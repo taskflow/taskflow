@@ -1051,7 +1051,12 @@ class Executor {
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
-  Notifier _notifier;
+  //Notifier _notifier;
+  #ifdef EventCount
+    EventCount _notifier;
+  #else 
+    Notifier _notifier;
+  #endif
   std::atomic<bool> _done {0};
 #endif
   

@@ -67,7 +67,11 @@ class Worker {
     Node* _cache;
 
 #ifndef __cpp_lib_atomic_wait
+    #ifdef EventCount
+    EventCount::Waiter* _waiter;
+    #else 
     Notifier::Waiter* _waiter;
+    #endif
 #endif
 };
 
