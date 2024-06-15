@@ -1,6 +1,3 @@
-// 2019/02/09 - created by Tsung-Wei Huang
-//  - modified the event count from Eigen
-
 #pragma once
 
 #include <iostream>
@@ -62,7 +59,8 @@ namespace tf {
 // and won't block, or notifying thread will see _state change and will unblock
 // the waiter, or both. But it can't happen that both threads don't see each
 // other changes, which would lead to deadlock.
-class Notifier {
+
+class NonblockingNotifierV1 {
 
   friend class Executor;
 
@@ -86,13 +84,13 @@ class Notifier {
 #endif
   };
 
-  explicit Notifier(size_t N) : _state(kStackMask), _waiters(N) {
+  explicit NonblockingNotifierV1(size_t N) : _state(kStackMask), _waiters(N) {
     assert(_waiters.size() < (1 << kWaiterBits) - 1);
     // Initialize epoch to something close to overflow to test overflow.
     //_state = kStackMask | (kEpochMask - kEpochInc * _waiters.size() * 2);
   }
 
-  ~Notifier() {
+  ~NonblockingNotifierV1() {
     // Ensure there are no waiters.
     assert((_state.load() & (kStackMask | kWaiterMask)) == kStackMask);
   }
@@ -168,61 +166,22 @@ class Notifier {
     }
   }
 
-  // notify wakes one or all waiting threads.
-  // Must be called after changing the associated wait predicate.
-  void notify(bool all) {
-    std::atomic_thread_fence(std::memory_order_seq_cst);
-    uint64_t state = _state.load(std::memory_order_acquire);
-    for (;;) {
-      // Easy case: no waiters.
-      if ((state & kStackMask) == kStackMask && (state & kWaiterMask) == 0) {
-        return;
-      }
-      uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
-      uint64_t newstate;
-      if (all) {
-        // Reset prewait counter and empty wait list.
-        newstate = (state & kEpochMask) + (kEpochInc * waiters) + kStackMask;
-      } else if (waiters) {
-        // There is a thread in pre-wait state, unblock it.
-        newstate = state + kEpochInc - kWaiterInc;
-      } else {
-        // Pop a waiter from list and unpark it.
-        Waiter* w = &_waiters[state & kStackMask];
-        Waiter* wnext = w->next.load(std::memory_order_relaxed);
-        uint64_t next = kStackMask;
-        //if (wnext != nullptr) next = wnext - &_waiters[0];
-        if (wnext != nullptr) {
-          next = static_cast<uint64_t>(wnext - &_waiters[0]);
-        }
-        // Note: we don't add kEpochInc here. ABA problem on the lock-free stack
-        // can't happen because a waiter is re-pushed onto the stack only after
-        // it was in the pre-wait state which inevitably leads to epoch
-        // increment.
-        newstate = (state & kEpochMask) + next;
-      }
-      if (_state.compare_exchange_weak(state, newstate,
-                                       std::memory_order_acquire)) {
-        if (!all && waiters) return;  // unblocked pre-wait thread
-        if ((state & kStackMask) == kStackMask) return;
-        Waiter* w = &_waiters[state & kStackMask];
-        if (!all) {
-          w->next.store(nullptr, std::memory_order_relaxed);
-        }
-        _unpark(w);
-        return;
-      }
-    }
+  void notify_one() {
+    _notify<false>();
+  }
+
+  void notify_all() {
+    _notify<true>();
   }
 
   // notify n workers
   void notify_n(size_t n) {
     if(n >= _waiters.size()) {
-      notify(true);
+      _notify<true>();
     }
     else {
       for(size_t k=0; k<n; ++k) {
-        notify(false);
+        _notify<false>();
       }
     }
   }
@@ -292,44 +251,92 @@ class Notifier {
 #endif
     }
   }
-
+  
+  // notify wakes one or all waiting threads.
+  // Must be called after changing the associated wait predicate.
+  template <bool all>
+  void _notify() {
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    uint64_t state = _state.load(std::memory_order_acquire);
+    for (;;) {
+      // Easy case: no waiters.
+      if ((state & kStackMask) == kStackMask && (state & kWaiterMask) == 0) {
+        return;
+      }
+      uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
+      uint64_t newstate;
+      if (all) {
+        // Reset prewait counter and empty wait list.
+        newstate = (state & kEpochMask) + (kEpochInc * waiters) + kStackMask;
+      } else if (waiters) {
+        // There is a thread in pre-wait state, unblock it.
+        newstate = state + kEpochInc - kWaiterInc;
+      } else {
+        // Pop a waiter from list and unpark it.
+        Waiter* w = &_waiters[state & kStackMask];
+        Waiter* wnext = w->next.load(std::memory_order_relaxed);
+        uint64_t next = kStackMask;
+        //if (wnext != nullptr) next = wnext - &_waiters[0];
+        if (wnext != nullptr) {
+          next = static_cast<uint64_t>(wnext - &_waiters[0]);
+        }
+        // Note: we don't add kEpochInc here. ABA problem on the lock-free stack
+        // can't happen because a waiter is re-pushed onto the stack only after
+        // it was in the pre-wait state which inevitably leads to epoch
+        // increment.
+        newstate = (state & kEpochMask) + next;
+      }
+      if (_state.compare_exchange_weak(state, newstate,
+                                       std::memory_order_acquire)) {
+        if (!all && waiters) return;  // unblocked pre-wait thread
+        if ((state & kStackMask) == kStackMask) return;
+        Waiter* w = &_waiters[state & kStackMask];
+        if (!all) {
+          w->next.store(nullptr, std::memory_order_relaxed);
+        }
+        _unpark(w);
+        return;
+      }
+    }
+  }
 };
 
+
 // ----------------------------------------------------------------------------
-// EventCount
+// NonblockingNotifierV2
+// reference: https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/ThreadPool/EventCount.h
 // ----------------------------------------------------------------------------
-class EventCount {
+class NonblockingNotifierV2 {
 
   friend class Executor;
 
   public:
   
   struct Waiter {
-    // Align to 128 byte boundary to prevent false sharing with other Waiter
-    // objects in the same vector.
     alignas (2*TF_CACHELINE_SIZE) std::atomic<uint64_t> next;
-    std::mutex mu;
-    std::condition_variable cv;
-    uint64_t epoch = 0;
-    unsigned state = kNotSignaled;
-    enum {
-      kNotSignaled,
+    uint64_t epoch;
+    enum : unsigned {
+      kNotSignaled = 0,
       kWaiting,
       kSignaled,
     };
+
+#ifdef __cpp_lib_atomic_wait
+    std::atomic<unsigned> state {0};
+#else
+    std::mutex mu;
+    std::condition_variable cv;
+    unsigned state;
+#endif
   };
 
-  //EventCount(MaxSizeVector<Waiter>& waiters) : _state(kStackMask), _waiters(waiters) {
-  //  eigen_plain_assert(waiters.size() < (1 << kWaiterBits) - 1);
-  //}
-  
-  explicit EventCount(size_t N) : _state(kStackMask), _waiters{N} {
+  explicit NonblockingNotifierV2(size_t N) : _state(kStackMask), _waiters(N) {
     assert(N < ((1 << kWaiterBits) - 1));
   }
 
-  ~EventCount() {
+  ~NonblockingNotifierV2() {
     // Ensure there are no waiters.
-    //eigen_plain_assert(_state.load() == kStackMask);
+    assert(_state.load() == kStackMask);
   }
 
   // prepare_wait prepares for waiting.
@@ -338,17 +345,24 @@ class EventCount {
   void prepare_wait(Waiter*) {
     uint64_t state = _state.load(std::memory_order_relaxed);
     for (;;) {
+      //_check_state(state);
       uint64_t newstate = state + kWaiterInc;
+      //_check_state(newstate);
       if (_state.compare_exchange_weak(state, newstate, std::memory_order_seq_cst)) return;
     }
   }
 
   // commit_wait commits waiting after prepare_wait.
   void commit_wait(Waiter* w) {
+#ifdef __cpp_lib_atomic_wait
+    w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
+#else
     w->state = Waiter::kNotSignaled;
+#endif
     const uint64_t me = (w - &_waiters[0]) | w->epoch;
     uint64_t state = _state.load(std::memory_order_seq_cst);
     for (;;) {
+      //_check_state(state, true);
       uint64_t newstate;
       if ((state & kSignalMask) != 0) {
         // Consume the signal and return immediately.
@@ -358,6 +372,7 @@ class EventCount {
         newstate = ((state & kWaiterMask) - kWaiterInc) | me;
         w->next.store(state & (kStackMask | kEpochMask), std::memory_order_relaxed);
       }
+      //_check_state(newstate);
       if (_state.compare_exchange_weak(state, newstate, std::memory_order_acq_rel)) {
         if ((state & kSignalMask) == 0) {
           w->epoch += kEpochInc;
@@ -372,58 +387,34 @@ class EventCount {
   void cancel_wait(Waiter*) {
     uint64_t state = _state.load(std::memory_order_relaxed);
     for (;;) {
+      //_check_state(state, true);
       uint64_t newstate = state - kWaiterInc;
       // We don't know if the thread was also notified or not,
       // so we should not consume a signal unconditionally.
       // Only if number of waiters is equal to number of signals,
       // we know that the thread was notified and we must take away the signal.
       if (((state & kWaiterMask) >> kWaiterShift) == ((state & kSignalMask) >> kSignalShift)) newstate -= kSignalInc;
+      //_check_state(newstate);
       if (_state.compare_exchange_weak(state, newstate, std::memory_order_acq_rel)) return;
     }
   }
 
-  // Notify wakes one or all waiting threads.
-  // Must be called after changing the associated wait predicate.
-  void notify(bool notifyAll) {
-    std::atomic_thread_fence(std::memory_order_seq_cst);
-    uint64_t state = _state.load(std::memory_order_acquire);
-    for (;;) {
-      const uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
-      const uint64_t signals = (state & kSignalMask) >> kSignalShift;
-      // Easy case: no waiters.
-      if ((state & kStackMask) == kStackMask && waiters == signals) return;
-      uint64_t newstate;
-      if (notifyAll) {
-        // Empty wait stack and set signal to number of pre-wait threads.
-        newstate = (state & kWaiterMask) | (waiters << kSignalShift) | kStackMask;
-      } else if (signals < waiters) {
-        // There is a thread in pre-wait state, unblock it.
-        newstate = state + kSignalInc;
-      } else {
-        // Pop a waiter from list and unpark it.
-        Waiter* w = &_waiters[state & kStackMask];
-        uint64_t next = w->next.load(std::memory_order_relaxed);
-        newstate = (state & (kWaiterMask | kSignalMask)) | next;
-      }
-      if (_state.compare_exchange_weak(state, newstate, std::memory_order_acq_rel)) {
-        if (!notifyAll && (signals < waiters)) return;  // unblocked pre-wait thread
-        if ((state & kStackMask) == kStackMask) return;
-        Waiter* w = &_waiters[state & kStackMask];
-        if (!notifyAll) w->next.store(kStackMask, std::memory_order_relaxed);
-        _unpark(w);
-        return;
-      }
-    }
+  void notify_one() {
+    _notify<false>();
+  }
+
+  void notify_all() {
+    _notify<true>();
   }
   
   // notify n workers
   void notify_n(size_t n) {
     if(n >= _waiters.size()) {
-      notify(true);
+      _notify<true>();
     }
     else {
       for(size_t k=0; k<n; ++k) {
-        notify(false);
+        _notify<false>();
       }
     }
   }
@@ -431,7 +422,6 @@ class EventCount {
   size_t size() const {
     return _waiters.size();
   }
-
 
   private:
   // State_ layout:
@@ -454,21 +444,39 @@ class EventCount {
   static const uint64_t kEpochBits = 64 - kEpochShift;
   static const uint64_t kEpochMask = ((1ull << kEpochBits) - 1) << kEpochShift;
   static const uint64_t kEpochInc = 1ull << kEpochShift;
+  
+  static_assert(kEpochBits >= 20, "not enough bits to prevent ABA problem");
+
   std::atomic<uint64_t> _state;
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
+#ifdef __cpp_lib_atomic_wait
+    unsigned target = Waiter::kNotSignaled;
+    if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
+                                        std::memory_order_relaxed,
+                                        std::memory_order_relaxed)) {
+      w->state.wait(Waiter::kWaiting, std::memory_order_relaxed);
+    }
+#else
     std::unique_lock<std::mutex> lock(w->mu);
     while (w->state != Waiter::kSignaled) {
       w->state = Waiter::kWaiting;
       w->cv.wait(lock);
     }
+#endif
   }
 
   void _unpark(Waiter* w) {
     for (Waiter* next; w; w = next) {
       uint64_t wnext = w->next.load(std::memory_order_relaxed) & kStackMask;
       next = (wnext == kStackMask) ? nullptr : &_waiters[static_cast<size_t>(wnext)];
+#ifdef __cpp_lib_atomic_wait
+      if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == 
+         Waiter::kWaiting) {
+        w->state.notify_one();
+      }
+#else      
       unsigned state;
       {
         std::unique_lock<std::mutex> lock(w->mu);
@@ -477,11 +485,60 @@ class EventCount {
       }
       // Avoid notifying if it wasn't waiting.
       if (state == Waiter::kWaiting) w->cv.notify_one();
+#endif
+    }
+  }
+  
+  // Notify wakes one or all waiting threads.
+  // Must be called after changing the associated wait predicate.
+  template <bool notifyAll>
+  void _notify() {
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    uint64_t state = _state.load(std::memory_order_acquire);
+    for (;;) {
+      //_check_state(state);
+      const uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
+      const uint64_t signals = (state & kSignalMask) >> kSignalShift;
+      // Easy case: no waiters.
+      if ((state & kStackMask) == kStackMask && waiters == signals) return;
+      uint64_t newstate;
+      if (notifyAll) {
+        // Empty wait stack and set signal to number of pre-wait threads.
+        newstate = (state & kWaiterMask) | (waiters << kSignalShift) | kStackMask;
+      } else if (signals < waiters) {
+        // There is a thread in pre-wait state, unblock it.
+        newstate = state + kSignalInc;
+      } else {
+        // Pop a waiter from list and unpark it.
+        Waiter* w = &_waiters[state & kStackMask];
+        uint64_t next = w->next.load(std::memory_order_relaxed);
+        newstate = (state & (kWaiterMask | kSignalMask)) | next;
+      }
+      //_check_state(newstate);
+      if (_state.compare_exchange_weak(state, newstate, std::memory_order_acq_rel)) {
+        if (!notifyAll && (signals < waiters)) return;  // unblocked pre-wait thread
+        if ((state & kStackMask) == kStackMask) return;
+        Waiter* w = &_waiters[state & kStackMask];
+        if (!notifyAll) w->next.store(kStackMask, std::memory_order_relaxed);
+        _unpark(w);
+        return;
+      }
     }
   }
 
-  EventCount(const EventCount&) = delete;
-  void operator=(const EventCount&) = delete;
+  //static void _check_state(uint64_t state, bool waiter = false) {
+  //  const uint64_t waiters = (state & kWaiterMask) >> kWaiterShift;
+  //  const uint64_t signals = (state & kSignalMask) >> kSignalShift;
+  //  assert(waiters >= signals);
+  //  assert(waiters < (1 << kWaiterBits) - 1);
+  //  assert(!waiter || waiters > 0);
+  //  (void)waiters;
+  //  (void)signals;
+  //}
+
+
+  NonblockingNotifierV2(const NonblockingNotifierV2&) = delete;
+  void operator=(const NonblockingNotifierV2&) = delete;
 };
 
 

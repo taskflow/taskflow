@@ -25,17 +25,6 @@ jobs:
     - name: test
       run: cd build ; ctest --output-on-failure
   
-  release-test-cpp17-eventcount:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: cmake
-      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="-DEVENTCOUNT"
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
-  
   undefined-test-cpp17:
     runs-on: macos-latest
     steps:
@@ -61,6 +50,17 @@ jobs:
 ###############################################################################
 # C++ 20 standard test:
 ###############################################################################
+  
+  debug-test-cpp20:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=20
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest --output-on-failure
 
   release-test-cpp20:
     runs-on: ubuntu-latest
@@ -68,6 +68,17 @@ jobs:
     - uses: actions/checkout@v2
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest --output-on-failure
+  
+  undefined-test-cpp20:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g" -DCMAKE_CXX_STANDARD=20
     - name: build
       run: cmake --build build --parallel 10
     - name: test

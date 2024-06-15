@@ -2,12 +2,9 @@
 
 #include "declarations.hpp"
 #include "tsq.hpp"
+#include "atomic_notifier.hpp"
+#include "nonblocking_notifier.hpp"
 
-#ifdef __cpp_lib_atomic_wait
-#include "notifier-tw.hpp"
-#else
-#include "notifier.hpp"
-#endif
 
 /**
 @file worker.hpp
@@ -15,6 +12,14 @@
 */
 
 namespace tf {
+
+// ----------------------------------------------------------------------------
+// Default Notifier
+// ----------------------------------------------------------------------------
+/**
+@private
+*/
+using DefaultNotifier = NonblockingNotifierV2;
 
 // ----------------------------------------------------------------------------
 // Class Definition: Worker
@@ -66,13 +71,7 @@ class Worker {
     TaskQueue<Node*> _wsq;
     Node* _cache;
 
-#ifndef __cpp_lib_atomic_wait
-    #ifdef EVENTCOUNT
-    EventCount::Waiter* _waiter;
-    #else 
-    Notifier::Waiter* _waiter;
-    #endif
-#endif
+    DefaultNotifier::Waiter* _waiter;
 };
 
 // ----------------------------------------------------------------------------

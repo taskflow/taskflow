@@ -14,17 +14,6 @@ jobs:
     - name: test
       run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
   
-  release-test-cpp17-eventcount:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="-DEVENTCOUNT"
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
-
 ###############################################################################
 # C++ 20 standard test:
 ###############################################################################

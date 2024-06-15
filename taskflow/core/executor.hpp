@@ -1040,25 +1040,19 @@ class Executor {
   
   std::vector<std::thread> _threads;
   std::vector<Worker> _workers;
+  DefaultNotifier _notifier;
 
 #ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies {0};
   std::atomic_flag _all_spawned = ATOMIC_FLAG_INIT;
-
   std::atomic_flag _done = ATOMIC_FLAG_INIT; 
-  Notifier _notifier;
 #else
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
-  //Notifier _notifier;
-  #ifdef EVENTCOUNT
-    EventCount _notifier;
-  #else 
-    Notifier _notifier;
-  #endif
   std::atomic<bool> _done {0};
 #endif
+
   
   std::unordered_map<std::thread::id, size_t> _wids;
   std::list<Taskflow> _taskflows;
@@ -1111,10 +1105,8 @@ class Executor {
 inline Executor::Executor(size_t N) :
   _MAX_STEALS {((N+1) << 1)},
   _threads    {N},
-  _workers    {N}
-#ifndef __cpp_lib_atomic_wait
-  ,_notifier   {N} 
-#endif 
+  _workers    {N},
+  _notifier   {N} 
 {
 
   if(N == 0) {
@@ -1139,11 +1131,10 @@ inline Executor::~Executor() {
 
 #ifdef __cpp_lib_atomic_wait
   _done.test_and_set(std::memory_order_relaxed);
-  _notifier.notify_all();
 #else
   _done = true;
-  _notifier.notify(true);
 #endif
+  _notifier.notify_all();
 
   for(auto& t : _threads) {
     t.join();
@@ -1198,10 +1189,7 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._id = id;
     _workers[id]._vtm = id;
     _workers[id]._executor = this;
-#ifndef __cpp_lib_atomic_wait
     _workers[id]._waiter = &_notifier._waiters[id];
-#endif
-
     _threads[id] = std::thread([&, &w=_workers[id]] () {
 
 #ifdef __cpp_lib_atomic_wait
@@ -1358,43 +1346,10 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // The last thief who successfully stole a task will wake up
   // another thief worker to avoid starvation.
 //  if(t) {
-//#ifdef __cpp_lib_atomic_wait
-//
-//#else
-//    _notifier.notify(false);
-//#endif
+//    _notifier.notify_one();
 //    return true;
 //  }
-
-#ifdef __cpp_lib_atomic_wait
-  auto key = _notifier.prepare_wait();
-
-  if(_done.test(std::memory_order_relaxed)) {
-    _notifier.cancel_wait();
-    return false;
-  }
-
-  if(!_wsq.empty()) {
-    _notifier.cancel_wait();
-    worker._vtm = worker._id;
-    goto explore_task;
-  }
   
-  // We need to use index-based scanning to avoid data race
-  // with _spawn which may initialize a worker at the same time.
-  for(size_t vtm=0; vtm<_workers.size(); vtm++) {
-    if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait();
-      worker._vtm = vtm;
-      goto explore_task;
-    }
-  }
-
-  _notifier.wait(key);
-
-  goto explore_task;
-  
-#else
   // ---- 2PC guard ----
   _notifier.prepare_wait(worker._waiter);
 
@@ -1403,10 +1358,14 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     worker._vtm = worker._id;
     goto explore_task;
   }
-  
+
+#ifdef __cpp_lib_atomic_wait
+  if(_done.test(std::memory_order_relaxed)) {
+#else
   if(_done) {
+#endif
     _notifier.cancel_wait(worker._waiter);
-    _notifier.notify(true);
+    _notifier.notify_all();
     return false;
   }
   
@@ -1423,7 +1382,6 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // Now I really need to relinguish my self to others
   _notifier.commit_wait(worker._waiter);
   goto explore_task;
-#endif
 
 }
 
@@ -1478,11 +1436,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // has shown no significant advantage.
   if(worker._executor == this) {
     worker._wsq.push(node, p);
-#ifdef __cpp_lib_atomic_wait
     _notifier.notify_one();
-#else
-    _notifier.notify(false);
-#endif
     return;
   }
 
@@ -1490,11 +1444,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     _wsq.push(node, p);
   }
-#ifdef __cpp_lib_atomic_wait
   _notifier.notify_one();
-#else
-  _notifier.notify(false);
-#endif
 }
 
 // Procedure: _schedule
@@ -1512,11 +1462,7 @@ inline void Executor::_schedule(Node* node) {
     _wsq.push(node, p);
   }
 
-#ifdef __cpp_lib_atomic_wait
   _notifier.notify_one();
-#else
-  _notifier.notify(false);
-#endif
 }
 
 // Procedure: _schedule
@@ -1541,11 +1487,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
       auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
       worker._wsq.push(nodes[i], p);
-#ifdef __cpp_lib_atomic_wait
       _notifier.notify_one();
-#else
-      _notifier.notify(false);
-#endif
     }
     return;
   }
@@ -1558,18 +1500,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
       _wsq.push(nodes[k], p);
     }
   }
-#ifdef __cpp_lib_atomic_wait
-  if(num_nodes >= _workers.size()) {
-    _notifier.notify_all();
-  }
-  else {
-    for(size_t k=0; k<num_nodes; k++) {
-      _notifier.notify_one();
-    }
-  }
-#else
   _notifier.notify_n(num_nodes);
-#endif
 }
 
 // Procedure: _schedule
@@ -1594,18 +1525,7 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
     }
   }
 
-#ifdef __cpp_lib_atomic_wait
-  if(num_nodes >= _workers.size()) {
-    _notifier.notify_all();
-  }
-  else {
-    for(size_t k=0; k<num_nodes; k++) {
-      _notifier.notify_one();
-    }
-  }
-#else
   _notifier.notify_n(num_nodes);
-#endif
 }
 
 // Procedure: _invoke
