@@ -3,18 +3,29 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
-  msvc2019:
-    # The CMake configure and build commands are platform agnostic and should work equally
-    # well on Windows or Mac.  You can convert this to a matrix build if you need
-    # cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  release-test-cpp17:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: cmake
-      run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D CMAKE_BUILD_BENCHMARKS=ON -D CMAKE_BUILD_PROFILER=ON
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17
     - name: build
       run: cmake --build build --parallel 10
     - name: test
       run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
+
+###############################################################################
+# C++ 20 standard test:
+###############################################################################
+  
+  release-test-cpp20:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
+
