@@ -69,7 +69,7 @@ class Notifier {
   public:
 
   struct Waiter {
-    std::atomic<Waiter*> next;
+    alignas (2*TF_CACHELINE_SIZE) std::atomic<Waiter*> next;
     uint64_t epoch;
     enum : unsigned {
       kNotSignaled = 0,
@@ -86,7 +86,7 @@ class Notifier {
 #endif
   };
 
-  explicit Notifier(size_t N) : _state{kStackMask}, _waiters{N}{
+  explicit Notifier(size_t N) : _state(kStackMask), _waiters(N) {
     assert(_waiters.size() < (1 << kWaiterBits) - 1);
     // Initialize epoch to something close to overflow to test overflow.
     //_state = kStackMask | (kEpochMask - kEpochInc * _waiters.size() * 2);
