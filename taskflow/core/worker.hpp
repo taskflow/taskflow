@@ -16,10 +16,15 @@ namespace tf {
 // ----------------------------------------------------------------------------
 // Default Notifier
 // ----------------------------------------------------------------------------
+
 /**
 @private
 */
-using DefaultNotifier = NonblockingNotifierV2;
+#ifdef TF_ENABLE_ATOMIC_NOTIFIER
+  using DefaultNotifier = AtomicNotifier;
+#else
+  using DefaultNotifier = NonblockingNotifierV2;
+#endif
 
 // ----------------------------------------------------------------------------
 // Class Definition: Worker
