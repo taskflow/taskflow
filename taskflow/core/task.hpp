@@ -268,16 +268,6 @@ class Task {
     Task& succeed(Ts&&... tasks);
 
     /**
-    @brief makes the task release this semaphore
-    */
-    Task& release(Semaphore& semaphore);
-
-    /**
-    @brief makes the task acquire this semaphore
-    */
-    Task& acquire(Semaphore& semaphore);
-
-    /**
     @brief assigns pointer to user data
 
     @param data pointer to user data
@@ -440,25 +430,6 @@ inline bool Task::operator != (const Task& rhs) const {
 // Function: name
 inline Task& Task::name(const std::string& name) {
   _node->_name = name;
-  return *this;
-}
-
-// Function: acquire
-inline Task& Task::acquire(Semaphore& s) {
-  if(!_node->_semaphores) {
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_acquire.push_back(&s);
-  return *this;
-}
-
-// Function: release
-inline Task& Task::release(Semaphore& s) {
-  if(!_node->_semaphores) {
-    //_node->_semaphores.emplace();
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_release.push_back(&s);
   return *this;
 }
 

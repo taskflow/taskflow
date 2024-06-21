@@ -5,7 +5,7 @@
   <title>Taskflow Algorithms &raquo; Task-parallel Scalable Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -59,721 +59,721 @@
             <li><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
           </ul>
         </nav>
-<p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</p><section id="IncludeTheScalablePipelineHeader"><h2><a href="#IncludeTheScalablePipelineHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a scalable pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span><span class="cp"></span></pre></section><section id="CreateAScalablePipelineModuleTask"><h2><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></h2><p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is a composable graph object to implement a <em>pipeline scheduling framework</em> in a taskflow. The key difference between <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is that a scalable pipeline can accept <em>variable</em> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</p><section id="IncludeTheScalablePipelineHeader"><h2><a href="#IncludeTheScalablePipelineHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a scalable pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span></pre></section><section id="CreateAScalablePipelineModuleTask"><h2><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></h2><p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is a composable graph object to implement a <em>pipeline scheduling framework</em> in a taskflow. The key difference between <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is that a scalable pipeline can accept <em>variable</em> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
-<span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
+<span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 
 <span class="c1">// create data storage</span>
-<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">num_lines</span><span class="o">&gt;</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">num_lines</span><span class="o">&gt;</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span>
 
 <span class="c1">// define the pipe callable</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">pipe_callable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">switch</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">pipe_callable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">switch</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// first stage generates only 5 scheduling tokens and saves the </span>
 <span class="w">    </span><span class="c1">// token number into the buffer.</span>
-<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;stage 1: input token = %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">());</span><span class="w"></span>
-<span class="w">        </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="mi">0</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;stage 1: input token = %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">());</span>
+<span class="w">        </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="c1">// other stages propagate the previous result to this pipe and</span>
 <span class="w">    </span><span class="c1">// increment it by one</span>
-<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;stage %zu: input buffer[%zu] = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">(),</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">(),</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"></span>
-<span class="w">      </span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;stage %zu: input buffer[%zu] = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">(),</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">(),</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">      </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span>
-<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// create a vector of three pipes</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span>
 
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_callable</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_callable</span><span class="p">);</span>
+<span class="p">}</span>
 
 <span class="c1">// create a pipeline of four parallel lines based on the given vector of pipes</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="n">pl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
 <span class="c1">// build the pipeline graph using composition</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
-<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;starting pipeline&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span><span class="w"></span>
-<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
-<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;ready</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;starting pipeline&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span>
 
 <span class="c1">// create task dependency</span>
-<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span><span class="w"></span>
-<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span><span class="w"></span>
+<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
 
 <span class="c1">// dump the pipeline graph structure (with composition)</span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="c1">// reset the pipeline to a new range of five pipes and starts from</span>
 <span class="c1">// the initial state (i.e., token counts from zero)</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_callable</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-<span class="n">pl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_callable</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">pl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The program defines a uniform pipe type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <code>[first, last)</code>, that point to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</p><div class="m-graph"><svg style="width: 24.200rem; height: 29.200rem;" viewBox="0.00 0.00 242.00 292.00">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The program defines a uniform pipe type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <code>[first, last)</code>, that point to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</p><div class="m-graph"><svg style="width: 23.800rem; height: 29.200rem;" viewBox="0.00 0.00 238.00 292.00">
 <g transform="scale(1 1) rotate(0) translate(4 288)">
 <title>Taskflow</title>
 <g class="m-cluster">
-<title>cluster0</title>
-<polygon stroke-dasharray="5,2" points="8,-224 8,-276 226,-276 226,-224 8,-224"/>
-</g>
-<g class="m-cluster">
 <title>cluster1</title>
-<polygon stroke-dasharray="5,2" points="8,-152 8,-204 226,-204 226,-152 8,-152"/>
+<polygon stroke-dasharray="5,2" points="8,-152 8,-204 222,-204 222,-152 8,-152"/>
 </g>
 <g class="m-cluster">
 <title>cluster2</title>
-<polygon stroke-dasharray="5,2" points="8,-80 8,-132 226,-132 226,-80 8,-80"/>
+<polygon stroke-dasharray="5,2" points="8,-80 8,-132 222,-132 222,-80 8,-80"/>
 </g>
 <g class="m-cluster">
 <title>cluster3</title>
-<polygon stroke-dasharray="5,2" points="8,-8 8,-60 226,-60 226,-8 8,-8"/>
+<polygon stroke-dasharray="5,2" points="8,-8 8,-60 222,-60 222,-8 8,-8"/>
+</g>
+<g class="m-cluster">
+<title>cluster0</title>
+<polygon stroke-dasharray="5,2" points="8,-224 8,-276 222,-276 222,-224 8,-224"/>
 </g>
 <g class="m-node m-flat">
 <title>p00</title>
-<ellipse cx="44" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-node m-flat">
 <title>p10</title>
-<ellipse cx="44" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p10</title>
-<path d="M44,-231.7C44,-223.98 44,-214.71 44,-206.11"/>
-<polygon points="47.5,-206.1 44,-196.1 40.5,-206.1 47.5,-206.1"/>
+<path d="M43,-231.7C43,-224.41 43,-215.73 43,-207.54"/>
+<polygon points="46.5,-207.62 43,-197.62 39.5,-207.62 46.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p01</title>
-<ellipse cx="117" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p01</title>
-<path d="M71.95,-250C74.28,-250 76.62,-250 78.95,-250"/>
-<polygon points="79.19,-253.5 89.19,-250 79.19,-246.5 79.19,-253.5"/>
+<path d="M70.28,-250C72.28,-250 74.28,-250 76.29,-250"/>
+<polygon points="76.24,-253.5 86.24,-250 76.24,-246.5 76.24,-253.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p20</title>
-<ellipse cx="44" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p20</title>
-<path d="M44,-159.7C44,-151.98 44,-142.71 44,-134.11"/>
-<polygon points="47.5,-134.1 44,-124.1 40.5,-134.1 47.5,-134.1"/>
+<path d="M43,-159.7C43,-152.41 43,-143.73 43,-135.54"/>
+<polygon points="46.5,-135.62 43,-125.62 39.5,-135.62 46.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p11</title>
-<ellipse cx="117" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p11</title>
-<path d="M71.95,-178C74.28,-178 76.62,-178 78.95,-178"/>
-<polygon points="79.19,-181.5 89.19,-178 79.19,-174.5 79.19,-181.5"/>
+<path d="M70.28,-178C72.28,-178 74.28,-178 76.29,-178"/>
+<polygon points="76.24,-181.5 86.24,-178 76.24,-174.5 76.24,-181.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p30</title>
-<ellipse cx="44" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p30</title>
-<path d="M44,-87.7C44,-79.98 44,-70.71 44,-62.11"/>
-<polygon points="47.5,-62.1 44,-52.1 40.5,-62.1 47.5,-62.1"/>
+<path d="M43,-87.7C43,-80.41 43,-71.73 43,-63.54"/>
+<polygon points="46.5,-63.62 43,-53.62 39.5,-63.62 46.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p21</title>
-<ellipse cx="117" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p21</title>
-<path d="M71.95,-106C74.28,-106 76.62,-106 78.95,-106"/>
-<polygon points="79.19,-109.5 89.19,-106 79.19,-102.5 79.19,-109.5"/>
+<path d="M70.28,-106C72.28,-106 74.28,-106 76.29,-106"/>
+<polygon points="76.24,-109.5 86.24,-106 76.24,-102.5 76.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p31</title>
-<ellipse cx="117" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p30&#45;&gt;p31</title>
-<path d="M71.95,-34C74.28,-34 76.62,-34 78.95,-34"/>
-<polygon points="79.19,-37.5 89.19,-34 79.19,-30.5 79.19,-37.5"/>
+<path d="M70.28,-34C72.28,-34 74.28,-34 76.29,-34"/>
+<polygon points="76.24,-37.5 86.24,-34 76.24,-30.5 76.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p01&#45;&gt;p11</title>
-<path d="M117,-231.7C117,-223.98 117,-214.71 117,-206.11"/>
-<polygon points="120.5,-206.1 117,-196.1 113.5,-206.1 120.5,-206.1"/>
+<path d="M115,-231.7C115,-224.41 115,-215.73 115,-207.54"/>
+<polygon points="118.5,-207.62 115,-197.62 111.5,-207.62 118.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p02</title>
-<ellipse cx="190" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p01&#45;&gt;p02</title>
-<path d="M144.95,-250C147.28,-250 149.62,-250 151.95,-250"/>
-<polygon points="152.19,-253.5 162.19,-250 152.19,-246.5 152.19,-253.5"/>
+<path d="M142.28,-250C144.28,-250 146.28,-250 148.29,-250"/>
+<polygon points="148.24,-253.5 158.24,-250 148.24,-246.5 148.24,-253.5"/>
 </g>
 <g class="m-edge">
 <title>p11&#45;&gt;p21</title>
-<path d="M117,-159.7C117,-151.98 117,-142.71 117,-134.11"/>
-<polygon points="120.5,-134.1 117,-124.1 113.5,-134.1 120.5,-134.1"/>
+<path d="M115,-159.7C115,-152.41 115,-143.73 115,-135.54"/>
+<polygon points="118.5,-135.62 115,-125.62 111.5,-135.62 118.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p12</title>
-<ellipse cx="190" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p11&#45;&gt;p12</title>
-<path d="M144.95,-178C147.28,-178 149.62,-178 151.95,-178"/>
-<polygon points="152.19,-181.5 162.19,-178 152.19,-174.5 152.19,-181.5"/>
+<path d="M142.28,-178C144.28,-178 146.28,-178 148.29,-178"/>
+<polygon points="148.24,-181.5 158.24,-178 148.24,-174.5 148.24,-181.5"/>
 </g>
 <g class="m-edge">
 <title>p21&#45;&gt;p31</title>
-<path d="M117,-87.7C117,-79.98 117,-70.71 117,-62.11"/>
-<polygon points="120.5,-62.1 117,-52.1 113.5,-62.1 120.5,-62.1"/>
+<path d="M115,-87.7C115,-80.41 115,-71.73 115,-63.54"/>
+<polygon points="118.5,-63.62 115,-53.62 111.5,-63.62 118.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p22</title>
-<ellipse cx="190" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p21&#45;&gt;p22</title>
-<path d="M144.95,-106C147.28,-106 149.62,-106 151.95,-106"/>
-<polygon points="152.19,-109.5 162.19,-106 152.19,-102.5 152.19,-109.5"/>
+<path d="M142.28,-106C144.28,-106 146.28,-106 148.29,-106"/>
+<polygon points="148.24,-109.5 158.24,-106 148.24,-102.5 148.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p32</title>
-<ellipse cx="190" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p31&#45;&gt;p32</title>
-<path d="M144.95,-34C147.28,-34 149.62,-34 151.95,-34"/>
-<polygon points="152.19,-37.5 162.19,-34 152.19,-30.5 152.19,-37.5"/>
+<path d="M142.28,-34C144.28,-34 146.28,-34 148.29,-34"/>
+<polygon points="148.24,-37.5 158.24,-34 148.24,-30.5 148.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p02&#45;&gt;p12</title>
-<path d="M190,-231.7C190,-223.98 190,-214.71 190,-206.11"/>
-<polygon points="193.5,-206.1 190,-196.1 186.5,-206.1 193.5,-206.1"/>
+<path d="M187,-231.7C187,-224.41 187,-215.73 187,-207.54"/>
+<polygon points="190.5,-207.62 187,-197.62 183.5,-207.62 190.5,-207.62"/>
 </g>
 <g class="m-edge">
 <title>p12&#45;&gt;p22</title>
-<path d="M190,-159.7C190,-151.98 190,-142.71 190,-134.11"/>
-<polygon points="193.5,-134.1 190,-124.1 186.5,-134.1 193.5,-134.1"/>
+<path d="M187,-159.7C187,-152.41 187,-143.73 187,-135.54"/>
+<polygon points="190.5,-135.62 187,-125.62 183.5,-135.62 190.5,-135.62"/>
 </g>
 <g class="m-edge">
 <title>p22&#45;&gt;p32</title>
-<path d="M190,-87.7C190,-79.98 190,-70.71 190,-62.11"/>
-<polygon points="193.5,-62.1 190,-52.1 186.5,-62.1 193.5,-62.1"/>
+<path d="M187,-87.7C187,-80.41 187,-71.73 187,-63.54"/>
+<polygon points="190.5,-63.62 187,-53.62 183.5,-63.62 190.5,-63.62"/>
 </g>
 </g>
 </svg>
-</div><p>Then, the program appends another two pipes into the vector and resets the pipeline to the new range of two additional pipes, resulting in a pipeline of five serial stages:</p><div class="m-graph"><svg style="width: 38.800rem; height: 29.200rem;" viewBox="0.00 0.00 388.00 292.00">
+</div><p>Then, the program appends another two pipes into the vector and resets the pipeline to the new range of two additional pipes, resulting in a pipeline of five serial stages:</p><div class="m-graph"><svg style="width: 38.200rem; height: 29.200rem;" viewBox="0.00 0.00 382.00 292.00">
 <g transform="scale(1 1) rotate(0) translate(4 288)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster0</title>
-<polygon stroke-dasharray="5,2" points="8,-224 8,-276 372,-276 372,-224 8,-224"/>
+<polygon stroke-dasharray="5,2" points="8,-224 8,-276 366,-276 366,-224 8,-224"/>
 </g>
 <g class="m-cluster">
 <title>cluster1</title>
-<polygon stroke-dasharray="5,2" points="8,-152 8,-204 372,-204 372,-152 8,-152"/>
+<polygon stroke-dasharray="5,2" points="8,-152 8,-204 366,-204 366,-152 8,-152"/>
 </g>
 <g class="m-cluster">
 <title>cluster2</title>
-<polygon stroke-dasharray="5,2" points="8,-80 8,-132 372,-132 372,-80 8,-80"/>
+<polygon stroke-dasharray="5,2" points="8,-80 8,-132 366,-132 366,-80 8,-80"/>
 </g>
 <g class="m-cluster">
 <title>cluster3</title>
-<polygon stroke-dasharray="5,2" points="8,-8 8,-60 372,-60 372,-8 8,-8"/>
+<polygon stroke-dasharray="5,2" points="8,-8 8,-60 366,-60 366,-8 8,-8"/>
 </g>
 <g class="m-node m-flat">
 <title>p00</title>
-<ellipse cx="44" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-node m-flat">
 <title>p10</title>
-<ellipse cx="44" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p10</title>
-<path d="M44,-231.7C44,-223.98 44,-214.71 44,-206.11"/>
-<polygon points="47.5,-206.1 44,-196.1 40.5,-206.1 47.5,-206.1"/>
+<path d="M43,-231.7C43,-224.41 43,-215.73 43,-207.54"/>
+<polygon points="46.5,-207.62 43,-197.62 39.5,-207.62 46.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p01</title>
-<ellipse cx="117" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p00&#45;&gt;p01</title>
-<path d="M71.95,-250C74.28,-250 76.62,-250 78.95,-250"/>
-<polygon points="79.19,-253.5 89.19,-250 79.19,-246.5 79.19,-253.5"/>
+<path d="M70.28,-250C72.28,-250 74.28,-250 76.29,-250"/>
+<polygon points="76.24,-253.5 86.24,-250 76.24,-246.5 76.24,-253.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p20</title>
-<ellipse cx="44" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p20</title>
-<path d="M44,-159.7C44,-151.98 44,-142.71 44,-134.11"/>
-<polygon points="47.5,-134.1 44,-124.1 40.5,-134.1 47.5,-134.1"/>
+<path d="M43,-159.7C43,-152.41 43,-143.73 43,-135.54"/>
+<polygon points="46.5,-135.62 43,-125.62 39.5,-135.62 46.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p11</title>
-<ellipse cx="117" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p10&#45;&gt;p11</title>
-<path d="M71.95,-178C74.28,-178 76.62,-178 78.95,-178"/>
-<polygon points="79.19,-181.5 89.19,-178 79.19,-174.5 79.19,-181.5"/>
+<path d="M70.28,-178C72.28,-178 74.28,-178 76.29,-178"/>
+<polygon points="76.24,-181.5 86.24,-178 76.24,-174.5 76.24,-181.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p30</title>
-<ellipse cx="44" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="44" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+<ellipse cx="43" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p30</title>
-<path d="M44,-87.7C44,-79.98 44,-70.71 44,-62.11"/>
-<polygon points="47.5,-62.1 44,-52.1 40.5,-62.1 47.5,-62.1"/>
+<path d="M43,-87.7C43,-80.41 43,-71.73 43,-63.54"/>
+<polygon points="46.5,-63.62 43,-53.62 39.5,-63.62 46.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p21</title>
-<ellipse cx="117" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p20&#45;&gt;p21</title>
-<path d="M71.95,-106C74.28,-106 76.62,-106 78.95,-106"/>
-<polygon points="79.19,-109.5 89.19,-106 79.19,-102.5 79.19,-109.5"/>
+<path d="M70.28,-106C72.28,-106 74.28,-106 76.29,-106"/>
+<polygon points="76.24,-109.5 86.24,-106 76.24,-102.5 76.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p31</title>
-<ellipse cx="117" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="117" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+<ellipse cx="115" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p30&#45;&gt;p31</title>
-<path d="M71.95,-34C74.28,-34 76.62,-34 78.95,-34"/>
-<polygon points="79.19,-37.5 89.19,-34 79.19,-30.5 79.19,-37.5"/>
+<path d="M70.28,-34C72.28,-34 74.28,-34 76.29,-34"/>
+<polygon points="76.24,-37.5 86.24,-34 76.24,-30.5 76.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p01&#45;&gt;p11</title>
-<path d="M117,-231.7C117,-223.98 117,-214.71 117,-206.11"/>
-<polygon points="120.5,-206.1 117,-196.1 113.5,-206.1 120.5,-206.1"/>
+<path d="M115,-231.7C115,-224.41 115,-215.73 115,-207.54"/>
+<polygon points="118.5,-207.62 115,-197.62 111.5,-207.62 118.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p02</title>
-<ellipse cx="190" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p01&#45;&gt;p02</title>
-<path d="M144.95,-250C147.28,-250 149.62,-250 151.95,-250"/>
-<polygon points="152.19,-253.5 162.19,-250 152.19,-246.5 152.19,-253.5"/>
+<path d="M142.28,-250C144.28,-250 146.28,-250 148.29,-250"/>
+<polygon points="148.24,-253.5 158.24,-250 148.24,-246.5 148.24,-253.5"/>
 </g>
 <g class="m-edge">
 <title>p11&#45;&gt;p21</title>
-<path d="M117,-159.7C117,-151.98 117,-142.71 117,-134.11"/>
-<polygon points="120.5,-134.1 117,-124.1 113.5,-134.1 120.5,-134.1"/>
+<path d="M115,-159.7C115,-152.41 115,-143.73 115,-135.54"/>
+<polygon points="118.5,-135.62 115,-125.62 111.5,-135.62 118.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p12</title>
-<ellipse cx="190" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p11&#45;&gt;p12</title>
-<path d="M144.95,-178C147.28,-178 149.62,-178 151.95,-178"/>
-<polygon points="152.19,-181.5 162.19,-178 152.19,-174.5 152.19,-181.5"/>
+<path d="M142.28,-178C144.28,-178 146.28,-178 148.29,-178"/>
+<polygon points="148.24,-181.5 158.24,-178 148.24,-174.5 148.24,-181.5"/>
 </g>
 <g class="m-edge">
 <title>p21&#45;&gt;p31</title>
-<path d="M117,-87.7C117,-79.98 117,-70.71 117,-62.11"/>
-<polygon points="120.5,-62.1 117,-52.1 113.5,-62.1 120.5,-62.1"/>
+<path d="M115,-87.7C115,-80.41 115,-71.73 115,-63.54"/>
+<polygon points="118.5,-63.62 115,-53.62 111.5,-63.62 118.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p22</title>
-<ellipse cx="190" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p21&#45;&gt;p22</title>
-<path d="M144.95,-106C147.28,-106 149.62,-106 151.95,-106"/>
-<polygon points="152.19,-109.5 162.19,-106 152.19,-102.5 152.19,-109.5"/>
+<path d="M142.28,-106C144.28,-106 146.28,-106 148.29,-106"/>
+<polygon points="148.24,-109.5 158.24,-106 148.24,-102.5 148.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p32</title>
-<ellipse cx="190" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="190" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+<ellipse cx="187" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p31&#45;&gt;p32</title>
-<path d="M144.95,-34C147.28,-34 149.62,-34 151.95,-34"/>
-<polygon points="152.19,-37.5 162.19,-34 152.19,-30.5 152.19,-37.5"/>
+<path d="M142.28,-34C144.28,-34 146.28,-34 148.29,-34"/>
+<polygon points="148.24,-37.5 158.24,-34 148.24,-30.5 148.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p02&#45;&gt;p12</title>
-<path d="M190,-231.7C190,-223.98 190,-214.71 190,-206.11"/>
-<polygon points="193.5,-206.1 190,-196.1 186.5,-206.1 193.5,-206.1"/>
+<path d="M187,-231.7C187,-224.41 187,-215.73 187,-207.54"/>
+<polygon points="190.5,-207.62 187,-197.62 183.5,-207.62 190.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p03</title>
-<ellipse cx="263" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="263" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
+<ellipse cx="259" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="259" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p02&#45;&gt;p03</title>
-<path d="M217.95,-250C220.28,-250 222.62,-250 224.95,-250"/>
-<polygon points="225.19,-253.5 235.19,-250 225.19,-246.5 225.19,-253.5"/>
+<path d="M214.28,-250C216.28,-250 218.28,-250 220.29,-250"/>
+<polygon points="220.24,-253.5 230.24,-250 220.24,-246.5 220.24,-253.5"/>
 </g>
 <g class="m-edge">
 <title>p12&#45;&gt;p22</title>
-<path d="M190,-159.7C190,-151.98 190,-142.71 190,-134.11"/>
-<polygon points="193.5,-134.1 190,-124.1 186.5,-134.1 193.5,-134.1"/>
+<path d="M187,-159.7C187,-152.41 187,-143.73 187,-135.54"/>
+<polygon points="190.5,-135.62 187,-125.62 183.5,-135.62 190.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p13</title>
-<ellipse cx="263" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="263" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
+<ellipse cx="259" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="259" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p12&#45;&gt;p13</title>
-<path d="M217.95,-178C220.28,-178 222.62,-178 224.95,-178"/>
-<polygon points="225.19,-181.5 235.19,-178 225.19,-174.5 225.19,-181.5"/>
+<path d="M214.28,-178C216.28,-178 218.28,-178 220.29,-178"/>
+<polygon points="220.24,-181.5 230.24,-178 220.24,-174.5 220.24,-181.5"/>
 </g>
 <g class="m-edge">
 <title>p22&#45;&gt;p32</title>
-<path d="M190,-87.7C190,-79.98 190,-70.71 190,-62.11"/>
-<polygon points="193.5,-62.1 190,-52.1 186.5,-62.1 193.5,-62.1"/>
+<path d="M187,-87.7C187,-80.41 187,-71.73 187,-63.54"/>
+<polygon points="190.5,-63.62 187,-53.62 183.5,-63.62 190.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p23</title>
-<ellipse cx="263" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="263" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
+<ellipse cx="259" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="259" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p22&#45;&gt;p23</title>
-<path d="M217.95,-106C220.28,-106 222.62,-106 224.95,-106"/>
-<polygon points="225.19,-109.5 235.19,-106 225.19,-102.5 225.19,-109.5"/>
+<path d="M214.28,-106C216.28,-106 218.28,-106 220.29,-106"/>
+<polygon points="220.24,-109.5 230.24,-106 220.24,-102.5 220.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p33</title>
-<ellipse cx="263" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="263" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
+<ellipse cx="259" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="259" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p32&#45;&gt;p33</title>
-<path d="M217.95,-34C220.28,-34 222.62,-34 224.95,-34"/>
-<polygon points="225.19,-37.5 235.19,-34 225.19,-30.5 225.19,-37.5"/>
+<path d="M214.28,-34C216.28,-34 218.28,-34 220.29,-34"/>
+<polygon points="220.24,-37.5 230.24,-34 220.24,-30.5 220.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p03&#45;&gt;p13</title>
-<path d="M263,-231.7C263,-223.98 263,-214.71 263,-206.11"/>
-<polygon points="266.5,-206.1 263,-196.1 259.5,-206.1 266.5,-206.1"/>
+<path d="M259,-231.7C259,-224.41 259,-215.73 259,-207.54"/>
+<polygon points="262.5,-207.62 259,-197.62 255.5,-207.62 262.5,-207.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p04</title>
-<ellipse cx="336" cy="-250" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="336" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
+<ellipse cx="331" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="331" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p03&#45;&gt;p04</title>
-<path d="M290.95,-250C293.28,-250 295.62,-250 297.95,-250"/>
-<polygon points="298.19,-253.5 308.19,-250 298.19,-246.5 298.19,-253.5"/>
+<path d="M286.28,-250C288.28,-250 290.28,-250 292.29,-250"/>
+<polygon points="292.24,-253.5 302.24,-250 292.24,-246.5 292.24,-253.5"/>
 </g>
 <g class="m-edge">
 <title>p13&#45;&gt;p23</title>
-<path d="M263,-159.7C263,-151.98 263,-142.71 263,-134.11"/>
-<polygon points="266.5,-134.1 263,-124.1 259.5,-134.1 266.5,-134.1"/>
+<path d="M259,-159.7C259,-152.41 259,-143.73 259,-135.54"/>
+<polygon points="262.5,-135.62 259,-125.62 255.5,-135.62 262.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p14</title>
-<ellipse cx="336" cy="-178" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="336" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
+<ellipse cx="331" cy="-178" rx="27" ry="18"/>
+<text text-anchor="middle" x="331" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p13&#45;&gt;p14</title>
-<path d="M290.95,-178C293.28,-178 295.62,-178 297.95,-178"/>
-<polygon points="298.19,-181.5 308.19,-178 298.19,-174.5 298.19,-181.5"/>
+<path d="M286.28,-178C288.28,-178 290.28,-178 292.29,-178"/>
+<polygon points="292.24,-181.5 302.24,-178 292.24,-174.5 292.24,-181.5"/>
 </g>
 <g class="m-edge">
 <title>p23&#45;&gt;p33</title>
-<path d="M263,-87.7C263,-79.98 263,-70.71 263,-62.11"/>
-<polygon points="266.5,-62.1 263,-52.1 259.5,-62.1 266.5,-62.1"/>
+<path d="M259,-87.7C259,-80.41 259,-71.73 259,-63.54"/>
+<polygon points="262.5,-63.62 259,-53.62 255.5,-63.62 262.5,-63.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p24</title>
-<ellipse cx="336" cy="-106" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="336" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
+<ellipse cx="331" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="331" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p23&#45;&gt;p24</title>
-<path d="M290.95,-106C293.28,-106 295.62,-106 297.95,-106"/>
-<polygon points="298.19,-109.5 308.19,-106 298.19,-102.5 298.19,-109.5"/>
+<path d="M286.28,-106C288.28,-106 290.28,-106 292.29,-106"/>
+<polygon points="292.24,-109.5 302.24,-106 292.24,-102.5 292.24,-109.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p34</title>
-<ellipse cx="336" cy="-34" rx="27.84" ry="18"/>
-<text text-anchor="middle" x="336" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
+<ellipse cx="331" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="331" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p33&#45;&gt;p34</title>
-<path d="M290.95,-34C293.28,-34 295.62,-34 297.95,-34"/>
-<polygon points="298.19,-37.5 308.19,-34 298.19,-30.5 298.19,-37.5"/>
+<path d="M286.28,-34C288.28,-34 290.28,-34 292.29,-34"/>
+<polygon points="292.24,-37.5 302.24,-34 292.24,-30.5 292.24,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p04&#45;&gt;p14</title>
-<path d="M336,-231.7C336,-223.98 336,-214.71 336,-206.11"/>
-<polygon points="339.5,-206.1 336,-196.1 332.5,-206.1 339.5,-206.1"/>
+<path d="M331,-231.7C331,-224.41 331,-215.73 331,-207.54"/>
+<polygon points="334.5,-207.62 331,-197.62 327.5,-207.62 334.5,-207.62"/>
 </g>
 <g class="m-edge">
 <title>p14&#45;&gt;p24</title>
-<path d="M336,-159.7C336,-151.98 336,-142.71 336,-134.11"/>
-<polygon points="339.5,-134.1 336,-124.1 332.5,-134.1 339.5,-134.1"/>
+<path d="M331,-159.7C331,-152.41 331,-143.73 331,-135.54"/>
+<polygon points="334.5,-135.62 331,-125.62 327.5,-135.62 334.5,-135.62"/>
 </g>
 <g class="m-edge">
 <title>p24&#45;&gt;p34</title>
-<path d="M336,-87.7C336,-79.98 336,-70.71 336,-62.11"/>
-<polygon points="339.5,-62.1 336,-52.1 332.5,-62.1 339.5,-62.1"/>
+<path d="M331,-87.7C331,-80.41 331,-71.73 331,-63.54"/>
+<polygon points="334.5,-63.62 331,-53.62 327.5,-63.62 334.5,-63.62"/>
 </g>
 </g>
 </svg>
-</div><p>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed, i.e., the token number counts from zero.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> that keeps the given pipes in a <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> object, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</p></aside></section><section id="ResetAPlaceholderScalablePipeline"><h2><a href="#ResetAPlaceholderScalablePipeline">Reset a Placeholder Scalable Pipeline</a></h2><p>It is possible to create a scalable pipeline as a placeholder using the constructor <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline(size_t num_lines)</a> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+</div><p>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed, i.e., the token number counts from zero.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> that keeps the given pipes in a <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> object, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</p></aside></section><section id="ResetAPlaceholderScalablePipeline"><h2><a href="#ResetAPlaceholderScalablePipeline">Reset a Placeholder Scalable Pipeline</a></h2><p>It is possible to create a scalable pipeline as a placeholder using the constructor <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline(size_t num_lines)</a> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
-<span class="kt">size_t</span><span class="w"> </span><span class="n">num_pipes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
-<span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"></span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">num_pipes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">decltype</span><span class="p">(</span><span class="n">pipes</span><span class="p">)</span><span class="o">::</span><span class="n">iterator</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spl</span><span class="p">(</span><span class="n">num_lines</span><span class="p">);</span><span class="w"> </span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_pipes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">num_pipes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">pipes</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">});</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="n">spl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">pf</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">spl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">spl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="n">pipeline</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span><span class="w"></span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w">  </span></pre><p>The task graph of this program is shown below:</p><div class="m-graph"><svg style="width: 84.800rem; height: 17.800rem;" viewBox="0.00 0.00 848.00 178.00">
-<g transform="scale(1 1) rotate(0) translate(4 174)">
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">spl</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
+<span class="n">pipeline</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w">  </span></pre><p>The task graph of this program is shown below:</p><div class="m-graph"><svg style="width: 83.800rem; height: 17.900rem;" viewBox="0.00 0.00 838.00 178.50">
+<g transform="scale(1 1) rotate(0) translate(4 174.5)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffcc76abe80</title>
-<polygon points="8,-8 8,-162 106,-162 106,-8 8,-8"/>
-<text text-anchor="middle" x="57" y="-150" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
+<polygon points="8,-8 8,-162.5 96,-162.5 96,-8 8,-8"/>
+<text text-anchor="middle" x="52" y="-149" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffcc76abd30</title>
-<polygon points="114,-8 114,-162 832,-162 832,-8 114,-8"/>
-<text text-anchor="middle" x="473" y="-150" font-family="Helvetica,sans-Serif" font-size="10.00">m1</text>
+<polygon points="104,-8 104,-162.5 822,-162.5 822,-8 104,-8"/>
+<text text-anchor="middle" x="463" y="-149" font-family="Helvetica,sans-Serif" font-size="10.00">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9a68</title>
-<ellipse cx="57" cy="-117" rx="36.49" ry="18"/>
-<text text-anchor="middle" x="57" y="-114.5" font-family="Helvetica,sans-Serif" font-size="10.00">init pipes</text>
+<ellipse cx="52" cy="-117.25" rx="32.54" ry="18"/>
+<text text-anchor="middle" x="52" y="-113.38" font-family="Helvetica,sans-Serif" font-size="10.00">init pipes</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9980</title>
-<polygon points="98,-52 20,-52 16,-48 16,-16 94,-16 98,-20 98,-52"/>
-<polyline points="94,-48 16,-48 "/>
-<polyline points="94,-48 94,-16 "/>
-<polyline points="94,-48 98,-52 "/>
-<text text-anchor="middle" x="57" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline [m1]</text>
+<polygon points="87.75,-52 20.25,-52 16.25,-48 16.25,-16 83.75,-16 87.75,-20 87.75,-52"/>
+<polyline points="83.75,-48 16.25,-48"/>
+<polyline points="83.75,-48 83.75,-16"/>
+<polyline points="83.75,-48 87.75,-52"/>
+<text text-anchor="middle" x="52" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline [m1]</text>
 </g>
 <g class="m-edge">
 <title>p0x8e9a68&#45;&gt;p0x8e9980</title>
-<path d="M57,-98.82C57,-88.19 57,-74.31 57,-62.2"/>
-<polygon points="60.5,-62.15 57,-52.15 53.5,-62.15 60.5,-62.15"/>
+<path d="M52,-99.02C52,-88.75 52,-75.45 52,-63.64"/>
+<polygon points="55.5,-64 52,-54 48.5,-64 55.5,-64"/>
 </g>
 <g class="m-node">
 <title>p0x8ea460</title>
-<polygon points="472,-135 438.9,-117 472,-99 505.1,-117 472,-135"/>
-<text text-anchor="middle" x="472" y="-114.5" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+<polygon points="463,-135.25 432.04,-117.25 463,-99.25 493.96,-117.25 463,-135.25"/>
+<text text-anchor="middle" x="463" y="-113.38" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8ea378</title>
-<polygon points="176,-52 122,-52 122,-48 118,-48 118,-44 122,-44 122,-24 118,-24 118,-20 122,-20 122,-16 176,-16 176,-52"/>
-<polyline points="122,-48 126,-48 126,-44 122,-44 "/>
-<polyline points="122,-24 126,-24 126,-20 122,-20 "/>
-<text text-anchor="middle" x="149" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;0</text>
+<polygon points="166,-52 112,-52 112,-48 108,-48 108,-44 112,-44 112,-24 108,-24 108,-20 112,-20 112,-16 166,-16 166,-52"/>
+<polyline points="112,-48 116,-48 116,-44 112,-44"/>
+<polyline points="112,-24 116,-24 116,-20 112,-20"/>
+<text text-anchor="middle" x="139" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8ea378</title>
-<path stroke-dasharray="5,2" d="M446.83,-112.58C397.73,-105.46 285.92,-86.98 185.93,-51.98"/>
-<polygon points="186.88,-48.61 176.29,-48.54 184.53,-55.2 186.88,-48.61"/>
-<text text-anchor="middle" x="280.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M438.52,-112.92C389.83,-105.85 277.51,-87.32 176.92,-52.33"/>
+<polygon points="178.31,-49.1 167.71,-49.05 175.97,-55.7 178.31,-49.1"/>
+<text text-anchor="middle" x="270.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8ea290</title>
-<polygon points="248,-52 194,-52 194,-48 190,-48 190,-44 194,-44 194,-24 190,-24 190,-20 194,-20 194,-16 248,-16 248,-52"/>
-<polyline points="194,-48 198,-48 198,-44 194,-44 "/>
-<polyline points="194,-24 198,-24 198,-20 194,-20 "/>
-<text text-anchor="middle" x="221" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;1</text>
+<polygon points="238,-52 184,-52 184,-48 180,-48 180,-44 184,-44 184,-24 180,-24 180,-20 184,-20 184,-16 238,-16 238,-52"/>
+<polyline points="184,-48 188,-48 188,-44 184,-44"/>
+<polyline points="184,-24 188,-24 188,-20 184,-20"/>
+<text text-anchor="middle" x="211" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8ea290</title>
-<path stroke-dasharray="5,2" d="M450.28,-110.7C412.68,-101.28 333.01,-80.25 257.93,-52.08"/>
-<polygon points="258.92,-48.72 248.33,-48.43 256.43,-55.26 258.92,-48.72"/>
-<text text-anchor="middle" x="341.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M441.8,-111.09C404.44,-101.75 324.42,-80.69 248.95,-52.46"/>
+<polygon points="250.34,-49.25 239.75,-48.97 247.85,-55.79 250.34,-49.25"/>
+<text text-anchor="middle" x="331.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8ea1a8</title>
-<polygon points="320,-52 266,-52 266,-48 262,-48 262,-44 266,-44 266,-24 262,-24 262,-20 266,-20 266,-16 320,-16 320,-52"/>
-<polyline points="266,-48 270,-48 270,-44 266,-44 "/>
-<polyline points="266,-24 270,-24 270,-20 266,-20 "/>
-<text text-anchor="middle" x="293" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;2</text>
+<polygon points="310,-52 256,-52 256,-48 252,-48 252,-44 256,-44 256,-24 252,-24 252,-20 256,-20 256,-16 310,-16 310,-52"/>
+<polyline points="256,-48 260,-48 260,-44 256,-44"/>
+<polyline points="256,-24 260,-24 260,-20 256,-20"/>
+<text text-anchor="middle" x="283" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;2</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8ea1a8</title>
-<path stroke-dasharray="5,2" d="M454.34,-108.23C428.81,-96.98 379.93,-75.32 329.24,-52.07"/>
-<polygon points="330.65,-48.86 320.1,-47.87 327.72,-55.23 330.65,-48.86"/>
-<text text-anchor="middle" x="394.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<path stroke-dasharray="5,2" d="M446.1,-108.85C420.82,-97.75 371.47,-75.97 320.66,-52.72"/>
+<polygon points="322.41,-49.67 311.86,-48.69 319.49,-56.04 322.41,-49.67"/>
+<text text-anchor="middle" x="384.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8ea0c0</title>
-<polygon points="392,-52 338,-52 338,-48 334,-48 334,-44 338,-44 338,-24 334,-24 334,-20 338,-20 338,-16 392,-16 392,-52"/>
-<polyline points="338,-48 342,-48 342,-44 338,-44 "/>
-<polyline points="338,-24 342,-24 342,-20 338,-20 "/>
-<text text-anchor="middle" x="365" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;3</text>
+<polygon points="382,-52 328,-52 328,-48 324,-48 324,-44 328,-44 328,-24 324,-24 324,-20 328,-20 328,-16 382,-16 382,-52"/>
+<polyline points="328,-48 332,-48 332,-44 328,-44"/>
+<polyline points="328,-24 332,-24 332,-20 328,-20"/>
+<text text-anchor="middle" x="355" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;3</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8ea0c0</title>
-<path stroke-dasharray="5,2" d="M458.88,-106.07C443.21,-94.21 416.5,-73.99 395.57,-58.14"/>
-<polygon points="397.66,-55.34 387.58,-52.09 393.44,-60.92 397.66,-55.34"/>
-<text text-anchor="middle" x="427.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<path stroke-dasharray="5,2" d="M450.19,-106.61C434.71,-94.97 408.12,-74.96 386.97,-59.05"/>
+<polygon points="389.29,-56.42 379.2,-53.2 385.09,-62.01 389.29,-56.42"/>
+<text text-anchor="middle" x="417.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9fd8</title>
-<polygon points="464,-52 410,-52 410,-48 406,-48 406,-44 410,-44 410,-24 406,-24 406,-20 410,-20 410,-16 464,-16 464,-52"/>
-<polyline points="410,-48 414,-48 414,-44 410,-44 "/>
-<polyline points="410,-24 414,-24 414,-20 410,-20 "/>
-<text text-anchor="middle" x="437" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;4</text>
+<polygon points="454,-52 400,-52 400,-48 396,-48 396,-44 400,-44 400,-24 396,-24 396,-20 400,-20 400,-16 454,-16 454,-52"/>
+<polyline points="400,-48 404,-48 404,-44 400,-44"/>
+<polyline points="400,-24 404,-24 404,-20 400,-20"/>
+<text text-anchor="middle" x="427" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;4</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9fd8</title>
-<path stroke-dasharray="5,2" d="M465.9,-101.89C461.08,-90.73 454.21,-74.83 448.38,-61.34"/>
-<polygon points="451.54,-59.83 444.36,-52.04 445.11,-62.6 451.54,-59.83"/>
-<text text-anchor="middle" x="459.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
+<path stroke-dasharray="5,2" d="M456.89,-102.47C452.05,-91.54 445.13,-75.91 439.16,-62.45"/>
+<polygon points="442.51,-61.36 435.26,-53.63 436.11,-64.19 442.51,-61.36"/>
+<text text-anchor="middle" x="449.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9ef0</title>
-<polygon points="536,-52 482,-52 482,-48 478,-48 478,-44 482,-44 482,-24 478,-24 478,-20 482,-20 482,-16 536,-16 536,-52"/>
-<polyline points="482,-48 486,-48 486,-44 482,-44 "/>
-<polyline points="482,-24 486,-24 486,-20 482,-20 "/>
-<text text-anchor="middle" x="509" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;5</text>
+<polygon points="526,-52 472,-52 472,-48 468,-48 468,-44 472,-44 472,-24 468,-24 468,-20 472,-20 472,-16 526,-16 526,-52"/>
+<polyline points="472,-48 476,-48 476,-44 472,-44"/>
+<polyline points="472,-24 476,-24 476,-20 472,-20"/>
+<text text-anchor="middle" x="499" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;5</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9ef0</title>
-<path stroke-dasharray="5,2" d="M478.28,-102.26C483.35,-91.15 490.65,-75.16 496.86,-61.57"/>
-<polygon points="500.17,-62.75 501.15,-52.2 493.81,-59.84 500.17,-62.75"/>
-<text text-anchor="middle" x="495.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
+<path stroke-dasharray="5,2" d="M469.11,-102.47C473.95,-91.54 480.87,-75.91 486.84,-62.45"/>
+<polygon points="489.89,-64.19 490.74,-53.63 483.49,-61.36 489.89,-64.19"/>
+<text text-anchor="middle" x="485.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9e08</title>
-<polygon points="608,-52 554,-52 554,-48 550,-48 550,-44 554,-44 554,-24 550,-24 550,-20 554,-20 554,-16 608,-16 608,-52"/>
-<polyline points="554,-48 558,-48 558,-44 554,-44 "/>
-<polyline points="554,-24 558,-24 558,-20 554,-20 "/>
-<text text-anchor="middle" x="581" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;6</text>
+<polygon points="598,-52 544,-52 544,-48 540,-48 540,-44 544,-44 544,-24 540,-24 540,-20 544,-20 544,-16 598,-16 598,-52"/>
+<polyline points="544,-48 548,-48 548,-44 544,-44"/>
+<polyline points="544,-24 548,-24 548,-20 544,-20"/>
+<text text-anchor="middle" x="571" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;6</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9e08</title>
-<path stroke-dasharray="5,2" d="M485.37,-106.07C501.32,-94.21 528.53,-73.99 549.86,-58.14"/>
-<polygon points="552.06,-60.87 558,-52.09 547.89,-55.25 552.06,-60.87"/>
-<text text-anchor="middle" x="536.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">6</text>
+<path stroke-dasharray="5,2" d="M475.81,-106.61C491.29,-94.97 517.88,-74.96 539.03,-59.05"/>
+<polygon points="540.91,-62.01 546.8,-53.2 536.71,-56.42 540.91,-62.01"/>
+<text text-anchor="middle" x="525.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">6</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9d20</title>
-<polygon points="680,-52 626,-52 626,-48 622,-48 622,-44 626,-44 626,-24 622,-24 622,-20 626,-20 626,-16 680,-16 680,-52"/>
-<polyline points="626,-48 630,-48 630,-44 626,-44 "/>
-<polyline points="626,-24 630,-24 630,-20 626,-20 "/>
-<text text-anchor="middle" x="653" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;7</text>
+<polygon points="670,-52 616,-52 616,-48 612,-48 612,-44 616,-44 616,-24 612,-24 612,-20 616,-20 616,-16 670,-16 670,-52"/>
+<polyline points="616,-48 620,-48 620,-44 616,-44"/>
+<polyline points="616,-24 620,-24 620,-20 616,-20"/>
+<text text-anchor="middle" x="643" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;7</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9d20</title>
-<path stroke-dasharray="5,2" d="M489.47,-108.46C515.24,-97.3 565.12,-75.57 616.62,-52.12"/>
-<polygon points="618.26,-55.22 625.91,-47.88 615.36,-48.85 618.26,-55.22"/>
-<text text-anchor="middle" x="576.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">7</text>
+<path stroke-dasharray="5,2" d="M479.9,-108.85C505.18,-97.75 554.53,-75.97 605.34,-52.72"/>
+<polygon points="606.51,-56.04 614.14,-48.69 603.59,-49.67 606.51,-56.04"/>
+<text text-anchor="middle" x="565.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">7</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9c38</title>
-<polygon points="752,-52 698,-52 698,-48 694,-48 694,-44 698,-44 698,-24 694,-24 694,-20 698,-20 698,-16 752,-16 752,-52"/>
-<polyline points="698,-48 702,-48 702,-44 698,-44 "/>
-<polyline points="698,-24 702,-24 702,-20 698,-20 "/>
-<text text-anchor="middle" x="725" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;8</text>
+<polygon points="742,-52 688,-52 688,-48 684,-48 684,-44 688,-44 688,-24 684,-24 684,-20 688,-20 688,-16 742,-16 742,-52"/>
+<polyline points="688,-48 692,-48 692,-44 688,-44"/>
+<polyline points="688,-24 692,-24 692,-20 688,-20"/>
+<text text-anchor="middle" x="715" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;8</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9c38</title>
-<path stroke-dasharray="5,2" d="M493.93,-110.73C531.88,-101.35 612.3,-80.38 687.99,-52.11"/>
-<polygon points="689.56,-55.25 697.67,-48.44 687.08,-48.71 689.56,-55.25"/>
-<text text-anchor="middle" x="639.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">8</text>
+<path stroke-dasharray="5,2" d="M484.2,-111.09C521.56,-101.75 601.58,-80.69 677.05,-52.46"/>
+<polygon points="678.15,-55.79 686.25,-48.97 675.66,-49.25 678.15,-55.79"/>
+<text text-anchor="middle" x="628.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">8</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x8e9b50</title>
-<polygon points="824,-52 770,-52 770,-48 766,-48 766,-44 770,-44 770,-24 766,-24 766,-20 770,-20 770,-16 824,-16 824,-52"/>
-<polyline points="770,-48 774,-48 774,-44 770,-44 "/>
-<polyline points="770,-24 774,-24 774,-20 770,-20 "/>
-<text text-anchor="middle" x="797" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;9</text>
+<polygon points="814,-52 760,-52 760,-48 756,-48 756,-44 760,-44 760,-24 756,-24 756,-20 760,-20 760,-16 814,-16 814,-52"/>
+<polyline points="760,-48 764,-48 764,-44 760,-44"/>
+<polyline points="760,-24 764,-24 764,-20 760,-20"/>
+<text text-anchor="middle" x="787" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;9</text>
 </g>
 <g class="m-edge">
 <title>p0x8ea460&#45;&gt;p0x8e9b50</title>
-<path stroke-dasharray="5,2" d="M497.34,-112.61C546.78,-105.52 659.37,-87.1 760.01,-52"/>
-<polygon points="761.46,-55.2 769.71,-48.55 759.12,-48.6 761.46,-55.2"/>
-<text text-anchor="middle" x="702.5" y="-73" font-family="Helvetica,sans-Serif" font-size="10.00">9</text>
+<path stroke-dasharray="5,2" d="M487.47,-112.9C536.15,-105.79 648.45,-87.2 749.08,-52.32"/>
+<polygon points="750.03,-55.7 758.29,-49.06 747.69,-49.1 750.03,-55.7"/>
+<text text-anchor="middle" x="691.62" y="-71.75" font-family="Helvetica,sans-Serif" font-size="10.00">9</text>
 </g>
 </g>
 </svg>
-</div><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a scalable pipeline has a valid structure before running it. A valid pipeline must have at least one parallel line and one pipe, where the first pipe is a serial type.</p></aside><p>Similarly, you can create an empty scalable pipeline using the default constructor <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline()</a> and reset it later in your program.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span><span class="w"></span>
+</div><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure a scalable pipeline has a valid structure before running it. A valid pipeline must have at least one parallel line and one pipe, where the first pipe is a serial type.</p></aside><p>Similarly, you can create an empty scalable pipeline using the default constructor <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline()</a> and reset it later in your program.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">pipes</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">decltype</span><span class="p">(</span><span class="n">pipes</span><span class="p">)</span><span class="o">::</span><span class="n">iterator</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spl</span><span class="p">;</span><span class="w"> </span>
 <span class="c1">// create pipes ...</span>
-<span class="n">spl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span></pre></section><section id="ScalablePipelineUseOtherIteratorTypes"><h2><a href="#ScalablePipelineUseOtherIteratorTypes">Use Other Iterator Types</a></h2><p>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <code>++</code>.</p><pre class="m-code"><span class="c1">// use vector to store pipes</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">vector</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl1</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span>
+<span class="n">spl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></pre></section><section id="ScalablePipelineUseOtherIteratorTypes"><h2><a href="#ScalablePipelineUseOtherIteratorTypes">Use Other Iterator Types</a></h2><p>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <code>++</code>.</p><pre class="m-code"><span class="c1">// use vector to store pipes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">vector</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl1</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
 <span class="c1">// use list to store pipes</span>
-<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">list</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl2</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">());</span><span class="w"></span></pre></section><section id="ParallelScalablePipelineLearnMore"><h2><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ul><li><a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a></li><li><a href="DataParallelPipeline.html" class="m-doc">Data-parallel Pipeline</a></li><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ul></section>
+<span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">list</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl2</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></pre></section><section id="ParallelScalablePipelineLearnMore"><h2><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ul><li><a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a></li><li><a href="DataParallelPipeline.html" class="m-doc">Data-parallel Pipeline</a></li><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ul></section>
       </div>
     </div>
   </div>
@@ -818,7 +818,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

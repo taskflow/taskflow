@@ -9,28 +9,26 @@ void sl() {
 
 int main() {
 
-  tf::Executor executor(4);
-  tf::Taskflow taskflow;
-
   // define a critical region of 1 worker
   tf::Semaphore semaphore(1);
 
-  // create give tasks in taskflow
-  std::vector<tf::Task> tasks {
-    taskflow.emplace([](){ sl(); std::cout << "A" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "B" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "C" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "D" << std::endl; }),
-    taskflow.emplace([](){ sl(); std::cout << "E" << std::endl; })
-  };
+  tf::Taskflow taskflow;
+  tf::Executor executor;
 
-  for(auto & task : tasks) {
-    task.acquire(semaphore);
-    task.release(semaphore);
+  executor.async([&](tf::Runtime& rt){
+    rt.acquire(semaphore);
+  });
+  
+  for(size_t i=0; i<100; i++) {
+    taskflow.emplace([&, i](tf::Runtime& rt){
+      rt.acquire(semaphore);
+      std::cout << i << "-th " << "message " << "never " << "interleaves with others\n";
+      rt.release(semaphore);
+    });
   }
 
-  executor.run(taskflow);
-  executor.wait_for_all();
+  executor.run(taskflow).wait();
+
 
   return 0;
 }

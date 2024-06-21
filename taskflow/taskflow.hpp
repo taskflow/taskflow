@@ -2,7 +2,6 @@
 
 #include "core/executor.hpp"
 #include "core/async.hpp"
-#include "algorithm/critical.hpp"
 
 /**
 @dir taskflow

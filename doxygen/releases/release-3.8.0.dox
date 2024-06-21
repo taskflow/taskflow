@@ -36,22 +36,39 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-8-0_summary Release Summary
 
-This releases enhances the scheduling performance through a new C++20 atomic wait/notification-based
-scheduling algorithm.
+This releases (1) enhances the scheduling performance through C++20 atomic notification
+and (2) revised the semaphore model for better runtime control.
 
 @note
 When compiling %Taskflow with C++20, applications should see improved performance due
-to the new atomic-wait/-notification algorithm powered by C++20.
+to C++20 atomic wait and notification.
 
 @section release-3-8-0_new_features New Features
 
 @subsection release-3-8-0_taskflow_core Taskflow Core
 
-+ enhanced the core scheduling using C++20 atomic notification
++ Enhanced the core scheduling using C++20 atomic notification
 
 @code{.shell-session}
 # compile your taskflow program with C++20 enabled
 ~$ g++ -std=c++20 my_taskflow.cpp 
+@endcode
+
++ Revised the semaphore programming model for better runtime control through tf::Runtime
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow;
+tf::Semaphore semaphore(1); // create a semaphore with initial count 1
+for(size_t i=0; i<1000; i++) {
+  taskflow.emplace([&](tf::Runtime& rt){ 
+    rt.acquire(semaphore);
+    std::cout << "critical section here (one worker here only)\n"; 
+    critical_section();
+    rt.release(semaphore);
+  });
+}
+executor.run(taskflow).wait();
 @endcode
 
 
@@ -59,11 +76,15 @@ to the new atomic-wait/-notification algorithm powered by C++20.
 
 @section release-3-8-0_bug_fixes Bug Fixes 
 
++ Fixed the compilation error for not finding the C++ atomic library
+
 @section release-3-8-0_breaking_changes Breaking Changes
 
-+ removed the support of object pool for fast resource release
++ Removed the support of object pool for real-time resource release
 
 @section release-3-8-0_documentation Documentation
+
++ Revised @ref LimitTheMaximumConcurrency
 
 @section release-3-8-0_miscellaneous_items Miscellaneous Items
 

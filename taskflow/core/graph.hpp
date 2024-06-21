@@ -173,6 +173,11 @@ class Runtime {
   @endcode
   */
   Executor& executor();
+  
+  /**
+  @brief acquire a reference to the underlying worker
+  */
+  inline Worker& worker();
 
   /**
   @brief schedules an active task immediately to the worker's queue
@@ -462,9 +467,122 @@ class Runtime {
   inline void corun_all();
 
   /**
-  @brief acquire a reference to the underlying worker
-  */
-  inline Worker& worker();
+  @brief acquires the given semaphores with a deadlock avoidance algorithm
+
+  @tparam S semaphore type (tf::Semaphore)
+  @param semaphores semaphores
+
+  Coruns this worker until acquiring all the semaphores. 
+
+  @code{.cpp}
+  tf::Semaphore semaphore(1);
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(semaphore);
+      critical_section();
+      rt.release(semaphore);
+    });
+  }
+  @endcode
+  */ 
+  template <typename... S,
+    std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
+  > 
+  void acquire(S&&... semaphores);
+
+  /**
+  @brief acquires the given range of semaphores with a deadlock avoidance algorithm
+  
+  @tparam I iterator type
+  @param first iterator to the begining (inclusive)
+  @param last iterator to the end (exclusive)
+
+  Coruns this worker until acquiring all the semaphores. 
+
+  @code{.cpp}
+  std::list<tf::Semaphore> semaphores;
+  semaphores.emplace_back(1);
+  semaphores.emplace_back(1);
+  auto first = semaphores.begin();
+  auto last  = semaphores.end();
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(first, last);
+      critical_section();
+      rt.release(first, last);
+    });
+  }
+  @endcode
+  */ 
+  template <typename I,
+    std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
+  >
+  void acquire(I first, I last);
+  
+  /**
+  @brief releases the given semaphores
+  
+  @tparam S semaphore type (tf::Semaphore)
+  @param semaphores semaphores
+
+  Releases the given semaphores.
+
+  @code{.cpp}
+  tf::Semaphore semaphore(1);
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(semaphore);
+      critical_section();
+      rt.release(semaphore);
+    });
+  }
+  @endcode
+  */ 
+  template <typename... S,
+    std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
+  >
+  void release(S&&... semaphores);
+  
+  /**
+  @brief releases the given range of semaphores
+  
+  @tparam I iterator type
+  @param first iterator to the begining (inclusive)
+  @param last iterator to the end (exclusive)
+
+  Releases the given range of semaphores.
+
+  @code{.cpp}
+  std::list<tf::Semaphore> semaphores;
+  semaphores.emplace_back(1);
+  semaphores.emplace_back(1);
+  auto first = semaphores.begin();
+  auto last  = semaphores.end();
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(first, last);
+      critical_section();
+      rt.release(first, last);
+    });
+  }
+  @endcode
+  */ 
+  template <typename I,
+    std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
+  >
+  void release(I first, I last);
 
   protected:
   
@@ -596,9 +714,8 @@ class Node {
   // state bit flag
   constexpr static int CONDITIONED = 1;
   constexpr static int DETACHED    = 2;
-  constexpr static int ACQUIRED    = 4;
-  constexpr static int READY       = 8;
-  constexpr static int EXCEPTION   = 16;
+  constexpr static int READY       = 4;
+  constexpr static int EXCEPTION   = 8;
 
   using Placeholder = std::monostate;
 
@@ -747,7 +864,6 @@ class Node {
   std::atomic<int> _state {0};
   std::atomic<size_t> _join_counter {0};
 
-  std::unique_ptr<Semaphores> _semaphores;
   std::exception_ptr _exception_ptr {nullptr};
   
   handle_t _handle;
@@ -1044,37 +1160,6 @@ inline void Node::_process_exception() {
     _exception_ptr = nullptr;
     std::rethrow_exception(e);
   }
-}
-
-// Function: _acquire_all
-inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {
-
-  auto& to_acquire = _semaphores->to_acquire;
-
-  for(size_t i = 0; i < to_acquire.size(); ++i) {
-    if(!to_acquire[i]->_try_acquire_or_wait(this)) {
-      for(size_t j = 1; j <= i; ++j) {
-        auto r = to_acquire[i-j]->_release();
-        nodes.insert(std::end(nodes), std::begin(r), std::end(r));
-      }
-      return false;
-    }
-  }
-  return true;
-}
-
-// Function: _release_all
-inline SmallVector<Node*> Node::_release_all() {
-
-  auto& to_release = _semaphores->to_release;
-
-  SmallVector<Node*> nodes;
-  for(const auto& sem : to_release) {
-    auto r = sem->_release();
-    nodes.insert(std::end(nodes), std::begin(r), std::end(r));
-  }
-
-  return nodes;
 }
 
 // ----------------------------------------------------------------------------

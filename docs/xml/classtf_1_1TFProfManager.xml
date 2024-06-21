@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1TFProfManager" kind="class" language="C++" prot="private">
     <compoundname>tf::TFProfManager</compoundname>
       <sectiondef kind="friend">
@@ -8,8 +8,9 @@
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::TFProfManager::Executor</qualifiedname>
         <param>
-          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
+          <type>Executor</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -17,48 +18,51 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="932" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="932" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="932" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="932" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1TFProfManager_1a9a9f25501767ab82d8fcddae279c8789" prot="private" static="no" mutable="no">
-        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>const std::string tf::TFProfManager::_fpath</definition>
         <argsstring></argsstring>
         <name>_fpath</name>
+        <qualifiedname>tf::TFProfManager::_fpath</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="947" column="23" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="947" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="947" column="23" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="947" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TFProfManager_1a057632d73e24ffc0730f6c953deed880" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
+        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
         <definition>std::mutex tf::TFProfManager::_mutex</definition>
         <argsstring></argsstring>
         <name>_mutex</name>
+        <qualifiedname>tf::TFProfManager::_mutex</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="949" column="16" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="949" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="949" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="949" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TFProfManager_1a783f61fc9980c173bf63257c5e68071f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1TFProfObserver" kindref="compound">TFProfObserver</ref> &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1TFProfObserver" kindref="compound">TFProfObserver</ref> &gt; &gt;</type>
         <definition>std::vector&lt;std::shared_ptr&lt;TFProfObserver&gt; &gt; tf::TFProfManager::_observers</definition>
         <argsstring></argsstring>
         <name>_observers</name>
+        <qualifiedname>tf::TFProfManager::_observers</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="950" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="950" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="950" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="950" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -67,19 +71,21 @@
         <definition>tf::TFProfManager::~TFProfManager</definition>
         <argsstring>()</argsstring>
         <name>~TFProfManager</name>
+        <qualifiedname>tf::TFProfManager::~TFProfManager</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="936" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="978" bodyend="1009"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="936" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="978" bodyend="1009"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfManager_1a7de17b017d3b2db51eb227f15adfb123" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::TFProfManager::TFProfManager</definition>
         <argsstring>(const TFProfManager &amp;)=delete</argsstring>
         <name>TFProfManager</name>
+        <qualifiedname>tf::TFProfManager::TFProfManager</qualifiedname>
         <param>
           <type>const TFProfManager &amp;</type>
         </param>
@@ -89,13 +95,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="938" column="5"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="938" column="5"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TFProfManager_1a5218d6dd8665696b51e038002c688434" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TFProfManager_1a1d7efdca9fd904998b5d0ee5259855fb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TFProfManager &amp;</type>
-        <definition>TFProfManager&amp; tf::TFProfManager::operator=</definition>
+        <definition>TFProfManager &amp; tf::TFProfManager::operator=</definition>
         <argsstring>(const TFProfManager &amp;)=delete</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::TFProfManager::operator=</qualifiedname>
         <param>
           <type>const TFProfManager &amp;</type>
         </param>
@@ -105,15 +112,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="939" column="19"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="939" column="19"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfManager_1a7d44fb8b25dbcd528487194da43cad6d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::TFProfManager::dump</definition>
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
+        <qualifiedname>tf::TFProfManager::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
@@ -122,7 +130,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="943" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="970" bodyend="975"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="943" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="970" bodyend="975"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -131,13 +139,14 @@
         <definition>TFProfManager &amp; tf::TFProfManager::get</definition>
         <argsstring>()</argsstring>
         <name>get</name>
+        <qualifiedname>tf::TFProfManager::get</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="941" column="26" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="1012" bodyend="1015"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="941" column="26" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="1012" bodyend="1015"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -146,21 +155,23 @@
         <definition>tf::TFProfManager::TFProfManager</definition>
         <argsstring>()</argsstring>
         <name>TFProfManager</name>
+        <qualifiedname>tf::TFProfManager::TFProfManager</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="952" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="958" bodyend="961"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="952" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="958" bodyend="961"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfManager_1a5cea0d2082714658a13b9b506d946253" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::TFProfManager::_manage</definition>
         <argsstring>(std::shared_ptr&lt; TFProfObserver &gt; observer)</argsstring>
         <name>_manage</name>
+        <qualifiedname>tf::TFProfManager::_manage</qualifiedname>
         <param>
-          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1TFProfObserver" kindref="compound">TFProfObserver</ref> &gt;</type>
+          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1TFProfObserver" kindref="compound">TFProfObserver</ref> &gt;</type>
           <declname>observer</declname>
         </param>
         <briefdescription>
@@ -169,14 +180,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="954" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="964" bodyend="967"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="954" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="964" bodyend="967"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="930" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="930" bodyend="955"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" line="930" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/observer.hpp" bodystart="930" bodyend="955"/>
     <listofallmembers>
       <member refid="classtf_1_1TFProfManager_1a9a9f25501767ab82d8fcddae279c8789" prot="private" virt="non-virtual"><scope>tf::TFProfManager</scope><name>_fpath</name></member>
       <member refid="classtf_1_1TFProfManager_1a5cea0d2082714658a13b9b506d946253" prot="private" virt="non-virtual"><scope>tf::TFProfManager</scope><name>_manage</name></member>
@@ -185,7 +196,7 @@
       <member refid="classtf_1_1TFProfManager_1a7d44fb8b25dbcd528487194da43cad6d" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>dump</name></member>
       <member refid="classtf_1_1TFProfManager_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::TFProfManager</scope><name>Executor</name></member>
       <member refid="classtf_1_1TFProfManager_1a395d9e6f56a4cdada848d889c7de8a86" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>get</name></member>
-      <member refid="classtf_1_1TFProfManager_1a5218d6dd8665696b51e038002c688434" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>operator=</name></member>
+      <member refid="classtf_1_1TFProfManager_1a1d7efdca9fd904998b5d0ee5259855fb" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>operator=</name></member>
       <member refid="classtf_1_1TFProfManager_1a7de17b017d3b2db51eb227f15adfb123" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>TFProfManager</name></member>
       <member refid="classtf_1_1TFProfManager_1a3a9c3d86c712279e91937de039bacf0e" prot="private" virt="non-virtual"><scope>tf::TFProfManager</scope><name>TFProfManager</name></member>
       <member refid="classtf_1_1TFProfManager_1ae20ae795ede51362ecb74747e0d468f7" prot="public" virt="non-virtual"><scope>tf::TFProfManager</scope><name>~TFProfManager</name></member>

@@ -6,7 +6,7 @@ invokeN [label="invoke(T)"]
 invokeY [label="R = invoke(T)"]
 enqueueR [label="enqueue the R-th successor of T"]
 decrement [label="decrement strong dependencies of each successor of T by one"]
-enqueueS [label="enqueue successors of zero strong dpendencies"]
+enqueueS [label="enqueue successors of zero strong dependencies"]
 invokeN->decrement;
 decrement->enqueueS;
 invokeY->enqueueR;

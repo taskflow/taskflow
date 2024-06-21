@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1TaskQueue" kind="class" language="C++" prot="public">
     <compoundname>tf::TaskQueue</compoundname>
     <includes refid="tsq_8hpp" local="no">tsq.hpp</includes>
@@ -17,56 +17,60 @@
     </templateparamlist>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1TaskQueue_1a8b8c8e69e04481708b8b17059398a04b" prot="private" static="no" mutable="no">
-        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
+        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
         <definition>CachelineAligned&lt;std::atomic&lt;int64_t&gt; &gt; tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::_top[TF_MAX_PRIORITY]</definition>
         <argsstring>[TF_MAX_PRIORITY]</argsstring>
         <name>_top</name>
+        <qualifiedname>tf::TaskQueue::_top</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="155" column="20" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="155" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="155" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="155" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TaskQueue_1aebf6dd0368728d9fa25127020afb9dda" prot="private" static="no" mutable="no">
-        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
+        <type>CachelineAligned&lt; <ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt; &gt;</type>
         <definition>CachelineAligned&lt;std::atomic&lt;int64_t&gt; &gt; tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::_bottom[TF_MAX_PRIORITY]</definition>
         <argsstring>[TF_MAX_PRIORITY]</argsstring>
         <name>_bottom</name>
+        <qualifiedname>tf::TaskQueue::_bottom</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="156" column="20" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="156" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="156" column="20" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="156" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TaskQueue_1abaadb3c00494c5873bc7fd5d8ec30f06" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
         <definition>std::atomic&lt;Array*&gt; tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::_array[TF_MAX_PRIORITY]</definition>
         <argsstring>[TF_MAX_PRIORITY]</argsstring>
         <name>_array</name>
+        <qualifiedname>tf::TaskQueue::_array</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="157" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="157" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="157" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="157" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TaskQueue_1aeb6fedf457596dad3f64af57343613cd" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
         <definition>std::vector&lt;Array*&gt; tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::_garbage[TF_MAX_PRIORITY]</definition>
         <argsstring>[TF_MAX_PRIORITY]</argsstring>
         <name>_garbage</name>
+        <qualifiedname>tf::TaskQueue::_garbage</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="158" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="158" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="158" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="158" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -75,6 +79,7 @@
         <definition>tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::TaskQueue</definition>
         <argsstring>(int64_t capacity=512)</argsstring>
         <name>TaskQueue</name>
+        <qualifiedname>tf::TaskQueue::TaskQueue</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>capacity</declname>
@@ -97,13 +102,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="169" column="14" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="261" bodyend="269"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="169" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="261" bodyend="269"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a15d5b45f482cba7383512a9c5bcbd7cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::~TaskQueue</definition>
         <argsstring>()</argsstring>
         <name>~TaskQueue</name>
+        <qualifiedname>tf::TaskQueue::~TaskQueue</qualifiedname>
         <briefdescription>
 <para>destructs the queue </para>
         </briefdescription>
@@ -111,13 +117,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="174" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="273" bodyend="280"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="174" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="273" bodyend="280"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1adfdf70255e24d62c46b31b09c47d78f7" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::empty</definition>
         <argsstring>() const noexcept</argsstring>
         <name>empty</name>
+        <qualifiedname>tf::TaskQueue::empty</qualifiedname>
         <briefdescription>
 <para>queries if the queue is empty at the time of this call </para>
         </briefdescription>
@@ -125,13 +132,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="179" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="284" bodyend="291"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="179" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="284" bodyend="291"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1af57eb2ebc4d92120d7eaf868ec57b524" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::empty</definition>
         <argsstring>(unsigned priority) const noexcept</argsstring>
         <name>empty</name>
+        <qualifiedname>tf::TaskQueue::empty</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>priority</declname>
@@ -143,13 +151,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="184" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="295" bodyend="299"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="184" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="295" bodyend="299"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1ad598bef2211bf4cc99d66d80a12ebb6a" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::size</definition>
         <argsstring>() const noexcept</argsstring>
         <name>size</name>
+        <qualifiedname>tf::TaskQueue::size</qualifiedname>
         <briefdescription>
 <para>queries the number of items at the time of this call </para>
         </briefdescription>
@@ -157,13 +166,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="189" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="303" bodyend="307"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="189" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="303" bodyend="307"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a0386ad90ced931025d14ea955ce40d8c" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::size</definition>
         <argsstring>(unsigned priority) const noexcept</argsstring>
         <name>size</name>
+        <qualifiedname>tf::TaskQueue::size</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>priority</declname>
@@ -175,13 +185,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="195" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="311" bodyend="315"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="195" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="311" bodyend="315"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1ad47b2671aa5270bcd05605c4063280ff" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>int64_t</type>
         <definition>int64_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::capacity</definition>
         <argsstring>() const noexcept</argsstring>
         <name>capacity</name>
+        <qualifiedname>tf::TaskQueue::capacity</qualifiedname>
         <briefdescription>
 <para>queries the capacity of the queue </para>
         </briefdescription>
@@ -189,13 +200,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="200" column="13" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="413" bodyend="419"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="200" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="413" bodyend="419"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1ab868d17013212547d750267710037877" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>int64_t</type>
         <definition>int64_t tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::capacity</definition>
         <argsstring>(unsigned priority) const noexcept</argsstring>
         <name>capacity</name>
+        <qualifiedname>tf::TaskQueue::capacity</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>priority</declname>
@@ -207,13 +219,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="205" column="13" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="423" bodyend="425"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="205" column="13" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="423" bodyend="425"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a644a03868c0d424d979f91e15c864a15" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::push</definition>
         <argsstring>(T item, unsigned priority)</argsstring>
         <name>push</name>
+        <qualifiedname>tf::TaskQueue::push</qualifiedname>
         <param>
           <type>T</type>
           <declname>item</declname>
@@ -247,13 +260,14 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="217" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="319" bodyend="333"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="217" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="319" bodyend="333"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a3df0b3554e814385d23ee603941391df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
         <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::pop</definition>
         <argsstring>()</argsstring>
         <name>pop</name>
+        <qualifiedname>tf::TaskQueue::pop</qualifiedname>
         <briefdescription>
 <para>pops out an item from the queue </para>
         </briefdescription>
@@ -262,13 +276,14 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="225" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="337" bodyend="344"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="225" column="7" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="337" bodyend="344"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a569a76254aea3f1f411e28aa57f7a810" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
         <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::pop</definition>
         <argsstring>(unsigned priority)</argsstring>
         <name>pop</name>
+        <qualifiedname>tf::TaskQueue::pop</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>priority</declname>
@@ -290,13 +305,14 @@ Only the owner thread can pop out an item from the queue. The return can be a <c
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="235" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="348" bodyend="375"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="235" column="7" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="348" bodyend="375"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1a23e13cb9f98316b26c00ce494aa2f0c6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
         <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::steal</definition>
         <argsstring>()</argsstring>
         <name>steal</name>
+        <qualifiedname>tf::TaskQueue::steal</qualifiedname>
         <briefdescription>
 <para>steals an item from the queue </para>
         </briefdescription>
@@ -305,13 +321,14 @@ Only the owner thread can pop out an item from the queue. The return can be a <c
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="243" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="379" bodyend="386"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="243" column="7" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="379" bodyend="386"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskQueue_1aca896b5d59a78a018aeb313760ca735a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
         <definition>T tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::steal</definition>
         <argsstring>(unsigned priority)</argsstring>
         <name>steal</name>
+        <qualifiedname>tf::TaskQueue::steal</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>priority</declname>
@@ -333,7 +350,7 @@ Any threads can try to steal an item from the queue. The return can be a <comput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="253" column="7" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="390" bodyend="409"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="253" column="7" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="390" bodyend="409"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -342,6 +359,7 @@ Any threads can try to steal an item from the queue. The return can be a <comput
         <definition>TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::Array * tf::TaskQueue&lt; T, TF_MAX_PRIORITY &gt;::resize_array</definition>
         <argsstring>(Array *a, unsigned p, std::int64_t b, std::int64_t t)</argsstring>
         <name>resize_array</name>
+        <qualifiedname>tf::TaskQueue::resize_array</qualifiedname>
         <param>
           <type>Array *</type>
           <declname>a</declname>
@@ -351,11 +369,11 @@ Any threads can try to steal an item from the queue. The return can be a <comput
           <declname>p</declname>
         </param>
         <param>
-          <type><ref refid="cpp/types/integer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
+          <type><ref refid="cpp/types/integer" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
           <declname>b</declname>
         </param>
         <param>
-          <type><ref refid="cpp/types/integer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
+          <type><ref refid="cpp/types/integer" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
           <declname>t</declname>
         </param>
         <briefdescription>
@@ -364,7 +382,7 @@ Any threads can try to steal an item from the queue. The return can be a <comput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="256" column="11" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="429" bodyend="438"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="256" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="429" bodyend="438"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -388,19 +406,20 @@ Any threads can try to steal an item from the queue. The return can be a <comput
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>, and extends it to include priority.</para>
+</para>
+<para>This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>, and extends it to include priority.</para>
 <para>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. Priority starts from zero (highest priority) to the template value <computeroutput>TF_MAX_PRIORITY-1</computeroutput> (lowest priority). All operations are associated with priority values to indicate the corresponding queues to which an operation is applied.</para>
 <para>The default template value, <computeroutput>TF_MAX_PRIORITY</computeroutput>, is <computeroutput><ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" kindref="member">TaskPriority::MAX</ref></computeroutput> which applies only three priority levels to the task queue.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D,<sp/>E]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>C:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>C:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;]<sp/>()<sp/>{<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>D:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>D:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter++<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -420,7 +439,7 @@ This class implements the work-stealing queue described in the paper, <ulink url
 <codeline><highlight class="normal">Task<sp/>C:<sp/>2</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" line="110" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/tsq.hpp" bodystart="110" bodyend="257"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" line="110" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/tsq.hpp" bodystart="110" bodyend="257"/>
     <listofallmembers>
       <member refid="classtf_1_1TaskQueue_1abaadb3c00494c5873bc7fd5d8ec30f06" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_array</name></member>
       <member refid="classtf_1_1TaskQueue_1aebf6dd0368728d9fa25127020afb9dda" prot="private" virt="non-virtual"><scope>tf::TaskQueue</scope><name>_bottom</name></member>

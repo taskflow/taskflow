@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1AsyncTask" kind="class" language="C++" prot="public">
     <compoundname>tf::AsyncTask</compoundname>
     <includes refid="async__task_8hpp" local="no">async_task.hpp</includes>
@@ -9,8 +9,9 @@
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::AsyncTask::Executor</qualifiedname>
         <param>
-          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
+          <type>Executor</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -18,7 +19,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="44" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="44" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="44" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="44" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -27,6 +28,7 @@
         <definition>Node* tf::AsyncTask::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
+        <qualifiedname>tf::AsyncTask::_node</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -34,7 +36,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="113" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="113" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="113" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="113" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -43,6 +45,7 @@
         <definition>tf::AsyncTask::AsyncTask</definition>
         <argsstring>()=default</argsstring>
         <name>AsyncTask</name>
+        <qualifiedname>tf::AsyncTask::AsyncTask</qualifiedname>
         <briefdescription>
 <para>constructs an empty task handle </para>
         </briefdescription>
@@ -50,13 +53,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="51" column="5"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="51" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a148ddcabda8fd44746b278499cd4cb53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::AsyncTask::~AsyncTask</definition>
         <argsstring>()</argsstring>
         <name>~AsyncTask</name>
+        <qualifiedname>tf::AsyncTask::~AsyncTask</qualifiedname>
         <briefdescription>
 <para>destroys the managed asynchronous task if this is the last owner </para>
         </briefdescription>
@@ -64,13 +68,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="56" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="155" bodyend="157"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="56" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="155" bodyend="157"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a682bc679a773da5e45714f71c8137f70" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::AsyncTask::AsyncTask</definition>
         <argsstring>(const AsyncTask &amp;rhs)</argsstring>
         <name>AsyncTask</name>
+        <qualifiedname>tf::AsyncTask::AsyncTask</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;</type>
           <declname>rhs</declname>
@@ -82,13 +87,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="61" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="143" bodyend="146"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="61" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="143" bodyend="146"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a5a31f85d2ee542f62e784d551ec78896" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::AsyncTask::AsyncTask</definition>
         <argsstring>(AsyncTask &amp;&amp;rhs)</argsstring>
         <name>AsyncTask</name>
+        <qualifiedname>tf::AsyncTask::AsyncTask</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;&amp;</type>
           <declname>rhs</declname>
@@ -100,13 +106,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="66" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="149" bodyend="152"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="66" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="149" bodyend="152"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a14fa18d27a02c41e01b48ea07e87f5c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;</type>
         <definition>AsyncTask &amp; tf::AsyncTask::operator=</definition>
         <argsstring>(const AsyncTask &amp;rhs)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::AsyncTask::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;</type>
           <declname>rhs</declname>
@@ -119,13 +126,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="74" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="160" bodyend="165"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="74" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="160" bodyend="165"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a8dc18d17f3a5d72ef4d9c20ebf7ade4a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;</type>
         <definition>AsyncTask &amp; tf::AsyncTask::operator=</definition>
         <argsstring>(AsyncTask &amp;&amp;rhs)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::AsyncTask::operator=</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &amp;&amp;</type>
           <declname>rhs</declname>
@@ -138,13 +146,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="81" column="15" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="168" bodyend="173"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="81" column="15" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="168" bodyend="173"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1ae42c70dc0c5edc6d58f47b346125fca3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::AsyncTask::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
+        <qualifiedname>tf::AsyncTask::empty</qualifiedname>
         <briefdescription>
 <para>checks if the asynchronous task stores nothing </para>
         </briefdescription>
@@ -152,13 +161,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="86" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="176" bodyend="178"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="86" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="176" bodyend="178"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a7c12835577fbdc1bca3190cf92c78088" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::AsyncTask::reset</definition>
         <argsstring>()</argsstring>
         <name>reset</name>
+        <qualifiedname>tf::AsyncTask::reset</qualifiedname>
         <briefdescription>
 <para>release the managed object of <computeroutput>this</computeroutput> </para>
         </briefdescription>
@@ -166,13 +176,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="91" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="181" bodyend="184"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="91" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="181" bodyend="184"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a826a2ea909094f5a26c2df876de58056" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::AsyncTask::hash_value</definition>
         <argsstring>() const</argsstring>
         <name>hash_value</name>
+        <qualifiedname>tf::AsyncTask::hash_value</qualifiedname>
         <briefdescription>
 <para>obtains a hash value of this asynchronous task </para>
         </briefdescription>
@@ -180,13 +191,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="96" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="187" bodyend="189"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="96" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="187" bodyend="189"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1a6a4a54030f57d1ef05c04ae01825165d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::AsyncTask::use_count</definition>
         <argsstring>() const</argsstring>
         <name>use_count</name>
+        <qualifiedname>tf::AsyncTask::use_count</qualifiedname>
         <briefdescription>
 <para>returns the number of shared owners that are currently managing this asynchronous task </para>
         </briefdescription>
@@ -194,13 +206,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="102" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="192" bodyend="197"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="102" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="192" bodyend="197"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::AsyncTask::is_done</definition>
         <argsstring>() const</argsstring>
         <name>is_done</name>
+        <qualifiedname>tf::AsyncTask::is_done</qualifiedname>
         <briefdescription>
 <para>returns the boolean indicating whether the async task is done </para>
         </briefdescription>
@@ -208,7 +221,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="107" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="200" bodyend="204"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="107" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="200" bodyend="204"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -217,6 +230,7 @@
         <definition>tf::AsyncTask::AsyncTask</definition>
         <argsstring>(Node *)</argsstring>
         <name>AsyncTask</name>
+        <qualifiedname>tf::AsyncTask::AsyncTask</qualifiedname>
         <param>
           <type>Node *</type>
           <defname>ptr</defname>
@@ -227,33 +241,35 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="111" column="14" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="120" bodyend="122"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="111" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="120" bodyend="122"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1ae2eefe6ee6de4f97dd0b247b053addb1" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::AsyncTask::_incref</definition>
         <argsstring>()</argsstring>
         <name>_incref</name>
+        <qualifiedname>tf::AsyncTask::_incref</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="115" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="125" bodyend="131"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="115" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="125" bodyend="131"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AsyncTask_1aaee1f8ef1109eb90ad20bac2cba4eaca" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::AsyncTask::_decref</definition>
         <argsstring>()</argsstring>
         <name>_decref</name>
+        <qualifiedname>tf::AsyncTask::_decref</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="116" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="134" bodyend="140"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="116" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="134" bodyend="140"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -268,9 +284,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>when<sp/>being<sp/>added<sp/>to<sp/>the<sp/>dependency<sp/>list<sp/>of<sp/>async<sp/>task<sp/>B</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){},<sp/>A);</highlight></codeline>
 </programlisting></para>
-<para>Currently, <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is implemented based on the logic of C++ smart pointer <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed. </para>
+<para>Currently, <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is implemented based on the logic of C++ smart pointer <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed. </para>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" line="42" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/async_task.hpp" bodystart="42" bodyend="117"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" line="42" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/async_task.hpp" bodystart="42" bodyend="117"/>
     <listofallmembers>
       <member refid="classtf_1_1AsyncTask_1aaee1f8ef1109eb90ad20bac2cba4eaca" prot="private" virt="non-virtual"><scope>tf::AsyncTask</scope><name>_decref</name></member>
       <member refid="classtf_1_1AsyncTask_1ae2eefe6ee6de4f97dd0b247b053addb1" prot="private" virt="non-virtual"><scope>tf::AsyncTask</scope><name>_incref</name></member>

@@ -5,7 +5,7 @@
   <title>tf::Semaphore class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -55,7 +55,6 @@
             <li>
               Reference
               <ul>
-                <li><a href="#derived-classes">Derived classes</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
@@ -63,38 +62,25 @@
           </ul>
         </nav>
 <p>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span><span class="w">   </span><span class="c1">// create an executor of 8 workers</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// create a semaphore with initial count 1</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">}),</span><span class="w"></span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
+<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"> </span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;critical section here (one worker at any time)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span>
+<span class="w">    </span><span class="n">critical_section</span><span class="p">();</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">}</span>
 
-<span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// each task acquires and release the semaphore</span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">task</span><span class="p">.</span><span class="n">release</span><span class="p">(</span><span class="n">semaphore</span><span class="p">);</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This arrangement limits the number of concurrently running tasks to only one.</p>
-        <section id="derived-classes">
-          <h2><a href="#derived-classes">Derived classes</a></h2>
-          <dl class="m-doc">
-            <dt>
-              class <a href="classtf_1_1CriticalSection.html" class="m-doc">CriticalSection</a>
-            </dt>
-            <dd>class to create a critical region of limited workers to run tasks</dd>
-          </dl>
-        </section>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a taskflow of 1000 independent tasks while only one worker will run <code>critical_section</code> at any time due to the semaphore constraint. This arrangement limits the parallelism of <code>critical_section</code> to just one.</p><aside class="m-note m-info"><h4>Note</h4><p>Taskflow use a non-blocking algorithm to implement the acquisition of semaphores and thus is deadlock-free.</p></aside>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a70ffe5c1611dba350d105b70377f8cd2" class="m-doc">Semaphore</a>(</span><span class="m-doc-wrap">size_t max_workers) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#aafbb7c98f5e510f2ba053b3e9fd2cb25" class="m-doc">Semaphore</a>(</span><span class="m-doc-wrap">size_t count) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs a semaphore with the given counter</dd>
           </dl>
@@ -102,20 +88,109 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a8e4236750edd903ec0492231076ba2ba">
-              <span class="m-doc-wrap-bumper">auto <a href="#a8e4236750edd903ec0492231076ba2ba" class="m-doc-self">count</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad6e2debbcbfba34ad5ec72057a3981f7" class="m-doc">count</a>(</span><span class="m-doc-wrap">std::memory_order memory_order = std::memory_order_relaxed) const -&gt; size_t</span>
             </dt>
             <dd>queries the counter value (not thread-safe during the run)</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2bbcb0be1e7e767d5911ad79d63b59f0" class="m-doc">try_acquire</a>(</span><span class="m-doc-wrap">) -&gt; bool</span>
+            </dt>
+            <dd>tries to atomically decrement the internal counter by <code>1</code> if it is greater than <code>0</code></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a495348aa6280a4d2756a42fbf23fbe20" class="m-doc">release</a>(</span><span class="m-doc-wrap">size_t n = 1)</span>
+            </dt>
+            <dd>tries to atomically increment the internal counter by <code>n</code></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a6210744dd39283c3f2d5a89370d1b6b9" class="m-doc">reset</a>(</span><span class="m-doc-wrap">size_t count,
+              std::memory_order memory_order = std::memory_order_relaxed)</span>
+            </dt>
+            <dd>resets the semaphore to the given count</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a70ffe5c1611dba350d105b70377f8cd2"><div>
+          <section class="m-doc-details" id="aafbb7c98f5e510f2ba053b3e9fd2cb25"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a70ffe5c1611dba350d105b70377f8cd2" class="m-doc-self">Semaphore</a>(</span><span class="m-doc-wrap">size_t max_workers) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aafbb7c98f5e510f2ba053b3e9fd2cb25" class="m-doc-self">Semaphore</a>(</span><span class="m-doc-wrap">size_t count) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs a semaphore with the given counter</p>
-<p>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">  </span><span class="c1">// concurrency constraint of 4 workers</span></pre>
+<p>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Semaphore</span><span class="w"> </span><span class="nf">semaphore</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">  </span><span class="c1">// a semaphore initialized with 4</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ad6e2debbcbfba34ad5ec72057a3981f7"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad6e2debbcbfba34ad5ec72057a3981f7" class="m-doc-self">count</a>(</span><span class="m-doc-wrap">std::memory_order memory_order = std::memory_order_relaxed) const</span></span>
+            </h3>
+            <p>queries the counter value (not thread-safe during the run)</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">memory_order</td>
+                  <td>the memory order of this load (default std::memory_order_relaxed)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a2bbcb0be1e7e767d5911ad79d63b59f0"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2bbcb0be1e7e767d5911ad79d63b59f0" class="m-doc-self">try_acquire</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>tries to atomically decrement the internal counter by <code>1</code> if it is greater than <code>0</code></p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td><code>true</code> if it decremented the internal counter, otherwise <code>false</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a495348aa6280a4d2756a42fbf23fbe20"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a495348aa6280a4d2756a42fbf23fbe20" class="m-doc-self">release</a>(</span><span class="m-doc-wrap">size_t n = 1)</span></span>
+            </h3>
+            <p>tries to atomically increment the internal counter by <code>n</code></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">n</td>
+                  <td>the value by which the internal counter will be incremented</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>true</code> if it decremented the internal counter, otherwise <code>false</code></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a6210744dd39283c3f2d5a89370d1b6b9"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Semaphore::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6210744dd39283c3f2d5a89370d1b6b9" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">size_t count,
+              std::memory_order memory_order = std::memory_order_relaxed)</span></span>
+            </h3>
+            <p>resets the semaphore to the given count</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">count</td>
+                  <td>the new count value</td>
+                </tr>
+                <tr>
+                  <td>memory_order</td>
+                  <td>memory order to which this operation will be applied</td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
         </section>
       </div>
@@ -162,7 +237,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

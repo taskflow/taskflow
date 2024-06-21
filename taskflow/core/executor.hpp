@@ -1099,6 +1099,7 @@ class Executor {
   
   template <typename P>
   void _corun_until(Worker&, P&&);
+
 };
 
 // Constructor
@@ -1544,16 +1545,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     return;
   }
 
-  // if acquiring semaphore(s) exists, acquire them first
-  if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
-    SmallVector<Node*> nodes;
-    if(!node->_acquire_all(nodes)) {
-      _schedule(worker, nodes);
-      return;
-    }
-    node->_state.fetch_or(Node::ACQUIRED, std::memory_order_release);
-  }
-
   // condition task
   //int cond = -1;
 
@@ -1616,11 +1607,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   //invoke_successors:
 
-  // if releasing semaphores exist, release them
-  if(node->_semaphores && !node->_semaphores->to_release.empty()) {
-    _schedule(worker, node->_release_all());
-  }
-  
   // Reset the join counter to support the cyclic control flow.
   // + We must do this before scheduling the successors to avoid race
   //   condition on _dependents.
@@ -2193,7 +2179,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   // case 2: the final run of this topology
   else {
 
-    // TODO: if the topology is cancelled, need to release all semaphores
+    // invoke the callback after each run
     if(tpg->_call != nullptr) {
       tpg->_call();
     }
@@ -2315,6 +2301,74 @@ inline void Runtime::corun_all() {
   _parent->_process_exception();
 }
 
+// Function: acquire
+template <typename... S,
+  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
+>
+void Runtime::acquire(S&&... semaphores) {
+  constexpr size_t N = sizeof...(S);
+  std::array<Semaphore*, N> items { std::addressof(semaphores)... };
+  _executor._corun_until(_worker, [&](){ 
+    // Ideally, we should use a better deadlock-avoidance algorithm but
+    // in practice the number of semaphores will not be too large and
+    // tf::Semaphore does not provide blocking method. Hence, we are 
+    // mostly safe here. This is similar to the GCC try_lock implementation:
+    // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
+    for(size_t i=0; i < N; i++) {
+      if(items[i]->try_acquire() == false) {
+        for(size_t j=0; j<i; j++) {
+          items[j]->release();
+        }
+        return false;
+      }
+    }
+    return true;
+  });
+  // TODO: exception?
+}
+  
+// Function:: acquire
+template <typename I,
+  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void>*
+>
+void Runtime::acquire(I begin, I end) {
+  _executor._corun_until(_worker, [begin, end](){
+    // Ideally, we should use a better deadlock-avoidance algorithm but
+    // in practice the number of semaphores will not be too large and
+    // tf::Semaphore does not provide blocking method. Hence, we are 
+    // mostly safe here. This is similar to the GCC try_lock implementation:
+    // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
+    for(I ptr = begin; ptr != end; ptr++) {
+      if(ptr->try_acquire() == false) {
+        for(I ptr2 = begin; ptr2 != ptr; ptr2++) {
+          ptr2->release();
+        }
+        return false;
+      }
+    }
+    return true;
+  });
+  // TODO: exception?
+}
+
+// Function: release
+template <typename... S,
+  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
+>
+void Runtime::release(S&&... semaphores){
+  (semaphores.release(), ...);
+}
+
+// Function:: release
+template <typename I,
+  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void>*
+>
+void Runtime::release(I begin, I end) {
+  for(I ptr = begin; ptr != end; ptr++) {
+    ptr->release();
+  }
+}
+
 // Destructor
 inline Runtime::~Runtime() {
   _executor._corun_until(_worker, [this] () -> bool { 
@@ -2401,6 +2455,11 @@ template <typename P, typename F>
 auto Runtime::async(P&& params, F&& f) {
   return _async(*_executor._this_worker(), std::forward<P>(params), std::forward<F>(f));
 }
+
+// ----------------------------------------------------------------------------
+// Runtime: Semaphore series
+// ----------------------------------------------------------------------------
+
 
 
 

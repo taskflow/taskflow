@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-5-0" kind="page">
     <compoundname>release-3-5-0</compoundname>
     <title>Release 3.5.0 (2023/01/05)</title>
@@ -107,7 +107,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>See <ref refid="PrioritizedTasking" kindref="compound">Prioritized Tasking</ref></para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>Extended <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> to include tf::WorkerInterface</para>
+</listitem><listitem><para>Extended tf::Executor to include tf::WorkerInterface</para>
 </listitem><listitem><para>Improved parallel algorithms (e.g., <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref>) with tail optimization</para>
 </listitem><listitem><para>Resolved the busy-waiting problem in our work-stealing algorithm (<ulink url="https://github.com/taskflow/taskflow/pull/440">#400</ulink>)</para>
 </listitem></itemizedlist>
@@ -122,7 +122,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>Added tf::unroll to unroll loops using template techniques</para>
 </listitem><listitem><para>Added tf::CachelineAligned to create a cacheline-aligned object</para>
-</listitem><listitem><para>Replaced <ref refid="cpp/types/aligned_union" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::aligned_union</ref> (deprecated in C++23) with a custom byte type (<ulink url="https://github.com/taskflow/taskflow/issues/445">#445</ulink>)</para>
+</listitem><listitem><para>Replaced <ref refid="cpp/types/aligned_union" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::aligned_union</ref> (deprecated in C++23) with a custom byte type (<ulink url="https://github.com/taskflow/taskflow/issues/445">#445</ulink>)</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
