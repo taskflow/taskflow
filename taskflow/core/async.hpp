@@ -15,22 +15,31 @@ template <typename P, typename F>
 auto Executor::async(P&& params, F&& f) {
 
   _increment_topology();
-
-  using R = std::invoke_result_t<std::decay_t<F>>;
-
-  std::packaged_task<R()> p(std::forward<F>(f));
-  auto fu{p.get_future()};
-
-  auto node = animate(
-    std::forward<P>(params), nullptr, nullptr, 0, 
-    // handle
-    std::in_place_type_t<Node::Async>{}, 
-    [p=make_moc(std::move(p))]() mutable { p.object(); }
-  );
-
-  _schedule_async_task(node);
-
-  return fu;
+  
+  // async task with runtime: [] (tf::Runtime&) { ... }
+  if constexpr (std::is_invocable_v<F, Runtime&>) {
+    using R = std::invoke_result_t<F, Runtime&>;
+    std::packaged_task<R(Runtime& rt)> p(std::forward<F>(f));
+    auto fu{p.get_future()};
+    _schedule_async_task(animate(
+      std::forward<P>(params), nullptr, nullptr, 0, 
+      std::in_place_type_t<Node::Async>{}, 
+      [p=make_moc(std::move(p))](tf::Runtime& rt) mutable { p.object(rt); }
+    ));
+    return fu;
+  }
+  // async task without runtime: [] () { ... }
+  else {
+    using R = std::invoke_result_t<F>;
+    std::packaged_task<R()> p(std::forward<F>(f));
+    auto fu{p.get_future()};
+    _schedule_async_task(animate(
+      std::forward<P>(params), nullptr, nullptr, 0, 
+      std::in_place_type_t<Node::Async>{}, 
+      [p=make_moc(std::move(p))]() mutable { p.object(); }
+    ));
+    return fu;
+  }
 }
 
 // Function: async
@@ -192,29 +201,57 @@ template <typename P, typename F, typename I,
 auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   
   _increment_topology();
-  
-  using R = std::invoke_result_t<std::decay_t<F>>;
-
-  std::packaged_task<R()> p(std::forward<F>(func));
-  auto fu{p.get_future()};
-
+    
   size_t num_dependents = std::distance(first, last);
+  
+  // async with runtime: [] (tf::Runtime&) {}
+  if constexpr (std::is_invocable_v<F, Runtime&>) {
 
-  AsyncTask task(animate(
-    std::forward<P>(params), nullptr, nullptr, num_dependents,
-    std::in_place_type_t<Node::DependentAsync>{},
-    [p=make_moc(std::move(p))] () mutable { p.object(); }
-  ));
+    using R = std::invoke_result_t<F, Runtime&>;
+    std::packaged_task<R(Runtime& rt)> p(std::forward<F>(func));
+    
+    auto fu{p.get_future()};
 
-  for(; first != last; first++) {
-    _process_async_dependent(task._node, *first, num_dependents);
+    AsyncTask task(animate(
+      std::forward<P>(params), nullptr, nullptr, num_dependents,
+      std::in_place_type_t<Node::DependentAsync>{},
+      [p=make_moc(std::move(p))] (tf::Runtime& rt) mutable { p.object(rt); }
+    ));
+
+    for(; first != last; first++) {
+      _process_async_dependent(task._node, *first, num_dependents);
+    }
+
+    if(num_dependents == 0) {
+      _schedule_async_task(task._node);
+    }
+
+    return std::make_pair(std::move(task), std::move(fu));
   }
+  // async without runtime: [] () {}
+  else {
 
-  if(num_dependents == 0) {
-    _schedule_async_task(task._node);
+    using R = std::invoke_result_t<std::decay_t<F>>;
+    std::packaged_task<R()> p(std::forward<F>(func));
+
+    auto fu{p.get_future()};
+
+    AsyncTask task(animate(
+      std::forward<P>(params), nullptr, nullptr, num_dependents,
+      std::in_place_type_t<Node::DependentAsync>{},
+      [p=make_moc(std::move(p))] () mutable { p.object(); }
+    ));
+
+    for(; first != last; first++) {
+      _process_async_dependent(task._node, *first, num_dependents);
+    }
+
+    if(num_dependents == 0) {
+      _schedule_async_task(task._node);
+    }
+
+    return std::make_pair(std::move(task), std::move(fu));
   }
-
-  return std::make_pair(std::move(task), std::move(fu));
 }
 
 // ----------------------------------------------------------------------------

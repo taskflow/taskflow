@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="FAQ" kind="page">
     <compoundname>FAQ</compoundname>
     <title>Frequently Asked Questions</title>
@@ -227,7 +227,7 @@
 </sect2>
 <sect2 id="FAQ_1ProgrammingQuestions6">
 <title>Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?</title>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+<para><dotfile name="subflow-join.dot"></dotfile>
 </para>
 <para>No. The subflow is spawned during the execution of <computeroutput>B</computeroutput>, and at this point <computeroutput>A</computeroutput> must have finished because <computeroutput>A</computeroutput> precedes <computeroutput>B</computeroutput>. This gives rise to the fact <computeroutput>B1</computeroutput> and <computeroutput>B2</computeroutput> must run after <computeroutput>A</computeroutput>.</para>
 </sect2>

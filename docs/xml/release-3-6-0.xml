@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
     <title>Release 3.6.0 (2023/05/07)</title>
@@ -94,10 +94,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>Added new async methods to support dynamic task graph creation<itemizedlist>
-<listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1aa9b08e47e68ae1e568f18aa7104cb9b1" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
+<listitem><para>tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para>
+</listitem><listitem><para>tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</para>
+</listitem><listitem><para>tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para>
+</listitem><listitem><para>tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added new async and join methods to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
@@ -197,7 +197,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">std::optional&lt;int&gt;<sp/>res<sp/>=<sp/>fu.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>res<sp/>may<sp/>be<sp/>std::nullopt<sp/>or<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>use<sp/>std::future<sp/>instead</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
@@ -267,8 +267,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para>
-</listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para>
+<listitem><para>Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness</para>
+</listitem><listitem><para>Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness</para>
 </listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para>
 </listitem><listitem><para>Disabled argument support for all asynchronous tasking features<itemizedlist>
 <listitem><para>users are responsible for creating their own wrapper to make the callable</para>
@@ -277,10 +277,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>users<sp/>are<sp/>responsible<sp/>of<sp/>wrapping<sp/>the<sp/>arumgnets<sp/>into<sp/>a<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
+<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>){});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para>

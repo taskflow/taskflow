@@ -23,6 +23,7 @@ project(Taskflow VERSION 3.8.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)
+option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
 option(TF_BUILD_SYCL "Enables builds of sycl code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
@@ -46,7 +47,7 @@ include(CheckLanguage)
 include(GNUInstallDirs)
 
 # Check for correct settings for atomic library
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CheckAtomic.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Atomic/CheckAtomic.cmake)
 
 # Compiler vendors
 ## g++

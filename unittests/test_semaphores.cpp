@@ -63,6 +63,73 @@ TEST_CASE("CriticalSection.16threads") {
 }
 
 // --------------------------------------------------------
+// Testcase: CriticalSectionWithAsync
+// --------------------------------------------------------
+
+void critical_section_async(size_t W) {
+
+  tf::Executor executor(W);
+  tf::Semaphore semaphore(1);
+
+  int N = 1000;
+  int counter = 0;
+
+  for(int i=0; i<N; ++i) {
+    executor.async([&](tf::Runtime& rt){ 
+      rt.acquire(semaphore);
+      counter++; 
+      rt.release(semaphore);
+    });
+    
+    executor.silent_async([&](tf::Runtime& rt){ 
+      rt.acquire(semaphore);
+      counter++; 
+      rt.release(semaphore);
+    });
+    
+    executor.dependent_async([&](tf::Runtime& rt){ 
+      rt.acquire(semaphore);
+      counter++; 
+      rt.release(semaphore);
+    });
+    
+    executor.silent_dependent_async([&](tf::Runtime& rt){ 
+      rt.acquire(semaphore);
+      counter++; 
+      rt.release(semaphore);
+    });
+  }
+
+  executor.wait_for_all();
+  REQUIRE(counter == N*4);
+  REQUIRE(semaphore.count() == 1);
+}
+
+TEST_CASE("CriticalSectionWithAsync.1thread") {
+  critical_section_async(1);
+}
+
+TEST_CASE("CriticalSectionWithAsync.2threads") {
+  critical_section_async(2);
+}
+
+TEST_CASE("CriticalSectionWithAsync.3threads") {
+  critical_section_async(3);
+}
+
+TEST_CASE("CriticalSectionWithAsync.7threads") {
+  critical_section_async(7);
+}
+
+TEST_CASE("CriticalSectionWithAsync.11threads") {
+  critical_section_async(11);
+}
+
+TEST_CASE("CriticalSectionWithAsync.16threads") {
+  critical_section_async(16);
+}
+
+// --------------------------------------------------------
 // Testcase: Linearity
 // --------------------------------------------------------
 
@@ -314,7 +381,6 @@ TEST_CASE("Deadlock1.4threads") {
   deadlock_1(4);
 }
 
-
 //     A
 //    / \
 //   /   \
@@ -380,5 +446,81 @@ TEST_CASE("RangedDeadlock1.3threads") {
 
 TEST_CASE("RangedDeadlock1.4threads") {
   ranged_deadlock_1(4);
+}
+
+// ----------------------------------------------------------------------------
+// Multiple Taskflows
+// ----------------------------------------------------------------------------
+
+void semaphore_by_multiple_tasks(size_t W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow1, taskflow2, taskflow3, taskflow4;
+  tf::Semaphore s(1);
+
+  int counter {0};
+  size_t N = 2000;
+
+  for(size_t i=0; i<N; i++) {
+    taskflow1.emplace([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+    
+    taskflow2.emplace([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+    
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+    
+    taskflow3.emplace([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+    
+    taskflow4.emplace([&](tf::Runtime& rt){
+      rt.acquire(s);
+      counter++;
+      rt.release(s);
+    });
+  }
+  
+  executor.run(taskflow1);
+  executor.run(taskflow2);
+  executor.run(taskflow3);
+  executor.run(taskflow4);
+
+  executor.wait_for_all();
+  REQUIRE(counter == N*6);
+}
+
+TEST_CASE("SemaphoreByMultipleTasks.1thread") {
+  semaphore_by_multiple_tasks(1);
+}
+
+TEST_CASE("SemaphoreByMultipleTasks.2threads") {
+  semaphore_by_multiple_tasks(2);
+}
+
+TEST_CASE("SemaphoreByMultipleTasks.3threads") {
+  semaphore_by_multiple_tasks(3);
+}
+
+TEST_CASE("SemaphoreByMultipleTasks.4threads") {
+  semaphore_by_multiple_tasks(4);
 }
 

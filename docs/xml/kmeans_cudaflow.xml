@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="kmeans_cudaflow" kind="page">
     <compoundname>kmeans_cudaflow</compoundname>
     <title>k-means Clustering (cudaFlow)</title>
@@ -89,9 +89,9 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>mx,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>my,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>sx,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>sy,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>c</highlight></codeline>
 <codeline><highlight class="normal">)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>k<sp/>=<sp/>threadIdx.x;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/><ref refid="cpp/algorithm/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">max</ref>(1,<sp/>c[k]);<sp/><sp/></highlight><highlight class="comment">//<sp/>turn<sp/>0/0<sp/>to<sp/>0/1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>mx[k]<sp/>=<sp/>sx[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>my[k]<sp/>=<sp/>sy[k]<sp/>/<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref>;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid, multiple GPU threads may access the sum arrays, <computeroutput>sx</computeroutput> and <computeroutput>sy</computeroutput>, and the count array, <computeroutput>c</computeroutput>. To avoid data race, we use a simple <computeroutput>atomicAdd</computeroutput> method.</para>
@@ -104,9 +104,9 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>M:<sp/>number<sp/>of<sp/>iterations</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>px/py:<sp/>2D<sp/>point<sp/>vector<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>kmeans_gpu(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/>cconst<sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/>cconst<sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>px,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref>&amp;<sp/>py</highlight></codeline>
 <codeline><highlight class="normal">)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>h_mx,<sp/>h_my;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>h_mx,<sp/>h_my;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*d_px,<sp/>*d_py,<sp/>*d_mx,<sp/>*d_my,<sp/>*d_sx,<sp/>*d_sy,<sp/>*d_c;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;K;<sp/>++i)<sp/>{</highlight></codeline>
@@ -115,7 +115,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>taskflow<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;K-Means&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>allocate_px<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
@@ -186,7 +186,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaMemcpy(h_my.data(),<sp/>d_my,<sp/>K*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">),<sp/>cudaMemcpyDefault);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;d2h&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/><ref refid="cpp/memory/c/free" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">free</ref><sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_px);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_py);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cudaFree(d_mx);</highlight></codeline>
@@ -205,15 +205,15 @@
 <codeline><highlight class="normal"><sp/><sp/>stop.precede(free);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//std::cout<sp/>&lt;&lt;<sp/>&quot;dumping<sp/>kmeans<sp/>graph<sp/>...\n&quot;;</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>{h_mx,<sp/>h_my};</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <computeroutput>update_means</computeroutput>. Each time it goes back to <computeroutput>update_means</computeroutput>, the cudaFlow is reconstructed with captured parameters in the closure and offloaded to the GPU.</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/kmeans_3.dot"></dotfile>
+<para><dotfile name="kmeans_3.dot"></dotfile>
 </para>
 <para>The main cudaFlow task, <computeroutput>update_means</computeroutput>, must not run before all required data has settled down. It precedes a condition task that circles back to itself until we reach <computeroutput>M</computeroutput> iterations. When iteration completes, the condition task directs the execution path to the cudaFlow, <computeroutput>h2d</computeroutput>, to copy the results of clusters to <computeroutput>h_mx</computeroutput> and <computeroutput>h_my</computeroutput> and then deallocate all GPU memory.</para>
 </sect1>

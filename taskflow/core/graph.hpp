@@ -468,6 +468,25 @@ class Runtime {
 
   /**
   @brief acquires the given semaphores with a deadlock avoidance algorithm
+
+  @tparam S semaphore type (tf::Semaphore)
+  @param semaphores semaphores
+
+  Coruns this worker until acquiring all the semaphores. 
+
+  @code{.cpp}
+  tf::Semaphore semaphore(1);
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(semaphore);
+      critical_section();
+      rt.release(semaphore);
+    });
+  }
+  @endcode
   */ 
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
@@ -476,14 +495,57 @@ class Runtime {
 
   /**
   @brief acquires the given range of semaphores with a deadlock avoidance algorithm
+  
+  @tparam I iterator type
+  @param first iterator to the begining (inclusive)
+  @param last iterator to the end (exclusive)
+
+  Coruns this worker until acquiring all the semaphores. 
+
+  @code{.cpp}
+  std::list<tf::Semaphore> semaphores;
+  semaphores.emplace_back(1);
+  semaphores.emplace_back(1);
+  auto first = semaphores.begin();
+  auto last  = semaphores.end();
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(first, last);
+      critical_section();
+      rt.release(first, last);
+    });
+  }
+  @endcode
   */ 
   template <typename I,
     std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
   >
-  void acquire(I begin, I end);
+  void acquire(I first, I last);
   
   /**
   @brief releases the given semaphores
+  
+  @tparam S semaphore type (tf::Semaphore)
+  @param semaphores semaphores
+
+  Releases the given semaphores.
+
+  @code{.cpp}
+  tf::Semaphore semaphore(1);
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(semaphore);
+      critical_section();
+      rt.release(semaphore);
+    });
+  }
+  @endcode
   */ 
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
@@ -492,11 +554,35 @@ class Runtime {
   
   /**
   @brief releases the given range of semaphores
+  
+  @tparam I iterator type
+  @param first iterator to the begining (inclusive)
+  @param last iterator to the end (exclusive)
+
+  Releases the given range of semaphores.
+
+  @code{.cpp}
+  std::list<tf::Semaphore> semaphores;
+  semaphores.emplace_back(1);
+  semaphores.emplace_back(1);
+  auto first = semaphores.begin();
+  auto last  = semaphores.end();
+  tf::Executor executor;
+
+  // only one worker will enter the "critical_section" at any time
+  for(size_t i=0; i<100; i++) {
+    executor.async([&](tf::Runtime& rt){
+      rt.acquire(first, last);
+      critical_section();
+      rt.release(first, last);
+    });
+  }
+  @endcode
   */ 
   template <typename I,
     std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
   >
-  void release(I begin, I end);
+  void release(I first, I last);
 
   protected:
   

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="release-3-8-0" kind="page">
     <compoundname>release-3-8-0</compoundname>
     <title>Release 3.8.0 (Master)</title>
@@ -81,8 +81,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
 <title>Release Summary</title>
-<para>This releases enhances the scheduling performance through a new C++20 atomic wait/notification-based scheduling algorithm.</para>
-<para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to the new atomic-wait/-notification algorithm powered by C++20.</para>
+<para>This releases (1) enhances the scheduling performance through C++20 atomic notification and (2) revised the semaphore model for better runtime control.</para>
+<para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to C++20 atomic wait and notification.</para>
 </simplesect>
 </para>
 </sect1>
@@ -91,11 +91,28 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>enhanced the core scheduling using C++20 atomic notification</para>
+<listitem><para>Enhanced the core scheduling using C++20 atomic notification</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>compile<sp/>your<sp/>taskflow<sp/>program<sp/>with<sp/>C++20<sp/>enabled</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>my_taskflow.cpp<sp/></highlight></codeline>
+</programlisting></para>
+<para><itemizedlist>
+<listitem><para>Revised the semaphore programming model for better runtime control through <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>here<sp/>only)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>critical_section();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="release-3-8-0_1release-3-8-0_utilities">
@@ -104,16 +121,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_bug_fixes">
 <title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>Fixed the compilation error for not finding the C++ atomic library</para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>removed the support of object pool for fast resource release</para>
+<listitem><para>Removed the support of object pool for real-time resource release</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_documentation">
 <title>Documentation</title>
+<para><itemizedlist>
+<listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref></para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_miscellaneous_items">
 <title>Miscellaneous Items</title>

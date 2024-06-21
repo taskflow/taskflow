@@ -14,6 +14,10 @@ int main() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
+
+  executor.async([&](tf::Runtime& rt){
+    rt.acquire(semaphore);
+  });
   
   for(size_t i=0; i<100; i++) {
     taskflow.emplace([&, i](tf::Runtime& rt){

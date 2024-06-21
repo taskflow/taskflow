@@ -41,28 +41,26 @@ tf::Taskflow taskflow;
 
 tf::Semaphore semaphore(1); // create a semaphore with initial count 1
 
-std::vector<tf::Task> tasks {
-  taskflow.emplace([](){ std::cout << "A" << std::endl; }),
-  taskflow.emplace([](){ std::cout << "B" << std::endl; }),
-  taskflow.emplace([](){ std::cout << "C" << std::endl; }),
-  taskflow.emplace([](){ std::cout << "D" << std::endl; }),
-  taskflow.emplace([](){ std::cout << "E" << std::endl; })
-};
-
-for(auto & task : tasks) {  // each task acquires and release the semaphore
-  task.acquire(semaphore);
-  task.release(semaphore);
+for(size_t i=0; i<1000; i++) {
+  taskflow.emplace([&](tf::Runtime& rt){ 
+    rt.acquire(semaphore);
+    std::cout << "critical section here (one worker at any time)\n"; 
+    critical_section();
+    rt.release(semaphore);
+  });
 }
 
 executor.run(taskflow).wait();
 @endcode
 
-The above example creates five tasks with no dependencies between them.
-Under normal circumstances, the five tasks would be executed concurrently.
-However, this example has a semaphore with initial count 1,
-and all tasks need to acquire that semaphore before running and release that
-semaphore after they are done.
-This arrangement limits the number of concurrently running tasks to only one.
+The above example creates a taskflow of 1000 independent tasks while
+only one worker will run @c critical_section at any time
+due to the semaphore constraint.
+This arrangement limits the parallelism of @c critical_section to 
+just one.
+
+@note %Taskflow use a non-blocking algorithm to implement the acquisition
+of semaphores and thus is deadlock-free.
 
 */
 class Semaphore {
@@ -119,12 +117,25 @@ class Semaphore {
     void release(size_t n = 1) {
       _count.fetch_add(n, std::memory_order_release);
     }
+    
+    /**
+    @brief resets the semaphore to the given count
+
+    @param count the new count value
+    @param memory_order memory order to which this operation will be applied
+    */
+    void reset(size_t count, std::memory_order memory_order = std::memory_order_relaxed) {
+      _count.store(count, memory_order);
+    }
 
   private:
 
     std::atomic<size_t> _count;
 };
 
+/**
+@brief tries to acquire all semaphores in the specified range
+*/
 template <typename I,
   std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
 >
@@ -141,6 +152,9 @@ bool try_acquire(I begin, I end) {
   return true;
 }
 
+/**
+@brief tries to acquire all semaphores
+*/
 template<typename... S, 
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
 >

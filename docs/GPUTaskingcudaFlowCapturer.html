@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (cudaFlowCapturer) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,216 +62,216 @@
             <li><a href="#IntegrateCudaFlowCapturerIntoTaskflow">Integrate a cudaFlow Capturer into Taskflow</a></li>
           </ul>
         </nav>
-<p>You can create a cudaFlow through <em>stream capture</em>, which allows you to implicitly capture a CUDA graph using stream-based interface. Compared to explicit CUDA Graph construction (<a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>), implicit CUDA Graph capturing (<a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a>) is more flexible in building GPU task graphs.</p><section id="GPUTaskingcudaFlowCapturerIncludeTheHeader"><h2><a href="#GPUTaskingcudaFlowCapturerIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/cudaflow.hpp</code>, for capturing a GPU task graph using <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/cudaflow.hpp&gt;</span><span class="cp"></span></pre></section><section id="Capture_a_cudaFlow"><h2><a href="#Capture_a_cudaFlow">Capture a cudaFlow</a></h2><p>When your program has no access to direct kernel calls but can only invoke them through a stream-based interface (e.g., <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> and <a href="https://developer.nvidia.com/cudnn">cuDNN</a> library functions), you can use <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> to capture the hidden GPU operations into a CUDA graph. A cudaFlowCapturer is similar to a cudaFlow except it constructs a GPU task graph through <em>stream capture</em>. You use the method <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of <em>asynchronous</em> GPU operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> (<code>my_kernel_1</code>) and <code>task_2</code> (<code>my_kernel_2</code>) , where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="c1">// create a cudaFlow capturer to run a CUDA graph using stream capturing</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span><span class="w"></span>
+<p>You can create a cudaFlow through <em>stream capture</em>, which allows you to implicitly capture a CUDA graph using stream-based interface. Compared to explicit CUDA Graph construction (<a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>), implicit CUDA Graph capturing (<a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a>) is more flexible in building GPU task graphs.</p><section id="GPUTaskingcudaFlowCapturerIncludeTheHeader"><h2><a href="#GPUTaskingcudaFlowCapturerIncludeTheHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/cuda/cudaflow.hpp</code>, for capturing a GPU task graph using <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a>.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/cuda/cudaflow.hpp&gt;</span></pre></section><section id="Capture_a_cudaFlow"><h2><a href="#Capture_a_cudaFlow">Capture a cudaFlow</a></h2><p>When your program has no access to direct kernel calls but can only invoke them through a stream-based interface (e.g., <a href="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</a> and <a href="https://developer.nvidia.com/cudnn">cuDNN</a> library functions), you can use <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> to capture the hidden GPU operations into a CUDA graph. A cudaFlowCapturer is similar to a cudaFlow except it constructs a GPU task graph through <em>stream capture</em>. You use the method <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of <em>asynchronous</em> GPU operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> (<code>my_kernel_1</code>) and <code>task_2</code> (<code>my_kernel_2</code>) , where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="c1">// create a cudaFlow capturer to run a CUDA graph using stream capturing</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span>
 
 <span class="c1">// capture my_kernel_1 through a stream managed by capturer</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">){</span><span class="w"> </span>
-<span class="w">  </span><span class="n">my_kernel_1</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid_1</span><span class="p">,</span><span class="w"> </span><span class="n">block_1</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size_1</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">my_parameters_1</span><span class="p">);</span><span class="w"></span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel_1&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">my_kernel_1</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid_1</span><span class="p">,</span><span class="w"> </span><span class="n">block_1</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size_1</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">my_parameters_1</span><span class="p">);</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel_1&quot;</span><span class="p">);</span>
 
 <span class="c1">// capture my_kernel_2 through a stream managed by capturer</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">){</span><span class="w"> </span>
-<span class="w">  </span><span class="n">my_kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid_2</span><span class="p">,</span><span class="w"> </span><span class="n">block_2</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size_2</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">my_parameters_2</span><span class="p">);</span><span class="w"></span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel_2&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">my_kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid_2</span><span class="p">,</span><span class="w"> </span><span class="n">block_2</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size_2</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">my_parameters_2</span><span class="p">);</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel_2&quot;</span><span class="p">);</span>
 
 <span class="c1">// my_kernel_1 runs before my_kernel_2</span>
-<span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task_2</span><span class="p">);</span><span class="w"></span>
+<span class="n">task_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task_2</span><span class="p">);</span>
 
 <span class="c1">// offload captured GPU tasks using the CUDA Graph execution model</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
-<span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
-<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
 
 <span class="c1">// dump the cudaFlow to a DOT format through std::cout</span>
-<span class="n">capturer</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">)</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 26.200rem; height: 9.500rem;" viewBox="0.00 0.00 262.02 95.00">
+<span class="n">capturer</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">)</span></pre><div class="m-graph"><svg style="width: 24.500rem; height: 9.500rem;" viewBox="0.00 0.00 245.23 95.00">
 <g transform="scale(1 1) rotate(0) translate(4 91)">
 <title>cudaFlowCapturer</title>
 <g class="m-cluster">
 <title>cluster_capturer</title>
-<polygon points="8,-8 8,-79 246.02,-79 246.02,-8 8,-8"/>
-<text text-anchor="middle" x="127.01" y="-67" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: capturer</text>
+<polygon points="8,-8 8,-79 229.23,-79 229.23,-8 8,-8"/>
+<text text-anchor="middle" x="118.61" y="-65.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: capturer</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel_1</title>
-<ellipse cx="62.5" cy="-34" rx="46.51" ry="18"/>
-<text text-anchor="middle" x="62.5" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel_1</text>
+<ellipse cx="58.31" cy="-34" rx="42.31" ry="18"/>
+<text text-anchor="middle" x="58.31" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel_1</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel_2</title>
-<ellipse cx="191.51" cy="-34" rx="46.51" ry="18"/>
-<text text-anchor="middle" x="191.51" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel_2</text>
+<ellipse cx="178.92" cy="-34" rx="42.31" ry="18"/>
+<text text-anchor="middle" x="178.92" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel_2</text>
 </g>
 <g class="m-edge">
 <title>my_kernel_1&#45;&gt;my_kernel_2</title>
-<path d="M109.36,-34C117.54,-34 126.15,-34 134.58,-34"/>
-<polygon points="134.73,-37.5 144.73,-34 134.73,-30.5 134.73,-37.5"/>
+<path d="M100.79,-34C108.6,-34 116.87,-34 124.97,-34"/>
+<polygon points="124.74,-37.5 134.74,-34 124.74,-30.5 124.74,-37.5"/>
 </g>
 </g>
 </svg>
-</div><aside class="m-note m-danger"><h4>Warning</h4><p>Inside <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a>, you should <em>NOT</em> modify the properties of the stream argument but only use it to capture <em>asynchronous</em> GPU operations (e.g., <code>kernel</code>, <code>cudaMemcpyAsync</code>). The stream argument is internal to the capturer use only.</p></aside></section><section id="CommonCaptureMethods"><h2><a href="#CommonCaptureMethods">Common Capture Methods</a></h2><p><a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> defines a set of methods for capturing common GPU operations, such as <a href="classtf_1_1cudaFlowCapturer.html#a6f06c7f6954d8d67ad89f0eddfe285e9" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />kernel</a>, <a href="classtf_1_1cudaFlowCapturer.html#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />memcpy</a>, <a href="classtf_1_1cudaFlowCapturer.html#a0d38965b380f940bf6cfc6667a281052" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />memset</a>, and so on. For example, the following code snippet uses these pre-defined methods to construct a GPU task graph of one host-to-device copy, kernel, and one device-to-host copy, in this order of their dependencies.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span><span class="w"></span>
+</div><aside class="m-note m-danger"><h4>Warning</h4><p>Inside <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a>, you should <em>NOT</em> modify the properties of the stream argument but only use it to capture <em>asynchronous</em> GPU operations (e.g., <code>kernel</code>, <code>cudaMemcpyAsync</code>). The stream argument is internal to the capturer use only.</p></aside></section><section id="CommonCaptureMethods"><h2><a href="#CommonCaptureMethods">Common Capture Methods</a></h2><p><a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> defines a set of methods for capturing common GPU operations, such as <a href="classtf_1_1cudaFlowCapturer.html#a6f06c7f6954d8d67ad89f0eddfe285e9" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />kernel</a>, <a href="classtf_1_1cudaFlowCapturer.html#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />memcpy</a>, <a href="classtf_1_1cudaFlowCapturer.html#a0d38965b380f940bf6cfc6667a281052" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />memset</a>, and so on. For example, the following code snippet uses these pre-defined methods to construct a GPU task graph of one host-to-device copy, kernel, and one device-to-host copy, in this order of their dependencies.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span>
 
 <span class="c1">// copy data from host_data to gpu_data</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">gpu_data</span><span class="p">,</span><span class="w"> </span><span class="n">host_data</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span><span class="w"></span>
-<span class="w">                           </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">gpu_data</span><span class="p">,</span><span class="w"> </span><span class="n">host_data</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">                           </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d&quot;</span><span class="p">);</span>
 
 <span class="c1">// capture my_kernel to do computation on gpu_data</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args</span><span class="p">);</span><span class="w"></span>
-<span class="w">                              </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args</span><span class="p">);</span>
+<span class="w">                              </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;my_kernel&quot;</span><span class="p">);</span>
 
 <span class="c1">// copy data from gpu_data to host_data</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">host_data</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_data</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span><span class="w"></span>
-<span class="w">                           </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">memcpy</span><span class="p">(</span><span class="n">host_data</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_data</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<span class="w">                           </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h&quot;</span><span class="p">);</span>
 
 <span class="c1">// build task dependencies</span>
-<span class="n">h2d</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kernel</span><span class="p">);</span><span class="w"></span>
-<span class="n">kernel</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 30.000rem; height: 9.500rem;" viewBox="0.00 0.00 300.06 95.00">
+<span class="n">h2d</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">kernel</span><span class="p">);</span>
+<span class="n">kernel</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 29.200rem; height: 9.500rem;" viewBox="0.00 0.00 292.19 95.00">
 <g transform="scale(1 1) rotate(0) translate(4 91)">
 <title>cudaFlowCapturer</title>
 <g class="m-cluster">
 <title>cluster_capturer</title>
-<polygon points="8,-8 8,-79 284.06,-79 284.06,-8 8,-8"/>
-<text text-anchor="middle" x="146.03" y="-67" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: capturer</text>
+<polygon points="8,-8 8,-79 276.19,-79 276.19,-8 8,-8"/>
+<text text-anchor="middle" x="142.09" y="-65.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: capturer</text>
 </g>
 <g class="m-node m-flat">
 <title>h2d</title>
 <ellipse cx="43" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="43" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">h2d</text>
+<text text-anchor="middle" x="43" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d</text>
 </g>
 <g class="m-node m-flat">
 <title>my_kernel</title>
-<ellipse cx="146.03" cy="-34" rx="40.06" ry="18"/>
-<text text-anchor="middle" x="146.03" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel</text>
+<ellipse cx="142.09" cy="-34" rx="36.09" ry="18"/>
+<text text-anchor="middle" x="142.09" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">my_kernel</text>
 </g>
 <g class="m-edge">
 <title>h2d&#45;&gt;my_kernel</title>
-<path d="M70.02,-34C77.83,-34 86.68,-34 95.49,-34"/>
-<polygon points="95.75,-37.5 105.75,-34 95.75,-30.5 95.75,-37.5"/>
+<path d="M70.27,-34C77.68,-34 85.97,-34 94.19,-34"/>
+<polygon points="94.17,-37.5 104.17,-34 94.17,-30.5 94.17,-37.5"/>
 </g>
 <g class="m-node m-flat">
 <title>dh2</title>
-<ellipse cx="249.06" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="249.06" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">dh2</text>
+<ellipse cx="241.19" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="241.19" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">dh2</text>
 </g>
 <g class="m-edge">
 <title>my_kernel&#45;&gt;dh2</title>
-<path d="M186.09,-34C194.52,-34 203.41,-34 211.73,-34"/>
-<polygon points="211.9,-37.5 221.9,-34 211.9,-30.5 211.9,-37.5"/>
+<path d="M178.42,-34C186.29,-34 194.66,-34 202.62,-34"/>
+<polygon points="202.35,-37.5 212.35,-34 202.35,-30.5 202.35,-37.5"/>
 </g>
 </g>
 </svg>
-</div></section><section id="CreateACapturerOnASpecificGPU"><h2><a href="#CreateACapturerOnASpecificGPU">Create a Capturer on a Specific GPU</a></h2><p>You can run a cudaFlow capturer on a specific GPU by switching to the context of that GPU using <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">tf::<wbr />cudaScopedDevice</a>, following the CUDA convention of multi-GPU programming. The example below creates a cudaFlow capturer and runs it on GPU <code>2</code>:</p><pre class="m-code"><span class="p">{</span><span class="w"></span>
+</div></section><section id="CreateACapturerOnASpecificGPU"><h2><a href="#CreateACapturerOnASpecificGPU">Create a Capturer on a Specific GPU</a></h2><p>You can run a cudaFlow capturer on a specific GPU by switching to the context of that GPU using <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">tf::<wbr />cudaScopedDevice</a>, following the CUDA convention of multi-GPU programming. The example below creates a cudaFlow capturer and runs it on GPU <code>2</code>:</p><pre class="m-code"><span class="p">{</span>
 <span class="w">  </span><span class="c1">// create an RAII-styled switcher to the context of GPU 2</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 
 <span class="w">  </span><span class="c1">// create a cudaFlow capturer under GPU 2</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span>
 <span class="w">  </span><span class="c1">// ...</span>
 
 <span class="w">  </span><span class="c1">// create a stream under GPU 2 and offload the capturer to that GPU</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span></pre><p><a href="classtf_1_1cudaScopedDevice.html" class="m-doc">tf::<wbr />cudaScopedDevice</a> is an RAII-styled wrapper to perform <em>scoped</em> switch to the given GPU context. When the scope is destroyed, it switches back to the original context.</p><aside class="m-note m-info"><h4>Note</h4><p>By default, a cudaFlow capturer runs on the current GPU associated with the caller, which is typically <code>0</code>.</p></aside></section><section id="CreateACapturerWithinAcudaFlow"><h2><a href="#CreateACapturerWithinAcudaFlow">Create a Capturer from a cudaFlow</a></h2><p>Within a parent cudaFlow, you can capture a cudaFlow to form a subflow that eventually becomes a <em>child</em> node in the underlying CUDA task graph. The following example defines a captured flow <code>task2</code> of two dependent tasks, <code>task2_1</code> and <code>task2_2</code>, and <code>task2</code> runs after <code>task1</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">  </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
+<span class="p">}</span></pre><p><a href="classtf_1_1cudaScopedDevice.html" class="m-doc">tf::<wbr />cudaScopedDevice</a> is an RAII-styled wrapper to perform <em>scoped</em> switch to the given GPU context. When the scope is destroyed, it switches back to the original context.</p><aside class="m-note m-info"><h4>Note</h4><p>By default, a cudaFlow capturer runs on the current GPU associated with the caller, which is typically <code>0</code>.</p></aside></section><section id="CreateACapturerWithinAcudaFlow"><h2><a href="#CreateACapturerWithinAcudaFlow">Create a Capturer from a cudaFlow</a></h2><p>Within a parent cudaFlow, you can capture a cudaFlow to form a subflow that eventually becomes a <em>child</em> node in the underlying CUDA task graph. The following example defines a captured flow <code>task2</code> of two dependent tasks, <code>task2_1</code> and <code>task2_2</code>, and <code>task2</code> runs after <code>task1</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">;</span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="n">shm</span><span class="p">,</span><span class="w"> </span><span class="n">my_kernel</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">...)</span><span class="w"></span>
-<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="n">shm</span><span class="p">,</span><span class="w"> </span><span class="n">my_kernel</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">...)</span>
+<span class="w">                       </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel&quot;</span><span class="p">);</span>
 
 <span class="c1">// task2 forms a subflow as a child node in the underlying CUDA graph</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">capture</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span><span class="w"> </span><span class="n">capturer</span><span class="p">){</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">capture</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span><span class="w"> </span><span class="n">capturer</span><span class="p">){</span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// capture kernel_1 using the given stream</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">){</span><span class="w">  </span>
-<span class="w">    </span><span class="n">kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size1</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">args1</span><span class="p">...);</span><span class="w"></span>
+<span class="w">    </span><span class="n">kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size1</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">args1</span><span class="p">...);</span>
 <span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel_1&quot;</span><span class="p">);</span><span class="w">  </span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// capture kernel_2 using the given stream</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task2_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">){</span><span class="w">  </span>
-<span class="w">    </span><span class="n">kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size2</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">args2</span><span class="p">...);</span><span class="w"></span>
+<span class="w">    </span><span class="n">kernel_2</span><span class="o">&lt;&lt;&lt;</span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm_size2</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="o">&gt;&gt;&gt;</span><span class="p">(</span><span class="n">args2</span><span class="p">...);</span>
 <span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;kernel_2&quot;</span><span class="p">);</span><span class="w">   </span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// kernel_1 runs before kernel_2</span>
-<span class="w">  </span><span class="n">task2_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2_2</span><span class="p">);</span><span class="w"></span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;capturer&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">task2_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2_2</span><span class="p">);</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;capturer&quot;</span><span class="p">);</span>
 
-<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 30.600rem; height: 13.100rem;" viewBox="0.00 0.00 305.57 131.00">
+<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 29.100rem; height: 13.100rem;" viewBox="0.00 0.00 290.85 131.00">
 <g transform="scale(1 1) rotate(0) translate(4 127)">
 <title>cudaFlow</title>
 <g class="m-cluster">
 <title>cluster_p0x28fd510</title>
-<polygon points="8,-8 8,-79 289.57,-79 289.57,-8 8,-8"/>
-<text text-anchor="middle" x="148.78" y="-67" font-family="Helvetica,sans-Serif" font-size="10.00">cudaSubflow: capturer</text>
+<polygon points="8,-8 8,-79 274.85,-79 274.85,-8 8,-8"/>
+<text text-anchor="middle" x="141.42" y="-65.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaSubflow: capturer</text>
 </g>
 <g class="m-node">
 <title>p0x28fcca0</title>
-<polygon points="181.43,-123 131.43,-123 127.43,-119 127.43,-87 177.43,-87 181.43,-91 181.43,-123"/>
-<polyline points="177.43,-119 127.43,-119 "/>
-<polyline points="177.43,-119 177.43,-87 "/>
-<polyline points="177.43,-119 181.43,-123 "/>
-<text text-anchor="middle" x="154.43" y="-102.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">kernel</text>
+<polygon points="172.64,-123 122.64,-123 118.64,-119 118.64,-87 168.64,-87 172.64,-91 172.64,-123"/>
+<polyline points="168.64,-119 118.64,-119"/>
+<polyline points="168.64,-119 168.64,-87"/>
+<polyline points="168.64,-119 172.64,-123"/>
+<text text-anchor="middle" x="145.64" y="-101.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">kernel</text>
 </g>
 <g class="m-node">
 <title>p0x28fd510</title>
-<polygon points="281.57,-52 278.57,-56 257.57,-56 254.57,-52 224.57,-52 224.57,-16 281.57,-16 281.57,-52"/>
-<text text-anchor="middle" x="253.07" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">capturer</text>
+<polygon points="266.85,-52 263.85,-56 242.85,-56 239.85,-52 212.85,-52 212.85,-16 266.85,-16 266.85,-52"/>
+<text text-anchor="middle" x="239.85" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">capturer</text>
 </g>
 <g class="m-edge">
 <title>p0x28fcca0&#45;&gt;p0x28fd510</title>
-<path d="M181.6,-87.88C183.97,-86.25 186.32,-84.61 188.57,-83 199.47,-75.19 211.15,-66.33 221.48,-58.31"/>
-<polygon points="223.72,-61 229.44,-52.09 219.41,-55.49 223.72,-61"/>
+<path d="M172.07,-86.59C173.7,-85.38 175.3,-84.18 176.85,-83 186.79,-75.46 197.49,-67.09 207.16,-59.44"/>
+<polygon points="209.21,-62.27 214.87,-53.31 204.86,-56.79 209.21,-62.27"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x28fd5e0</title>
-<ellipse cx="50.14" cy="-34" rx="34.29" ry="18"/>
-<text text-anchor="middle" x="50.14" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">kernel_1</text>
+<ellipse cx="47.21" cy="-34" rx="31.21" ry="18"/>
+<text text-anchor="middle" x="47.21" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">kernel_1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x28fd6b0</title>
-<ellipse cx="154.43" cy="-34" rx="34.29" ry="18"/>
-<text text-anchor="middle" x="154.43" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">kernel_2</text>
+<ellipse cx="145.64" cy="-34" rx="31.21" ry="18"/>
+<text text-anchor="middle" x="145.64" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">kernel_2</text>
 </g>
 <g class="m-edge">
 <title>p0x28fd5e0&#45;&gt;p0x28fd6b0</title>
-<path d="M84.35,-34C92.48,-34 101.3,-34 109.83,-34"/>
-<polygon points="110.04,-37.5 120.03,-34 110.03,-30.5 110.04,-37.5"/>
+<path d="M78.72,-34C86.28,-34 94.52,-34 102.53,-34"/>
+<polygon points="102.48,-37.5 112.48,-34 102.48,-30.5 102.48,-37.5"/>
 </g>
 <g class="m-edge">
 <title>p0x28fd6b0&#45;&gt;p0x28fd510</title>
-<path d="M188.69,-34C196.99,-34 205.96,-34 214.46,-34"/>
-<polygon points="214.52,-37.5 224.52,-34 214.52,-30.5 214.52,-37.5"/>
+<path d="M177.34,-34C185.01,-34 193.33,-34 201.3,-34"/>
+<polygon points="201.08,-37.5 211.08,-34 201.08,-30.5 201.08,-37.5"/>
 </g>
 </g>
 </svg>
-</div></section><section id="OffloadAcudaFlowCapturer"><h2><a href="#OffloadAcudaFlowCapturer">Offload a cudaFlow Capturer</a></h2><p>When you offload a cudaFlow capturer using <a href="classtf_1_1cudaFlowCapturer.html#a952596fd7c46acee4c2459d8fe39da28" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />run</a>, the runtime transforms that capturer (i.e., application GPU task graph) into a native CUDA graph and an executable instance both optimized for maximum kernel concurrency. Depending on the optimization algorithm, the application GPU task graph may be different from the actual executable graph submitted to the CUDA runtime.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
+</div></section><section id="OffloadAcudaFlowCapturer"><h2><a href="#OffloadAcudaFlowCapturer">Offload a cudaFlow Capturer</a></h2><p>When you offload a cudaFlow capturer using <a href="classtf_1_1cudaFlowCapturer.html#a952596fd7c46acee4c2459d8fe39da28" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />run</a>, the runtime transforms that capturer (i.e., application GPU task graph) into a native CUDA graph and an executable instance both optimized for maximum kernel concurrency. Depending on the optimization algorithm, the application GPU task graph may be different from the actual executable graph submitted to the CUDA runtime.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
 <span class="c1">// launch a cudaflow capturer asynchronously through a stream</span>
-<span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
+<span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
 <span class="c1">// wait for the cudaflow to finish</span>
-<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span></pre></section><section id="UpdateAcudaFlowCapturer"><h2><a href="#UpdateAcudaFlowCapturer">Update a cudaFlow Capturer</a></h2><p>Between successive offloads (i.e., executions of a cudaFlow capturer), you can update the captured task with a different set of parameters. Every task-creation method in <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> has an overload to update the parameters of a created task by that method. The following example creates a kernel task and updates its parameter between successive runs:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span><span class="w"></span>
+<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span></pre></section><section id="UpdateAcudaFlowCapturer"><h2><a href="#UpdateAcudaFlowCapturer">Update a cudaFlow Capturer</a></h2><p>Between successive offloads (i.e., executions of a cudaFlow capturer), you can update the captured task with a different set of parameters. Every task-creation method in <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> has an overload to update the parameters of a created task by that method. The following example creates a kernel task and updates its parameter between successive runs:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span>
 
 <span class="c1">// create a kernel task</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm1</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args_1</span><span class="p">);</span><span class="w"></span>
-<span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
-<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid1</span><span class="p">,</span><span class="w"> </span><span class="n">block1</span><span class="p">,</span><span class="w"> </span><span class="n">shm1</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args_1</span><span class="p">);</span>
+<span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
 
 <span class="c1">// update the created kernel task with different parameters</span>
-<span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">task</span><span class="p">,</span><span class="w"> </span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm2</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args_2</span><span class="p">);</span><span class="w"></span>
-<span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
-<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span></pre><p>When you run a updated cudaFlow capturer, Taskflow will try to update the underlying executable with the newly captured graph first. If that update is unsuccessful, Taskflow will destroy the executable graph and re-instantiate a new one from the newly captured graph.</p></section><section id="IntegrateCudaFlowCapturerIntoTaskflow"><h2><a href="#IntegrateCudaFlowCapturerIntoTaskflow">Integrate a cudaFlow Capturer into Taskflow</a></h2><p>You can create a task to enclose a cudaFlow capturer and run it from a worker thread. The usage of the capturer remains the same except that the capturer is run by a worker thread from a taskflow task. The following example runs a cudaFlow capturer from a static task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">task</span><span class="p">,</span><span class="w"> </span><span class="n">grid2</span><span class="p">,</span><span class="w"> </span><span class="n">block2</span><span class="p">,</span><span class="w"> </span><span class="n">shm2</span><span class="p">,</span><span class="w"> </span><span class="n">kernel</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_args_2</span><span class="p">);</span>
+<span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span></pre><p>When you run a updated cudaFlow capturer, Taskflow will try to update the underlying executable with the newly captured graph first. If that update is unsuccessful, Taskflow will destroy the executable graph and re-instantiate a new one from the newly captured graph.</p></section><section id="IntegrateCudaFlowCapturerIntoTaskflow"><h2><a href="#IntegrateCudaFlowCapturerIntoTaskflow">Integrate a cudaFlow Capturer into Taskflow</a></h2><p>You can create a task to enclose a cudaFlow capturer and run it from a worker thread. The usage of the capturer remains the same except that the capturer is run by a worker thread from a taskflow task. The following example runs a cudaFlow capturer from a static task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
-<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"></span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span>
 <span class="w">  </span><span class="c1">// create a cudaFlow capturer inside a static task</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="w"> </span><span class="n">capturer</span><span class="p">;</span>
 
 <span class="w">  </span><span class="c1">// ... capture a GPU task graph</span>
-<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">kernel</span><span class="p">(...);</span><span class="w"></span>
+<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">kernel</span><span class="p">(...);</span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// run the capturer through a stream</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre></section>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">  </span><span class="n">capturer</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">  </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
+<span class="p">});</span></pre></section>
       </div>
     </div>
   </div>
@@ -316,7 +316,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

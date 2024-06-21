@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Subflow Tasking | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -58,26 +58,26 @@
             <li><a href="#CreateANestedSubflow">Create a Nested Subflow</a></li>
           </ul>
         </nav>
-<p>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <em>subflow tasking</em>.</p><section id="CreateASubflow"><h2><a href="#CreateASubflow">Create a Subflow</a></h2><p>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <em>subflow</em> dependency graph. To create a subflow, emplace a callable that takes an argument of type <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>. A <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> object will be created and forwarded to the execution context of the task. All methods you find in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> are applicable for <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"></span>
+<p>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <em>subflow tasking</em>.</p><section id="CreateASubflow"><h2><a href="#CreateASubflow">Create a Subflow</a></h2><p>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <em>subflow</em> dependency graph. To create a subflow, emplace a callable that takes an argument of type <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>. A <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> object will be created and forwarded to the execution context of the task. All methods you find in <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> are applicable for <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">3</span><span class="o">:</span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task A</span>
 <span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task C</span>
 <span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task D</span>
-<span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w"></span>
+<span class="w"> </span><span class="mi">7</span><span class="o">:</span>
 <span class="w"> </span><span class="mi">8</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B1&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// subflow task B1</span>
 <span class="mi">10</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B2&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// subflow task B2</span>
 <span class="mi">11</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B3&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// subflow task B3</span>
 <span class="mi">12</span><span class="o">:</span><span class="w">   </span><span class="n">B1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w">  </span><span class="c1">// B1 runs before B3</span>
 <span class="mi">13</span><span class="o">:</span><span class="w">   </span><span class="n">B2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w">  </span><span class="c1">// B2 runs before B3</span>
-<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">15</span><span class="o">:</span><span class="w"></span>
+<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="mi">15</span><span class="o">:</span>
 <span class="mi">16</span><span class="o">:</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// B runs after A</span>
 <span class="mi">17</span><span class="o">:</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span><span class="w">  </span><span class="c1">// C runs after A</span>
 <span class="mi">18</span><span class="o">:</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span><span class="w">  </span><span class="c1">// D runs after B</span>
 <span class="mi">19</span><span class="o">:</span><span class="w"> </span><span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span><span class="w">  </span><span class="c1">// D runs after C</span>
-<span class="mi">20</span><span class="o">:</span><span class="w"></span>
+<span class="mi">20</span><span class="o">:</span>
 <span class="mi">21</span><span class="o">:</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span><span class="w">  </span><span class="c1">// execute the graph to spawn the subflow</span>
 <span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w">      </span><span class="c1">// dump the taskflow to a DOT format</span></pre><div><div class="m-graph"><svg style="width: 37.200rem; height: 22.800rem;" viewBox="0.00 0.00 372.00 228.00">
 <g transform="scale(1 1) rotate(0) translate(4 224)">
@@ -85,294 +85,294 @@
 <g class="m-cluster">
 <title>cluster_p0x7ffee9781810</title>
 <polygon points="8,-8 8,-212 356,-212 356,-8 8,-8"/>
-<text text-anchor="middle" x="182" y="-200" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
+<text text-anchor="middle" x="182" y="-198.5" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7f9866c01b70</title>
 <polygon points="16,-60 16,-185 266,-185 266,-60 16,-60"/>
-<text text-anchor="middle" x="141" y="-173" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: B</text>
+<text text-anchor="middle" x="141" y="-171.5" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: B</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01820</title>
 <ellipse cx="141" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="141" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="141" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01b70</title>
 <ellipse cx="231" cy="-88" rx="27" ry="18"/>
-<text text-anchor="middle" x="231" y="-85.5" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<text text-anchor="middle" x="231" y="-84.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01820&#45;&gt;p0x7f9866c01b70</title>
-<path d="M161.53,-45.98C173.38,-53.26 188.7,-62.66 201.84,-70.72"/>
-<polygon points="200.17,-73.8 210.52,-76.05 203.83,-67.84 200.17,-73.8"/>
+<path d="M161.53,-45.98C173.15,-53.12 188.11,-62.3 201.08,-70.25"/>
+<polygon points="198.88,-73.01 209.23,-75.26 202.54,-67.04 198.88,-73.01"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01930</title>
 <ellipse cx="231" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="231" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<text text-anchor="middle" x="231" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01820&#45;&gt;p0x7f9866c01930</title>
-<path d="M168.4,-34C176.39,-34 185.31,-34 193.82,-34"/>
-<polygon points="193.92,-37.5 203.92,-34 193.92,-30.5 193.92,-37.5"/>
+<path d="M168.4,-34C175.89,-34 184.18,-34 192.2,-34"/>
+<polygon points="192.1,-37.5 202.1,-34 192.1,-30.5 192.1,-37.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866c01a40</title>
 <ellipse cx="321" cy="-61" rx="27" ry="18"/>
-<text text-anchor="middle" x="321" y="-58.5" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
+<text text-anchor="middle" x="321" y="-57.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01b70&#45;&gt;p0x7f9866c01a40</title>
-<path d="M256.05,-80.62C265.44,-77.74 276.36,-74.39 286.5,-71.28"/>
-<polygon points="287.75,-74.55 296.29,-68.28 285.7,-67.86 287.75,-74.55"/>
+<path d="M256.05,-80.62C264.97,-77.88 275.29,-74.72 284.99,-71.74"/>
+<polygon points="286,-75.09 294.54,-68.81 283.95,-68.4 286,-75.09"/>
 </g>
 <g class="m-edge">
 <title>p0x7f9866c01930&#45;&gt;p0x7f9866c01a40</title>
-<path d="M256.05,-41.38C265.44,-44.26 276.36,-47.61 286.5,-50.72"/>
-<polygon points="285.7,-54.14 296.29,-53.72 287.75,-47.45 285.7,-54.14"/>
+<path d="M256.05,-41.38C264.97,-44.12 275.29,-47.28 284.99,-50.26"/>
+<polygon points="283.95,-53.6 294.54,-53.19 286,-46.91 283.95,-53.6"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d01880</title>
 <ellipse cx="51" cy="-140" rx="27" ry="18"/>
-<text text-anchor="middle" x="51" y="-137.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="51" y="-136.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d01ac0</title>
 <ellipse cx="141" cy="-88" rx="27" ry="18"/>
-<text text-anchor="middle" x="141" y="-85.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="141" y="-84.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d01880&#45;&gt;p0x7f9866d01ac0</title>
-<path d="M71.97,-128.2C83.56,-121.35 98.35,-112.61 111.19,-105.03"/>
-<polygon points="113.28,-107.85 120.11,-99.75 109.72,-101.83 113.28,-107.85"/>
+<path d="M71.97,-128.2C83.33,-121.49 97.78,-112.95 110.44,-105.47"/>
+<polygon points="111.98,-108.62 118.81,-100.52 108.42,-102.6 111.98,-108.62"/>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d01ac0&#45;&gt;p0x7f9866c01b70</title>
-<path d="M168.4,-88C176.39,-88 185.31,-88 193.82,-88"/>
-<polygon points="193.92,-91.5 203.92,-88 193.92,-84.5 193.92,-91.5"/>
+<path d="M168.4,-88C175.89,-88 184.18,-88 192.2,-88"/>
+<polygon points="192.1,-91.5 202.1,-88 192.1,-84.5 192.1,-91.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9866d019a0</title>
 <ellipse cx="51" cy="-86" rx="27" ry="18"/>
-<text text-anchor="middle" x="51" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="51" y="-82.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9866d019a0&#45;&gt;p0x7f9866d01ac0</title>
-<path d="M78.4,-86.6C86.39,-86.78 95.31,-86.98 103.82,-87.18"/>
-<polygon points="103.84,-90.68 113.92,-87.41 104,-83.68 103.84,-90.68"/>
+<path d="M78.4,-86.6C85.89,-86.77 94.18,-86.96 102.2,-87.14"/>
+<polygon points="102.03,-90.64 112.1,-87.37 102.18,-83.64 102.03,-90.64"/>
 </g>
 </g>
 </svg>
-</div></div><p>Debrief:</p><ul><li>Lines 1-2 create a taskflow and an executor</li><li>Lines 4-6 create three tasks, A, C, and D</li><li>Lines 8-14 create a task B that spawns a task dependency graph of three tasks B1, B2, and B3</li><li>Lines 16-19 add dependencies among A, B, C, and D</li><li>Line 21 submits the graph to an executor and waits until it finishes</li><li>Line 22 dumps the entire task dependency graph</li></ul><p>Lines 8-14 are the main block to enable subflow tasking at task B. The runtime will create a <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology of its parent task B. Due to the property of subflow tasking, we cannot dump its structure before execution. We will need to run the graph first to spawn the graph and then call <a href="classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758" class="m-doc">tf::<wbr />Taskflow::<wbr />dump</a>.</p></section><section id="JoinASubflow"><h2><a href="#JoinASubflow">Join a Subflow</a></h2><p>By default, a subflow joins its parent task when the program leaves its execution context. All nodes of zero outgoing edges in the subflow precede its parent task. You can explicitly join a subflow within its execution context to carry out recursive patterns. A famous implementation is fibonacci recursion.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+</div></div><p>Debrief:</p><ul><li>Lines 1-2 create a taskflow and an executor</li><li>Lines 4-6 create three tasks, A, C, and D</li><li>Lines 8-14 create a task B that spawns a task dependency graph of three tasks B1, B2, and B3</li><li>Lines 16-19 add dependencies among A, B, C, and D</li><li>Line 21 submits the graph to an executor and waits until it finishes</li><li>Line 22 dumps the entire task dependency graph</li></ul><p>Lines 8-14 are the main block to enable subflow tasking at task B. The runtime will create a <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology of its parent task B. Due to the property of subflow tasking, we cannot dump its structure before execution. We will need to run the graph first to spawn the graph and then call <a href="classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758" class="m-doc">tf::<wbr />Taskflow::<wbr />dump</a>.</p></section><section id="JoinASubflow"><h2><a href="#JoinASubflow">Join a Subflow</a></h2><p>By default, a subflow joins its parent task when the program leaves its execution context. All nodes of zero outgoing edges in the subflow precede its parent task. You can explicitly join a subflow within its execution context to carry out recursive patterns. A famous implementation is fibonacci recursion.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
 <span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w">    </span><span class="c1">// join to materialize the subflow immediately</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="p">}</span>
 <span class="w">  </span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w">  </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w">  </span>
-<span class="p">});</span><span class="w"></span>
+<span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>The code above computes the fifth fibonacci number using recursive subflow. Calling <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> <em>immediately</em> materializes the subflow by executing all associated tasks to recursively compute fibonacci numbers. The taskflow graph is shown below:</p><div class="m-graph"><svg style="width: 67.000rem; height: 52.500rem;" viewBox="0.00 0.00 670.00 525.00">
-<g transform="scale(1 1) rotate(0) translate(4 521)">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The code above computes the fifth fibonacci number using recursive subflow. Calling <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> <em>immediately</em> materializes the subflow by executing all associated tasks to recursively compute fibonacci numbers. The taskflow graph is shown below:</p><div class="m-graph"><svg style="width: 67.000rem; height: 52.700rem;" viewBox="0.00 0.00 670.00 526.75">
+<g transform="scale(1 1) rotate(0) translate(4 522.75)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffd972c0cd0</title>
-<polygon points="8,-8 8,-509 654,-509 654,-8 8,-8"/>
-<text text-anchor="middle" x="331" y="-497" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: fibonacci</text>
+<polygon points="8,-8 8,-510.75 654,-510.75 654,-8 8,-8"/>
+<text text-anchor="middle" x="331" y="-497.25" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: fibonacci</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0xa445c0</title>
-<polygon points="16,-16 16,-482 646,-482 646,-16 16,-16"/>
+<polygon points="16,-16 16,-483.5 646,-483.5 646,-16 16,-16"/>
 <text text-anchor="middle" x="331" y="-470" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 5</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000b90</title>
-<polygon points="252,-88 252,-455 638,-455 638,-88 252,-88"/>
-<text text-anchor="middle" x="445" y="-443" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 4</text>
+<polygon points="252,-88 252,-456.25 638,-456.25 638,-88 252,-88"/>
+<text text-anchor="middle" x="445" y="-442.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 4</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe910000b90</title>
-<polygon points="410,-160 410,-428 630,-428 630,-160 410,-160"/>
-<text text-anchor="middle" x="520" y="-416" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
+<polygon points="410,-160 410,-429 630,-429 630,-160 410,-160"/>
+<text text-anchor="middle" x="520" y="-415.5" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000fe0</title>
-<polygon points="480,-232 480,-401 622,-401 622,-232 480,-232"/>
-<text text-anchor="middle" x="551" y="-389" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="480,-232 480,-401.75 622,-401.75 622,-232 480,-232"/>
+<text text-anchor="middle" x="551" y="-388.25" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe910000c48</title>
-<polygon points="260,-160 260,-303 402,-303 402,-160 260,-160"/>
-<text text-anchor="middle" x="331" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="260,-160 260,-303.25 402,-303.25 402,-160 260,-160"/>
+<text text-anchor="middle" x="331" y="-289.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000c48</title>
-<polygon points="24,-88 24,-330 244,-330 244,-88 24,-88"/>
-<text text-anchor="middle" x="134" y="-318" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
+<polygon points="24,-88 24,-330.5 244,-330.5 244,-88 24,-88"/>
+<text text-anchor="middle" x="134" y="-317" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000d00</title>
-<polygon points="94,-160 94,-303 236,-303 236,-160 94,-160"/>
-<text text-anchor="middle" x="165" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="94,-160 94,-303.25 236,-303.25 236,-160 94,-160"/>
+<text text-anchor="middle" x="165" y="-289.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xa445c0</title>
 <ellipse cx="248" cy="-42" rx="27" ry="18"/>
-<text text-anchor="middle" x="248" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
+<text text-anchor="middle" x="248" y="-38.12" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000b90</title>
 <ellipse cx="331" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
+<text text-anchor="middle" x="331" y="-110.12" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000b90&#45;&gt;p0xa445c0</title>
-<path d="M314.6,-99.17C302.36,-88.85 285.45,-74.58 271.73,-63.01"/>
-<polygon points="273.98,-60.33 264.08,-56.56 269.47,-65.69 273.98,-60.33"/>
+<path d="M314.6,-99.17C302.78,-89.2 286.6,-75.56 273.15,-64.21"/>
+<polygon points="275.42,-61.55 265.52,-57.78 270.91,-66.9 275.42,-61.55"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000b90</title>
 <ellipse cx="445" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<text text-anchor="middle" x="445" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000b90&#45;&gt;p0x7fe918000b90</title>
-<path d="M426.42,-172.93C419.98,-168.79 412.7,-164.15 406,-160 390.65,-150.48 373.37,-140.09 359.28,-131.7"/>
-<polygon points="360.91,-128.59 350.52,-126.5 357.33,-134.61 360.91,-128.59"/>
+<path d="M426.03,-172.68C419.69,-168.6 412.56,-164.07 406,-160 391.05,-150.72 374.27,-140.63 360.37,-132.35"/>
+<polygon points="362.52,-129.56 352.14,-127.46 358.95,-135.57 362.52,-129.56"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000fe0</title>
 <ellipse cx="517" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="517" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="517" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000fe0&#45;&gt;p0x7fe910000b90</title>
-<path d="M502.43,-242.83C492.25,-232.94 478.48,-219.55 466.97,-208.36"/>
-<polygon points="469.41,-205.85 459.8,-201.38 464.53,-210.87 469.41,-205.85"/>
+<path d="M502.08,-242.5C492.23,-232.92 479.14,-220.19 467.97,-209.34"/>
+<polygon points="470.59,-207 460.98,-202.54 465.71,-212.02 470.59,-207"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001150</title>
-<ellipse cx="587" cy="-356" rx="27" ry="18"/>
-<text text-anchor="middle" x="587" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<ellipse cx="587" cy="-356.5" rx="27" ry="18"/>
+<text text-anchor="middle" x="587" y="-352.62" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001150&#45;&gt;p0x7fe918000fe0</title>
-<path d="M575.75,-339.58C564.53,-324.18 547.13,-300.32 534.17,-282.55"/>
-<polygon points="536.94,-280.4 528.22,-274.39 531.28,-284.53 536.94,-280.4"/>
+<path d="M575.75,-340C564.8,-324.89 547.96,-301.68 535.11,-283.97"/>
+<polygon points="538.04,-282.05 529.34,-276.01 532.38,-286.16 538.04,-282.05"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001208</title>
-<ellipse cx="515" cy="-356" rx="27" ry="18"/>
-<text text-anchor="middle" x="515" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<ellipse cx="515" cy="-356.5" rx="27" ry="18"/>
+<text text-anchor="middle" x="515" y="-352.62" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001208&#45;&gt;p0x7fe918000fe0</title>
-<path d="M515.36,-337.84C515.66,-323.5 516.09,-302.81 516.43,-286.22"/>
-<polygon points="519.94,-286.09 516.65,-276.01 512.94,-285.94 519.94,-286.09"/>
+<path d="M515.36,-338.25C515.65,-324.2 516.07,-304.08 516.41,-287.62"/>
+<polygon points="519.9,-288.01 516.61,-277.94 512.9,-287.87 519.9,-288.01"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001098</title>
 <ellipse cx="445" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="445" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001098&#45;&gt;p0x7fe910000b90</title>
-<path d="M445,-239.7C445,-231.98 445,-222.71 445,-214.11"/>
-<polygon points="448.5,-214.1 445,-204.1 441.5,-214.1 448.5,-214.1"/>
+<path d="M445,-239.7C445,-232.41 445,-223.73 445,-215.54"/>
+<polygon points="448.5,-215.62 445,-205.62 441.5,-215.62 448.5,-215.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000c48</title>
 <ellipse cx="331" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="331" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000c48&#45;&gt;p0x7fe918000b90</title>
-<path d="M331,-167.7C331,-159.98 331,-150.71 331,-142.11"/>
-<polygon points="334.5,-142.1 331,-132.1 327.5,-142.1 334.5,-142.1"/>
+<path d="M331,-167.7C331,-160.41 331,-151.73 331,-143.54"/>
+<polygon points="334.5,-143.62 331,-133.62 327.5,-143.62 334.5,-143.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000d00</title>
 <ellipse cx="367" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="367" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="367" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000d00&#45;&gt;p0x7fe910000c48</title>
-<path d="M358.65,-240.76C354.29,-232.28 348.85,-221.71 343.96,-212.2"/>
-<polygon points="346.99,-210.44 339.3,-203.15 340.77,-213.64 346.99,-210.44"/>
+<path d="M358.65,-240.76C354.42,-232.55 349.19,-222.37 344.42,-213.09"/>
+<polygon points="347.68,-211.79 340,-204.49 341.46,-214.99 347.68,-211.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000db8</title>
 <ellipse cx="295" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="295" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<text text-anchor="middle" x="295" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000db8&#45;&gt;p0x7fe910000c48</title>
-<path d="M303.35,-240.76C307.71,-232.28 313.15,-221.71 318.04,-212.2"/>
-<polygon points="321.23,-213.64 322.7,-203.15 315.01,-210.44 321.23,-213.64"/>
+<path d="M303.35,-240.76C307.58,-232.55 312.81,-222.37 317.58,-213.09"/>
+<polygon points="320.54,-214.99 322,-204.49 314.32,-211.79 320.54,-214.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000c48</title>
 <ellipse cx="166" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<text text-anchor="middle" x="166" y="-110.12" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000c48&#45;&gt;p0xa445c0</title>
-<path d="M182.2,-99.17C194.18,-88.94 210.69,-74.85 224.18,-63.34"/>
-<polygon points="226.78,-65.72 232.11,-56.56 222.23,-60.39 226.78,-65.72"/>
+<path d="M182.2,-99.17C193.88,-89.2 209.86,-75.56 223.15,-64.21"/>
+<polygon points="225.35,-66.94 230.68,-57.78 220.8,-61.61 225.35,-66.94"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000d00</title>
 <ellipse cx="166" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="166" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000d00&#45;&gt;p0x7fe918000c48</title>
-<path d="M166,-167.7C166,-159.98 166,-150.71 166,-142.11"/>
-<polygon points="169.5,-142.1 166,-132.1 162.5,-142.1 169.5,-142.1"/>
+<path d="M166,-167.7C166,-160.41 166,-151.73 166,-143.54"/>
+<polygon points="169.5,-143.62 166,-133.62 162.5,-143.62 169.5,-143.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000e70</title>
 <ellipse cx="201" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="201" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="201" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000e70&#45;&gt;p0x7fe918000d00</title>
-<path d="M192.88,-240.76C188.7,-232.4 183.51,-222.02 178.8,-212.61"/>
-<polygon points="181.92,-211.01 174.32,-203.63 175.66,-214.14 181.92,-211.01"/>
+<path d="M192.71,-240.41C188.7,-232.39 183.78,-222.57 179.27,-213.54"/>
+<polygon points="182.51,-212.2 174.91,-204.82 176.25,-215.33 182.51,-212.2"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000f28</title>
 <ellipse cx="129" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="129" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<text text-anchor="middle" x="129" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000f28&#45;&gt;p0x7fe918000d00</title>
-<path d="M137.58,-240.76C142.06,-232.28 147.65,-221.71 152.68,-212.2"/>
-<polygon points="155.89,-213.62 157.46,-203.15 149.7,-210.35 155.89,-213.62"/>
+<path d="M137.58,-240.76C141.92,-232.55 147.3,-222.37 152.21,-213.09"/>
+<polygon points="155.18,-214.96 156.76,-204.49 148.99,-211.69 155.18,-214.96"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000db8</title>
 <ellipse cx="59" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="59" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="59" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000db8&#45;&gt;p0x7fe918000c48</title>
-<path d="M75.07,-171.31C79.78,-167.51 85,-163.47 90,-160 104.88,-149.67 122.21,-139.3 136.56,-131.11"/>
-<polygon points="138.51,-134.03 145.5,-126.07 135.07,-127.93 138.51,-134.03"/>
+<path d="M75.07,-171.31C79.78,-167.51 85,-163.47 90,-160 104.6,-149.87 121.55,-139.69 135.74,-131.58"/>
+<polygon points="137.2,-134.78 144.19,-126.82 133.76,-128.68 137.2,-134.78"/>
 </g>
 </g>
 </svg>
-</div><p>Our implementation to join subflows is <em>recursive</em> in order to preserve the thread context in each subflow task. Having a deep recursion of subflows may cause stack overflow.</p></section><section id="DetachASubflow"><h2><a href="#DetachASubflow">Detach a Subflow</a></h2><p>In contract to joined subflow, you can detach a subflow from its parent task, allowing its execution to flow independently.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"></span>
+</div><p>Our implementation to join subflows is <em>recursive</em> in order to preserve the thread context in each subflow task. Having a deep recursion of subflows may cause stack overflow.</p></section><section id="DetachASubflow"><h2><a href="#DetachASubflow">Detach a Subflow</a></h2><p>In contract to joined subflow, you can detach a subflow from its parent task, allowing its execution to flow independently.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">2</span><span class="o">:</span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task A</span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task C</span>
 <span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task D</span>
-<span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w"></span>
+<span class="w"> </span><span class="mi">6</span><span class="o">:</span>
 <span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
 <span class="w"> </span><span class="mi">8</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B1&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task B1</span>
 <span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B2&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// static task B2</span>
@@ -380,352 +380,352 @@
 <span class="mi">11</span><span class="o">:</span><span class="w">   </span><span class="n">B1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w">    </span><span class="c1">// B1 runs before B3</span>
 <span class="mi">12</span><span class="o">:</span><span class="w">   </span><span class="n">B2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w">    </span><span class="c1">// B2 runs before B3</span>
 <span class="mi">13</span><span class="o">:</span><span class="w">   </span><span class="n">subflow</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span><span class="w">  </span><span class="c1">// detach this subflow</span>
-<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">15</span><span class="o">:</span><span class="w"></span>
+<span class="mi">14</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="mi">15</span><span class="o">:</span>
 <span class="mi">16</span><span class="o">:</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// B runs after A</span>
 <span class="mi">17</span><span class="o">:</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span><span class="w">  </span><span class="c1">// C runs after A</span>
 <span class="mi">18</span><span class="o">:</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span><span class="w">  </span><span class="c1">// D runs after B</span>
 <span class="mi">19</span><span class="o">:</span><span class="w"> </span><span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span><span class="w">  </span><span class="c1">// D runs after C</span>
-<span class="mi">20</span><span class="o">:</span><span class="w"></span>
-<span class="mi">21</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="mi">20</span><span class="o">:</span>
+<span class="mi">21</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 <span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w">       </span><span class="c1">// execute the graph to spawn the subflow</span>
-<span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w">            </span><span class="c1">// dump the taskflow to DOT format</span></pre><p>The figure below demonstrates a detached subflow based on the previous example. A detached subflow will eventually join the topology of its parent task.</p><div class="m-graph"><svg style="width: 31.600rem; height: 26.600rem;" viewBox="0.00 0.00 316.00 266.00">
-<g transform="scale(1 1) rotate(0) translate(4 262)">
+<span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w">            </span><span class="c1">// dump the taskflow to DOT format</span></pre><p>The figure below demonstrates a detached subflow based on the previous example. A detached subflow will eventually join the topology of its parent task.</p><div class="m-graph"><svg style="width: 31.600rem; height: 26.700rem;" viewBox="0.00 0.00 316.00 266.50">
+<g transform="scale(1 1) rotate(0) translate(4 262.5)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffeecc59810</title>
-<polygon points="8,-8 8,-250 300,-250 300,-8 8,-8"/>
-<text text-anchor="middle" x="154" y="-238" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
+<polygon points="8,-8 8,-250.5 300,-250.5 300,-8 8,-8"/>
+<text text-anchor="middle" x="154" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fdc0dc02b60</title>
-<polygon points="150,-80 150,-223 292,-223 292,-80 150,-80"/>
-<text text-anchor="middle" x="221" y="-211" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: B</text>
+<polygon points="150,-80 150,-223.25 292,-223.25 292,-80 150,-80"/>
+<text text-anchor="middle" x="221" y="-209.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: B</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0dc02830</title>
 <ellipse cx="78" cy="-178" rx="27" ry="18"/>
-<text text-anchor="middle" x="78" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="78" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0dc02b60</title>
 <ellipse cx="43" cy="-106" rx="27" ry="18"/>
-<text text-anchor="middle" x="43" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<text text-anchor="middle" x="43" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0dc02830&#45;&gt;p0x7fdc0dc02b60</title>
-<path d="M69.88,-160.76C65.7,-152.4 60.51,-142.02 55.8,-132.61"/>
-<polygon points="58.92,-131.01 51.32,-123.63 52.66,-134.14 58.92,-131.01"/>
+<path d="M69.71,-160.41C65.7,-152.39 60.78,-142.57 56.27,-133.54"/>
+<polygon points="59.51,-132.2 51.91,-124.82 53.25,-135.33 59.51,-132.2"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0dc02940</title>
 <ellipse cx="115" cy="-106" rx="27" ry="18"/>
-<text text-anchor="middle" x="115" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<text text-anchor="middle" x="115" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0dc02830&#45;&gt;p0x7fdc0dc02940</title>
-<path d="M86.58,-160.76C91.06,-152.28 96.65,-141.71 101.68,-132.2"/>
-<polygon points="104.89,-133.62 106.46,-123.15 98.7,-130.35 104.89,-133.62"/>
+<path d="M86.58,-160.76C90.92,-152.55 96.3,-142.37 101.21,-133.09"/>
+<polygon points="104.18,-134.96 105.76,-124.49 97.99,-131.69 104.18,-134.96"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0dc02a50</title>
 <ellipse cx="79" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="79" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
+<text text-anchor="middle" x="79" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0dc02b60&#45;&gt;p0x7fdc0dc02a50</title>
-<path d="M51.35,-88.76C55.71,-80.28 61.15,-69.71 66.04,-60.2"/>
-<polygon points="69.23,-61.64 70.7,-51.15 63.01,-58.44 69.23,-61.64"/>
+<path d="M51.35,-88.76C55.58,-80.55 60.81,-70.37 65.58,-61.09"/>
+<polygon points="68.54,-62.99 70,-52.49 62.32,-59.79 68.54,-62.99"/>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0dc02940&#45;&gt;p0x7fdc0dc02a50</title>
-<path d="M106.65,-88.76C102.29,-80.28 96.85,-69.71 91.96,-60.2"/>
-<polygon points="94.99,-58.44 87.3,-51.15 88.77,-61.64 94.99,-58.44"/>
+<path d="M106.65,-88.76C102.42,-80.55 97.19,-70.37 92.42,-61.09"/>
+<polygon points="95.68,-59.79 88,-52.49 89.46,-62.99 95.68,-59.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0de00120</title>
 <ellipse cx="257" cy="-178" rx="27" ry="18"/>
-<text text-anchor="middle" x="257" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="257" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0de00360</title>
 <ellipse cx="222" cy="-106" rx="27" ry="18"/>
-<text text-anchor="middle" x="222" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="222" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0de00120&#45;&gt;p0x7fdc0de00360</title>
-<path d="M248.88,-160.76C244.7,-152.4 239.51,-142.02 234.8,-132.61"/>
-<polygon points="237.92,-131.01 230.32,-123.63 231.66,-134.14 237.92,-131.01"/>
+<path d="M248.71,-160.41C244.7,-152.39 239.78,-142.57 235.27,-133.54"/>
+<polygon points="238.51,-132.2 230.91,-124.82 232.25,-135.33 238.51,-132.2"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fdc0de00240</title>
 <ellipse cx="185" cy="-178" rx="27" ry="18"/>
-<text text-anchor="middle" x="185" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="185" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fdc0de00240&#45;&gt;p0x7fdc0de00360</title>
-<path d="M193.58,-160.76C198.06,-152.28 203.65,-141.71 208.68,-132.2"/>
-<polygon points="211.89,-133.62 213.46,-123.15 205.7,-130.35 211.89,-133.62"/>
+<path d="M193.58,-160.76C197.92,-152.55 203.3,-142.37 208.21,-133.09"/>
+<polygon points="211.18,-134.96 212.76,-124.49 204.99,-131.69 211.18,-134.96"/>
 </g>
 </g>
 </svg>
-</div><p>Detached subflow becomes an independent graph attached to the top-most taskflow. Running a taskflow multiple times will accumulate all detached tasks in the graph. For example, running the above taskflow 5 times results in a total of 19 tasks.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
-<span class="n">assert</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">num_tasks</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w"></span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre><p>The dumped graph is shown as follows:</p><div class="m-graph"><svg style="width: 84.500rem; height: 18.800rem;" viewBox="0.00 0.00 845.00 188.00">
+</div><p>Detached subflow becomes an independent graph attached to the top-most taskflow. Running a taskflow multiple times will accumulate all detached tasks in the graph. For example, running the above taskflow 5 times results in a total of 19 tasks.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">taskflow</span><span class="p">.</span><span class="n">num_tasks</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>The dumped graph is shown as follows:</p><div class="m-graph"><svg style="width: 84.500rem; height: 18.800rem;" viewBox="0.00 0.00 845.00 188.00">
 <g transform="scale(1 1) rotate(0) translate(4 184)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x934ff0</title>
 <ellipse cx="63" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="63" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="63" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x935218</title>
 <ellipse cx="27" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<text text-anchor="middle" x="27" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
 </g>
 <g class="m-edge">
 <title>p0x934ff0&#45;&gt;p0x935218</title>
-<path d="M54.65,-144.76C50.29,-136.28 44.85,-125.71 39.96,-116.2"/>
-<polygon points="42.99,-114.44 35.3,-107.15 36.77,-117.64 42.99,-114.44"/>
+<path d="M54.65,-144.76C50.42,-136.55 45.19,-126.37 40.42,-117.09"/>
+<polygon points="43.68,-115.79 36,-108.49 37.46,-118.99 43.68,-115.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x9350a8</title>
 <ellipse cx="99" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<text text-anchor="middle" x="99" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
 </g>
 <g class="m-edge">
 <title>p0x934ff0&#45;&gt;p0x9350a8</title>
-<path d="M71.35,-144.76C75.71,-136.28 81.15,-125.71 86.04,-116.2"/>
-<polygon points="89.23,-117.64 90.7,-107.15 83.01,-114.44 89.23,-117.64"/>
+<path d="M71.35,-144.76C75.58,-136.55 80.81,-126.37 85.58,-117.09"/>
+<polygon points="88.54,-118.99 90,-108.49 82.32,-115.79 88.54,-118.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x935160</title>
 <ellipse cx="63" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="63" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
+<text text-anchor="middle" x="63" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
 </g>
 <g class="m-edge">
 <title>p0x935218&#45;&gt;p0x935160</title>
-<path d="M35.35,-72.76C39.71,-64.28 45.15,-53.71 50.04,-44.2"/>
-<polygon points="53.23,-45.64 54.7,-35.15 47.01,-42.44 53.23,-45.64"/>
+<path d="M35.35,-72.76C39.58,-64.55 44.81,-54.37 49.58,-45.09"/>
+<polygon points="52.54,-46.99 54,-36.49 46.32,-43.79 52.54,-46.99"/>
 </g>
 <g class="m-edge">
 <title>p0x9350a8&#45;&gt;p0x935160</title>
-<path d="M90.65,-72.76C86.29,-64.28 80.85,-53.71 75.96,-44.2"/>
-<polygon points="78.99,-42.44 71.3,-35.15 72.77,-45.64 78.99,-42.44"/>
+<path d="M90.65,-72.76C86.42,-64.55 81.19,-54.37 76.42,-45.09"/>
+<polygon points="79.68,-43.79 72,-36.49 73.46,-46.99 79.68,-43.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd564000b90</title>
 <ellipse cx="153" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="153" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="153" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd564000d00</title>
 <ellipse cx="207" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="207" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd564000b90&#45;&gt;p0x7fd564000d00</title>
-<path d="M164.98,-145.46C171.98,-136.4 180.94,-124.79 188.79,-114.61"/>
-<polygon points="191.71,-116.55 195.05,-106.49 186.17,-112.27 191.71,-116.55"/>
+<path d="M164.98,-145.46C171.77,-136.67 180.4,-125.48 188.08,-115.53"/>
+<polygon points="190.79,-117.75 194.12,-107.69 185.25,-113.47 190.79,-117.75"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd564000c48</title>
 <ellipse cx="225" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="225" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="225" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd564000c48&#45;&gt;p0x7fd564000d00</title>
-<path d="M220.64,-144.05C218.61,-136.14 216.14,-126.54 213.86,-117.69"/>
-<polygon points="217.2,-116.6 211.32,-107.79 210.42,-118.35 217.2,-116.6"/>
+<path d="M220.64,-144.05C218.7,-136.49 216.35,-127.37 214.16,-118.85"/>
+<polygon points="217.57,-118.07 211.69,-109.25 210.79,-119.81 217.57,-118.07"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000b90</title>
 <ellipse cx="306" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="306" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="306" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000d00</title>
 <ellipse cx="315" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="315" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="315" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c000b90&#45;&gt;p0x7fd55c000d00</title>
-<path d="M308.18,-144.05C309.17,-136.35 310.37,-127.03 311.48,-118.36"/>
-<polygon points="314.98,-118.64 312.78,-108.28 308.03,-117.75 314.98,-118.64"/>
+<path d="M308.22,-143.7C309.17,-136.32 310.3,-127.52 311.37,-119.25"/>
+<polygon points="314.8,-119.97 312.61,-109.61 307.86,-119.08 314.8,-119.97"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000c48</title>
 <ellipse cx="378" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="378" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="378" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c000c48&#45;&gt;p0x7fd55c000d00</title>
-<path d="M364.64,-146.15C356.12,-136.69 344.91,-124.24 335.31,-113.56"/>
-<polygon points="337.63,-110.92 328.34,-105.82 332.43,-115.6 337.63,-110.92"/>
+<path d="M364.64,-146.15C356.29,-136.87 345.35,-124.73 335.87,-114.19"/>
+<polygon points="338.65,-112.04 329.35,-106.95 333.44,-116.72 338.65,-112.04"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000db8</title>
 <ellipse cx="450" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="450" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="450" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000f28</title>
 <ellipse cx="486" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="486" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="486" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c000db8&#45;&gt;p0x7fd55c000f28</title>
-<path d="M458.35,-144.76C462.71,-136.28 468.15,-125.71 473.04,-116.2"/>
-<polygon points="476.23,-117.64 477.7,-107.15 470.01,-114.44 476.23,-117.64"/>
+<path d="M458.35,-144.76C462.58,-136.55 467.81,-126.37 472.58,-117.09"/>
+<polygon points="475.54,-118.99 477,-108.49 469.32,-115.79 475.54,-118.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000e70</title>
 <ellipse cx="522" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="522" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="522" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c000e70&#45;&gt;p0x7fd55c000f28</title>
-<path d="M513.65,-144.76C509.29,-136.28 503.85,-125.71 498.96,-116.2"/>
-<polygon points="501.99,-114.44 494.3,-107.15 495.77,-117.64 501.99,-114.44"/>
+<path d="M513.65,-144.76C509.42,-136.55 504.19,-126.37 499.42,-117.09"/>
+<polygon points="502.68,-115.79 495,-108.49 496.46,-118.99 502.68,-115.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c000fe0</title>
 <ellipse cx="594" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="594" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="594" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c001150</title>
 <ellipse cx="630" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="630" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="630" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c000fe0&#45;&gt;p0x7fd55c001150</title>
-<path d="M602.35,-144.76C606.71,-136.28 612.15,-125.71 617.04,-116.2"/>
-<polygon points="620.23,-117.64 621.7,-107.15 614.01,-114.44 620.23,-117.64"/>
+<path d="M602.35,-144.76C606.58,-136.55 611.81,-126.37 616.58,-117.09"/>
+<polygon points="619.54,-118.99 621,-108.49 613.32,-115.79 619.54,-118.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c001098</title>
 <ellipse cx="666" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="666" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="666" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c001098&#45;&gt;p0x7fd55c001150</title>
-<path d="M657.65,-144.76C653.29,-136.28 647.85,-125.71 642.96,-116.2"/>
-<polygon points="645.99,-114.44 638.3,-107.15 639.77,-117.64 645.99,-114.44"/>
+<path d="M657.65,-144.76C653.42,-136.55 648.19,-126.37 643.42,-117.09"/>
+<polygon points="646.68,-115.79 639,-108.49 640.46,-118.99 646.68,-115.79"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c001208</title>
 <ellipse cx="738" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="738" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
+<text text-anchor="middle" x="738" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c001378</title>
 <ellipse cx="774" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="774" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
+<text text-anchor="middle" x="774" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">B3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c001208&#45;&gt;p0x7fd55c001378</title>
-<path d="M746.35,-144.76C750.71,-136.28 756.15,-125.71 761.04,-116.2"/>
-<polygon points="764.23,-117.64 765.7,-107.15 758.01,-114.44 764.23,-117.64"/>
+<path d="M746.35,-144.76C750.58,-136.55 755.81,-126.37 760.58,-117.09"/>
+<polygon points="763.54,-118.99 765,-108.49 757.32,-115.79 763.54,-118.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fd55c0012c0</title>
 <ellipse cx="810" cy="-162" rx="27" ry="18"/>
-<text text-anchor="middle" x="810" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
+<text text-anchor="middle" x="810" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">B2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fd55c0012c0&#45;&gt;p0x7fd55c001378</title>
-<path d="M801.65,-144.76C797.29,-136.28 791.85,-125.71 786.96,-116.2"/>
-<polygon points="789.99,-114.44 782.3,-107.15 783.77,-117.64 789.99,-114.44"/>
+<path d="M801.65,-144.76C797.42,-136.55 792.19,-126.37 787.42,-117.09"/>
+<polygon points="790.68,-115.79 783,-108.49 784.46,-118.99 790.68,-115.79"/>
 </g>
 </g>
 </svg>
-</div></section><section id="CreateANestedSubflow"><h2><a href="#CreateANestedSubflow">Create a Nested Subflow</a></h2><p>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"></span>
-<span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">){</span><span class="w"></span>
-<span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A spawns A1 &amp; subflow A2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w">   </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A1&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w"> </span><span class="mi">8</span><span class="o">:</span><span class="w"></span>
-<span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf2</span><span class="p">){</span><span class="w"></span>
-<span class="mi">10</span><span class="o">:</span><span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A2 spawns A2_1 &amp; A2_2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="mi">11</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="mi">12</span><span class="o">:</span><span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A2_1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="mi">13</span><span class="o">:</span><span class="w">     </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2_1&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">14</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="mi">15</span><span class="o">:</span><span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A2_2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
-<span class="mi">16</span><span class="o">:</span><span class="w">     </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2_2&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">17</span><span class="o">:</span><span class="w">     </span><span class="n">A2_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A2_2</span><span class="p">);</span><span class="w"></span>
-<span class="mi">18</span><span class="o">:</span><span class="w">   </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">19</span><span class="o">:</span><span class="w">   </span><span class="n">A1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A2</span><span class="p">);</span><span class="w"></span>
-<span class="mi">20</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="mi">21</span><span class="o">:</span><span class="w"></span>
+</div></section><section id="CreateANestedSubflow"><h2><a href="#CreateANestedSubflow">Create a Nested Subflow</a></h2><p>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">2</span><span class="o">:</span>
+<span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">){</span>
+<span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A spawns A1 &amp; subflow A2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">5</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="mi">6</span><span class="o">:</span><span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w"> </span><span class="mi">7</span><span class="o">:</span><span class="w">   </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A1&quot;</span><span class="p">);</span>
+<span class="w"> </span><span class="mi">8</span><span class="o">:</span>
+<span class="w"> </span><span class="mi">9</span><span class="o">:</span><span class="w">   </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf2</span><span class="p">){</span>
+<span class="mi">10</span><span class="o">:</span><span class="w">     </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A2 spawns A2_1 &amp; A2_2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="mi">11</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="mi">12</span><span class="o">:</span><span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A2_1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="mi">13</span><span class="o">:</span><span class="w">     </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2_1&quot;</span><span class="p">);</span>
+<span class="mi">14</span><span class="o">:</span><span class="w">     </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A2_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sbf2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="mi">15</span><span class="o">:</span><span class="w">       </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subtask A2_2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="mi">16</span><span class="o">:</span><span class="w">     </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2_2&quot;</span><span class="p">);</span>
+<span class="mi">17</span><span class="o">:</span><span class="w">     </span><span class="n">A2_1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A2_2</span><span class="p">);</span>
+<span class="mi">18</span><span class="o">:</span><span class="w">   </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A2&quot;</span><span class="p">);</span>
+<span class="mi">19</span><span class="o">:</span><span class="w">   </span><span class="n">A1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A2</span><span class="p">);</span>
+<span class="mi">20</span><span class="o">:</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+<span class="mi">21</span><span class="o">:</span>
 <span class="mi">22</span><span class="o">:</span><span class="w"> </span><span class="c1">// execute the graph to spawn the subflow</span>
-<span class="mi">23</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="p">().</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span><span class="w"></span>
-<span class="mi">24</span><span class="o">:</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre><div class="m-graph"><svg style="width: 38.800rem; height: 21.100rem;" viewBox="0.00 0.00 388.00 211.00">
+<span class="mi">23</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="p">().</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span>
+<span class="mi">24</span><span class="o">:</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 38.800rem; height: 21.100rem;" viewBox="0.00 0.00 388.00 211.00">
 <g transform="scale(1 1) rotate(0) translate(4 207)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffeeca03810</title>
 <polygon points="8,-8 8,-195 372,-195 372,-8 8,-8"/>
-<text text-anchor="middle" x="190" y="-183" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
+<text text-anchor="middle" x="190" y="-181.5" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fbc40c02830</title>
 <polygon points="16,-16 16,-168 364,-168 364,-16 16,-16"/>
-<text text-anchor="middle" x="190" y="-156" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: A</text>
+<text text-anchor="middle" x="190" y="-154.5" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: A</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fbc40d00240</title>
 <polygon points="24,-70 24,-141 274,-141 274,-70 24,-70"/>
-<text text-anchor="middle" x="149" y="-129" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: A2</text>
+<text text-anchor="middle" x="149" y="-127.5" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: A2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fbc40c02830</title>
 <ellipse cx="329" cy="-96" rx="27" ry="18"/>
-<text text-anchor="middle" x="329" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<text text-anchor="middle" x="329" y="-92.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fbc40d00120</title>
 <ellipse cx="149" cy="-42" rx="27" ry="18"/>
-<text text-anchor="middle" x="149" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">A1</text>
+<text text-anchor="middle" x="149" y="-38.12" font-family="Helvetica,sans-Serif" font-size="10.00">A1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fbc40d00240</title>
 <ellipse cx="239" cy="-96" rx="27" ry="18"/>
-<text text-anchor="middle" x="239" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00">A2</text>
+<text text-anchor="middle" x="239" y="-92.12" font-family="Helvetica,sans-Serif" font-size="10.00">A2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fbc40d00120&#45;&gt;p0x7fbc40d00240</title>
-<path d="M169.53,-53.98C181.38,-61.26 196.7,-70.66 209.84,-78.72"/>
-<polygon points="208.17,-81.8 218.52,-84.05 211.83,-75.84 208.17,-81.8"/>
+<path d="M169.53,-53.98C181.15,-61.12 196.11,-70.3 209.08,-78.25"/>
+<polygon points="206.88,-81.01 217.23,-83.26 210.54,-75.04 206.88,-81.01"/>
 </g>
 <g class="m-edge">
 <title>p0x7fbc40d00240&#45;&gt;p0x7fbc40c02830</title>
-<path d="M266.4,-96C274.39,-96 283.31,-96 291.82,-96"/>
-<polygon points="291.92,-99.5 301.92,-96 291.92,-92.5 291.92,-99.5"/>
+<path d="M266.4,-96C273.89,-96 282.18,-96 290.2,-96"/>
+<polygon points="290.1,-99.5 300.1,-96 290.1,-92.5 290.1,-99.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fbc40d00360</title>
 <ellipse cx="59" cy="-96" rx="27" ry="18"/>
-<text text-anchor="middle" x="59" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00">A2_1</text>
+<text text-anchor="middle" x="59" y="-92.12" font-family="Helvetica,sans-Serif" font-size="10.00">A2_1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fbc40d00470</title>
 <ellipse cx="149" cy="-96" rx="27" ry="18"/>
-<text text-anchor="middle" x="149" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00">A2_2</text>
+<text text-anchor="middle" x="149" y="-92.12" font-family="Helvetica,sans-Serif" font-size="10.00">A2_2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fbc40d00360&#45;&gt;p0x7fbc40d00470</title>
-<path d="M86.4,-96C94.39,-96 103.31,-96 111.82,-96"/>
-<polygon points="111.92,-99.5 121.92,-96 111.92,-92.5 111.92,-99.5"/>
+<path d="M86.4,-96C93.89,-96 102.18,-96 110.2,-96"/>
+<polygon points="110.1,-99.5 120.1,-96 110.1,-92.5 110.1,-99.5"/>
 </g>
 <g class="m-edge">
 <title>p0x7fbc40d00470&#45;&gt;p0x7fbc40d00240</title>
-<path d="M176.4,-96C184.39,-96 193.31,-96 201.82,-96"/>
-<polygon points="201.92,-99.5 211.92,-96 201.92,-92.5 201.92,-99.5"/>
+<path d="M176.4,-96C183.89,-96 192.18,-96 200.2,-96"/>
+<polygon points="200.1,-99.5 210.1,-96 200.1,-92.5 200.1,-99.5"/>
 </g>
 </g>
 </svg>
@@ -774,7 +774,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2023.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

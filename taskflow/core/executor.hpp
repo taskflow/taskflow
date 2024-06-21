@@ -1099,6 +1099,7 @@ class Executor {
   
   template <typename P>
   void _corun_until(Worker&, P&&);
+
 };
 
 // Constructor
@@ -2308,7 +2309,7 @@ void Runtime::acquire(S&&... semaphores) {
   constexpr size_t N = sizeof...(S);
   std::array<Semaphore*, N> items { std::addressof(semaphores)... };
   _executor._corun_until(_worker, [&](){ 
-    // Ideally, we should use a deadlock-avoidance algorithm but
+    // Ideally, we should use a better deadlock-avoidance algorithm but
     // in practice the number of semaphores will not be too large and
     // tf::Semaphore does not provide blocking method. Hence, we are 
     // mostly safe here. This is similar to the GCC try_lock implementation:
@@ -2332,7 +2333,7 @@ template <typename I,
 >
 void Runtime::acquire(I begin, I end) {
   _executor._corun_until(_worker, [begin, end](){
-    // Ideally, we should use a deadlock-avoidance algorithm but
+    // Ideally, we should use a better deadlock-avoidance algorithm but
     // in practice the number of semaphores will not be too large and
     // tf::Semaphore does not provide blocking method. Hence, we are 
     // mostly safe here. This is similar to the GCC try_lock implementation:

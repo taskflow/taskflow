@@ -1,8 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
   <compounddef id="classtf_1_1PartitionerBase" kind="class" language="C++" prot="public">
     <compoundname>tf::PartitionerBase</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::IsPartitioner</basecompoundref>
+    <derivedcompoundref refid="classtf_1_1DynamicPartitioner" prot="public" virt="non-virtual">tf::DynamicPartitioner&lt; C &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1GuidedPartitioner" prot="public" virt="non-virtual">tf::GuidedPartitioner&lt; C &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1RandomPartitioner" prot="public" virt="non-virtual">tf::RandomPartitioner&lt; C &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1StaticPartitioner" prot="public" virt="non-virtual">tf::StaticPartitioner&lt; C &gt;</derivedcompoundref>
     <includes refid="partitioner_8hpp" local="no">partitioner.hpp</includes>
     <templateparamlist>
       <param>
@@ -16,6 +20,7 @@
         <definition>using tf::PartitionerBase&lt; C &gt;::closure_wrapper_type =  C</definition>
         <argsstring></argsstring>
         <name>closure_wrapper_type</name>
+        <qualifiedname>tf::PartitionerBase::closure_wrapper_type</qualifiedname>
         <briefdescription>
 <para>the closure type </para>
         </briefdescription>
@@ -23,7 +28,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="137" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="137" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="137" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="137" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -32,6 +37,7 @@
         <definition>size_t tf::PartitionerBase&lt; C &gt;::_chunk_size</definition>
         <argsstring></argsstring>
         <name>_chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::_chunk_size</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
 <para>chunk size </para>
@@ -40,13 +46,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="183" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="183" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="183" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="183" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" static="no" mutable="no">
         <type>C</type>
         <definition>C tf::PartitionerBase&lt; C &gt;::_closure_wrapper</definition>
         <argsstring></argsstring>
         <name>_closure_wrapper</name>
+        <qualifiedname>tf::PartitionerBase::_closure_wrapper</qualifiedname>
         <briefdescription>
 <para>closure wrapper </para>
         </briefdescription>
@@ -54,7 +61,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="188" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="188" bodyend="-1"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="188" column="5" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="188" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -63,6 +70,7 @@
         <definition>tf::PartitionerBase&lt; C &gt;::PartitionerBase</definition>
         <argsstring>()=default</argsstring>
         <name>PartitionerBase</name>
+        <qualifiedname>tf::PartitionerBase::PartitionerBase</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -70,13 +78,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="142" column="3"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="142" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::PartitionerBase&lt; C &gt;::PartitionerBase</definition>
         <argsstring>(size_t chunk_size)</argsstring>
         <name>PartitionerBase</name>
+        <qualifiedname>tf::PartitionerBase::PartitionerBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>chunk_size</declname>
@@ -88,13 +97,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="147" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="147" bodyend="147"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="147" column="12" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="147" bodyend="147"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::PartitionerBase&lt; C &gt;::PartitionerBase</definition>
         <argsstring>(size_t chunk_size, C &amp;&amp;closure_wrapper)</argsstring>
         <name>PartitionerBase</name>
+        <qualifiedname>tf::PartitionerBase::PartitionerBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>chunk_size</declname>
@@ -110,13 +120,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="152" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="152" bodyend="155"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="152" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="152" bodyend="155"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::PartitionerBase&lt; C &gt;::chunk_size</definition>
         <argsstring>() const</argsstring>
         <name>chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::chunk_size</qualifiedname>
         <briefdescription>
 <para>query the chunk size of this partitioner </para>
         </briefdescription>
@@ -124,13 +135,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="160" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="160" bodyend="160"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="160" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="160" bodyend="160"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::PartitionerBase&lt; C &gt;::chunk_size</definition>
         <argsstring>(size_t cz)</argsstring>
         <name>chunk_size</name>
+        <qualifiedname>tf::PartitionerBase::chunk_size</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>cz</declname>
@@ -142,13 +154,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="165" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="165"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="165" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="165"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a56cd2cc038e67d21e6676ab81fa3a8ad" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const C &amp;</type>
-        <definition>const C&amp; tf::PartitionerBase&lt; C &gt;::closure_wrapper</definition>
+        <definition>const C &amp; tf::PartitionerBase&lt; C &gt;::closure_wrapper</definition>
         <argsstring>() const</argsstring>
         <name>closure_wrapper</name>
+        <qualifiedname>tf::PartitionerBase::closure_wrapper</qualifiedname>
         <briefdescription>
 <para>acquire an immutable access to the closure wrapper object </para>
         </briefdescription>
@@ -156,7 +169,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="170" column="11" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="170" bodyend="170"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="170" column="11" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="170" bodyend="170"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -168,6 +181,7 @@
         <definition>void tf::PartitionerBase&lt; C &gt;::closure_wrapper</definition>
         <argsstring>(F &amp;&amp;fn)</argsstring>
         <name>closure_wrapper</name>
+        <qualifiedname>tf::PartitionerBase::closure_wrapper</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>fn</declname>
@@ -179,7 +193,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="176" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="176" bodyend="176"/>
+        <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="176" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="176" bodyend="176"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -208,11 +222,11 @@ The class provides base methods to derive a partitioner that can be used to sche
 <para><simplesect kind="note"><para>Giving the partition size of 0 lets the Taskflow runtime automatically determines the partition size for the given partitioner.</para>
 </simplesect>
 In addition to partition size, the application can specify a closure wrapper for a partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -232,17 +246,48 @@ In addition to partition size, the application can specify a closure wrapper for
 </para>
     </detaileddescription>
     <inheritancegraph>
+      <node id="3">
+        <label>tf::DynamicPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1DynamicPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>tf::GuidedPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1GuidedPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>tf::IsPartitioner</label>
+      </node>
       <node id="1">
         <label>tf::PartitionerBase&lt; C &gt;</label>
         <link refid="classtf_1_1PartitionerBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
-        <label>tf::IsPartitioner</label>
+      <node id="5">
+        <label>tf::RandomPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1RandomPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>tf::StaticPartitioner&lt; C &gt;</label>
+        <link refid="classtf_1_1StaticPartitioner"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="3">
+        <label>tf::DefaultClosureWrapper</label>
+        <link refid="structtf_1_1DefaultClosureWrapper"/>
+      </node>
+      <node id="2">
+        <label>tf::IsPartitioner</label>
+      </node>
       <node id="1">
         <label>tf::PartitionerBase&lt; C &gt;</label>
         <link refid="classtf_1_1PartitionerBase"/>
@@ -252,21 +297,14 @@ In addition to partition size, the application can specify a closure wrapper for
           <edgelabel>_closure_wrapper</edgelabel>
         </childnode>
       </node>
-      <node id="2">
-        <label>tf::IsPartitioner</label>
-      </node>
-      <node id="3">
-        <label>tf::DefaultClosureWrapper</label>
-        <link refid="structtf_1_1DefaultClosureWrapper"/>
-      </node>
     </collaborationgraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="130" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="130" bodyend="189"/>
+    <location file="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" line="130" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/algorithm/partitioner.hpp" bodystart="130" bodyend="189"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a56cd2cc038e67d21e6676ab81fa3a8ad" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a2b6152f24c2a3d6e750349d02ecb4595" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper_type</name></member>
       <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>
