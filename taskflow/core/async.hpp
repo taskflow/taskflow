@@ -112,26 +112,10 @@ template <typename P, typename F, typename... Tasks,
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
-
-  _increment_topology();
-
-  size_t num_dependents = sizeof...(Tasks);
-  
-  // create a task before scheduling the node to retain a shared ownership first
-  AsyncTask task(animate(
-    std::forward<P>(params), nullptr, nullptr, num_dependents,
-    std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
-  ));
-  
-  if constexpr(sizeof...(Tasks) > 0) {
-    (_process_async_dependent(task._node, tasks, num_dependents), ...);
-  }
-
-  if(num_dependents == 0) {
-    _schedule_async_task(task._node);
-  }
-
-  return task;
+  std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
+  return silent_dependent_async(
+    std::forward<P>(params), std::forward<F>(func), array.begin(), array.end()
+  );
 }
 
 // Function: silent_dependent_async
@@ -187,31 +171,10 @@ template <typename P, typename F, typename... Tasks,
   std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
 auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
-  
-  _increment_topology();
-  
-  using R = std::invoke_result_t<std::decay_t<F>>;
-
-  std::packaged_task<R()> p(std::forward<F>(func));
-  auto fu{p.get_future()};
-
-  size_t num_dependents = sizeof...(tasks);
-
-  AsyncTask task(animate(
-    std::forward<P>(params), nullptr, nullptr, num_dependents,
-    std::in_place_type_t<Node::DependentAsync>{},
-    [p=make_moc(std::move(p))] () mutable { p.object(); }
-  ));
-  
-  if constexpr(sizeof...(Tasks) > 0) {
-    (_process_async_dependent(task._node, tasks, num_dependents), ...);
-  }
-
-  if(num_dependents == 0) {
-    _schedule_async_task(task._node);
-  }
-
-  return std::make_pair(std::move(task), std::move(fu));
+  std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
+  return dependent_async(
+    std::forward<P>(params), std::forward<F>(func), array.begin(), array.end()
+  );
 }
 
 // Function: dependent_async
