@@ -42,8 +42,6 @@ class AtomicNotifier {
   static_assert(sizeof(uint64_t) == 8, "bad platform");
   static_assert(sizeof(std::atomic<uint64_t>) == 8, "bad platform");
 
-  //static constexpr size_t kEpochOffset = kIsLittleEndian ? 1 : 0;
-
   // _state stores the epoch in the most significant 32 bits and the
   // waiter count in the least significant 32 bits.
   std::atomic<uint64_t> _state;
@@ -143,8 +141,6 @@ class AtomicNotifierV2 {
   static_assert(sizeof(uint32_t) == 4, "bad platform");
   static_assert(sizeof(uint64_t) == 8, "bad platform");
   static_assert(sizeof(std::atomic<uint64_t>) == 8, "bad platform");
-
-  //static constexpr size_t kEpochOffset = kIsLittleEndian ? 1 : 0;
 
   // _state stores the epoch in the most significant 32 bits and the
   // waiter count in the least significant 32 bits.

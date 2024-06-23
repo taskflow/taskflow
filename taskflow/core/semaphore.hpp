@@ -70,7 +70,15 @@ class Semaphore {
   public:
 
     /**
-    @brief constructs a semaphore with the given counter
+    @brief constructs a default semaphore with count equal to zero
+
+    Application can use tf::Semaphore::reset to reset the counter of 
+    the semaphore later.
+    */
+    Semaphore() : _count(0) { };
+
+    /**
+    @brief constructs a semaphore with the given count
 
     A semaphore creates a constraint that limits the maximum concurrency,
     i.e., the number of workers, in a set of tasks.
@@ -83,9 +91,11 @@ class Semaphore {
     }
 
     /**
-    @brief queries the counter value (not thread-safe during the run)
+    @brief queries the current value of the associated counter
 
     @param memory_order the memory order of this load (default std::memory_order_relaxed)
+
+    Queries the current value of the associated counter.
     */
     size_t count(std::memory_order memory_order = std::memory_order_relaxed) const {
       return _count.load(memory_order);
@@ -96,6 +106,8 @@ class Semaphore {
 
     @return @c true if it decremented the internal counter, otherwise @c false
 
+    Tries to atomically decrement the internal counter by @c 1. If the operation succeeds,
+    returns @c true, otherwise @c false.
     */
     bool try_acquire() {
       auto old = _count.load(std::memory_order_acquire);
@@ -112,7 +124,9 @@ class Semaphore {
 
     @param n the value by which the internal counter will be incremented
     @return @c true if it decremented the internal counter, otherwise @c false
-
+    
+    The release operation always succeeds as it simply increments 
+    the counter of this semaphore.
     */
     void release(size_t n = 1) {
       _count.fetch_add(n, std::memory_order_release);
@@ -123,6 +137,11 @@ class Semaphore {
 
     @param count the new count value
     @param memory_order memory order to which this operation will be applied
+    
+    @note
+    Calling tf::Semaphore::reset will immediately change the underlying
+    counter to the given @c count value, regardless other threads acquiring 
+    or releasing the semaphore.
     */
     void reset(size_t count, std::memory_order memory_order = std::memory_order_relaxed) {
       _count.store(count, memory_order);
@@ -135,15 +154,28 @@ class Semaphore {
 
 /**
 @brief tries to acquire all semaphores in the specified range
+
+@tparam I iterator type
+@param first iterator to the beginning (inclusive)
+@param last iterator to the end (exclusive)
+
+Tries to acquire all semaphores in the specified range.
+
+@return @c true if all semaphores are acquired, otherwise @c false
 */
 template <typename I,
   std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
 >
-bool try_acquire(I begin, I end) {
-  I ptr = begin;
-  for(; ptr != end; ptr++) {
+bool try_acquire(I first, I last) {
+  // Ideally, we should use a better deadlock-avoidance algorithm but
+  // in practice the number of semaphores is small and
+  // tf::Semaphore does not provide blocking require. Hence, we are 
+  // mostly safe here. This is similar to the GCC try_lock implementation:
+  // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
+  I ptr = first;
+  for(; ptr != last; ptr++) {
     if(ptr->try_acquire() == false) {
-      for(I ptr2 = begin; ptr2 != ptr; ptr2++) {
+      for(I ptr2 = first; ptr2 != ptr; ptr2++) {
         ptr2->release();
       }
       return false;
@@ -154,11 +186,22 @@ bool try_acquire(I begin, I end) {
 
 /**
 @brief tries to acquire all semaphores
+
+@param semaphores semaphores to acquire
+
+Tries to acquire all the semaphores.
+
+@return @c true if all semaphores are acquired, otherwise @c false
 */
 template<typename... S, 
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
 >
-bool try_acquire(S&&... semaphores) {
+bool try_acquire(S&... semaphores) {
+  // Ideally, we should use a better deadlock-avoidance algorithm but
+  // in practice the number of semaphores is small and
+  // tf::Semaphore does not provide blocking require. Hence, we are 
+  // mostly safe here. This is similar to the GCC try_lock implementation:
+  // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
   constexpr size_t N = sizeof...(S);
   std::array<Semaphore*, N> items { std::addressof(semaphores)... };
   size_t i = 0;
@@ -171,6 +214,38 @@ bool try_acquire(S&&... semaphores) {
     }
   }
   return true;
+}
+
+/**
+@brief tries to acquire all semaphores in the specified range
+
+@tparam I iterator type
+@param first iterator to the beginning (inclusive)
+@param last iterator to the end (exclusive)
+
+Releases all the semaphores in the given range.
+*/
+template <typename I,
+  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
+>
+void release(I first, I last) {
+  std::for_each(first, last, [](tf::Semaphore& semaphore){ 
+    semaphore.release();
+  });
+}
+
+/**
+@brief tries to acquire all semaphores
+
+@param semaphores semaphores to release
+
+Releases all the semaphores.
+*/
+template<typename... S, 
+  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
+>
+void release(S&... semaphores) {
+  (semaphores.release(), ...);
 }
 
 }  // end of namespace tf. ---------------------------------------------------

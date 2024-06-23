@@ -2,7 +2,11 @@
 
 #include "../utility/traits.hpp"
 #include "../utility/iterator.hpp"
+
+#ifdef TF_ENABLE_TASK_POOL
 #include "../utility/object_pool.hpp"
+#endif
+
 #include "../utility/os.hpp"
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
@@ -491,7 +495,7 @@ class Runtime {
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
   > 
-  void acquire(S&&... semaphores);
+  void acquire(S&... semaphores);
 
   /**
   @brief acquires the given range of semaphores with a deadlock avoidance algorithm
@@ -550,7 +554,7 @@ class Runtime {
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
   >
-  void release(S&&... semaphores);
+  void release(S&... semaphores);
   
   /**
   @brief releases the given range of semaphores
@@ -709,7 +713,9 @@ class Node {
     FINISHED = 2
   };
 
+#ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
+#endif
 
   // state bit flag
   constexpr static int CONDITIONED = 1;
@@ -886,23 +892,31 @@ class Node {
 /**
 @private
 */
+#ifdef TF_ENABLE_TASK_POOL
 inline ObjectPool<Node> _task_pool;
+#endif
 
 /**
 @private
 */
 template <typename... ArgsT>
 TF_FORCE_INLINE Node* animate(ArgsT&&... args) {
-  //return new Node(std::forward<ArgsT>(args)...);
+#ifdef TF_ENABLE_TASK_POOL
   return _task_pool.animate(std::forward<ArgsT>(args)...);
+#else
+  return new Node(std::forward<ArgsT>(args)...);
+#endif
 }
 
 /**
 @private
 */
 TF_FORCE_INLINE void recycle(Node* ptr) {
-  //delete ptr;
+#ifdef TF_ENABLE_TASK_POOL
   _task_pool.recycle(ptr);
+#else
+  delete ptr;
+#endif
 }
 
 // ----------------------------------------------------------------------------
