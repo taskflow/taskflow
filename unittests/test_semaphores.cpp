@@ -185,7 +185,7 @@ void multiple_critical_sections(unsigned W) {
   int counter(0);
 
   for(size_t i=0; i<N; i++) {
-    taskflow.emplace([&, i](tf::Runtime& rt){
+    taskflow.emplace([&semaphores, &counter](tf::Runtime& rt){
       // critical section 1
       rt.acquire(semaphores.begin(), semaphores.end());
       counter++;
