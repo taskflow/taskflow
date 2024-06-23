@@ -6,7 +6,7 @@ jobs:
   debug-test-cpp17:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17
     - name: build
@@ -17,7 +17,7 @@ jobs:
   release-test-cpp17:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
     - name: build
@@ -28,7 +28,7 @@ jobs:
   leak-test-cpp17:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -fsanitize=leak -g" -DCMAKE_CXX_STANDARD=17
     - name: build
@@ -39,7 +39,7 @@ jobs:
   #undefined-test:
   #  runs-on: ubuntu-latest
   #  steps:
-  #  - uses: actions/checkout@v2
+  #  - uses: actions/checkout@v3
   #  - name: cmake
   #    run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g"
   #  - name: build
@@ -50,7 +50,7 @@ jobs:
   tsan-test-cpp17:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" -DCMAKE_CXX_STANDARD=17
     - name: build
@@ -65,7 +65,7 @@ jobs:
   debug-test-cpp20:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=20
     - name: build
@@ -76,7 +76,7 @@ jobs:
   release-test-cpp20:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20
     - name: build
@@ -87,7 +87,7 @@ jobs:
   release-test-cpp20-atomic-notifier:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_FLAGS="-DTF_ENABLE_ATOMIC_NOTIFIER=1"
     - name: build
@@ -98,7 +98,7 @@ jobs:
   leak-test-cpp20:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -fsanitize=leak -g" -DCMAKE_CXX_STANDARD=20
     - name: build
@@ -109,7 +109,7 @@ jobs:
   tsan-test-cpp20:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20
     - name: build

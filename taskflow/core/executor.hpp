@@ -2300,12 +2300,18 @@ inline void Runtime::corun_all() {
   _parent->_process_exception();
 }
 
+// ----------------------------------------------------------------------------
+// Runtime: Semaphore series
+// ----------------------------------------------------------------------------
+
 // Function: acquire
 template <typename... S,
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
 >
 void Runtime::acquire(S&&... semaphores) {
-  _executor._corun_until(_worker, [&](){ return tf::try_acquire(semaphores...); });
+  _executor._corun_until(_worker, [&](){ 
+    return tf::try_acquire(std::forward<S>(semaphores)...); 
+  });
   // TODO: exception?
 }
   
@@ -2314,7 +2320,9 @@ template <typename I,
   std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void>*
 >
 void Runtime::acquire(I first, I last) {
-  _executor._corun_until(_worker, [=](){ return tf::try_acquire(first, last); });
+  _executor._corun_until(_worker, [=](){ 
+    return tf::try_acquire(first, last); 
+  });
   // TODO: exception?
 }
 
@@ -2323,7 +2331,7 @@ template <typename... S,
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
 >
 void Runtime::release(S&&... semaphores){
-  tf::release(semaphores...);
+  tf::release(std::forward<S>(semaphores)...);
 }
 
 // Function:: release
@@ -2421,9 +2429,7 @@ auto Runtime::async(P&& params, F&& f) {
   return _async(*_executor._this_worker(), std::forward<P>(params), std::forward<F>(f));
 }
 
-// ----------------------------------------------------------------------------
-// Runtime: Semaphore series
-// ----------------------------------------------------------------------------
+
 
 
 

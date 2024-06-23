@@ -6,7 +6,7 @@ jobs:
   release-test-cpp17:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17
     - name: build
@@ -21,7 +21,7 @@ jobs:
   release-test-cpp20:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cmake
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20
     - name: build

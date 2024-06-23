@@ -93,11 +93,11 @@ class Semaphore {
     /**
     @brief queries the current value of the associated counter
 
-    @param memory_order the memory order of this load (default std::memory_order_relaxed)
+    @param memory_order the memory order of this load (default std::memory_order_seq_cst)
 
     Queries the current value of the associated counter.
     */
-    size_t count(std::memory_order memory_order = std::memory_order_relaxed) const {
+    size_t count(std::memory_order memory_order = std::memory_order_seq_cst) const {
       return _count.load(memory_order);
     }
 
@@ -137,13 +137,14 @@ class Semaphore {
 
     @param count the new count value
     @param memory_order memory order to which this operation will be applied
+                        (default std::memory_order_seq_cst)
     
     @note
     Calling tf::Semaphore::reset will immediately change the underlying
     counter to the given @c count value, regardless other threads acquiring 
     or releasing the semaphore.
     */
-    void reset(size_t count, std::memory_order memory_order = std::memory_order_relaxed) {
+    void reset(size_t count, std::memory_order memory_order = std::memory_order_seq_cst) {
       _count.store(count, memory_order);
     }
 
