@@ -495,7 +495,7 @@ class Runtime {
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
   > 
-  void acquire(S&... semaphores);
+  void acquire(S&&... semaphores);
 
   /**
   @brief acquires the given range of semaphores with a deadlock avoidance algorithm
@@ -554,7 +554,7 @@ class Runtime {
   template <typename... S,
     std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
   >
-  void release(S&... semaphores);
+  void release(S&&... semaphores);
   
   /**
   @brief releases the given range of semaphores

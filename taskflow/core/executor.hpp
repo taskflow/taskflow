@@ -2304,7 +2304,7 @@ inline void Runtime::corun_all() {
 template <typename... S,
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
 >
-void Runtime::acquire(S&... semaphores) {
+void Runtime::acquire(S&&... semaphores) {
   _executor._corun_until(_worker, [&](){ return tf::try_acquire(semaphores...); });
   // TODO: exception?
 }
@@ -2322,7 +2322,7 @@ void Runtime::acquire(I first, I last) {
 template <typename... S,
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
 >
-void Runtime::release(S&... semaphores){
+void Runtime::release(S&&... semaphores){
   tf::release(semaphores...);
 }
 

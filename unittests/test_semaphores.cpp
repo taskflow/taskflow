@@ -208,7 +208,7 @@ void multiple_critical_sections(unsigned W) {
     });
   }
   
-  executor.run(taskflow).get();
+  executor.run(taskflow).wait();
   REQUIRE(counter == N*4);
 }
 

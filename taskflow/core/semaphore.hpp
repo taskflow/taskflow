@@ -172,8 +172,7 @@ bool try_acquire(I first, I last) {
   // tf::Semaphore does not provide blocking require. Hence, we are 
   // mostly safe here. This is similar to the GCC try_lock implementation:
   // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
-  I ptr = first;
-  for(; ptr != last; ptr++) {
+  for(I ptr = first; ptr != last; ptr++) {
     if(ptr->try_acquire() == false) {
       for(I ptr2 = first; ptr2 != ptr; ptr2++) {
         ptr2->release();
@@ -196,7 +195,7 @@ Tries to acquire all the semaphores.
 template<typename... S, 
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
 >
-bool try_acquire(S&... semaphores) {
+bool try_acquire(S&&... semaphores) {
   // Ideally, we should use a better deadlock-avoidance algorithm but
   // in practice the number of semaphores is small and
   // tf::Semaphore does not provide blocking require. Hence, we are 
@@ -204,8 +203,7 @@ bool try_acquire(S&... semaphores) {
   // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
   constexpr size_t N = sizeof...(S);
   std::array<Semaphore*, N> items { std::addressof(semaphores)... };
-  size_t i = 0;
-  for(; i < N; i++) {
+  for(size_t i=0; i<N; i++) {
     if(items[i]->try_acquire() == false) {
       for(size_t j=0; j<i; j++) {
         items[j]->release();
@@ -244,7 +242,7 @@ Releases all the semaphores.
 template<typename... S, 
   std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
 >
-void release(S&... semaphores) {
+void release(S&&... semaphores) {
   (semaphores.release(), ...);
 }
 
