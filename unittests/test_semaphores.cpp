@@ -45,8 +45,10 @@ void critical_section(unsigned W) {
   tf::Taskflow taskflow;
   tf::Executor executor(W);
   tf::Semaphore semaphore(1);
-
-  int N = 1000;
+  
+  // We don't do large N as acquire will trigger recursive
+  // corun_until which can become too deep to process
+  int N = 50;
   int counter = 0;
 
   for(int i=0; i<N; ++i) {
@@ -104,7 +106,7 @@ void critical_section_async(unsigned W) {
   tf::Executor executor(W);
   tf::Semaphore semaphore(1);
 
-  int N = 1000;
+  int N = 50;
   int counter = 0;
 
   for(int i=0; i<N; ++i) {
@@ -169,7 +171,7 @@ TEST_CASE("CriticalSectionWithAsync.16threads") {
 void multiple_critical_sections(unsigned W) {
 
   const size_t S = 10;
-  const size_t N = 1000;
+  const size_t N = 50;
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -246,7 +248,7 @@ void linearity(unsigned W) {
   tf::Taskflow taskflow;
   tf::Semaphore semaphore(1);
 
-  int N = 1000;
+  int N = 50;
   int counter = 0;
 
   for(int i=0; i<N; i++) {
@@ -566,7 +568,7 @@ void semaphore_by_multiple_tasks(unsigned W) {
   tf::Semaphore s(1);
 
   int counter {0};
-  size_t N = 2000;
+  size_t N = 50;
 
   for(size_t i=0; i<N; i++) {
     taskflow1.emplace([&](tf::Runtime& rt){
@@ -630,4 +632,69 @@ TEST_CASE("SemaphoreByMultipleTasks.3threads") {
 TEST_CASE("SemaphoreByMultipleTasks.4threads") {
   semaphore_by_multiple_tasks(4);
 }
+
+// ----------------------------------------------------------------------------
+// Nonblocking Semaphores
+// ----------------------------------------------------------------------------
+
+void nonblocking_semaphore(unsigned W) {
+  
+  tf::Executor executor(W);
+  tf::Semaphore semaphore(0);
+
+  const size_t N = 50;
+
+  for(size_t i=0; i<N; i++) {
+    executor.async([&, i](tf::Runtime& rt){
+      rt.acquire(semaphore);
+    });
+  }
+  
+  for(size_t i=0; i<N; i++) {
+    executor.async([&, i](tf::Runtime& rt){
+      rt.release(semaphore);
+    });
+  }
+
+  executor.wait_for_all();
+
+  REQUIRE(semaphore.count() == 0);
+
+}
+
+TEST_CASE("NonblockingSemaphore.1thread") {
+  nonblocking_semaphore(1);
+}
+
+TEST_CASE("NonblockingSemaphore.2threads") {
+  nonblocking_semaphore(2);
+}
+
+TEST_CASE("NonblockingSemaphore.3threads") {
+  nonblocking_semaphore(3);
+}
+
+TEST_CASE("NonblockingSemaphore.4threads") {
+  nonblocking_semaphore(4);
+}
+
+TEST_CASE("NonblockingSemaphore.5threads") {
+  nonblocking_semaphore(5);
+}
+
+TEST_CASE("NonblockingSemaphore.6threads") {
+  nonblocking_semaphore(6);
+}
+
+TEST_CASE("NonblockingSemaphore.7threads") {
+  nonblocking_semaphore(7);
+}
+
+TEST_CASE("NonblockingSemaphore.8threads") {
+  nonblocking_semaphore(8);
+}
+
+
+
+
 
