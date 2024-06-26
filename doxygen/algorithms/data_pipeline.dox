@@ -33,8 +33,7 @@ The following example creates a data-parallel pipeline that generates a total of
 five dataflow tokens
 from `void` to `int` at the first stage, 
 from `int` to `%std::string` at the second stage, 
-from `%std::string` to `float` at the third stage, 
-and `float` to `void` at the final stage.
+and `%std::string` to `void` at the final stage.
 Data storage between stages is automatically managed by tf::DataPipeline.
 
 @code{.cpp}
@@ -43,7 +42,7 @@ Data storage between stages is automatically managed by tf::DataPipeline.
 
 int main() {
 
-  // data flow => void -> int -> std::string -> float -> void 
+  // data flow => void -> int -> std::string -> void 
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
@@ -63,7 +62,7 @@ int main() {
     }),
 
     tf::make_data_pipe<int, std::string>(tf::PipeType::SERIAL, [](int& input) {
-      printf("second pipe returns a strong of %d\n", input + 100);
+      printf("second pipe returns a string of %d\n", input + 100);
       return std::to_string(input + 100);
     }),
 
