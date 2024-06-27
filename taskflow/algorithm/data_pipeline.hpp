@@ -189,7 +189,7 @@ using a module task in a taskflow.
 The only difference is that tf::DataPipeline provides a data abstraction
 for users to quickly express dataflow in a pipeline.
 The following example creates a data-parallel pipeline of three stages
-that generate dataflow from `void` to `int`, `std::string`, `float`, and `void`.
+that generate dataflow from `void` to `int`, `std::string`, and `void`.
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
@@ -197,7 +197,7 @@ that generate dataflow from `void` to `int`, `std::string`, `float`, and `void`.
 
 int main() {
 
-  // data flow => void -> int -> std::string -> float -> void 
+  // data flow => void -> int -> std::string -> void
   tf::Taskflow taskflow("pipeline");
   tf::Executor executor;
 
