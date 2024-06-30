@@ -202,7 +202,7 @@ void upperbidiagonalization_blocked_helper(MatrixType& A,
       {
         SubColumnType y_k( Y.col(k).tail(remainingCols) );
         
-        // let's use the begining of column k of Y as a temporary vector
+        // let's use the beginning of column k of Y as a temporary vector
         SubColumnType tmp( Y.col(k).head(k) );
         y_k.noalias()  = A.block(k,k+1, remainingRows,remainingCols).adjoint() * v_k; // bottleneck
         tmp.noalias()  = V_k1.adjoint()  * v_k;
@@ -231,7 +231,7 @@ void upperbidiagonalization_blocked_helper(MatrixType& A,
       {
         SubColumnType x_k ( X.col(k).tail(remainingRows-1) );
         
-        // let's use the begining of column k of X as a temporary vectors
+        // let's use the beginning of column k of X as a temporary vectors
         // note that tmp0 and tmp1 overlaps
         SubColumnType tmp0 ( X.col(k).head(k) ),
                       tmp1 ( X.col(k).head(k+1) );

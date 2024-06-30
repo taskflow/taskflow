@@ -226,7 +226,7 @@ void cuda_merge_sort_partitions(
   unsigned coop, unsigned spacing, C comp, unsigned* buf
 ) {
 
-  // bufer size is num_partitions + 1
+  // buffer size is num_partitions + 1
   unsigned num_partitions = (count + spacing - 1) / spacing + 1;
 
   const unsigned nt = 128;

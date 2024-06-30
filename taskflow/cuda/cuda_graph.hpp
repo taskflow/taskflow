@@ -421,7 +421,7 @@ class cudaGraphExec :
   cudaGraphExec() = default;
   
   /**
-  @brief instantiates the exexutable from the given CUDA graph
+  @brief instantiates the executable from the given CUDA graph
   */
   void instantiate(cudaGraph_t graph) {
     cudaGraphExecDeleter {} (object);
@@ -432,7 +432,7 @@ class cudaGraphExec :
   }
   
   /**
-  @brief updates the exexutable from the given CUDA graph
+  @brief updates the executable from the given CUDA graph
   */
   cudaGraphExecUpdateResult update(cudaGraph_t graph) {
     cudaGraphNode_t error_node;
@@ -442,7 +442,7 @@ class cudaGraphExec :
   }
   
   /**
-  @brief launchs the executable graph via the given stream
+  @brief launches the executable graph via the given stream
   */
   void launch(cudaStream_t stream) {
     TF_CHECK_CUDA(

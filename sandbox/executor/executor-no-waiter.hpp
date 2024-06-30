@@ -421,7 +421,7 @@ class Executor {
   Unlike the typical flow of calling `tf::Executor::run` series 
   plus waiting on the result, this method must be called by an internal
   worker of this executor. The caller worker will participate in
-  the work-stealing loop of the scheduler, therby avoiding potential
+  the work-stealing loop of the scheduler, thereby avoiding potential
   deadlock caused by blocked waiting.
   
   @code{.cpp}
@@ -1418,7 +1418,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     }
   }
   
-  // Now I really need to relinguish my self to others
+  // Now I really need to relinquish my self to others
   _notifier.commit_wait(worker._waiter);
   goto explore_task;
 #endif

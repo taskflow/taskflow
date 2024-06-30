@@ -142,7 +142,7 @@ inline void cuda_memcpy_async(
 @brief initializes or sets GPU memory to the given value byte by byte
 
 @param stream stream identifier
-@param devPtr pointer to GPU mempry
+@param devPtr pointer to GPU memory
 @param value value to set for each byte of the specified memory
 @param count size in bytes to set
 
@@ -529,7 +529,7 @@ class cudaDeviceAllocator {
   A call to member allocate with the value returned by this function 
   can still fail to allocate the requested storage.
   
-  @return the nubmer of elements that might be allcoated as maximum 
+  @return the number of elements that might be allocated as maximum 
           by a call to member allocate
   */
   size_type max_size() const noexcept { return size_type {-1}; }
@@ -725,7 +725,7 @@ class cudaUSMAllocator {
   A call to member allocate with the value returned by this function 
   can still fail to allocate the requested storage.
   
-  @return the nubmer of elements that might be allcoated as maximum 
+  @return the number of elements that might be allocated as maximum 
           by a call to member allocate
   */
   size_type max_size() const noexcept { return size_type {-1}; }

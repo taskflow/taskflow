@@ -15,7 +15,7 @@ A CUDA device object has a lifetime associated with a device,
 for example, @c cudaStream_t, @c cublasHandle_t, etc.
 Creating a device object is typically expensive (e.g., 10-200 ms)
 and destroying it may trigger implicit device synchronization.
-For applications tha intensively make use of device objects,
+For applications that intensively make use of device objects,
 it is desirable to reuse them as much as possible.
 
 There exists an one-to-one relationship between CUDA devices in CUDA Runtime API

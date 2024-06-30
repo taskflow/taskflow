@@ -79,7 +79,7 @@ class cudaFlowCapturer {
   public:
 
     /**
-    @brief constrcts a standalone cudaFlowCapturer
+    @brief constructs a standalone cudaFlowCapturer
 
     A standalone %cudaFlow capturer does not go through any taskflow and
     can be run by the caller thread using tf::cudaFlowCapturer::run.
@@ -232,7 +232,7 @@ class cudaFlowCapturer {
     /**
     @brief initializes or sets GPU memory to the given value byte by byte
 
-    @param ptr pointer to GPU mempry
+    @param ptr pointer to GPU memory
     @param v value to set for each byte of the specified memory
     @param n size in bytes to set
 

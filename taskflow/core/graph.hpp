@@ -501,7 +501,7 @@ class Runtime {
   @brief acquires the given range of semaphores with a deadlock avoidance algorithm
   
   @tparam I iterator type
-  @param first iterator to the begining (inclusive)
+  @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
 
   Coruns this worker until acquiring all the semaphores. 
@@ -560,7 +560,7 @@ class Runtime {
   @brief releases the given range of semaphores
   
   @tparam I iterator type
-  @param first iterator to the begining (inclusive)
+  @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
 
   Releases the given range of semaphores.
