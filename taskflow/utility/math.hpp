@@ -77,7 +77,7 @@ RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp) {
 }
 
 /**
-@brief finds the pseudo median of a range of items using spreaded
+@brief finds the pseudo median of a range of items using a spread of
        nine numbers
  */
 template <typename RandItr, typename C>

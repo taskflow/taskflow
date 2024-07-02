@@ -32,7 +32,7 @@ namespace tf {
 // Different from the normal memory allocator, object pool allocates
 // only one object at a time.
 //
-// Internall, we use the following variables to maintain blocks and heaps:
+// Internally, we use the following variables to maintain blocks and heaps:
 // X: size in byte of a item slot
 // M: number of items per block
 // F: emptiness threshold

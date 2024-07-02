@@ -322,7 +322,7 @@ struct TensorEvaluator<const TensorContractionOp<Indices, LeftArgType, RightArgT
         // Normal number of notifications for k slice switch is
         // nm_ + nn_ + nm_ * nn_. However, first P - 1 slices will receive only
         // nm_ + nn_ notifications, because they will not receive notifications
-        // from preceeding kernels.
+        // from preceding kernels.
         state_switch_[x] =
             x == 0
                 ? 1

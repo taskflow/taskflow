@@ -76,7 +76,7 @@ inline void cuda_dump_device_property(std::ostream& os, const cudaDeviceProp& p)
   }
   os << '\n';
 
-  os << "Maximum dimenstion of grid:    ";
+  os << "Maximum dimension of grid:    ";
   for (int i = 0; i < 3; ++i) {
     if(i) os << 'x';
     os << p.maxGridSize[i];;

@@ -46,7 +46,7 @@ enum class PartitionerType : int {
 /**
 @struct DefaultClosureWrapper
 
-@brief default closure wrapper that simplies runs the given closure as is
+@brief default closure wrapper that simply runs the given closure as is
 */
 struct DefaultClosureWrapper {
 };

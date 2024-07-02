@@ -33,10 +33,10 @@ namespace Eigen {
 //   ec.Notify(true);
 //
 // Notify is cheap if there are no waiting threads. Prewait/CommitWait are not
-// cheap, but they are executed only if the preceeding predicate check has
+// cheap, but they are executed only if the preceding predicate check has
 // failed.
 //
-// Algorihtm outline:
+// Algorithm outline:
 // There are two main variables: predicate (managed by user) and state_.
 // Operation closely resembles Dekker mutual algorithm:
 // https://en.wikipedia.org/wiki/Dekker%27s_algorithm
@@ -79,7 +79,7 @@ class EventCount {
     uint64_t state = state_.load(std::memory_order_seq_cst);
     for (;;) {
       if (int64_t((state & kEpochMask) - epoch) < 0) {
-        // The preceeding waiter has not decided on its fate. Wait until it
+        // The preceding waiter has not decided on its fate. Wait until it
         // calls either CancelWait or CommitWait, or is notified.
         EIGEN_THREAD_YIELD();
         state = state_.load(std::memory_order_seq_cst);
@@ -110,7 +110,7 @@ class EventCount {
     uint64_t state = state_.load(std::memory_order_relaxed);
     for (;;) {
       if (int64_t((state & kEpochMask) - epoch) < 0) {
-        // The preceeding waiter has not decided on its fate. Wait until it
+        // The preceding waiter has not decided on its fate. Wait until it
         // calls either CancelWait or CommitWait, or is notified.
         EIGEN_THREAD_YIELD();
         state = state_.load(std::memory_order_relaxed);
