@@ -120,10 +120,9 @@ class Semaphore {
     }
 
     /**
-    @brief tries to atomically increment the internal counter by @c n
+    @brief atomically increment the internal counter by @c n
 
     @param n the value by which the internal counter will be incremented
-    @return @c true if it decremented the internal counter, otherwise @c false
     
     The release operation always succeeds as it simply increments 
     the counter of this semaphore.
