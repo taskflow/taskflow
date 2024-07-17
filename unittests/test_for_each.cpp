@@ -761,9 +761,99 @@ TEST_CASE("ClosureWrapper.for_each.Dynamic" * doctest::timeout(300))
 //  parallel_for_exception(4);
 //}
 
+// ----------------------------------------------------------------------------
+// Multiple For Each
+// ----------------------------------------------------------------------------
 
+template <typename P>
+void multiple_for_each(unsigned W) {
 
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
 
+  const int N = 1000;
+  const int M = 1000;
 
+  std::array<std::vector<int>, N> vectors;
 
+  for(auto& vec : vectors) {
+    vec.resize(M);
+  }
+
+  for(int i=0; i<N; i++) {
+
+    // chain i in charge of vectors[i]
+
+    auto init = taskflow.emplace([&, i](){
+      for(auto& j : vectors[i]) {
+        j = -i;
+      }
+    });
+
+    size_t c = rand() % 20;
+
+    auto for_each = taskflow.for_each(vectors[i].begin(), vectors[i].end(), [&executor, i] (auto& j) {
+      REQUIRE(j == -i);
+      j = i;
+      //executor.async([](){});
+    }, P(c));
+
+    auto for_each_index = taskflow.for_each_index(0, M, 1, [i, &vec=vectors[i]](size_t j){
+      REQUIRE(vec[j] == i);
+    }, P(c));
+
+    init.precede(for_each);
+    for_each.precede(for_each_index);
+  }
+
+  executor.run(taskflow).wait();
+}
+
+TEST_CASE("MultipleParallelForEach.Static.1thread") {
+  multiple_for_each<tf::StaticPartitioner<>>(1);
+}
+
+TEST_CASE("MultipleParallelForEach.Static.2threads") {
+  multiple_for_each<tf::StaticPartitioner<>>(2);
+}
+
+TEST_CASE("MultipleParallelForEach.Static.3threads") {
+  multiple_for_each<tf::StaticPartitioner<>>(3);
+}
+
+TEST_CASE("MultipleParallelForEach.Static.4threads") {
+  multiple_for_each<tf::StaticPartitioner<>>(4);
+}
+
+TEST_CASE("MultipleParallelForEach.Dynamic.1thread") {
+  multiple_for_each<tf::DynamicPartitioner<>>(1);
+}
+
+TEST_CASE("MultipleParallelForEach.Dynamic.2threads") {
+  multiple_for_each<tf::DynamicPartitioner<>>(2);
+}
+
+TEST_CASE("MultipleParallelForEach.Dynamic.3threads") {
+  multiple_for_each<tf::DynamicPartitioner<>>(3);
+}
+
+TEST_CASE("MultipleParallelForEach.Dynamic.4threads") {
+  multiple_for_each<tf::DynamicPartitioner<>>(4);
+}
+
+TEST_CASE("MultipleParallelForEach.Guided.1thread") {
+  multiple_for_each<tf::GuidedPartitioner<>>(1);
+}
+
+TEST_CASE("MultipleParallelForEach.Guided.2threads") {
+  multiple_for_each<tf::GuidedPartitioner<>>(2);
+}
+
+TEST_CASE("MultipleParallelForEach.Guided.3threads") {
+  multiple_for_each<tf::GuidedPartitioner<>>(3);
+}
+
+TEST_CASE("MultipleParallelForEach.Guided.4threads") {
+  multiple_for_each<tf::GuidedPartitioner<>>(4);
+}
 

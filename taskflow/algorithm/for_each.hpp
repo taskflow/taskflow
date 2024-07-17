@@ -67,6 +67,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
         );
       });
     }
+
   };
 }
 
@@ -140,6 +141,8 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
         );
       });
     }
+
+
   };
 }
 

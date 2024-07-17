@@ -132,6 +132,88 @@ TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase MixedExecutorAsync
+// --------------------------------------------------------
+
+void mixed_executor_async(unsigned N) {
+
+  const size_t T = 1000;
+
+  std::vector<tf::Executor> executors(N);
+  
+  std::atomic<size_t> counter(0);
+
+  auto check_wid = [&](unsigned e){
+    for(size_t i=0; i<N; i++) {
+      if(i == e) {
+        REQUIRE(executors[i].this_worker_id() != -1);
+      }
+      else {
+        REQUIRE(executors[i].this_worker_id() == -1);
+      }
+    }
+  };
+
+  for(size_t j=0; j<T; j++) {
+    for(size_t i=0; i<N; i++) {
+      executors[i].async([&, i, j](){
+        check_wid(i);
+        counter.fetch_add(1, std::memory_order_relaxed);
+        auto n = j % N;
+        executors[n].async([&, n](tf::Runtime&){
+          check_wid(n);
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      });
+      
+      executors[i].silent_async([&, i, j](){
+        check_wid(i);
+        counter.fetch_add(1, std::memory_order_relaxed);
+        auto n = (j + 1) % N;
+        executors[n].silent_async([&, n](tf::Runtime){
+          check_wid(n);
+          counter.fetch_add(1, std::memory_order_relaxed);
+        });
+      });
+    }
+  }
+
+  while(counter.load() != 4000*N);
+
+  for(auto& executor : executors) {
+    executor.wait_for_all();
+  }
+}
+
+TEST_CASE("MixedAsync.1Executor" * doctest::timeout(300)) {
+  mixed_executor_async(1);
+}
+
+TEST_CASE("MixedAsync.2Executors" * doctest::timeout(300)) {
+  mixed_executor_async(2);
+}
+
+TEST_CASE("MixedAsync.4Executors" * doctest::timeout(300)) {
+  mixed_executor_async(4);
+}
+
+TEST_CASE("MixedAsync.5Executors" * doctest::timeout(300)) {
+  mixed_executor_async(5);
+}
+
+TEST_CASE("MixedAsync.6Executors" * doctest::timeout(300)) {
+  mixed_executor_async(6);
+}
+
+TEST_CASE("MixedAsync.7Executors" * doctest::timeout(300)) {
+  mixed_executor_async(7);
+}
+
+TEST_CASE("MixedAsync.8Executors" * doctest::timeout(300)) {
+  mixed_executor_async(8);
+}
+
+// --------------------------------------------------------
 // Testcase: MixedAsync
 // --------------------------------------------------------
 
@@ -142,7 +224,7 @@ void mixed_async(unsigned W) {
 
   std::atomic<int> counter(0);
 
-  int N = 1000;
+  int N = 10000;
 
   for(int i=0; i<N; i=i+1) {
     tf::Task A, B, C, D;

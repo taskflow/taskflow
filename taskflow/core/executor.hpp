@@ -15,7 +15,8 @@ namespace tf {
 // Executor Definition
 // ----------------------------------------------------------------------------
 
-/** @class Executor
+/** 
+@class Executor
 
 @brief class to create an executor for running a taskflow graph
 
@@ -533,7 +534,7 @@ class Executor {
   size_t num_taskflows() const;
   
   /**
-  @brief queries the id of the caller thread in this executor
+  @brief queries the id of the caller thread within this executor
 
   Each worker has an unique id in the range of @c 0 to @c N-1 associated with
   its parent executor.
@@ -1042,9 +1043,14 @@ class Executor {
   std::vector<Worker> _workers;
   DefaultNotifier _notifier;
 
+#ifdef __cpp_lib_latch
+  std::latch _latch;
+#else
+  Latch _latch;
+#endif
+
 #ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies {0};
-  std::atomic_flag _all_spawned = ATOMIC_FLAG_INIT;
   std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 #else
   std::condition_variable _topology_cv;
@@ -1054,14 +1060,13 @@ class Executor {
 #endif
 
   
-  std::unordered_map<std::thread::id, size_t> _wids;
   std::list<Taskflow> _taskflows;
 
   TaskQueue<Node*> _wsq;
 
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-  Worker* _this_worker();
+  Worker* _this_worker() const;
   
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_module_task_internal(Worker&, Node*);
@@ -1104,10 +1109,11 @@ class Executor {
 
 // Constructor
 inline Executor::Executor(size_t N) :
-  _MAX_STEALS {((N+1) << 1)},
-  _threads    {N},
-  _workers    {N},
-  _notifier   {N} 
+  _MAX_STEALS ((N+1) << 1),
+  _threads    (N),
+  _workers    (N),
+  _notifier   (N),
+  _latch      (N+1)
 {
 
   if(N == 0) {
@@ -1162,28 +1168,24 @@ inline size_t Executor::num_taskflows() const {
 }
 
 // Function: _this_worker
-inline Worker* Executor::_this_worker() {
-  auto itr = _wids.find(std::this_thread::get_id());
-  return itr == _wids.end() ? nullptr : &_workers[itr->second];
+inline Worker* Executor::_this_worker() const {
+  auto w = pt::worker;
+  return (w && w->_executor == this) ? w : nullptr;
 }
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto i = _wids.find(std::this_thread::get_id());
-  return i == _wids.end() ? -1 : static_cast<int>(_workers[i->second]._id);
+  auto w = pt::worker;
+  return (w && w->_executor == this) ? w->_id : -1;
 }
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
 
-#ifdef __cpp_lib_atomic_wait
-  // we cannot declare _all_spawned here because the main thread
-  // may finish real quick before other threads access _all_spawned
-#else
-  std::mutex mutex;
-  std::condition_variable cond;
-  size_t n=0;
-#endif
+  // Note: we can't declare latch here as a local variable
+  //       since the main thread may leave quicker than other thread
+  //       and then destroy it, causing the other thread to dangle
+  //       with the latch
 
   for(size_t id=0; id<N; ++id) {
 
@@ -1193,19 +1195,8 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._waiter = &_notifier._waiters[id];
     _threads[id] = std::thread([&, &w=_workers[id]] () {
 
-#ifdef __cpp_lib_atomic_wait
-      // wait for the caller thread to initialize the ID mapping
-      _all_spawned.wait(false, std::memory_order_acquire);
-#else
-      // update the ID mapping of this thread
-      {
-        std::scoped_lock lock(mutex);
-        _wids[std::this_thread::get_id()] = w._id;
-        if(n++; n == num_workers()) {
-          cond.notify_one();
-        }
-      }
-#endif
+      pt::worker = &w;
+      _latch.arrive_and_wait();  // synchronize with the main thread
 
       Node* t = nullptr;
       
@@ -1229,22 +1220,9 @@ inline void Executor::_spawn(size_t N) {
     //pthread_setaffinity_np(
     //  _threads[id].native_handle(), sizeof(cpu_set_t), &cpuset
     //);
-
-#ifdef __cpp_lib_atomic_wait
-    //_wids[_threads[id].get_id()] = id;
-    _wids.emplace(std::piecewise_construct,
-      std::forward_as_tuple(_threads[id].get_id()), std::forward_as_tuple(id)
-    );
-#endif
   }
-  
-#ifdef __cpp_lib_atomic_wait
-  _all_spawned.test_and_set(std::memory_order_release);
-  _all_spawned.notify_all();
-#else
-  std::unique_lock<std::mutex> lock(mutex);
-  cond.wait(lock, [&](){ return n==N; });
-#endif
+
+  _latch.arrive_and_wait();
 }
 
 // Function: _corun_until
@@ -2137,12 +2115,7 @@ inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
   _set_up_graph(tpg->_taskflow._graph, nullptr, tpg, 0, tpg->_sources);
   tpg->_join_counter.store(tpg->_sources.size(), std::memory_order_relaxed);
 
-  if(worker) {
-    _schedule(*worker, tpg->_sources);
-  }
-  else {
-    _schedule(tpg->_sources);
-  }
+  worker ? _schedule(*worker, tpg->_sources) : _schedule(tpg->_sources);
 }
 
 // Function: _set_up_graph
