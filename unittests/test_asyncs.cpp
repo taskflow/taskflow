@@ -179,6 +179,10 @@ void mixed_executor_async(unsigned N) {
   }
 
   while(counter.load() != 4000*N);
+
+  for(auto& executor : executors) {
+    executor.wait_for_all();
+  }
 }
 
 TEST_CASE("MixedAsync.1Executor" * doctest::timeout(300)) {
