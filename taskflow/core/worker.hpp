@@ -71,13 +71,29 @@ class Worker {
 
     size_t _id;
     size_t _vtm;
-    Executor* _executor;
+    Executor* _executor {nullptr};
     std::default_random_engine _rdgen { std::random_device{}() };
     TaskQueue<Node*> _wsq;
-    Node* _cache;
+    Node* _cache {nullptr};
 
     DefaultNotifier::Waiter* _waiter;
 };
+
+
+// ----------------------------------------------------------------------------
+// Per-thread
+// ----------------------------------------------------------------------------
+
+namespace pt {
+
+/**
+@private
+*/
+
+inline thread_local Worker* worker {nullptr};
+
+}
+    
 
 // ----------------------------------------------------------------------------
 // Class Definition: WorkerView

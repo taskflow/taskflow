@@ -1,5 +1,11 @@
 #pragma once
 
+// Feature macros for fine-tuning the performance of Taskflow at compile time
+// 
+// Disabled features by default:
+// + TF_ENABLE_TASK_POOL       : enable task pool optimization
+// + TF_ENABLE_ATOMIC_NOTIFIER : enable atomic notifier (required C++20)
+//
 #include "core/executor.hpp"
 #include "core/async.hpp"
 
@@ -39,10 +45,7 @@
 #define TF_MINOR_VERSION TF_VERSION/100%1000
 #define TF_PATCH_VERSION TF_VERSION%100
 
-// Macros to fine-tune the performance of Taskflow at compile time
-//
-// + TF_ENABLE_TASK_POOL      : enable task pool optimization
-// + TF_ENABLE_ATOMIC_NOTIFIER: enable atomic notifier (required C++20)
+
 
 /**
 @brief taskflow namespace

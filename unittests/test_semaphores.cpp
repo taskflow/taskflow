@@ -296,11 +296,12 @@ TEST_CASE("Linearity.8threads") {
 // --------------------------------------------------------
 // Testcase: Conflict Graph
 // --------------------------------------------------------
-//
-//     A
-//    / \
-//   /   \
-//  B-----C
+/*
+     A
+    / \
+   /   \
+  B-----C
+*/
 void conflict_graph_1(unsigned W) {
 
   tf::Executor executor(W);
@@ -431,11 +432,12 @@ TEST_CASE("ConflictGraph2.4threads") {
 // --------------------------------------------------------
 // Testcase: Deadlock
 // --------------------------------------------------------
-//
-//     A
-//    / \
-//   /   \
-//  B-----C
+/*
+     A
+    / \
+   /   \
+  B-----C
+*/
 void deadlock_1(unsigned W) {
 
   tf::Executor executor(W);
@@ -490,10 +492,12 @@ TEST_CASE("Deadlock1.4threads") {
   deadlock_1(4);
 }
 
-//     A
-//    / \
-//   /   \
-//  B-----C
+/*
+     A
+    / \
+   /   \
+  B-----C
+*/
 void ranged_deadlock_1(unsigned W) {
 
   tf::Executor executor(W);
