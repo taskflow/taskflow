@@ -1043,12 +1043,16 @@ class Executor {
   std::vector<Worker> _workers;
   DefaultNotifier _notifier;
 
-#ifdef __cpp_lib_atomic_wait
+#ifdef __cpp_lib_latch
   std::latch _latch;
+#else
+  Latch _latch;
+#endif
+
+#ifdef __cpp_lib_atomic_wait
   std::atomic<size_t> _num_topologies {0};
   std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 #else
-  Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};

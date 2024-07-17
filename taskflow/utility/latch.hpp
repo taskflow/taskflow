@@ -1,19 +1,6 @@
 #pragma once
 
 
-#if __has_include(<latch>)
-
-// use std::latch
-#include <latch>
-
-namespace tf {
-
-//using Latch = std::latch;
-
-} // namespace tf -------------------------------------------------------------
-
-#elif
-
 // use tf::Latch
 #include <condition_variable>
 #include <limits>
@@ -36,7 +23,7 @@ public:
     return (std::numeric_limits<ptrdiff_t>::max)();
   }
 
-  constexpr explicit Latch(std::ptrdiff_t expected)
+  explicit Latch(std::ptrdiff_t expected)
     : _counter(expected)
   {
     assert(0 <= expected && expected < (max)());
@@ -88,6 +75,3 @@ public:
 };
 
 } // namespace tf -------------------------------------------------------------
-
-#endif
-
