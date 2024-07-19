@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-8-0" kind="page">
     <compoundname>release-3-8-0</compoundname>
     <title>Release 3.8.0 (Master)</title>
@@ -91,7 +91,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Enhanced the core scheduling using C++20 atomic notification</para>
+<listitem><para>Enhanced the core scheduling performance using C++20 atomic notification</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>compile<sp/>your<sp/>taskflow<sp/>program<sp/>with<sp/>C++20<sp/>enabled</highlight></codeline>
@@ -107,13 +107,18 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>here<sp/>only)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>here<sp/>only)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>critical_section();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
+<para><itemizedlist>
+<listitem><para>Enhanced async-tasking performance through TLS</para>
+</listitem><listitem><para>Added async-task benchmark</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 <sect2 id="release-3-8-0_1release-3-8-0_utilities">
 <title>Utilities</title>
@@ -123,13 +128,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Bug Fixes</title>
 <para><itemizedlist>
 <listitem><para>Fixed the compilation error for not finding the C++ atomic library</para>
+</listitem><listitem><para>Fixed the missing <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> in asynchronous tasking</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>Removed the support of object pool for real-time resource release</para>
+<listitem><para>Removed the support of object pool by default</para>
 </listitem></itemizedlist>
 </para>
 </sect1>

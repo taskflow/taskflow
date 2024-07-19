@@ -788,9 +788,12 @@ class RandomPartitioner : public PartitionerBase<C> {
 };
 
 /**
-@brief default partitioner set to tf::StaticPartitioner
+@brief default partitioner set to tf::GuidedPartitioner
+
+Guided partitioning algorithm can achieve stable and decent performance
+for most parallel algorithms.
 */
-using DefaultPartitioner = StaticPartitioner<>;
+using DefaultPartitioner = GuidedPartitioner<>;
 
 /**
 @brief determines if a type is a partitioner 

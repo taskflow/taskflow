@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Fibonacci Number | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -56,227 +56,227 @@
             <li><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></li>
           </ul>
         </nav>
-<p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">fib</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span>
-<span class="p">}</span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> to recursively compute fibonacci numbers in parallel.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span>
+<p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">fib</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> to recursively compute fibonacci numbers in parallel.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span><span class="cp"></span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
 <span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">));</span><span class="w">  </span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span>
-<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">));</span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;fibonacci&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;fibonacci&quot;</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
-<span class="w">          </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">N</span><span class="p">));</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">})</span><span class="w"></span>
+<span class="w">          </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">N</span><span class="p">));</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
 
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Fib[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Fib[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
 
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</p><div class="m-graph"><svg style="width: 67.000rem; height: 52.700rem;" viewBox="0.00 0.00 670.00 526.75">
-<g transform="scale(1 1) rotate(0) translate(4 522.75)">
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</p><div class="m-graph"><svg style="width: 67.000rem; height: 52.500rem;" viewBox="0.00 0.00 670.00 525.00">
+<g transform="scale(1 1) rotate(0) translate(4 521)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffd972c0cd0</title>
-<polygon points="8,-8 8,-510.75 654,-510.75 654,-8 8,-8"/>
-<text text-anchor="middle" x="331" y="-497.25" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: fibonacci</text>
+<polygon points="8,-8 8,-509 654,-509 654,-8 8,-8"/>
+<text text-anchor="middle" x="331" y="-497" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: fibonacci</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0xa445c0</title>
-<polygon points="16,-16 16,-483.5 646,-483.5 646,-16 16,-16"/>
+<polygon points="16,-16 16,-482 646,-482 646,-16 16,-16"/>
 <text text-anchor="middle" x="331" y="-470" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 5</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000b90</title>
-<polygon points="252,-88 252,-456.25 638,-456.25 638,-88 252,-88"/>
-<text text-anchor="middle" x="445" y="-442.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 4</text>
+<polygon points="252,-88 252,-455 638,-455 638,-88 252,-88"/>
+<text text-anchor="middle" x="445" y="-443" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 4</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe910000b90</title>
-<polygon points="410,-160 410,-429 630,-429 630,-160 410,-160"/>
-<text text-anchor="middle" x="520" y="-415.5" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
+<polygon points="410,-160 410,-428 630,-428 630,-160 410,-160"/>
+<text text-anchor="middle" x="520" y="-416" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000fe0</title>
-<polygon points="480,-232 480,-401.75 622,-401.75 622,-232 480,-232"/>
-<text text-anchor="middle" x="551" y="-388.25" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="480,-232 480,-401 622,-401 622,-232 480,-232"/>
+<text text-anchor="middle" x="551" y="-389" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe910000c48</title>
-<polygon points="260,-160 260,-303.25 402,-303.25 402,-160 260,-160"/>
-<text text-anchor="middle" x="331" y="-289.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="260,-160 260,-303 402,-303 402,-160 260,-160"/>
+<text text-anchor="middle" x="331" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000c48</title>
-<polygon points="24,-88 24,-330.5 244,-330.5 244,-88 24,-88"/>
-<text text-anchor="middle" x="134" y="-317" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
+<polygon points="24,-88 24,-330 244,-330 244,-88 24,-88"/>
+<text text-anchor="middle" x="134" y="-318" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7fe918000d00</title>
-<polygon points="94,-160 94,-303.25 236,-303.25 236,-160 94,-160"/>
-<text text-anchor="middle" x="165" y="-289.75" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<polygon points="94,-160 94,-303 236,-303 236,-160 94,-160"/>
+<text text-anchor="middle" x="165" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
 </g>
 <g class="m-node m-flat">
 <title>p0xa445c0</title>
 <ellipse cx="248" cy="-42" rx="27" ry="18"/>
-<text text-anchor="middle" x="248" y="-38.12" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
+<text text-anchor="middle" x="248" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000b90</title>
 <ellipse cx="331" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-110.12" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
+<text text-anchor="middle" x="331" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000b90&#45;&gt;p0xa445c0</title>
-<path d="M314.6,-99.17C302.78,-89.2 286.6,-75.56 273.15,-64.21"/>
-<polygon points="275.42,-61.55 265.52,-57.78 270.91,-66.9 275.42,-61.55"/>
+<path d="M314.6,-99.17C302.36,-88.85 285.45,-74.58 271.73,-63.01"/>
+<polygon points="273.98,-60.33 264.08,-56.56 269.47,-65.69 273.98,-60.33"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000b90</title>
 <ellipse cx="445" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<text text-anchor="middle" x="445" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000b90&#45;&gt;p0x7fe918000b90</title>
-<path d="M426.03,-172.68C419.69,-168.6 412.56,-164.07 406,-160 391.05,-150.72 374.27,-140.63 360.37,-132.35"/>
-<polygon points="362.52,-129.56 352.14,-127.46 358.95,-135.57 362.52,-129.56"/>
+<path d="M426.42,-172.93C419.98,-168.79 412.7,-164.15 406,-160 390.65,-150.48 373.37,-140.09 359.28,-131.7"/>
+<polygon points="360.91,-128.59 350.52,-126.5 357.33,-134.61 360.91,-128.59"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000fe0</title>
 <ellipse cx="517" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="517" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="517" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000fe0&#45;&gt;p0x7fe910000b90</title>
-<path d="M502.08,-242.5C492.23,-232.92 479.14,-220.19 467.97,-209.34"/>
-<polygon points="470.59,-207 460.98,-202.54 465.71,-212.02 470.59,-207"/>
+<path d="M502.43,-242.83C492.25,-232.94 478.48,-219.55 466.97,-208.36"/>
+<polygon points="469.41,-205.85 459.8,-201.38 464.53,-210.87 469.41,-205.85"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001150</title>
-<ellipse cx="587" cy="-356.5" rx="27" ry="18"/>
-<text text-anchor="middle" x="587" y="-352.62" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<ellipse cx="587" cy="-356" rx="27" ry="18"/>
+<text text-anchor="middle" x="587" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001150&#45;&gt;p0x7fe918000fe0</title>
-<path d="M575.75,-340C564.8,-324.89 547.96,-301.68 535.11,-283.97"/>
-<polygon points="538.04,-282.05 529.34,-276.01 532.38,-286.16 538.04,-282.05"/>
+<path d="M575.75,-339.58C564.53,-324.18 547.13,-300.32 534.17,-282.55"/>
+<polygon points="536.94,-280.4 528.22,-274.39 531.28,-284.53 536.94,-280.4"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001208</title>
-<ellipse cx="515" cy="-356.5" rx="27" ry="18"/>
-<text text-anchor="middle" x="515" y="-352.62" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<ellipse cx="515" cy="-356" rx="27" ry="18"/>
+<text text-anchor="middle" x="515" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001208&#45;&gt;p0x7fe918000fe0</title>
-<path d="M515.36,-338.25C515.65,-324.2 516.07,-304.08 516.41,-287.62"/>
-<polygon points="519.9,-288.01 516.61,-277.94 512.9,-287.87 519.9,-288.01"/>
+<path d="M515.36,-337.84C515.66,-323.5 516.09,-302.81 516.43,-286.22"/>
+<polygon points="519.94,-286.09 516.65,-276.01 512.94,-285.94 519.94,-286.09"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918001098</title>
 <ellipse cx="445" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="445" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918001098&#45;&gt;p0x7fe910000b90</title>
-<path d="M445,-239.7C445,-232.41 445,-223.73 445,-215.54"/>
-<polygon points="448.5,-215.62 445,-205.62 441.5,-215.62 448.5,-215.62"/>
+<path d="M445,-239.7C445,-231.98 445,-222.71 445,-214.11"/>
+<polygon points="448.5,-214.1 445,-204.1 441.5,-214.1 448.5,-214.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000c48</title>
 <ellipse cx="331" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="331" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000c48&#45;&gt;p0x7fe918000b90</title>
-<path d="M331,-167.7C331,-160.41 331,-151.73 331,-143.54"/>
-<polygon points="334.5,-143.62 331,-133.62 327.5,-143.62 334.5,-143.62"/>
+<path d="M331,-167.7C331,-159.98 331,-150.71 331,-142.11"/>
+<polygon points="334.5,-142.1 331,-132.1 327.5,-142.1 334.5,-142.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000d00</title>
 <ellipse cx="367" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="367" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="367" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000d00&#45;&gt;p0x7fe910000c48</title>
-<path d="M358.65,-240.76C354.42,-232.55 349.19,-222.37 344.42,-213.09"/>
-<polygon points="347.68,-211.79 340,-204.49 341.46,-214.99 347.68,-211.79"/>
+<path d="M358.65,-240.76C354.29,-232.28 348.85,-221.71 343.96,-212.2"/>
+<polygon points="346.99,-210.44 339.3,-203.15 340.77,-213.64 346.99,-210.44"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe910000db8</title>
 <ellipse cx="295" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="295" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<text text-anchor="middle" x="295" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe910000db8&#45;&gt;p0x7fe910000c48</title>
-<path d="M303.35,-240.76C307.58,-232.55 312.81,-222.37 317.58,-213.09"/>
-<polygon points="320.54,-214.99 322,-204.49 314.32,-211.79 320.54,-214.99"/>
+<path d="M303.35,-240.76C307.71,-232.28 313.15,-221.71 318.04,-212.2"/>
+<polygon points="321.23,-213.64 322.7,-203.15 315.01,-210.44 321.23,-213.64"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000c48</title>
 <ellipse cx="166" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-110.12" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<text text-anchor="middle" x="166" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000c48&#45;&gt;p0xa445c0</title>
-<path d="M182.2,-99.17C193.88,-89.2 209.86,-75.56 223.15,-64.21"/>
-<polygon points="225.35,-66.94 230.68,-57.78 220.8,-61.61 225.35,-66.94"/>
+<path d="M182.2,-99.17C194.18,-88.94 210.69,-74.85 224.18,-63.34"/>
+<polygon points="226.78,-65.72 232.11,-56.56 222.23,-60.39 226.78,-65.72"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000d00</title>
 <ellipse cx="166" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<text text-anchor="middle" x="166" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000d00&#45;&gt;p0x7fe918000c48</title>
-<path d="M166,-167.7C166,-160.41 166,-151.73 166,-143.54"/>
-<polygon points="169.5,-143.62 166,-133.62 162.5,-143.62 169.5,-143.62"/>
+<path d="M166,-167.7C166,-159.98 166,-150.71 166,-142.11"/>
+<polygon points="169.5,-142.1 166,-132.1 162.5,-142.1 169.5,-142.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000e70</title>
 <ellipse cx="201" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="201" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="201" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000e70&#45;&gt;p0x7fe918000d00</title>
-<path d="M192.71,-240.41C188.7,-232.39 183.78,-222.57 179.27,-213.54"/>
-<polygon points="182.51,-212.2 174.91,-204.82 176.25,-215.33 182.51,-212.2"/>
+<path d="M192.88,-240.76C188.7,-232.4 183.51,-222.02 178.8,-212.61"/>
+<polygon points="181.92,-211.01 174.32,-203.63 175.66,-214.14 181.92,-211.01"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000f28</title>
 <ellipse cx="129" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="129" y="-254.12" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<text text-anchor="middle" x="129" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000f28&#45;&gt;p0x7fe918000d00</title>
-<path d="M137.58,-240.76C141.92,-232.55 147.3,-222.37 152.21,-213.09"/>
-<polygon points="155.18,-214.96 156.76,-204.49 148.99,-211.69 155.18,-214.96"/>
+<path d="M137.58,-240.76C142.06,-232.28 147.65,-221.71 152.68,-212.2"/>
+<polygon points="155.89,-213.62 157.46,-203.15 149.7,-210.35 155.89,-213.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7fe918000db8</title>
 <ellipse cx="59" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="59" y="-182.12" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<text text-anchor="middle" x="59" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7fe918000db8&#45;&gt;p0x7fe918000c48</title>
-<path d="M75.07,-171.31C79.78,-167.51 85,-163.47 90,-160 104.6,-149.87 121.55,-139.69 135.74,-131.58"/>
-<polygon points="137.2,-134.78 144.19,-126.82 133.76,-128.68 137.2,-134.78"/>
+<path d="M75.07,-171.31C79.78,-167.51 85,-163.47 90,-160 104.88,-149.67 122.21,-139.3 136.56,-131.11"/>
+<polygon points="138.51,-134.03 145.5,-126.07 135.07,-127.93 138.51,-134.03"/>
 </g>
 </g>
 </svg>
@@ -325,7 +325,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

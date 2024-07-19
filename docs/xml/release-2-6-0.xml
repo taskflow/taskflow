@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-2-6-0" kind="page">
     <compoundname>release-2-6-0</compoundname>
     <title>Release 2.6.0 (2020/08/25)</title>
@@ -39,13 +39,13 @@
 <para><itemizedlist>
 <listitem><para>added explicit join behavior of <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="SubflowTasking_1JoinASubflow" kindref="member">Join a Subflow</ref> and <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>) </para>
 </listitem>
-<listitem><para>added version macro (<computeroutput>TF_VERSION</computeroutput>, <computeroutput>TF_MAJOR_VERSION</computeroutput>, <computeroutput>TF_MINOR_VERSION</computeroutput>, <computeroutput>TF_PATCH_VERSION</computeroutput>) to retrieve version info programmatically (<ref refid="namespacetf_1a06790e5f6898894392f247309626e1b4" kindref="member">tf::version</ref>) </para>
+<listitem><para>added version macro (<computeroutput>TF_VERSION</computeroutput>, <computeroutput>TF_MAJOR_VERSION</computeroutput>, <computeroutput>TF_MINOR_VERSION</computeroutput>, <computeroutput>TF_PATCH_VERSION</computeroutput>) to retrieve version info programmatically (<ref refid="namespacetf_1a30fa078dcf625e9eada5a95af1467588" kindref="member">tf::version</ref>) </para>
 </listitem>
 <listitem><para>added <computeroutput>TF_BUILD_TESTS</computeroutput> and <computeroutput>TF_BUILD_EXAMPLES</computeroutput> (default on) to let users disable the build of tests and examples (see <ref refid="install" kindref="compound">Building and Installing</ref>) </para>
 </listitem>
 <listitem><para>renamed tf::Taskflkow::parallel_for to <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref> to follow the STL convention </para>
 </listitem>
-<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref> using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a <ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref> of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>). </para>
+<listitem><para>redesigned <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref> using OpenMP-styled scheduling algorithms; this redesign largely improved the performance of parallel-for using a single dynamic task return, but it breaks the previous API that returned a <ref refid="cpp/utility/pair" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref> of tasks to synchronize on a set of static parallel-for tasks. Yet, we believe adopting this change is not difficult (see <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref>). </para>
 </listitem>
 <listitem><para>added multiple unit tests for <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each</ref> and <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref> at different partition algorithms; we have implemented our partition algorithms based on the OpenMP library implementation of LLVM and GCC. </para>
 </listitem>

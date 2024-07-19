@@ -814,11 +814,6 @@ class Node {
     DependentAsync    // dependent async tasking
   >;
 
-  struct Semaphores {
-    SmallVector<Semaphore*> to_acquire;
-    SmallVector<Semaphore*> to_release;
-  };
-
   public:
 
   // variant index
@@ -855,6 +850,8 @@ class Node {
   const std::string& name() const;
 
   private:
+  
+  std::atomic<int> _state {0};
 
   std::string _name;
   
@@ -868,7 +865,6 @@ class Node {
   SmallVector<Node*> _successors;
   SmallVector<Node*> _dependents;
 
-  std::atomic<int> _state {0};
   std::atomic<size_t> _join_counter {0};
 
   std::exception_ptr _exception_ptr {nullptr};
