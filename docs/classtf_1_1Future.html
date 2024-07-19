@@ -5,7 +5,7 @@
   <title>tf::Future class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,23 +62,23 @@
             </li>
           </ul>
         </nav>
-<p><a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> is a derived class from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> that will eventually hold the execution result of a submitted taskflow (tf::Executor::run) In addition to the base methods inherited from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, you can call <a href="classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b" class="m-doc">tf::<wbr />Future::<wbr />cancel</a> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<p><a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> is a derived class from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> that will eventually hold the execution result of a submitted taskflow (tf::Executor::run) In addition to the base methods inherited from <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, you can call <a href="classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b" class="m-doc">tf::<wbr />Future::<wbr />cancel</a> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
-<span class="w">  </span><span class="p">});</span>
-<span class="p">}</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="p">});</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// submit the taskflow</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// request to cancel the submitted execution above</span>
-<span class="n">fu</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span>
+<span class="n">fu</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// wait until the cancellation finishes</span>
-<span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">();</span></pre>
+<span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"></span></pre>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -99,12 +99,12 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a5203e9c97fad413b67f6f8ba1d322782">
-              <span class="m-doc-wrap-bumper">auto <a href="#a5203e9c97fad413b67f6f8ba1d322782" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp;) -&gt; <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
+            <dt id="af33647f94075cbbacc260f36917e6ff2">
+              <span class="m-doc-wrap-bumper">auto <a href="#af33647f94075cbbacc260f36917e6ff2" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp;) -&gt; <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
             </dt>
             <dd>disabled copy assignment</dd>
-            <dt id="a52777516391d8c799ac93830fc47402a">
-              <span class="m-doc-wrap-bumper">auto <a href="#a52777516391d8c799ac93830fc47402a" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp;&amp;) -&gt; <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="af3f3c745d9359478e12560ceb2157fc6">
+              <span class="m-doc-wrap-bumper">auto <a href="#af3f3c745d9359478e12560ceb2157fc6" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp;&amp;) -&gt; <a href="classtf_1_1Future.html" class="m-doc">Future</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>default move assignment</dd>
             <dt>
@@ -178,7 +178,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

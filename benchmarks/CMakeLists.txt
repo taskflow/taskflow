@@ -350,22 +350,23 @@ target_link_libraries(
 )
 set_target_properties(bench_scan PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
-## benchmark 18: dependent_async
-#add_executable(
-#  bench_dependent_async
-#  ${TF_BENCHMARK_DIR}/dependent_async/main.cpp
-#  ${TF_BENCHMARK_DIR}/dependent_async/omp.cpp
-#  ${TF_BENCHMARK_DIR}/dependent_async/taskflow.cpp
-#)
-#target_include_directories(bench_dependent_async PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
-#target_link_libraries(
-#  bench_dependent_async 
-#  ${PROJECT_NAME} 
-#  ${TBB_IMPORTED_TARGETS} 
-#  ${OpenMP_CXX_LIBRARIES} 
-#  tf::default_settings
-#)
-#set_target_properties(bench_dependent_async PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+## benchmark 18: async_task
+add_executable(
+  bench_async_task
+  ${TF_BENCHMARK_DIR}/async_task/main.cpp
+  ${TF_BENCHMARK_DIR}/async_task/omp.cpp
+  ${TF_BENCHMARK_DIR}/async_task/std.cpp
+  ${TF_BENCHMARK_DIR}/async_task/taskflow.cpp
+)
+target_include_directories(bench_async_task PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_async_task
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_async_task PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 # CUDA benchmarks

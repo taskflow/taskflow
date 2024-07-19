@@ -47,7 +47,7 @@ to C++20 atomic wait and notification.
 
 @subsection release-3-8-0_taskflow_core Taskflow Core
 
-+ Enhanced the core scheduling using C++20 atomic notification
++ Enhanced the core scheduling performance using C++20 atomic notification
 
 @code{.shell-session}
 # compile your taskflow program with C++20 enabled
@@ -71,16 +71,19 @@ for(size_t i=0; i<1000; i++) {
 executor.run(taskflow).wait();
 @endcode
 
++ Enhanced async-tasking performance through TLS
++ Added async-task benchmark
 
 @subsection release-3-8-0_utilities Utilities
 
 @section release-3-8-0_bug_fixes Bug Fixes 
 
 + Fixed the compilation error for not finding the C++ atomic library
++ Fixed the missing tf::Runtime in asynchronous tasking
 
 @section release-3-8-0_breaking_changes Breaking Changes
 
-+ Removed the support of object pool for real-time resource release
++ Removed the support of object pool by default
 
 @section release-3-8-0_documentation Documentation
 

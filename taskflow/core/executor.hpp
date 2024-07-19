@@ -18,7 +18,7 @@ namespace tf {
 /** 
 @class Executor
 
-@brief class to create an executor for running a taskflow graph
+@brief class to create an executor 
 
 An executor manages a set of worker threads to run one or multiple taskflows
 using an efficient work-stealing scheduling algorithm.
@@ -1066,7 +1066,7 @@ class Executor {
 
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-  Worker* _this_worker() const;
+  //Worker* _this_worker() const;
   
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_module_task_internal(Worker&, Node*);
@@ -1168,10 +1168,10 @@ inline size_t Executor::num_taskflows() const {
 }
 
 // Function: _this_worker
-inline Worker* Executor::_this_worker() const {
-  auto w = pt::worker;
-  return (w && w->_executor == this) ? w : nullptr;
-}
+//inline Worker* Executor::_this_worker() const {
+//  auto w = pt::worker;
+//  return (w && w->_executor == this) ? w : nullptr;
+//}
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
@@ -2015,7 +2015,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::lock_guard<std::mutex> lock(f._mutex);
     f._topologies.push(t);
     if(f._topologies.size() == 1) {
-      _set_up_topology(_this_worker(), t.get());
+      _set_up_topology(pt::worker, t.get());
     }
   }
 
@@ -2041,14 +2041,12 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
 template <typename T>
 void Executor::corun(T& target) {
   
-  auto w = _this_worker();
-
-  if(w == nullptr) {
+  if(pt::worker == nullptr || pt::worker->_executor != this) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
   Node parent;  // auxiliary parent
-  _corun_graph(*w, &parent, target.graph());
+  _corun_graph(*pt::worker, &parent, target.graph());
   parent._process_exception();
 }
 
@@ -2056,13 +2054,11 @@ void Executor::corun(T& target) {
 template <typename P>
 void Executor::corun_until(P&& predicate) {
   
-  auto w = _this_worker();
-
-  if(w == nullptr) {
+  if(pt::worker == nullptr || pt::worker->_executor != this) {
     TF_THROW("corun_until must be called by a worker of the executor");
   }
 
-  _corun_until(*w, std::forward<P>(predicate));
+  _corun_until(*pt::worker, std::forward<P>(predicate));
 
   // TODO: exception?
 }
@@ -2343,13 +2339,13 @@ void Runtime::_silent_async(Worker& w, P&& params, F&& f) {
 // Function: silent_async
 template <typename F>
 void Runtime::silent_async(F&& f) {
-  _silent_async(*_executor._this_worker(), DefaultTaskParams{}, std::forward<F>(f));
+  _silent_async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: silent_async
 template <typename P, typename F>
 void Runtime::silent_async(P&& params, F&& f) {
-  _silent_async(*_executor._this_worker(), std::forward<P>(params), std::forward<F>(f));
+  _silent_async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 
 // Function: silent_async_unchecked
@@ -2393,13 +2389,13 @@ auto Runtime::_async(Worker& w, P&& params, F&& f) {
 // Function: async
 template <typename F>
 auto Runtime::async(F&& f) {
-  return _async(*_executor._this_worker(), DefaultTaskParams{}, std::forward<F>(f));
+  return _async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: async
 template <typename P, typename F>
 auto Runtime::async(P&& params, F&& f) {
-  return _async(*_executor._this_worker(), std::forward<P>(params), std::forward<F>(f));
+  return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 
 

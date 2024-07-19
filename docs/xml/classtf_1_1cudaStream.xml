@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaStream" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaStream</compoundname>
     <basecompoundref prot="public" virt="non-virtual">cudaObject&lt; cudaStream_t, cudaStreamCreator, cudaStreamDeleter &gt;</basecompoundref>
@@ -10,7 +10,6 @@
         <definition>tf::cudaStream::cudaStream</definition>
         <argsstring>(cudaStream_t stream)</argsstring>
         <name>cudaStream</name>
-        <qualifiedname>tf::cudaStream::cudaStream</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -23,14 +22,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="60" column="14" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="60" bodyend="61"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="60" column="14" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="60" bodyend="61"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a922ed633cf0670b22aca1430e7a810b1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaStream::cudaStream</definition>
         <argsstring>()=default</argsstring>
         <name>cudaStream</name>
-        <qualifiedname>tf::cudaStream::cudaStream</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -38,14 +36,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="66" column="5"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="66" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStream::synchronize</definition>
         <argsstring>() const</argsstring>
         <name>synchronize</name>
-        <qualifiedname>tf::cudaStream::synchronize</qualifiedname>
         <briefdescription>
 <para>synchronizes the associated stream </para>
         </briefdescription>
@@ -54,14 +51,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="74" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="74" bodyend="78"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="74" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="74" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStream::begin_capture</definition>
         <argsstring>(cudaStreamCaptureMode m=cudaStreamCaptureModeGlobal) const</argsstring>
         <name>begin_capture</name>
-        <qualifiedname>tf::cudaStream::begin_capture</qualifiedname>
         <param>
           <type>cudaStreamCaptureMode</type>
           <declname>m</declname>
@@ -81,14 +77,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="106" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="106" bodyend="111"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="106" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="106" bodyend="111"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
         <definition>cudaGraph_t tf::cudaStream::end_capture</definition>
         <argsstring>() const</argsstring>
         <name>end_capture</name>
-        <qualifiedname>tf::cudaStream::end_capture</qualifiedname>
         <briefdescription>
 <para>ends graph capturing on the stream </para>
         </briefdescription>
@@ -97,14 +92,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="122" column="17" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="122" bodyend="129"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="122" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="122" bodyend="129"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a8343c234b4a3040b59626dc70e81d767" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStream::record</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>record</name>
-        <qualifiedname>tf::cudaStream::record</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -117,14 +111,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="137" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="137" bodyend="142"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="137" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="137" bodyend="142"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStream_1a6bb195945f7a580bec6105691c53c699" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStream::wait</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>wait</name>
-        <qualifiedname>tf::cudaStream::wait</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -137,7 +130,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="150" column="10" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="150" bodyend="155"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="150" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="150" bodyend="155"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -168,7 +161,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="49" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="51" bodyend="156"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" line="49" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp" bodystart="51" bodyend="156"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" prot="public" virt="non-virtual"><scope>tf::cudaStream</scope><name>begin_capture</name></member>
       <member refid="classtf_1_1cudaStream_1ab29390d447e334d4945caf78b24d6ca6" prot="public" virt="non-virtual"><scope>tf::cudaStream</scope><name>cudaStream</name></member>

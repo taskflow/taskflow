@@ -14,10 +14,10 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
-@brief class to create a dependent asynchronous task
+@brief class to create a dependent asynchronous task (async task)
 
 A tf::AsyncTask is a lightweight handle that retains @em shared ownership
-of a dependent async task created by an executor.
+of a dependent asynchronous task (async task) created by an executor.
 This shared ownership ensures that the async task remains alive when
 adding it to the dependency list of another async task, 
 thus avoiding the classical [ABA problem](https://en.wikipedia.org/wiki/ABA_problem).
@@ -51,22 +51,22 @@ class AsyncTask {
     AsyncTask() = default;
     
     /**
-    @brief destroys the managed asynchronous task if this is the last owner
+    @brief destroys the managed async task if this is the last owner
     */
     ~AsyncTask();
     
     /**
-    @brief constructs an asynchronous task that shares ownership of @c rhs
+    @brief constructs an async task that shares ownership of @c rhs
     */
     AsyncTask(const AsyncTask& rhs);
 
     /**
-    @brief move-constructs an asynchronous task from @c rhs
+    @brief move-constructs an async task from @c rhs
     */
     AsyncTask(AsyncTask&& rhs);
     
     /**
-    @brief copy-assigns the asynchronous task from @c rhs
+    @brief copy-assigns the async task from @c rhs
 
     Releases the managed object of @c this and retains a new shared ownership
     of @c rhs.
@@ -74,14 +74,14 @@ class AsyncTask {
     AsyncTask& operator = (const AsyncTask& rhs);
 
     /**
-    @brief move-assigns the asynchronous task from @c rhs
+    @brief move-assigns the async task from @c rhs
     
     Releases the managed object of @c this and takes over the ownership of @c rhs.
     */
     AsyncTask& operator = (AsyncTask&& rhs);
     
     /**
-    @brief checks if the asynchronous task stores nothing
+    @brief checks if this async task is associated with a callable
     */
     bool empty() const;
 
@@ -91,18 +91,18 @@ class AsyncTask {
     void reset();
     
     /**
-    @brief obtains a hash value of this asynchronous task
+    @brief obtains the hashed value of this async task
     */
     size_t hash_value() const;
 
     /**
     @brief returns the number of shared owners that are currently managing 
-           this asynchronous task
+           this async task
     */
     size_t use_count() const;
 
     /**                                                                                                       
-    @brief returns the boolean indicating whether the async task is done
+    @brief checks if the async task finishes
     */
     bool is_done() const; 
 

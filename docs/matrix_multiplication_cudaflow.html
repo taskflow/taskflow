@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Matrix Multiplication (cudaFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -58,226 +58,226 @@
           </ul>
         </nav>
 <p>Following up on <a href="matrix_multiplication.html" class="m-doc">Matrix Multiplication</a>, this page studies how to accelerate a matrix multiplication workload on a GPU using <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>.</p><section id="GPUAcceleratedMatrixMultiplication"><h2><a href="#GPUAcceleratedMatrixMultiplication">Define a Matrix Multiplication Kernel</a></h2><p>GPU can perform a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</p><pre class="m-code"><span class="c1">// CUDA kernel to perform matrix multiplication</span>
-<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">matmul</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">row</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">col</span><span class="p">];</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">    </span><span class="n">c</span><span class="p">[</span><span class="n">row</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">col</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span></pre><p>Each CUDA thread corresponds to an element of <code>C</code> and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <code>(x, y)</code> in the 2D matrix can be addressed at <code>x * width + y</code> in the transformed 1D layout.</p><img class="m-image" src="matrix_multiplication_4.png" alt="Image" style="width: 70%;" /></section><section id="DefineAcudaFlowForMatrixMultiplication"><h2><a href="#DefineAcudaFlowForMatrixMultiplication">Define a cudaFlow for Matrix Multiplication</a></h2><p>The next step is to allocate memory for <code>A</code>, <code>B</code>, and <code>C</code> at a GPU. We create three tasks each calling <code>cudaMalloc</code> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</p><pre class="m-code"><span class="kt">void</span><span class="w"> </span><span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">matmul</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">y</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">row</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">col</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">c</span><span class="p">[</span><span class="n">row</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">col</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>Each CUDA thread corresponds to an element of <code>C</code> and compute its result. Instead of storing each matrix in a 2D array, we use 1D layout to ease the data transfer between CPU and GPU. In a row-major layout, an element <code>(x, y)</code> in the 2D matrix can be addressed at <code>x * width + y</code> in the transformed 1D layout.</p><img class="m-image" src="matrix_multiplication_4.png" alt="Image" style="width: 70%;" /></section><section id="DefineAcudaFlowForMatrixMultiplication"><h2><a href="#DefineAcudaFlowForMatrixMultiplication">Define a cudaFlow for Matrix Multiplication</a></h2><p>The next step is to allocate memory for <code>A</code>, <code>B</code>, and <code>C</code> at a GPU. We create three tasks each calling <code>cudaMalloc</code> to allocate space for one matrix. Then, we create a cudaFlow to offload matrix multiplication to a GPU. The entire code is described as follows:</p><pre class="m-code"><span class="kt">void</span><span class="w"> </span><span class="nf">matrix_multiplication</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// allocate the host and gpu storage for A</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_a&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_a&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// allocate the host and gpu storage for B</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_b&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_b&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// allocate the host and gpu storage for C</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">allocate_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;allocate_c&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// create a cudaFlow task to run the matrix multiplication</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">cudaFlow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">cudaFlow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">    </span><span class="c1">// copy data to da, db, and dc</span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_da</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_A&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_B&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_hc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D2H_C&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_da</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">K</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_A&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;H2D_B&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">copy_hc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D2H_C&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">    </span><span class="n">dim3</span><span class="w"> </span><span class="n">grid</span><span class="w">  </span><span class="p">((</span><span class="n">K</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">);</span>
-<span class="w">    </span><span class="n">dim3</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+<span class="w">    </span><span class="n">dim3</span><span class="w"> </span><span class="n">grid</span><span class="w">  </span><span class="p">((</span><span class="n">K</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="mi">16-1</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">dim3</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">kmatmul</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">matmul</span><span class="p">,</span><span class="w"> </span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
-<span class="w">                             </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;matmul&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">kmatmul</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">block</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">matmul</span><span class="p">,</span><span class="w"> </span><span class="n">da</span><span class="p">,</span><span class="w"> </span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">dc</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="w">                             </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;matmul&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">    </span><span class="n">kmatmul</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">copy_da</span><span class="p">,</span><span class="w"> </span><span class="n">copy_db</span><span class="p">)</span>
-<span class="w">           </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">copy_hc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">kmatmul</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">copy_da</span><span class="p">,</span><span class="w"> </span><span class="n">copy_db</span><span class="p">)</span><span class="w"></span>
+<span class="w">           </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">copy_hc</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">    </span><span class="c1">// launch the cudaFlow</span>
-<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
-<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
-<span class="w">    </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span>
+<span class="w">    </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">stream</span><span class="p">.</span><span class="n">synchronize</span><span class="p">();</span><span class="w"></span>
 <span class="w">  </span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cudaFlow&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cudaFlow&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// free the gpu storage</span>
-<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">da</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
-<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">dc</span><span class="p">);</span>
-<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">da</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">db</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">cudaFree</span><span class="p">(</span><span class="n">dc</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;free&quot;</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// create dependency</span>
-<span class="w">  </span><span class="n">cudaFlow</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_a</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_b</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">)</span>
-<span class="w">          </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span>
+<span class="w">  </span><span class="n">cudaFlow</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">allocate_a</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_b</span><span class="p">,</span><span class="w"> </span><span class="n">allocate_c</span><span class="p">)</span><span class="w"></span>
+<span class="w">          </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">free</span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// dump the graph without unfolding the cudaFlow</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// run the taskflow</span>
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// dump the entire execution graph including unfolded cudaFlow</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <code>A</code> and <code>B</code> to <code>da</code> and <code>db</code>, one device-to-host (D2H) task that copies the result from <code>dc</code> to <code>C</code>, and one kernel task that launches <code>matmul</code> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</p><div class="m-graph"><svg style="width: 25.700rem; height: 18.800rem;" viewBox="0.00 0.00 257.30 188.00">
+<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span></pre><p>Within the cudaFlow, we create two host-to-device (H2D) tasks that copy data from <code>A</code> and <code>B</code> to <code>da</code> and <code>db</code>, one device-to-host (D2H) task that copies the result from <code>dc</code> to <code>C</code>, and one kernel task that launches <code>matmul</code> on the GPU (by default, GPU 0). H2D tasks precede the kernel and the kernel precedes the D2H task. These GPU operations form a GPU task graph managed by a cudaFlow. The first dump of the taskflow gives the following graph:</p><div class="m-graph"><svg style="width: 27.900rem; height: 18.800rem;" viewBox="0.00 0.00 279.29 188.00">
 <g transform="scale(1 1) rotate(0) translate(4 184)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x55d923794f10</title>
-<ellipse cx="35.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="35.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_a</text>
+<ellipse cx="39.44" cy="-162" rx="39.38" ry="18"/>
+<text text-anchor="middle" x="39.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_a</text>
 </g>
 <g class="m-node">
 <title>p0x55d923795240</title>
-<polygon points="153.65,-108 150.65,-112 129.65,-112 126.65,-108 95.65,-108 95.65,-72 153.65,-72 153.65,-108"/>
-<text text-anchor="middle" x="124.65" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow</text>
+<polygon points="167.94,-108 164.94,-112 143.94,-112 140.94,-108 104.94,-108 104.94,-72 167.94,-72 167.94,-108"/>
+<text text-anchor="middle" x="136.44" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow</text>
 </g>
 <g class="m-edge">
 <title>p0x55d923794f10&#45;&gt;p0x55d923795240</title>
-<path d="M54.09,-146.5C65.51,-137.52 80.46,-125.76 93.66,-115.37"/>
-<polygon points="95.57,-118.33 101.26,-109.39 91.24,-112.82 95.57,-118.33"/>
+<path d="M59.54,-146.5C72.43,-137.19 89.47,-124.9 104.22,-114.25"/>
+<polygon points="106.54,-116.89 112.6,-108.2 102.44,-111.22 106.54,-116.89"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55d923795350</title>
-<ellipse cx="124.65" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="124.65" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
+<ellipse cx="136.44" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="136.44" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
 </g>
 <g class="m-edge">
 <title>p0x55d923795240&#45;&gt;p0x55d923795350</title>
-<path d="M124.65,-71.7C124.65,-64.41 124.65,-55.73 124.65,-47.54"/>
-<polygon points="128.15,-47.62 124.65,-37.62 121.15,-47.62 128.15,-47.62"/>
+<path d="M136.44,-71.7C136.44,-63.98 136.44,-54.71 136.44,-46.11"/>
+<polygon points="139.94,-46.1 136.44,-36.1 132.94,-46.1 139.94,-46.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55d923795020</title>
-<ellipse cx="124.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="124.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_b</text>
+<ellipse cx="136.44" cy="-162" rx="39.38" ry="18"/>
+<text text-anchor="middle" x="136.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_b</text>
 </g>
 <g class="m-edge">
 <title>p0x55d923795020&#45;&gt;p0x55d923795240</title>
-<path d="M124.65,-143.7C124.65,-136.41 124.65,-127.73 124.65,-119.54"/>
-<polygon points="128.15,-119.62 124.65,-109.62 121.15,-119.62 128.15,-119.62"/>
+<path d="M136.44,-143.7C136.44,-135.98 136.44,-126.71 136.44,-118.11"/>
+<polygon points="139.94,-118.1 136.44,-108.1 132.94,-118.1 139.94,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x55d923795130</title>
-<ellipse cx="213.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="213.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
+<ellipse cx="232.44" cy="-162" rx="38.7" ry="18"/>
+<text text-anchor="middle" x="232.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
 </g>
 <g class="m-edge">
 <title>p0x55d923795130&#45;&gt;p0x55d923795240</title>
-<path d="M195.21,-146.5C183.79,-137.52 168.84,-125.76 155.64,-115.37"/>
-<polygon points="158.06,-112.82 148.04,-109.39 153.73,-118.33 158.06,-112.82"/>
+<path d="M212.55,-146.5C199.79,-137.19 182.93,-124.9 168.33,-114.25"/>
+<polygon points="170.18,-111.27 160.03,-108.2 166.05,-116.92 170.18,-111.27"/>
 </g>
 </g>
 </svg>
-</div><p>A cudaFlow encapsulates a GPU task dependency graph similar to a <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> (see <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</p><div class="m-graph"><svg style="width: 40.100rem; height: 36.700rem;" viewBox="0.00 0.00 401.30 367.25">
-<g transform="scale(1 1) rotate(0) translate(4 363.25)">
+</div><p>A cudaFlow encapsulates a GPU task dependency graph similar to a <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> (see <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a>). In order to visualize it, we need to execute the graph first and then dump the taskflow.</p><div class="m-graph"><svg style="width: 42.600rem; height: 36.700rem;" viewBox="0.00 0.00 426.29 367.00">
+<g transform="scale(1 1) rotate(0) translate(4 363)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x5558af971240</title>
-<polygon points="79.65,-64 79.65,-351.25 224.65,-351.25 224.65,-64 79.65,-64"/>
-<text text-anchor="middle" x="152.15" y="-337.75" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: cudaFlow</text>
+<polygon points="86.44,-64 86.44,-351 236.44,-351 236.44,-64 86.44,-64"/>
+<text text-anchor="middle" x="161.44" y="-339" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow: cudaFlow</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x5558af970f10</title>
-<ellipse cx="35.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="35.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_a</text>
+<ellipse cx="39.44" cy="-162" rx="39.38" ry="18"/>
+<text text-anchor="middle" x="39.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_a</text>
 </g>
 <g class="m-node">
 <title>p0x5558af971240</title>
-<polygon points="216.65,-108 213.65,-112 192.65,-112 189.65,-108 158.65,-108 158.65,-72 216.65,-72 216.65,-108"/>
-<text text-anchor="middle" x="187.65" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow</text>
+<polygon points="227.94,-108 224.94,-112 203.94,-112 200.94,-108 164.94,-108 164.94,-72 227.94,-72 227.94,-108"/>
+<text text-anchor="middle" x="196.44" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">cudaFlow</text>
 </g>
 <g class="m-edge">
 <title>p0x5558af970f10&#45;&gt;p0x5558af971240</title>
-<path d="M61.43,-149.13C85.14,-138.21 120.64,-121.86 147.96,-109.28"/>
-<polygon points="149.36,-112.49 156.98,-105.12 146.43,-106.13 149.36,-112.49"/>
+<path d="M66.79,-148.81C91.34,-137.86 127.7,-121.65 155.68,-109.17"/>
+<polygon points="157.11,-112.37 164.82,-105.1 154.26,-105.98 157.11,-112.37"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x5558af971350</title>
-<ellipse cx="187.65" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="187.65" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
+<ellipse cx="196.44" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="196.44" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
 </g>
 <g class="m-edge">
 <title>p0x5558af971240&#45;&gt;p0x5558af971350</title>
-<path d="M187.65,-71.7C187.65,-64.41 187.65,-55.73 187.65,-47.54"/>
-<polygon points="191.15,-47.62 187.65,-37.62 184.15,-47.62 191.15,-47.62"/>
+<path d="M196.44,-71.7C196.44,-63.98 196.44,-54.71 196.44,-46.11"/>
+<polygon points="199.94,-46.1 196.44,-36.1 192.94,-46.1 199.94,-46.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x5558af971020</title>
-<ellipse cx="268.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="268.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_b</text>
+<ellipse cx="283.44" cy="-162" rx="39.38" ry="18"/>
+<text text-anchor="middle" x="283.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_b</text>
 </g>
 <g class="m-edge">
 <title>p0x5558af971020&#45;&gt;p0x5558af971240</title>
-<path d="M251.47,-146.15C241.26,-137.33 228.04,-125.91 216.29,-115.75"/>
-<polygon points="218.66,-113.17 208.8,-109.28 214.08,-118.47 218.66,-113.17"/>
+<path d="M264.56,-145.81C253.25,-136.71 238.62,-124.94 225.82,-114.64"/>
+<polygon points="227.71,-111.67 217.73,-108.13 223.32,-117.12 227.71,-111.67"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x5558af971130</title>
-<ellipse cx="357.65" cy="-162" rx="35.65" ry="18"/>
-<text text-anchor="middle" x="357.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
+<ellipse cx="379.44" cy="-162" rx="38.7" ry="18"/>
+<text text-anchor="middle" x="379.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
 </g>
 <g class="m-edge">
 <title>p0x5558af971130&#45;&gt;p0x5558af971240</title>
-<path d="M330.71,-149.91C302.87,-138.44 259.11,-120.42 227.31,-107.33"/>
-<polygon points="229.01,-104.24 218.43,-103.67 226.34,-110.72 229.01,-104.24"/>
+<path d="M350.44,-149.91C320.08,-138.29 272.13,-119.95 237.8,-106.82"/>
+<polygon points="238.65,-103.4 228.06,-103.1 236.15,-109.94 238.65,-103.4"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6fd8000b20</title>
-<ellipse cx="188.65" cy="-306" rx="27.66" ry="18"/>
-<text text-anchor="middle" x="188.65" y="-302.12" font-family="Helvetica,sans-Serif" font-size="10.00">H2D_a</text>
+<ellipse cx="199.44" cy="-306" rx="28.69" ry="18"/>
+<text text-anchor="middle" x="199.44" y="-303.5" font-family="Helvetica,sans-Serif" font-size="10.00">H2D_a</text>
 </g>
 <g class="m-node">
 <title>p0x7f6fd8000db0</title>
-<polygon points="214.65,-252 164.65,-252 160.65,-248 160.65,-216 210.65,-216 214.65,-220 214.65,-252"/>
-<polyline points="210.65,-248 160.65,-248"/>
-<polyline points="210.65,-248 210.65,-216"/>
-<polyline points="210.65,-248 214.65,-252"/>
-<text text-anchor="middle" x="187.65" y="-230.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">matmul</text>
+<polygon points="223.94,-252 172.94,-252 168.94,-248 168.94,-216 219.94,-216 223.94,-220 223.94,-252"/>
+<polyline points="219.94,-248 168.94,-248 "/>
+<polyline points="219.94,-248 219.94,-216 "/>
+<polyline points="219.94,-248 223.94,-252 "/>
+<text text-anchor="middle" x="196.44" y="-231.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">matmul</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6fd8000b20&#45;&gt;p0x7f6fd8000db0</title>
-<path d="M188.4,-287.7C188.3,-280.41 188.17,-271.73 188.06,-263.54"/>
-<polygon points="191.56,-263.57 187.92,-253.62 184.56,-263.67 191.56,-263.57"/>
+<path d="M198.7,-287.7C198.37,-279.98 197.97,-270.71 197.6,-262.11"/>
+<polygon points="201.1,-261.95 197.17,-252.1 194.1,-262.25 201.1,-261.95"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6fd8000ce0</title>
-<ellipse cx="187.65" cy="-162" rx="27.66" ry="18"/>
-<text text-anchor="middle" x="187.65" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">D2H_c</text>
+<ellipse cx="196.44" cy="-162" rx="28.01" ry="18"/>
+<text text-anchor="middle" x="196.44" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">D2H_c</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6fd8000db0&#45;&gt;p0x7f6fd8000ce0</title>
-<path d="M187.65,-215.7C187.65,-208.41 187.65,-199.73 187.65,-191.54"/>
-<polygon points="191.15,-191.62 187.65,-181.62 184.15,-191.62 191.15,-191.62"/>
+<path d="M196.44,-215.7C196.44,-207.98 196.44,-198.71 196.44,-190.11"/>
+<polygon points="199.94,-190.1 196.44,-180.1 192.94,-190.1 199.94,-190.1"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f6fd8000c00</title>
-<ellipse cx="115.65" cy="-306" rx="27.66" ry="18"/>
-<text text-anchor="middle" x="115.65" y="-302.12" font-family="Helvetica,sans-Serif" font-size="10.00">H2D_b</text>
+<ellipse cx="123.44" cy="-306" rx="28.69" ry="18"/>
+<text text-anchor="middle" x="123.44" y="-303.5" font-family="Helvetica,sans-Serif" font-size="10.00">H2D_b</text>
 </g>
 <g class="m-edge">
 <title>p0x7f6fd8000c00&#45;&gt;p0x7f6fd8000db0</title>
-<path d="M130.57,-290.5C139.54,-281.77 151.21,-270.43 161.65,-260.28"/>
-<polygon points="163.88,-262.99 168.61,-253.51 159,-257.97 163.88,-262.99"/>
+<path d="M138.57,-290.5C148,-281.45 160.37,-269.59 171.26,-259.15"/>
+<polygon points="173.7,-261.65 178.5,-252.2 168.86,-256.6 173.7,-261.65"/>
 </g>
 <g class="m-edge">
 <title>p0x7f6fd8000ce0&#45;&gt;p0x5558af971240</title>
-<path d="M187.65,-143.7C187.65,-136.41 187.65,-127.73 187.65,-119.54"/>
-<polygon points="191.15,-119.62 187.65,-109.62 184.15,-119.62 191.15,-119.62"/>
+<path d="M196.44,-143.7C196.44,-135.98 196.44,-126.71 196.44,-118.11"/>
+<polygon points="199.94,-118.1 196.44,-108.1 192.94,-118.1 199.94,-118.1"/>
 </g>
 </g>
 </svg>
@@ -326,7 +326,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

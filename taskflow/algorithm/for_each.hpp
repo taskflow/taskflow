@@ -156,6 +156,9 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
   return emplace(
     make_for_each_task(beg, end, c, part)
   );
+  //return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
+  //  std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
+  //));
 }
 
 // ----------------------------------------------------------------------------

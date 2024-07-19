@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1FlowBuilder" kind="class" language="C++" prot="public">
     <compoundname>tf::FlowBuilder</compoundname>
     <derivedcompoundref refid="classtf_1_1Subflow" prot="public" virt="non-virtual">tf::Subflow</derivedcompoundref>
@@ -11,7 +11,6 @@
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::FlowBuilder::Executor</qualifiedname>
         <param>
           <type>Executor</type>
         </param>
@@ -21,7 +20,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="24" column="16" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="24" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="24" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="24" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -30,7 +29,6 @@
         <definition>Graph&amp; tf::FlowBuilder::_graph</definition>
         <argsstring></argsstring>
         <name>_graph</name>
-        <qualifiedname>tf::FlowBuilder::_graph</qualifiedname>
         <briefdescription>
 <para>associated graph object </para>
         </briefdescription>
@@ -38,7 +36,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1152" column="9" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1152" bodyend="-1"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1152" column="9" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1152" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -47,7 +45,6 @@
         <definition>tf::FlowBuilder::FlowBuilder</definition>
         <argsstring>(Graph &amp;graph)</argsstring>
         <name>FlowBuilder</name>
-        <qualifiedname>tf::FlowBuilder::FlowBuilder</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
           <declname>graph</declname>
@@ -59,7 +56,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="31" column="3" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1161" bodyend="1163"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="31" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1161" bodyend="1163"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -75,7 +72,6 @@
         <definition>Task tf::FlowBuilder::emplace</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>emplace</name>
-        <qualifiedname>tf::FlowBuilder::emplace</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -111,7 +107,7 @@ The following example creates a static task.</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="53" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1167" bodyend="1171"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="53" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1167" bodyend="1171"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -127,7 +123,6 @@ The following example creates a static task.</para>
         <definition>Task tf::FlowBuilder::emplace</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>emplace</name>
-        <qualifiedname>tf::FlowBuilder::emplace</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -166,7 +161,7 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="79" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="79" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -182,7 +177,6 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
         <definition>Task tf::FlowBuilder::emplace</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>emplace</name>
-        <qualifiedname>tf::FlowBuilder::emplace</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -217,8 +211,8 @@ The following example creates an if-else block using one condition task and thre
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0,<sp/>or<sp/>no<sp/>if<sp/>cond<sp/>returns<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -229,7 +223,7 @@ The following example creates an if-else block using one condition task and thre
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="113" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="113" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -245,7 +239,6 @@ The following example creates an if-else block using one condition task and thre
         <definition>Task tf::FlowBuilder::emplace</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>emplace</name>
-        <qualifiedname>tf::FlowBuilder::emplace</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -259,7 +252,7 @@ The following example creates an if-else block using one condition task and thre
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;</para>
+<para>callable type constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;</para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -280,9 +273,9 @@ The following example creates a multi-condition task that selectively jumps to t
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>branch1,<sp/>branch2,<sp/>branch3]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>{0,<sp/>2};<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>branch1<sp/>and<sp/>branch3<sp/>when<sp/>cond<sp/>returns<sp/>0<sp/>and<sp/>2</highlight><highlight class="normal"></highlight></codeline>
@@ -293,7 +286,7 @@ The following example creates a multi-condition task that selectively jumps to t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="149" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="149" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1f6118326ad434f6c839007a1a79fe1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -311,7 +304,6 @@ The following example creates a multi-condition task that selectively jumps to t
         <definition>auto tf::FlowBuilder::emplace</definition>
         <argsstring>(C &amp;&amp;... callables)</argsstring>
         <name>emplace</name>
-        <qualifiedname>tf::FlowBuilder::emplace</qualifiedname>
         <param>
           <type>C &amp;&amp;...</type>
           <declname>callables</declname>
@@ -342,23 +334,22 @@ The following example creates a multi-condition task that selectively jumps to t
 </simplesect>
 The method returns a tuple of tasks each corresponding to the given callable target. You can use structured binding to get the return tasks one by one. The following example creates four static tasks and assign them to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> using structured binding.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="176" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1199" bodyend="1201"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="176" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1199" bodyend="1201"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::FlowBuilder::erase</definition>
         <argsstring>(Task task)</argsstring>
         <name>erase</name>
-        <qualifiedname>tf::FlowBuilder::erase</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
           <declname>task</declname>
@@ -377,10 +368,10 @@ The method returns a tuple of tasks each corresponding to the given callable tar
 </parameteritem>
 </parameterlist>
 Removes a task and its input and output dependencies from the graph associated with the flow builder. If the task does not belong to the graph, nothing will happen.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>erase<sp/>A<sp/>from<sp/>the<sp/>taskflow<sp/>and<sp/>its<sp/>dependencies<sp/>to<sp/>B,<sp/>C,<sp/>and<sp/>D</highlight><highlight class="normal"></highlight></codeline>
@@ -389,7 +380,7 @@ Removes a task and its input and output dependencies from the graph associated w
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="198" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1204" bodyend="1225"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="198" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1204" bodyend="1225"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -401,7 +392,6 @@ Removes a task and its input and output dependencies from the graph associated w
         <definition>Task tf::FlowBuilder::composed_of</definition>
         <argsstring>(T &amp;object)</argsstring>
         <name>composed_of</name>
-        <qualifiedname>tf::FlowBuilder::composed_of</qualifiedname>
         <param>
           <type>T &amp;</type>
           <declname>object</declname>
@@ -432,11 +422,11 @@ Removes a task and its input and output dependencies from the graph associated w
 </simplesect>
 The example below demonstrates a taskflow composition using the <computeroutput>composed_of</computeroutput> method.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>t1,<sp/>t2;</highlight></codeline>
-<codeline><highlight class="normal">t1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t1&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">t1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t1&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>t2<sp/>is<sp/>partially<sp/>composed<sp/>of<sp/>t1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>comp<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(t1);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t2&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t2&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(comp);</highlight></codeline>
 </programlisting></para>
 <para>The taskflow object <computeroutput>t2</computeroutput> is composed of another taskflow object <computeroutput>t1</computeroutput>, preceded by another static task <computeroutput>init</computeroutput>. When taskflow <computeroutput>t2</computeroutput> is submitted to an executor, <computeroutput>init</computeroutput> will run first and then <computeroutput>comp</computeroutput> which spawns its definition in taskflow <computeroutput>t1</computeroutput>.</para>
@@ -447,7 +437,7 @@ The example below demonstrates a taskflow composition using the <computeroutput>
 <codeline><highlight class="normal"><sp/><sp/>MyObj()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>builder.emplace([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>Graph&amp;<sp/>graph()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>graph;<sp/>}</highlight></codeline>
@@ -460,14 +450,13 @@ The example below demonstrates a taskflow composition using the <computeroutput>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="252" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1229" bodyend="1234"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="252" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1229" bodyend="1234"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
         <definition>Task tf::FlowBuilder::placeholder</definition>
         <argsstring>()</argsstring>
         <name>placeholder</name>
-        <qualifiedname>tf::FlowBuilder::placeholder</qualifiedname>
         <briefdescription>
 <para>creates a placeholder task </para>
         </briefdescription>
@@ -490,16 +479,15 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="278" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1237" bodyend="1242"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="278" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1237" bodyend="1242"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::FlowBuilder::linearize</definition>
         <argsstring>(std::vector&lt; Task &gt; &amp;tasks)</argsstring>
         <name>linearize</name>
-        <qualifiedname>tf::FlowBuilder::linearize</qualifiedname>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -516,26 +504,25 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
 </parameteritem>
 </parameterlist>
 This member function creates linear dependencies over a vector of tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{A,<sp/>B,<sp/>C,<sp/>D}</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{A,<sp/>B,<sp/>C,<sp/>D}</highlight></codeline>
 <codeline><highlight class="normal">taskflow.linearize(tasks);<sp/><sp/></highlight><highlight class="comment">//<sp/>A-&gt;B-&gt;C-&gt;D</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="297" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1263" bodyend="1265"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="297" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1263" bodyend="1265"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::FlowBuilder::linearize</definition>
         <argsstring>(std::initializer_list&lt; Task &gt; tasks)</argsstring>
         <name>linearize</name>
-        <qualifiedname>tf::FlowBuilder::linearize</qualifiedname>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -552,16 +539,16 @@ This member function creates linear dependencies over a vector of tasks.</para>
 </parameteritem>
 </parameterlist>
 This member function creates linear dependencies over a list of tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">taskflow.linearize({A,<sp/>B,<sp/>C,<sp/>D});<sp/><sp/></highlight><highlight class="comment">//<sp/>A-&gt;B-&gt;C-&gt;D</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="314" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1268" bodyend="1270"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="314" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1268" bodyend="1270"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -583,7 +570,6 @@ This member function creates linear dependencies over a list of tasks.</para>
         <definition>Task tf::FlowBuilder::for_each</definition>
         <argsstring>(B first, E last, C callable, P part=P())</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::FlowBuilder::for_each</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -678,12 +664,12 @@ The task spawns asynchronous tasks that applies the callable object to each obje
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
 <para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="353" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="353" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -708,7 +694,6 @@ The task spawns asynchronous tasks that applies the callable object to each obje
         <definition>Task tf::FlowBuilder::for_each_index</definition>
         <argsstring>(B first, E last, S step, C callable, P part=P())</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::FlowBuilder::for_each_index</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -829,12 +814,12 @@ The task spawns asynchronous tasks that applies the callable object to each inde
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para>
 <para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="394" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="394" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -855,7 +840,7 @@ The task spawns asynchronous tasks that applies the callable object to each inde
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -863,7 +848,6 @@ The task spawns asynchronous tasks that applies the callable object to each inde
         <definition>Task tf::FlowBuilder::transform</definition>
         <argsstring>(B first1, E last1, O d_first, C c, P part=P())</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::FlowBuilder::transform</qualifiedname>
         <param>
           <type>B</type>
           <declname>first1</declname>
@@ -978,12 +962,12 @@ The task spawns asynchronous tasks that applies the callable object to an input 
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
 <para>Please refer to <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="439" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="439" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1007,7 +991,7 @@ The task spawns asynchronous tasks that applies the callable object to an input 
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; C &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; C &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -1015,7 +999,6 @@ The task spawns asynchronous tasks that applies the callable object to an input 
         <definition>Task tf::FlowBuilder::transform</definition>
         <argsstring>(B1 first1, E1 last1, B2 first2, O d_first, C c, P part=P())</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::FlowBuilder::transform</qualifiedname>
         <param>
           <type>B1</type>
           <declname>first1</declname>
@@ -1150,12 +1133,12 @@ The task spawns asynchronous tasks that applies the callable object to two input
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</para>
 <para>Please refer to <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="480" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="480" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1afb24798ebf46e253a40b01bffb1da6a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1180,7 +1163,6 @@ The task spawns asynchronous tasks that applies the callable object to two input
         <definition>Task tf::FlowBuilder::reduce</definition>
         <argsstring>(B first, E last, T &amp;init, O bop, P part=P())</argsstring>
         <name>reduce</name>
-        <qualifiedname>tf::FlowBuilder::reduce</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -1295,12 +1277,12 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="519" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="519" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aa62d24438c0860e76153ffd129deba41" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1324,7 +1306,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -1332,7 +1314,6 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         <definition>Task tf::FlowBuilder::transform_reduce</definition>
         <argsstring>(B first, E last, T &amp;init, BOP bop, UOP uop, P part=P())</argsstring>
         <name>transform_reduce</name>
-        <qualifiedname>tf::FlowBuilder::transform_reduce</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -1467,12 +1448,12 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="563" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="563" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1adcd90e5b46299f4ccab33caf46edcbc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1499,7 +1480,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; BOP_T &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; BOP_T &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -1507,7 +1488,6 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         <definition>Task tf::FlowBuilder::transform_reduce</definition>
         <argsstring>(B1 first1, E1 last1, B2 first2, T &amp;init, BOP_R bop_r, BOP_T bop_t, P part=P())</argsstring>
         <name>transform_reduce</name>
-        <qualifiedname>tf::FlowBuilder::transform_reduce</qualifiedname>
         <param>
           <type>B1</type>
           <declname>first1</declname>
@@ -1662,12 +1642,12 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop_r(init,<sp/>bop_t(*itr1,<sp/>*itr2));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="606" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="606" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1abcfd93880168b7c701c4e9da2e8657de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1688,7 +1668,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -1696,7 +1676,6 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         <definition>Task tf::FlowBuilder::inclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, BOP bop, P part=P())</argsstring>
         <name>inclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::inclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -1806,20 +1785,20 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{1,<sp/>3,<sp/>6,<sp/>10,<sp/>15}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="656" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="656" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0f80c33f083b423d4d19b2a3f2650d65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1843,7 +1822,7 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; T &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; T &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -1851,7 +1830,6 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         <definition>Task tf::FlowBuilder::inclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, BOP bop, T init, P part=P())</argsstring>
         <name>inclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::inclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -1981,20 +1959,20 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/>-1</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/>-1</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{0,<sp/>2,<sp/>5,<sp/>9,<sp/>14}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="703" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="703" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a7ba5b95020fe35f12ee6bdb97ac84156" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2022,7 +2000,6 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         <definition>Task tf::FlowBuilder::exclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, T init, BOP bop, P part=P())</argsstring>
         <name>exclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::exclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -2152,20 +2129,20 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>exclusive</emphasis> scan, meaning the N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is not included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.exclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>0,<sp/>2,<sp/>5,<sp/>9}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="747" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="747" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ab1afb02f55255db38625eded6bf6a1d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2189,7 +2166,7 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; P &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -2197,7 +2174,6 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         <definition>Task tf::FlowBuilder::transform_inclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, BOP bop, UOP uop, P part=P())</argsstring>
         <name>transform_inclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::transform_inclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -2327,21 +2303,21 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>-3,<sp/>-6,<sp/>-10,<sp/>-15}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="798" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="798" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aa7f9f4805a150cf8d82938388c419078" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2368,7 +2344,7 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
             <defval><ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">DefaultPartitioner</ref></defval>
           </param>
           <param>
-            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; T &gt; &gt;, void &gt; *</type>
+            <type>std::enable_if_t&lt;!<ref refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kindref="member">is_partitioner_v</ref>&lt; std::decay_t&lt; T &gt;&gt;, void &gt; *</type>
             <defval>nullptr</defval>
           </param>
         </templateparamlist>
@@ -2376,7 +2352,6 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         <definition>Task tf::FlowBuilder::transform_inclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, BOP bop, UOP uop, T init, P part=P())</argsstring>
         <name>transform_inclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::transform_inclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -2526,9 +2501,9 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-1</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -2536,12 +2511,12 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-2,<sp/>-4,<sp/>-7,<sp/>-11,<sp/>-16}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="848" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="848" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a2b7965f3611737503a73ab41714642b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2572,7 +2547,6 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         <definition>Task tf::FlowBuilder::transform_exclusive_scan</definition>
         <argsstring>(B first, E last, D d_first, T init, BOP bop, UOP uop, P part=P())</argsstring>
         <name>transform_exclusive_scan</name>
-        <qualifiedname>tf::FlowBuilder::transform_exclusive_scan</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -2722,21 +2696,21 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>exclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N-1 input elements, so the Nth input element is not included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_exclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>-2,<sp/>-4,<sp/>-7,<sp/>-11}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="895" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="895" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a46a96f5889e6ac87b1ff8d6313b5f471" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2761,7 +2735,6 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         <definition>Task tf::FlowBuilder::find_if</definition>
         <argsstring>(B first, E last, T &amp;result, UOP predicate, P part=P())</argsstring>
         <name>find_if</name>
-        <qualifiedname>tf::FlowBuilder::find_if</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -2880,19 +2853,19 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the element that satisfies the given criteria (value plus one is equal to 23) from an input range of 10 elements:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>6,<sp/>9,<sp/>10,<sp/>22,<sp/>5,<sp/>7,<sp/>8,<sp/>9,<sp/>11};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>6,<sp/>9,<sp/>10,<sp/>22,<sp/>5,<sp/>7,<sp/>8,<sp/>9,<sp/>11};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i+1<sp/>=<sp/>23;<sp/>},<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="947" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="947" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a95fa2719fa7bbe7d171cf474ddb06726" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2917,7 +2890,6 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
         <definition>Task tf::FlowBuilder::find_if_not</definition>
         <argsstring>(B first, E last, T &amp;result, UOP predicate, P part=P())</argsstring>
         <name>find_if_not</name>
-        <qualifiedname>tf::FlowBuilder::find_if_not</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -3036,19 +3008,19 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the element that satisfies the given criteria (value is not equal to 1) from an input range of 10 elements:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.find_if_not(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i<sp/>==<sp/>1;<sp/>},<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="995" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="995" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6bf43eeaa81900084a472be1d36d46a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3072,7 +3044,6 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
         <definition>Task tf::FlowBuilder::min_element</definition>
         <argsstring>(B first, E last, T &amp;result, C comp, P part)</argsstring>
         <name>min_element</name>
-        <qualifiedname>tf::FlowBuilder::min_element</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -3193,19 +3164,19 @@ Finds the smallest element in the <computeroutput>[first, last)</computeroutput>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>smallest;</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the smallest element from an input range of 10 elements.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.min_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>-1);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1047" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1047" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3229,7 +3200,6 @@ Finds the smallest element in the <computeroutput>[first, last)</computeroutput>
         <definition>Task tf::FlowBuilder::max_element</definition>
         <argsstring>(B first, E last, T &amp;result, C comp, P part)</argsstring>
         <name>max_element</name>
-        <qualifiedname>tf::FlowBuilder::max_element</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -3350,19 +3320,19 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>largest;</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the largest element from an input range of 10 elements.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.max_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>2);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1099" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1099" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3380,7 +3350,6 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
         <definition>Task tf::FlowBuilder::sort</definition>
         <argsstring>(B first, E last, C cmp)</argsstring>
         <name>sort</name>
-        <qualifiedname>tf::FlowBuilder::sort</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -3448,12 +3417,12 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
 </parameteritem>
 </parameterlist>
 The task spawns asynchronous tasks to sort elements in the range <computeroutput>[first, last)</computeroutput> in parallel.</para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1124" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1124" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3468,7 +3437,6 @@ The task spawns asynchronous tasks to sort elements in the range <computeroutput
         <definition>Task tf::FlowBuilder::sort</definition>
         <argsstring>(B first, E last)</argsstring>
         <name>sort</name>
-        <qualifiedname>tf::FlowBuilder::sort</qualifiedname>
         <param>
           <type>B</type>
           <declname>first</declname>
@@ -3516,12 +3484,12 @@ The task spawns asynchronous tasks to sort elements in the range <computeroutput
 </parameteritem>
 </parameterlist>
 The task spawns asynchronous tasks to parallel sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1145" column="8"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1145" column="8"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -3535,7 +3503,6 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         <definition>void tf::FlowBuilder::_linearize</definition>
         <argsstring>(L &amp;)</argsstring>
         <name>_linearize</name>
-        <qualifiedname>tf::FlowBuilder::_linearize</qualifiedname>
         <param>
           <type>L &amp;</type>
           <defname>keys</defname>
@@ -3546,7 +3513,7 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="1157" column="8" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1246" bodyend="1260"/>
+        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1157" column="8" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1246" bodyend="1260"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -3586,7 +3553,7 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         <link refid="classtf_1_1Graph"/>
       </node>
     </collaborationgraph>
-    <location file="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" line="22" column="1" bodyfile="/Users/twhuang/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="22" bodyend="1158"/>
+    <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="22" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="22" bodyend="1158"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" prot="private" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_linearize</name></member>

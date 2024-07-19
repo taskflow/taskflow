@@ -89,7 +89,6 @@ namespace pt {
 /**
 @private
 */
-
 inline thread_local Worker* worker {nullptr};
 
 }

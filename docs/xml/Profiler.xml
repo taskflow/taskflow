@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="Profiler" kind="page">
     <compoundname>Profiler</compoundname>
     <title>Profile Taskflow Programs</title>
@@ -54,7 +54,7 @@
 <codeline><highlight class="normal">~$<sp/>ls</highlight></codeline>
 <codeline><highlight class="normal">my_taskflow.tfp<sp/><sp/><sp/><sp/>#<sp/>my_taskflow.tfp<sp/>is<sp/>of<sp/>binary<sp/>format</highlight></codeline>
 </programlisting></para>
-<para>Launch the server program <computeroutput>tfprof/server/tfprof</computeroutput> and pass (1) the directory of <computeroutput>index.html</computeroutput> (default at <computeroutput>tfprof/</computeroutput>) via the option <computeroutput>--mount</computeroutput> and (2) the <computeroutput>my_taskflow.tfp</computeroutput> via the option <computeroutput>--input</computeroutput>.</para>
+<para>Launch the server program <computeroutput>tfprof/server/tfprof</computeroutput> and pass (1) the directory of <computeroutput>index.html</computeroutput> (default at <computeroutput>tfprof/</computeroutput>) via the option <computeroutput><ndash/>mount</computeroutput> and (2) the <computeroutput>my_taskflow.tfp</computeroutput> via the option <computeroutput><ndash/>input</computeroutput>.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>the<sp/>build/<sp/>directory</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./tfprof/server/tfprof<sp/>--mount<sp/>../tfprof/<sp/>--input<sp/>my_taskflow.tfp</highlight></codeline>
 </programlisting></para>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="fibonacci" kind="page">
     <compoundname>fibonacci</compoundname>
     <title>Fibonacci Number</title>
@@ -37,9 +37,9 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(n<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>n;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sbf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;res1,<sp/>n]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{<sp/>res1<sp/>=<sp/>spawn(n<sp/>-<sp/>1,<sp/>sbf);<sp/>}<sp/>)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(n-1));<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(n-1));<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sbf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;res2,<sp/>n]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{<sp/>res2<sp/>=<sp/>spawn(n<sp/>-<sp/>2,<sp/>sbf);<sp/>}<sp/>)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(n-2));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(n-2));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sbf.<ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">join</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>res1<sp/>+<sp/>res2;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -53,19 +53,19 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;fibonacci&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.emplace([&amp;res,<sp/>N]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{<sp/>res<sp/>=<sp/>spawn(N,<sp/>sbf);<sp/>})</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(N));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(<ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(N));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Fib[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Fib[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</para>
-<para><dotfile name="fibonacci_7.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/fibonacci_7.dot"></dotfile>
 </para>
 <para>Even if recursive dynamic tasking or subflows are possible, the recursion depth may not be too deep or it can cause stack overflow. </para>
 </sect1>

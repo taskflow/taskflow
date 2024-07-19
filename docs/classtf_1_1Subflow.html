@@ -5,7 +5,7 @@
   <title>tf::Subflow class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -62,18 +62,18 @@
           </ul>
         </nav>
 <p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is a derived class from <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> with a specialized mechanism to manage the execution of a child graph. By default, a subflow automatically <em>joins</em> its parent node. You may explicitly join or detach a subflow by calling <a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="classtf_1_1Subflow.html#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// create a subflow graph (dynamic tasking)</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B1&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B2&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B3&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">B1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span>
-<span class="w">  </span><span class="n">B2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">subflow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B1&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B2&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B3&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">B1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">B2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B3</span><span class="p">);</span><span class="w"></span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span><span class="w"></span>
 
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// B runs after A</span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">);</span><span class="w">  </span><span class="c1">// C runs after A</span>
@@ -120,20 +120,20 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a59fcac1323e70d920088dd37bd0be245" class="m-doc-self">join</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>enables the subflow to join its parent task</p>
-<p>Performs an immediate action to join the subflow. Once the subflow is joined, it is considered finished and you may not modify the subflow anymore.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<p>Performs an immediate action to join the subflow. Once the subflow is joined, it is considered finished and you may not modify the subflow anymore.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w">  </span><span class="c1">// join the subflow of one task</span>
-<span class="p">});</span></pre><p>Only the worker that spawns this subflow can join it.</p>
+<span class="p">});</span><span class="w"></span></pre><p>Only the worker that spawns this subflow can join it.</p>
           </div></section>
           <section class="m-doc-details" id="acfdedc7e9676126e9a38ecf7b5a37864"><div>
             <h3>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc-self">detach</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>enables the subflow to detach from its parent task</p>
-<p>Performs an immediate action to detach the subflow. Once the subflow is detached, it is considered finished and you may not modify the subflow anymore.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
-<span class="p">});</span></pre><p>Only the worker that spawns this subflow can detach it.</p>
+<p>Performs an immediate action to detach the subflow. Once the subflow is detached, it is considered finished and you may not modify the subflow anymore.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
+<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span><span class="w"></span>
+<span class="p">});</span><span class="w"></span></pre><p>Only the worker that spawns this subflow can detach it.</p>
           </div></section>
           <section class="m-doc-details" id="a540be503df4621be3e8342b99b1729a0"><div>
             <h3>
@@ -158,12 +158,12 @@
               <span class="m-doc-wrap-bumper">bool tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac3805e898b6a55b6e5173c74c5555e57" class="m-doc-self">joinable</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
             </h3>
             <p>queries if the subflow is joinable</p>
-<p>This member function queries if the subflow is joinable. When a subflow is joined or detached, it becomes not joinable.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<p>This member function queries if the subflow is joinable. When a subflow is joined or detached, it becomes not joinable.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span><span class="w"></span>
+<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// true</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"></span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// false</span>
-<span class="p">});</span></pre>
+<span class="p">});</span><span class="w"></span></pre>
           </div></section>
         </section>
       </div>
@@ -210,7 +210,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.6 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
