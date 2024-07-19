@@ -1107,6 +1107,9 @@ class Executor {
 
 };
 
+
+#ifndef DOXYGEN
+
 // Constructor
 inline Executor::Executor(size_t N) :
   _MAX_STEALS ((N+1) << 1),
@@ -2400,7 +2403,7 @@ auto Runtime::async(P&& params, F&& f) {
 
 
 
-
+#endif
 
 
 }  // end of namespace tf -----------------------------------------------------
