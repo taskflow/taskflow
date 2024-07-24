@@ -96,7 +96,6 @@
 #if defined(__i386__) || defined(__x86_64__)
   #define TF_CACHELINE_SIZE 64
 #elif defined(__powerpc64__)
-  // TODO
   // This is the L1 D-cache line size of our Power7 machines.
   // Need to check if this is appropriate for other PowerPC64 systems.
   #define TF_CACHELINE_SIZE 128
@@ -135,6 +134,7 @@ namespace tf {
 template <typename T>
 struct CachelineAligned {
   alignas (2*TF_CACHELINE_SIZE) T data;
+  T& get() { return data; }
 };
 
 // Function: get_env
