@@ -1,35 +1,8 @@
-/*  Multi-producer/multi-consumer bounded queue.
- *  http://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
- *
- *  Copyright (c) 2010-2011, Dmitry Vyukov. All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- *     1. Redistributions of source code must retain the above copyright notice,
- *        this list of conditions and the following disclaimer.
- *     2. Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
- *
- *  THIS SOFTWARE IS PROVIDED BY DMITRY VYUKOV "AS IS" AND ANY EXPRESS OR
- *  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- *  EVENT SHALL DMITRY VYUKOV OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- *  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- *  The views and conclusions contained in the software and documentation are
- *  those of the authors and should not be interpreted as representing official
- *  policies, either expressed or implied, of Dmitry Vyukov.
- */
+#pragma once
 
 #include <cassert>
 #include <atomic>
+#include <optional>
 
 namespace tf {
 
@@ -40,10 +13,16 @@ namespace tf {
  * returned items within it as a single thread can block progression
  * of the queue.
  */
-template<typename T>
-class mpmc_bounded_queue {
+template<typename T, size_t LogSize = 10>
+class MPMC {
+
+  constexpr static uint64_t BufferSize = 1ull << LogSize;
+  constexpr static uint64_t BufferMask = (BufferSize - 1);
+  
+  static_assert((BufferSize >= 2) && ((BufferSize & (BufferSize - 1)) == 0));
 
 public:
+
   /**
    * Constructs a bounded multi-producer, multi-consumer queue
    *
@@ -52,23 +31,14 @@ public:
    *
    * @param buffer_size Number of spaces available in the queue.
    */
-  explicit mpmc_bounded_queue(size_t buffer_size): 
-    buffer_(new cell_t [buffer_size]),
-    buffer_mask_(buffer_size - 1) {
-
-    assert((buffer_size >= 2) && ((buffer_size & (buffer_size - 1)) == 0));
-    for (size_t i = 0; i != buffer_size; i += 1) {
-      buffer_[i].sequence_.store(i, std::memory_order_relaxed);
+  explicit MPMC() {
+    for (size_t i = 0; i < _buffer.size(); i++) {
+      _buffer[i].sequence.store(i, std::memory_order_relaxed);
     }
-
-    enqueue_pos_.store(0, std::memory_order_relaxed);
-    dequeue_pos_.store(0, std::memory_order_relaxed);
-
+    _enqueue_pos.store(0, std::memory_order_relaxed);
+    _dequeue_pos.store(0, std::memory_order_relaxed);
   }
 
-  ~mpmc_bounded_queue() {
-    delete [] buffer_;
-  }
 
   /**
    * Enqueues an item into the queue
@@ -77,29 +47,51 @@ public:
    * @return false if the queue was full (and enqueing failed),
    *         true otherwise
    */
-  bool enqueue(const T& data) {
-    cell_t *cell;
-    size_t pos = enqueue_pos_.load(std::memory_order_relaxed);
+  bool try_enqueue(T data) {
+    Cell *cell;
+    auto pos = _enqueue_pos.load(std::memory_order_relaxed);
     for (; ;) {
-      cell = &buffer_[pos & buffer_mask_];
-      size_t seq = cell->sequence_.load(std::memory_order_acquire);
-      intptr_t dif = (intptr_t) seq - (intptr_t) pos;
-      if (dif == 0) {
-        if (enqueue_pos_.compare_exchange_weak(pos, pos + 1,
+      cell = &_buffer[pos & BufferMask];
+      auto seq = cell->sequence.load(std::memory_order_acquire);
+      if (seq == pos) {
+        if (_enqueue_pos.compare_exchange_weak(pos, pos + 1,
                                                std::memory_order_relaxed)) {
             break;
         }
-      } else if (dif < 0) {
+      } else if (seq < pos) {
           return false;
       } else {
-          pos = enqueue_pos_.load(std::memory_order_relaxed);
+          pos = _enqueue_pos.load(std::memory_order_relaxed);
       }
     }
 
-    cell->data_ = data;
-    cell->sequence_.store(pos + 1, std::memory_order_release);
+    cell->data = data;
+    cell->sequence.store(pos + 1, std::memory_order_release);
 
     return true;
+  }
+  
+  void enqueue(T data) {
+
+    Cell *cell;
+    auto pos = _enqueue_pos.load(std::memory_order_relaxed);
+
+    for (; ;) {
+      cell = &_buffer[pos & BufferMask];
+      auto seq = cell->sequence.load(std::memory_order_acquire);
+      if (seq == pos) {
+        if (_enqueue_pos.compare_exchange_weak(pos, pos + 1,
+                                               std::memory_order_relaxed)) {
+            break;
+        }
+      }
+      else {
+        pos = _enqueue_pos.load(std::memory_order_relaxed);
+      }
+    }
+
+    cell->data = data;
+    cell->sequence.store(pos + 1, std::memory_order_release);
   }
 
   /**
@@ -109,60 +101,52 @@ public:
    * @return false if the queue was empty (and dequeuing failed),
    *         true if successful
    */
-  bool dequeue(T& data) {
-    cell_t *cell;
-    size_t pos = dequeue_pos_.load(std::memory_order_relaxed);
+  std::optional<T> try_dequeue() {
+    Cell *cell;
+    auto pos = _dequeue_pos.load(std::memory_order_relaxed);
     for (; ;) {
-      cell = &buffer_[pos & buffer_mask_];
-      size_t seq = cell->sequence_.load(std::memory_order_acquire);
-      intptr_t dif = (intptr_t) seq - (intptr_t) (pos + 1);
-      if (dif == 0) {
-        if (dequeue_pos_.compare_exchange_weak(pos, pos + 1,
+      cell = &_buffer[pos & BufferMask];
+      auto seq = cell->sequence.load(std::memory_order_acquire);
+      if (seq == pos + 1) {
+        if (_dequeue_pos.compare_exchange_weak(pos, pos + 1,
                                                std::memory_order_relaxed)) {
           break;
         }
-      } else if (dif < 0) {
-        return false;
+      } else if (seq < (pos + 1)) {
+        return std::nullopt;
       } else {
-        pos = dequeue_pos_.load(std::memory_order_relaxed);
+        pos = _dequeue_pos.load(std::memory_order_relaxed);
       }
     }
 
-    data = cell->data_;
-    cell->sequence_.store(pos + buffer_mask_ + 1,
-                          std::memory_order_release);
+    T data = cell->data;
+    cell->sequence.store(pos + BufferMask + 1, std::memory_order_release);
 
-    return true;
+    return data;
   }
 
   bool empty() const {
-    auto beg = dequeue_pos_.load(std::memory_order_relaxed);
-    auto end = enqueue_pos_.load(std::memory_order_relaxed);
+    auto beg = _dequeue_pos.load(std::memory_order_relaxed);
+    auto end = _enqueue_pos.load(std::memory_order_relaxed);
     return beg >= end;
+  }
+
+  size_t capacity() const {
+    return BufferSize;
   }
 
 private:
 
-  struct cell_t {
-    std::atomic<size_t> sequence_;
-    T data_;
+  struct Cell {
+    T data;
+    std::atomic<uint64_t> sequence;
   };
 
-  static const size_t cacheline_size = 64;
-  typedef char cacheline_pad_t [cacheline_size];
+  //static const size_t cacheline_size = 64;
 
-  cacheline_pad_t pad0_;
-  cell_t* const buffer_;
-  const size_t buffer_mask_;
-  cacheline_pad_t pad1_;
-  std::atomic<size_t> enqueue_pos_;
-  cacheline_pad_t pad2_;
-  std::atomic<size_t> dequeue_pos_;
-  cacheline_pad_t pad3_;
-
-  mpmc_bounded_queue(mpmc_bounded_queue const &);
-
-  void operator=(mpmc_bounded_queue const &);
+  alignas(2*TF_CACHELINE_SIZE) std::array<Cell, BufferSize> _buffer;
+  alignas(2*TF_CACHELINE_SIZE) std::atomic<uint64_t> _enqueue_pos;
+  alignas(2*TF_CACHELINE_SIZE) std::atomic<uint64_t> _dequeue_pos;
 };
 
 }  // end of namespace tf -----------------------------------------------------

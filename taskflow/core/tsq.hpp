@@ -166,7 +166,7 @@ class TaskQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    explicit TaskQueue(int64_t capacity = 512);
+    explicit TaskQueue(int64_t capacity = 1024);
 
     /**
     @brief destructs the queue
@@ -426,7 +426,7 @@ int64_t TaskQueue<T, TF_MAX_PRIORITY>::capacity(unsigned p) const noexcept {
 
 template <typename T, unsigned TF_MAX_PRIORITY>
 typename TaskQueue<T, TF_MAX_PRIORITY>::Array*
-  TaskQueue<T, TF_MAX_PRIORITY>::resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t) {
+TaskQueue<T, TF_MAX_PRIORITY>::resize_array(Array* a, unsigned p, std::int64_t b, std::int64_t t) {
 
   Array* tmp = a->resize(b, t);
   _garbage[p].push_back(a);
