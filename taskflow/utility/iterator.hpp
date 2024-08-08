@@ -5,17 +5,21 @@
 
 namespace tf {
 
-template <typename T>
-constexpr std::enable_if_t<std::is_integral<std::decay_t<T>>::value, bool>
-is_range_invalid(T beg, T end, T step) {
+template <typename B, typename E, typename S>
+constexpr std::enable_if_t<std::is_integral<std::decay_t<B>>::value && 
+                           std::is_integral<std::decay_t<E>>::value && 
+                           std::is_integral<std::decay_t<S>>::value, bool>
+is_range_invalid(B beg, E end, S step) {
   return ((step == 0 && beg != end) ||
           (beg < end && step <=  0) ||  // positive range
           (beg > end && step >=  0));   // negative range
 }
 
-template <typename T>
-constexpr std::enable_if_t<std::is_integral<std::decay_t<T>>::value, size_t>
-distance(T beg, T end, T step) {
+template <typename B, typename E, typename S>
+constexpr std::enable_if_t<std::is_integral<std::decay_t<B>>::value && 
+                           std::is_integral<std::decay_t<E>>::value && 
+                           std::is_integral<std::decay_t<S>>::value, size_t>
+distance(B beg, E end, S step) {
   return (end - beg + step + (step > 0 ? -1 : 1)) / step;
 }
 
