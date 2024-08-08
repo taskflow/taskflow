@@ -582,7 +582,7 @@ TEST_CASE("ForEachIndex.NegativeIndex.4threads" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 
 TEST_CASE("ForEachIndex.InvalidRange" * doctest::timeout(300)) {
-	std::atomic<size_t> counter(0);
+  std::atomic<size_t> counter(0);
 	tf::Executor ex;
 	tf::Taskflow flow;
 	flow.for_each_index(0, -1, 1, [&](int i) {
@@ -597,7 +597,7 @@ TEST_CASE("ForEachIndex.InvalidRange" * doctest::timeout(300)) {
 // ----------------------------------------------------------------------------
 
 TEST_CASE("ForEachIndex.HeterogeneousRange" * doctest::timeout(300)) {
-  std::atomic<size_t> counter(0);
+	std::atomic<size_t> counter(0);
 	tf::Executor ex;
 	tf::Taskflow flow;
 
