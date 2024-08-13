@@ -609,7 +609,7 @@ TEST_CASE("ForEachIndex.HeterogeneousRange" * doctest::timeout(300)) {
 		counter.fetch_add(i, std::memory_order_relaxed);
 	});
 	ex.run(flow).wait();
-	REQUIRE(counter == to * (to + 1) / 2);
+	REQUIRE(counter == to * (to - 1) / 2);
 }
 
 // ----------------------------------------------------------------------------
