@@ -356,7 +356,7 @@ template <class P, class Q>
 constexpr P* ObjectPool<T, S>::_parent_class_of(
   Q* ptr, const Q P::*member
 ) {
-  return (P*)( (char*)ptr - _offset_in_class(member));
+  return reinterpret_cast<P*>(reinterpret_cast<char*>(ptr) - _offset_in_class(member));
 }
 
 // Function: _parent_class_of
@@ -365,7 +365,7 @@ template <class P, class Q>
 constexpr P* ObjectPool<T, S>::_parent_class_of(
   const Q* ptr, const Q P::*member
 ) const {
-  return (P*)( (char*)ptr - _offset_in_class(member));
+  return reinterpret_cast<P*>(reinterpret_cast<char*>(ptr) - _offset_in_class(member));
 }
 
 // Function: _block_of
