@@ -163,7 +163,7 @@ to the given GPU context.
 When the scope is destroyed, it switches back to the original context.
 
 @attention
-tf::cudaScopedDeviceallows you to place a %cudaFlow on a particular GPU device,
+tf::cudaScopedDevice allows you to place a %cudaFlow on a particular GPU device,
 but it is your responsibility to ensure correct memory access.
 For example, you may not allocate a memory block on GPU @c 2 while
 accessing it from a kernel on GPU @c 0.
