@@ -24,10 +24,17 @@ int main(){
     []() { std::cout << "TaskD\n"; }
   );
 
+  A.name("A");
+  B.name("B");
+  C.name("C");
+  D.name("D");
+
   A.precede(B, C);  // A runs before B and C
   D.succeed(B, C);  // D runs after  B and C
 
   executor.run(taskflow).wait();
+
+  taskflow.dump(std::cout);
 
   return 0;
 }
