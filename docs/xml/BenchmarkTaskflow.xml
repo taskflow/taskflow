@@ -39,8 +39,8 @@
 </programlisting></para>
 <para>After you successfully build the benchmark code, you can find all benchmark instances in the <computeroutput>benchmarks/</computeroutput> folder. You can run the executable of each instance in the corresponding folder.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cd<sp/>benchmarks<sp/>&amp;<sp/>ls</highlight></codeline>
-<codeline><highlight class="normal">black_scholes<sp/>binary_tree<sp/>graph_traversal<sp/>...</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>cd<sp/>graph_traversal<sp/>&amp;<sp/>./graph_traversal</highlight></codeline>
+<codeline><highlight class="normal">bench_black_scholes<sp/>bench_binary_tree<sp/>bench_graph_traversal<sp/>...</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>2<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.197</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>842<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.198</highlight></codeline>
@@ -53,9 +53,9 @@
 <codeline><highlight class="normal"><sp/>711200<sp/><sp/><sp/><sp/><sp/><sp/>83.957</highlight></codeline>
 </programlisting></para>
 <para>You can display the help message by giving the option <computeroutput><ndash/>help</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>--help</highlight></codeline>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>--help</highlight></codeline>
 <codeline><highlight class="normal">Graph<sp/>Traversal</highlight></codeline>
-<codeline><highlight class="normal">Usage:<sp/>./graph_traversal<sp/>[OPTIONS]</highlight></codeline>
+<codeline><highlight class="normal">Usage:<sp/>./bench_graph_traversal<sp/>[OPTIONS]</highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">Options:</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-h,--help<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Print<sp/>this<sp/>help<sp/>message<sp/>and<sp/>exit</highlight></codeline>
@@ -69,51 +69,51 @@
 </entry><entry thead="yes" align='center'><para>Description    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>binary_tree   </para>
+<entry thead="no" align='center'><para>bench_binary_tree   </para>
 </entry><entry thead="no" align='center'><para>traverses a complete binary tree    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>black_scholes   </para>
+<entry thead="no" align='center'><para>bench_black_scholes   </para>
 </entry><entry thead="no" align='center'><para>computes option pricing with Black-Shcoles Models    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>graph_traversal   </para>
+<entry thead="no" align='center'><para>bench_graph_traversal   </para>
 </entry><entry thead="no" align='center'><para>traverses a randomly generated direct acyclic graph    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>linear_chain   </para>
+<entry thead="no" align='center'><para>bench_linear_chain   </para>
 </entry><entry thead="no" align='center'><para>traverses a linear chain of tasks    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>mandelbrot   </para>
+<entry thead="no" align='center'><para>bench_mandelbrot   </para>
 </entry><entry thead="no" align='center'><para>exploits imbalanced workloads in a Mandelbrot set    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>matrix_multiplication   </para>
+<entry thead="no" align='center'><para>bench_matrix_multiplication   </para>
 </entry><entry thead="no" align='center'><para>multiplies two 2D matrices    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>mnist   </para>
+<entry thead="no" align='center'><para>bench_mnist   </para>
 </entry><entry thead="no" align='center'><para>trains a neural network-based image classifier on the MNIST dataset    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>parallel_sort   </para>
+<entry thead="no" align='center'><para>bench_parallel_sort   </para>
 </entry><entry thead="no" align='center'><para>sorts a range of items    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>reduce_sum   </para>
+<entry thead="no" align='center'><para>bench_reduce_sum   </para>
 </entry><entry thead="no" align='center'><para>sums a range of items using reduction    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>wavefront   </para>
+<entry thead="no" align='center'><para>bench_wavefront   </para>
 </entry><entry thead="no" align='center'><para>propagates computations in a 2D grid    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>linear_pipeline   </para>
+<entry thead="no" align='center'><para>bench_linear_pipeline   </para>
 </entry><entry thead="no" align='center'><para>pipeline scheduling on a linear chain of pipes    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>graph_pipeline   </para>
+<entry thead="no" align='center'><para>bench_graph_pipeline   </para>
 </entry><entry thead="no" align='center'><para>pipeline scheduling on a graph of pipes   </para>
 </entry></row>
 </table>
@@ -153,27 +153,27 @@
 <sect2 id="BenchmarkTaskflow_1SpecifyTheRunModel">
 <title>Specify the Run Model</title>
 <para>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <ulink url="https://www.openmp.org/">OpenMP</ulink> and <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <computeroutput>-m</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tf<sp/><sp/><sp/>#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>(default)</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tbb<sp/><sp/>#<sp/>run<sp/>the<sp/>TBB<sp/>implementation</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>omp<sp/><sp/>#<sp/>run<sp/>the<sp/>OpenMP<sp/>implementation</highlight></codeline>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tf<sp/><sp/><sp/>#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>(default)</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tbb<sp/><sp/>#<sp/>run<sp/>the<sp/>TBB<sp/>implementation</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>omp<sp/><sp/>#<sp/>run<sp/>the<sp/>OpenMP<sp/>implementation</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfThreads">
 <title>Specify the Number of Threads</title>
 <para>You can configure the number of threads to run a benchmark instance by passing the option <computeroutput>-t</computeroutput>. The default value is one.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>using<sp/>4<sp/>threads</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-m<sp/>tf<sp/>-t<sp/>4</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tf<sp/>-t<sp/>4</highlight></codeline>
 </programlisting></para>
 <para>Depending on your environment, you may need to use <computeroutput>taskset</computeroutput> to set the CPU affinity of the running process. This allows the OS scheduler to keep process on the same CPU(s) as long as practical for performance reason.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>affine<sp/>the<sp/>process<sp/>to<sp/>4<sp/>CPUs,<sp/>CPU<sp/>0,<sp/>CPU<sp/>1,<sp/>CPU<sp/>2,<sp/>and<sp/>CPU<sp/>3</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>taskset<sp/>-c<sp/>0-3<sp/>graph_traversal<sp/>-t<sp/>4<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>taskset<sp/>-c<sp/>0-3<sp/>bench_graph_traversal<sp/>-t<sp/>4<sp/><sp/></highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfRounds">
 <title>Specify the Number of Rounds</title>
 <para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>runtime<sp/>in<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>./graph_traversal<sp/>-r<sp/>10</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-r<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>2<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.109<sp/><sp/><sp/>#<sp/>the<sp/>runtime<sp/>value<sp/>0.109<sp/>is<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>842<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.298</highlight></codeline>

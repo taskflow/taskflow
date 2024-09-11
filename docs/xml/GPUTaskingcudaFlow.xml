@@ -144,7 +144,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref> is an RAII-styled wrapper to perform <emphasis>scoped</emphasis> switch to the given GPU context. When the scope is destroyed, it switches back to the original context.</para>
-<para><simplesect kind="attention"><para>tf::cudaScopedDeviceallows you to place a cudaFlow on a particular GPU device, but it is your responsibility to ensure correct memory access. For example, you may not allocate a memory block on GPU <computeroutput>2</computeroutput> while accessing it from a kernel on GPU <computeroutput>0</computeroutput>. An easy practice for multi-GPU programming is to allocate <emphasis>unified shared memory</emphasis> using <computeroutput>cudaMallocManaged</computeroutput> and let the CUDA runtime perform automatic memory migration between GPUs.</para>
+<para><simplesect kind="attention"><para><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref> allows you to place a cudaFlow on a particular GPU device, but it is your responsibility to ensure correct memory access. For example, you may not allocate a memory block on GPU <computeroutput>2</computeroutput> while accessing it from a kernel on GPU <computeroutput>0</computeroutput>. An easy practice for multi-GPU programming is to allocate <emphasis>unified shared memory</emphasis> using <computeroutput>cudaMallocManaged</computeroutput> and let the CUDA runtime perform automatic memory migration between GPUs.</para>
 </simplesect>
 </para>
 </sect1>

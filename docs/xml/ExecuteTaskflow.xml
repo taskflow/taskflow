@@ -103,7 +103,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.run(f);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.run(taskflow);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>leaving<sp/>the<sp/>scope<sp/>will<sp/>destroy<sp/>taskflow<sp/>while<sp/>it<sp/>is<sp/>running,<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>resulting<sp/>in<sp/>undefined<sp/>behavior</highlight></codeline>
@@ -117,10 +117,10 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Declare<sp/>an<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>future<sp/>=<sp/>taskflow.run(f);<sp/><sp/></highlight><highlight class="comment">//<sp/>non-blocking<sp/>return</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>future<sp/>=<sp/>executor.run(taskflow);<sp/><sp/></highlight><highlight class="comment">//<sp/>non-blocking<sp/>return</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>alter<sp/>the<sp/>taskflow<sp/>while<sp/>running<sp/>leads<sp/>to<sp/>undefined<sp/>behavior<sp/></highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">f.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Add<sp/>a<sp/>new<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Add<sp/>a<sp/>new<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 </programlisting></para>
 <para>You must always keep a taskflow alive and must not modify it while it is running on an executor.</para>
 </sect1>
