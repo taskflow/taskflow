@@ -21,8 +21,8 @@ You can run the executable of each instance in the corresponding folder.
 
 @code{.shell-session}
 ~$ cd benchmarks & ls
-black_scholes binary_tree graph_traversal ...
-~$ cd graph_traversal & ./graph_traversal
+bench_black_scholes bench_binary_tree bench_graph_traversal ...
+~$ ./bench_graph_traversal
 |V|+|E|     Runtime
       2       0.197
     842       0.198
@@ -38,9 +38,9 @@ black_scholes binary_tree graph_traversal ...
 You can display the help message by giving the option @c --help.
 
 @code{.shell-session}
-~$ ./graph_traversal --help
+~$ ./bench_graph_traversal --help
 Graph Traversal
-Usage: ./graph_traversal [OPTIONS]
+Usage: ./bench_graph_traversal [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -54,18 +54,18 @@ the parallel computing community to evaluate the system performance.
 
 | Instance | Description |
 | :-:      | :-:         |
-| binary_tree | traverses a complete binary tree |
-| black_scholes | computes option pricing with Black-Shcoles Models |
-| graph_traversal | traverses a randomly generated direct acyclic graph |
-| linear_chain    | traverses a linear chain of tasks |
-| mandelbrot      | exploits imbalanced workloads in a Mandelbrot set |
-| matrix_multiplication | multiplies two 2D matrices |
-| mnist | trains a neural network-based image classifier on the MNIST dataset |
-| parallel_sort | sorts a range of items |
-| reduce_sum | sums a range of items using reduction |
-| wavefront | propagates computations in a 2D grid |
-| linear_pipeline | pipeline scheduling on a linear chain of pipes |
-| graph_pipeline | pipeline scheduling on a graph of pipes |
+| bench_binary_tree | traverses a complete binary tree |
+| bench_black_scholes | computes option pricing with Black-Shcoles Models |
+| bench_graph_traversal | traverses a randomly generated direct acyclic graph |
+| bench_linear_chain    | traverses a linear chain of tasks |
+| bench_mandelbrot      | exploits imbalanced workloads in a Mandelbrot set |
+| bench_matrix_multiplication | multiplies two 2D matrices |
+| bench_mnist | trains a neural network-based image classifier on the MNIST dataset |
+| bench_parallel_sort | sorts a range of items |
+| bench_reduce_sum | sums a range of items using reduction |
+| bench_wavefront | propagates computations in a 2D grid |
+| bench_linear_pipeline | pipeline scheduling on a linear chain of pipes |
+| bench_graph_pipeline | pipeline scheduling on a graph of pipes |
 
 
 @section ConfigureRunOptions Configure Run Options
@@ -91,9 +91,9 @@ to measure and evaluate the performance of %Taskflow.
 You can select different implementations by passing the option @c -m.
 
 @code{.shell-session}
-~$ ./graph_traversal -m tf   # run the Taskflow implementation (default)
-~$ ./graph_traversal -m tbb  # run the TBB implementation
-~$ ./graph_traversal -m omp  # run the OpenMP implementation
+~$ ./bench_graph_traversal -m tf   # run the Taskflow implementation (default)
+~$ ./bench_graph_traversal -m tbb  # run the TBB implementation
+~$ ./bench_graph_traversal -m omp  # run the OpenMP implementation
 @endcode
 
 @subsection SpecifyTheNumberOfThreads Specify the Number of Threads
@@ -104,7 +104,7 @@ The default value is one.
 
 @code{.shell-session}
 # run the Taskflow implementation using 4 threads
-~$ ./graph_traversal -m tf -t 4
+~$ ./bench_graph_traversal -m tf -t 4
 @endcode
 
 Depending on your environment, you may need to use @c taskset to set the CPU
@@ -114,7 +114,7 @@ practical for performance reason.
 
 @code{.shell-session}
 # affine the process to 4 CPUs, CPU 0, CPU 1, CPU 2, and CPU 3
-~$ taskset -c 0-3 graph_traversal -t 4  
+~$ taskset -c 0-3 bench_graph_traversal -t 4  
 @endcode
 
 @subsection SpecifyTheNumberOfRounds Specify the Number of Rounds
@@ -126,7 +126,7 @@ You can configure the number of rounds per iteration to average the runtime.
 
 @code{.shell-session}
 # measure the runtime in an average of 10 runs
-~$ ./graph_traversal -r 10
+~$ ./bench_graph_traversal -r 10
 |V|+|E|     Runtime
       2       0.109   # the runtime value 0.109 is an average of 10 runs
     842       0.298

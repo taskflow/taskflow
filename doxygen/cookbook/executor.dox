@@ -98,7 +98,7 @@ tf::Executor executor;  // create an executor
   // ... 
 
   // run the taskflow
-  executor.run(f);
+  executor.run(taskflow);
 
 } // leaving the scope will destroy taskflow while it is running, 
   // resulting in undefined behavior
@@ -115,10 +115,10 @@ tf::Taskflow taskflow;
 // Declare an executor
 tf::Executor executor;
 
-tf::Future<void> future = taskflow.run(f);  // non-blocking return
+tf::Future<void> future = executor.run(taskflow);  // non-blocking return
 
 // alter the taskflow while running leads to undefined behavior 
-f.emplace([](){ std::cout << "Add a new task\n"; });
+taskflow.emplace([](){ std::cout << "Add a new task\n"; });
 @endcode
 
 You must always keep a taskflow alive and must not modify it while 
