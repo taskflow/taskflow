@@ -157,8 +157,6 @@ class TaskQueue {
   std::atomic<Array*> _array[TF_MAX_PRIORITY];
   std::vector<Array*> _garbage[TF_MAX_PRIORITY];
 
-  //std::atomic<T> _cache {nullptr};
-
   public:
 
     /**
