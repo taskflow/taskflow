@@ -18,7 +18,7 @@ void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
   //ostreamize(oss, std::forward<ArgsT>(args)...);
   (oss << ... << args);
 #ifdef TF_DISABLE_EXCEPTION_HANDLING
-  std::cerr << "std::runtime_error throw with: " << oss.str() << std::endl;
+  std::cerr << oss.str();
   std::terminate();
 #else
   throw std::runtime_error(oss.str());
