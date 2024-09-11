@@ -813,7 +813,7 @@ void multiple_for_each(unsigned W) {
 
     size_t c = rand() % 20;
 
-    auto for_each = taskflow.for_each(vectors[i].begin(), vectors[i].end(), [&executor, i] (auto& j) {
+    auto for_each = taskflow.for_each(vectors[i].begin(), vectors[i].end(), [i] (auto& j) {
       REQUIRE(j == -i);
       j = i;
       //executor.async([](){});

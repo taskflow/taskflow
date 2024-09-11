@@ -649,13 +649,13 @@ void nonblocking_semaphore(unsigned W) {
   const size_t N = 50;
 
   for(size_t i=0; i<N; i++) {
-    executor.async([&, i](tf::Runtime& rt){
+    executor.async([&](tf::Runtime& rt){
       rt.acquire(semaphore);
     });
   }
   
   for(size_t i=0; i<N; i++) {
-    executor.async([&, i](tf::Runtime& rt){
+    executor.async([&](tf::Runtime& rt){
       rt.release(semaphore);
     });
   }

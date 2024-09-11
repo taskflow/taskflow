@@ -1235,11 +1235,210 @@ TEST_CASE("WorkStealing.Continuation.8threads" * doctest::timeout(300)) {
   continuation_test(8);
 }
 
+// ----------------------------------------------------------------------------
+// MPMC
+// ----------------------------------------------------------------------------
 
+template <typename T, size_t LogSize>
+void mpmc_basics() {
 
+  tf::MPMC<T, LogSize> mpmc;
+  size_t N = (1<<LogSize);
+  std::vector<T> data(N+1, -1);
 
+  REQUIRE(mpmc.capacity() == N);
 
+  REQUIRE(mpmc.empty() == true);
+  REQUIRE(mpmc.try_dequeue() == std::nullopt);
 
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.try_enqueue(data[i]) == true);
+  }
+
+  REQUIRE(mpmc.try_enqueue(data[N]) == false);
+  REQUIRE(mpmc.empty() == false);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.try_dequeue() == data[i]);
+  }
+
+  REQUIRE(mpmc.empty() == true); 
+  REQUIRE(mpmc.try_dequeue() == std::nullopt);
+
+  for(size_t i=0; i<N; i++) {
+    mpmc.enqueue(data[i]);
+  }
+  REQUIRE(mpmc.try_enqueue(data[N]) == false);
+  
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.empty() == false);
+    REQUIRE(mpmc.try_dequeue() == data[i]);
+  }
+
+  REQUIRE(mpmc.empty() == true); 
+  REQUIRE(mpmc.try_dequeue() == std::nullopt);
+}
+
+TEST_CASE("MPMC.Basics.LogSize=1") {
+  mpmc_basics<int, 1>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=2") {
+  mpmc_basics<int, 2>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=3") {
+  mpmc_basics<int, 3>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=4") {
+  mpmc_basics<int, 4>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=5") {
+  mpmc_basics<int, 5>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=6") {
+  mpmc_basics<int, 6>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=7") {
+  mpmc_basics<int, 7>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=8") {
+  mpmc_basics<int, 8>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=9") {
+  mpmc_basics<int, 9>();
+}
+
+TEST_CASE("MPMC.Basics.LogSize=10") {
+  mpmc_basics<int, 10>();
+}
+
+// mpmc
+template <typename T, size_t LogSize>
+void mpmc(unsigned num_producers, unsigned num_consumers) {
+
+  const uint64_t N = 65536;
+
+  std::atomic<uint64_t> pcnt(0), ccnt(0), ans(0);
+  std::vector<std::thread> threads;
+
+  tf::MPMC<T, LogSize> mpmc;
+
+  for(unsigned i=0; i<num_consumers; i++) {
+    threads.emplace_back([&](){
+      while(ccnt.load(std::memory_order_relaxed) != N) {
+        if(auto item = mpmc.try_dequeue(); item) {
+          ans.fetch_add(item.value(), std::memory_order_relaxed);
+          ccnt.fetch_add(1, std::memory_order_relaxed);
+        }
+      }
+    });
+  }
+
+  for(unsigned i=0; i<num_producers; i++) {
+    threads.emplace_back([&](){
+      while(true) {
+        auto v = pcnt.fetch_add(1, std::memory_order_relaxed);
+        if(v >= N) {
+          break;
+        }
+        mpmc.enqueue(v);
+      }
+    });
+  }
+
+  for(auto & thread : threads) {
+    thread.join();
+  }
+
+  REQUIRE(ans.load() == (((N-1)*N) >> 1));
+}
+
+TEST_CASE("MPMC.1C1P") {
+  mpmc<int, 1>(1, 1);
+  mpmc<int, 10>(1, 1);
+}
+
+TEST_CASE("MPMC.1C2P") {
+  mpmc<int, 1>(1, 2);
+  mpmc<int, 10>(1, 2);
+}
+
+TEST_CASE("MPMC.1C3P") {
+  mpmc<int, 1>(1, 3);
+  mpmc<int, 10>(1, 3);
+}
+
+TEST_CASE("MPMC.1C4P") {
+  mpmc<int, 1>(1, 4);
+  mpmc<int, 10>(1, 4);
+}
+
+TEST_CASE("MPMC.2C1P") {
+  mpmc<int, 1>(2, 1);
+  mpmc<int, 10>(2, 1);
+}
+
+TEST_CASE("MPMC.2C2P") {
+  mpmc<int, 1>(2, 2);
+  mpmc<int, 10>(2, 2);
+}
+
+TEST_CASE("MPMC.2C3P") {
+  mpmc<int, 1>(2, 3);
+  mpmc<int, 10>(2, 3);
+}
+
+TEST_CASE("MPMC.2C4P") {
+  mpmc<int, 1>(2, 4);
+  mpmc<int, 10>(2, 4);
+}
+
+TEST_CASE("MPMC.3C1P") {
+  mpmc<int, 1>(3, 1);
+  mpmc<int, 10>(3, 1);
+}
+
+TEST_CASE("MPMC.3C2P") {
+  mpmc<int, 1>(3, 2);
+  mpmc<int, 10>(3, 2);
+}
+
+TEST_CASE("MPMC.3C3P") {
+  mpmc<int, 1>(3, 3);
+  mpmc<int, 10>(3, 3);
+}
+
+TEST_CASE("MPMC.3C4P") {
+  mpmc<int, 1>(3, 4);
+  mpmc<int, 10>(3, 4);
+}
+
+TEST_CASE("MPMC.4C1P") {
+  mpmc<int, 1>(4, 1);
+  mpmc<int, 10>(4, 1);
+}
+
+TEST_CASE("MPMC.4C2P") {
+  mpmc<int, 1>(4, 2);
+  mpmc<int, 10>(4, 2);
+}
+
+TEST_CASE("MPMC.4C3P") {
+  mpmc<int, 1>(4, 3);
+  mpmc<int, 10>(4, 3);
+}
+
+TEST_CASE("MPMC.4C4P") {
+  mpmc<int, 1>(4, 4);
+  mpmc<int, 10>(4, 4);
+}
 
 
 
