@@ -17,7 +17,12 @@ void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
   oss << "[" << fname << ":" << line << "] ";
   //ostreamize(oss, std::forward<ArgsT>(args)...);
   (oss << ... << args);
+#ifdef TF_DISABLE_EXCEPTION_HANDLING
+  std::cerr << oss.str();
+  std::terminate();
+#else
   throw std::runtime_error(oss.str());
+#endif
 }
 
 }  // ------------------------------------------------------------------------
