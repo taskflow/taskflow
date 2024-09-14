@@ -518,20 +518,25 @@ auto loop = [&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
   }
   else {
     counter.fetch_add(1, std::memory_order_relaxed);
-    return {++c < 10 ? 0 : -1};
+    return {++c < 10 ? 0 : 1};
   }
-}
-auto A = taskflow.emplace([](){});
-auto B = taskflow.emplace(loop);
-auto C = taskflow.emplace(loop);
-auto D = taskflow.emplace(loop);
+};
+auto init = taskflow.emplace([](){}).name("init");
+auto A = taskflow.emplace(loop).name("A");
+auto B = taskflow.emplace(loop).name("B");
+auto C = taskflow.emplace(loop).name("C");
+auto D = taskflow.emplace(loop).name("D");
 
-A.precede(B);
+init.precede(A);
+A.precede(A, B);
 B.precede(B, C);
 C.precede(C, D);
 D.precede(D);
 
 executor.run(taskflow).wait();  // counter == 40
+taskflow.dump(std::cout);
+
+std::cout << "counter == " << counter << '\n';
 @endcode
 
 @dotfile images/multi-condition-task-2.dot
