@@ -511,15 +511,9 @@ tf::Executor executor;
 tf::Taskflow taskflow;
 std::atomic<int> counter{0};
 
-auto loop = [&, i=bool{true}, c = int(0)]() mutable -> tf::SmallVector<int> {
-  if(i) {
-    i = false;
-    return {0, -1};
-  }
-  else {
-    counter.fetch_add(1, std::memory_order_relaxed);
-    return {++c < 10 ? 0 : 1};
-  }
+auto loop = [&, c = int(0)]() mutable -> tf::SmallVector<int> {
+  counter.fetch_add(1, std::memory_order_relaxed);
+  return {++c < 10 ? 0 : 1};
 };
 auto init = taskflow.emplace([](){}).name("init");
 auto A = taskflow.emplace(loop).name("A");

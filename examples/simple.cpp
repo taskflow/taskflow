@@ -33,7 +33,8 @@ int main(){
   D.succeed(B, C);  // D runs after  B and C
 
   executor.run(taskflow).wait();
-
+  
+  // dump the taskflow graph into a .dot format
   taskflow.dump(std::cout);
 
   return 0;
