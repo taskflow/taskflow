@@ -251,7 +251,9 @@ class Taskflow : public FlowBuilder {
 
     @param from from task (dependent)
     @param to to task (successor)
-  
+
+    <p><!-- Doxygen warning workaround --></p>
+
     @code{.cpp}
     tf::Taskflow taskflow;
     auto a = taskflow.placeholder().name("a");
