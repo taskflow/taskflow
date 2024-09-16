@@ -133,13 +133,13 @@
               <div class="m-doc-template">template&lt;typename F&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#ab32a718db1cc32d997b68b4f8482fc7e" class="m-doc">silent_async_unchecked</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span>
             </dt>
-            <dd>similar to <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
+            <dd>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename F&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#ae5144f53fe3a52e7d57de9e01815c814" class="m-doc">silent_async_unchecked</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
               F&amp;&amp; f)</span>
             </dt>
-            <dd>similar to <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
+            <dd>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span>
@@ -185,7 +185,7 @@
               <span class="m-doc-wrap-bumper"> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7bf472d4afca4eed0f1a0fe4168c1097" class="m-doc-self">~Runtime</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>destroys the runtime object</p>
-<p>Issues a <a href="classtf_1_1Runtime.html#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to finish all spawned asynchronous tasks and then destroys the runtime object.</p>
+<p>Issues a <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to finish all spawned asynchronous tasks and then destroys the runtime object.</p>
           </div></section>
           <section class="m-doc-details" id="a4ee48a82df1f9758a999d18e6015cec4"><div>
             <h3>
@@ -256,7 +256,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to tf::Executor::async is that the created asynchronous task pertains to the runtime object. Applications can explicitly issue <a href="classtf_1_1Runtime.html#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to wait for all spawned asynchronous tasks to finish. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to tf::Executor::async is that the created asynchronous task pertains to the runtime object. Applications can explicitly issue <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to wait for all spawned asynchronous tasks to finish. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
@@ -358,7 +358,7 @@
                 </tr>
               </tbody>
             </table>
-<p>This member function is more efficient than <a href="classtf_1_1Runtime.html#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<p>This member function is more efficient than <a href="#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> and is encouraged to use when there is no data returned.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
@@ -416,7 +416,7 @@
               </div>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab32a718db1cc32d997b68b4f8482fc7e" class="m-doc-self">silent_async_unchecked</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span></span>
             </h3>
-            <p>similar to <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
+            <p>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -451,7 +451,7 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae5144f53fe3a52e7d57de9e01815c814" class="m-doc-self">silent_async_unchecked</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
               F&amp;&amp; f)</span></span>
             </h3>
-            <p>similar to <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
+            <p>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -509,7 +509,7 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span><span class="w"></span>
 <span class="p">});</span><span class="w"></span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>Although <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue corun.</p></aside>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span></pre><p>Although <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue corun.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a078fc4e7202426221d45e44b08ad60e6"><div>
             <h3>
@@ -546,7 +546,7 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc-self">corun_all</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>corun all asynchronous tasks spawned by this runtime with other workers</p>
-<p>Coruns all asynchronous tasks (<a href="classtf_1_1Runtime.html#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a>, <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>) with other workers until all those asynchronous tasks finish.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+<p>Coruns all asynchronous tasks (<a href="#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a>, <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>) with other workers until all those asynchronous tasks finish.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"></span>
 <span class="w">  </span><span class="c1">// spawn 100 async tasks and wait</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -561,7 +561,7 @@
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span><span class="w"></span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span><span class="w"></span>
-<span class="p">});</span><span class="w"></span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue <a href="classtf_1_1Runtime.html#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a>.</p></aside>
+<span class="p">});</span><span class="w"></span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="ada6b02ea097968de011bb3825a7ec48b"><div>
             <h3>

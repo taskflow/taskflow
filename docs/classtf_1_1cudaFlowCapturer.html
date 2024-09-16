@@ -61,7 +61,7 @@
             </li>
           </ul>
         </nav>
-<p>The usage of <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> is similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, except users can call the method <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span><span class="w"> </span><span class="n">capturer</span><span class="p">){</span><span class="w"></span>
+<p>The usage of <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">tf::<wbr />cudaFlowCapturer</a> is similar to <a href="classtf_1_1cudaFlow.html" class="m-doc">tf::<wbr />cudaFlow</a>, except users can call the method <a href="#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />on</a> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <code>task_1</code> and <code>task_2</code>, where <code>task_1</code> runs before <code>task_2</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlowCapturer</span><span class="o">&amp;</span><span class="w"> </span><span class="n">capturer</span><span class="p">){</span><span class="w"></span>
 
 <span class="w">  </span><span class="c1">// capture my_kernel_1 through the given stream managed by the capturer</span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">task_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">capturer</span><span class="p">.</span><span class="n">on</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">){</span><span class="w"></span>
@@ -307,7 +307,7 @@
               <span class="m-doc-wrap-bumper"> tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0ddccd6faa338047921269bfe964b774" class="m-doc-self">cudaFlowCapturer</a>(</span><span class="m-doc-wrap">) <span class="m-label m-info">defaulted</span></span></span>
             </h3>
             <p>constructs a standalone <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a></p>
-<p>A standalone cudaFlow capturer does not go through any taskflow and can be run by the caller thread using <a href="classtf_1_1cudaFlowCapturer.html#a952596fd7c46acee4c2459d8fe39da28" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />run</a>.</p>
+<p>A standalone cudaFlow capturer does not go through any taskflow and can be run by the caller thread using <a href="#a952596fd7c46acee4c2459d8fe39da28" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />run</a>.</p>
           </div></section>
           <section class="m-doc-details" id="ad0d937ae0d77239f148b66a77e35db41"><div>
             <h3>
@@ -348,7 +348,7 @@
               C&amp;&amp; callable)</span></span>
             </h3>
             <p>updates a capture task to another sequential CUDA operations</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">cudaFlowCapturer::<wbr />on</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#ad0d937ae0d77239f148b66a77e35db41" class="m-doc">cudaFlowCapturer::<wbr />on</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a593335760ea517cea597237137ef9333"><div>
             <h3>
@@ -370,7 +370,7 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a168a968d7f5833700fcc14a210ad39bc" class="m-doc-self">noop</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task)</span></span>
             </h3>
             <p>updates a task to a no-operation task</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a593335760ea517cea597237137ef9333" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />noop</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#a593335760ea517cea597237137ef9333" class="m-doc">tf::<wbr />cudaFlowCapturer::<wbr />noop</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ae84d097cdae9e2e8ce108dea760483ed"><div>
             <h3>
@@ -408,7 +408,7 @@
               size_t count)</span></span>
             </h3>
             <p>updates a capture task to a memcpy operation</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">cudaFlowCapturer::<wbr />memcpy</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#ae84d097cdae9e2e8ce108dea760483ed" class="m-doc">cudaFlowCapturer::<wbr />memcpy</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ab70f12050e78b588f5c23d874aa4e538"><div>
             <h3>
@@ -467,7 +467,7 @@
               size_t num)</span></span>
             </h3>
             <p>updates a capture task to a copy operation</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ab70f12050e78b588f5c23d874aa4e538" class="m-doc">cudaFlowCapturer::<wbr />copy</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#ab70f12050e78b588f5c23d874aa4e538" class="m-doc">cudaFlowCapturer::<wbr />copy</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a0d38965b380f940bf6cfc6667a281052"><div>
             <h3>
@@ -505,7 +505,7 @@
               size_t n)</span></span>
             </h3>
             <p>updates a capture task to a memset operation</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a0d38965b380f940bf6cfc6667a281052" class="m-doc">cudaFlowCapturer::<wbr />memset</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#a0d38965b380f940bf6cfc6667a281052" class="m-doc">cudaFlowCapturer::<wbr />memset</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a6f06c7f6954d8d67ad89f0eddfe285e9"><div>
             <h3>
@@ -579,7 +579,7 @@
               ArgsT &amp;&amp; ... args)</span></span>
             </h3>
             <p>updates a capture task to a kernel operation</p>
-<p>The method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a6f06c7f6954d8d67ad89f0eddfe285e9" class="m-doc">cudaFlowCapturer::<wbr />kernel</a> but operates on an existing task.</p>
+<p>The method is similar to <a href="#a6f06c7f6954d8d67ad89f0eddfe285e9" class="m-doc">cudaFlowCapturer::<wbr />kernel</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ac944c7d20056e0633ef84f1a25b52296"><div>
             <h3>
@@ -619,7 +619,7 @@
               C c)</span></span>
             </h3>
             <p>updates a capture task to a single-threaded kernel</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#ac944c7d20056e0633ef84f1a25b52296" class="m-doc">cudaFlowCapturer::<wbr />single_task</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="#ac944c7d20056e0633ef84f1a25b52296" class="m-doc">cudaFlowCapturer::<wbr />single_task</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a0b2f1bcd59f0b42e0f823818348b4ae7"><div>
             <h3>
@@ -684,7 +684,7 @@
               C callable)</span></span>
             </h3>
             <p>updates a capture task to a for-each kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a0b2f1bcd59f0b42e0f823818348b4ae7" class="m-doc">cudaFlowCapturer::<wbr />for_each</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="#a0b2f1bcd59f0b42e0f823818348b4ae7" class="m-doc">cudaFlowCapturer::<wbr />for_each</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="aeb877f42ee3a627c40f1c9c84e31ba3c"><div>
             <h3>
@@ -761,7 +761,7 @@
               C callable)</span></span>
             </h3>
             <p>updates a capture task to a for-each-index kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#aeb877f42ee3a627c40f1c9c84e31ba3c" class="m-doc">cudaFlowCapturer::<wbr />for_each_index</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="#aeb877f42ee3a627c40f1c9c84e31ba3c" class="m-doc">cudaFlowCapturer::<wbr />for_each_index</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="a99d9a86a7240ebf0767441e4ec2e14c4"><div>
             <h3>
@@ -836,7 +836,7 @@
               C op)</span></span>
             </h3>
             <p>updates a capture task to a transform kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="ac2f527e57e8fe447b9f13ba51e9b9c48"><div>
             <h3>
@@ -921,7 +921,7 @@
               C op)</span></span>
             </h3>
             <p>updates a capture task to a transform kernel task</p>
-<p>This method is similar to <a href="classtf_1_1cudaFlowCapturer.html#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
+<p>This method is similar to <a href="#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
           </div></section>
           <section class="m-doc-details" id="aa1d016b56c06cb28eabfebfdd7dbb24d"><div>
             <h3>

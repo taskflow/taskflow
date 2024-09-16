@@ -3,7 +3,7 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -1239,7 +1239,8 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 }
 .m-block.m-default { border-left-color: #405363; }
 .m-block.m-default h3, .m-block.m-default h4, .m-block.m-default h5, .m-block.m-default h6,
-.m-text.m-default, .m-label.m-flat.m-default {
+.m-text.m-default, .m-label.m-flat.m-default,
+pre.m-math.m-default, code.m-math.m-default {
   color: #dcdcdc;
 }
 .m-block.m-default h3 a, .m-block.m-default h4 a, .m-block.m-default h5 a, .m-block.m-default h6 a {
@@ -1248,35 +1249,41 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-primary { border-left-color: #a5c9ea; }
 .m-block.m-primary h3, .m-block.m-primary h4, .m-block.m-primary h5, .m-block.m-primary h6,
 .m-block.m-primary h3 a, .m-block.m-primary h4 a, .m-block.m-primary h5 a, .m-block.m-primary h6 a,
-.m-text.m-primary, .m-label.m-flat.m-primary {
+.m-text.m-primary, .m-label.m-flat.m-primary,
+pre.m-math.m-primary, code.m-math.m-primary {
   color: #a5c9ea;
 }
 .m-block.m-success { border-left-color: #3bd267; }
 .m-block.m-success h3, .m-block.m-success h4, .m-block.m-success h5, .m-block.m-success h6,
 .m-block.m-success h3 a, .m-block.m-success h4 a, .m-block.m-success h5 a, .m-block.m-success h6 a,
-.m-text.m-success, .m-label.m-flat.m-success {
+.m-text.m-success, .m-label.m-flat.m-success,
+pre.m-math.m-success, code.m-math.m-success {
   color: #3bd267;
 }
 .m-block.m-warning { border-left-color: #c7cf2f; }
 .m-block.m-warning h3, .m-block.m-warning h4, .m-block.m-warning h5, .m-block.m-warning h6,
 .m-block.m-warning h3 a, .m-block.m-warning h4 a, .m-block.m-warning h5 a, .m-block.m-warning h6 a,
-.m-text.m-warning, .m-label.m-flat.m-warning {
+.m-text.m-warning, .m-label.m-flat.m-warning,
+pre.m-math.m-warning, code.m-math.m-warning {
   color: #c7cf2f;
 }
 .m-block.m-danger { border-left-color: #cd3431; }
 .m-block.m-danger h3, .m-block.m-danger h4, .m-block.m-danger h5, .m-block.m-danger h6,
 .m-block.m-danger h3 a, .m-block.m-danger h4 a, .m-block.m-danger h5 a, .m-block.m-danger h6 a,
-.m-text.m-danger, .m-label.m-flat.m-danger {
+.m-text.m-danger, .m-label.m-flat.m-danger,
+pre.m-math.m-danger, code.m-math.m-danger {
   color: #cd3431;
 }
 .m-block.m-info { border-left-color: #2f83cc; }
 .m-block.m-info h3, .m-block.m-info h4, .m-block.m-info h5, .m-block.m-info h6,
 .m-block.m-info h3 a, .m-block.m-info h4 a, .m-block.m-info h5 a, .m-block.m-info h6 a,
-.m-text.m-info, .m-label.m-flat.m-info {
+.m-text.m-info, .m-label.m-flat.m-info,
+pre.m-math.m-info, code.m-math.m-info {
   color: #2f83cc;
 }
 .m-block.m-dim { border-left-color: #747474; }
-.m-block.m-dim, .m-text.m-dim, .m-label.m-flat.m-dim {
+.m-block.m-dim, .m-text.m-dim, .m-label.m-flat.m-dim,
+pre.m-math.m-dim, code.m-math.m-dim {
   color: #747474;
 }
 .m-block.m-dim a, .m-text.m-dim a { color: #acacac; }
@@ -1532,8 +1539,9 @@ figure.m-figure.m-dim a { color: #acacac; }
 figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
   color: #747474;
 }
-.m-math { fill: #dcdcdc; }
-.m-math.m-default, .m-math g.m-default, .m-math rect.m-default,
+div.m-math svg, svg.m-math { fill: #dcdcdc; }
+div.m-math.m-default svg, div.m-math svg g.m-default, div.m-math svg rect.m-default,
+svg.m-math.m-default, svg.m-math g.m-default, svg.m-math rect.m-default,
 div.m-plot svg .m-bar.m-default,
 .m-graph g.m-edge polygon,
 .m-graph g.m-node:not(.m-flat) ellipse,
@@ -1563,7 +1571,8 @@ div.m-plot svg .m-bar.m-default,
 .m-graph.m-default g.m-cluster polygon {
   stroke: #dcdcdc;
 }
-.m-math.m-primary, .m-math g.m-primary, .m-math rect.m-primary,
+div.m-math.m-primary svg, div.m-math svg g.m-primary, div.m-math svg rect.m-primary,
+svg.m-math.m-primary, svg.m-math g.m-primary, svg.m-math rect.m-primary,
 div.m-plot svg .m-bar.m-primary,
 .m-graph.m-primary g.m-edge polygon,
 .m-graph.m-primary g.m-node:not(.m-flat) ellipse,
@@ -1581,7 +1590,8 @@ div.m-plot svg .m-bar.m-primary,
 .m-graph.m-primary g.m-cluster polygon {
   stroke: #a5c9ea;
 }
-.m-math.m-success, .m-math g.m-success, .m-math rect.m-success,
+div.m-math.m-success svg, div.m-math svg g.m-success, div.m-math svg rect.m-success,
+svg.m-math.m-success, svg.m-math g.m-success, svg.m-math rect.m-success,
 div.m-plot svg .m-bar.m-success,
 .m-graph.m-success g.m-edge polygon,
 .m-graph.m-success g.m-node:not(.m-flat) ellipse,
@@ -1599,7 +1609,8 @@ div.m-plot svg .m-bar.m-success,
 .m-graph.m-success g.m-cluster polygon {
   stroke: #3bd267;
 }
-.m-math.m-warning, .m-math g.m-warning, .m-math rect.m-warning,
+div.m-math.m-warning svg, div.m-math svg g.m-warning, div.m-math svg rect.m-warning,
+svg.m-math.m-warning, svg.m-math g.m-warning, svg.m-math rect.m-warning,
 div.m-plot svg .m-bar.m-warning,
 .m-graph.m-warning g.m-edge polygon,
 .m-graph.m-warning g.m-node:not(.m-flat) ellipse,
@@ -1617,7 +1628,8 @@ div.m-plot svg .m-bar.m-warning,
 .m-graph.m-warning g.m-cluster polygon {
   stroke: #c7cf2f;
 }
-.m-math.m-danger, .m-math g.m-danger, .m-math rect.m-danger,
+div.m-math.m-danger svg, div.m-math svg g.m-danger, div.m-math svg rect.m-danger,
+svg.m-math.m-danger, svg.m-math g.m-danger, svg.m-math rect.m-danger,
 div.m-plot svg .m-bar.m-danger,
 .m-graph.m-danger g.m-edge polygon,
 .m-graph.m-danger g.m-node:not(.m-flat) ellipse,
@@ -1635,7 +1647,8 @@ div.m-plot svg .m-bar.m-danger,
 .m-graph.m-danger g.m-cluster polygon {
   stroke: #cd3431;
 }
-.m-math.m-info, .m-math g.m-info, .m-math rect.m-info,
+div.m-math.m-info svg, div.m-math svg g.m-info, div.m-math svg rect.m-info,
+svg.m-math.m-info, svg.m-math g.m-info, svg.m-math rect.m-info,
 div.m-plot svg .m-bar.m-info,
 .m-graph.m-info g.m-edge polygon,
 .m-graph.m-info g.m-node:not(.m-flat) ellipse,
@@ -1653,7 +1666,8 @@ div.m-plot svg .m-bar.m-info,
 .m-graph.m-info g.m-cluster polygon {
   stroke: #2f83cc;
 }
-.m-math.m-dim, .m-math g.m-dim, .m-math rect.m-dim,
+div.m-math.m-dim svg, div.m-math svg g.m-dim, div.m-math svg rect.m-dim,
+svg.m-math.m-dim, svg.m-math g.m-dim, svg.m-math rect.m-dim,
 div.m-plot svg .m-bar.m-dim,
 .m-graph.m-dim g.m-edge polygon,
 .m-graph.m-dim g.m-node:not(.m-flat) ellipse,
