@@ -292,6 +292,8 @@ class Runtime {
   @param params task parameters
   @param f callable
 
+  <p><!-- Doxygen warning workaround --></p>
+
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     auto future = rt.async("my task", [](){});
@@ -334,7 +336,9 @@ class Runtime {
   @tparam F callable type
   @param params task parameters
   @param f callable
-  
+
+  <p><!-- Doxygen warning workaround --></p>
+
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async("my task", [](){});
