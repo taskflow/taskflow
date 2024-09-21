@@ -73,7 +73,7 @@ class Worker {
     size_t _vtm;
     Executor* _executor {nullptr};
     std::default_random_engine _rdgen { std::random_device{}() };
-    TaskQueue<Node*> _wsq;
+    UnboundedTaskQueue<Node*> _wsq;
     Node* _cache {nullptr};
 
     DefaultNotifier::Waiter* _waiter;

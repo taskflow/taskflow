@@ -11,7 +11,7 @@
 void tsq_owner() {
 
   for(size_t N=1; N<=777777; N=N*2+1) {
-    tf::TaskQueue<void*> queue;
+    tf::UnboundedTaskQueue<void*> queue;
     std::vector<void*> gold(N);
 
     REQUIRE(queue.empty());
@@ -19,7 +19,7 @@ void tsq_owner() {
     // push and pop
     for(size_t i=0; i<N; ++i) {
       gold[i] = &i;
-      queue.push(gold[i], 0);
+      queue.push(gold[i]);
     }
     for(size_t i=0; i<N; ++i) {
       auto ptr = queue.pop();
@@ -30,7 +30,7 @@ void tsq_owner() {
 
     // push and steal
     for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i], 0);
+      queue.push(gold[i]);
     }
     // i starts from 1 to avoid cache effect
     for(size_t i=1; i<N; ++i) {
@@ -41,11 +41,18 @@ void tsq_owner() {
   }
 }
 
+// ----------------------------------------------------------------------------
+// Testcase: TSQTest.Owner
+// ----------------------------------------------------------------------------
+TEST_CASE("WorkStealing.QueueOwner" * doctest::timeout(300)) {
+  tsq_owner();
+}
+
 // Procedure: tsq_n_thieves
 void tsq_n_thieves(size_t M) {
 
   for(size_t N=1; N<=777777; N=N*2+1) {
-    tf::TaskQueue<void*> queue;
+    tf::UnboundedTaskQueue<void*> queue;
     std::vector<void*> gold(N);
     std::atomic<size_t> consumed {0};
 
@@ -71,7 +78,7 @@ void tsq_n_thieves(size_t M) {
 
     // master thread
     for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i], 0);
+      queue.push(gold[i]);
     }
 
     std::vector<void*> items;
@@ -105,12 +112,6 @@ void tsq_n_thieves(size_t M) {
 
 }
 
-// ----------------------------------------------------------------------------
-// Testcase: TSQTest.Owner
-// ----------------------------------------------------------------------------
-TEST_CASE("WorkStealing.QueueOwner" * doctest::timeout(300)) {
-  tsq_owner();
-}
 
 // ----------------------------------------------------------------------------
 // Testcase: TSQTest.1Thief
@@ -168,6 +169,7 @@ TEST_CASE("WorkStealing.Queue8Thieves" * doctest::timeout(300)) {
   tsq_n_thieves(8);
 }
 
+/*
 // ============================================================================
 // Test with Priority
 // ============================================================================
@@ -177,7 +179,7 @@ void priority_tsq_owner() {
 
   const unsigned P = 5;
 
-  tf::TaskQueue<void*, P> queue;
+  tf::UnboundedTaskQueue<void*, P> queue;
 
   //for(unsigned p=0; p<P; p++) {
   //  REQUIRE(queue.push(nullptr, p) == true);
@@ -254,7 +256,7 @@ void priority_tsq_owner() {
 
 TEST_CASE("WorkStealing.PriorityQueue.Owner" * doctest::timeout(300)) {
   priority_tsq_owner();
-}
+} */
 
 // ----------------------------------------------------------------------------
 // Starvation Test
