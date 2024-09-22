@@ -1107,6 +1107,8 @@ class Executor {
 
 };
 
+#ifndef DOXYGEN_GENERATING_OUTPUT
+
 // Constructor
 inline Executor::Executor(size_t N) :
   _MAX_STEALS ((N+1) << 1),
@@ -2384,7 +2386,7 @@ auto Runtime::async(P&& params, F&& f) {
   return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 
-
+#endif
 
 
 
