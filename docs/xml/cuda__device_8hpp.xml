@@ -2,6 +2,31 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__device_8hpp" kind="file" language="C++">
     <compoundname>cuda_device.hpp</compoundname>
+    <includes local="yes">cuda_error.hpp</includes>
+    <includedby refid="cuda__memory_8hpp" local="yes">taskflow/cuda/cuda_memory.hpp</includedby>
+    <incdepgraph>
+      <node id="2">
+        <label>cuda_error.hpp</label>
+      </node>
+      <node id="1">
+        <label>taskflow/cuda/cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>taskflow/cuda/cuda_memory.hpp</label>
+        <link refid="cuda__memory_8hpp"/>
+      </node>
+      <node id="1">
+        <label>taskflow/cuda/cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <briefdescription>
@@ -9,6 +34,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_device.hpp"/>
+    <location file="taskflow/cuda/cuda_device.hpp"/>
   </compounddef>
 </doxygen>

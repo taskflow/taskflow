@@ -47,6 +47,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>AsyncTask <span class="m-thin">class</span>
+          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="async__task_8hpp.html">&lt;taskflow/core/async_task.hpp&gt;</a></div>
         </h1>
         <p>class to create a dependent asynchronous task (async task)</p>
         <nav class="m-block m-default">
@@ -62,11 +63,11 @@
           </ul>
         </nav>
 <p>A <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is a lightweight handle that retains <em>shared</em> ownership of a dependent asynchronous task (async task) created by an executor. This shared ownership ensures that the async task remains alive when adding it to the dependency list of another async task, thus avoiding the classical <a href="https://en.wikipedia.org/wiki/ABA_problem">ABA problem</a>.</p><pre class="m-code"><span class="c1">// main thread retains shared ownership of async task A</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){});</span><span class="w"></span>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){});</span>
 
 <span class="c1">// task A remains alive (i.e., at least one ref count by the main thread) </span>
 <span class="c1">// when being added to the dependency list of async task B</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"></span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on the logic of C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
+<span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span></pre><p>Currently, <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> is implemented based on the logic of C++ smart pointer <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">

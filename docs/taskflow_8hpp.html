@@ -56,6 +56,7 @@
               Reference
               <ul>
                 <li><a href="#namespaces">Namespaces</a></li>
+                <li><a href="#define-members">Defines</a></li>
               </ul>
             </li>
           </ul>
@@ -66,6 +67,37 @@
             <dt>namespace <a href="namespacetf.html" class="m-doc">tf</a></dt>
             <dd>taskflow namespace</dd>
           </dl>
+        </section>
+        <section id="define-members">
+          <h2><a href="#define-members">Defines</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#a4df13cef00c37d2c56239c6e3b58e03f" class="m-doc">TF_VERSION</a></span>
+            </dt>
+            <dd>version of the Taskflow (currently 3.8.0)</dd>
+            <dt id="ac543189162351f11cc56cbc81e609e21">
+              <span class="m-doc-wrap-bumper">#define <a href="#ac543189162351f11cc56cbc81e609e21" class="m-doc-self">TF_MAJOR_VERSION</a></span>
+            </dt>
+            <dd>major version of Taskflow, which is equal to <code>TF_VERSION/100000</code></dd>
+            <dt id="ac79e1d6e02bafb712ca6b8580fc35d0d">
+              <span class="m-doc-wrap-bumper">#define <a href="#ac79e1d6e02bafb712ca6b8580fc35d0d" class="m-doc-self">TF_MINOR_VERSION</a></span>
+            </dt>
+            <dd>minor version of Taskflow, which is equal to <code>TF_VERSION / 100 % 1000</code></dd>
+            <dt id="af5d0ce402f403151eb848aceacfe28ec">
+              <span class="m-doc-wrap-bumper">#define <a href="#af5d0ce402f403151eb848aceacfe28ec" class="m-doc-self">TF_PATCH_VERSION</a></span>
+            </dt>
+            <dd>patch version of Taskflow, which is equal to <code>TF_VERSION % 100</code></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Define documentation</h2>
+          <section class="m-doc-details" id="a4df13cef00c37d2c56239c6e3b58e03f"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#a4df13cef00c37d2c56239c6e3b58e03f" class="m-doc-self">TF_VERSION</a></span>
+            </h3>
+            <p>version of the Taskflow (currently 3.8.0)</p>
+<p>The version system is made of a major version number, a minor version number, and a patch number:</p><ul><li>TF_VERSION % 100 is the patch level</li><li>TF_VERSION / 100 % 1000 is the minor version</li><li>TF_VERSION / 100000 is the major version</li></ul>
+          </div></section>
         </section>
       </div>
     </div>

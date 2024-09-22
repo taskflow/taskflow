@@ -2,6 +2,18 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__stream_8hpp" kind="file" language="C++">
     <compoundname>cuda_stream.hpp</compoundname>
+    <includes local="yes">cuda_object.hpp</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>cuda_object.hpp</label>
+      </node>
+      <node id="1">
+        <label>taskflow/cuda/cuda_stream.hpp</label>
+        <link refid="cuda__stream_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
     <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
     <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
@@ -14,6 +26,6 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/cuda/cuda_stream.hpp"/>
+    <location file="taskflow/cuda/cuda_stream.hpp"/>
   </compounddef>
 </doxygen>

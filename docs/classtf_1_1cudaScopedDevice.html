@@ -47,6 +47,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaScopedDevice <span class="m-thin">class</span>
+          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__device_8hpp.html">&lt;taskflow/cuda/cuda_device.hpp&gt;</a></div>
         </h1>
         <p>class to create an RAII-styled context switch</p>
         <nav class="m-block m-default">
@@ -60,12 +61,12 @@
             </li>
           </ul>
         </nav>
-<p>Sample usage:</p><pre class="m-code"><span class="p">{</span><span class="w"></span>
+<p>Sample usage:</p><pre class="m-code"><span class="p">{</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaScopedDevice</span><span class="w"> </span><span class="nf">device</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// switch to the device context 1</span>
 
 <span class="w">  </span><span class="c1">// create a stream under device context 1</span>
-<span class="w">  </span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">cudaStreamCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">cudaStream_t</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">  </span><span class="n">cudaStreamCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
 
 <span class="p">}</span><span class="w">  </span><span class="c1">// leaving the scope and goes back to the previous device context</span></pre><p>cudaScopedDevice is neither movable nor copyable.</p>
         <section id="typeless-methods">

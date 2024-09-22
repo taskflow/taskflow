@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Semaphore" kind="class" language="C++" prot="public">
     <compoundname>tf::Semaphore</compoundname>
-    <includes refid="semaphore_8hpp" local="no">semaphore.hpp</includes>
+    <includes refid="semaphore_8hpp" local="no">taskflow/core/semaphore.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
@@ -18,7 +18,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="68" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="68" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="68" column="3" bodyfile="taskflow/core/semaphore.hpp" bodystart="68" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -33,7 +33,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="152" column="17" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="152" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="152" column="17" bodyfile="taskflow/core/semaphore.hpp" bodystart="152" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -50,7 +50,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="78" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="78" bodyend="78"/>
+        <location file="taskflow/core/semaphore.hpp" line="78" column="5" bodyfile="taskflow/core/semaphore.hpp" bodystart="78" bodyend="78"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1aafbb7c98f5e510f2ba053b3e9fd2cb25" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -71,7 +71,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="90" column="14" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="90" bodyend="91"/>
+        <location file="taskflow/core/semaphore.hpp" line="90" column="14" bodyfile="taskflow/core/semaphore.hpp" bodystart="90" bodyend="91"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1aa3d4f0f1930f5d5ec6238a9d1460b06b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -100,7 +100,7 @@ Queries the current value of the associated counter. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="100" column="12" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="100" bodyend="102"/>
+        <location file="taskflow/core/semaphore.hpp" line="100" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="100" bodyend="102"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a2bbcb0be1e7e767d5911ad79d63b59f0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -117,7 +117,7 @@ Tries to atomically decrement the internal counter by <computeroutput>1</compute
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="112" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="112" bodyend="120"/>
+        <location file="taskflow/core/semaphore.hpp" line="112" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="112" bodyend="120"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a495348aa6280a4d2756a42fbf23fbe20" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -146,7 +146,7 @@ The release operation always succeeds as it simply increments the counter of thi
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="130" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="130" bodyend="132"/>
+        <location file="taskflow/core/semaphore.hpp" line="130" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="130" bodyend="132"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a6d0481c1a39eddc6497aad21695c0e8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -189,7 +189,7 @@ The release operation always succeeds as it simply increments the counter of thi
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="146" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="146" bodyend="148"/>
+        <location file="taskflow/core/semaphore.hpp" line="146" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="146" bodyend="148"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -197,7 +197,7 @@ The release operation always succeeds as it simply increments the counter of thi
     </briefdescription>
     <detaileddescription>
 <para>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -218,7 +218,7 @@ The release operation always succeeds as it simply increments the counter of thi
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" line="66" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/semaphore.hpp" bodystart="66" bodyend="153"/>
+    <location file="taskflow/core/semaphore.hpp" line="66" column="1" bodyfile="taskflow/core/semaphore.hpp" bodystart="66" bodyend="153"/>
     <listofallmembers>
       <member refid="classtf_1_1Semaphore_1abe01d3cb3ccb1b59d816f5bec36d5cc8" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_count</name></member>
       <member refid="classtf_1_1Semaphore_1aa3d4f0f1930f5d5ec6238a9d1460b06b" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>count</name></member>

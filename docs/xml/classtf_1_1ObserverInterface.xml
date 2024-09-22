@@ -4,7 +4,7 @@
     <compoundname>tf::ObserverInterface</compoundname>
     <derivedcompoundref refid="classtf_1_1ChromeObserver" prot="public" virt="non-virtual">tf::ChromeObserver</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1TFProfObserver" prot="public" virt="non-virtual">tf::TFProfObserver</derivedcompoundref>
-    <includes refid="observer_8hpp" local="no">observer.hpp</includes>
+    <includes refid="observer_8hpp" local="no">taskflow/core/observer.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type></type>
@@ -18,7 +18,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="176" column="11"/>
+        <location file="taskflow/core/observer.hpp" line="176" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -48,7 +48,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="182" column="16"/>
+        <location file="taskflow/core/observer.hpp" line="182" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -90,7 +90,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="189" column="16"/>
+        <location file="taskflow/core/observer.hpp" line="189" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -132,7 +132,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="196" column="16"/>
+        <location file="taskflow/core/observer.hpp" line="196" column="16"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -166,16 +166,16 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>insert<sp/>tasks<sp/>into<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;MyObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.make_observer&lt;MyObserver&gt;(</highlight><highlight class="stringliteral">&quot;MyObserver&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;MyObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kindref="member">make_observer</ref>&lt;MyObserver&gt;(</highlight><highlight class="stringliteral">&quot;MyObserver&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>
@@ -196,7 +196,7 @@
         </childnode>
       </node>
     </inheritancegraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" line="169" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/observer.hpp" bodystart="169" bodyend="197"/>
+    <location file="taskflow/core/observer.hpp" line="169" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="169" bodyend="197"/>
     <listofallmembers>
       <member refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" prot="public" virt="pure-virtual"><scope>tf::ObserverInterface</scope><name>on_entry</name></member>
       <member refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" prot="public" virt="pure-virtual"><scope>tf::ObserverInterface</scope><name>on_exit</name></member>

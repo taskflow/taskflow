@@ -80,7 +80,7 @@
 <title>Static Traversal</title>
 <para>We create a taskflow to traverse the graph using static tasks (see <ref refid="StaticTasking" kindref="compound">Static Tasking</ref>). Each task does nothing but marks <computeroutput>visited</computeroutput> to <computeroutput>true</computeroutput> and subtracts <computeroutput>dependents</computeroutput> from one, both of which are used for validation after the graph is traversed. In practice, this computation may be replaced with a heavy function.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes<sp/>=<sp/>make_dag(100000,<sp/>4);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks;</highlight></codeline>
@@ -104,7 +104,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>after<sp/>the<sp/>graph<sp/>is<sp/>traversed,<sp/>all<sp/>nodes<sp/>must<sp/>be<sp/>visited<sp/>with<sp/>no<sp/>dependents</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>
@@ -121,7 +121,7 @@
 <title>Dynamic Traversal</title>
 <para>We can traverse the graph dynamically using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> (see <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref>). We start from the source nodes of zero incoming edges and recursively spawn subflows whenever the dependency of a node is meet. Since we are creating tasks from the execution context of another task, we need to store the task callable in advance.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>callable<sp/>of<sp/>traversing<sp/>a<sp/>node<sp/>using<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(Node*,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;)&gt;<sp/>traverse;</highlight></codeline>
@@ -156,7 +156,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}).name(nodes[i].name);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>after<sp/>the<sp/>graph<sp/>is<sp/>traversed,<sp/>all<sp/>nodes<sp/>must<sp/>be<sp/>visited<sp/>with<sp/>no<sp/>dependents</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>
@@ -170,6 +170,6 @@
 <para>In general, the dynamic version of graph traversal is slower than the static version due to the overhead incurred by spawning subflows. However, it may be useful for the situation where the graph structure is unknown at once but being partially explored during the traversal. </para>
 </sect1>
     </detaileddescription>
-    <location file="examples/graph_traversal.dox"/>
+    <location file="doxygen/examples/graph_traversal.dox"/>
   </compounddef>
 </doxygen>

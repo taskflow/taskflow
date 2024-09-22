@@ -187,7 +187,7 @@
 <sect1 id="GPUTaskingcudaFlowCapturer_1IntegrateCudaFlowCapturerIntoTaskflow">
 <title>Integrate a cudaFlow Capturer into Taskflow</title>
 <para>You can create a task to enclose a cudaFlow capturer and run it from a worker thread. The usage of the capturer remains the same except that the capturer is run by a worker thread from a taskflow task. The following example runs a cudaFlow capturer from a static task:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
@@ -205,6 +205,6 @@
 </programlisting> </para>
 </sect1>
     </detaileddescription>
-    <location file="cookbook/gpu_tasking_cudaflow_capturer.dox"/>
+    <location file="doxygen/cookbook/gpu_tasking_cudaflow_capturer.dox"/>
   </compounddef>
 </doxygen>

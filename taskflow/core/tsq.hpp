@@ -46,57 +46,10 @@ enum class TaskPriority : unsigned {
 @brief class to create a lock-free unbounded single-producer multiple-consumer queue
 
 This class implements the work-stealing queue described in the paper,
-<a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>,
-and extends it to include priority.
+<a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.
 
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue simultaneously.
-Priority starts from zero (highest priority) to the template value 
-`TF_MAX_PRIORITY-1` (lowest priority).
-All operations are associated with priority values to indicate
-the corresponding queues to which an operation is applied.
-
-The default template value, `TF_MAX_PRIORITY`, is `TaskPriority::MAX` 
-which applies only three priority levels to the task queue.
-
-@code{.cpp}
-auto [A, B, C, D, E] = taskflow.emplace(
-  [] () { },
-  [&] () { 
-    std::cout << "Task B: " << counter++ << '\n';  // 0
-  },
-  [&] () { 
-    std::cout << "Task C: " << counter++ << '\n';  // 2
-  },
-  [&] () { 
-    std::cout << "Task D: " << counter++ << '\n';  // 1
-  },
-  [] () { }
-);
-
-A.precede(B, C, D); 
-E.succeed(B, C, D);
-  
-B.priority(tf::TaskPriority::HIGH);
-C.priority(tf::TaskPriority::LOW);
-D.priority(tf::TaskPriority::NORMAL);
-  
-executor.run(taskflow).wait();
-@endcode
-
-In the above example, we have a task graph of five tasks,
-@c A, @c B, @c C, @c D, and @c E, in which @c B, @c C, and @c D
-can run in simultaneously when @c A finishes.
-Since we only uses one worker thread in the executor, 
-we can deterministically run @c B first, then @c D, and @c C
-in order of their priority values.
-The output is as follows:
-
-@code{.shell-session}
-Task B: 0
-Task D: 1
-Task C: 2
-@endcode
 
 */
 template <typename T>
@@ -344,8 +297,9 @@ UnboundedTaskQueue<T>::resize_array(Array* a, std::int64_t b, std::int64_t t) {
 @class: BoundedTaskQueue
 
 @tparam T data type
+@tparam LogSize log size of the queue to the base of 2
 
-@brief Lock-free unbounded single-producer multiple-consumer queue.
+@brief Lock-free bounded single-producer multiple-consumer queue.
 
 This class implements the work stealing queue described in the paper, 
 "Correct and Efficient Work-Stealing for Weak Memory Models,"
@@ -372,8 +326,6 @@ class BoundedTaskQueue {
     
     /**
     @brief constructs the queue with a given capacity
-
-    @param capacity the capacity of the queue (must be power of 2)
     */
     BoundedTaskQueue() = default;
 

@@ -121,13 +121,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem>
-<listitem><para>added moved run in tf::Executor for automatically managing taskflow&apos;s lifetimes<itemizedlist>
-<listitem><para>tf::Executor::run(Taskflow&amp;&amp;)</para>
-</listitem><listitem><para>tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</para>
-</listitem><listitem><para>tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</para>
-</listitem><listitem><para>tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</para>
-</listitem><listitem><para>tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</para>
-</listitem><listitem><para>tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</para>
+<listitem><para>added moved run in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> for automatically managing taskflow&apos;s lifetimes<itemizedlist>
+<listitem><para><ref refid="classtf_1_1Executor_1a4b97752c00b788918cb8396fbb1b3ad0" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a2d0dc32d81100202168e42ac1d3dd8f9" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a04aa012598622e807dba3272aa464d7e" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ae5c5c6a1c1f6d4740414c86daa6a3901" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a724d188df2952f64c1f2c60555a0a611" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad7aa69f06309b9226a4046f8c400144e" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para>
 </listitem></itemizedlist>
 </para>
 </listitem>
@@ -271,7 +271,7 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 <para><itemizedlist>
 <listitem><para>fixed compilation errors in constructing tf::cudaRoundRobinCapturing </para>
 </listitem>
-<listitem><para>fixed compilation errors of TLS worker pointer in tf::Executor </para>
+<listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para>
 </listitem>
 <listitem><para>fixed compilation errors of nvcc v11.3 in auto template deduction<itemizedlist>
 <listitem><para>std::scoped_lock</para>
@@ -339,6 +339,6 @@ New algorithms in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFl
 </para>
 </sect1>
     </detaileddescription>
-    <location file="releases/release-3.2.0.dox"/>
+    <location file="doxygen/releases/release-3.2.0.dox"/>
   </compounddef>
 </doxygen>

@@ -47,6 +47,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>ChromeObserver <span class="m-thin">class</span>
+          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="observer_8hpp.html">&lt;taskflow/core/observer.hpp&gt;</a></div>
         </h1>
         <p>class to create an observer based on Chrome tracing format</p>
         <nav class="m-block m-default">
@@ -62,20 +63,20 @@
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1ChromeObserver.html" class="m-doc">tf::<wbr />ChromeObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span><span class="w"></span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span><span class="w"></span>
+<p>A <a href="classtf_1_1ChromeObserver.html" class="m-doc">tf::<wbr />ChromeObserver</a> inherits <a href="classtf_1_1ObserverInterface.html" class="m-doc">tf::<wbr />ObserverInterface</a> and defines methods to dump the observed thread activities into a format that can be visualized through <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
 <span class="c1">// insert tasks into taskflow</span>
 <span class="c1">// ...</span>
 <span class="w">  </span>
 <span class="c1">// create a custom observer</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="w"> </span><span class="n">observer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">make_observer</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">ChromeObserver</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="c1">// run the taskflow</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="c1">// dump the thread activities to a chrome-tracing format.</span>
-<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span><span class="w"></span></pre>
+<span class="n">observer</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
         <section id="base-classes">
           <h2><a href="#base-classes">Base classes</a></h2>
           <dl class="m-doc">
