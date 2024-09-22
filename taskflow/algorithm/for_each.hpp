@@ -11,6 +11,10 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
+  // use ADL to allow for custom distance() and advance() functions:
+  using std::distance;
+  using std::advance;
+
   return [=] (Runtime& rt) mutable {
 
     // fetch the stateful values
@@ -18,7 +22,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
     E_t end = e;
 
     size_t W = rt.executor().num_workers();
-    size_t N = std::distance(beg, end);
+    size_t N = distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -40,7 +44,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
         launch_loop(W, w, rt, part, [=, &c, &part] () mutable {
           part.loop(N, W, curr_b, chunk_size,
             [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-              std::advance(beg, part_b - prev_e);
+              advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
                 c(*beg++);
               }
@@ -58,7 +62,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
       launch_loop(N, W, rt, next, part, [=, &c, &next, &part] () mutable {
         part.loop(N, W, next, 
           [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-            std::advance(beg, part_b - prev_e);
+            advance(beg, part_b - prev_e);
             for(size_t x = part_b; x<part_e; x++) {
               c(*beg++);
             }
