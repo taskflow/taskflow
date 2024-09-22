@@ -1412,11 +1412,14 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node);
+    if(worker._wsq.try_push(node) == false) {
+      std::lock_guard<std::mutex> lock(_wsq_mutex);
+      _wsq.push(node);
+    }
     _notifier.notify_one();
     return;
   }
-
+  
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     _wsq.push(node);
@@ -1460,7 +1463,10 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
       // operation is synchronized properly with other thread to
       // void data race.
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      worker._wsq.push(nodes[i]);
+      if(worker._wsq.try_push(nodes[i]) == false) {
+        std::lock_guard<std::mutex> lock(_wsq_mutex);
+        _wsq.push(nodes[i]);
+      }
       _notifier.notify_one();
     }
     return;
