@@ -68,7 +68,7 @@ Debrief:
 @li Lines 13-14 run the taskflow once and wait for completion 
 @li Line 16 runs the taskflow once with a callback to invoke when the execution finishes
 @li Lines 17-18 run the taskflow four times and use tf::Executor::wait_for_all to wait for completion 
-@li Line 19 runs the taskflow four times and invokes a callback at the end of the forth execution
+@li Line 19 runs the taskflow four times and invokes a callback at the end of the fourth execution
 @li Line 20 keeps running the taskflow until the predicate returns true
 
 Issuing multiple runs on the same taskflow will automatically @em synchronize
