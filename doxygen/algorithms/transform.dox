@@ -65,7 +65,7 @@ tf::Task init = taskflow.emplace([&](){
   d_first = tgt.begin();
 });
 
-tf::Task transform = taskflow.for_each(
+tf::Task transform = taskflow.transform(
   std::ref(first), std::ref(last), std::ref(d_first), 
   [&](int i) {
     std::cout << "transforming item " << i << " to " << i + 1 << '\n';
