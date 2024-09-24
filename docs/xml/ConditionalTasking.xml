@@ -52,7 +52,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports an very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles, and conditionals that are otherwise difficult to do with existing frameworks.</para>
+<para>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports a very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles and conditionals that are otherwise difficult to do with existing frameworks.</para>
 <sect1 id="ConditionalTasking_1CreateAConditionTask">
 <title>Create a Condition Task</title>
 <para>A condition task evaluates a set of instructions and returns an integer index of the next successor task to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</para>
@@ -263,7 +263,7 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 </sect1>
 <sect1 id="ConditionalTasking_1AvoidCommonPitfalls">
 <title>Avoid Common Pitfalls</title>
-<para>Condition tasks are handy in creasing dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <emphasis>no source tasks</emphasis> to start with and <emphasis>task race</emphasis>. The figure below shows common pitfalls and their remedies.</para>
+<para>Condition tasks are handy in creating dynamic and cyclic control flows, but they are also easy to make mistakes. It is your responsibility to ensure a taskflow is properly conditioned. Top things to avoid include <emphasis>no source tasks</emphasis> to start with and <emphasis>task race</emphasis>. The figure below shows common pitfalls and their remedies.</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/conditional-tasking-pitfalls.dot"></dotfile>
 </para>
 <para>In the <computeroutput>error1</computeroutput> scenario, there is no source task for the scheduler to start with, and the simplest fix is to add a task <computeroutput>S</computeroutput> that has no dependents. In the <computeroutput>error2</computeroutput> scenario, <computeroutput>D</computeroutput> might be scheduled twice by <computeroutput>E</computeroutput> through the strong dependency and <computeroutput>C</computeroutput> through the weak dependency (on returning <computeroutput>1</computeroutput>). To fix this problem, you can add an auxiliary task <computeroutput>D-aux</computeroutput> to break the mixed use of strong dependency and weak dependency. In the risky scenario, task <computeroutput>X</computeroutput> may be raced by <computeroutput>M</computeroutput> and <computeroutput>P</computeroutput> if <computeroutput>M</computeroutput> returns <computeroutput>0</computeroutput> and P returns <computeroutput>1</computeroutput>.</para>

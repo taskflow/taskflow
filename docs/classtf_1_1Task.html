@@ -143,14 +143,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc">data</a>(</span><span class="m-doc-wrap">void* data) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>assigns pointer to user data</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a65ba160c1464b4084f85bd9d3dd41291" class="m-doc">priority</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a> p) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
-            </dt>
-            <dd>assigns a priority value to the task</dd>
-            <dt id="ab90b3e898dfb4a8d24ccc99b615bbd9a">
-              <span class="m-doc-wrap-bumper">auto <a href="#ab90b3e898dfb4a8d24ccc99b615bbd9a" class="m-doc-self">priority</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a></span>
-            </dt>
-            <dd>queries the priority value of the task</dd>
             <dt id="a302f51ed717d0a4e99edc50f92a571f3">
               <span class="m-doc-wrap-bumper">void <a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -398,13 +390,6 @@
 <span class="k">for</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">++</span><span class="p">){</span>
 <span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 <span class="p">}</span></pre>
-          </div></section>
-          <section class="m-doc-details" id="a65ba160c1464b4084f85bd9d3dd41291"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a65ba160c1464b4084f85bd9d3dd41291" class="m-doc-self">priority</a>(</span><span class="m-doc-wrap"><a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a> p)</span></span>
-            </h3>
-            <p>assigns a priority value to the task</p>
-<p>A priority value can be one of the following three levels, <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">tf::<wbr />TaskPriority::<wbr />HIGH</a> (numerically equivalent to 0), <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc">tf::<wbr />TaskPriority::<wbr />NORMAL</a> (numerically equivalent to 1), and <a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc">tf::<wbr />TaskPriority::<wbr />LOW</a> (numerically equivalent to 2). The smaller the priority value, the higher the priority.</p>
           </div></section>
         </section>
       </div>
