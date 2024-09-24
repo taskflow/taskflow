@@ -54,12 +54,12 @@
 <sect1 id="RuntimeTasking_1AcquireTheRunningExecutor">
 <title>Acquire the Running Executor</title>
 <para>You can acquire the reference to the running executor using <ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">tf::Runtime::executor()</ref>. The executor associated with a runtime object is the executor that runs the parent task of that runtime object.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(&amp;(rt.<ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>())<sp/>==<sp/>&amp;executor);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="RuntimeTasking_1RuntimeTaskingRunATaskGraphSynchronously">
@@ -83,10 +83,10 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>worker<sp/>coruns<sp/>the<sp/>graph<sp/>through<sp/>its<sp/>work-stealing<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>(graph);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal">executor.run_n(taskflow,<sp/>10000);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af15db5f7dde8e7ff1f86ef8fe825e9e2" kindref="member">run_n</ref>(taskflow,<sp/>10000);</highlight></codeline>
 </programlisting></para>
 <para>Although <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> blocks until the operation completes, the caller thread (worker) is not preempted (e.g., sleep or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and leaves whenever the spawned task graph completes. This is different from waiting for a submitted taskflow using tf::Future&lt;T&gt;::wait which blocks the caller thread until the submitted taskflow completes. When multiple submitted taskflows are being waited, their executions can potentially lead to deadlock. For example, the code below creates a taskflow of 1000 tasks with each task running a taskflow of 500 tasks in a blocking fashion:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(2);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::Taskflow, 1000&gt;</ref><sp/>others;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -99,13 +99,13 @@
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;executor,<sp/>&amp;<ref refid="namespacetf" kindref="compound">tf</ref>=others[n]](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>blocking<sp/>the<sp/>worker<sp/>can<sp/>introduce<sp/>deadlock<sp/>where</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>workers<sp/>are<sp/>waiting<sp/>for<sp/>their<sp/>taskflows<sp/>to<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.run(<ref refid="namespacetf" kindref="compound">tf</ref>).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(<ref refid="namespacetf" kindref="compound">tf</ref>).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>Using <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> allows each worker to corun these taskflows through its work-stealing loop, thus avoiding deadlock problem caused by blocking wait.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(2);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::Taskflow, 1000&gt;</ref><sp/>others;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -121,7 +121,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>(<ref refid="namespacetf" kindref="compound">tf</ref>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="RuntimeTasking_1LearnMoreAboutRuntime">
@@ -133,6 +133,6 @@
 </para>
 </sect1>
     </detaileddescription>
-    <location file="cookbook/runtime_tasking.dox"/>
+    <location file="doxygen/cookbook/runtime_tasking.dox"/>
   </compounddef>
 </doxygen>

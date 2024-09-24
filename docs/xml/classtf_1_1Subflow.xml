@@ -4,7 +4,7 @@
     <compoundname>tf::Subflow</compoundname>
     <basecompoundref refid="classtf_1_1FlowBuilder" prot="public" virt="non-virtual">tf::FlowBuilder</basecompoundref>
     <basecompoundref refid="classtf_1_1Runtime" prot="public" virt="non-virtual">tf::Runtime</basecompoundref>
-    <includes refid="flow__builder_8hpp" local="no">flow_builder.hpp</includes>
+    <includes refid="flow__builder_8hpp" local="no">taskflow/core/flow_builder.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
@@ -12,7 +12,7 @@
         <argsstring></argsstring>
         <name>Executor</name>
         <param>
-          <type>Executor</type>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -20,7 +20,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1313" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1313" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1313" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1313" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Subflow_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
@@ -36,7 +36,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1314" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1314" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1314" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1314" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Subflow_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
@@ -52,7 +52,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1315" column="3" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1315" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1315" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1315" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
@@ -68,7 +68,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1383" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1383" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1383" column="10" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1383" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -91,7 +91,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1334" column="10"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1334" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1acfdedc7e9676126e9a38ecf7b5a37864" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -112,7 +112,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1351" column="10"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1351" column="10"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1a540be503df4621be3e8342b99b1729a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -141,7 +141,7 @@ Clears the underlying task graph depending on the given variable <computeroutput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1362" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1403" bodyend="1408"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1362" column="10" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1403" bodyend="1408"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type>bool</type>
@@ -163,7 +163,7 @@ Clears the underlying task graph depending on the given variable <computeroutput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1379" column="10" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1398" bodyend="1400"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1379" column="10" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1398" bodyend="1400"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -173,7 +173,7 @@ Clears the underlying task graph depending on the given variable <computeroutput
         <argsstring>(Executor &amp;, Worker &amp;, Node *, Graph &amp;)</argsstring>
         <name>Subflow</name>
         <param>
-          <type>Executor &amp;</type>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
           <defname>executor</defname>
         </param>
         <param>
@@ -194,7 +194,7 @@ Clears the underlying task graph depending on the given variable <computeroutput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1385" column="5" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1389" bodyend="1395"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1385" column="5" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1389" bodyend="1395"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -265,7 +265,7 @@ Clears the underlying task graph depending on the given variable <computeroutput
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" line="1310" column="1" bodyfile="/home/thuang295/Code/taskflow/taskflow/core/flow_builder.hpp" bodystart="1311" bodyend="1386"/>
+    <location file="taskflow/core/flow_builder.hpp" line="1310" column="1" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1311" bodyend="1386"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::Subflow</scope><name>_graph</name></member>
       <member refid="classtf_1_1Subflow_1ac8db48417a0777f3c00257689dc63695" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_joinable</name></member>

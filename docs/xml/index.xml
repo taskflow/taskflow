@@ -3,16 +3,16 @@
   <compound refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType" kind="struct"><name>tf::SmallVectorTemplateCommon::AlignedUnionType</name>
     <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a156936c74cd597a4d4f6c9343f2bdc78" kind="variable"><name>buff</name></member>
   </compound>
-  <compound refid="structtf_1_1TaskQueue_1_1Array" kind="struct"><name>tf::TaskQueue::Array</name>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a59aae96cf602b0c89d16aec140a639b8" kind="variable"><name>C</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a9669c115e1ca6040935a060e56286962" kind="variable"><name>M</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a25a3a80719755424001cfebe47555efe" kind="variable"><name>S</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a5c104a080a8bcbc069e39ef67215ce95" kind="function"><name>Array</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1ab75932271a96bba9b058a62cb5a6c98e" kind="function"><name>~Array</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1afb19f3c093e6a2139bfaca183a97798e" kind="function"><name>capacity</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a0a751690ca21c4d0cb5214bff3e7fd12" kind="function"><name>push</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a257d7c9ebedba9ed83019b0fb74060c8" kind="function"><name>pop</name></member>
-    <member refid="structtf_1_1TaskQueue_1_1Array_1a89b8f1fdbff1fa4d794ce26d15fd12a8" kind="function"><name>resize</name></member>
+  <compound refid="structtf_1_1UnboundedTaskQueue_1_1Array" kind="struct"><name>tf::UnboundedTaskQueue::Array</name>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a4aa0afbaf4c1bc0755b6da3ea6df3914" kind="variable"><name>C</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a0b1b87427355534a661de7061042dc20" kind="variable"><name>M</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a1e6b66b7175c0efadeaf586b6d8ddf1e" kind="variable"><name>S</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a6d928f82f712a68167a9bcc0b9a92302" kind="function"><name>Array</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a972575b02a5806c6cf1d521282cdceec" kind="function"><name>~Array</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1abdba46e97c74434105d40b9d5d239049" kind="function"><name>capacity</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a4d703ed34e1b6ab4a23c4ccfa04028f7" kind="function"><name>push</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a72665ccf0d39de3dd5c75d856a5ea68a" kind="function"><name>pop</name></member>
+    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a5effb524e2f639b1f3c2d0ca0a10bf0b" kind="function"><name>resize</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1Async" kind="struct"><name>tf::Node::Async</name>
     <member refid="structtf_1_1Node_1_1Async_1a1aba14191b152b955cb2005bab6630b8" kind="variable"><name>work</name></member>
@@ -36,6 +36,21 @@
     <member refid="classtf_1_1AsyncTask_1ad6a3bcc865f13ecddc1d32306b6df1bb" kind="function"><name>AsyncTask</name></member>
     <member refid="classtf_1_1AsyncTask_1ae2eefe6ee6de4f97dd0b247b053addb1" kind="function"><name>_incref</name></member>
     <member refid="classtf_1_1AsyncTask_1aaee1f8ef1109eb90ad20bac2cba4eaca" kind="function"><name>_decref</name></member>
+  </compound>
+  <compound refid="classtf_1_1BoundedTaskQueue" kind="class"><name>tf::BoundedTaskQueue</name>
+    <member refid="classtf_1_1BoundedTaskQueue_1a97122e789b0d024d4e1f98f46665c0d7" kind="variable"><name>BufferSize</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a98cf29c5be602b8951b9b10238c44900" kind="variable"><name>BufferMask</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a51e4f79ae1957cde7b1208b2119246c6" kind="variable"><name>_top</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a4f6a86178138cff2f95243c2cc6b01e4" kind="variable"><name>_bottom</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1ae1871b739c04078d56e2031c6cda8f59" kind="variable"><name>_buffer</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a4160bb42036d75bc60f95cc189792a3d" kind="function"><name>BoundedTaskQueue</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a5811b32810d0e70a1572a8ef594eba7e" kind="function"><name>~BoundedTaskQueue</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1ae64ab051e9ce597482cb602ce967d459" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a76620d4f4a85eae9e4626b9d83c61cb3" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1ae3c7315f59e60f806225ee9cf8d55229" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1af52edec086b5e1a9c090eff6a6a76dae" kind="function"><name>try_push</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a2b9e1d2502b489656b89cb505e95e71b" kind="function"><name>pop</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1ad2b4f8d262b0093ce08dea92c00fae1b" kind="function"><name>steal</name></member>
   </compound>
   <compound refid="classtf_1_1ChromeObserver" kind="class"><name>tf::ChromeObserver</name>
     <member refid="classtf_1_1ChromeObserver_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -453,6 +468,94 @@
     <member refid="classtf_1_1DynamicPartitioner_1afcb528d9e66380375fce8a7ae99b467f" kind="function"><name>loop</name></member>
     <member refid="classtf_1_1DynamicPartitioner_1abae632f23aeefe2cd91ca51b6b409d19" kind="function"><name>loop_until</name></member>
   </compound>
+  <compound refid="classtf_1_1Executor" kind="class"><name>tf::Executor</name>
+    <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
+    <member refid="classtf_1_1Executor_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
+    <member refid="classtf_1_1Executor_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
+    <member refid="classtf_1_1Executor_1ac4a4632561a52d00a02d91296b20cb5a" kind="variable"><name>_MAX_STEALS</name></member>
+    <member refid="classtf_1_1Executor_1ad031630f03103157f807d85a174d08cb" kind="variable"><name>_wsq_mutex</name></member>
+    <member refid="classtf_1_1Executor_1aef4cf993dbd8efa0372cdea6b0f725d7" kind="variable"><name>_taskflows_mutex</name></member>
+    <member refid="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" kind="variable"><name>_threads</name></member>
+    <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" kind="variable"><name>_workers</name></member>
+    <member refid="classtf_1_1Executor_1ab36f7f886f9a6a9ad67ce919ca39d688" kind="variable"><name>_notifier</name></member>
+    <member refid="classtf_1_1Executor_1a321f9b72162b9f5d4ba46d829af985cc" kind="variable"><name>_latch</name></member>
+    <member refid="classtf_1_1Executor_1a94357ea08db1859178f855b0b926b3de" kind="variable"><name>_topology_cv</name></member>
+    <member refid="classtf_1_1Executor_1a8be5571fa0df99784aacb26b01d0f4b4" kind="variable"><name>_topology_mutex</name></member>
+    <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" kind="variable"><name>_num_topologies</name></member>
+    <member refid="classtf_1_1Executor_1a500d540a170f1da6e5247168bc6efa87" kind="variable"><name>_done</name></member>
+    <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
+    <member refid="classtf_1_1Executor_1a4cf092a00474bd36fb9112539612f87f" kind="variable"><name>_wsq</name></member>
+    <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
+    <member refid="classtf_1_1Executor_1a4910e89d89146b6d563d598b795eb4a9" kind="function"><name>Executor</name></member>
+    <member refid="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" kind="function"><name>~Executor</name></member>
+    <member refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kind="function"><name>run</name></member>
+    <member refid="classtf_1_1Executor_1a4b97752c00b788918cb8396fbb1b3ad0" kind="function"><name>run</name></member>
+    <member refid="classtf_1_1Executor_1a5a480ed24a6fd1e4152db69c0c5e2f89" kind="function"><name>run</name></member>
+    <member refid="classtf_1_1Executor_1a2d0dc32d81100202168e42ac1d3dd8f9" kind="function"><name>run</name></member>
+    <member refid="classtf_1_1Executor_1af15db5f7dde8e7ff1f86ef8fe825e9e2" kind="function"><name>run_n</name></member>
+    <member refid="classtf_1_1Executor_1a04aa012598622e807dba3272aa464d7e" kind="function"><name>run_n</name></member>
+    <member refid="classtf_1_1Executor_1a37af2ca2a97f0188fb2c4868d6f322ba" kind="function"><name>run_n</name></member>
+    <member refid="classtf_1_1Executor_1ae5c5c6a1c1f6d4740414c86daa6a3901" kind="function"><name>run_n</name></member>
+    <member refid="classtf_1_1Executor_1ae4f9e214ea5ee873e8d90a70bc1c77e8" kind="function"><name>run_until</name></member>
+    <member refid="classtf_1_1Executor_1a724d188df2952f64c1f2c60555a0a611" kind="function"><name>run_until</name></member>
+    <member refid="classtf_1_1Executor_1a5ed30b8db88cdeb78fe3e8e2de4a84dd" kind="function"><name>run_until</name></member>
+    <member refid="classtf_1_1Executor_1ad7aa69f06309b9226a4046f8c400144e" kind="function"><name>run_until</name></member>
+    <member refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kind="function"><name>corun</name></member>
+    <member refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kind="function"><name>corun_until</name></member>
+    <member refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kind="function"><name>wait_for_all</name></member>
+    <member refid="classtf_1_1Executor_1a9d2d464ab2a84ecb3b3ea7747e8e276b" kind="function"><name>num_workers</name></member>
+    <member refid="classtf_1_1Executor_1a6d6c28ed58211e4c27a99571e5bf0b6c" kind="function"><name>num_topologies</name></member>
+    <member refid="classtf_1_1Executor_1a5fb438dc0f7b9e1ae2fe3f240c82f174" kind="function"><name>num_taskflows</name></member>
+    <member refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kind="function"><name>this_worker_id</name></member>
+    <member refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kind="function"><name>make_observer</name></member>
+    <member refid="classtf_1_1Executor_1a31081f492c376f7b798de0e430534531" kind="function"><name>remove_observer</name></member>
+    <member refid="classtf_1_1Executor_1affec621aae59d73fc188ef454008fda2" kind="function"><name>num_observers</name></member>
+    <member refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kind="function"><name>async</name></member>
+    <member refid="classtf_1_1Executor_1a28bdb43837bd6b548e092154e4df5dd9" kind="function"><name>async</name></member>
+    <member refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kind="function"><name>silent_async</name></member>
+    <member refid="classtf_1_1Executor_1a878ec1bc337c7efe22619b21ba3ecdf3" kind="function"><name>silent_async</name></member>
+    <member refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kind="function"><name>silent_dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1abbf277ddbe4974e928361f232149341e" kind="function"><name>silent_dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1aa9b08e47e68ae1e568f18aa7104cb9b1" kind="function"><name>silent_dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1afdfb0ef6f995288299f7fe7e53c0cf3b" kind="function"><name>silent_dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kind="function"><name>dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1a4428cc5d1102ecb0eb51e0b977e08857" kind="function"><name>dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kind="function"><name>dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1a962d7fb7213a804ee4a2e7b79455efdc" kind="function"><name>dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" kind="function"><name>_wait_for_task</name></member>
+    <member refid="classtf_1_1Executor_1a7338106d893b2b7cc223376878a48d64" kind="function"><name>_invoke_module_task_internal</name></member>
+    <member refid="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" kind="function"><name>_observer_prologue</name></member>
+    <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" kind="function"><name>_observer_epilogue</name></member>
+    <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" kind="function"><name>_spawn</name></member>
+    <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
+    <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
+    <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a93428e4393889d4f944cd2ead5ae9a44" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1aeb7284d779569a8297bca3c5f126cd9b" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" kind="function"><name>_set_up_topology</name></member>
+    <member refid="classtf_1_1Executor_1a9c5bd85f2a5a266ae9cd27e5aaf2f14e" kind="function"><name>_set_up_graph</name></member>
+    <member refid="classtf_1_1Executor_1a76be884d38d1bb8f9b8bba488c901b4b" kind="function"><name>_tear_down_topology</name></member>
+    <member refid="classtf_1_1Executor_1a42e7db3fc43e1c5479e30e8d83da9e74" kind="function"><name>_tear_down_async</name></member>
+    <member refid="classtf_1_1Executor_1a5a745396246598bb55acb9dd3a4b6c25" kind="function"><name>_tear_down_dependent_async</name></member>
+    <member refid="classtf_1_1Executor_1a17fe8e0f32892cf2848611bca7566378" kind="function"><name>_tear_down_invoke</name></member>
+    <member refid="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" kind="function"><name>_increment_topology</name></member>
+    <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" kind="function"><name>_decrement_topology</name></member>
+    <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" kind="function"><name>_invoke</name></member>
+    <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" kind="function"><name>_invoke_static_task</name></member>
+    <member refid="classtf_1_1Executor_1aacaec034158ede71eb815a9a1e9a83ca" kind="function"><name>_invoke_subflow_task</name></member>
+    <member refid="classtf_1_1Executor_1a990098e7c3c5d055c2aa87526772ce1e" kind="function"><name>_detach_subflow_task</name></member>
+    <member refid="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" kind="function"><name>_invoke_condition_task</name></member>
+    <member refid="classtf_1_1Executor_1a19b3f10d4eab40143d3f76b946ded252" kind="function"><name>_invoke_multi_condition_task</name></member>
+    <member refid="classtf_1_1Executor_1a4c5324657bf02bc2da0294192ab80233" kind="function"><name>_invoke_module_task</name></member>
+    <member refid="classtf_1_1Executor_1a505ccafa7ab1855c200d5590499adf5a" kind="function"><name>_invoke_async_task</name></member>
+    <member refid="classtf_1_1Executor_1a6c5e337d9666504eed50c242f2090dbf" kind="function"><name>_invoke_dependent_async_task</name></member>
+    <member refid="classtf_1_1Executor_1a824fbb761eaece4549da2fe070f95dac" kind="function"><name>_process_async_dependent</name></member>
+    <member refid="classtf_1_1Executor_1ad3c24a3fa701517bfdf119c549e2729a" kind="function"><name>_process_exception</name></member>
+    <member refid="classtf_1_1Executor_1af5acda8c6e9a1564c9d665336ea091d0" kind="function"><name>_schedule_async_task</name></member>
+    <member refid="classtf_1_1Executor_1a6202243d809e524d196a9c0e3092ce41" kind="function"><name>_corun_graph</name></member>
+    <member refid="classtf_1_1Executor_1a43cdd198427b7be2827450f6ce8343af" kind="function"><name>_corun_until</name></member>
+  </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1External" kind="struct"><name>tf::cudaFlowCapturer::External</name>
     <member refid="structtf_1_1cudaFlowCapturer_1_1External_1a8037773edaec0ea3bd4925187250482b" kind="variable"><name>graph</name></member>
   </compound>
@@ -574,18 +677,6 @@
     <member refid="classtf_1_1Node_1a61184f9bd9c801d0a5eccecfdbddc641" kind="friend"><name>FlowBuilder</name></member>
     <member refid="classtf_1_1Node_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1Node_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
-    <member refid="classtf_1_1Node_1aa78ccd142a22698289c2c823bfa14241" kind="variable"><name>TF_ENABLE_POOLABLE_ON_THIS</name></member>
-    <member refid="classtf_1_1Node_1a19bbe02799273a6df9b639d22813f83c" kind="variable"><name>_state</name></member>
-    <member refid="classtf_1_1Node_1a4a022f2346fe70d56910bd4108dd0e05" kind="variable"><name>_name</name></member>
-    <member refid="classtf_1_1Node_1a97240d40fe462ab1df97aee10a966965" kind="variable"><name>_priority</name></member>
-    <member refid="classtf_1_1Node_1a5458c5905ee4b28b70f368a522c198f2" kind="variable"><name>_data</name></member>
-    <member refid="classtf_1_1Node_1ae771748b9bb4f9a01116ddbc31f7bc2d" kind="variable"><name>_topology</name></member>
-    <member refid="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" kind="variable"><name>_parent</name></member>
-    <member refid="classtf_1_1Node_1a45a3783b67e19091d8e02e5ab56c6b63" kind="variable"><name>_successors</name></member>
-    <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" kind="variable"><name>_dependents</name></member>
-    <member refid="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" kind="variable"><name>_join_counter</name></member>
-    <member refid="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" kind="variable"><name>_exception_ptr</name></member>
-    <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1Node_1a0f13e41390ceb7e3fe884952b39f2d0f" kind="variable"><name>CONDITIONED</name></member>
     <member refid="classtf_1_1Node_1aad8a10e34c51bc4a809aaa8fba7de854" kind="variable"><name>DETACHED</name></member>
     <member refid="classtf_1_1Node_1ada61f28d1cbfd66654c77211a8748891" kind="variable"><name>READY</name></member>
@@ -598,6 +689,17 @@
     <member refid="classtf_1_1Node_1aab8a9356eb42f9250e548818bbe30ae3" kind="variable"><name>MODULE</name></member>
     <member refid="classtf_1_1Node_1ab298b962d4cadbfd38f1a398712e2880" kind="variable"><name>ASYNC</name></member>
     <member refid="classtf_1_1Node_1a1beac9706176ad4f9e6062e8a6fa8bb2" kind="variable"><name>DEPENDENT_ASYNC</name></member>
+    <member refid="classtf_1_1Node_1a19bbe02799273a6df9b639d22813f83c" kind="variable"><name>_state</name></member>
+    <member refid="classtf_1_1Node_1a4a022f2346fe70d56910bd4108dd0e05" kind="variable"><name>_name</name></member>
+    <member refid="classtf_1_1Node_1a97240d40fe462ab1df97aee10a966965" kind="variable"><name>_priority</name></member>
+    <member refid="classtf_1_1Node_1a5458c5905ee4b28b70f368a522c198f2" kind="variable"><name>_data</name></member>
+    <member refid="classtf_1_1Node_1ae771748b9bb4f9a01116ddbc31f7bc2d" kind="variable"><name>_topology</name></member>
+    <member refid="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" kind="variable"><name>_parent</name></member>
+    <member refid="classtf_1_1Node_1a45a3783b67e19091d8e02e5ab56c6b63" kind="variable"><name>_successors</name></member>
+    <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" kind="variable"><name>_dependents</name></member>
+    <member refid="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" kind="variable"><name>_join_counter</name></member>
+    <member refid="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" kind="variable"><name>_exception_ptr</name></member>
+    <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1Node_1aebc4701caf53db89d260c75fba0e5050" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1aa5e77c24dc9a40efde7df11d034700e3" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1adfceea099b09ccb6dcd63b6382ce070d" kind="function"><name>Node</name></member>
@@ -1066,26 +1168,6 @@
     <member refid="structtf_1_1TaskParams_1a2a25d7c2412f3cb1b8d81e4c2faa74db" kind="variable"><name>priority</name></member>
     <member refid="structtf_1_1TaskParams_1ab0c8d56bea820fd5125afd864dd299bf" kind="variable"><name>data</name></member>
   </compound>
-  <compound refid="classtf_1_1TaskQueue" kind="class"><name>tf::TaskQueue</name>
-    <member refid="classtf_1_1TaskQueue_1a8b8c8e69e04481708b8b17059398a04b" kind="variable"><name>_top</name></member>
-    <member refid="classtf_1_1TaskQueue_1aebf6dd0368728d9fa25127020afb9dda" kind="variable"><name>_bottom</name></member>
-    <member refid="classtf_1_1TaskQueue_1abaadb3c00494c5873bc7fd5d8ec30f06" kind="variable"><name>_array</name></member>
-    <member refid="classtf_1_1TaskQueue_1aeb6fedf457596dad3f64af57343613cd" kind="variable"><name>_garbage</name></member>
-    <member refid="classtf_1_1TaskQueue_1a74f0a274fdd14aa561e7509559377059" kind="function"><name>TaskQueue</name></member>
-    <member refid="classtf_1_1TaskQueue_1a15d5b45f482cba7383512a9c5bcbd7cf" kind="function"><name>~TaskQueue</name></member>
-    <member refid="classtf_1_1TaskQueue_1adfdf70255e24d62c46b31b09c47d78f7" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1TaskQueue_1af57eb2ebc4d92120d7eaf868ec57b524" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1TaskQueue_1ad598bef2211bf4cc99d66d80a12ebb6a" kind="function"><name>size</name></member>
-    <member refid="classtf_1_1TaskQueue_1a0386ad90ced931025d14ea955ce40d8c" kind="function"><name>size</name></member>
-    <member refid="classtf_1_1TaskQueue_1ad47b2671aa5270bcd05605c4063280ff" kind="function"><name>capacity</name></member>
-    <member refid="classtf_1_1TaskQueue_1ab868d17013212547d750267710037877" kind="function"><name>capacity</name></member>
-    <member refid="classtf_1_1TaskQueue_1a644a03868c0d424d979f91e15c864a15" kind="function"><name>push</name></member>
-    <member refid="classtf_1_1TaskQueue_1a3df0b3554e814385d23ee603941391df" kind="function"><name>pop</name></member>
-    <member refid="classtf_1_1TaskQueue_1a569a76254aea3f1f411e28aa57f7a810" kind="function"><name>pop</name></member>
-    <member refid="classtf_1_1TaskQueue_1a23e13cb9f98316b26c00ce494aa2f0c6" kind="function"><name>steal</name></member>
-    <member refid="classtf_1_1TaskQueue_1aca896b5d59a78a018aeb313760ca735a" kind="function"><name>steal</name></member>
-    <member refid="classtf_1_1TaskQueue_1a824bec00bad35fd3a5f2836a293f4b90" kind="function"><name>resize_array</name></member>
-  </compound>
   <compound refid="structtf_1_1TFProfObserver_1_1TaskSummary" kind="struct"><name>tf::TFProfObserver::TaskSummary</name>
     <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1a8d5ae242b9a13dde380122f9fa1ee58a" kind="variable"><name>count</name></member>
     <member refid="structtf_1_1TFProfObserver_1_1TaskSummary_1abfb35499e1c1168896dd0a479c094095" kind="variable"><name>total_span</name></member>
@@ -1154,6 +1236,21 @@
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
   </compound>
+  <compound refid="classtf_1_1UnboundedTaskQueue" kind="class"><name>tf::UnboundedTaskQueue</name>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a7d91028a58dff5e905d58aeacdbe17ef" kind="variable"><name>_top</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" kind="variable"><name>_bottom</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" kind="variable"><name>_array</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a35bad5d9923949883d9c1a22aa89690f" kind="variable"><name>_garbage</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a816d238b0d24d34816be96af0c3cb67e" kind="function"><name>UnboundedTaskQueue</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" kind="function"><name>~UnboundedTaskQueue</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a54eb8fe122dd783c486c683e7c50c5e5" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" kind="function"><name>push</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" kind="function"><name>pop</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" kind="function"><name>steal</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1acc9a82d3f40fc2a8973c7b118c44c4fd" kind="function"><name>resize_array</name></member>
+  </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" kind="friend"><name>WorkerView</name></member>
@@ -1161,7 +1258,7 @@
     <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" kind="variable"><name>_vtm</name></member>
     <member refid="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" kind="variable"><name>_executor</name></member>
     <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" kind="variable"><name>_rdgen</name></member>
-    <member refid="classtf_1_1Worker_1a48d8af5d9ce1227254d202548c9b5f13" kind="variable"><name>_wsq</name></member>
+    <member refid="classtf_1_1Worker_1a582ddc7de274ecd0988af3dfb5d0f5bf" kind="variable"><name>_wsq</name></member>
     <member refid="classtf_1_1Worker_1a54428c075390d30c9c55a0dd0838575e" kind="variable"><name>_cache</name></member>
     <member refid="classtf_1_1Worker_1a559e98c3b61a201903d70952e39ab14f" kind="variable"><name>_waiter</name></member>
     <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kind="function"><name>id</name></member>
@@ -1747,12 +1844,11 @@
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" kind="enumvalue"><name>SUBFLOW</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
     <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
-    <member refid="namespacetf_1a6a998dd99f99e8d7647e6837c0b44d6c" kind="typedef"><name>DefaultNotifier</name></member>
+    <member refid="namespacetf_1a24e111672ff15b86ab128b5ec1cf64ab" kind="typedef"><name>DefaultNotifier</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
     <member refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kind="typedef"><name>DefaultPartitioner</name></member>
     <member refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
     <member refid="namespacetf_1ad3a41adc2499a9519da3e77dc3e9849c" kind="variable"><name>is_task_params_v</name></member>
-    <member refid="namespacetf_1ad28ed627b57f4b579689c600b1067d5c" kind="variable"><name>_task_pool</name></member>
     <member refid="namespacetf_1a872cf263ab68abc7c3180710fb792528" kind="variable"><name>TASK_TYPES</name></member>
     <member refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kind="variable"><name>is_subflow_task_v</name></member>
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
@@ -1877,37 +1973,67 @@
   </compound>
   <compound refid="algorithms_8dox" kind="file"><name>algorithms.dox</name>
   </compound>
-  <compound refid="async__task_8hpp" kind="file"><name>async_task.hpp</name>
+  <compound refid="data__pipeline_8dox" kind="file"><name>data_pipeline.dox</name>
   </compound>
-  <compound refid="async__tasking_8dox" kind="file"><name>async_tasking.dox</name>
+  <compound refid="find_8dox" kind="file"><name>find.dox</name>
   </compound>
-  <compound refid="benchmark__taskflow_8dox" kind="file"><name>benchmark_taskflow.dox</name>
+  <compound refid="for__each_8dox" kind="file"><name>for_each.dox</name>
   </compound>
-  <compound refid="cancellation_8dox" kind="file"><name>cancellation.dox</name>
+  <compound refid="partitioner_8dox" kind="file"><name>partitioner.dox</name>
   </compound>
-  <compound refid="codeofconduct_8dox" kind="file"><name>codeofconduct.dox</name>
+  <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
   </compound>
-  <compound refid="composable__tasking_8dox" kind="file"><name>composable_tasking.dox</name>
+  <compound refid="pipeline__with__token__dependencies_8dox" kind="file"><name>pipeline_with_token_dependencies.dox</name>
   </compound>
-  <compound refid="conditional__tasking_8dox" kind="file"><name>conditional_tasking.dox</name>
+  <compound refid="reduce_8dox" kind="file"><name>reduce.dox</name>
+  </compound>
+  <compound refid="scalable__pipeline_8dox" kind="file"><name>scalable_pipeline.dox</name>
+  </compound>
+  <compound refid="scan_8dox" kind="file"><name>scan.dox</name>
+  </compound>
+  <compound refid="sort_8dox" kind="file"><name>sort.dox</name>
+  </compound>
+  <compound refid="transform_8dox" kind="file"><name>transform.dox</name>
   </compound>
   <compound refid="contributing_8dox" kind="file"><name>contributing.dox</name>
   </compound>
   <compound refid="contributors_8dox" kind="file"><name>contributors.dox</name>
   </compound>
+  <compound refid="guidelines_8dox" kind="file"><name>guidelines.dox</name>
+  </compound>
+  <compound refid="async__tasking_8dox" kind="file"><name>async_tasking.dox</name>
+  </compound>
+  <compound refid="cancellation_8dox" kind="file"><name>cancellation.dox</name>
+  </compound>
+  <compound refid="composable__tasking_8dox" kind="file"><name>composable_tasking.dox</name>
+  </compound>
+  <compound refid="conditional__tasking_8dox" kind="file"><name>conditional_tasking.dox</name>
+  </compound>
   <compound refid="Cookbook_8dox" kind="file"><name>Cookbook.dox</name>
   </compound>
-  <compound refid="cuda__capturer_8hpp" kind="file"><name>cuda_capturer.hpp</name>
+  <compound refid="dependent__async__tasking_8dox" kind="file"><name>dependent_async_tasking.dox</name>
   </compound>
-  <compound refid="cuda__compile_8dox" kind="file"><name>cuda_compile.dox</name>
+  <compound refid="exception_8dox" kind="file"><name>exception.dox</name>
   </compound>
-  <compound refid="cuda__device_8hpp" kind="file"><name>cuda_device.hpp</name>
+  <compound refid="executor_8dox" kind="file"><name>executor.dox</name>
   </compound>
-  <compound refid="cuda__execution__policy_8hpp" kind="file"><name>cuda_execution_policy.hpp</name>
+  <compound refid="gpu__tasking__cudaflow_8dox" kind="file"><name>gpu_tasking_cudaflow.dox</name>
   </compound>
-  <compound refid="cuda__memory_8hpp" kind="file"><name>cuda_memory.hpp</name>
+  <compound refid="gpu__tasking__cudaflow__capturer_8dox" kind="file"><name>gpu_tasking_cudaflow_capturer.dox</name>
   </compound>
-  <compound refid="cuda__optimizer_8hpp" kind="file"><name>cuda_optimizer.hpp</name>
+  <compound refid="motivation_8dox" kind="file"><name>motivation.dox</name>
+  </compound>
+  <compound refid="prioritized__tasking_8dox" kind="file"><name>prioritized_tasking.dox</name>
+  </compound>
+  <compound refid="profiler_8dox" kind="file"><name>profiler.dox</name>
+  </compound>
+  <compound refid="runtime__tasking_8dox" kind="file"><name>runtime_tasking.dox</name>
+  </compound>
+  <compound refid="semaphore_8dox" kind="file"><name>semaphore.dox</name>
+  </compound>
+  <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
+  </compound>
+  <compound refid="subflow__tasking_8dox" kind="file"><name>subflow_tasking.dox</name>
   </compound>
   <compound refid="cuda__std__algorithms_8dox" kind="file"><name>cuda_std_algorithms.dox</name>
   </compound>
@@ -1927,12 +2053,6 @@
   </compound>
   <compound refid="cuda__std__transform_8dox" kind="file"><name>cuda_std_transform.dox</name>
   </compound>
-  <compound refid="cuda__stream_8hpp" kind="file"><name>cuda_stream.hpp</name>
-  </compound>
-  <compound refid="cuda__task_8hpp" kind="file"><name>cuda_task.hpp</name>
-  </compound>
-  <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
-  </compound>
   <compound refid="cudaflow__algorithms_8dox" kind="file"><name>cudaflow_algorithms.dox</name>
   </compound>
   <compound refid="cudaflow__for__each_8dox" kind="file"><name>cudaflow_for_each.dox</name>
@@ -1941,55 +2061,15 @@
   </compound>
   <compound refid="cudaflow__transform_8dox" kind="file"><name>cudaflow_transform.dox</name>
   </compound>
-  <compound refid="data__pipeline_8dox" kind="file"><name>data_pipeline.dox</name>
-  </compound>
-  <compound refid="data__pipeline_8hpp" kind="file"><name>data_pipeline.hpp</name>
-  </compound>
-  <compound refid="dependent__async__tasking_8dox" kind="file"><name>dependent_async_tasking.dox</name>
-  </compound>
-  <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
-  </compound>
   <compound refid="examples_8dox" kind="file"><name>examples.dox</name>
-  </compound>
-  <compound refid="exception_8dox" kind="file"><name>exception.dox</name>
-  </compound>
-  <compound refid="executor_8dox" kind="file"><name>executor.dox</name>
-  </compound>
-  <compound refid="executor_8hpp" kind="file"><name>executor.hpp</name>
-  </compound>
-  <compound refid="FAQ_8dox" kind="file"><name>FAQ.dox</name>
   </compound>
   <compound refid="fibonacci_8dox" kind="file"><name>fibonacci.dox</name>
   </compound>
-  <compound refid="find_8dox" kind="file"><name>find.dox</name>
-  </compound>
-  <compound refid="find_8hpp" kind="file"><name>find.hpp</name>
-  </compound>
   <compound refid="flipcoins_8dox" kind="file"><name>flipcoins.dox</name>
-  </compound>
-  <compound refid="flow__builder_8hpp" kind="file"><name>flow_builder.hpp</name>
-  </compound>
-  <compound refid="for__each_8dox" kind="file"><name>for_each.dox</name>
-  </compound>
-  <compound refid="for__each_8hpp" kind="file"><name>for_each.hpp</name>
-  </compound>
-  <compound refid="governance_8dox" kind="file"><name>governance.dox</name>
-  </compound>
-  <compound refid="gpu__tasking__cudaflow_8dox" kind="file"><name>gpu_tasking_cudaflow.dox</name>
-  </compound>
-  <compound refid="gpu__tasking__cudaflow__capturer_8dox" kind="file"><name>gpu_tasking_cudaflow_capturer.dox</name>
-  </compound>
-  <compound refid="graph_8hpp" kind="file"><name>graph.hpp</name>
   </compound>
   <compound refid="graph__pipeline_8dox" kind="file"><name>graph_pipeline.dox</name>
   </compound>
   <compound refid="graph__traversal_8dox" kind="file"><name>graph_traversal.dox</name>
-  </compound>
-  <compound refid="guidelines_8dox" kind="file"><name>guidelines.dox</name>
-  </compound>
-  <compound refid="header_8html" kind="file"><name>header.html</name>
-  </compound>
-  <compound refid="install_8dox" kind="file"><name>install.dox</name>
   </compound>
   <compound refid="kmeans_8dox" kind="file"><name>kmeans.dox</name>
   </compound>
@@ -1999,33 +2079,31 @@
   </compound>
   <compound refid="matrix__multiplication__cudaflow_8dox" kind="file"><name>matrix_multiplication_cudaflow.dox</name>
   </compound>
-  <compound refid="merge_8hpp" kind="file"><name>merge.hpp</name>
+  <compound refid="taskflow__pipeline_8dox" kind="file"><name>taskflow_pipeline.dox</name>
   </compound>
-  <compound refid="motivation_8dox" kind="file"><name>motivation.dox</name>
+  <compound refid="text__pipeline_8dox" kind="file"><name>text_pipeline.dox</name>
   </compound>
-  <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
+  <compound refid="wavefront_8dox" kind="file"><name>wavefront.dox</name>
   </compound>
-  <compound refid="opentimer_8dox" kind="file"><name>opentimer.dox</name>
+  <compound refid="FAQ_8dox" kind="file"><name>FAQ.dox</name>
   </compound>
-  <compound refid="partitioner_8dox" kind="file"><name>partitioner.dox</name>
+  <compound refid="codeofconduct_8dox" kind="file"><name>codeofconduct.dox</name>
   </compound>
-  <compound refid="partitioner_8hpp" kind="file"><name>partitioner.hpp</name>
+  <compound refid="governance_8dox" kind="file"><name>governance.dox</name>
   </compound>
-  <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
+  <compound refid="rules_8dox" kind="file"><name>rules.dox</name>
   </compound>
-  <compound refid="pipeline_8hpp" kind="file"><name>pipeline.hpp</name>
+  <compound refid="team_8dox" kind="file"><name>team.dox</name>
   </compound>
-  <compound refid="pipeline__with__token__dependencies_8dox" kind="file"><name>pipeline_with_token_dependencies.dox</name>
+  <compound refid="header_8html" kind="file"><name>header.html</name>
   </compound>
-  <compound refid="prioritized__tasking_8dox" kind="file"><name>prioritized_tasking.dox</name>
+  <compound refid="benchmark__taskflow_8dox" kind="file"><name>benchmark_taskflow.dox</name>
   </compound>
-  <compound refid="profiler_8dox" kind="file"><name>profiler.dox</name>
+  <compound refid="cuda__compile_8dox" kind="file"><name>cuda_compile.dox</name>
+  </compound>
+  <compound refid="install_8dox" kind="file"><name>install.dox</name>
   </compound>
   <compound refid="QuickStart_8dox" kind="file"><name>QuickStart.dox</name>
-  </compound>
-  <compound refid="reduce_8dox" kind="file"><name>reduce.dox</name>
-  </compound>
-  <compound refid="reduce_8hpp" kind="file"><name>reduce.hpp</name>
   </compound>
   <compound refid="references_8dox" kind="file"><name>references.dox</name>
   </compound>
@@ -2071,53 +2149,77 @@
   </compound>
   <compound refid="releases_8dox" kind="file"><name>releases.dox</name>
   </compound>
-  <compound refid="rules_8dox" kind="file"><name>rules.dox</name>
+  <compound refid="dreamplace_8dox" kind="file"><name>dreamplace.dox</name>
   </compound>
-  <compound refid="runtime__tasking_8dox" kind="file"><name>runtime_tasking.dox</name>
-  </compound>
-  <compound refid="scalable__pipeline_8dox" kind="file"><name>scalable_pipeline.dox</name>
-  </compound>
-  <compound refid="scan_8dox" kind="file"><name>scan.dox</name>
-  </compound>
-  <compound refid="scan_8hpp" kind="file"><name>scan.hpp</name>
-  </compound>
-  <compound refid="semaphore_8dox" kind="file"><name>semaphore.dox</name>
-  </compound>
-  <compound refid="semaphore_8hpp" kind="file"><name>semaphore.hpp</name>
-  </compound>
-  <compound refid="small__vector_8hpp" kind="file"><name>small_vector.hpp</name>
-  </compound>
-  <compound refid="sort_8dox" kind="file"><name>sort.dox</name>
-  </compound>
-  <compound refid="sort_8hpp" kind="file"><name>sort.hpp</name>
-  </compound>
-  <compound refid="static__tasking_8dox" kind="file"><name>static_tasking.dox</name>
-  </compound>
-  <compound refid="subflow__tasking_8dox" kind="file"><name>subflow_tasking.dox</name>
-  </compound>
-  <compound refid="task_8hpp" kind="file"><name>task.hpp</name>
-  </compound>
-  <compound refid="core_2taskflow_8hpp" kind="file"><name>core/taskflow.hpp</name>
-  </compound>
-  <compound refid="taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
-  </compound>
-  <compound refid="taskflow__pipeline_8dox" kind="file"><name>taskflow_pipeline.dox</name>
-  </compound>
-  <compound refid="team_8dox" kind="file"><name>team.dox</name>
-  </compound>
-  <compound refid="text__pipeline_8dox" kind="file"><name>text_pipeline.dox</name>
-  </compound>
-  <compound refid="transform_8dox" kind="file"><name>transform.dox</name>
-  </compound>
-  <compound refid="transform_8hpp" kind="file"><name>transform.hpp</name>
-  </compound>
-  <compound refid="tsq_8hpp" kind="file"><name>tsq.hpp</name>
+  <compound refid="opentimer_8dox" kind="file"><name>opentimer.dox</name>
   </compound>
   <compound refid="usecases_8dox" kind="file"><name>usecases.dox</name>
   </compound>
-  <compound refid="wavefront_8dox" kind="file"><name>wavefront.dox</name>
+  <compound refid="data__pipeline_8hpp" kind="file"><name>data_pipeline.hpp</name>
+  </compound>
+  <compound refid="partitioner_8hpp" kind="file"><name>partitioner.hpp</name>
+  </compound>
+  <compound refid="pipeline_8hpp" kind="file"><name>pipeline.hpp</name>
+  </compound>
+  <compound refid="async__task_8hpp" kind="file"><name>async_task.hpp</name>
+  </compound>
+  <compound refid="executor_8hpp" kind="file"><name>executor.hpp</name>
+  </compound>
+  <compound refid="flow__builder_8hpp" kind="file"><name>flow_builder.hpp</name>
+  </compound>
+  <compound refid="graph_8hpp" kind="file"><name>graph.hpp</name>
+  </compound>
+  <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
+  </compound>
+  <compound refid="semaphore_8hpp" kind="file"><name>semaphore.hpp</name>
+  </compound>
+  <compound refid="task_8hpp" kind="file"><name>task.hpp</name>
+  </compound>
+  <compound refid="core_2taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
+  </compound>
+  <compound refid="taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
+    <member refid="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" kind="define"><name>TF_VERSION</name></member>
+    <member refid="taskflow_8hpp_1ac543189162351f11cc56cbc81e609e21" kind="define"><name>TF_MAJOR_VERSION</name></member>
+    <member refid="taskflow_8hpp_1ac79e1d6e02bafb712ca6b8580fc35d0d" kind="define"><name>TF_MINOR_VERSION</name></member>
+    <member refid="taskflow_8hpp_1af5d0ce402f403151eb848aceacfe28ec" kind="define"><name>TF_PATCH_VERSION</name></member>
+  </compound>
+  <compound refid="tsq_8hpp" kind="file"><name>tsq.hpp</name>
   </compound>
   <compound refid="worker_8hpp" kind="file"><name>worker.hpp</name>
+  </compound>
+  <compound refid="find_8hpp" kind="file"><name>find.hpp</name>
+  </compound>
+  <compound refid="for__each_8hpp" kind="file"><name>for_each.hpp</name>
+  </compound>
+  <compound refid="merge_8hpp" kind="file"><name>merge.hpp</name>
+  </compound>
+  <compound refid="reduce_8hpp" kind="file"><name>reduce.hpp</name>
+  </compound>
+  <compound refid="scan_8hpp" kind="file"><name>scan.hpp</name>
+  </compound>
+  <compound refid="sort_8hpp" kind="file"><name>sort.hpp</name>
+  </compound>
+  <compound refid="transform_8hpp" kind="file"><name>transform.hpp</name>
+  </compound>
+  <compound refid="cuda__capturer_8hpp" kind="file"><name>cuda_capturer.hpp</name>
+  </compound>
+  <compound refid="cuda__device_8hpp" kind="file"><name>cuda_device.hpp</name>
+  </compound>
+  <compound refid="cuda__execution__policy_8hpp" kind="file"><name>cuda_execution_policy.hpp</name>
+  </compound>
+  <compound refid="cuda__memory_8hpp" kind="file"><name>cuda_memory.hpp</name>
+  </compound>
+  <compound refid="cuda__optimizer_8hpp" kind="file"><name>cuda_optimizer.hpp</name>
+  </compound>
+  <compound refid="cuda__stream_8hpp" kind="file"><name>cuda_stream.hpp</name>
+  </compound>
+  <compound refid="cuda__task_8hpp" kind="file"><name>cuda_task.hpp</name>
+  </compound>
+  <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
+  </compound>
+  <compound refid="small__vector_8hpp" kind="file"><name>small_vector.hpp</name>
+    <member refid="small__vector_8hpp_1ae26b57d578b56fc6bb64405706fda992" kind="define"><name>TF_LIKELY</name></member>
+    <member refid="small__vector_8hpp_1a4feec43418b365f045f440667d66cec1" kind="define"><name>TF_UNLIKELY</name></member>
   </compound>
   <compound refid="Releases" kind="page"><name>Releases</name>
   </compound>
@@ -2299,39 +2401,41 @@
   </compound>
   <compound refid="References" kind="page"><name>References</name>
   </compound>
-  <compound refid="dir_04c130fdbeeccfa0338db9f77a5dc2c3" kind="dir"><name>algorithm</name>
+  <compound refid="dir_7d8f2e56a3b68fb88e627c2a1db4941a" kind="dir"><name>taskflow/cuda/algorithm</name>
   </compound>
-  <compound refid="dir_7d8f2e56a3b68fb88e627c2a1db4941a" kind="dir"><name>algorithm</name>
+  <compound refid="dir_04c130fdbeeccfa0338db9f77a5dc2c3" kind="dir"><name>taskflow/algorithm</name>
   </compound>
-  <compound refid="dir_73635165b734e23094c358e517ec45fc" kind="dir"><name>algorithms</name>
+  <compound refid="dir_73635165b734e23094c358e517ec45fc" kind="dir"><name>doxygen/algorithms</name>
   </compound>
-  <compound refid="dir_ecfa7d70310a08b350e190615cc70712" kind="dir"><name>contributing</name>
+  <compound refid="dir_ecfa7d70310a08b350e190615cc70712" kind="dir"><name>doxygen/contributing</name>
   </compound>
-  <compound refid="dir_61bd9e18b52c497a2e6d3af3a72c0d02" kind="dir"><name>cookbook</name>
+  <compound refid="dir_61bd9e18b52c497a2e6d3af3a72c0d02" kind="dir"><name>doxygen/cookbook</name>
   </compound>
-  <compound refid="dir_220cd4d9b8cb38c840b455d5d75c25bb" kind="dir"><name>core</name>
+  <compound refid="dir_220cd4d9b8cb38c840b455d5d75c25bb" kind="dir"><name>taskflow/core</name>
   </compound>
-  <compound refid="dir_638d51f8e6f20ea8c720cc8c006296ba" kind="dir"><name>cuda</name>
+  <compound refid="dir_638d51f8e6f20ea8c720cc8c006296ba" kind="dir"><name>taskflow/cuda</name>
   </compound>
-  <compound refid="dir_b300e8dd3979c341db683b8f1cb76e6e" kind="dir"><name>cuda_std_algorithms</name>
+  <compound refid="dir_b300e8dd3979c341db683b8f1cb76e6e" kind="dir"><name>doxygen/cuda_std_algorithms</name>
   </compound>
-  <compound refid="dir_05586da0f4e90fa96d454e8d75d56e9a" kind="dir"><name>cudaflow_algorithms</name>
+  <compound refid="dir_05586da0f4e90fa96d454e8d75d56e9a" kind="dir"><name>doxygen/cudaflow_algorithms</name>
   </compound>
-  <compound refid="dir_0c6655e7a474ec7aa2f43d8d56b9e1c1" kind="dir"><name>examples</name>
+  <compound refid="dir_4e8d938e9ddb5a617c200d5739d1f41a" kind="dir"><name>doxygen</name>
   </compound>
-  <compound refid="dir_87abf3142b2bf0ff331672dc90c991b0" kind="dir"><name>governance</name>
+  <compound refid="dir_0c6655e7a474ec7aa2f43d8d56b9e1c1" kind="dir"><name>doxygen/examples</name>
   </compound>
-  <compound refid="dir_13901390c6d5ee592c18c2f167e01d4f" kind="dir"><name>install</name>
+  <compound refid="dir_87abf3142b2bf0ff331672dc90c991b0" kind="dir"><name>doxygen/governance</name>
   </compound>
-  <compound refid="dir_d7a9e4fcc659571fb4c113eec28c5eeb" kind="dir"><name>references</name>
+  <compound refid="dir_13901390c6d5ee592c18c2f167e01d4f" kind="dir"><name>doxygen/install</name>
   </compound>
-  <compound refid="dir_7c512093e4879e21c0dd502d7d593a16" kind="dir"><name>releases</name>
+  <compound refid="dir_d7a9e4fcc659571fb4c113eec28c5eeb" kind="dir"><name>doxygen/references</name>
+  </compound>
+  <compound refid="dir_7c512093e4879e21c0dd502d7d593a16" kind="dir"><name>doxygen/releases</name>
   </compound>
   <compound refid="dir_88dad41ea55ca2177e141d32a93e931c" kind="dir"><name>taskflow</name>
   </compound>
-  <compound refid="dir_183ade9c70bd4384e3037d383160f942" kind="dir"><name>usecases</name>
+  <compound refid="dir_183ade9c70bd4384e3037d383160f942" kind="dir"><name>doxygen/usecases</name>
   </compound>
-  <compound refid="dir_ce5b1d0a1b287ae7223729d7a3a091a8" kind="dir"><name>utility</name>
+  <compound refid="dir_ce5b1d0a1b287ae7223729d7a3a091a8" kind="dir"><name>taskflow/utility</name>
   </compound>
   <compound refid="indexpage" kind="page"><name>index</name>
   </compound>

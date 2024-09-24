@@ -442,7 +442,7 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <sect1 id="ConditionalTasking_1CreateAMultiConditionTask">
 <title>Create a Multi-condition Task</title>
 <para>A <emphasis>multi-condition task</emphasis> is a generalized version of conditional tasking. In some cases, applications need to jump to multiple branches from a parent task. This can be done by creating a <emphasis>multi-condition task</emphasis> which allows a task to select one or more successor tasks to execute. Similar to a condition task, a multi-condition task returns a vector of integer indices that indicate the successors to execute when the multi-condition task completes. The index is defined with respect to the order of successors preceded by a multi-condition task. For example, the following code creates a multi-condition task, <computeroutput>A</computeroutput>, that informs the scheduler to run on its two successors, <computeroutput>B</computeroutput> and <computeroutput>D</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]()<sp/>-&gt;<sp/><ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector&lt;int&gt;</ref><sp/>{<sp/></highlight></codeline>
@@ -455,14 +455,14 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/multi-condition-task-1.dot"></dotfile>
 </para>
 <para><simplesect kind="note"><para>The return type of a multi-condition task is <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>, which provides C++ vector-style functionalities but comes with small buffer optimization.</para>
 </simplesect>
 One important application of conditional tasking is implementing <emphasis>iterative control flow</emphasis>. You can use multi-condition tasks to create multiple loops that run concurrently. The following code creates a sequential chain of four loops in which each loop increments a counter variable ten times. When the program completes, the value of the counter variable is <computeroutput>40</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter{0};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -482,7 +482,7 @@ One important application of conditional tasking is implementing <emphasis>itera
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();<sp/><sp/></highlight><highlight class="comment">//<sp/>counter<sp/>==<sp/>40</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight><highlight class="comment">//<sp/>counter<sp/>==<sp/>40</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;counter<sp/>==<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>counter<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
@@ -494,6 +494,6 @@ One important application of conditional tasking is implementing <emphasis>itera
 </para>
 </sect1>
     </detaileddescription>
-    <location file="cookbook/conditional_tasking.dox"/>
+    <location file="doxygen/cookbook/conditional_tasking.dox"/>
   </compounddef>
 </doxygen>

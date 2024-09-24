@@ -1062,7 +1062,7 @@ class Executor {
   
   std::list<Taskflow> _taskflows;
 
-  TaskQueue<Node*> _wsq;
+  UnboundedTaskQueue<Node*> _wsq;
 
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
@@ -1408,22 +1408,23 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // We need to fetch p before the release such that the read 
   // operation is synchronized properly with other thread to
   // void data race.
-  auto p = node->_priority;
-
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool - starting at v3.5 we do not use
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node, p);
+    if(TF_UNLIKELY(worker._wsq.try_push(node) == false)) {
+      std::lock_guard<std::mutex> lock(_wsq_mutex);
+      _wsq.push(node);
+    }
     _notifier.notify_one();
     return;
   }
-
+  
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node, p);
+    _wsq.push(node);
   }
   _notifier.notify_one();
 }
@@ -1434,13 +1435,11 @@ inline void Executor::_schedule(Node* node) {
   // We need to fetch p before the release such that the read 
   // operation is synchronized properly with other thread to
   // void data race.
-  auto p = node->_priority;
-
   node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
-    _wsq.push(node, p);
+    _wsq.push(node);
   }
 
   _notifier.notify_one();
@@ -1465,9 +1464,11 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
       // We need to fetch p before the release such that the read 
       // operation is synchronized properly with other thread to
       // void data race.
-      auto p = nodes[i]->_priority;
       nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
-      worker._wsq.push(nodes[i], p);
+      if(TF_UNLIKELY(worker._wsq.try_push(nodes[i]) == false)) {
+        std::lock_guard<std::mutex> lock(_wsq_mutex);
+        _wsq.push(nodes[i]);
+      }
       _notifier.notify_one();
     }
     return;
@@ -1476,9 +1477,8 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      auto p = nodes[k]->_priority;
       nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
-      _wsq.push(nodes[k], p);
+      _wsq.push(nodes[k]);
     }
   }
   _notifier.notify_n(num_nodes);
@@ -1500,9 +1500,8 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   {
     std::lock_guard<std::mutex> lock(_wsq_mutex);
     for(size_t k=0; k<num_nodes; ++k) {
-      auto p = nodes[k]->_priority;
       nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
-      _wsq.push(nodes[k], p);
+      _wsq.push(nodes[k]);
     }
   }
 
@@ -1606,7 +1605,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // Here, we want to cache the latest successor with the highest priority
   worker._cache = nullptr;
-  auto max_p = static_cast<unsigned>(TaskPriority::MAX);
 
   // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
@@ -1620,16 +1618,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1, std::memory_order_relaxed);
-          if(s->_priority <= max_p) {
-            if(worker._cache) {
-              _schedule(worker, worker._cache);
-            }
-            worker._cache = s;
-            max_p = s->_priority;
+          if(worker._cache) {
+            _schedule(worker, worker._cache);
           }
-          else {
-            _schedule(worker, s);
-          }
+          worker._cache = s;
         }
       }
     }
@@ -1642,16 +1634,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         if(auto s = node->_successors[i]; 
           s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           j.fetch_add(1, std::memory_order_relaxed);
-          if(s->_priority <= max_p) {
-            if(worker._cache) {
-              _schedule(worker, worker._cache);
-            }
-            worker._cache = s;
-            max_p = s->_priority;
+          if(worker._cache) {
+            _schedule(worker, worker._cache);
           }
-          else {
-            _schedule(worker, s);
-          }
+          worker._cache = s;
         }
       }
     }

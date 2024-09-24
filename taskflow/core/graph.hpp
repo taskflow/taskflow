@@ -662,11 +662,6 @@ struct TaskParams {
   std::string name;
 
   /**
-  @brief priority of the tassk
-  */
-  unsigned priority {0};
-
-  /**
   @brief C-styled pointer to user data
   */
   void* data {nullptr};
@@ -834,9 +829,6 @@ class Node {
   Node() = default;
 
   template <typename... Args>
-  Node(const std::string&, unsigned, Topology*, Node*, size_t, Args&&...);
-  
-  template <typename... Args>
   Node(const std::string&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
@@ -859,8 +851,6 @@ class Node {
   std::atomic<int> _state {0};
 
   std::string _name;
-  
-  unsigned _priority {0};
   
   void* _data {nullptr};
   
@@ -991,24 +981,6 @@ Node::DependentAsync::DependentAsync(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename... Args>
 Node::Node(
-  const std::string& name, 
-  unsigned priority,
-  Topology* topology, 
-  Node* parent, 
-  size_t join_counter,
-  Args&&... args
-) :
-  _name         {name},
-  _priority     {priority},
-  _topology     {topology},
-  _parent       {parent},
-  _join_counter {join_counter},
-  _handle       {std::forward<Args>(args)...} {
-}
-
-// Constructor
-template <typename... Args>
-Node::Node(
   const std::string& name,
   Topology* topology, 
   Node* parent, 
@@ -1032,7 +1004,6 @@ Node::Node(
   Args&&... args
 ) :
   _name         {params.name},
-  _priority     {params.priority},
   _data         {params.data},
   _topology     {topology},
   _parent       {parent},

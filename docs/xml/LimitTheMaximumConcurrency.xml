@@ -24,7 +24,7 @@
 <sect1 id="LimitTheMaximumConcurrency_1DefineASemaphore">
 <title>Define a Semaphore</title>
 <para>Taskflow provides a mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency in a section of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -45,7 +45,7 @@
 <para><simplesect kind="attention"><para>It is your responsibility to ensure the semaphore stays alive during the execution of tasks that acquire and release it. The executor and taskflow do not manage lifetime of any semaphores.</para>
 </simplesect>
 We can create a semaphore with a different count value, such as 3, to limit the parallelism of independent tasks to 3.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(3);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>3</highlight><highlight class="normal"></highlight></codeline>
@@ -92,7 +92,7 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal">ED</highlight></codeline>
 </programlisting></para>
 <para><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> is also useful for limiting the maximum concurrency across multiple task groups. For instance, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on different task groups. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>creates<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>creates<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -127,7 +127,7 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/semaphore3.dot"></dotfile>
 </para>
 <para>We can create one semaphore of one concurrency for each edge in the conflict graph and let the two tasks of that edge acquire the semaphore. This organization forces the two tasks to not run concurrently.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>conflict_AB(1);</highlight></codeline>
@@ -154,7 +154,7 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(conflict_AC);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>One<sp/>possible<sp/>output:<sp/>B<sp/>and<sp/>C<sp/>run<sp/>concurrently<sp/>after<sp/>A</highlight></codeline>
 <codeline><highlight class="normal">A</highlight></codeline>
@@ -167,7 +167,7 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <sect1 id="LimitTheMaximumConcurrency_1UseASemaphoreAcrossDifferentTasks">
 <title>Use a Semaphore across Different Tasks</title>
 <para>You can use <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> across different types of tasks, such as async tasks, taskflow tasks, and your application code. <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> does not impose any restriction on which task to use.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow1,<sp/>taskflow2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter(0);</highlight></codeline>
@@ -189,18 +189,18 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>acquire<sp/>and<sp/>release<sp/>the<sp/>semaphore<sp/>from<sp/>an<sp/>async<sp/>task</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.async([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(s);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(s);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.wait_for_all();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 <codeline><highlight class="normal">assert(counter<sp/>==<sp/>3*N);</highlight></codeline>
 </programlisting> </para>
 </sect1>
     </detaileddescription>
-    <location file="cookbook/semaphore.dox"/>
+    <location file="doxygen/cookbook/semaphore.dox"/>
   </compounddef>
 </doxygen>

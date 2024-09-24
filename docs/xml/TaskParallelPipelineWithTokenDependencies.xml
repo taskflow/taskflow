@@ -84,7 +84,7 @@
 </para>
 <para>The following example demonstrates the creation of a deferred pipeline application exemplified in the dependency diagram in <ref refid="TaskParallelPipelineWithTokenDependencies_1DeferredPipelineTokenDependencies" kindref="member">Understand Token Dependencies</ref>. The example creates a deferred pipeline that generates a total of 10 data tokens. The pipeline structure consists of four lines and three stages (all serial types).</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;deferred_pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/>2:<sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>4:<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:</highlight></codeline>
@@ -152,7 +152,7 @@
 <codeline><highlight class="normal">64:<sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">65:</highlight></codeline>
 <codeline><highlight class="normal">66:<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">67:<sp/><sp/>executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">67:<sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>Debrief:</para>
 <para><itemizedlist>
@@ -300,14 +300,14 @@ The following is one of the possible outcomes of the example.</para>
 <codeline><highlight class="normal">67:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">68:<sp/></highlight></codeline>
 <codeline><highlight class="normal">69:<sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">70:<sp/>executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">70:<sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">71:</highlight></codeline>
 <codeline><highlight class="normal">72:<sp/></highlight><highlight class="comment">//<sp/>reset<sp/>the<sp/>pipeline<sp/>to<sp/>a<sp/>new<sp/>range<sp/>of<sp/>three<sp/>pipes<sp/>and<sp/>starts<sp/>from</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">73:<sp/></highlight><highlight class="comment">//<sp/>the<sp/>initial<sp/>state<sp/>(i.e.,<sp/>token<sp/>counts<sp/>from<sp/>zero)</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">74:<sp/>pipes.emplace_back(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>third_pipe_callable);</highlight></codeline>
-<codeline><highlight class="normal">75:<sp/>pl.<ref refid="classtf_1_1Task_1a302f51ed717d0a4e99edc50f92a571f3" kindref="member">reset</ref>(pipes.begin(),<sp/>pipes.end());</highlight></codeline>
+<codeline><highlight class="normal">75:<sp/>pl.reset(pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal">76:</highlight></codeline>
-<codeline><highlight class="normal">77:<sp/>executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">77:<sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>Debrief:</para>
 <para><itemizedlist>
@@ -350,6 +350,6 @@ The following is one of the possible outcomes of the example.</para>
 </para>
 </sect1>
     </detaileddescription>
-    <location file="algorithms/pipeline_with_token_dependencies.dox"/>
+    <location file="doxygen/algorithms/pipeline_with_token_dependencies.dox"/>
   </compounddef>
 </doxygen>

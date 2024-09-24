@@ -157,7 +157,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>P<sp/>=<sp/>12;<sp/><sp/></highlight><highlight class="comment">//<sp/>12<sp/>partitions<sp/>of<sp/>the<sp/>parallel-for<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;K-Means&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>c(K),<sp/>best_ks(N);</highlight></codeline>
@@ -223,7 +223,7 @@
 <codeline><highlight class="normal"><sp/><sp/>condition.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(clean_up)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(update_cluster);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The taskflow consists of two parts, a <computeroutput>clean_up</computeroutput> task and a parallel-for graph. The former cleans up the storage <computeroutput>sx</computeroutput>, <computeroutput>sy</computeroutput>, and <computeroutput>c</computeroutput> that are used to average points for new centroids, and the later parallelizes the searching for nearest centroids across individual points using 12 tasks (may vary depending on the machine). If the iteration count is smaller than <computeroutput>M</computeroutput>, the condition task returns 0 to let the execution path go back to <computeroutput>clean_up</computeroutput>. Otherwise, it returns 1 to stop (i.e., no successor tasks at index 1). The taskflow graph is illustrated below:</para>
@@ -281,6 +281,6 @@
 <para>When the number of points is larger than 10K, the parallel CPU implementation starts to outperform the sequential CPU implementation. </para>
 </sect1>
     </detaileddescription>
-    <location file="examples/kmeans.dox"/>
+    <location file="doxygen/examples/kmeans.dox"/>
   </compounddef>
 </doxygen>

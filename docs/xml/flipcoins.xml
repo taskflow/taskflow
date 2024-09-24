@@ -35,7 +35,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>rounds<sp/>=<sp/>10000;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>tosses<sp/>=<sp/>0;<sp/></highlight></codeline>
@@ -70,7 +70,7 @@
 <codeline><highlight class="normal"><sp/><sp/>F.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(G,<sp/>B);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>repeat<sp/>the<sp/>flip-coin<sp/>simulation<sp/>by<sp/>rounds<sp/>times</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.run_n(taskflow,<sp/>rounds).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af15db5f7dde8e7ff1f86ef8fe825e9e2" kindref="member">run_n</ref>(taskflow,<sp/>rounds).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>calculate<sp/>the<sp/>expected<sp/>number<sp/>of<sp/>tosses</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>average_tosses<sp/>=<sp/>total_tosses<sp/>/<sp/>(double)rounds;</highlight></codeline>
@@ -117,7 +117,7 @@
 <codeline><highlight class="normal">F.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(G,<sp/>B,<sp/>B);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>repeat<sp/>the<sp/>flip-coin<sp/>simulation<sp/>by<sp/>rounds<sp/>times</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run_n(taskflow,<sp/>rounds).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af15db5f7dde8e7ff1f86ef8fe825e9e2" kindref="member">run_n</ref>(taskflow,<sp/>rounds).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>calculate<sp/>the<sp/>expected<sp/>number<sp/>of<sp/>tosses</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">average_tosses<sp/>=<sp/>total_tosses<sp/>/<sp/>(double)rounds;</highlight></codeline>
@@ -129,6 +129,6 @@
 <para>Similarly, we can extend the probabilistic condition to any degree. </para>
 </sect1>
     </detaileddescription>
-    <location file="examples/flipcoins.dox"/>
+    <location file="doxygen/examples/flipcoins.dox"/>
   </compounddef>
 </doxygen>

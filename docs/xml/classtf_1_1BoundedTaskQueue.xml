@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1BoundedTaskQueue" kind="class" language="C++" prot="public">
+    <compoundname>tf::BoundedTaskQueue</compoundname>
+    <includes refid="tsq_8hpp" local="no">taskflow/core/tsq.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>LogSize</declname>
+        <defname>LogSize</defname>
+        <defval>10</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classtf_1_1BoundedTaskQueue_1a97122e789b0d024d4e1f98f46665c0d7" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static int64_t</type>
+        <definition>constexpr static int64_t tf::BoundedTaskQueue&lt; T, LogSize &gt;::BufferSize</definition>
+        <argsstring></argsstring>
+        <name>BufferSize</name>
+        <initializer>= int64_t{1} &lt;&lt; LogSize</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="316" column="28" bodyfile="taskflow/core/tsq.hpp" bodystart="316" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedTaskQueue_1a98cf29c5be602b8951b9b10238c44900" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static int64_t</type>
+        <definition>constexpr static int64_t tf::BoundedTaskQueue&lt; T, LogSize &gt;::BufferMask</definition>
+        <argsstring></argsstring>
+        <name>BufferMask</name>
+        <initializer>= (BufferSize - 1)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="317" column="28" bodyfile="taskflow/core/tsq.hpp" bodystart="317" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1BoundedTaskQueue_1a51e4f79ae1957cde7b1208b2119246c6" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <definition>std::atomic&lt;int64_t&gt; tf::BoundedTaskQueue&lt; T, LogSize &gt;::_top</definition>
+        <argsstring></argsstring>
+        <name>_top</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="321" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="321" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedTaskQueue_1a4f6a86178138cff2f95243c2cc6b01e4" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <definition>std::atomic&lt;int64_t&gt; tf::BoundedTaskQueue&lt; T, LogSize &gt;::_bottom</definition>
+        <argsstring></argsstring>
+        <name>_bottom</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="322" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="322" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedTaskQueue_1ae1871b739c04078d56e2031c6cda8f59" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt;</type>
+        <definition>std::atomic&lt;T&gt; tf::BoundedTaskQueue&lt; T, LogSize &gt;::_buffer[BufferSize]</definition>
+        <argsstring>[BufferSize]</argsstring>
+        <name>_buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="323" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="323" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1a4160bb42036d75bc60f95cc189792a3d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::BoundedTaskQueue&lt; T, LogSize &gt;::BoundedTaskQueue</definition>
+        <argsstring>()=default</argsstring>
+        <name>BoundedTaskQueue</name>
+        <briefdescription>
+<para>constructs the queue with a given capacity </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="330" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1a5811b32810d0e70a1572a8ef594eba7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::BoundedTaskQueue&lt; T, LogSize &gt;::~BoundedTaskQueue</definition>
+        <argsstring>()=default</argsstring>
+        <name>~BoundedTaskQueue</name>
+        <briefdescription>
+<para>destructs the queue </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="335" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1ae64ab051e9ce597482cb602ce967d459" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::BoundedTaskQueue&lt; T, LogSize &gt;::empty</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>empty</name>
+        <briefdescription>
+<para>queries if the queue is empty at the time of this call </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="340" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="385" bodyend="389"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1a76620d4f4a85eae9e4626b9d83c61cb3" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::BoundedTaskQueue&lt; T, LogSize &gt;::size</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>size</name>
+        <briefdescription>
+<para>queries the number of items at the time of this call </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="345" column="12" bodyfile="taskflow/core/tsq.hpp" bodystart="393" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1ae3c7315f59e60f806225ee9cf8d55229" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr size_t</type>
+        <definition>constexpr size_t tf::BoundedTaskQueue&lt; T, LogSize &gt;::capacity</definition>
+        <argsstring>() const</argsstring>
+        <name>capacity</name>
+        <briefdescription>
+<para>queries the capacity of the queue </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="350" column="22" bodyfile="taskflow/core/tsq.hpp" bodystart="473" bodyend="475"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1af52edec086b5e1a9c090eff6a6a76dae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tf::BoundedTaskQueue&lt; T, LogSize &gt;::try_push</definition>
+        <argsstring>(O &amp;&amp;item)</argsstring>
+        <name>try_push</name>
+        <param>
+          <type>O &amp;&amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>inserts an item to the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Only the owner thread can insert an item to the queue. The operation can trigger the queue to resize its capacity if more space is required.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>O</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the item to perfect-forward to the queue </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="364" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="402" bodyend="418"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1a2b9e1d2502b489656b89cb505e95e71b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::BoundedTaskQueue&lt; T, LogSize &gt;::pop</definition>
+        <argsstring>()</argsstring>
+        <name>pop</name>
+        <briefdescription>
+<para>pops out an item from the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Only the owner thread can pop out an item from the queue. The return can be a <ulink url="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</ulink> if this operation failed (empty queue). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="372" column="7" bodyfile="taskflow/core/tsq.hpp" bodystart="422" bodyend="448"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedTaskQueue_1ad2b4f8d262b0093ce08dea92c00fae1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::BoundedTaskQueue&lt; T, LogSize &gt;::steal</definition>
+        <argsstring>()</argsstring>
+        <name>steal</name>
+        <briefdescription>
+<para>steals an item from the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Any threads can try to steal an item from the queue. The return can be a <ulink url="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::nullopt</ulink> if this operation failed (not necessary empty). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="380" column="7" bodyfile="taskflow/core/tsq.hpp" bodystart="452" bodyend="469"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Lock-free bounded single-producer multiple-consumer queue. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>LogSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>log size of the queue to the base of 2</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This class implements the work stealing queue described in the paper, &quot;Correct and Efficient Work-Stealing for Weak Memory Models,&quot; available at <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https://www.di.ens.fr/~zappa/readings/ppopp13.pdf</ulink>.</para>
+<para>Only the queue owner can perform pop and push operations, while others can steal data from the queue. </para>
+    </detaileddescription>
+    <location file="taskflow/core/tsq.hpp" line="312" column="1" bodyfile="taskflow/core/tsq.hpp" bodystart="312" bodyend="381"/>
+    <listofallmembers>
+      <member refid="classtf_1_1BoundedTaskQueue_1a4f6a86178138cff2f95243c2cc6b01e4" prot="private" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>_bottom</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1ae1871b739c04078d56e2031c6cda8f59" prot="private" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>_buffer</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a51e4f79ae1957cde7b1208b2119246c6" prot="private" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>_top</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a4160bb42036d75bc60f95cc189792a3d" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>BoundedTaskQueue</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a98cf29c5be602b8951b9b10238c44900" prot="private" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>BufferMask</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a97122e789b0d024d4e1f98f46665c0d7" prot="private" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>BufferSize</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1ae3c7315f59e60f806225ee9cf8d55229" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>capacity</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1ae64ab051e9ce597482cb602ce967d459" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>empty</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a2b9e1d2502b489656b89cb505e95e71b" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>pop</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a76620d4f4a85eae9e4626b9d83c61cb3" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>size</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1ad2b4f8d262b0093ce08dea92c00fae1b" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>steal</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1af52edec086b5e1a9c090eff6a6a76dae" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>try_push</name></member>
+      <member refid="classtf_1_1BoundedTaskQueue_1a5811b32810d0e70a1572a8ef594eba7e" prot="public" virt="non-virtual"><scope>tf::BoundedTaskQueue</scope><name>~BoundedTaskQueue</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

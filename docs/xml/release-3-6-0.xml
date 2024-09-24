@@ -94,10 +94,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>Added new async methods to support dynamic task graph creation<itemizedlist>
-<listitem><para>tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para>
-</listitem><listitem><para>tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</para>
-</listitem><listitem><para>tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</para>
-</listitem><listitem><para>tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</para>
+<listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1aa9b08e47e68ae1e568f18aa7104cb9b1" kindref="member">tf::Executor::silent_dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added new async and join methods to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
@@ -267,8 +267,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para>Renamed tf::Executor::run_and_wait to tf::Executor::corun for expressiveness</para>
-</listitem><listitem><para>Renamed tf::Executor::loop_until to tf::Executor::corun_until for expressiveness</para>
+<listitem><para>Renamed tf::Executor::run_and_wait to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref> for expressiveness</para>
+</listitem><listitem><para>Renamed tf::Executor::loop_until to <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> for expressiveness</para>
 </listitem><listitem><para>Renamed tf::Runtime::run_and_wait to <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> for expressiveness</para>
 </listitem><listitem><para>Disabled argument support for all asynchronous tasking features<itemizedlist>
 <listitem><para>users are responsible for creating their own wrapper to make the callable</para>
@@ -333,6 +333,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>
     </detaileddescription>
-    <location file="releases/release-3.6.0.dox"/>
+    <location file="doxygen/releases/release-3.6.0.dox"/>
   </compounddef>
 </doxygen>

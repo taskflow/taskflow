@@ -39,7 +39,7 @@
 <title>Create a Scalable Pipeline Module Task</title>
 <para>Similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is a composable graph object to implement a <emphasis>pipeline scheduling framework</emphasis> in a taskflow. The key difference between <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> and <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is that a scalable pipeline can accept <emphasis>variable</emphasis> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -101,7 +101,7 @@
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>the<sp/>pipeline<sp/>to<sp/>a<sp/>new<sp/>range<sp/>of<sp/>five<sp/>pipes<sp/>and<sp/>starts<sp/>from</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>the<sp/>initial<sp/>state<sp/>(i.e.,<sp/>token<sp/>counts<sp/>from<sp/>zero)</highlight><highlight class="normal"></highlight></codeline>
@@ -110,7 +110,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">pl.reset(pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>The program defines a uniform pipe type of <computeroutput>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</computeroutput> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <computeroutput>[first, last)</computeroutput>, that point to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/scalable_pipeline_1.dot"></dotfile>
@@ -126,7 +126,7 @@
 <sect1 id="TaskParallelScalablePipeline_1ResetAPlaceholderScalablePipeline">
 <title>Reset a Placeholder Scalable Pipeline</title>
 <para>It is possible to create a scalable pipeline as a placeholder using the constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_pipes<sp/>=<sp/>10;</highlight></codeline>
@@ -149,7 +149,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pipeline<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(spl).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">pipeline.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(init);</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight></codeline>
 </programlisting></para>
 <para>The task graph of this program is shown below:</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/scalable_pipeline_3.dot"></dotfile>
@@ -188,6 +188,6 @@ Similarly, you can create an empty scalable pipeline using the default construct
 </para>
 </sect1>
     </detaileddescription>
-    <location file="algorithms/scalable_pipeline.dox"/>
+    <location file="doxygen/algorithms/scalable_pipeline.dox"/>
   </compounddef>
 </doxygen>

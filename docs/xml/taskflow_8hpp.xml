@@ -2,13 +2,356 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="taskflow_8hpp" kind="file" language="C++">
     <compoundname>taskflow.hpp</compoundname>
+    <includes refid="executor_8hpp" local="yes">core/executor.hpp</includes>
+    <includes local="yes">core/async.hpp</includes>
+    <includedby refid="pipeline_8hpp" local="yes">taskflow/algorithm/pipeline.hpp</includedby>
+    <includedby refid="cudaflow_8hpp" local="yes">taskflow/cuda/cudaflow.hpp</includedby>
+    <incdepgraph>
+      <node id="3">
+        <label>observer.hpp</label>
+        <link refid="observer_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="32">
+        <label>atomic_notifier.hpp</label>
+      </node>
+      <node id="17">
+        <label>iterator</label>
+      </node>
+      <node id="28">
+        <label>topology.hpp</label>
+      </node>
+      <node id="29">
+        <label>tsq.hpp</label>
+        <link refid="tsq_8hpp"/>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>core/async.hpp</label>
+      </node>
+      <node id="10">
+        <label>../utility/small_vector.hpp</label>
+        <link refid="small__vector_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>core/executor.hpp</label>
+        <link refid="executor_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>cassert</label>
+      </node>
+      <node id="30">
+        <label>../utility/macros.hpp</label>
+      </node>
+      <node id="22">
+        <label>error.hpp</label>
+      </node>
+      <node id="7">
+        <label>../utility/iterator.hpp</label>
+      </node>
+      <node id="20">
+        <label>../utility/latch.hpp</label>
+      </node>
+      <node id="8">
+        <label>../utility/os.hpp</label>
+      </node>
+      <node id="6">
+        <label>../utility/traits.hpp</label>
+      </node>
+      <node id="4">
+        <label>task.hpp</label>
+        <link refid="task_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>../utility/mpmc.hpp</label>
+      </node>
+      <node id="5">
+        <label>graph.hpp</label>
+        <link refid="graph_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>flow_builder.hpp</label>
+        <link refid="flow__builder_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>../utility/serializer.hpp</label>
+      </node>
+      <node id="1">
+        <label>taskflow/taskflow.hpp</label>
+        <link refid="taskflow_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="37">
+        <label>async_task.hpp</label>
+        <link refid="async__task_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>vector</label>
+      </node>
+      <node id="9">
+        <label>../utility/math.hpp</label>
+      </node>
+      <node id="14">
+        <label>cstdlib</label>
+      </node>
+      <node id="13">
+        <label>cstddef</label>
+      </node>
+      <node id="23">
+        <label>declarations.hpp</label>
+      </node>
+      <node id="24">
+        <label>semaphore.hpp</label>
+        <link refid="semaphore_8hpp"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>mutex</label>
+      </node>
+      <node id="27">
+        <label>environment.hpp</label>
+      </node>
+      <node id="36">
+        <label>../algorithm/partitioner.hpp</label>
+        <link refid="partitioner_8hpp"/>
+      </node>
+      <node id="33">
+        <label>nonblocking_notifier.hpp</label>
+      </node>
+      <node id="31">
+        <label>worker.hpp</label>
+        <link refid="worker_8hpp"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>algorithm</label>
+      </node>
+      <node id="15">
+        <label>cstring</label>
+      </node>
+      <node id="18">
+        <label>memory</label>
+      </node>
+      <node id="16">
+        <label>initializer_list</label>
+      </node>
+      <node id="34">
+        <label>taskflow.hpp</label>
+        <link refid="core_2taskflow_8hpp"/>
+        <childnode refid="35" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="7">
+        <label>taskflow/cuda/algorithm/transform.hpp</label>
+        <link refid="transform_8hpp"/>
+      </node>
+      <node id="11">
+        <label>taskflow/cuda/algorithm/sort.hpp</label>
+        <link refid="sort_8hpp"/>
+      </node>
+      <node id="5">
+        <label>taskflow/cuda/algorithm/for_each.hpp</label>
+        <link refid="for__each_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>taskflow/algorithm/pipeline.hpp</label>
+        <link refid="pipeline_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>taskflow/cuda/cudaflow.hpp</label>
+        <link refid="cudaflow_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>taskflow/cuda/algorithm/scan.hpp</label>
+        <link refid="scan_8hpp"/>
+      </node>
+      <node id="1">
+        <label>taskflow/taskflow.hpp</label>
+        <link refid="taskflow_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>taskflow/cuda/algorithm/merge.hpp</label>
+        <link refid="merge_8hpp"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>taskflow/cuda/algorithm/reduce.hpp</label>
+        <link refid="reduce_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>taskflow/algorithm/data_pipeline.hpp</label>
+        <link refid="data__pipeline_8hpp_source"/>
+      </node>
+      <node id="6">
+        <label>taskflow/cuda/algorithm/find.hpp</label>
+        <link refid="find_8hpp"/>
+      </node>
+    </invincdepgraph>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" prot="public" static="no">
+        <name>TF_VERSION</name>
+        <initializer>300800</initializer>
+        <briefdescription>
+<para>version of the Taskflow (currently 3.8.0) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The version system is made of a major version number, a minor version number, and a patch number:<itemizedlist>
+<listitem><para>TF_VERSION % 100 is the patch level</para>
+</listitem><listitem><para>TF_VERSION / 100 % 1000 is the minor version</para>
+</listitem><listitem><para>TF_VERSION / 100000 is the major version </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/taskflow.hpp" line="50" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="taskflow_8hpp_1ac543189162351f11cc56cbc81e609e21" prot="public" static="no">
+        <name>TF_MAJOR_VERSION</name>
+        <initializer><ref refid="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" kindref="member">TF_VERSION</ref>/100000</initializer>
+        <briefdescription>
+<para>major version of Taskflow, which is equal to <computeroutput>TF_VERSION/100000</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/taskflow.hpp" line="57" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="taskflow_8hpp_1ac79e1d6e02bafb712ca6b8580fc35d0d" prot="public" static="no">
+        <name>TF_MINOR_VERSION</name>
+        <initializer><ref refid="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" kindref="member">TF_VERSION</ref>/100%1000</initializer>
+        <briefdescription>
+<para>minor version of Taskflow, which is equal to <computeroutput>TF_VERSION / 100 % 1000</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/taskflow.hpp" line="64" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="taskflow_8hpp_1af5d0ce402f403151eb848aceacfe28ec" prot="public" static="no">
+        <name>TF_PATCH_VERSION</name>
+        <initializer><ref refid="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" kindref="member">TF_VERSION</ref>%100</initializer>
+        <briefdescription>
+<para>patch version of Taskflow, which is equal to <computeroutput>TF_VERSION % 100</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/taskflow.hpp" line="71" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
     <briefdescription>
 <para>main taskflow include file </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/thuang295/Code/taskflow/taskflow/taskflow.hpp"/>
+    <location file="taskflow/taskflow.hpp"/>
   </compounddef>
 </doxygen>

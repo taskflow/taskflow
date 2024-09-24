@@ -1165,7 +1165,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 // Function: emplace
 template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
+  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
   ));
 }
@@ -1173,7 +1173,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_subflow_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
+  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Subflow>{}, std::forward<C>(c)
   ));
 }
@@ -1181,7 +1181,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
+  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
   ));
 }
@@ -1189,7 +1189,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_multi_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", 0, nullptr, nullptr, 0,
+  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
   ));
 }
@@ -1227,7 +1227,7 @@ inline void FlowBuilder::erase(Task task) {
 // Function: composed_of
 template <typename T>
 Task FlowBuilder::composed_of(T& object) {
-  auto node = _graph._emplace_back("", 0, nullptr, nullptr, 0,
+  auto node = _graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Module>{}, object
   );
   return Task(node);
@@ -1235,7 +1235,7 @@ Task FlowBuilder::composed_of(T& object) {
 
 // Function: placeholder
 inline Task FlowBuilder::placeholder() {
-  auto node = _graph._emplace_back("", 0, nullptr, nullptr, 0,
+  auto node = _graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Placeholder>{}
   );
   return Task(node);

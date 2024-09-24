@@ -62,6 +62,6 @@
 <para>A key difference between our CUDA standard algorithms and others (e.g., Thrust) is the <emphasis>memory management</emphasis>. Unlike CPU-parallel algorithms, many GPU-parallel algorithms require extra buffer to store the temporary results during the multi-phase computation, for instance, <ref refid="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" kindref="member">tf::cuda_reduce</ref> and <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. We <emphasis>DO NOT</emphasis> allocate any memory during these algorithms call but ask you to provide the memory buffer required for each of such algorithms. This decision seems to complicate the code a little bit, but it gives applications freedom to optimize the memory; also, it makes all algorithm calls capturable to a CUDA graph to improve the execution efficiency. </para>
 </sect1>
     </detaileddescription>
-    <location file="cuda_std_algorithms/cuda_std_execution_policy.dox"/>
+    <location file="doxygen/cuda_std_algorithms/cuda_std_execution_policy.dox"/>
   </compounddef>
 </doxygen>

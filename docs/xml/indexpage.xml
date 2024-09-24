@@ -66,7 +66,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>four<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
@@ -79,7 +79,7 @@
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>D.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/><sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.run(taskflow).wait();<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -188,41 +188,41 @@
 <sect1 id="index_1QuickStartLaunchAsyncTasks">
 <title>Launch Asynchronous Tasks</title>
 <para>Taskflow supports <emphasis>asynchronous</emphasis> tasking. You can launch tasks asynchronously to dynamically explore task graph parallelism.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>asynchronous<sp/>tasks<sp/>directly<sp/>from<sp/>an<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.async([](){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([](){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>returns<sp/>1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
-<codeline><highlight class="normal">executor.silent_async([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>does<sp/>not<sp/>return\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;async<sp/>task<sp/>does<sp/>not<sp/>return\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>asynchronous<sp/>tasks<sp/>with<sp/>dynamic<sp/>dependencies</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>executor.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>C<sp/>=<sp/>executor.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>D<sp/>=<sp/>executor.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>B,<sp/>C);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>C<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>D<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>B,<sp/>C);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.wait_for_all();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="index_1QuickStartRunATaskflowThroughAnExecution">
 <title>Run a Taskflow through an Executor</title>
 <para>The executor provides several <emphasis>thread-safe</emphasis> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <computeroutput>tf::Future&lt;void&gt;</computeroutput> return to let you query the execution status.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>run_once<sp/>=<sp/>executor.run(taskflow);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>run_once<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>on<sp/>this<sp/>run<sp/>to<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">run_once.get();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>four<sp/>times</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run_n(taskflow,<sp/>4);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af15db5f7dde8e7ff1f86ef8fe825e9e2" kindref="member">run_n</ref>(taskflow,<sp/>4);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>five<sp/>times</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.run_until(taskflow,<sp/>[counter=5](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>--counter<sp/>==<sp/>0;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ae4f9e214ea5ee873e8d90a70bc1c77e8" kindref="member">run_until</ref>(taskflow,<sp/>[counter=5](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>--counter<sp/>==<sp/>0;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>blocks<sp/>the<sp/>executor<sp/>until<sp/>all<sp/>submitted<sp/>taskflows<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.wait_for_all();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="index_1QuickStartLeverageStandardParallelAlgorithms">
@@ -255,7 +255,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(pl)</highlight></codeline>
-<codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="index_1QuickStartVisualizeATaskflow">
@@ -350,6 +350,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>Taskflow is open-source under permissive MIT license. You are completely free to use, modify, and redistribute any work on top of Taskflow. The source code is available in <ulink url="https://github.com/taskflow/">Project GitHub</ulink> and is actively maintained by <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> and his research group at the University of Wisconsin at Madison. </para>
 </sect1>
     </detaileddescription>
-    <location file="QuickStart.dox"/>
+    <location file="doxygen/QuickStart.dox"/>
   </compounddef>
 </doxygen>

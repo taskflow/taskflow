@@ -72,10 +72,15 @@
           <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-doc">
             <dt>
-              <div class="m-doc-template">template&lt;typename T, unsigned TF_MAX_PRIORITY = static_cast&lt;unsigned&gt;(<a href="namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">TaskPriority::<wbr />MAX</a>)&gt;</div>
-              class <a href="classtf_1_1TaskQueue.html" class="m-doc">tf::TaskQueue</a>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">tf::UnboundedTaskQueue</a>
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, size_t LogSize = 10&gt;</div>
+              class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">tf::BoundedTaskQueue</a>
+            </dt>
+            <dd>Lock-free bounded single-producer multiple-consumer queue.</dd>
           </dl>
         </section>
       </div>

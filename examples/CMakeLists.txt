@@ -15,7 +15,6 @@ list(APPEND TF_EXAMPLES
   while_loop
   if_else
   nested_if_else
-  priority
   visualization 
   parallel_for 
   parallel_sort
