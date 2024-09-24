@@ -10,7 +10,6 @@
 
 namespace tf {
 
-
 /**
 @enum TaskPriority
 
