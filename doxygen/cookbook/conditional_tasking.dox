@@ -3,8 +3,8 @@ namespace tf {
 /** @page ConditionalTasking Conditional Tasking
 
 Parallel workloads often require making control-flow decisions across dependent tasks.
-%Taskflow supports an very efficient interface of conditional tasking
-for users to implement general control flow such as dynamic flow, cycles, and conditionals 
+%Taskflow supports a very efficient interface of conditional tasking
+for users to implement general control flow such as dynamic flow, cycles and conditionals 
 that are otherwise difficult to do with existing frameworks.
 
 @tableofcontents
@@ -216,7 +216,7 @@ If @c cond returns @c 1, the scheduler enqueues @c stop and then moves on.
 
 @section AvoidCommonPitfalls Avoid Common Pitfalls
 
-Condition tasks are handy in creasing dynamic and cyclic control flows,
+Condition tasks are handy in creating dynamic and cyclic control flows,
 but they are also easy to make mistakes.
 It is your responsibility to ensure a taskflow is properly conditioned. 
 Top things to avoid include <em>no source tasks</em> to start with 
