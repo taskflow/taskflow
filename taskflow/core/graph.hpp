@@ -871,7 +871,7 @@ class Node {
   handle_t _handle;
 
   // free list
-  Node* _freelist_next{nullptr};
+  //Node* _freelist_next{nullptr};
 
   void _precede(Node*);
   void _set_up_join_counter();
@@ -1282,6 +1282,8 @@ class Freelist {
     HeadPtr n_head;  // new head
 
     if(c_head.ptr != nullptr) {
+      // TODO: bug - here c_head.ptr may die already so accessing its freelist next
+      // will cause memory segmentation fault
       n_head.ptr = c_head.ptr->_freelist_next;
       n_head.tag = c_head.tag + 1;
       if(_head.compare_exchange_weak(c_head, n_head, 
