@@ -86,7 +86,7 @@ class UnboundedTaskQueue {
 
     @param capacity the capacity of the queue (must be power of 2)
     */
-    explicit UnboundedTaskQueue(int64_t capacity = 1024);
+    explicit UnboundedTaskQueue(int64_t capacity = 512);
 
     /**
     @brief destructs the queue
@@ -265,6 +265,56 @@ UnboundedTaskQueue<T>::resize_array(Array* a, std::int64_t b, std::int64_t t) {
   //_array.store(a, std::memory_order_relaxed);
   return a;
 }
+
+// ----------------------------------------------------------------------------
+// UnboundedTaskQueues
+// ----------------------------------------------------------------------------
+
+template <typename T>
+class Freelists {
+
+  struct Queue {
+    std::mutex mutex;
+    UnboundedTaskQueue<T> queue;
+  };
+
+  public:
+
+  Freelists(size_t N) : _queues(N) {}
+
+  void push(size_t w, T item) {
+    std::scoped_lock lock(_queues[w].mutex);
+    _queues[w].queue.push(item);  
+  }
+
+  void push(T item) {
+    push(reinterpret_cast<uintptr_t>(item) % _queues.size(), item);
+  }
+
+  T steal(size_t w) {
+    for(size_t i=0; i<_queues.size(); i++, w=(w+1)%_queues.size()) {
+      if(auto item = _queues[w].queue.steal(); item) {
+        return item;
+      }
+    }
+    return nullptr;
+  }
+
+
+  bool empty() const {
+    for(const auto& q : _queues) {
+      if(!q.queue.empty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private:
+  
+  std::vector<Queue> _queues;
+};
+
 
 // ----------------------------------------------------------------------------
 // BoundedTaskQueue
