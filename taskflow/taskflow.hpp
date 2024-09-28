@@ -6,6 +6,12 @@
 // + TF_ENABLE_TASK_POOL       : enable task pool optimization
 // + TF_ENABLE_ATOMIC_NOTIFIER : enable atomic notifier (required C++20)
 //
+
+#ifndef TF_DEFAULT_TASK_QUEUE_LOG_SIZE 
+  #define TF_DEFAULT_TASK_QUEUE_LOG_SIZE 9
+#endif
+
+
 #include "core/executor.hpp"
 #include "core/async.hpp"
 

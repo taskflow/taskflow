@@ -82,11 +82,11 @@ class UnboundedTaskQueue {
   public:
 
     /**
-    @brief constructs the queue with a given capacity
+    @brief constructs the queue with the given size in log to the base of 2
 
-    @param capacity the capacity of the queue (must be power of 2)
+    @param LogSize default size in log to the base of 2
     */
-    explicit UnboundedTaskQueue(int64_t capacity = 512);
+    explicit UnboundedTaskQueue(int64_t LogSize = TF_DEFAULT_TASK_QUEUE_LOG_SIZE);
 
     /**
     @brief destructs the queue
@@ -137,16 +137,15 @@ class UnboundedTaskQueue {
 
   private:
 
-    Array* resize_array(Array* a, std::int64_t b, std::int64_t t);
+    Array* resize_array(Array* a, int64_t b, int64_t t);
 };
 
 // Constructor
 template <typename T>
-UnboundedTaskQueue<T>::UnboundedTaskQueue(int64_t c) {
-  assert(c && (!(c & (c-1))));
+UnboundedTaskQueue<T>::UnboundedTaskQueue(int64_t LogSize) {
   _top.store(0, std::memory_order_relaxed);
   _bottom.store(0, std::memory_order_relaxed);
-  _array.store(new Array{c}, std::memory_order_relaxed);
+  _array.store(new Array{(int64_t{1} << LogSize)}, std::memory_order_relaxed);
   _garbage.reserve(32);
 }
 
@@ -255,7 +254,7 @@ int64_t UnboundedTaskQueue<T>::capacity() const noexcept {
 
 template <typename T>
 typename UnboundedTaskQueue<T>::Array*
-UnboundedTaskQueue<T>::resize_array(Array* a, std::int64_t b, std::int64_t t) {
+UnboundedTaskQueue<T>::resize_array(Array* a, int64_t b, int64_t t) {
 
   Array* tmp = a->resize(b, t);
   _garbage.push_back(a);
@@ -265,56 +264,6 @@ UnboundedTaskQueue<T>::resize_array(Array* a, std::int64_t b, std::int64_t t) {
   //_array.store(a, std::memory_order_relaxed);
   return a;
 }
-
-// ----------------------------------------------------------------------------
-// UnboundedTaskQueues
-// ----------------------------------------------------------------------------
-
-template <typename T>
-class Freelists {
-
-  struct Queue {
-    std::mutex mutex;
-    UnboundedTaskQueue<T> queue;
-  };
-
-  public:
-
-  Freelists(size_t N) : _queues(N) {}
-
-  void push(size_t w, T item) {
-    std::scoped_lock lock(_queues[w].mutex);
-    _queues[w].queue.push(item);  
-  }
-
-  void push(T item) {
-    push(reinterpret_cast<uintptr_t>(item) % _queues.size(), item);
-  }
-
-  T steal(size_t w) {
-    for(size_t i=0; i<_queues.size(); i++, w=(w+1)%_queues.size()) {
-      if(auto item = _queues[w].queue.steal(); item) {
-        return item;
-      }
-    }
-    return nullptr;
-  }
-
-
-  bool empty() const {
-    for(const auto& q : _queues) {
-      if(!q.queue.empty()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private:
-  
-  std::vector<Queue> _queues;
-};
-
 
 // ----------------------------------------------------------------------------
 // BoundedTaskQueue
@@ -335,7 +284,7 @@ available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
 */
-template <typename T, size_t LogSize = 9>
+template <typename T, size_t LogSize = TF_DEFAULT_TASK_QUEUE_LOG_SIZE>
 class BoundedTaskQueue {
   
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
