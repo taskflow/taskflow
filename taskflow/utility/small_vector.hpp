@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "macros.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -11,13 +13,6 @@
 #include <iterator>
 #include <memory>
 
-#if defined(__GNUC__)
-  #define TF_LIKELY(x) (__builtin_expect((x), 1))
-  #define TF_UNLIKELY(x) (__builtin_expect((x), 0))
-#else
-  #define TF_LIKELY(x) (x)
-  #define TF_UNLIKELY(x) (x)
-#endif
 
 /**
 @file small_vector.hpp

@@ -10,28 +10,6 @@
 
 namespace tf {
 
-/**
-@enum TaskPriority
-
-@brief enumeration of all task priority values
-
-A priority is an enumerated value of type @c unsigned.
-Currently, %Taskflow defines three priority levels, 
-@c HIGH, @c NORMAL, and @c LOW, starting from 0, 1, to 2.
-That is, the lower the value, the higher the priority.
-
-*/
-enum class TaskPriority : unsigned {
-  /** @brief value of the highest priority (i.e., 0)  */
-  HIGH = 0,
-  /** @brief value of the normal priority (i.e., 1)  */
-  NORMAL = 1,
-  /** @brief value of the lowest priority (i.e., 2) */
-  LOW = 2,
-  /** @brief conventional value for iterating priority values */
-  MAX = 3
-};
-
 // ----------------------------------------------------------------------------
 // Task Queue
 // ----------------------------------------------------------------------------
@@ -206,7 +184,7 @@ void UnboundedTaskQueue<T>::push(T o) {
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full
-  if(a->capacity() - 1 < (b - t)) {
+  if TF_UNLIKELY(a->capacity() - 1 < (b - t)) {
     a = resize_array(a, b, t);
   }
 
@@ -307,7 +285,7 @@ available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
 */
-template <typename T, size_t LogSize = 10>
+template <typename T, size_t LogSize = 9>
 class BoundedTaskQueue {
   
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
@@ -349,18 +327,31 @@ class BoundedTaskQueue {
     constexpr size_t capacity() const;
     
     /**
-    @brief inserts an item to the queue
-
-    Only the owner thread can insert an item to the queue. 
-    The operation can trigger the queue to resize its capacity 
-    if more space is required.
+    @brief tries to insert an item to the queue
 
     @tparam O data type 
-
     @param item the item to perfect-forward to the queue
+    @return `true` if the insertion succeed or `false` (queue is full)
+    
+    Only the owner thread can insert an item to the queue. 
+
     */
     template <typename O>
     bool try_push(O&& item);
+    
+    /**
+    @brief tries to insert an item to the queue or invoke the callable if fails
+
+    @tparam O data type 
+    @tparam C callable type
+    @param item the item to perfect-forward to the queue
+    @param on_full callable to invoke when the queue is faull (insertion fails)
+    
+    Only the owner thread can insert an item to the queue. 
+
+    */
+    template <typename O, typename C>
+    void push(O&& item, C&& on_full);
     
     /**
     @brief pops out an item from the queue
@@ -395,7 +386,7 @@ size_t BoundedTaskQueue<T, LogSize>::size() const noexcept {
   return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
-// Function: push
+// Function: try_push
 template <typename T, size_t LogSize>
 template <typename O>
 bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
@@ -404,7 +395,7 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   int64_t t = _top.load(std::memory_order_acquire);
 
   // queue is full
-  if((b - t) >= BufferSize - 1) {
+  if TF_UNLIKELY((b - t) >= BufferSize - 1) {
     return false;
   }
   
@@ -414,6 +405,26 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   _bottom.store(b + 1, std::memory_order_relaxed);
 
   return true;
+}
+
+// Function: push
+template <typename T, size_t LogSize>
+template <typename O, typename C>
+void BoundedTaskQueue<T, LogSize>::push(O&& o, C&& on_full) {
+
+  int64_t b = _bottom.load(std::memory_order_relaxed);
+  int64_t t = _top.load(std::memory_order_acquire);
+
+  // queue is full
+  if TF_UNLIKELY((b - t) >= BufferSize - 1) {
+    on_full();
+    return;
+  }
+  
+  _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
+
+  std::atomic_thread_fence(std::memory_order_release);
+  _bottom.store(b + 1, std::memory_order_relaxed);
 }
 
 // Function: pop

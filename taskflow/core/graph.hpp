@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
 #include "../utility/iterator.hpp"
 
@@ -708,6 +709,9 @@ class Node {
   friend class Subflow;
   friend class Runtime;
 
+  template <typename T>
+  friend class Freelist;
+
   enum class AsyncState : int {
     UNFINISHED = 0,
     LOCKED = 1,
@@ -865,6 +869,9 @@ class Node {
   std::exception_ptr _exception_ptr {nullptr};
   
   handle_t _handle;
+
+  // free list
+  Node* _freelist_next{nullptr};
 
   void _precede(Node*);
   void _set_up_join_counter();
@@ -1086,7 +1093,6 @@ inline size_t Node::num_dependents() const {
 inline size_t Node::num_weak_dependents() const {
   size_t n = 0;
   for(size_t i=0; i<_dependents.size(); i++) {
-    //if(_dependents[i]->_handle.index() == Node::CONDITION) {
     if(_dependents[i]->_is_conditioner()) {
       n++;
     }
@@ -1098,7 +1104,6 @@ inline size_t Node::num_weak_dependents() const {
 inline size_t Node::num_strong_dependents() const {
   size_t n = 0;
   for(size_t i=0; i<_dependents.size(); i++) {
-    //if(_dependents[i]->_handle.index() != Node::CONDITION) {
     if(!_dependents[i]->_is_conditioner()) {
       n++;
     }
@@ -1120,7 +1125,6 @@ inline bool Node::_is_conditioner() const {
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
-  //return _topology && _topology->_is_cancelled.load(std::memory_order_relaxed);
   return _topology &&
          (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED);
 }
@@ -1129,7 +1133,6 @@ inline bool Node::_is_cancelled() const {
 inline void Node::_set_up_join_counter() {
   size_t c = 0;
   for(auto p : _dependents) {
-    //if(p->_handle.index() == Node::CONDITION) {
     if(p->_is_conditioner()) {
       _state.fetch_or(Node::CONDITIONED, std::memory_order_relaxed);
     }
@@ -1231,8 +1234,123 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
   return _nodes.back();
 }
 
+// ============================================================================
+// Freelist
+// ============================================================================
 
-}  // end of namespace tf. ---------------------------------------------------
+/**
+@private
+*/
+template <typename T>
+class Freelist {
+
+  struct HeadPtr {
+    T* ptr  {nullptr};
+    int tag {0};
+  };
+
+  public:
+
+  void push(T* node) {
+    HeadPtr c_head = _head.load(std::memory_order_relaxed);
+    HeadPtr n_head = { node };
+    do {
+      n_head.tag = c_head.tag + 1;
+      node->_freelist_next = c_head.ptr;
+    } while(!_head.compare_exchange_weak(c_head, n_head, 
+                                         std::memory_order_release, 
+                                         std::memory_order_relaxed));
+  }
+
+  T* pop() {
+    HeadPtr c_head = _head.load(std::memory_order_acquire);
+    HeadPtr n_head;  // new head
+    while (c_head.ptr != nullptr) {
+      n_head.ptr = c_head.ptr->_freelist_next;
+      n_head.tag = c_head.tag + 1;
+      if(_head.compare_exchange_weak(c_head, n_head, 
+                                     std::memory_order_release, 
+                                     std::memory_order_acquire)) {
+        break;
+      }
+    }
+    return c_head.ptr;
+  }
+  
+  T* steal() {
+    HeadPtr c_head = _head.load(std::memory_order_acquire);
+    HeadPtr n_head;  // new head
+
+    if(c_head.ptr != nullptr) {
+      n_head.ptr = c_head.ptr->_freelist_next;
+      n_head.tag = c_head.tag + 1;
+      if(_head.compare_exchange_weak(c_head, n_head, 
+                                     std::memory_order_release, 
+                                     std::memory_order_relaxed) == false) {
+        return nullptr;
+      }
+    }
+    return c_head.ptr;
+  }
+
+  bool empty() const {
+    return _head.load(std::memory_order_relaxed).ptr == nullptr;
+  }
+
+  private:
+
+  //static_assert(std::atomic<HeadPtr>::is_always_lock_free);
+
+  std::atomic<HeadPtr> _head;
+};
+
+/**
+@private
+*/
+template <typename T>
+class Freelists {
+
+  public:
+
+  Freelists(size_t W) : _heads(W) {
+  }
+
+  void push(size_t w, T* node) {
+    // assert(w < _heads.size());
+    _heads[w].push(node);  
+  }
+
+  void push(T* node) {
+    _heads[reinterpret_cast<uintptr_t>(node) % _heads.size()].push(node);
+  }
+
+  T* steal(size_t w) {
+    // assert(w < _heads.size());
+    for(size_t i=0; i<_heads.size(); i++, w=(w+1)%_heads.size()) {
+      if(T* ptr = _heads[w].steal(); ptr) {
+        return ptr;
+      }
+    }
+    return nullptr;
+  }
+
+  bool empty() const {
+    for(const auto& h : _heads) {
+      if(!h.empty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private:
+
+  std::vector<Freelist<T>> _heads;
+
+};
+
+
+}  // end of namespace tf. ----------------------------------------------------
 
 
 
