@@ -240,8 +240,8 @@ void test_threaded_uuid(size_t N) {
 
   auto size = uuids.size();
   std::sort(uuids.begin(), uuids.end());
-  std::unique(uuids.begin(), uuids.end());
-  REQUIRE(uuids.size() == size);
+  auto it = std::unique(uuids.begin(), uuids.end());
+  REQUIRE(it - uuids.begin() == size);
 }
 
 TEST_CASE("uuid") {
@@ -270,8 +270,8 @@ TEST_CASE("uuid") {
   // Uniqueness
   std::vector<tf::UUID> uuids(65536);
   std::sort(uuids.begin(), uuids.end());
-  std::unique(uuids.begin(), uuids.end());
-  REQUIRE(uuids.size() == 65536);
+  auto it = std::unique(uuids.begin(), uuids.end());
+  REQUIRE(it - uuids.begin() == 65535);
 
 }
 
