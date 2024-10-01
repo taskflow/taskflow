@@ -86,7 +86,7 @@ class UnboundedTaskQueue {
 
     @param LogSize default size in log to the base of 2
     */
-    explicit UnboundedTaskQueue(int64_t LogSize = TF_DEFAULT_TASK_QUEUE_LOG_SIZE);
+    explicit UnboundedTaskQueue(int64_t LogSize = TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE);
 
     /**
     @brief destructs the queue
@@ -284,7 +284,7 @@ available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
 Only the queue owner can perform pop and push operations,
 while others can steal data from the queue.
 */
-template <typename T, size_t LogSize = TF_DEFAULT_TASK_QUEUE_LOG_SIZE>
+template <typename T, size_t LogSize = TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE>
 class BoundedTaskQueue {
   
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
