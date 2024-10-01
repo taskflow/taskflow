@@ -271,7 +271,7 @@ TEST_CASE("uuid") {
   std::vector<tf::UUID> uuids(65536);
   std::sort(uuids.begin(), uuids.end());
   auto it = std::unique(uuids.begin(), uuids.end());
-  REQUIRE(it - uuids.begin() == 65535);
+  REQUIRE(it - uuids.begin() == 65536);
 
 }
 
