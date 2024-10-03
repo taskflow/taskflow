@@ -40,8 +40,6 @@ and adds a new text-based feature for profiler report.
 + Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate
 + Added tf::DataPipeline to implement data-parallel algorithms
   + See @ref DataParallelPipeline
-+ Extended tf::TaskQueue to include priority (tf::TaskPriority)
-  + See @ref PrioritizedTasking
 + Extended tf::Executor to include tf::WorkerInterface
 + Improved parallel algorithms (e.g., tf::Taskflow::for_each) with tail optimization
 + Resolved the busy-waiting problem in our work-stealing algorithm ([#400](https://github.com/taskflow/taskflow/pull/440))
@@ -81,7 +79,6 @@ This release has no deprecated and removed items.
 
 + Revised @ref ExecuteTaskflow
   + Added @ref ExecuteATaskflowFromAnInternalWorker
-+ Added @ref PrioritizedTasking 
 + Added @ref DataParallelPipeline
 
 @section release-3-5-0_miscellaneous_items Miscellaneous Items

@@ -47,10 +47,10 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="tsq_8hpp.html">&lt;taskflow/core/tsq.hpp&gt;</a></div>
-          <div class="m-doc-template">template&lt;typename T, size_t LogSize = 10&gt;</div>
+          <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="taskflow_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>BoundedTaskQueue <span class="m-thin">class</span>
         </h1>
-        <p>Lock-free bounded single-producer multiple-consumer queue.</p>
+        <p>class to create a lock-free bounded single-producer multiple-consumer queue</p>
         <table class="m-table m-fullwidth m-flat">
           <thead>
             <tr><th colspan="2">Template parameters</th></tr>
@@ -62,7 +62,7 @@
             </tr>
             <tr>
               <td>LogSize</td>
-              <td>log size of the queue to the base of 2</td>
+              <td>the base-2 logarithm of the queue size</td>
             </tr>
           </tbody>
         </table>
@@ -78,7 +78,7 @@
             </li>
           </ul>
         </nav>
-<p>This class implements the work stealing queue described in the paper, &quot;Correct and Efficient Work-Stealing for Weak Memory Models,&quot; available at <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https:/<wbr />/<wbr />www.di.ens.fr/<wbr />~zappa/<wbr />readings/<wbr />ppopp13.pdf</a>.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue.</p>
+<p>This class implements the work-stealing queue described in the paper, &quot;Correct and Efficient Work-Stealing for Weak Memory Models,&quot; available at <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">https:/<wbr />/<wbr />www.di.ens.fr/<wbr />~zappa/<wbr />readings/<wbr />ppopp13.pdf</a>.</p><p>Only the queue owner can perform pop and push operations, while others can steal data from the queue.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -111,7 +111,13 @@
               <div class="m-doc-template">template&lt;typename O&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#af52edec086b5e1a9c090eff6a6a76dae" class="m-doc">try_push</a>(</span><span class="m-doc-wrap">O&amp;&amp; item) -&gt; bool</span>
             </dt>
-            <dd>inserts an item to the queue</dd>
+            <dd>tries to insert an item to the queue</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename O, typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a9b0c93adcdeb0a876869027a211fdf62" class="m-doc">push</a>(</span><span class="m-doc-wrap">O&amp;&amp; item,
+              C&amp;&amp; on_full)</span>
+            </dt>
+            <dd>tries to insert an item to the queue or invoke the callable if fails</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a2b9e1d2502b489656b89cb505e95e71b" class="m-doc">pop</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
             </dt>
@@ -132,7 +138,7 @@
               </div>
               <span class="m-doc-wrap-bumper">bool tf::<wbr />BoundedTaskQueue&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af52edec086b5e1a9c090eff6a6a76dae" class="m-doc-self">try_push</a>(</span><span class="m-doc-wrap">O&amp;&amp; item)</span></span>
             </h3>
-            <p>inserts an item to the queue</p>
+            <p>tries to insert an item to the queue</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -152,8 +158,54 @@
                   <td>the item to perfect-forward to the queue</td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>true</code> if the insertion succeed or <code>false</code> (queue is full)</td>
+                </tr>
+              </tfoot>
             </table>
-<p>Only the owner thread can insert an item to the queue. The operation can trigger the queue to resize its capacity if more space is required.</p>
+<p>Only the owner thread can insert an item to the queue.</p>
+          </div></section>
+          <section class="m-doc-details" id="a9b0c93adcdeb0a876869027a211fdf62"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, size_t LogSize&gt;
+                template&lt;typename O, typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />BoundedTaskQueue&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9b0c93adcdeb0a876869027a211fdf62" class="m-doc-self">push</a>(</span><span class="m-doc-wrap">O&amp;&amp; item,
+              C&amp;&amp; on_full)</span></span>
+            </h3>
+            <p>tries to insert an item to the queue or invoke the callable if fails</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">O</td>
+                  <td>data type</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>item</td>
+                  <td>the item to perfect-forward to the queue</td>
+                </tr>
+                <tr>
+                  <td>on_full</td>
+                  <td>callable to invoke when the queue is faull (insertion fails)</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Only the owner thread can insert an item to the queue.</p>
           </div></section>
           <section class="m-doc-details" id="a2b9e1d2502b489656b89cb505e95e71b"><div>
             <h3>

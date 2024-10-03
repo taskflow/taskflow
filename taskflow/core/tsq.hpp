@@ -82,9 +82,9 @@ class UnboundedTaskQueue {
   public:
 
   /**
-  @brief constructs the queue with the given size in log to the base of 2
+  @brief constructs the queue with the given size in the base-2 logarithm
 
-  @param LogSize default size in log to the base of 2
+  @param LogSize the base-2 logarithm of the queue size
   */
   explicit UnboundedTaskQueue(int64_t LogSize = TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE);
 
@@ -273,11 +273,11 @@ UnboundedTaskQueue<T>::resize_array(Array* a, int64_t b, int64_t t) {
 @class: BoundedTaskQueue
 
 @tparam T data type
-@tparam LogSize log size of the queue to the base of 2
+@tparam LogSize the base-2 logarithm of the queue size
 
-@brief Lock-free bounded single-producer multiple-consumer queue.
+@brief class to create a lock-free bounded single-producer multiple-consumer queue
 
-This class implements the work stealing queue described in the paper, 
+This class implements the work-stealing queue described in the paper, 
 "Correct and Efficient Work-Stealing for Weak Memory Models,"
 available at https://www.di.ens.fr/~zappa/readings/ppopp13.pdf.
 

@@ -49,6 +49,7 @@
     <member refid="classtf_1_1BoundedTaskQueue_1a76620d4f4a85eae9e4626b9d83c61cb3" kind="function"><name>size</name></member>
     <member refid="classtf_1_1BoundedTaskQueue_1ae3c7315f59e60f806225ee9cf8d55229" kind="function"><name>capacity</name></member>
     <member refid="classtf_1_1BoundedTaskQueue_1af52edec086b5e1a9c090eff6a6a76dae" kind="function"><name>try_push</name></member>
+    <member refid="classtf_1_1BoundedTaskQueue_1a9b0c93adcdeb0a876869027a211fdf62" kind="function"><name>push</name></member>
     <member refid="classtf_1_1BoundedTaskQueue_1a2b9e1d2502b489656b89cb505e95e71b" kind="function"><name>pop</name></member>
     <member refid="classtf_1_1BoundedTaskQueue_1ad2b4f8d262b0093ce08dea92c00fae1b" kind="function"><name>steal</name></member>
   </compound>
@@ -473,7 +474,6 @@
     <member refid="classtf_1_1Executor_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1Executor_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
     <member refid="classtf_1_1Executor_1ac4a4632561a52d00a02d91296b20cb5a" kind="variable"><name>_MAX_STEALS</name></member>
-    <member refid="classtf_1_1Executor_1ad031630f03103157f807d85a174d08cb" kind="variable"><name>_wsq_mutex</name></member>
     <member refid="classtf_1_1Executor_1aef4cf993dbd8efa0372cdea6b0f725d7" kind="variable"><name>_taskflows_mutex</name></member>
     <member refid="classtf_1_1Executor_1a3b5e7cf6749feded228a46e9fbfdef5f" kind="variable"><name>_threads</name></member>
     <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" kind="variable"><name>_workers</name></member>
@@ -484,7 +484,7 @@
     <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" kind="variable"><name>_num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a500d540a170f1da6e5247168bc6efa87" kind="variable"><name>_done</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
-    <member refid="classtf_1_1Executor_1a4cf092a00474bd36fb9112539612f87f" kind="variable"><name>_wsq</name></member>
+    <member refid="classtf_1_1Executor_1a0f74eb32b801b30164e36936204c4b66" kind="variable"><name>_freelist</name></member>
     <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
     <member refid="classtf_1_1Executor_1a4910e89d89146b6d563d598b795eb4a9" kind="function"><name>Executor</name></member>
     <member refid="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" kind="function"><name>~Executor</name></member>
@@ -1235,7 +1235,7 @@
     <member refid="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" kind="variable"><name>_bottom</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" kind="variable"><name>_array</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a35bad5d9923949883d9c1a22aa89690f" kind="variable"><name>_garbage</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a816d238b0d24d34816be96af0c3cb67e" kind="function"><name>UnboundedTaskQueue</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1accc811a0a5d692a3cda366378367d7b6" kind="function"><name>UnboundedTaskQueue</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" kind="function"><name>~UnboundedTaskQueue</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" kind="function"><name>empty</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" kind="function"><name>size</name></member>
@@ -1243,7 +1243,7 @@
     <member refid="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" kind="function"><name>push</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" kind="function"><name>pop</name></member>
     <member refid="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" kind="function"><name>steal</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1acc9a82d3f40fc2a8973c7b118c44c4fd" kind="function"><name>resize_array</name></member>
+    <member refid="classtf_1_1UnboundedTaskQueue_1a7925cbfb4473f5bd4b2dcf52da4985f7" kind="function"><name>resize_array</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1806,11 +1806,6 @@
     <member refid="small__vector_8hpp_1ac8164ee2aeb48c22836ad8e3f6c6f067" kind="function"><name>swap</name></member>
   </compound>
   <compound refid="namespacetf" kind="namespace"><name>tf</name>
-    <member refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kind="enum"><name>TaskPriority</name></member>
-    <member refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kind="enumvalue"><name>HIGH</name></member>
-    <member refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kind="enumvalue"><name>NORMAL</name></member>
-    <member refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kind="enumvalue"><name>LOW</name></member>
-    <member refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" kind="enumvalue"><name>MAX</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395a" kind="enum"><name>TaskType</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kind="enumvalue"><name>PLACEHOLDER</name></member>
     <member refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kind="enumvalue"><name>STATIC</name></member>
@@ -2017,8 +2012,6 @@
   </compound>
   <compound refid="motivation_8dox" kind="file"><name>motivation.dox</name>
   </compound>
-  <compound refid="prioritized__tasking_8dox" kind="file"><name>prioritized_tasking.dox</name>
-  </compound>
   <compound refid="profiler_8dox" kind="file"><name>profiler.dox</name>
   </compound>
   <compound refid="runtime__tasking_8dox" kind="file"><name>runtime_tasking.dox</name>
@@ -2139,6 +2132,8 @@
   </compound>
   <compound refid="release-3_88_80_8dox" kind="file"><name>release-3.8.0.dox</name>
   </compound>
+  <compound refid="release-3_89_80_8dox" kind="file"><name>release-3.9.0.dox</name>
+  </compound>
   <compound refid="release-roadmap_8dox" kind="file"><name>release-roadmap.dox</name>
   </compound>
   <compound refid="releases_8dox" kind="file"><name>releases.dox</name>
@@ -2172,6 +2167,8 @@
   <compound refid="core_2taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
   </compound>
   <compound refid="taskflow_8hpp" kind="file"><name>taskflow.hpp</name>
+    <member refid="taskflow_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" kind="define"><name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
+    <member refid="taskflow_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" kind="define"><name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
     <member refid="taskflow_8hpp_1a4df13cef00c37d2c56239c6e3b58e03f" kind="define"><name>TF_VERSION</name></member>
     <member refid="taskflow_8hpp_1ac543189162351f11cc56cbc81e609e21" kind="define"><name>TF_MAJOR_VERSION</name></member>
     <member refid="taskflow_8hpp_1ac79e1d6e02bafb712ca6b8580fc35d0d" kind="define"><name>TF_MINOR_VERSION</name></member>
@@ -2212,12 +2209,12 @@
   <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
   </compound>
   <compound refid="small__vector_8hpp" kind="file"><name>small_vector.hpp</name>
-    <member refid="small__vector_8hpp_1ae26b57d578b56fc6bb64405706fda992" kind="define"><name>TF_LIKELY</name></member>
-    <member refid="small__vector_8hpp_1a4feec43418b365f045f440667d66cec1" kind="define"><name>TF_UNLIKELY</name></member>
   </compound>
   <compound refid="Releases" kind="page"><name>Releases</name>
   </compound>
   <compound refid="release-roadmap" kind="page"><name>release-roadmap</name>
+  </compound>
+  <compound refid="release-3-9-0" kind="page"><name>release-3-9-0</name>
   </compound>
   <compound refid="release-3-8-0" kind="page"><name>release-3-8-0</name>
   </compound>
@@ -2278,8 +2275,6 @@
   <compound refid="ComposableTasking" kind="page"><name>ComposableTasking</name>
   </compound>
   <compound refid="RuntimeTasking" kind="page"><name>RuntimeTasking</name>
-  </compound>
-  <compound refid="PrioritizedTasking" kind="page"><name>PrioritizedTasking</name>
   </compound>
   <compound refid="LimitTheMaximumConcurrency" kind="page"><name>LimitTheMaximumConcurrency</name>
   </compound>

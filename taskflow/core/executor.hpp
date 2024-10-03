@@ -1575,7 +1575,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   auto& j = (node->_parent) ? node->_parent->_join_counter :
                               node->_topology->_join_counter;
 
-  // Here, we want to cache the latest successor with the highest priority
+  // Here, we want to cache the latest successor
   worker._cache = nullptr;
 
   // Invoke the task based on the corresponding type

@@ -79,9 +79,9 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a816d238b0d24d34816be96af0c3cb67e" class="m-doc">UnboundedTaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 1024) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#accc811a0a5d692a3cda366378367d7b6" class="m-doc">UnboundedTaskQueue</a>(</span><span class="m-doc-wrap">int64_t LogSize = <a href="taskflow_8hpp.html#a45e25b85f72dd5c43f2c9010205c3e37" class="m-doc">TF_<wbr />DEFAULT_<wbr />UNBOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd>constructs the queue with a given capacity</dd>
+            <dd>constructs the queue with the given size in the base-2 logarithm</dd>
             <dt id="a72babe096da4ffc72a68b9ff76134e95">
               <span class="m-doc-wrap-bumper"><a href="#a72babe096da4ffc72a68b9ff76134e95" class="m-doc-self">~UnboundedTaskQueue</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -119,22 +119,22 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a816d238b0d24d34816be96af0c3cb67e"><div>
+          <section class="m-doc-details" id="accc811a0a5d692a3cda366378367d7b6"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />UnboundedTaskQueue&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a816d238b0d24d34816be96af0c3cb67e" class="m-doc-self">UnboundedTaskQueue</a>(</span><span class="m-doc-wrap">int64_t capacity = 1024) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />UnboundedTaskQueue&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#accc811a0a5d692a3cda366378367d7b6" class="m-doc-self">UnboundedTaskQueue</a>(</span><span class="m-doc-wrap">int64_t LogSize = <a href="taskflow_8hpp.html#a45e25b85f72dd5c43f2c9010205c3e37" class="m-doc">TF_<wbr />DEFAULT_<wbr />UNBOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
-            <p>constructs the queue with a given capacity</p>
+            <p>constructs the queue with the given size in the base-2 logarithm</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">capacity</td>
-                  <td>the capacity of the queue (must be power of 2)</td>
+                  <td style="width: 1%">LogSize</td>
+                  <td>the base-2 logarithm of the queue size</td>
                 </tr>
               </tbody>
             </table>

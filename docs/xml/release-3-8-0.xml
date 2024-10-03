@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-8-0" kind="page">
     <compoundname>release-3-8-0</compoundname>
-    <title>Release 3.8.0 (Master)</title>
+    <title>Release 3.8.0 (2024/10/02)</title>
     <tableofcontents>
       <tocsect>
         <name>Download</name>
@@ -50,10 +50,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.8.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
+<para>This release includes several new changes, such as exception support, improved scheduling algorithms,</para>
 <sect1 id="release-3-8-0_1release-3-8-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<para>Taskflow 3.8.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.8.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_system_requirements">
 <title>System Requirements</title>
@@ -81,7 +81,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
 <title>Release Summary</title>
-<para>This releases (1) enhances the scheduling performance through C++20 atomic notification and (2) revised the semaphore model for better runtime control.</para>
+<para>This releases (1) enhances the scheduling performance through C++20 atomic notification and a bounded queue strategy and (2) revised the semaphore model for better runtime control.</para>
 <para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to C++20 atomic wait and notification.</para>
 </simplesect>
 </para>
@@ -91,7 +91,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>Enhanced the core scheduling performance using C++20 atomic notification</para>
+<listitem><para>Enhanced the core scheduling algorithm using a new bounded queue strategy</para>
+</listitem><listitem><para>Enhanced the core scheduling performance using C++20 atomic notification</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>compile<sp/>your<sp/>taskflow<sp/>program<sp/>with<sp/>C++20<sp/>enabled</highlight></codeline>
@@ -117,6 +118,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>Enhanced async-tasking performance through TLS</para>
 </listitem><listitem><para>Added async-task benchmark</para>
+</listitem><listitem><para>Added non-blocking notifier and atomic notifier modules</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1BoundedTaskQueue" kindref="compound">tf::BoundedTaskQueue</ref> and <ref refid="classtf_1_1UnboundedTaskQueue" kindref="compound">tf::UnboundedTaskQueue</ref></para>
+</listitem><listitem><para>Added tf::Freelist module to replace the centralized overflow queue</para>
+</listitem><listitem><para>Removed the redundant exception handling in object pool</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -129,6 +134,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>Fixed the compilation error for not finding the C++ atomic library</para>
 </listitem><listitem><para>Fixed the missing <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> in asynchronous tasking</para>
+</listitem><listitem><para>Fixed the non-heterogeneity of <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref></para>
+</listitem><listitem><para>Fixed the bug of UUID unit test in a multithreaded environment</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
@@ -136,6 +143,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Breaking Changes</title>
 <para><itemizedlist>
 <listitem><para>Removed the support of object pool by default</para>
+</listitem><listitem><para>Removed the support of prioritized tasking due to inconsistency with work stealing</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
@@ -143,6 +151,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Documentation</title>
 <para><itemizedlist>
 <listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref></para>
+</listitem><listitem><para>Removed Prioritized Tasking</para>
+</listitem><listitem><para>Fixed typos in multiple pages</para>
 </listitem></itemizedlist>
 </para>
 </sect1>

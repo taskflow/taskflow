@@ -2,6 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="small__vector_8hpp" kind="file" language="C++">
     <compoundname>small_vector.hpp</compoundname>
+    <includes local="yes">macros.hpp</includes>
     <includes local="no">algorithm</includes>
     <includes local="no">cassert</includes>
     <includes local="no">cstddef</includes>
@@ -12,7 +13,7 @@
     <includes local="no">memory</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
     <incdepgraph>
-      <node id="8">
+      <node id="9">
         <label>iterator</label>
       </node>
       <node id="1">
@@ -34,26 +35,31 @@
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-      </node>
-      <node id="3">
-        <label>cassert</label>
-      </node>
-      <node id="5">
-        <label>cstdlib</label>
+        <childnode refid="10" relation="include">
+        </childnode>
       </node>
       <node id="4">
-        <label>cstddef</label>
-      </node>
-      <node id="2">
-        <label>algorithm</label>
+        <label>cassert</label>
       </node>
       <node id="6">
-        <label>cstring</label>
+        <label>cstdlib</label>
       </node>
-      <node id="9">
-        <label>memory</label>
+      <node id="5">
+        <label>cstddef</label>
+      </node>
+      <node id="3">
+        <label>algorithm</label>
       </node>
       <node id="7">
+        <label>cstring</label>
+      </node>
+      <node id="2">
+        <label>macros.hpp</label>
+      </node>
+      <node id="10">
+        <label>memory</label>
+      </node>
+      <node id="8">
         <label>initializer_list</label>
       </node>
     </incdepgraph>
@@ -191,32 +197,6 @@
     <innernamespace refid="namespacetf">tf</innernamespace>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
     <innernamespace refid="namespacestd">std</innernamespace>
-      <sectiondef kind="define">
-      <memberdef kind="define" id="small__vector_8hpp_1ae26b57d578b56fc6bb64405706fda992" prot="public" static="no">
-        <name>TF_LIKELY</name>
-        <param><defname>x</defname></param>
-        <initializer>(x)</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="18" column="12" bodyfile="taskflow/utility/small_vector.hpp" bodystart="18" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="define" id="small__vector_8hpp_1a4feec43418b365f045f440667d66cec1" prot="public" static="no">
-        <name>TF_UNLIKELY</name>
-        <param><defname>x</defname></param>
-        <initializer>(x)</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="19" column="11" bodyfile="taskflow/utility/small_vector.hpp" bodystart="19" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
     <briefdescription>
 <para>small vector include file </para>
     </briefdescription>

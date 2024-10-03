@@ -21,7 +21,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="99" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="99" bodyend="-1"/>
+        <location file="taskflow/core/tsq.hpp" line="77" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="77" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
@@ -34,7 +34,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="100" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="100" bodyend="-1"/>
+        <location file="taskflow/core/tsq.hpp" line="78" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="78" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
@@ -47,7 +47,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="101" column="15" bodyfile="taskflow/core/tsq.hpp" bodystart="101" bodyend="-1"/>
+        <location file="taskflow/core/tsq.hpp" line="79" column="15" bodyfile="taskflow/core/tsq.hpp" bodystart="79" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1a35bad5d9923949883d9c1a22aa89690f" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
@@ -60,30 +60,30 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="102" column="15" bodyfile="taskflow/core/tsq.hpp" bodystart="102" bodyend="-1"/>
+        <location file="taskflow/core/tsq.hpp" line="80" column="15" bodyfile="taskflow/core/tsq.hpp" bodystart="80" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a816d238b0d24d34816be96af0c3cb67e" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1accc811a0a5d692a3cda366378367d7b6" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::UnboundedTaskQueue&lt; T &gt;::UnboundedTaskQueue</definition>
-        <argsstring>(int64_t capacity=1024)</argsstring>
+        <argsstring>(int64_t LogSize=TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE)</argsstring>
         <name>UnboundedTaskQueue</name>
         <param>
           <type>int64_t</type>
-          <declname>capacity</declname>
-          <defval>1024</defval>
+          <declname>LogSize</declname>
+          <defval><ref refid="taskflow_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" kindref="member">TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</ref></defval>
         </param>
         <briefdescription>
-<para>constructs the queue with a given capacity </para>
+<para>constructs the queue with the given size in the base-2 logarithm </para>
         </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>capacity</parametername>
+<parametername>LogSize</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the capacity of the queue (must be power of 2) </para>
+<para>the base-2 logarithm of the queue size </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -91,7 +91,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="111" column="14" bodyfile="taskflow/core/tsq.hpp" bodystart="167" bodyend="173"/>
+        <location file="taskflow/core/tsq.hpp" line="89" column="12" bodyfile="taskflow/core/tsq.hpp" bodystart="145" bodyend="150"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -105,7 +105,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="116" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="177" bodyend="182"/>
+        <location file="taskflow/core/tsq.hpp" line="94" column="3" bodyfile="taskflow/core/tsq.hpp" bodystart="154" bodyend="159"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>bool</type>
@@ -119,7 +119,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="121" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="186" bodyend="190"/>
+        <location file="taskflow/core/tsq.hpp" line="99" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="163" bodyend="167"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
@@ -133,7 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="126" column="12" bodyfile="taskflow/core/tsq.hpp" bodystart="194" bodyend="198"/>
+        <location file="taskflow/core/tsq.hpp" line="104" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="171" bodyend="175"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a54eb8fe122dd783c486c683e7c50c5e5" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>int64_t</type>
@@ -147,7 +147,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="131" column="13" bodyfile="taskflow/core/tsq.hpp" bodystart="274" bodyend="276"/>
+        <location file="taskflow/core/tsq.hpp" line="109" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="251" bodyend="253"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -175,7 +175,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="142" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="202" bodyend="216"/>
+        <location file="taskflow/core/tsq.hpp" line="120" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="179" bodyend="193"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -190,7 +190,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="150" column="7" bodyfile="taskflow/core/tsq.hpp" bodystart="220" bodyend="247"/>
+        <location file="taskflow/core/tsq.hpp" line="128" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="197" bodyend="224"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -205,25 +205,25 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="158" column="7" bodyfile="taskflow/core/tsq.hpp" bodystart="251" bodyend="270"/>
+        <location file="taskflow/core/tsq.hpp" line="136" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="228" bodyend="247"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1acc9a82d3f40fc2a8973c7b118c44c4fd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a7925cbfb4473f5bd4b2dcf52da4985f7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>Array *</type>
         <definition>UnboundedTaskQueue&lt; T &gt;::Array * tf::UnboundedTaskQueue&lt; T &gt;::resize_array</definition>
-        <argsstring>(Array *a, std::int64_t b, std::int64_t t)</argsstring>
+        <argsstring>(Array *a, int64_t b, int64_t t)</argsstring>
         <name>resize_array</name>
         <param>
           <type>Array *</type>
           <declname>a</declname>
         </param>
         <param>
-          <type><ref refid="cpp/types/integer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
+          <type>int64_t</type>
           <declname>b</declname>
         </param>
         <param>
-          <type><ref refid="cpp/types/integer" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::int64_t</ref></type>
+          <type>int64_t</type>
           <declname>t</declname>
         </param>
         <briefdescription>
@@ -232,7 +232,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="162" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="280" bodyend="289"/>
+        <location file="taskflow/core/tsq.hpp" line="140" column="9" bodyfile="taskflow/core/tsq.hpp" bodystart="257" bodyend="266"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -251,7 +251,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
 This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>.</para>
 <para>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. </para>
     </detaileddescription>
-    <location file="taskflow/core/tsq.hpp" line="55" column="1" bodyfile="taskflow/core/tsq.hpp" bodystart="55" bodyend="163"/>
+    <location file="taskflow/core/tsq.hpp" line="33" column="1" bodyfile="taskflow/core/tsq.hpp" bodystart="33" bodyend="141"/>
     <listofallmembers>
       <member refid="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>_array</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>_bottom</name></member>
@@ -261,10 +261,10 @@ This class implements the work-stealing queue described in the paper, <ulink url
       <member refid="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>empty</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>pop</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>push</name></member>
-      <member refid="classtf_1_1UnboundedTaskQueue_1acc9a82d3f40fc2a8973c7b118c44c4fd" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>resize_array</name></member>
+      <member refid="classtf_1_1UnboundedTaskQueue_1a7925cbfb4473f5bd4b2dcf52da4985f7" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>resize_array</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>size</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>steal</name></member>
-      <member refid="classtf_1_1UnboundedTaskQueue_1a816d238b0d24d34816be96af0c3cb67e" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>UnboundedTaskQueue</name></member>
+      <member refid="classtf_1_1UnboundedTaskQueue_1accc811a0a5d692a3cda366378367d7b6" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>UnboundedTaskQueue</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>~UnboundedTaskQueue</name></member>
     </listofallmembers>
   </compounddef>

@@ -1,20 +1,14 @@
 namespace tf {
 
-/** @page release-3-8-0 Release 3.8.0 (Master)
+/** @page release-3-8-0 Release 3.8.0 (2024/10/02)
 
-%Taskflow 3.8.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+This release includes several new changes, such as exception support, improved scheduling algorithms,
 
 @tableofcontents
 
 @section release-3-8-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.8.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.8.0">here</a>.
 
 @section release-3-8-0_system_requirements System Requirements
 
@@ -37,7 +31,7 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 @section release-3-8-0_summary Release Summary
 
 This releases (1) enhances the scheduling performance through C++20 atomic notification
-and (2) revised the semaphore model for better runtime control.
+and a bounded queue strategy and (2) revised the semaphore model for better runtime control.
 
 @note
 When compiling %Taskflow with C++20, applications should see improved performance due
@@ -47,6 +41,7 @@ to C++20 atomic wait and notification.
 
 @subsection release-3-8-0_taskflow_core Taskflow Core
 
++ Enhanced the core scheduling algorithm using a new bounded queue strategy
 + Enhanced the core scheduling performance using C++20 atomic notification
 
 @code{.shell-session}
@@ -73,6 +68,10 @@ executor.run(taskflow).wait();
 
 + Enhanced async-tasking performance through TLS
 + Added async-task benchmark
++ Added non-blocking notifier and atomic notifier modules
++ Added tf::BoundedTaskQueue and tf::UnboundedTaskQueue
++ Added tf::Freelist module to replace the centralized overflow queue
++ Removed the redundant exception handling in object pool
 
 @subsection release-3-8-0_utilities Utilities
 
@@ -80,14 +79,19 @@ executor.run(taskflow).wait();
 
 + Fixed the compilation error for not finding the C++ atomic library
 + Fixed the missing tf::Runtime in asynchronous tasking
++ Fixed the non-heterogeneity of tf::Taskflow::for_each_index
++ Fixed the bug of UUID unit test in a multithreaded environment
 
 @section release-3-8-0_breaking_changes Breaking Changes
 
 + Removed the support of object pool by default
++ Removed the support of prioritized tasking due to inconsistency with work stealing
 
 @section release-3-8-0_documentation Documentation
 
 + Revised @ref LimitTheMaximumConcurrency
++ Removed Prioritized Tasking
++ Fixed typos in multiple pages
 
 @section release-3-8-0_miscellaneous_items Miscellaneous Items
 

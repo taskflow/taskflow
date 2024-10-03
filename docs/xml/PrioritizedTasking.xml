@@ -15,7 +15,7 @@
 <para>This chapter demonstrates how to assigns a task a priority to <emphasis>hint</emphasis> the scheduler about one task of a higher priority should start earlier than another task of a lower priority. Task priorities are useful in many cases. For instance, we may prioritize some tasks over others to improve responsiveness or data locality of parallel tasks.</para>
 <sect1 id="PrioritizedTasking_1AssignAPriorityToATask">
 <title>Assign a Priority to a Task</title>
-<para>Taskflow supports three different priority levels, <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref>, <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kindref="member">tf::TaskPriority::NORMAL</ref>, and <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kindref="member">tf::TaskPriority::LOW</ref>, as defined in <ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346f" kindref="member">tf::TaskPriority</ref>. When there are parallel tasks (i.e., no dependencies), Taskflow will <computeroutput>try</computeroutput> to execute tasks of higher priorities before tasks of lower priorities. By default, all tasks have the highest priorities (<computeroutput><ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref></computeroutput>) unless otherwise assigned.</para>
+<para>Taskflow supports three different priority levels, tf::TaskPriority::HIGH, tf::TaskPriority::NORMAL, and tf::TaskPriority::LOW, as defined in tf::TaskPriority. When there are parallel tasks (i.e., no dependencies), Taskflow will <computeroutput>try</computeroutput> to execute tasks of higher priorities before tasks of lower priorities. By default, all tasks have the highest priorities (<computeroutput>tf::TaskPriority::HIGH</computeroutput>) unless otherwise assigned.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -38,9 +38,9 @@
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);<sp/></highlight></codeline>
 <codeline><highlight class="normal">E.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">B.priority(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" kindref="member">tf::TaskPriority::HIGH</ref>);</highlight></codeline>
-<codeline><highlight class="normal">C.priority(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" kindref="member">tf::TaskPriority::LOW</ref>);</highlight></codeline>
-<codeline><highlight class="normal">D.priority(<ref refid="namespacetf_1ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" kindref="member">tf::TaskPriority::NORMAL</ref>);</highlight></codeline>
+<codeline><highlight class="normal">B.priority(tf::TaskPriority::HIGH);</highlight></codeline>
+<codeline><highlight class="normal">C.priority(tf::TaskPriority::LOW);</highlight></codeline>
+<codeline><highlight class="normal">D.priority(tf::TaskPriority::NORMAL);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>

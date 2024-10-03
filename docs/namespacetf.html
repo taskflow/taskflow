@@ -94,10 +94,10 @@
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, size_t LogSize = 10&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="taskflow_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
               class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a>
             </dt>
-            <dd>Lock-free bounded single-producer multiple-consumer queue.</dd>
+            <dd>class to create a lock-free bounded single-producer multiple-consumer queue</dd>
             <dt>
               class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
             </dt>
@@ -269,13 +269,6 @@
         <section id="enum-members">
           <h2><a href="#enum-members">Enums</a></h2>
           <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">enum class <a href="#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc">TaskPriority</a>: unsigned { </span><span class="m-doc-wrap"><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc">HIGH</a> = 0,
-              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc">NORMAL</a> = 1,
-              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc">LOW</a> = 2,
-              <a href="#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc">MAX</a> = 3 }</span>
-            </dt>
-            <dd>enumeration of all task priority values</dd>
             <dt>
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
@@ -769,43 +762,6 @@
         </section>
         <section>
           <h2>Enum documentation</h2>
-          <section class="m-doc-details" id="ac9f4add8f716ed323b0bdbbc1d89346f"><div>
-            <h3>
-              enum class tf::<wbr /><a href="#ac9f4add8f716ed323b0bdbbc1d89346f" class="m-doc-self">TaskPriority</a>: unsigned
-              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="tsq_8hpp.html">&lt;taskflow/core/tsq.hpp&gt;</a></div>
-            </h3>
-            <p>enumeration of all task priority values</p>
-<p>A priority is an enumerated value of type <code>unsigned</code>. Currently, Taskflow defines three priority levels, <code>HIGH</code>, <code>NORMAL</code>, and <code>LOW</code>, starting from 0, 1, to 2. That is, the lower the value, the higher the priority.</p>
-            <table class="m-table m-fullwidth m-flat m-doc">
-              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fab89de3b4b81c4facfac906edf29aec8c">HIGH</a></td>
-                  <td>
-                  <p>value of the highest priority (i.e., 0)<br /></p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa1e23852820b9154316c7c06e2b7ba051">NORMAL</a></td>
-                  <td>
-                  <p>value of the normal priority (i.e., 1)<br /></p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88">LOW</a></td>
-                  <td>
-                  <p>value of the lowest priority (i.e., 2)</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5" class="m-doc-self" id="ac9f4add8f716ed323b0bdbbc1d89346fa26a4b44a837bf97b972628509912b4a5">MAX</a></td>
-                  <td>
-                  <p>conventional value for iterating priority values</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div></section>
           <section class="m-doc-details" id="a1355048578785a80414707ff308b395a"><div>
             <h3>
               enum class tf::<wbr /><a href="#a1355048578785a80414707ff308b395a" class="m-doc-self">TaskType</a>: int
