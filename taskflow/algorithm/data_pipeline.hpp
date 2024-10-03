@@ -267,8 +267,10 @@ class DataPipeline {
   */
   struct PipeMeta {
     PipeType type;
+    PipeOperationType optype;
   };
 
+  std::atomic<bool> _is_stopped{true};
 
   public:
   
@@ -280,6 +282,13 @@ class DataPipeline {
     std::monostate, 
     std::decay_t<typename Ps::output_t>>...
   >>;
+
+   /**
+  @brief stops a pipeline
+
+  stops all pipes of a pipeline
+  */
+  void stop();
 
   /**
   @brief constructs a data-parallel pipeline object
@@ -435,6 +444,24 @@ constexpr size_t DataPipeline<Ps...>::num_pipes() const noexcept {
   return sizeof...(Ps);
 }
 
+// Procedure: _on_pipe
+template <typename... Ps>
+void DataPipeline<Ps...>::stop() {
+  int stoppable = 0;
+  for(size_t l = 0; l<num_lines(); l++) {
+    _pipeflows[l]._pipe = 0;
+    _pipeflows[l].stop();
+    if (_meta[_pipeflows[l]._pipe].optype == PipeOperationType::Cancellable)
+    {
+      stoppable++;
+    }
+  }
+
+  if (stoppable == num_lines()){
+    _is_stopped->store(true, std::memory_order_relaxed);
+  }
+}
+
 // Function: num_tokens
 template <typename... Ps>
 size_t DataPipeline<Ps...>::num_tokens() const noexcept {
@@ -570,6 +597,10 @@ void DataPipeline<Ps...>::_build() {
       }
       else {
         _on_pipe(*pf, rt);
+      }
+
+      if (this->_is_stopped->load(std::memory_order_relaxed)) {
+        return;
       }
 
       size_t c_f = pf->_pipe;
