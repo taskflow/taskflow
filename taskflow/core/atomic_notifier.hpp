@@ -154,14 +154,16 @@ class AtomicNotifierV2 {
 };
 
 inline void AtomicNotifierV2::notify_one() noexcept {
-  if((_state.load(std::memory_order_seq_cst) & WAITER_MASK) != 0) {
+  std::atomic_thread_fence(std::memory_order_seq_cst);
+  if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
     _state.fetch_add(EPOCH_INC, std::memory_order_release);
     _state.notify_one(); 
   }
 }
 
 inline void AtomicNotifierV2::notify_all() noexcept {
-  if((_state.load(std::memory_order_seq_cst) & WAITER_MASK) != 0) {
+  std::atomic_thread_fence(std::memory_order_seq_cst);
+  if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
     _state.fetch_add(EPOCH_INC, std::memory_order_release);
     _state.notify_all(); 
   }
@@ -183,8 +185,10 @@ inline size_t AtomicNotifierV2::size() const noexcept {
 }
 
 inline void AtomicNotifierV2::prepare_wait(Waiter* waiter) noexcept {
-  uint64_t prev = _state.fetch_add(WAITER_INC, std::memory_order_acquire);
-  waiter->epoch = prev + WAITER_INC; 
+  //uint64_t prev = _state.fetch_add(WAITER_INC, std::memory_order_acquire);
+  //waiter->epoch = prev + WAITER_INC; 
+  waiter->epoch = _state.fetch_add(WAITER_INC, std::memory_order_relaxed);
+  std::atomic_thread_fence(std::memory_order_seq_cst);
 }
 
 inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
@@ -192,8 +196,8 @@ inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
 }
 
 inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
-  _state.wait(waiter->epoch, std::memory_order_relaxed);
-  _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
+  _state.wait(waiter->epoch, std::memory_order_seq_cst);
+  _state.fetch_sub(WAITER_INC, std::memory_order_release);
 }
 
 

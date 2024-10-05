@@ -24,6 +24,7 @@ namespace tf {
   using DefaultNotifier = AtomicNotifierV2;
 #else
   using DefaultNotifier = NonblockingNotifierV2;
+  //using DefaultNotifier = AtomicNotifierV2;
 #endif
 
 // ----------------------------------------------------------------------------
