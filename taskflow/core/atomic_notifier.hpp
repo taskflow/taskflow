@@ -148,7 +148,7 @@ class AtomicNotifierV2 {
   std::vector<Waiter> _waiters;
 
   static constexpr uint64_t WAITER_INC  {1};
-  static constexpr size_t   EPOCH_SHIFT {32};
+  static constexpr uint64_t EPOCH_SHIFT {32};
   static constexpr uint64_t EPOCH_INC   {uint64_t(1) << EPOCH_SHIFT};
   static constexpr uint64_t WAITER_MASK {EPOCH_INC - 1};
 };
@@ -197,7 +197,7 @@ inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
 
 inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
   _state.wait(waiter->epoch, std::memory_order_seq_cst);
-  _state.fetch_sub(WAITER_INC, std::memory_order_release);
+  _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
 }
 
 
