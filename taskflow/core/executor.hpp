@@ -1408,7 +1408,7 @@ inline size_t Executor::num_observers() const noexcept {
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
   
-  node->_state.fetch_or(Node::READY, std::memory_order_release);
+  //node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   // caller is a worker to this pool - starting at v3.5 we do not use
   // any complicated notification mechanism as the experimental result
@@ -1426,7 +1426,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
   
-  node->_state.fetch_or(Node::READY, std::memory_order_release);
+  //node->_state.fetch_or(Node::READY, std::memory_order_release);
 
   _freelist.push(node);
   _notifier.notify_one();
@@ -1448,7 +1448,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   // has shown no significant advantage.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
+      //nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
       worker._wsq.push(nodes[i], [&](){ _freelist.push(worker._id, nodes[i]); });
       _notifier.notify_one();
     }
@@ -1456,7 +1456,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   }
 
   for(size_t k=0; k<num_nodes; ++k) {
-    nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
+    //nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
     _freelist.push(nodes[k]);
   }
   _notifier.notify_n(num_nodes);
@@ -1473,7 +1473,7 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   }
 
   for(size_t k=0; k<num_nodes; ++k) {
-    nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
+    //nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
     _freelist.push(nodes[k]);
   }
 
@@ -1484,7 +1484,7 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // synchronize all outstanding memory operations caused by reordering
-  while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
+  //while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
 
   begin_invoke:
   

@@ -189,7 +189,9 @@ void UnboundedTaskQueue<T>::push(T o) {
 
   a->push(b, o);
   std::atomic_thread_fence(std::memory_order_release);
-  _bottom.store(b + 1, std::memory_order_relaxed);
+
+  // original paper uses relaxed here but tsa complains
+  _bottom.store(b + 1, std::memory_order_release);
 }
 
 // Function: pop
@@ -401,7 +403,9 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
 
   std::atomic_thread_fence(std::memory_order_release);
-  _bottom.store(b + 1, std::memory_order_relaxed);
+  
+  // original paper uses relaxed here but tsa complains
+  _bottom.store(b + 1, std::memory_order_release);
 
   return true;
 }
@@ -423,7 +427,9 @@ void BoundedTaskQueue<T, LogSize>::push(O&& o, C&& on_full) {
   _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
 
   std::atomic_thread_fence(std::memory_order_release);
-  _bottom.store(b + 1, std::memory_order_relaxed);
+  
+  // original paper uses relaxed here but tsa complains
+  _bottom.store(b + 1, std::memory_order_release);
 }
 
 // Function: pop

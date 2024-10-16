@@ -725,8 +725,7 @@ class Node {
   // state bit flag
   constexpr static int CONDITIONED = 1;
   constexpr static int DETACHED    = 2;
-  constexpr static int READY       = 4;
-  constexpr static int EXCEPTION   = 8;
+  constexpr static int EXCEPTION   = 4;
 
   using Placeholder = std::monostate;
 
