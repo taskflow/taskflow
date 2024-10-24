@@ -44,7 +44,7 @@
 </programlisting></para>
 <para>At runtime, the reduction task spawns a subflow to perform parallel reduction. The reduced result is stored in <computeroutput>result</computeroutput> that will be captured by reference in the reduction task. It is your responsibility to ensure <computeroutput>result</computeroutput> remains alive during the parallel execution.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.reduce(vec.begin(),<sp/>vec.end(),<sp/>sum,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>l,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>r)<sp/>{<sp/>return<sp/>l<sp/>+<sp/>r;<sp/>}<sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reducer<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
@@ -59,8 +59,8 @@
 <title>Capture Iterators by Reference</title>
 <para>You can pass iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameter update between dependent tasks. This is especially useful when the range is unknown at the time of creating a parallel-reduction task, but needs initialization from another task.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>=<sp/>100;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>vec<sp/><sp/><sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
@@ -93,7 +93,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The example below transforms each digit in a string to an integer number and then sums up all integers in parallel.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>str<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;12345678&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>str<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;12345678&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum<sp/>{0};</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.transform_reduce(str.begin(),<sp/>str.end(),<sp/>sum,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>binary<sp/>reduction<sp/>operator</highlight><highlight class="normal"></highlight></codeline>
@@ -115,7 +115,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>sum1<sp/>=<sp/>100,<sp/>sum2<sp/>=<sp/>100;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5,<sp/>6,<sp/>7,<sp/>8,<sp/>9,<sp/>10};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-reduction<sp/>task<sp/>with<sp/>static<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.reduce(vec.begin(),<sp/>vec.end(),<sp/>sum1,<sp/></highlight></codeline>

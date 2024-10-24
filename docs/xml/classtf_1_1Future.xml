@@ -61,7 +61,7 @@
       </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Future_1ab2925106300ed72a886dd4a46a212114" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;</type>
+        <type><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;</type>
         <definition>std::weak_ptr&lt;Topology&gt; tf::Future&lt; T &gt;::_topology</definition>
         <argsstring></argsstring>
         <name>_topology</name>
@@ -182,13 +182,13 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
         <argsstring>(std::future&lt; T &gt; &amp;&amp;, std::weak_ptr&lt; Topology &gt;=std::weak_ptr&lt; Topology &gt;())</argsstring>
         <name>Future</name>
         <param>
-          <type><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>&lt; T &gt; &amp;&amp;</type>
+          <type><ref refid="cpp/thread/future" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>&lt; T &gt; &amp;&amp;</type>
           <defname>f</defname>
         </param>
         <param>
-          <type><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;</type>
+          <type><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;</type>
           <defname>p</defname>
-          <defval><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;()</defval>
+          <defval><ref refid="cpp/memory/weak_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::weak_ptr</ref>&lt; Topology &gt;()</defval>
         </param>
         <briefdescription>
         </briefdescription>
@@ -203,13 +203,13 @@ When you request a cancellation, the executor will stop scheduling any tasks onw
 <para>class to access the result of an execution </para>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> that will eventually hold the execution result of a submitted taskflow (<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">tf::Executor::run</ref>) In addition to the base methods inherited from <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para>
+<para><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is a derived class from <ref refid="cpp/thread/future" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> that will eventually hold the execution result of a submitted taskflow (<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">tf::Executor::run</ref>) In addition to the base methods inherited from <ref refid="cpp/thread/future" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, you can call <ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> to cancel the execution of the running taskflow associated with this future object. The following example cancels a submission of a taskflow that contains 1000 tasks each running one second.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/thread/sleep_for" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::sleep_for</ref>(<ref refid="cpp/chrono/duration" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::seconds</ref>(1));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

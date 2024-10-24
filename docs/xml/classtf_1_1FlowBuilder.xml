@@ -211,8 +211,8 @@ The following example creates an if-else block using one condition task and thre
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0,<sp/>or<sp/>no<sp/>if<sp/>cond<sp/>returns<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -252,7 +252,7 @@ The following example creates an if-else block using one condition task and thre
 <parametername>C</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>callable type constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;</para>
+<para>callable type constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;</para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -273,9 +273,9 @@ The following example creates a multi-condition task that selectively jumps to t
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>branch1,<sp/>branch2,<sp/>branch3]<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>{0,<sp/>2};<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;branch3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>executes<sp/>branch1<sp/>and<sp/>branch3<sp/>when<sp/>cond<sp/>returns<sp/>0<sp/>and<sp/>2</highlight><highlight class="normal"></highlight></codeline>
@@ -334,10 +334,10 @@ The following example creates a multi-condition task that selectively jumps to t
 </simplesect>
 The method returns a tuple of tasks each corresponding to the given callable target. You can use structured binding to get the return tasks one by one. The following example creates four static tasks and assign them to <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> using structured binding.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[A,<sp/>B,<sp/>C,<sp/>D]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -368,10 +368,10 @@ The method returns a tuple of tasks each corresponding to the given callable tar
 </parameteritem>
 </parameterlist>
 Removes a task and its input and output dependencies from the graph associated with the flow builder. If the task does not belong to the graph, nothing will happen.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>erase<sp/>A<sp/>from<sp/>the<sp/>taskflow<sp/>and<sp/>its<sp/>dependencies<sp/>to<sp/>B,<sp/>C,<sp/>and<sp/>D</highlight><highlight class="normal"></highlight></codeline>
@@ -422,11 +422,11 @@ Removes a task and its input and output dependencies from the graph associated w
 </simplesect>
 The example below demonstrates a taskflow composition using the <computeroutput>composed_of</computeroutput> method.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>t1,<sp/>t2;</highlight></codeline>
-<codeline><highlight class="normal">t1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t1&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">t1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t1&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>t2<sp/>is<sp/>partially<sp/>composed<sp/>of<sp/>t1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>comp<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(t1);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t2&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>t2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;t2&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(comp);</highlight></codeline>
 </programlisting></para>
 <para>The taskflow object <computeroutput>t2</computeroutput> is composed of another taskflow object <computeroutput>t1</computeroutput>, preceded by another static task <computeroutput>init</computeroutput>. When taskflow <computeroutput>t2</computeroutput> is submitted to an executor, <computeroutput>init</computeroutput> will run first and then <computeroutput>comp</computeroutput> which spawns its definition in taskflow <computeroutput>t1</computeroutput>.</para>
@@ -437,7 +437,7 @@ The example below demonstrates a taskflow composition using the <computeroutput>
 <codeline><highlight class="normal"><sp/><sp/>MyObj()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>builder.emplace([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>Graph&amp;<sp/>graph()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>graph;<sp/>}</highlight></codeline>
@@ -487,7 +487,7 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
         <argsstring>(std::vector&lt; Task &gt; &amp;tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
+          <type><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt; &amp;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -504,11 +504,11 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
 </parameteritem>
 </parameterlist>
 This member function creates linear dependencies over a vector of tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{A,<sp/>B,<sp/>C,<sp/>D}</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{A,<sp/>B,<sp/>C,<sp/>D}</highlight></codeline>
 <codeline><highlight class="normal">taskflow.linearize(tasks);<sp/><sp/></highlight><highlight class="comment">//<sp/>A-&gt;B-&gt;C-&gt;D</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -522,7 +522,7 @@ This member function creates linear dependencies over a vector of tasks.</para>
         <argsstring>(std::initializer_list&lt; Task &gt; tasks)</argsstring>
         <name>linearize</name>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &gt;</type>
           <declname>tasks</declname>
         </param>
         <briefdescription>
@@ -539,10 +539,10 @@ This member function creates linear dependencies over a vector of tasks.</para>
 </parameteritem>
 </parameterlist>
 This member function creates linear dependencies over a list of tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">taskflow.linearize({A,<sp/>B,<sp/>C,<sp/>D});<sp/><sp/></highlight><highlight class="comment">//<sp/>A-&gt;B-&gt;C-&gt;D</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -664,7 +664,7 @@ The task spawns asynchronous tasks that applies the callable object to each obje
 <codeline><highlight class="normal"><sp/><sp/>callable(*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
 <para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -814,7 +814,7 @@ The task spawns asynchronous tasks that applies the callable object to each inde
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the integral index type.</para>
 <para>Please refer to <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -962,7 +962,7 @@ The task spawns asynchronous tasks that applies the callable object to an input 
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take a single argument of the dereferenced iterator type.</para>
 <para>Please refer to <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1133,7 +1133,7 @@ The task spawns asynchronous tasks that applies the callable object to two input
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. The callable needs to take two arguments of dereferenced elements from the two input ranges.</para>
 <para>Please refer to <ref refid="ParallelTransforms" kindref="compound">Parallel Transforms</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1277,7 +1277,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>*itr);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1448,7 +1448,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop(init,<sp/>uop(*itr));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1642,7 +1642,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 <codeline><highlight class="normal"><sp/><sp/>init<sp/>=<sp/>bop_r(init,<sp/>bop_t(*itr1,<sp/>*itr2));</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1785,15 +1785,15 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning that the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{1,<sp/>3,<sp/>6,<sp/>10,<sp/>15}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -1959,15 +1959,15 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the N-th element of the output range is the sum of the first N input elements, so the N-th input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/>-1</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/>-1</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{0,<sp/>2,<sp/>5,<sp/>9,<sp/>14}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2129,15 +2129,15 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Performs the cumulative sum (aka prefix sum, aka scan) of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements (and the initial value) using the given binary operator for summation.</para>
 <para>This function generates an <emphasis>exclusive</emphasis> scan, meaning the N-th element of the output range is the sum of the first N-1 input elements, so the N-th input element is not included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.exclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>0,<sp/>2,<sp/>5,<sp/>9}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2303,16 +2303,16 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>-3,<sp/>-6,<sp/>-10,<sp/>-15}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2501,9 +2501,9 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>inclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N input elements, so the Nth input element is included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_inclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>-1</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -2511,7 +2511,7 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-2,<sp/>-4,<sp/>-7,<sp/>-11,<sp/>-16}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2696,16 +2696,16 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
 </parameterlist>
 Write the cumulative sum (aka prefix sum, aka scan) of the input range to the output range. Each element of the output range contains the running total of all earlier elements (including an initial value) using <computeroutput>uop</computeroutput> to transform the input elements and using <computeroutput>bop</computeroutput> for summation.</para>
 <para>This function generates an <emphasis>exclusive</emphasis> scan, meaning the Nth element of the output range is the sum of the first N-1 input elements, so the Nth input element is not included.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform_exclusive_scan(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>input.begin(),<sp/>-1,<sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;int&gt;</ref>{},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>item)<sp/>{<sp/>return<sp/>-item;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>input<sp/>is<sp/>{-1,<sp/>-2,<sp/>-4,<sp/>-7,<sp/>-11}</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelScan" kindref="compound">Parallel Scan</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2853,15 +2853,15 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the element that satisfies the given criteria (value plus one is equal to 23) from an input range of 10 elements:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>6,<sp/>9,<sp/>10,<sp/>22,<sp/>5,<sp/>7,<sp/>8,<sp/>9,<sp/>11};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>6,<sp/>9,<sp/>10,<sp/>22,<sp/>5,<sp/>7,<sp/>8,<sp/>9,<sp/>11};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i+1<sp/>=<sp/>23;<sp/>},<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -3008,15 +3008,15 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the element that satisfies the given criteria (value is not equal to 1) from an input range of 10 elements:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>22,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.find_if_not(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>return<sp/>i<sp/>==<sp/>1;<sp/>},<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>22);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -3164,15 +3164,15 @@ Finds the smallest element in the <computeroutput>[first, last)</computeroutput>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>smallest;</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the smallest element from an input range of 10 elements.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>-1,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.min_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>-1);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -3320,15 +3320,15 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>largest;</highlight></codeline>
 </programlisting></para>
 <para>For example, the code below find the largest element from an input range of 10 elements.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>input<sp/>=<sp/>{1,<sp/>1,<sp/>1,<sp/>1,<sp/>1,<sp/>2,<sp/>1,<sp/>1,<sp/>1,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.max_element(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>input.begin(),<sp/>input.end(),<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>(),<sp/>result</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>2);</highlight></codeline>
 </programlisting></para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -3417,7 +3417,7 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
 </parameteritem>
 </parameterlist>
 The task spawns asynchronous tasks to sort elements in the range <computeroutput>[first, last)</computeroutput> in parallel.</para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>
@@ -3484,7 +3484,7 @@ The task spawns asynchronous tasks to sort elements in the range <computeroutput
 </parameteritem>
 </parameterlist>
 The task spawns asynchronous tasks to parallel sort elements in the range <computeroutput>[first, last)</computeroutput> using the <computeroutput>std::less&lt;T&gt;</computeroutput> comparator, where <computeroutput>T</computeroutput> is the dereferenced iterator type.</para>
-<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
+<para>Iterators are templated to enable stateful range using <ref refid="cpp/utility/functional/reference_wrapper" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reference_wrapper</ref>.</para>
 <para>Please refer to <ref refid="ParallelSort" kindref="compound">Parallel Sort</ref> for details. </para>
         </detaileddescription>
         <inbodydescription>

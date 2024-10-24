@@ -105,7 +105,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -142,7 +142,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -173,11 +173,11 @@
 </parameterlist>
 The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order.</para>
 <para>In addition to partition size, the application can specify a closure wrapper for a dynamic partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>

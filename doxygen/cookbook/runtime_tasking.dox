@@ -78,20 +78,7 @@ executor.run(taskflow).wait();
 A runtime object can spawn and run a task graph synchronously using tf::Runtime::corun.
 This model allows you to leverage dynamic tasking to execute a parallel workload within
 a runtime object.
-The following code creates a subflow of two independent tasks and executes it synchronously
-via the given runtime object:
-
-@code{.cpp}
-taskflow.emplace([](tf::Runtime& rt){
-  rt.corun([](tf::Subflow& sf){
-    sf.emplace([](){ std::cout << "independent task 1\n"; });
-    sf.emplace([](){ std::cout << "independent task 2\n"; });
-    // subflow joins upon corun returns
-  });
-});
-@endcode
-
-You can also create a task graph yourself and execute it through a runtime object.
+You can create a task graph yourself and execute it through a runtime object.
 This organization avoids repetitive creation of a subflow with the same topology,
 such as running a runtime object repetitively.
 The following code performs the same execution logic as the above example

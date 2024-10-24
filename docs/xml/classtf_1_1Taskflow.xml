@@ -57,7 +57,7 @@
       </sectiondef>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Taskflow_1aa4f464efc6b69669c093d6d5218150db" prot="private" static="no" mutable="yes">
-        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
+        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
         <definition>std::mutex tf::Taskflow::_mutex</definition>
         <argsstring></argsstring>
         <name>_mutex</name>
@@ -70,7 +70,7 @@
         <location file="taskflow/core/taskflow.hpp" line="288" column="24" bodyfile="taskflow/core/taskflow.hpp" bodystart="288" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a5f4243689c241ccb5ca4316211d21a62" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::Taskflow::_name</definition>
         <argsstring></argsstring>
         <name>_name</name>
@@ -96,7 +96,7 @@
         <location file="taskflow/core/taskflow.hpp" line="292" column="11" bodyfile="taskflow/core/taskflow.hpp" bodystart="292" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a7016553915989a1725addcf7d4e975bf" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/queue" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; Topology &gt; &gt;</type>
+        <type><ref refid="cpp/container/queue" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; Topology &gt; &gt;</type>
         <definition>std::queue&lt;std::shared_ptr&lt;Topology&gt; &gt; tf::Taskflow::_topologies</definition>
         <argsstring></argsstring>
         <name>_topologies</name>
@@ -109,7 +109,7 @@
         <location file="taskflow/core/taskflow.hpp" line="294" column="16" bodyfile="taskflow/core/taskflow.hpp" bodystart="294" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1ad5d60317ed24250a1e1f919e65572d34" prot="private" static="no" mutable="no">
-        <type>std::optional&lt; <ref refid="cpp/container/list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt; <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &gt;::iterator &gt;</type>
+        <type>std::optional&lt; <ref refid="cpp/container/list" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt; <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &gt;::iterator &gt;</type>
         <definition>std::optional&lt;std::list&lt;Taskflow&gt;::iterator&gt; tf::Taskflow::_satellite</definition>
         <argsstring></argsstring>
         <name>_satellite</name>
@@ -129,7 +129,7 @@
         <argsstring>(const std::string &amp;name)</argsstring>
         <name>Taskflow</name>
         <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <declname>name</declname>
         </param>
         <briefdescription>
@@ -137,7 +137,7 @@
         </briefdescription>
         <detaileddescription>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;My<sp/>Taskflow&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>taskflow.name();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>&quot;My<sp/>Taskflow&quot;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>taskflow.name();<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>&quot;My<sp/>Taskflow&quot;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -195,7 +195,7 @@
         </briefdescription>
         <detaileddescription>
 <para>Moving a taskflow <computeroutput>taskflow2</computeroutput> to another taskflow <computeroutput>taskflow1</computeroutput> will destroy the existing graph of <computeroutput>taskflow1</computeroutput> and assign it the graph of <computeroutput>taskflow2</computeroutput>. After the move, <computeroutput>taskflow2</computeroutput> will become empty.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow1<sp/>=<sp/><ref refid="cpp/utility/move" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::move</ref>(taskflow2);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow1<sp/>=<sp/><ref refid="cpp/utility/move" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::move</ref>(taskflow2);</highlight></codeline>
 <codeline><highlight class="normal">assert(taskflow2.empty());</highlight></codeline>
 </programlisting></para>
 <para>Notice that both <computeroutput>taskflow1</computeroutput> and <computeroutput>taskflow2</computeroutput> should not be running in an executor during the move operation, or the behavior is undefined. </para>
@@ -236,25 +236,25 @@
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
-<para>dumps the taskflow to a DOT format through a <ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> target </para>
+<para>dumps the taskflow to a DOT format through a <ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> target </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>to<sp/>the<sp/>standard<sp/>output</highlight><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>to<sp/>the<sp/>standard<sp/>output</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ofstream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ofstream</ref><sp/>ofs(</highlight><highlight class="stringliteral">&quot;output.dot&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ofstream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ofstream</ref><sp/>ofs(</highlight><highlight class="stringliteral">&quot;output.dot&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">taskflow.dump(ofs);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>graph<sp/>to<sp/>the<sp/>file<sp/>output.dot</highlight></codeline>
 </programlisting></para>
 <para>For dynamically spawned tasks, such as module tasks, subflow tasks, and GPU tasks, you need to run the taskflow first before you can dump the entire graph.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>parent<sp/>=<sp/>taskflow.emplace([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref><sp/>sf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;child\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;child\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>dumps<sp/>only<sp/>the<sp/>parent<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>dumps<sp/>only<sp/>the<sp/>parent<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
-<codeline><highlight class="normal">taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>dumps<sp/>both<sp/>parent<sp/>and<sp/>child<sp/>tasks</highlight></codeline>
+<codeline><highlight class="normal">taskflow.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>this<sp/>dumps<sp/>both<sp/>parent<sp/>and<sp/>child<sp/>tasks</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -262,12 +262,12 @@
         <location file="taskflow/core/taskflow.hpp" line="183" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="399" bodyend="403"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a9c4900da1831dce708664a06b3e3a3fb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::Taskflow::dump</definition>
         <argsstring>() const</argsstring>
         <name>dump</name>
         <briefdescription>
-<para>dumps the taskflow to a <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> of DOT format </para>
+<para>dumps the taskflow to a <ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> of DOT format </para>
         </briefdescription>
         <detaileddescription>
 <para>This method is similar to tf::Taskflow::dump(std::ostream&amp; ostream), but returning a string of the graph in DOT format. </para>
@@ -311,7 +311,7 @@
         <argsstring>(const std::string &amp;)</argsstring>
         <name>name</name>
         <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <defname>name</defname>
         </param>
         <briefdescription>
@@ -326,7 +326,7 @@
         <location file="taskflow/core/taskflow.hpp" line="213" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="354" bodyend="356"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a911edd95acc1322433bddfcfeaf2ccb0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
         <definition>const std::string &amp; tf::Taskflow::name</definition>
         <argsstring>() const</argsstring>
         <name>name</name>
@@ -334,7 +334,7 @@
 <para>queries the name of the taskflow </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;my<sp/>name<sp/>is:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>taskflow.name();</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;my<sp/>name<sp/>is:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>taskflow.name();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -376,7 +376,7 @@
         <detaileddescription>
 <para>A visitor is a callable that takes an argument of type <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> and returns nothing. The following example iterates each task in a taskflow and prints its name:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.for_each_task([](<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -463,7 +463,7 @@
         <argsstring>(std::ostream &amp;, const Graph *) const</argsstring>
         <name>_dump</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <defname>os</defname>
         </param>
         <param>
@@ -484,7 +484,7 @@
         <argsstring>(std::ostream &amp;, const Node *, Dumper &amp;) const</argsstring>
         <name>_dump</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <defname>os</defname>
         </param>
         <param>
@@ -509,7 +509,7 @@
         <argsstring>(std::ostream &amp;, const Graph *, Dumper &amp;) const</argsstring>
         <name>_dump</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <defname>os</defname>
         </param>
         <param>
@@ -546,10 +546,10 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;simple&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskA\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskB\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskC\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskD\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskA\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskB\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskC\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>D<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;TaskD\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">D.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/><sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>

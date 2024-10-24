@@ -16,15 +16,15 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="2">
-        <label>taskflow/cuda/cuda_memory.hpp</label>
-        <link refid="cuda__memory_8hpp"/>
-      </node>
       <node id="1">
         <label>taskflow/cuda/cuda_device.hpp</label>
         <link refid="cuda__device_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
+      </node>
+      <node id="2">
+        <label>taskflow/cuda/cuda_memory.hpp</label>
+        <link refid="cuda__memory_8hpp"/>
       </node>
     </invincdepgraph>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>

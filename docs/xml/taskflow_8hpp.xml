@@ -24,16 +24,50 @@
       <node id="30">
         <label>topology.hpp</label>
       </node>
-      <node id="31">
-        <label>tsq.hpp</label>
-        <link refid="tsq_8hpp"/>
-        <childnode refid="6" relation="include">
-        </childnode>
-        <childnode refid="7" relation="include">
-        </childnode>
-      </node>
       <node id="40">
         <label>core/async.hpp</label>
+      </node>
+      <node id="26">
+        <label>semaphore.hpp</label>
+        <link refid="semaphore_8hpp"/>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>core/executor.hpp</label>
+        <link refid="executor_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+      </node>
+      <node id="35">
+        <label>taskflow.hpp</label>
+        <link refid="core_2taskflow_8hpp"/>
+        <childnode refid="36" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>taskflow/taskflow.hpp</label>
+        <link refid="taskflow_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>async_task.hpp</label>
+        <link refid="async__task_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
       </node>
       <node id="11">
         <label>../utility/small_vector.hpp</label>
@@ -57,20 +91,20 @@
         <childnode refid="20" relation="include">
         </childnode>
       </node>
-      <node id="2">
-        <label>core/executor.hpp</label>
-        <link refid="executor_8hpp"/>
-        <childnode refid="3" relation="include">
-        </childnode>
-        <childnode refid="35" relation="include">
-        </childnode>
-        <childnode refid="38" relation="include">
-        </childnode>
-        <childnode refid="39" relation="include">
-        </childnode>
-      </node>
       <node id="14">
         <label>cassert</label>
+      </node>
+      <node id="32">
+        <label>worker.hpp</label>
+        <link refid="worker_8hpp"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
       </node>
       <node id="6">
         <label>../utility/macros.hpp</label>
@@ -81,23 +115,16 @@
       <node id="8">
         <label>../utility/iterator.hpp</label>
       </node>
-      <node id="22">
-        <label>../utility/latch.hpp</label>
-      </node>
-      <node id="9">
-        <label>../utility/os.hpp</label>
-      </node>
-      <node id="7">
-        <label>../utility/traits.hpp</label>
-      </node>
-      <node id="4">
-        <label>task.hpp</label>
-        <link refid="task_8hpp"/>
-        <childnode refid="5" relation="include">
+      <node id="31">
+        <label>tsq.hpp</label>
+        <link refid="tsq_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
         </childnode>
       </node>
-      <node id="23">
-        <label>../utility/mpmc.hpp</label>
+      <node id="22">
+        <label>../utility/latch.hpp</label>
       </node>
       <node id="5">
         <label>graph.hpp</label>
@@ -133,6 +160,15 @@
         <childnode refid="31" relation="include">
         </childnode>
       </node>
+      <node id="9">
+        <label>../utility/os.hpp</label>
+      </node>
+      <node id="7">
+        <label>../utility/traits.hpp</label>
+      </node>
+      <node id="23">
+        <label>../utility/mpmc.hpp</label>
+      </node>
       <node id="36">
         <label>flow_builder.hpp</label>
         <link refid="flow__builder_8hpp"/>
@@ -144,25 +180,17 @@
       <node id="21">
         <label>../utility/serializer.hpp</label>
       </node>
-      <node id="1">
-        <label>taskflow/taskflow.hpp</label>
-        <link refid="taskflow_8hpp"/>
-        <childnode refid="2" relation="include">
-        </childnode>
-        <childnode refid="40" relation="include">
-        </childnode>
-      </node>
-      <node id="38">
-        <label>async_task.hpp</label>
-        <link refid="async__task_8hpp"/>
-        <childnode refid="5" relation="include">
-        </childnode>
-      </node>
       <node id="27">
         <label>vector</label>
       </node>
       <node id="10">
         <label>../utility/math.hpp</label>
+      </node>
+      <node id="4">
+        <label>task.hpp</label>
+        <link refid="task_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
       </node>
       <node id="16">
         <label>cstdlib</label>
@@ -173,40 +201,14 @@
       <node id="25">
         <label>declarations.hpp</label>
       </node>
-      <node id="26">
-        <label>semaphore.hpp</label>
-        <link refid="semaphore_8hpp"/>
-        <childnode refid="27" relation="include">
-        </childnode>
-        <childnode refid="28" relation="include">
-        </childnode>
-        <childnode refid="25" relation="include">
-        </childnode>
-      </node>
       <node id="28">
         <label>mutex</label>
       </node>
       <node id="29">
         <label>environment.hpp</label>
       </node>
-      <node id="37">
-        <label>../algorithm/partitioner.hpp</label>
-        <link refid="partitioner_8hpp"/>
-      </node>
       <node id="34">
         <label>nonblocking_notifier.hpp</label>
-      </node>
-      <node id="32">
-        <label>worker.hpp</label>
-        <link refid="worker_8hpp"/>
-        <childnode refid="25" relation="include">
-        </childnode>
-        <childnode refid="31" relation="include">
-        </childnode>
-        <childnode refid="33" relation="include">
-        </childnode>
-        <childnode refid="34" relation="include">
-        </childnode>
       </node>
       <node id="13">
         <label>algorithm</label>
@@ -223,29 +225,19 @@
       <node id="20">
         <label>memory</label>
       </node>
+      <node id="37">
+        <label>../algorithm/partitioner.hpp</label>
+        <link refid="partitioner_8hpp"/>
+      </node>
       <node id="18">
         <label>initializer_list</label>
       </node>
-      <node id="35">
-        <label>taskflow.hpp</label>
-        <link refid="core_2taskflow_8hpp"/>
-        <childnode refid="36" relation="include">
-        </childnode>
-      </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="7">
-        <label>taskflow/cuda/algorithm/transform.hpp</label>
-        <link refid="transform_8hpp"/>
-      </node>
-      <node id="11">
-        <label>taskflow/cuda/algorithm/sort.hpp</label>
-        <link refid="sort_8hpp"/>
-      </node>
-      <node id="5">
-        <label>taskflow/cuda/algorithm/for_each.hpp</label>
-        <link refid="for__each_8hpp"/>
-        <childnode refid="6" relation="include">
+      <node id="10">
+        <label>taskflow/cuda/algorithm/merge.hpp</label>
+        <link refid="merge_8hpp"/>
+        <childnode refid="11" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -253,6 +245,48 @@
         <link refid="pipeline_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
+      </node>
+      <node id="6">
+        <label>taskflow/cuda/algorithm/find.hpp</label>
+        <link refid="find_8hpp"/>
+      </node>
+      <node id="8">
+        <label>taskflow/cuda/algorithm/reduce.hpp</label>
+        <link refid="reduce_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>taskflow/taskflow.hpp</label>
+        <link refid="taskflow_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>taskflow/algorithm/data_pipeline.hpp</label>
+        <link refid="data__pipeline_8hpp_source"/>
+      </node>
+      <node id="7">
+        <label>taskflow/cuda/algorithm/transform.hpp</label>
+        <link refid="transform_8hpp"/>
+      </node>
+      <node id="9">
+        <label>taskflow/cuda/algorithm/scan.hpp</label>
+        <link refid="scan_8hpp"/>
+      </node>
+      <node id="5">
+        <label>taskflow/cuda/algorithm/for_each.hpp</label>
+        <link refid="for__each_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>taskflow/cuda/algorithm/sort.hpp</label>
+        <link refid="sort_8hpp"/>
       </node>
       <node id="4">
         <label>taskflow/cuda/cudaflow.hpp</label>
@@ -265,40 +299,6 @@
         </childnode>
         <childnode refid="10" relation="include">
         </childnode>
-      </node>
-      <node id="9">
-        <label>taskflow/cuda/algorithm/scan.hpp</label>
-        <link refid="scan_8hpp"/>
-      </node>
-      <node id="1">
-        <label>taskflow/taskflow.hpp</label>
-        <link refid="taskflow_8hpp"/>
-        <childnode refid="2" relation="include">
-        </childnode>
-        <childnode refid="4" relation="include">
-        </childnode>
-      </node>
-      <node id="10">
-        <label>taskflow/cuda/algorithm/merge.hpp</label>
-        <link refid="merge_8hpp"/>
-        <childnode refid="11" relation="include">
-        </childnode>
-      </node>
-      <node id="8">
-        <label>taskflow/cuda/algorithm/reduce.hpp</label>
-        <link refid="reduce_8hpp"/>
-        <childnode refid="9" relation="include">
-        </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
-      </node>
-      <node id="3">
-        <label>taskflow/algorithm/data_pipeline.hpp</label>
-        <link refid="data__pipeline_8hpp_source"/>
-      </node>
-      <node id="6">
-        <label>taskflow/cuda/algorithm/find.hpp</label>
-        <link refid="find_8hpp"/>
       </node>
     </invincdepgraph>
     <innernamespace refid="namespacetf">tf</innernamespace>

@@ -48,7 +48,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
@@ -84,7 +84,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
 </programlisting></para>
 <para>The following code finds the index of the minimum element in a range of one millions elements using GPU computing:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
@@ -92,7 +92,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
@@ -111,7 +111,7 @@
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
+<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::min_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
@@ -135,7 +135,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
 </programlisting></para>
 <para>The following code finds the index of the maximum element in a range of one millions elements using GPU computing:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1000000;</highlight></codeline>
@@ -143,7 +143,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>tf::cuda_malloc_shared&lt;unsigned&gt;(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>index</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>initializes<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>vec[i++]<sp/>=<sp/><ref refid="cpp/numeric/random/rand" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">rand</ref>());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>execution<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
@@ -162,7 +162,7 @@
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>verifies<sp/>the<sp/>result</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
+<codeline><highlight class="normal">assert(vec[*idx]<sp/>==<sp/>*std::max_element(vec,<sp/>vec+N,<sp/><ref refid="cpp/utility/functional/less" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less&lt;int&gt;</ref>{}));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>deletes<sp/>the<sp/>memory</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cudaFree(vec);</highlight></codeline>
