@@ -398,18 +398,8 @@ class Runtime {
   @brief co-runs the given target and waits until it completes
   
   A target can be one of the following forms:
-    + a subflow task to spawn a subflow or
     + a composable graph object with `tf::Graph& T::graph()` defined
 
-  @code{.cpp}
-  // co-run a subflow and wait until all tasks complete
-  taskflow.emplace([](tf::Runtime& rt){
-    rt.corun([](tf::Subflow& sf){
-      tf::Task A = sf.emplace([](){});
-      tf::Task B = sf.emplace([](){});
-    }); 
-  });
-  
   // co-run a taskflow and wait until all tasks complete
   tf::Taskflow taskflow1, taskflow2;
   taskflow1.emplace([](){ std::cout << "running taskflow1\n"; });

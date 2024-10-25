@@ -56,7 +56,7 @@
         <location file="taskflow/core/observer.hpp" line="522" column="14" bodyfile="taskflow/core/observer.hpp" bodystart="522" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1TFProfObserver_1a07f9db5edc30436d8ec55bdaecca5aaa" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
         <definition>std::vector&lt;std::stack&lt;observer_stamp_t&gt; &gt; tf::TFProfObserver::_stacks</definition>
         <argsstring></argsstring>
         <name>_stacks</name>
@@ -76,7 +76,7 @@
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
@@ -89,7 +89,7 @@
         <location file="taskflow/core/observer.hpp" line="488" column="10" bodyfile="taskflow/core/observer.hpp" bodystart="725" bodyend="795"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a59e82cb3f9b0ada38aa1ddea14f14d02" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::TFProfObserver::dump</definition>
         <argsstring>() const</argsstring>
         <name>dump</name>
@@ -108,7 +108,7 @@
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>summary</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
@@ -121,7 +121,7 @@
         <location file="taskflow/core/observer.hpp" line="498" column="10" bodyfile="taskflow/core/observer.hpp" bodystart="805" bodyend="893"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TFProfObserver_1a6f12a927a328bd594cf6c3c3a6bfe992" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::TFProfObserver::summary</definition>
         <argsstring>() const</argsstring>
         <name>summary</name>
@@ -302,13 +302,13 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::TFProfObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref>&gt;();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::TFProfObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1TFProfObserver" kindref="compound">tf::TFProfObserver</ref>&gt;();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>thread<sp/>activities<sp/>to<sp/>Taskflow<sp/>Profiler<sp/>format.</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>

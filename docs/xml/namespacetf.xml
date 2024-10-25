@@ -338,7 +338,7 @@
         <location file="taskflow/core/worker.hpp" line="26" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="26" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
-        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
         <definition>using tf::observer_stamp_t = typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
         <argsstring></argsstring>
         <name>observer_stamp_t</name>
@@ -395,7 +395,7 @@
         <initializer>=
   std::is_same_v&lt;std::decay_t&lt;P&gt;, <ref refid="structtf_1_1TaskParams" kindref="compound">TaskParams</ref>&gt; ||
   std::is_same_v&lt;std::decay_t&lt;P&gt;, <ref refid="structtf_1_1DefaultTaskParams" kindref="compound">DefaultTaskParams</ref>&gt; ||
-  std::is_constructible_v&lt;<ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>, P&gt;</initializer>
+  std::is_constructible_v&lt;<ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>, P&gt;</initializer>
         <briefdescription>
 <para>determines if the given type is a task parameter type </para>
         </briefdescription>
@@ -403,16 +403,16 @@
 <para><ref refid="classtf_1_1Task" kindref="compound">Task</ref> parameters can be specified in one of the following types:<itemizedlist>
 <listitem><para><ref refid="structtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref>: assign the struct of defined parameters</para>
 </listitem><listitem><para><ref refid="structtf_1_1DefaultTaskParams" kindref="compound">tf::DefaultTaskParams</ref>: assign nothing</para>
-</listitem><listitem><para><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>: assign a name to the task </para>
+</listitem><listitem><para><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>: assign a name to the task </para>
 </listitem></itemizedlist>
 </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="688" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="688" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="678" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="678" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" constexpr="yes" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
         <definition>constexpr std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
@@ -497,7 +497,7 @@
 <para>determines if a callable is a multi-condition task </para>
         </briefdescription>
         <detaileddescription>
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>
+<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -538,7 +538,7 @@
         <definition>constexpr bool tf::is_partitioner_v</definition>
         <argsstring></argsstring>
         <name>is_partitioner_v</name>
-        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;IsPartitioner, P&gt;::value</initializer>
+        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;IsPartitioner, P&gt;::value</initializer>
         <briefdescription>
 <para>determines if a type is a partitioner </para>
         </briefdescription>
@@ -600,7 +600,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="902" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="902" bodyend="908"/>
+        <location file="taskflow/core/graph.hpp" line="891" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="891" bodyend="897"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -617,7 +617,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="913" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="913" bodyend="919"/>
+        <location file="taskflow/core/graph.hpp" line="902" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="902" bodyend="908"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -646,12 +646,12 @@
         <location file="taskflow/core/task.hpp" line="65" column="19" bodyfile="taskflow/core/task.hpp" bodystart="65" bodyend="80"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const Task &amp;task)</argsstring>
         <name>operator&lt;&lt;</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -950,7 +950,7 @@ Releases all the semaphores. </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input,<sp/><ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -1052,7 +1052,7 @@ Releases all the semaphores. </para>
         <argsstring>(std::ostream &amp;os, const cudaDeviceProp &amp;p)</argsstring>
         <name>cuda_dump_device_property</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -1667,12 +1667,12 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         <location file="taskflow/cuda/cuda_task.hpp" line="43" column="22" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="43" bodyend="54"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
         <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const cudaTask &amp;ct)</argsstring>
         <name>operator&lt;&lt;</name>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -4460,7 +4460,7 @@ The function launches kernels asynchronously to find the smallest element in the
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -4595,7 +4595,7 @@ The function launches kernels asynchronously to find the largest element in the 
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>

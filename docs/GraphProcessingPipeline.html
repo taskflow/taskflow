@@ -498,7 +498,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp"># </span>possible output <span class="m">1</span>
+</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">1</span>
 <span class="go">ready</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>
@@ -511,7 +511,7 @@
 <span class="go">f3(C)</span>
 <span class="go">stopped</span>
 
-<span class="gp"># </span>possible output <span class="m">2</span>
+<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">2</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>
 <span class="go">f3(A)</span>
@@ -523,7 +523,7 @@
 <span class="go">f3(C)</span>
 <span class="go">stopped</span>
 
-<span class="gp"># </span>possible output <span class="m">3</span>
+<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">3</span>
 <span class="go">ready</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>

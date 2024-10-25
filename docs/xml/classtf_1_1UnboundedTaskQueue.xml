@@ -11,7 +11,7 @@
     </templateparamlist>
       <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1a7d91028a58dff5e905d58aeacdbe17ef" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
         <definition>std::atomic&lt;int64_t&gt; tf::UnboundedTaskQueue&lt; T &gt;::_top</definition>
         <argsstring></argsstring>
         <name>_top</name>
@@ -24,7 +24,7 @@
         <location file="taskflow/core/tsq.hpp" line="77" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="77" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
         <definition>std::atomic&lt;int64_t&gt; tf::UnboundedTaskQueue&lt; T &gt;::_bottom</definition>
         <argsstring></argsstring>
         <name>_bottom</name>
@@ -37,7 +37,7 @@
         <location file="taskflow/core/tsq.hpp" line="78" column="23" bodyfile="taskflow/core/tsq.hpp" bodystart="78" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Array * &gt;</type>
         <definition>std::atomic&lt;Array*&gt; tf::UnboundedTaskQueue&lt; T &gt;::_array</definition>
         <argsstring></argsstring>
         <name>_array</name>
@@ -50,7 +50,7 @@
         <location file="taskflow/core/tsq.hpp" line="79" column="15" bodyfile="taskflow/core/tsq.hpp" bodystart="79" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1UnboundedTaskQueue_1a35bad5d9923949883d9c1a22aa89690f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Array * &gt;</type>
         <definition>std::vector&lt;Array*&gt; tf::UnboundedTaskQueue&lt; T &gt;::_garbage</definition>
         <argsstring></argsstring>
         <name>_garbage</name>
@@ -147,7 +147,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="109" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="251" bodyend="253"/>
+        <location file="taskflow/core/tsq.hpp" line="109" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="253" bodyend="255"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -175,7 +175,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="120" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="179" bodyend="193"/>
+        <location file="taskflow/core/tsq.hpp" line="120" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="179" bodyend="195"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -190,7 +190,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="128" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="197" bodyend="224"/>
+        <location file="taskflow/core/tsq.hpp" line="128" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="199" bodyend="226"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -205,7 +205,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="136" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="228" bodyend="247"/>
+        <location file="taskflow/core/tsq.hpp" line="136" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="230" bodyend="249"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -232,7 +232,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="140" column="9" bodyfile="taskflow/core/tsq.hpp" bodystart="257" bodyend="266"/>
+        <location file="taskflow/core/tsq.hpp" line="140" column="9" bodyfile="taskflow/core/tsq.hpp" bodystart="259" bodyend="268"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

@@ -197,7 +197,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">std::optional&lt;int&gt;<sp/>res<sp/>=<sp/>fu.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>res<sp/>may<sp/>be<sp/>std::nullopt<sp/>or<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>use<sp/>std::future<sp/>instead</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
@@ -277,10 +277,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>users<sp/>are<sp/>responsible<sp/>of<sp/>wrapping<sp/>the<sp/>arumgnets<sp/>into<sp/>a<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
+<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para>
