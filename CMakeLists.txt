@@ -293,9 +293,6 @@ include_directories(${PROJECT_SOURCE_DIR})
 # must-have package include
 # -----------------------------------------------------------------------------
 
-# Enable test
-include(CTest)
-
 # Find pthread package
 find_package(Threads REQUIRED)
 
@@ -322,6 +319,7 @@ endif(TF_BUILD_EXAMPLES)
 # Unittest
 # -----------------------------------------------------------------------------
 if(TF_BUILD_TESTS)
+  include(CTest)
   add_subdirectory(unittests)
 endif(TF_BUILD_TESTS)
 
