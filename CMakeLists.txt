@@ -41,6 +41,7 @@ option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
+option(TF_BUILD_PROCESS_EXAMPLE "Enables build of process example, needs Boost" OFF)
 option(TF_BUILD_MODULES "Enables C++ modules" OFF)
 
 # project-specific variables
