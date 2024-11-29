@@ -21,10 +21,9 @@ namespace tf {
 @private
 */
 #ifdef TF_ENABLE_ATOMIC_NOTIFIER
-  using DefaultNotifier = AtomicNotifierV2;
+  using DefaultNotifier = AtomicNotifier;
 #else
   using DefaultNotifier = NonblockingNotifierV2;
-  //using DefaultNotifier = AtomicNotifierV2;
 #endif
 
 // ----------------------------------------------------------------------------

@@ -55,14 +55,14 @@ class AtomicNotifier {
 
 inline void AtomicNotifier::notify_one() noexcept {
   uint64_t prev = _state.fetch_add(EPOCH_INC, std::memory_order_acq_rel);
-  if((prev & WAITER_MASK))  { // has waiter (typically unlikely)
+  if(TF_UNLIKELY(prev & WAITER_MASK))  { // has waiter (typically unlikely)
     _state.notify_one();
   }
 }
 
 inline void AtomicNotifier::notify_all() noexcept {
   uint64_t prev = _state.fetch_add(EPOCH_INC, std::memory_order_acq_rel);
-  if((prev & WAITER_MASK))  { // has waiter (typically unlikely)
+  if(TF_UNLIKELY(prev & WAITER_MASK))  { // has waiter (typically unlikely)
     _state.notify_all();
   }
 }
@@ -202,6 +202,6 @@ inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
 
 
 
-} // namespace taskflow
+} // namespace taskflow -------------------------------------------------------
 
 #endif
