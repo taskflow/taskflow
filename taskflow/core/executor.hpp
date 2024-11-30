@@ -1234,7 +1234,7 @@ inline void Executor::_spawn(size_t N) {
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
   
-  std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
+  std::uniform_int_distribution<size_t> rdvtm(0, 2*_workers.size()-2);
 
   exploit:
 
@@ -1250,7 +1250,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
 
-      t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+      //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
+                                       _freelist.steal(w._vtm - _workers.size());
 
       if(t) {
         _invoke(w, t);
@@ -1260,7 +1262,10 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
         if(num_steals++ > _MAX_STEALS) {
           std::this_thread::yield();
         }
-        w._vtm = rdvtm(w._rdgen);
+        // skip worker-id
+        //auto r = w._rdgen.random_range(0, 2*_workers.size()-2);
+        auto r = rdvtm(w._rdgen);
+        w._vtm = r + (r >= w._id);
         goto explore;
       }
       else {
@@ -1279,12 +1284,14 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   size_t num_steals = 0;
   size_t num_yields = 0;
 
-  std::uniform_int_distribution<size_t> rdvtm(0, _workers.size()-1);
+  std::uniform_int_distribution<size_t> rdvtm(0, 2*_workers.size()-2);
   
   // Here, we write do-while to make the worker steal at once
   // from the assigned victim.
   do {
-    t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+    //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
+                                     _freelist.steal(w._vtm - _workers.size());
 
     if(t) {
       break;
@@ -1297,7 +1304,10 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       }
     }
 
-    w._vtm = rdvtm(w._rdgen);
+    // skip worker-id
+    //auto r = w._rdgen.random_range(0, 2*_workers.size()-2);
+    auto r = rdvtm(w._rdgen);
+    w._vtm = r + (r >= w._id);
   } 
 #ifdef __cpp_lib_atomic_wait
   // the _DONE can be checked later in wait_for_task?
@@ -1408,8 +1418,6 @@ inline size_t Executor::num_observers() const noexcept {
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
   
-  //node->_state.fetch_or(Node::READY, std::memory_order_release);
-
   // caller is a worker to this pool - starting at v3.5 we do not use
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
@@ -1425,9 +1433,6 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
 
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
-  
-  //node->_state.fetch_or(Node::READY, std::memory_order_release);
-
   _freelist.push(node);
   _notifier.notify_one();
 }
@@ -1448,7 +1453,6 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   // has shown no significant advantage.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      //nodes[i]->_state.fetch_or(Node::READY, std::memory_order_release);
       worker._wsq.push(nodes[i], [&](){ _freelist.push(worker._id, nodes[i]); });
       _notifier.notify_one();
     }
@@ -1456,7 +1460,6 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   }
 
   for(size_t k=0; k<num_nodes; ++k) {
-    //nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
     _freelist.push(nodes[k]);
   }
   _notifier.notify_n(num_nodes);
@@ -1473,7 +1476,6 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
   }
 
   for(size_t k=0; k<num_nodes; ++k) {
-    //nodes[k]->_state.fetch_or(Node::READY, std::memory_order_release);
     _freelist.push(nodes[k]);
   }
 
@@ -1482,9 +1484,6 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
 
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
-
-  // synchronize all outstanding memory operations caused by reordering
-  //while(!(node->_state.load(std::memory_order_acquire) & Node::READY));
 
   begin_invoke:
   
@@ -1623,7 +1622,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // the number of expensive pop/push operations through the task queue
   if(worker._cache) {
     node = worker._cache;
-    //node->_state.fetch_or(Node::READY, std::memory_order_release);
     goto begin_invoke;
   }
 }

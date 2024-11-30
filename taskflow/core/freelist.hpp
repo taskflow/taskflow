@@ -29,12 +29,7 @@ class Freelist {
   }
 
   T steal(size_t w) {
-    for(size_t i=0; i<_heads.size(); i++, w=(w+1)%_heads.size()) {
-      if(auto item = _heads[w].queue.steal(); item) {
-        return item;
-      }
-    }
-    return nullptr;
+    return _heads[w].queue.steal();
   }
 
 

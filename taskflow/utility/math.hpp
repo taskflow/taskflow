@@ -145,6 +145,66 @@ inline void atomic_min(std::atomic<T>& v, const T& min_v) noexcept {
   }
 }
 
+//class XorShift64 {
+//
+//  public:
+//  
+//  explicit XorShift64(uint64_t seed) : _state(seed) {}
+//
+//  uint64_t next() {
+//    _state ^= _state >> 12;
+//    _state ^= _state << 25;
+//    _state ^= _state >> 27;
+//    return _state * 0x2545F4914F6CDD1DULL; // Scramble for better randomness
+//  }
+//
+//  size_t random_range(size_t min, size_t max) {
+//    return min + (next() % (max - min + 1));
+//  }
+//
+//  private:
+//
+//  uint64_t _state;
+//};
+
+//inline int generate_random_excluding(int worker_id, int W, XorShift64& rng) {
+//    int random_number = rng.random_range(0, 2 * W - 2); // Range: [0, 2W-2]
+//    return random_number + (random_number >= worker_id); // Skip worker_id
+//}
+//
+//
+//class Xoroshiro128Plus {
+//
+//  public:
+//
+//    explicit Xoroshiro128Plus(uint64_t seed1, uint64_t seed2) : _state{seed1, seed2} {}
+//
+//    uint64_t next() {
+//      uint64_t s0 = _state[0];
+//      uint64_t s1 = _state[1];
+//      uint64_t result = s0 + s1;
+//
+//      s1 ^= s0;
+//      _state[0] = _rotl(s0, 55) ^ s1 ^ (s1 << 14); // Scramble _state
+//      _state[1] = _rotl(s1, 36);
+//
+//      return result;
+//    }
+//
+//    int random_range(int min, int max) {
+//      return min + (next() % (max - min + 1));
+//    }
+//
+//  private:
+//
+//    std::array<uint64_t, 2> _state;
+//
+//    static uint64_t _rotl(uint64_t x, int k) {
+//      return (x << k) | (x >> (64 - k));
+//    }
+//};
+
+
 }  // end of namespace tf -----------------------------------------------------
 
 
