@@ -73,8 +73,7 @@ class Worker {
     size_t _vtm;
     Executor* _executor {nullptr};
     //std::default_random_engine _rdgen { std::random_device{}() };
-    std::default_random_engine _rdgen { reinterpret_cast<uintptr_t>(this) };
-    //XorShift64 _rdgen{ std::random_device{}() };
+    std::default_random_engine _rdgen { seed<std::default_random_engine::result_type>() };
     BoundedTaskQueue<Node*> _wsq;
     Node* _cache {nullptr};
 

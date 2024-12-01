@@ -145,6 +145,14 @@ inline void atomic_min(std::atomic<T>& v, const T& min_v) noexcept {
   }
 }
 
+/**
+@brief get a random seed
+*/
+template <typename T>
+inline T seed() noexcept {
+  return std::chrono::system_clock::now().time_since_epoch().count();
+}
+
 //class XorShift64 {
 //
 //  public:
