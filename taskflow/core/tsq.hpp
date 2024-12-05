@@ -638,23 +638,15 @@ size_t UnboundedTaskQueue2<T>::size() const noexcept {
 // Function: push
 template <typename T>
 void UnboundedTaskQueue2<T>::push(T o) {
-
-  //lock_push:
-
-  //int64_t v = _bottom.fetch_or(BOTTOM_LOCK, std::memory_order_acquire);
-
-  //if(v < 0) {
-  //  goto lock_push;
-  //}
-
-  int64_t b = _bottom.load(std::memory_order_relaxed) & BOTTOM_MASK;
-  while(!_bottom.compare_exchange_weak(b, b | BOTTOM_LOCK, std::memory_order_relaxed,
+  
+  // spin until getting an exclusive access to b
+  int64_t b = _bottom.load(std::memory_order_acquire) & BOTTOM_MASK;
+  while(!_bottom.compare_exchange_weak(b, b | BOTTOM_LOCK, std::memory_order_acquire,
                                                            std::memory_order_relaxed)) {
     b = b & BOTTOM_MASK;
   }
 
   // critical region
-  //int64_t b = v & BOTTOM_MASK;
   int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
@@ -711,6 +703,23 @@ UnboundedTaskQueue2<T>::resize_array(Array* a, int64_t b, int64_t t) {
   //_array.store(a, std::memory_order_relaxed);
   return a;
 }
+
+// ----------------------------------------------------------------------------
+
+template <typename T>
+class GlobalTaskQueue : public UnboundedTaskQueue<T> {
+
+  public:
+  
+  void push(T item) {
+    std::scoped_lock lock(_mutex);
+    UnboundedTaskQueue<T>::push(item);  
+  }
+
+  private:
+
+  std::mutex _mutex;
+};
 
 
 }  // end of namespace tf -----------------------------------------------------

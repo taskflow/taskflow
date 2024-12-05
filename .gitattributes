@@ -1,4 +1,11 @@
+# Mark non-source directories as vendored
+# Common directories in Taskflow might include external dependencies or other assets.
 benchmark/* linguist-vendored
 doc/* linguist-vendored
 image/* linguist-vendored
 3rd-party/* linguist-vendored
+
+# Mark C++ source files for Taskflow
+*.cpp linguist-language=C++
+*.hpp linguist-language=C++
+*.h linguist-language=C++
