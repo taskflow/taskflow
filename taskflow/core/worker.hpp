@@ -60,12 +60,12 @@ class Worker {
     @brief queries the size of the queue (i.e., number of enqueued tasks to
            run) associated with the worker
     */
-    inline size_t queue_size() const { return _lwsq.size(); }
+    inline size_t queue_size() const { return _wsq.size(); }
     
     /**
     @brief queries the current capacity of the queue
     */
-    inline size_t queue_capacity() const { return static_cast<size_t>(_lwsq.capacity()); }
+    inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
 
   private:
 
@@ -73,11 +73,11 @@ class Worker {
     size_t _vtm;
     Executor* _executor {nullptr};
     DefaultNotifier::Waiter* _waiter;
-    std::default_random_engine _rdgen;// { std::hash<std::thread::id>()(std::this_thread::get_id()) };
+    std::default_random_engine _rdgen;
     std::uniform_int_distribution<size_t> _rdvtm;
     std::thread _thread;
     Node* _cache {nullptr};
-    BoundedTaskQueue<Node*> _lwsq;
+    BoundedTaskQueue<Node*> _wsq;
 };
 
 
@@ -155,12 +155,12 @@ inline size_t WorkerView::id() const {
 
 // Function: queue_size
 inline size_t WorkerView::queue_size() const {
-  return _worker._lwsq.size();
+  return _worker._wsq.size();
 }
 
 // Function: queue_capacity
 inline size_t WorkerView::queue_capacity() const {
-  return static_cast<size_t>(_worker._lwsq.capacity());
+  return static_cast<size_t>(_worker._wsq.capacity());
 }
 
 

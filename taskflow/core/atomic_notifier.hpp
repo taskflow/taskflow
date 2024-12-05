@@ -185,9 +185,8 @@ inline size_t AtomicNotifierV2::size() const noexcept {
 }
 
 inline void AtomicNotifierV2::prepare_wait(Waiter* waiter) noexcept {
-  //uint64_t prev = _state.fetch_add(WAITER_INC, std::memory_order_acquire);
-  //waiter->epoch = prev + WAITER_INC; 
-  waiter->epoch = _state.fetch_add(WAITER_INC, std::memory_order_relaxed);
+  auto prev = _state.fetch_add(WAITER_INC, std::memory_order_relaxed);
+  waiter->epoch = (prev >> EPOCH_SHIFT);
   std::atomic_thread_fence(std::memory_order_seq_cst);
 }
 
@@ -196,7 +195,14 @@ inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
 }
 
 inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
-  _state.wait(waiter->epoch, std::memory_order_seq_cst);
+  uint64_t prev = _state.load(std::memory_order_acquire);
+  while((prev >> EPOCH_SHIFT) == waiter->epoch) {
+    _state.wait(prev, std::memory_order_acquire); 
+    prev = _state.load(std::memory_order_acquire);
+  }
+  // memory_order_relaxed would suffice for correctness, but the faster
+  // #waiters gets to 0, the less likely it is that we'll do spurious wakeups
+  // (and thus system calls)
   _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
 }
 

@@ -1198,7 +1198,9 @@ inline void Executor::_spawn(size_t N) {
       pt::worker = &w;
       _latch.arrive_and_wait();  // synchronize with the main thread
       
-      w._rdgen.seed(std::hash<std::thread::id>()(std::this_thread::get_id()));
+      w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
+        std::hash<std::thread::id>()(std::this_thread::get_id()))
+      );
       w._rdvtm = std::uniform_int_distribution<size_t>(0, 2*_workers.size()-2);
 
       Node* t = nullptr;
@@ -1238,7 +1240,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
     //exploit:
 
-    if(auto t = w._lwsq.pop(); t) {
+    if(auto t = w._wsq.pop(); t) {
       _invoke(w, t);
     }
     else {
@@ -1246,8 +1248,8 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
 
-      //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._lwsq.steal();
-      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._lwsq.steal() : 
+      //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
                                        _freelist.steal(w._vtm - _workers.size());
 
       if(t) {
@@ -1283,8 +1285,8 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   // Here, we write do-while to make the worker steal at once
   // from the assigned victim.
   do {
-    //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._lwsq.steal();
-    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._lwsq.steal() : 
+    //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
+    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
                                      _freelist.steal(w._vtm - _workers.size());
 
     if(t) {
@@ -1316,7 +1318,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 inline void Executor::_exploit_task(Worker& w, Node*& t) {
   while(t) {
     _invoke(w, t);
-    t = w._lwsq.pop();
+    t = w._wsq.pop();
   }
 }
 
@@ -1360,7 +1362,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // We need to use index-based scanning to avoid data race
   // with _spawn which may initialize a worker at the same time.
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
-    if(!_workers[vtm]._lwsq.empty()) {
+    if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(worker._waiter);
       worker._vtm = vtm;
       goto explore_task;
@@ -1416,7 +1418,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._lwsq.push(node, [&](){ _freelist.push(worker._id, node); });
+    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
     _notifier.notify_one();
     return;
   }
@@ -1447,7 +1449,7 @@ inline void Executor::_schedule(Worker& worker, const SmallVector<Node*>& nodes)
   // has shown no significant advantage.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; ++i) {
-      worker._lwsq.push(nodes[i], [&](){ _freelist.push(worker._id, nodes[i]); });
+      worker._wsq.push(nodes[i], [&](){ _freelist.push(worker._id, nodes[i]); });
       _notifier.notify_one();
     }
     return;
