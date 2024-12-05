@@ -224,7 +224,7 @@ std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end, Compare c
 
       // Fill the offset blocks.
       if (left_split >= block_size) {
-        for (size_t i = 0; i < block_size;) {
+        for (unsigned char i = 0; i < block_size;) {
           offsets_l[num_l] = i++; num_l += !comp(*first, pivot); ++first;
           offsets_l[num_l] = i++; num_l += !comp(*first, pivot); ++first;
           offsets_l[num_l] = i++; num_l += !comp(*first, pivot); ++first;
@@ -235,13 +235,13 @@ std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end, Compare c
           offsets_l[num_l] = i++; num_l += !comp(*first, pivot); ++first;
         }
       } else {
-        for (size_t i = 0; i < left_split;) {
+        for (unsigned char i = 0; i < left_split;) {
           offsets_l[num_l] = i++; num_l += !comp(*first, pivot); ++first;
         }
       }
 
       if (right_split >= block_size) {
-        for (size_t i = 0; i < block_size;) {
+        for (unsigned char i = 0; i < block_size;) {
           offsets_r[num_r] = ++i; num_r += comp(*--last, pivot);
           offsets_r[num_r] = ++i; num_r += comp(*--last, pivot);
           offsets_r[num_r] = ++i; num_r += comp(*--last, pivot);
@@ -252,7 +252,7 @@ std::pair<Iter, bool> partition_right_branchless(Iter begin, Iter end, Compare c
           offsets_r[num_r] = ++i; num_r += comp(*--last, pivot);
         }
       } else {
-        for (size_t i = 0; i < right_split;) {
+        for (unsigned char i = 0; i < right_split;) {
           offsets_r[num_r] = ++i; num_r += comp(*--last, pivot);
         }
       }

@@ -646,7 +646,7 @@ void binary_tree(unsigned W) {
 
   tf::Executor executor(W);
   
-  std::vector<int> data(1<<L, 0);
+  std::vector<int> data((size_t{1}<<L), 0);
 
   std::vector<tf::AsyncTask> tasks_p, tasks_c;
   std::array<tf::AsyncTask, 1> dep;

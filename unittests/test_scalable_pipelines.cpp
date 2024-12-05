@@ -64,7 +64,7 @@ void scalable_pipeline(size_t num_lines, size_t num_pipes) {
   size_t N = 0;
 
   std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
-  std::vector< int > data(num_lines, -1);
+  std::vector< size_t > data(num_lines, 0);
 
   for(size_t i=0; i<num_pipes; i++) {
     pipes.emplace_back(tf::PipeType::SERIAL, [&](tf::Pipeflow& pf) mutable {
@@ -118,7 +118,7 @@ void scalable_pipeline_reset(size_t num_lines, size_t num_pipes) {
   size_t N = 0;
 
   std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
-  std::vector< int > data(num_lines, -1);
+  std::vector< size_t > data(num_lines, 0);
 
   tf::ScalablePipeline<typename decltype(pipes)::iterator> spl(num_lines);
 
@@ -178,7 +178,7 @@ void scalable_pipeline_iterative_reset(size_t num_lines, size_t num_pipes) {
   size_t N = 0;
 
   std::vector< tf::Pipe<std::function<void(tf::Pipeflow&)>> > pipes;
-  std::vector< int > data(num_lines, -1);
+  std::vector< size_t > data(num_lines, 0);
 
   tf::ScalablePipeline<typename decltype(pipes)::iterator> spl(num_lines);
 
@@ -249,7 +249,7 @@ void scalable_pipeline_lines_reset(size_t num_lines, size_t num_pipes) {
 
   for(size_t l = 1; l <= num_lines; ++l) {
     tf::Taskflow taskflow;
-    std::vector<int> data(l, -1);
+    std::vector<size_t> data(l, 0);
 
     auto init = taskflow.emplace([&](){
       for(size_t i=0; i<num_pipes; i++) {
@@ -330,7 +330,6 @@ int ifelse_spipe_ans(int a) {
 }
 
 void ifelse_spipeline(size_t L, unsigned w) {
-  srand(time(NULL));
 
   tf::Executor executor(w);
   size_t maxN = 200;

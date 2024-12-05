@@ -135,7 +135,7 @@ TEST_CASE("NestedAsync.16threads" * doctest::timeout(300)) {
 // Testcase MixedExecutorAsync
 // --------------------------------------------------------
 
-void mixed_executor_async(unsigned N) {
+void mixed_executor_async(size_t N) {
 
   const size_t T = 1000;
 
@@ -143,7 +143,7 @@ void mixed_executor_async(unsigned N) {
   
   std::atomic<size_t> counter(0);
 
-  auto check_wid = [&](unsigned e){
+  auto check_wid = [&](size_t e){
     for(size_t i=0; i<N; i++) {
       if(i == e) {
         REQUIRE(executors[i].this_worker_id() != -1);

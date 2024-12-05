@@ -2378,7 +2378,7 @@ int ifelse_pipe_ans(int a) {
 }
 
 void ifelse_data_pipeline(size_t L, unsigned w) {
-  srand(time(NULL));
+  //srand(time(NULL));
 
   tf::Executor executor(w);
   size_t maxN = 200;
