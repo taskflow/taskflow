@@ -1176,7 +1176,7 @@ inline size_t Executor::num_taskflows() const {
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   auto w = pt::worker;
-  return (w && w->_executor == this) ? w->_id : -1;
+  return (w && w->_executor == this) ? static_cast<int>(w->_id) : -1;
 }
 
 // Procedure: _spawn
@@ -1193,11 +1193,13 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._vtm = id;
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
-    _workers[id]._rdvtm = std::uniform_int_distribution<size_t>(0, 2*N-2);
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
       pt::worker = &w;
       _latch.arrive_and_wait();  // synchronize with the main thread
+      
+      w._rdgen.seed(std::hash<std::thread::id>()(std::this_thread::get_id()));
+      w._rdvtm = std::uniform_int_distribution<size_t>(0, 2*_workers.size()-2);
 
       Node* t = nullptr;
       
