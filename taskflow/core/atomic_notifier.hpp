@@ -155,17 +155,30 @@ class AtomicNotifierV2 {
 
 inline void AtomicNotifierV2::notify_one() noexcept {
   std::atomic_thread_fence(std::memory_order_seq_cst);
-  if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
-    _state.fetch_add(EPOCH_INC, std::memory_order_release);
-    _state.notify_one(); 
+  //if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
+  //  _state.fetch_add(EPOCH_INC, std::memory_order_release);
+  //  _state.notify_one(); 
+  //}
+
+  for(uint64_t state = _state.load(std::memory_order_acquire); state & WAITER_MASK;) {
+    if(_state.compare_exchange_weak(state, state + EPOCH_INC, std::memory_order_acquire)) {
+      _state.notify_one(); 
+      break;
+    }
   }
 }
 
 inline void AtomicNotifierV2::notify_all() noexcept {
   std::atomic_thread_fence(std::memory_order_seq_cst);
-  if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
-    _state.fetch_add(EPOCH_INC, std::memory_order_release);
-    _state.notify_all(); 
+  //if((_state.load(std::memory_order_acquire) & WAITER_MASK) != 0) {
+  //  _state.fetch_add(EPOCH_INC, std::memory_order_release);
+  //  _state.notify_all(); 
+  //}
+  for(uint64_t state = _state.load(std::memory_order_acquire); state & WAITER_MASK;) {
+    if(_state.compare_exchange_weak(state, state + EPOCH_INC, std::memory_order_acquire)) {
+      _state.notify_all(); 
+      break;
+    }
   }
 }
   
@@ -195,15 +208,15 @@ inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
 }
 
 inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
-  uint64_t prev = _state.load(std::memory_order_acquire);
+  uint64_t prev = _state.load(std::memory_order_seq_cst);
   while((prev >> EPOCH_SHIFT) == waiter->epoch) {
-    _state.wait(prev, std::memory_order_acquire); 
-    prev = _state.load(std::memory_order_acquire);
+    _state.wait(prev, std::memory_order_seq_cst); 
+    prev = _state.load(std::memory_order_seq_cst);
   }
   // memory_order_relaxed would suffice for correctness, but the faster
   // #waiters gets to 0, the less likely it is that we'll do spurious wakeups
   // (and thus system calls)
-  _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
+  _state.fetch_sub(WAITER_INC, std::memory_order_seq_cst);
 }
 
 
