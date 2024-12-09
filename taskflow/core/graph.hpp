@@ -769,6 +769,8 @@ class Node {
     Module(T&);
 
     Graph& graph;
+
+    bool _spawned {false};
   };
 
   // Async work

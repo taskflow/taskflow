@@ -1522,7 +1522,19 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // module task
     case Node::MODULE: {
-      _invoke_module_task(worker, node);
+      auto m = std::get_if<Node::Module>(&node->_handle);
+      if(m->graph.size() && m->_spawned == false) {
+        m->_spawned = true;
+        SmallVector<Node*> src;
+        _set_up_graph(m->graph, node, node->_topology, 0, src);
+        node->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
+        _schedule(worker, src);
+        return;
+      } 
+      else {
+        m->_spawned = false;
+        goto invoke_successors;
+      }
     }
     break;
 
@@ -1540,6 +1552,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       _tear_down_dependent_async(worker, node);
       if(worker._cache) {
         node = worker._cache;
+        worker._cache = nullptr;
         goto begin_invoke;
       }
       return;
@@ -1551,7 +1564,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
   }
 
-  //invoke_successors:
+  invoke_successors:
 
   // Reset the join counter to support the cyclic control flow.
   // + We must do this before scheduling the successors to avoid race
@@ -1571,7 +1584,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
                               node->_topology->_join_counter;
 
   // Here, we want to cache the latest successor
-  worker._cache = nullptr;
+  //worker._cache = nullptr;
 
   // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
@@ -1618,6 +1631,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // the number of expensive pop/push operations through the task queue
   if(worker._cache) {
     node = worker._cache;
+    worker._cache = nullptr;
     goto begin_invoke;
   }
 }
@@ -1632,20 +1646,23 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
     }
   }
   // The parent is in a corun loop waiting for its join counter to reach 0.
-  else {
-    //parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel);
-    parent->_join_counter.fetch_sub(1, std::memory_order_release);
-  }
-  //// module task
-  //else {  
-  //  auto id = parent->_handle.index();
-  //  if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-  //    if(id == Node::MODULE) {
-  //      return parent;
-  //    }
-  //  }
+  //else {
+  //  parent->_join_counter.fetch_sub(1, std::memory_order_release);
   //}
-  //return nullptr;
+  else {  
+    switch(parent->_handle.index()) {
+      case Node::MODULE: {
+        if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+          // TODO: optimize through cache?
+          _schedule(worker, parent);
+        }
+      } break;
+
+      default:
+        parent->_join_counter.fetch_sub(1, std::memory_order_release);
+      break;
+    }
+  }
 }
 
 // Procedure: _observer_prologue
@@ -1668,7 +1685,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
   
   // if the node has a parent, we store the exception in its parent
-  if(auto parent = node->_parent; parent) { 
+  if(auto parent = node->_parent; parent && parent->_handle.index() != Node::MODULE) { 
     if ((parent->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
       parent->_exception_ptr = std::current_exception();
     }
@@ -1808,15 +1825,15 @@ inline void Executor::_invoke_multi_condition_task(
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_module_task
-inline void Executor::_invoke_module_task(Worker& w, Node* node) {
-  _observer_prologue(w, node);
-  TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
-    _corun_graph(w, node, std::get_if<Node::Module>(&node->_handle)->graph);
-    node->_process_exception();
-  });
-  _observer_epilogue(w, node);
-}
+//// Procedure: _invoke_module_task
+//inline void Executor::_invoke_module_task(Worker& w, Node* node) {
+//  _observer_prologue(w, node);
+//  TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
+//    _corun_graph(w, node, std::get_if<Node::Module>(&node->_handle)->graph);
+//    node->_process_exception();
+//  });
+//  _observer_epilogue(w, node);
+//}
 
 //// Function: _invoke_module_task_internal
 //inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {

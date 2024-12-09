@@ -300,7 +300,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node) {
   }
   
   // spawn successors whenever their dependencies are resolved
-  worker._cache = nullptr;
+  //worker._cache = nullptr;
   for(size_t i=0; i<node->_successors.size(); ++i) {
     if(auto s = node->_successors[i]; 
       s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1

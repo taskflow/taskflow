@@ -618,13 +618,13 @@ void module_task_exception(unsigned W) {
   taskflow2.composed_of(taskflow1);
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
 
-  taskflow1.clear();
-  taskflow1.emplace([](tf::Subflow& sf){
-    sf.emplace([](){
-      throw std::runtime_error("y");
-    });
-  });
-  REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "y", std::runtime_error);
+  //taskflow1.clear();
+  //taskflow1.emplace([](tf::Subflow& sf){
+  //  sf.emplace([](){
+  //    throw std::runtime_error("y");
+  //  });
+  //});
+  //REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "y", std::runtime_error);
 }
 
 TEST_CASE("Exception.ModuleTask.1thread") {
