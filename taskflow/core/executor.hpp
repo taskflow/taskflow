@@ -1097,6 +1097,8 @@ class Executor {
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
   void _corun_graph(Worker&, Node*, Graph&);
+
+  bool _invoke_module_task(Worker&, Node*);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
@@ -1527,22 +1529,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // module task
     case Node::MODULE: {
-      // spawns only non-empty module
-      if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
-        // first entry - not spawned yet
-        if((node->_state.load(std::memory_order_relaxed) & Node::SPAWNED) == 0) {
-          node->_state.fetch_or(Node::SPAWNED, std::memory_order_relaxed);
-          SmallVector<Node*> src;
-          _set_up_graph(m->graph, node, node->_topology, 0, src);
-          node->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
-          _schedule(worker, src);
-          return;
-        }
-        // second entry - already spawned
-        else {
-          node->_state.fetch_and(~Node::SPAWNED, std::memory_order_relaxed);
-          goto invoke_successors;
-        }
+      if(_invoke_module_task(worker, node)) {
+        return;
       }
     }
     break;
@@ -1568,8 +1556,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     default:
     break;
   }
-
-  invoke_successors:
 
   // Reset the join counter to support the cyclic control flow.
   // + We must do this before scheduling the successors to avoid race
@@ -1818,34 +1804,26 @@ inline void Executor::_invoke_multi_condition_task(
   _observer_epilogue(worker, node);
 }
 
-//// Procedure: _invoke_module_task
-//inline void Executor::_invoke_module_task(Worker& w, Node* node) {
-//  _observer_prologue(w, node);
-//  TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
-//    _corun_graph(w, node, std::get_if<Node::Module>(&node->_handle)->graph);
-//    node->_process_exception();
-//  });
-//  _observer_epilogue(w, node);
-//}
-
-//// Function: _invoke_module_task_internal
-//inline bool Executor::_invoke_module_task_internal(Worker& w, Node* p) {
-//  
-//  // acquire the underlying graph
-//  auto& g = std::get_if<Node::Module>(&p->_handle)->graph;
-//
-//  // no need to do anything if the graph is empty
-//  if(g.empty()) {
-//    return false;
-//  }
-//
-//  SmallVector<Node*> src;
-//  _set_up_graph(g, p, p->_topology, 0, src);
-//  p->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
-//
-//  _schedule(w, src);
-//  return true;
-//}
+// Procedure: _invoke_module_task
+inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
+  // spawns only non-empty module
+  if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
+    // first entry - not spawned yet
+    if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
+      node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
+      SmallVector<Node*> src;
+      _set_up_graph(m->graph, node, node->_topology, 0, src);
+      node->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
+      _schedule(w, src);
+      return true;
+    }
+    // second entry - already spawned
+    else {
+      node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
+    }
+  }
+  return false;
+}
 
 // Procedure: _invoke_async_task
 inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
