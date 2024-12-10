@@ -1067,7 +1067,6 @@ class Executor {
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
   bool _wait_for_task(Worker&, Node*&);
-  bool _invoke_module_task_internal(Worker&, Node*);
 
   void _observer_prologue(Worker&, Node*);
   void _observer_epilogue(Worker&, Node*);
@@ -1092,7 +1091,6 @@ class Executor {
   void _detach_subflow_task(Worker&, Node*, Graph&);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-  void _invoke_module_task(Worker&, Node*);
   void _invoke_async_task(Worker&, Node*);
   void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
@@ -1481,18 +1479,25 @@ inline void Executor::_schedule(const SmallVector<Node*>& nodes) {
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
+  // macro for continuous invoke to bypass queuing operations
+  #define TF_INVOKE_CONTINUATION()  \
+    if (worker._cache) {            \
+      node = worker._cache;         \
+      worker._cache = nullptr;      \
+      goto begin_invoke;            \
+    }
+
   begin_invoke:
-  
-  SmallVector<int> conds;
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
     _tear_down_invoke(worker, node);
+    TF_INVOKE_CONTINUATION();
     return;
   }
 
   // condition task
-  //int cond = -1;
+  SmallVector<int> conds;
 
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
@@ -1522,18 +1527,22 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // module task
     case Node::MODULE: {
-      auto m = std::get_if<Node::Module>(&node->_handle);
-      if(m->graph.size() && m->_spawned == false) {
-        m->_spawned = true;
-        SmallVector<Node*> src;
-        _set_up_graph(m->graph, node, node->_topology, 0, src);
-        node->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
-        _schedule(worker, src);
-        return;
-      } 
-      else {
-        m->_spawned = false;
-        goto invoke_successors;
+      // spawns only non-empty module
+      if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
+        // first entry - not spawned yet
+        if((node->_state.load(std::memory_order_relaxed) & Node::SPAWNED) == 0) {
+          node->_state.fetch_or(Node::SPAWNED, std::memory_order_relaxed);
+          SmallVector<Node*> src;
+          _set_up_graph(m->graph, node, node->_topology, 0, src);
+          node->_join_counter.fetch_add(src.size(), std::memory_order_relaxed);
+          _schedule(worker, src);
+          return;
+        }
+        // second entry - already spawned
+        else {
+          node->_state.fetch_and(~Node::SPAWNED, std::memory_order_relaxed);
+          goto invoke_successors;
+        }
       }
     }
     break;
@@ -1550,11 +1559,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::DEPENDENT_ASYNC: {
       _invoke_dependent_async_task(worker, node);
       _tear_down_dependent_async(worker, node);
-      if(worker._cache) {
-        node = worker._cache;
-        worker._cache = nullptr;
-        goto begin_invoke;
-      }
+      TF_INVOKE_CONTINUATION();
       return;
     }
     break;
@@ -1582,9 +1587,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // acquire the parent flow counter
   auto& j = (node->_parent) ? node->_parent->_join_counter :
                               node->_topology->_join_counter;
-
-  // Here, we want to cache the latest successor
-  //worker._cache = nullptr;
 
   // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
@@ -1627,17 +1629,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // tear_down the invoke
   _tear_down_invoke(worker, node);
 
-  // perform tail recursion elimination for the right-most child to reduce
-  // the number of expensive pop/push operations through the task queue
-  if(worker._cache) {
-    node = worker._cache;
-    worker._cache = nullptr;
-    goto begin_invoke;
-  }
+  TF_INVOKE_CONTINUATION();
 }
 
 // Procedure: _tear_down_invoke
 inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
+  
   // we must check parent first before subtracting the join counter,
   // or it can introduce data race
   if(auto parent = node->_parent; parent == nullptr) {
@@ -1645,16 +1642,12 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
       _tear_down_topology(worker, node->_topology);
     }
   }
-  // The parent is in a corun loop waiting for its join counter to reach 0.
-  //else {
-  //  parent->_join_counter.fetch_sub(1, std::memory_order_release);
-  //}
   else {  
     switch(parent->_handle.index()) {
       case Node::MODULE: {
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          // TODO: optimize through cache?
-          _schedule(worker, parent);
+          //assert(worker._cache == nullptr);
+          worker._cache = parent;
         }
       } break;
 

@@ -285,13 +285,15 @@ TEST_CASE("CancelComposition") {
   auto f3_module_task = f4.composed_of(f3).name("module_of_f3");
   auto f2_module_task = f4.composed_of(f2).name("module_of_f2");
   f3_module_task.precede(f2_module_task);
+    
+  std::vector<tf::Future<void>> futures;
 
   for(int r=0; r<100; r++) {
 
     size_t N = 100;
     size_t success = 0;
 
-    std::vector<tf::Future<void>> futures;
+    futures.clear();
 
     for(int i=0; i<100; i++) {
       futures.emplace_back(executor.run(f4));

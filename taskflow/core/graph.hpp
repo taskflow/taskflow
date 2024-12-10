@@ -716,6 +716,7 @@ class Node {
   constexpr static int CONDITIONED = 1;
   constexpr static int DETACHED    = 2;
   constexpr static int EXCEPTION   = 4;
+  constexpr static int SPAWNED     = 8;
 
   using Placeholder = std::monostate;
 
@@ -769,8 +770,6 @@ class Node {
     Module(T&);
 
     Graph& graph;
-
-    bool _spawned {false};
   };
 
   // Async work
