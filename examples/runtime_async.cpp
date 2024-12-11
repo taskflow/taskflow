@@ -9,18 +9,18 @@ int main() {
 
   std::atomic<int> counter{0};
 
-  taskflow.emplace([&](tf::Subflow& sf){
+  taskflow.emplace([&](tf::Runtime& rt){
     for(int i=0; i<10; i++) {
       // Here, we use "silent_async" instead of "async" because we do
       // not care the return value. The method "silent_async" gives us
       // less overhead compared to "async".
       // The 10 asynchronous tasks run concurrently.
-      sf.silent_async([&](){
+      rt.silent_async([&](){
         std::cout << "async task from the subflow\n";
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }
-    sf.join();
+    rt.corun_all();
     std::cout << counter << " = 10\n";
   });
 

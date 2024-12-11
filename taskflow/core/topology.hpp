@@ -34,8 +34,8 @@ class Topology {
     Taskflow& _taskflow;
 
     std::promise<void> _promise;
-
-    SmallVector<Node*> _sources;
+    
+    size_t _num_sources {0};
 
     std::function<bool()> _pred;
     std::function<void()> _call;

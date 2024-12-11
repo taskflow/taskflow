@@ -2,7 +2,7 @@ list(APPEND TF_EXAMPLES
   simple 
   attach_data
   async
-  subflow_async
+  runtime_async
   dependent_async
   dependent_async_algorithm
   observer 

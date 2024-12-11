@@ -35,11 +35,11 @@ int main() {
 
   std::atomic<int> counter {0};
 
-  taskflow.emplace([&](tf::Subflow& sf){
+  taskflow.emplace([&](tf::Runtime& rt){
     for(int i=0; i<100; i++) {
-      sf.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+      rt.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
-    sf.join();
+    rt.corun_all();
 
     // when subflow joins, all spawned tasks from the subflow will finish
     if(counter == 100) {

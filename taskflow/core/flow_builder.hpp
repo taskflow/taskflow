@@ -1276,11 +1276,12 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 
 @brief class to construct a subflow graph from the execution of a dynamic task
 
-tf::Subflow is a derived class from tf::Runtime with a specialized mechanism
-to manage the execution of a child graph.
-By default, a subflow automatically @em joins its parent node.
-You may explicitly join or detach a subflow by calling tf::Subflow::join
+tf::Subflow is spawned from the execution of a task to dynamically manage a 
+child graph that may depend on runtime variables.
+You can explicitly join or detach a subflow by calling tf::Subflow::join
 or tf::Subflow::detach, respectively.
+By default, the %Taskflow runtime will implicitly join a subflow it is is joinable.
+
 The following example creates a taskflow graph that spawns a subflow from
 the execution of task @c B, and the subflow contains three tasks, @c B1,
 @c B2, and @c B3, where @c B3 runs after @c B1 and @c B2.
@@ -1307,12 +1308,10 @@ C.precede(D);  // D runs after C
 @endcode
 
 */
-class Subflow : public FlowBuilder,
-                public Runtime {
+class Subflow : public FlowBuilder {
 
   friend class Executor;
   friend class FlowBuilder;
-  friend class Runtime;
 
   public:
 
@@ -1379,18 +1378,19 @@ class Subflow : public FlowBuilder,
     bool joinable() const noexcept;
 
   private:
+    
+    Subflow(Executor&, Worker&, Node*, Graph&);
+
+    Executor& _executor;
+    Worker& _worker;
+    Node* _parent;
 
     bool _joinable {true};
-
-    Subflow(Executor&, Worker&, Node*, Graph&);
 };
 
 // Constructor
-inline Subflow::Subflow(
-  Executor& executor, Worker& worker, Node* parent, Graph& graph
-) :
-  FlowBuilder {graph},
-  Runtime {executor, worker, parent} {
+inline Subflow::Subflow(Executor& e, Worker& w, Node* p, Graph& g) :
+  FlowBuilder {g}, _executor{e}, _worker{w}, _parent{p} {
   // assert(_parent != nullptr);
 }
 

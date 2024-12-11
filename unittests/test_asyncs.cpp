@@ -283,132 +283,6 @@ TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: SubflowAsync
-// --------------------------------------------------------
-
-void subflow_async(size_t W) {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor(W);
-
-  std::atomic<int> counter{0};
-
-  auto A = taskflow.emplace(
-    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
-  );
-  auto B = taskflow.emplace(
-    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
-  );
-
-  taskflow.emplace(
-    [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
-  );
-
-  auto S1 = taskflow.emplace([&] (tf::Subflow& sf){
-    for(int i=0; i<1000; i++) {
-      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    }
-  });
-
-  auto S2 = taskflow.emplace([&] (tf::Subflow& sf){
-    sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    for(int i=0; i<1000; i++) {
-      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    }
-  });
-
-  taskflow.emplace([&] (tf::Subflow& sf){
-    sf.emplace([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    for(int i=0; i<1000; i++) {
-      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    }
-    sf.join();
-  });
-
-  taskflow.emplace([&] (tf::Subflow& sf){
-    for(int i=0; i<1000; i++) {
-      sf.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    }
-    sf.join();
-  });
-
-  A.precede(S1, S2);
-  B.succeed(S1, S2);
-
-  executor.run(taskflow).wait();
-
-  REQUIRE(counter == 4005);
-}
-
-TEST_CASE("SubflowAsync.1thread") {
-  subflow_async(1);
-}
-
-TEST_CASE("SubflowAsync.3threads") {
-  subflow_async(3);
-}
-
-TEST_CASE("SubflowAsync.11threads") {
-  subflow_async(11);
-}
-
-// --------------------------------------------------------
-// Testcase: NestedSubflowAsync
-// --------------------------------------------------------
-
-void nested_subflow_async(size_t W) {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor(W);
-
-  std::atomic<int> counter{0};
-
-  taskflow.emplace([&](tf::Subflow& sf1){
-
-    for(int i=0; i<100; i++) {
-      sf1.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-    }
-
-    sf1.emplace([&](tf::Subflow& sf2){
-      for(int i=0; i<100; i++) {
-        sf2.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-        sf1.async(
-          [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
-        );
-      }
-
-      sf2.emplace([&](tf::Subflow& sf3){
-        for(int i=0; i<100; i++) {
-          sf3.silent_async(
-            [&](){ counter.fetch_add(1, std::memory_order_relaxed); }
-          );
-          sf2.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-          sf1.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
-        }
-      });
-    });
-
-    sf1.join();
-    REQUIRE(counter == 600);
-  });
-
-  executor.run(taskflow).wait();
-  REQUIRE(counter == 600);
-}
-
-TEST_CASE("NestedSubflowAsync.1thread") {
-  nested_subflow_async(1);
-}
-
-TEST_CASE("NestedSubflowAsync.3threads") {
-  nested_subflow_async(3);
-}
-
-TEST_CASE("NestedSubflowAsync.11threads") {
-  nested_subflow_async(11);
-}
-
-// --------------------------------------------------------
 // Testcase: RuntimeAsync
 // --------------------------------------------------------
 
@@ -476,10 +350,35 @@ TEST_CASE("RuntimeAsync.1thread") {
   runtime_async(1);
 }
 
+TEST_CASE("RuntimeAsync.2threads") {
+  runtime_async(2);
+}
+
 TEST_CASE("RuntimeAsync.3threads") {
   runtime_async(3);
+}
+
+TEST_CASE("RuntimeAsync.4threads") {
+  runtime_async(4);
+}
+
+TEST_CASE("RuntimeAsync.5threads") {
+  runtime_async(5);
+}
+
+TEST_CASE("RuntimeAsync.6threads") {
+  runtime_async(6);
+}
+
+TEST_CASE("RuntimeAsync.7threads") {
+  runtime_async(7);
+}
+
+TEST_CASE("RuntimeAsync.8threads") {
+  runtime_async(8);
 }
 
 TEST_CASE("RuntimeAsync.11threads") {
   runtime_async(11);
 }
+

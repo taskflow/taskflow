@@ -351,50 +351,6 @@ class Runtime {
   void silent_async(P&& params, F&& f);
   
   /**
-  @brief similar to tf::Runtime::silent_async but the caller must be the worker of the runtime
-
-  @tparam F callable type
-
-  @param f callable
-
-  The method bypass the check of the caller worker from the executor 
-  and thus can only called by the worker of this runtime.
-
-  @code{.cpp}
-  taskflow.emplace([&](tf::Runtime& rt){
-    // running by the worker of this runtime
-    rt.silent_async_unchecked([](){});
-    rt.corun_all();
-  });
-  @endcode
-  */
-  template <typename F>
-  void silent_async_unchecked(F&& f);
-  
-  /**
-  @brief similar to tf::Runtime::silent_async but the caller must be the worker of the runtime
-
-  @tparam F callable type
-  @tparam P task parameters type
-
-  @param params task parameters
-  @param f callable
-
-  The method bypass the check of the caller worker from the executor 
-  and thus can only called by the worker of this runtime.
-
-  @code{.cpp}
-  taskflow.emplace([&](tf::Runtime& rt){
-    // running by the worker of this runtime
-    rt.silent_async_unchecked("my task", [](){});
-    rt.corun_all();
-  });
-  @endcode
-  */
-  template <typename P, typename F>
-  void silent_async_unchecked(P&& params, F&& f);
-
-  /**
   @brief co-runs the given target and waits until it completes
   
   A target can be one of the following forms:
@@ -1026,12 +982,7 @@ Node::Node(
 // Destructor
 inline Node::~Node() {
   // this is to avoid stack overflow
-
   if(_handle.index() == SUBFLOW) {
-    // using std::get_if instead of std::get makes this compatible
-    // with older macOS versions
-    // the result of std::get_if is guaranteed to be non-null
-    // due to the index check above
     auto& subgraph = std::get_if<Subflow>(&_handle)->subgraph;
     std::vector<Node*> nodes;
     nodes.reserve(subgraph.size());
