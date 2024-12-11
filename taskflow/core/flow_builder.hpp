@@ -1350,17 +1350,6 @@ class Subflow : public FlowBuilder {
     void detach();
 
     /**
-    @brief resets the subflow to a joinable state
-
-    @param clear_graph specifies whether to clear the associated graph (default @c true)
-
-    Clears the underlying task graph depending on the 
-    given variable @c clear_graph (default @c true) and then
-    updates the subflow to a joinable state.
-    */
-    void reset(bool clear_graph = true);
-
-    /**
     @brief queries if the subflow is joinable
 
     This member function queries if the subflow is joinable.
@@ -1397,14 +1386,6 @@ inline Subflow::Subflow(Executor& e, Worker& w, Node* p, Graph& g) :
 // Function: joined
 inline bool Subflow::joinable() const noexcept {
   return _joinable;
-}
-
-// Procedure: reset
-inline void Subflow::reset(bool clear_graph) {
-  if(clear_graph) {
-    _graph._clear();
-  }
-  _joinable = true;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

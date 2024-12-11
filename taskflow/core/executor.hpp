@@ -1629,12 +1629,14 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
     }
   }
   else {  
+    // needs to fetch every data before join-counter becomes zero at which
+    // the node may be deleted
     switch(parent->_handle.index()) {
-
       case Node::SUBFLOW: {
-        if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+        if(auto state = parent->_state.load(std::memory_order_relaxed);
+           parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           // only preempted parent needs to be re-invoked
-          if(parent->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) {
+          if(state & Node::PREEMPTED) {
             //assert(worker._cache == nullptr);
             worker._cache = parent;
           }
