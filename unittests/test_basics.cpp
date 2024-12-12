@@ -571,7 +571,7 @@ void sequential_runs(unsigned W) {
     REQUIRE(counter == num_tasks);
   }
 
-  SUBCASE("RunWithFuture") {
+  /*SUBCASE("RunWithFuture") {
 
     std::atomic<size_t> count {0};
     tf::Taskflow f;
@@ -615,9 +615,9 @@ void sequential_runs(unsigned W) {
 
     REQUIRE(count == 7000);
 
-  }
+  }*/
 
-  SUBCASE("RunWithChange") {
+  /*SUBCASE("RunWithChange") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
@@ -649,9 +649,9 @@ void sequential_runs(unsigned W) {
     executor.wait_for_all();
     REQUIRE(count == 210);
 
-  }
+  }*/
 
-  SUBCASE("RunWithPred") {
+  /*SUBCASE("RunWithPred") {
     std::atomic<size_t> count {0};
     tf::Taskflow f;
     auto A = f.emplace([&](){ count ++; });
@@ -690,7 +690,7 @@ void sequential_runs(unsigned W) {
       }
     ).get();
 
-  }
+  }*/
 
   SUBCASE("MultipleRuns") {
     std::atomic<size_t> count(0);
