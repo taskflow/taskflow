@@ -2127,21 +2127,6 @@ I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int stat
     }
   }
   return send;
-
-
-  //size_t num_sources = 0;
-  //for(size_t i=0; i<g._nodes.size(); i++) {
-  //  auto node = g._nodes[i];
-  //  node->_topology = tpg;
-  //  node->_parent = parent;
-  //  node->_state.store(state, std::memory_order_relaxed);
-  //  node->_set_up_join_counter();
-  //  node->_exception_ptr = nullptr;
-  //  if(node->num_dependents() == 0) {
-  //    std::swap(g._nodes[num_sources++], g._nodes[i]);
-  //  }
-  //}
-  //return num_sources;
 }
 
 // Function: _tear_down_topology
@@ -2220,8 +2205,9 @@ inline void Subflow::join() {
   if(!joinable()) {
     TF_THROW("subflow already joined or detached");
   }
-
-  if(auto sbeg = _graph._nodes.begin() + _tag; sbeg != _graph._nodes.end()) {
+  
+  if(_graph._nodes.size() > _tag) {
+    auto sbeg = _graph._nodes.begin() + _tag;
     auto send = _executor._set_up_graph(
       sbeg, _graph._nodes.end(), _parent, _parent->_topology, 0
     );
@@ -2243,7 +2229,8 @@ inline void Subflow::detach() {
     TF_THROW("subflow already joined or detached");
   }
 
-  if(auto sbeg = _graph._nodes.begin() + _tag; sbeg != _graph._nodes.end()) {
+  if(_graph._nodes.size() > _tag) {
+    auto sbeg = _graph._nodes.begin() + _tag;
     auto send = _executor._set_up_graph(
       sbeg, _graph._nodes.end(), nullptr, _parent->_topology, Node::DETACHED
     );

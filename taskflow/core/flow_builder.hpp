@@ -1373,8 +1373,7 @@ class Subflow : public FlowBuilder {
 
   private:
     
-    //constexpr static int JOINED_BIT  = std::numeric_limits<int>::min();  // 100...00
-    //constexpr static size_t JOINED_BIT = size_t(1) << (std::numeric_limits<size_t>::digits - 1);
+    // with only the most significant bit set: 1000...000
     constexpr static size_t JOINED_BIT = (~size_t(0)) ^ ((~size_t(0)) >> 1);
 
     Subflow(Executor&, Worker&, Node*, Graph&);
