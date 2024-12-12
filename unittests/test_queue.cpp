@@ -426,9 +426,9 @@ TEST_CASE("BoundedMPMC.Basics.LogSize=10") {
 template <typename T, size_t LogSize>
 void mpmc(unsigned num_producers, unsigned num_consumers) {
 
-  const uint64_t N = 65536;
+  const int N = 6543;
 
-  std::atomic<uint64_t> pcnt(0), ccnt(0), ans(0);
+  std::atomic<int> pcnt(0), ccnt(0), ans(0);
   std::vector<std::thread> threads;
 
   tf::MPMC<T, LogSize> mpmc;

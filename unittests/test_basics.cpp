@@ -571,51 +571,7 @@ void sequential_runs(unsigned W) {
     REQUIRE(counter == num_tasks);
   }
 
-  /*SUBCASE("RunWithFuture") {
 
-    std::atomic<size_t> count {0};
-    tf::Taskflow f;
-    auto A = f.emplace([&](){ count ++; });
-    auto B = f.emplace([&](tf::Subflow& subflow){
-      count ++;
-      auto B1 = subflow.emplace([&](){ count++; });
-      auto B2 = subflow.emplace([&](){ count++; });
-      auto B3 = subflow.emplace([&](){ count++; });
-      B1.precede(B3); B2.precede(B3);
-    });
-    auto C = f.emplace([&](){ count ++; });
-    auto D = f.emplace([&](){ count ++; });
-
-    A.precede(B, C);
-    B.precede(D);
-    C.precede(D);
-
-    std::list<tf::Future<void>> fu_list;
-    for(size_t i=0; i<500; i++) {
-      if(i == 499) {
-        executor.run(f).get();   // Synchronize the first 500 runs
-        executor.run_n(f, 500);  // Run 500 times more
-      }
-      else if(i % 2) {
-        fu_list.push_back(executor.run(f));
-      }
-      else {
-        fu_list.push_back(executor.run(f, [&, i=i](){
-          REQUIRE(count == (i+1)*7); })
-        );
-      }
-    }
-
-    executor.wait_for_all();
-
-    for(auto& fu: fu_list) {
-      REQUIRE(fu.valid());
-      REQUIRE(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
-    }
-
-    REQUIRE(count == 7000);
-
-  }*/
 
   /*SUBCASE("RunWithChange") {
     std::atomic<size_t> count {0};

@@ -471,3 +471,94 @@ TEST_CASE("FibSubflow.7threads") {
 TEST_CASE("FibSubflow.8threads") {
   fibonacci(8);
 }
+
+// ----------------------------------------------------------------------------
+// multiple subflow runs
+// ----------------------------------------------------------------------------
+void multiple_subflow_runs(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::atomic<size_t> count {0};
+
+  auto A = taskflow.emplace([&](){ count ++; });
+  auto B = taskflow.emplace([&](tf::Subflow& subflow){
+    count ++;
+    auto B1 = subflow.emplace([&](){ count++; });
+    auto B2 = subflow.emplace([&](){ count++; });
+    auto B3 = subflow.emplace([&](){ count++; });
+    B1.precede(B3); B2.precede(B3);
+  });
+  auto C = taskflow.emplace([&](){ count ++; });
+  auto D = taskflow.emplace([&](){ count ++; });
+
+  A.precede(B, C);
+  B.precede(D);
+  C.precede(D);
+
+  std::list<tf::Future<void>> fu_list;
+  for(size_t i=0; i<500; i++) {
+    if(i == 499) {
+      executor.run(taskflow).get();   // Synchronize the first 500 runs
+      executor.run_n(taskflow, 500);  // Run 500 times more
+    }
+    else if(i % 2) {
+      fu_list.push_back(executor.run(taskflow));
+    }
+    else {
+      fu_list.push_back(executor.run(taskflow, [&, i=i](){
+        REQUIRE(count == (i+1)*7); })
+      );
+    }
+  }
+
+  executor.wait_for_all();
+
+  for(auto& fu: fu_list) {
+    REQUIRE(fu.valid());
+    REQUIRE(fu.wait_for(std::chrono::seconds(1)) == std::future_status::ready);
+  }
+
+  REQUIRE(count == 7000);
+}
+
+TEST_CASE("MultipleSubflowRuns.1thread") {
+  multiple_subflow_runs(1);
+}
+
+TEST_CASE("MultipleSubflowRuns.2threads") {
+  multiple_subflow_runs(2);
+}
+
+TEST_CASE("MultipleSubflowRuns.3threads") {
+  multiple_subflow_runs(3);
+}
+
+TEST_CASE("MultipleSubflowRuns.4threads") {
+  multiple_subflow_runs(4);
+}
+
+TEST_CASE("MultipleSubflowRuns.4threads") {
+  multiple_subflow_runs(4);
+}
+
+TEST_CASE("MultipleSubflowRuns.5threads") {
+  multiple_subflow_runs(5);
+}
+
+TEST_CASE("MultipleSubflowRuns.6threads") {
+  multiple_subflow_runs(6);
+}
+
+TEST_CASE("MultipleSubflowRuns.7threads") {
+  multiple_subflow_runs(7);
+}
+
+TEST_CASE("MultipleSubflowRuns.8threads") {
+  multiple_subflow_runs(8);
+}
+
+
+
+
