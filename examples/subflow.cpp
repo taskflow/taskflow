@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
   B.precede(D);  // D runs after B
   C.precede(D);  // D runs after C
 
-  executor.run(taskflow).get();  // block until finished
+  executor.run_n(taskflow, 3).get();  // block until finished
 
   // examine the graph
   taskflow.dump(std::cout);

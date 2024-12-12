@@ -1366,26 +1366,56 @@ class Subflow : public FlowBuilder {
     */
     bool joinable() const noexcept;
 
+    /**
+    @brief acquires the associated executor
+    */
+    Executor& executor() noexcept;
+
   private:
     
+    //constexpr static int JOINED_BIT  = std::numeric_limits<int>::min();  // 100...00
+    //constexpr static size_t JOINED_BIT = size_t(1) << (std::numeric_limits<size_t>::digits - 1);
+    constexpr static size_t JOINED_BIT = (~size_t(0)) ^ ((~size_t(0)) >> 1);
+
     Subflow(Executor&, Worker&, Node*, Graph&);
 
     Executor& _executor;
     Worker& _worker;
     Node* _parent;
 
-    bool _joinable {true};
+    size_t _tag;
 };
 
 // Constructor
-inline Subflow::Subflow(Executor& e, Worker& w, Node* p, Graph& g) :
-  FlowBuilder {g}, _executor{e}, _worker{w}, _parent{p} {
+inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph& graph) :
+  FlowBuilder {graph}, 
+  _executor   {executor}, 
+  _worker     {worker}, 
+  _parent     {parent}, 
+  _tag        {graph._nodes.size()} {
+
   // assert(_parent != nullptr);
+  // clear undetached nodes in reversed order
+  //for(auto i = g._nodes.rbegin(); i != g._nodes.rend(); ++i) {
+  //  if(auto node = *i; (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
+  //    recycle(node);
+  //    --_tag;
+  //  }
+  //  else {
+  //    break;
+  //  }
+  //}
+  //g._nodes.resize(_tag);
 }
 
-// Function: joined
+// Function: joinable
 inline bool Subflow::joinable() const noexcept {
-  return _joinable;
+  return (_tag & JOINED_BIT) == 0;
+}
+
+// Function: executor
+inline Executor& Subflow::executor() noexcept {
+  return _executor;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

@@ -69,6 +69,7 @@ class Taskflow : public FlowBuilder {
   friend class Topology;
   friend class Executor;
   friend class FlowBuilder;
+  friend class Subflow;
 
   struct Dumper {
     size_t id;
@@ -474,7 +475,7 @@ inline void Taskflow::_dump(
   if(node->_parent && node->_parent->_handle.index() == Node::SUBFLOW &&
      node->_successors.size() == 0
     ) {
-    os << 'p' << node << " -> p" << node->_parent << ";\n";
+    os << 'p' << node << " -> p" << node->_parent << " [style=dashed color=blue];\n";
   }
 
   // node info

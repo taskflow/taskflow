@@ -1075,8 +1075,6 @@ class Executor {
   void _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
-  void _schedule(Worker&, const std::vector<Node*>&, size_t);
-  void _schedule(const std::vector<Node*>&, size_t);
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*);
   void _tear_down_async(Node*);
@@ -1086,7 +1084,6 @@ class Executor {
   void _decrement_topology();
   void _invoke(Worker&, Node*);
   void _invoke_static_task(Worker&, Node*);
-  void _detach_subflow_task(Worker&, Node*, Graph&);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_async_task(Worker&, Node*);
@@ -1099,11 +1096,17 @@ class Executor {
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
 
-  size_t _set_up_graph(Graph&, Node*, Topology*, int);
+  template <typename I>
+  I _set_up_graph(I first, I second, Node*, Topology*, int);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
+  
+  template <typename I>
+  void _schedule(Worker&, I first, I last);
 
+  template <typename I>
+  void _schedule(I first, I last);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1435,11 +1438,12 @@ inline void Executor::_schedule(Node* node) {
 }
 
 // Procedure: _schedule
-inline void Executor::_schedule(Worker& worker, const std::vector<Node*>& nodes, size_t num_nodes) {
+template <typename I>
+void Executor::_schedule(Worker& worker, I first, I last) {
 
   //assert(nodes.size() >= num_nodes);
 
-  if(num_nodes == 0) {
+  if(first == last) {
     return;
   }
 
@@ -1447,33 +1451,35 @@ inline void Executor::_schedule(Worker& worker, const std::vector<Node*>& nodes,
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    for(size_t i=0; i<num_nodes; ++i) {
-      worker._wsq.push(nodes[i], [&](){ _freelist.push(worker._id, nodes[i]); });
+    for(; first != last; ++first) {
+      worker._wsq.push(*first, [&](){ _freelist.push(worker._id, *first); });
       _notifier.notify_one();
     }
     return;
   }
 
-  for(size_t k=0; k<num_nodes; ++k) {
-    _freelist.push(nodes[k]);
+  size_t n = 0;
+  for(; first != last; ++first, ++n) {
+    _freelist.push(*first);
   }
-  _notifier.notify_n(num_nodes);
+  _notifier.notify_n(n);
 }
 
 // Procedure: _schedule
-inline void Executor::_schedule(const std::vector<Node*>& nodes, size_t num_nodes) {
+template <typename I>
+inline void Executor::_schedule(I first, I last) {
   
   //assert(nodes.size() >= num_nodes);
 
-  if(num_nodes == 0) {
+  if(first == last) {
     return;
   }
-
-  for(size_t k=0; k<num_nodes; ++k) {
-    _freelist.push(nodes[k]);
+  
+  size_t n = 0;
+  for(; first != last; ++first, ++n) {
+    _freelist.push(*first);
   }
-
-  _notifier.notify_n(num_nodes);
+  _notifier.notify_n(n);
 }
 
 // Procedure: _invoke
@@ -1720,24 +1726,30 @@ inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
   //TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
 
   if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
-    auto handle = std::get_if<Node::Subflow>(&node->_handle);
-    handle->subgraph._clear();
-    Subflow sf(*this, w, node, handle->subgraph);
     
+    auto& h = *std::get_if<Node::Subflow>(&node->_handle);
+    auto& g = h.subgraph;
+    
+    // set up the subflow
+    Subflow sf(*this, w, node, g);
+
+    // invoke the subflow callable
     _observer_prologue(w, node);
-    handle->work(sf);
+    h.work(sf);
     _observer_epilogue(w, node);
     
     // spawn the subflow if it is joinable and its graph is non-empty
-    if(sf._joinable && handle->subgraph.size()) {
+    // implicit join is faster than Subflow::join as it does not involve corun
+    if(sf.joinable() && g._nodes.size() > sf._tag) {
 
       // signal the executor to preempt this node
       node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
 
       // set up and schedule the graph
-      auto N = _set_up_graph(handle->subgraph, node, node->_topology, 0);
-      node->_join_counter.fetch_add(N, std::memory_order_relaxed);
-      _schedule(w, handle->subgraph._nodes, N);
+      auto sbeg = g._nodes.begin() + sf._tag;
+      auto send = _set_up_graph(sbeg, g._nodes.end(), node, node->_topology, 0);
+      node->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
+      _schedule(w, sbeg, send);
       return true;
     }
     //node->_process_exception();
@@ -1747,30 +1759,6 @@ inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
   }
 
   return false;
-}
-
-// Procedure: _detach_subflow_task
-inline void Executor::_detach_subflow_task(Worker& w, Node* p, Graph& g) {
-
-  // graph is empty and has no async tasks
-  if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {
-    return;
-  }
-
-  auto N = _set_up_graph(g, nullptr, p->_topology, Node::DETACHED);
-  
-  // need to fetch the node to a local vector since the graph will be
-  // merged to the parent taskflow with move semantics
-  std::vector<Node*> local(N);
-  std::copy(g._nodes.begin(), g._nodes.begin() + N, local.begin());
-
-  {
-    std::lock_guard<std::mutex> lock(p->_topology->_taskflow._mutex);
-    p->_topology->_taskflow._graph._merge(std::move(g));
-  }
-  
-  p->_topology->_join_counter.fetch_add(N, std::memory_order_relaxed);
-  _schedule(w, local, N);
 }
 
 // Procedure: _corun_graph
@@ -1783,9 +1771,9 @@ inline void Executor::_corun_graph(Worker& w, Node* p, Graph& g) {
     return;
   }
 
-  auto N = _set_up_graph(g, p, p->_topology, 0);
-  p->_join_counter.fetch_add(N, std::memory_order_relaxed);
-  _schedule(w, g._nodes, N);
+  auto send = _set_up_graph(g._nodes.begin(), g._nodes.end(), p, p->_topology, 0);
+  p->_join_counter.fetch_add(send - g._nodes.begin(), std::memory_order_relaxed);
+  _schedule(w, g._nodes.begin(), send);
 
   _corun_until(w, [p] () -> bool { 
     return p->_join_counter.load(std::memory_order_acquire) == 0; }
@@ -1848,9 +1836,9 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
       // signal the executor to preempt this node
       node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
 
-      auto N = _set_up_graph(m->graph, node, node->_topology, 0);
-      node->_join_counter.fetch_add(N, std::memory_order_relaxed);
-      _schedule(w, m->graph._nodes, N);
+      auto send = _set_up_graph(m->graph._nodes.begin(), m->graph._nodes.end(), node, node->_topology, 0);
+      node->_join_counter.fetch_add(send - m->graph._nodes.begin(), std::memory_order_relaxed);
+      _schedule(w, m->graph._nodes.begin(), send);
       return true;
     }
     // second entry - already spawned
@@ -2080,34 +2068,80 @@ inline void Executor::wait_for_all() {
 }
 
 // Function: _set_up_topology
-inline void Executor::_set_up_topology(Worker* worker, Topology* tpg) {
+inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
   // ---- under taskflow lock ----
-  tpg->_taskflow._graph._clear_detached();
-  tpg->_num_sources = _set_up_graph(tpg->_taskflow._graph, nullptr, tpg, 0);
+  auto& g = tpg->_taskflow._graph;
+  //g._clear_detached();
+  
+  auto send = _set_up_graph(g._nodes.begin(), g._nodes.end(), nullptr, tpg, 0);
+  tpg->_num_sources = send - g._nodes.begin();
   tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
 
-  worker ? _schedule(*worker, tpg->_taskflow._graph._nodes, tpg->_num_sources) : 
-           _schedule(         tpg->_taskflow._graph._nodes, tpg->_num_sources);
+  w ? _schedule(*w, g._nodes.begin(), send) : _schedule(g._nodes.begin(), send);
 }
 
 // Function: _set_up_graph
-inline size_t Executor::_set_up_graph(
-  Graph& g, Node* parent, Topology* tpg, int state
-) {
-  size_t num_sources = 0;
-  for(size_t i=0; i<g._nodes.size(); i++) {
-    auto node = g._nodes[i];
+//inline size_t Executor::_set_up_graph(
+//  Graph& g, Node* parent, Topology* tpg, int state
+//) {
+//  size_t num_sources = 0;
+//  for(size_t i=0; i<g._nodes.size(); i++) {
+//    auto node = g._nodes[i];
+//    node->_topology = tpg;
+//    node->_parent = parent;
+//    node->_state.store(state, std::memory_order_relaxed);
+//    node->_set_up_join_counter();
+//    node->_exception_ptr = nullptr;
+//    if(node->num_dependents() == 0) {
+//      std::swap(g._nodes[num_sources++], g._nodes[i]);
+//    }
+//  }
+//  return num_sources;
+//}
+
+// Function: _set_up_graph
+template <typename I>
+I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int state) {
+
+  auto send = first;
+  for(; first != last; ++first) {
+    auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
     node->_state.store(state, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
     if(node->num_dependents() == 0) {
-      std::swap(g._nodes[num_sources++], g._nodes[i]);
+      std::iter_swap(send++, first);
+    }
+
+    // handle-specific clear
+    switch(node->_handle.index()) {
+      case Node::SUBFLOW: {
+        std::get_if<Node::Subflow>(&node->_handle)->subgraph.clear();
+      } break;
+
+      default:
+      break;
     }
   }
-  return num_sources;
+  return send;
+
+
+  //size_t num_sources = 0;
+  //for(size_t i=0; i<g._nodes.size(); i++) {
+  //  auto node = g._nodes[i];
+  //  node->_topology = tpg;
+  //  node->_parent = parent;
+  //  node->_state.store(state, std::memory_order_relaxed);
+  //  node->_set_up_join_counter();
+  //  node->_exception_ptr = nullptr;
+  //  if(node->num_dependents() == 0) {
+  //    std::swap(g._nodes[num_sources++], g._nodes[i]);
+  //  }
+  //}
+  //return num_sources;
 }
 
 // Function: _tear_down_topology
@@ -2121,8 +2155,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
+    auto& g = tpg->_taskflow._graph;
     tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
-    _schedule(worker, tpg->_taskflow._graph._nodes, tpg->_num_sources);
+    _schedule(worker, g._nodes.begin(), g._nodes.begin() + tpg->_num_sources);
   }
   // case 2: the final run of this topology
   else {
@@ -2182,30 +2217,41 @@ inline void Subflow::join() {
 
   // assert(this_worker().worker == &_worker);
 
-  if(!_joinable) {
-    TF_THROW("subflow not joinable");
+  if(!joinable()) {
+    TF_THROW("subflow already joined or detached");
   }
 
-  // only the parent worker can join the subflow
-  _executor._corun_graph(_worker, _parent, _graph);
-
-  // if any exception is caught from subflow tasks, rethrow it
-  _parent->_process_exception();
-
-  _joinable = false;
+  if(auto sbeg = _graph._nodes.begin() + _tag; sbeg != _graph._nodes.end()) {
+    auto send = _executor._set_up_graph(
+      sbeg, _graph._nodes.end(), _parent, _parent->_topology, 0
+    );
+    _parent->_join_counter.fetch_add(send-sbeg, std::memory_order_relaxed);
+    _executor._schedule(_worker, sbeg, send);
+    _executor._corun_until(_worker, [p=_parent] () -> bool { 
+      return p->_join_counter.load(std::memory_order_acquire) == 0; }
+    );
+  }
+  
+  _tag |= JOINED_BIT;
 }
 
 inline void Subflow::detach() {
 
   // assert(this_worker().worker == &_worker);
 
-  if(!_joinable) {
+  if(!joinable()) {
     TF_THROW("subflow already joined or detached");
   }
 
-  // only the parent worker can detach the subflow
-  _executor._detach_subflow_task(_worker, _parent, _graph);
-  _joinable = false;
+  if(auto sbeg = _graph._nodes.begin() + _tag; sbeg != _graph._nodes.end()) {
+    auto send = _executor._set_up_graph(
+      sbeg, _graph._nodes.end(), nullptr, _parent->_topology, Node::DETACHED
+    );
+    _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
+    _executor._schedule(_worker, sbeg, send);
+  }
+
+  _tag |= JOINED_BIT;
 }
 
 // ############################################################################

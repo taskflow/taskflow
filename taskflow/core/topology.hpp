@@ -12,6 +12,7 @@ class TopologyBase {
 class Topology {
 
   friend class Executor;
+  friend class Subflow;
   friend class Runtime;
   friend class Node;
 

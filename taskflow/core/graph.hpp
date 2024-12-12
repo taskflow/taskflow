@@ -108,8 +108,7 @@ class Graph {
     std::vector<Node*> _nodes;
 
     void _clear();
-    void _clear_joined();
-    void _clear_detached();
+    //void _clear_detached();
     void _merge(Graph&&);
     void _erase(Node*);
     
@@ -1128,44 +1127,21 @@ inline void Graph::_clear() {
   _nodes.clear();
 }
 
-// Procedure: _clear_joined
-inline void Graph::_clear_joined() {
-
-  auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
-    return (node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
-  });
-
-  for(auto itr = mid; itr != _nodes.end(); ++itr) {
-    recycle(*itr);
-  }
-  _nodes.resize(std::distance(_nodes.begin(), mid));
-}
-
 // Procedure: clear_detached
-inline void Graph::_clear_detached() {
-
-  //auto mid = std::partition(_nodes.begin(), _nodes.end(), [] (Node* node) {
-  //  return !(node->_state.load(std::memory_order_relaxed) & Node::DETACHED);
-  //});
-
-  //for(auto itr = mid; itr != _nodes.end(); ++itr) {
-  //  recycle(*itr);
-  //}
-  //_nodes.resize(std::distance(_nodes.begin(), mid));
-
-  size_t n = 0;
-  for(size_t i=0; i<_nodes.size(); i++) {
-    // non-detached node
-    if((_nodes[i]->_state.load(std::memory_order_relaxed) & Node::DETACHED)) {
-      recycle(_nodes[i]);  
-    }
-    // delete detached node
-    else {
-      std::swap(_nodes[n++], _nodes[i]);
-    }
-  }
-  _nodes.resize(n);
-}
+//inline void Graph::_clear_detached() {
+//  size_t n = 0;
+//  for(size_t i=0; i<_nodes.size(); i++) {
+//    // detached nodes
+//    if((_nodes[i]->_state.load(std::memory_order_relaxed) & Node::DETACHED)) {
+//      recycle(_nodes[i]);  
+//    }
+//    // delete undetached node
+//    else {
+//      std::swap(_nodes[n++], _nodes[i]);
+//    }
+//  }
+//  _nodes.resize(n);
+//}
 
 // Procedure: merge
 inline void Graph::_merge(Graph&& g) {

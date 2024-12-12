@@ -683,7 +683,7 @@ void condition_subflow(unsigned W) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(taskflow.num_tasks() == 4 + I);
+  REQUIRE(taskflow.num_tasks() == 4);
 
   for(size_t j=0; j<data.size(); ++j) {
     REQUIRE(data[j] == j*(j+1)/2*123);
@@ -696,7 +696,7 @@ void condition_subflow(unsigned W) {
 
   executor.wait_for_all();
 
-  REQUIRE(taskflow.num_tasks() == 4 + I*100);
+  REQUIRE(taskflow.num_tasks() == 4);
 
   for(size_t j=0; j<data.size(); ++j) {
     REQUIRE(data[j] == j*(j+1)/2*123);
