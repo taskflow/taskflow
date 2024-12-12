@@ -444,31 +444,31 @@ void fibonacci(size_t W) {
   REQUIRE(res == 6765);
 }
 
-TEST_CASE("FibSubflow.1thread") {
+TEST_CASE("FibSubflow.1thread" * doctest::timeout(300)) {
   fibonacci(1);
 }
 
-TEST_CASE("FibSubflow.2threads") {
+TEST_CASE("FibSubflow.2threads" * doctest::timeout(300)) {
   fibonacci(2);
 }
 
-TEST_CASE("FibSubflow.4threads") {
+TEST_CASE("FibSubflow.4threads" * doctest::timeout(300)) {
   fibonacci(4);
 }
 
-TEST_CASE("FibSubflow.5threads") {
+TEST_CASE("FibSubflow.5threads" * doctest::timeout(300)) {
   fibonacci(5);
 }
 
-TEST_CASE("FibSubflow.6threads") {
+TEST_CASE("FibSubflow.6threads" * doctest::timeout(300)) {
   fibonacci(6);
 }
 
-TEST_CASE("FibSubflow.7threads") {
+TEST_CASE("FibSubflow.7threads" * doctest::timeout(300)) {
   fibonacci(7);
 }
 
-TEST_CASE("FibSubflow.8threads") {
+TEST_CASE("FibSubflow.8threads" * doctest::timeout(300)) {
   fibonacci(8);
 }
 
@@ -523,39 +523,39 @@ void multiple_subflow_runs(unsigned W) {
   REQUIRE(count == 7000);
 }
 
-TEST_CASE("MultipleSubflowRuns.1thread") {
+TEST_CASE("MultipleSubflowRuns.1thread" * doctest::timeout(300)) {
   multiple_subflow_runs(1);
 }
 
-TEST_CASE("MultipleSubflowRuns.2threads") {
+TEST_CASE("MultipleSubflowRuns.2threads" * doctest::timeout(300)) {
   multiple_subflow_runs(2);
 }
 
-TEST_CASE("MultipleSubflowRuns.3threads") {
+TEST_CASE("MultipleSubflowRuns.3threads" * doctest::timeout(300)) {
   multiple_subflow_runs(3);
 }
 
-TEST_CASE("MultipleSubflowRuns.4threads") {
+TEST_CASE("MultipleSubflowRuns.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.4threads") {
+TEST_CASE("MultipleSubflowRuns.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.5threads") {
+TEST_CASE("MultipleSubflowRuns.5threads" * doctest::timeout(300)) {
   multiple_subflow_runs(5);
 }
 
-TEST_CASE("MultipleSubflowRuns.6threads") {
+TEST_CASE("MultipleSubflowRuns.6threads" * doctest::timeout(300)) {
   multiple_subflow_runs(6);
 }
 
-TEST_CASE("MultipleSubflowRuns.7threads") {
+TEST_CASE("MultipleSubflowRuns.7threads" * doctest::timeout(300)) {
   multiple_subflow_runs(7);
 }
 
-TEST_CASE("MultipleSubflowRuns.8threads") {
+TEST_CASE("MultipleSubflowRuns.8threads" * doctest::timeout(300)) {
   multiple_subflow_runs(8);
 }
 
@@ -601,39 +601,39 @@ void multiple_subflow_runs_with_changed_taskflow(unsigned W) {
 
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.1thread") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.1thread" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(1);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.2threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.2threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(2);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.3threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.3threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(3);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.4threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.4threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.5threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.5threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(5);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.6threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.6threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(6);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.7threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.7threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(7);
 }
 
-TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.8threads") {
+TEST_CASE("MultipleSubflowRuns.ChangedTaskflow.8threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_changed_taskflow(8);
 }
 
@@ -684,38 +684,38 @@ void multiple_subflow_runs_with_predicate(unsigned W) {
   ).get();
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.1thread") {
+TEST_CASE("MultipleSubflowRuns.Predicate.1thread" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(1);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.2threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.2threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(2);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.3threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.3threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(3);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.4threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.4threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.4threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(4);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.5threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.5threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(5);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.6threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.6threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(6);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.7threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.7threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(7);
 }
 
-TEST_CASE("MultipleSubflowRuns.Predicate.8threads") {
+TEST_CASE("MultipleSubflowRuns.Predicate.8threads" * doctest::timeout(300)) {
   multiple_subflow_runs_with_predicate(8);
 }

@@ -787,7 +787,7 @@ class Node {
   template <typename... Args>
   Node(const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
 
-  ~Node();
+  //~Node();
 
   size_t num_successors() const;
   size_t num_dependents() const;
@@ -980,39 +980,39 @@ Node::Node(
 }
 
 // Destructor
-inline Node::~Node() {
-  // this is to avoid stack overflow
-  if(_handle.index() == SUBFLOW) {
-    auto& subgraph = std::get_if<Subflow>(&_handle)->subgraph;
-    std::vector<Node*> nodes;
-    nodes.reserve(subgraph.size());
-
-    std::move(
-      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
-    );
-    subgraph._nodes.clear();
-
-    size_t i = 0;
-
-    while(i < nodes.size()) {
-
-      if(nodes[i]->_handle.index() == SUBFLOW) {
-        auto& sbg = std::get_if<Subflow>(&(nodes[i]->_handle))->subgraph;
-        std::move(
-          sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
-        );
-        sbg._nodes.clear();
-      }
-
-      ++i;
-    }
-
-    //auto& np = Graph::_node_pool();
-    for(i=0; i<nodes.size(); ++i) {
-      recycle(nodes[i]);
-    }
-  }
-}
+//inline Node::~Node() {
+//  // this is to avoid stack overflow
+//  if(_handle.index() == SUBFLOW) {
+//    auto& subgraph = std::get_if<Subflow>(&_handle)->subgraph;
+//    std::vector<Node*> nodes;
+//    nodes.reserve(subgraph.size());
+//
+//    std::move(
+//      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
+//    );
+//    subgraph._nodes.clear();
+//
+//    size_t i = 0;
+//
+//    while(i < nodes.size()) {
+//
+//      if(nodes[i]->_handle.index() == SUBFLOW) {
+//        auto& sbg = std::get_if<Subflow>(&(nodes[i]->_handle))->subgraph;
+//        std::move(
+//          sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
+//        );
+//        sbg._nodes.clear();
+//      }
+//
+//      ++i;
+//    }
+//
+//    //auto& np = Graph::_node_pool();
+//    for(i=0; i<nodes.size(); ++i) {
+//      recycle(nodes[i]);
+//    }
+//  }
+//}
 
 // Procedure: _precede
 inline void Node::_precede(Node* v) {
