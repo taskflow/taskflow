@@ -2106,12 +2106,15 @@ I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int stat
 
   auto send = first;
   for(; first != last; ++first) {
+
     auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
     node->_state.store(state, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
+
+    // move source to the first partition
     if(node->num_dependents() == 0) {
       std::iter_swap(send++, first);
     }
