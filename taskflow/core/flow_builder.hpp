@@ -1395,16 +1395,16 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
 
   // assert(_parent != nullptr);
   // clear undetached nodes in reversed order
-  //for(auto i = g._nodes.rbegin(); i != g._nodes.rend(); ++i) {
-  //  if(auto node = *i; (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
-  //    recycle(node);
-  //    --_tag;
-  //  }
-  //  else {
-  //    break;
-  //  }
-  //}
-  //g._nodes.resize(_tag);
+  for(auto i = graph._nodes.rbegin(); i != graph._nodes.rend(); ++i) {
+    if(auto node = *i; (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
+      recycle(node);
+      --_tag;
+    }
+    else {
+      break;
+    }
+  }
+  graph._nodes.resize(_tag);
 }
 
 // Function: joinable
