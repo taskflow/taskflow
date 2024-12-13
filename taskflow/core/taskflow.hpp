@@ -338,7 +338,7 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
 
 // Procedure:
 inline void Taskflow::clear() {
-  _graph._clear();
+  _graph.clear();
 }
 
 // Function: num_tasks
@@ -369,8 +369,8 @@ inline Graph& Taskflow::graph() {
 // Function: for_each_task
 template <typename V>
 void Taskflow::for_each_task(V&& visitor) const {
-  for(size_t i=0; i<_graph._nodes.size(); ++i) {
-    visitor(Task(_graph._nodes[i]));
+  for(auto itr = _graph.begin(); itr != _graph.end(); ++itr) {
+    visitor(Task(itr->get()));
   }
 }
 
@@ -505,7 +505,9 @@ inline void Taskflow::_dump(
   std::ostream& os, const Graph* graph, Dumper& dumper
 ) const {
 
-  for(const auto& n : graph->_nodes) {
+  for(auto itr = graph->begin(); itr != graph->end(); ++itr) {
+
+    Node* n = itr->get();
 
     // regular task
     if(n->_handle.index() != Node::MODULE) {

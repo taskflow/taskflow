@@ -1391,20 +1391,19 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
   _executor   {executor}, 
   _worker     {worker}, 
   _parent     {parent}, 
-  _tag        {graph._nodes.size()} {
+  _tag        {graph.size()} {
 
   // assert(_parent != nullptr);
   // clear undetached nodes in reversed order
-  for(auto i = graph._nodes.rbegin(); i != graph._nodes.rend(); ++i) {
-    if(auto node = *i; (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
-      recycle(node);
+  for(auto i = graph.rbegin(); i != graph.rend(); ++i) {
+    if(auto node = i->get(); (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
       --_tag;
     }
     else {
       break;
     }
   }
-  graph._nodes.resize(_tag);
+  graph.resize(_tag);
 }
 
 // Function: joinable

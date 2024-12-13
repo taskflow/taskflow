@@ -1442,78 +1442,76 @@ inline void Executor::_schedule(Node* node) {
 template <typename I>
 void Executor::_schedule(Worker& worker, I first, I last) {
 
-  //size_t num_nodes = last - first;
-  //
-  //if(num_nodes == 0) {
-  //  return;
-  //}
-
-  //// caller is a worker to this pool - starting at v3.5 we do not use
-  //// any complicated notification mechanism as the experimental result
-  //// has shown no significant advantage.
-  //if(worker._executor == this) {
-  //  for(size_t i=0; i<num_nodes; i++) {
-  //    auto node = *first++;
-  //    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
-  //    _notifier.notify_one();
-  //  }
-  //  return;
-  //}
-
-  //for(size_t i=0; i<num_nodes; i++) {
-  //  auto node = *first++;
-  //  _freelist.push(node);
-  //}
-  //_notifier.notify_n(num_nodes);
-
-  if(first == last) {
+  size_t num_nodes = last - first;
+  
+  if(num_nodes == 0) {
     return;
   }
-
-  // caller is a worker to this pool - starting at v3.5 we do not use
-  // any complicated notification mechanism as the experimental result
-  // has shown no significant advantage.
+  
+  // [NOTE]: We cannot use first/last as the for-loop condition 
+  // (e.g., for(; first != last; ++first)) since when a node is inserted
+  // into the queue the node can run and finish immediately.
+  // If this is the last node in the graph, it will tear down the parent
+  // container which cause the last ++first to fail.
+  // This problem is specific to MSVC which has strict iterator arithmetics.
   if(worker._executor == this) {
-    for(; first != last; ++first) {
-      worker._wsq.push(*first, [&](){ _freelist.push(worker._id, *first); });
+    for(size_t i=0; i<num_nodes; i++) {
+      worker._wsq.push(
+        first[i].get(), [&](){ _freelist.push(worker._id, first[i].get()); }
+      );
       _notifier.notify_one();
     }
     return;
   }
 
-  size_t n = 0;
-  for(; first != last; ++first, ++n) {
-    _freelist.push(*first);
+  for(size_t i=0; i<num_nodes; i++) {
+    _freelist.push(first[i].get());
   }
-  _notifier.notify_n(n);
+  _notifier.notify_n(num_nodes);
+
+  //if(first == last) {
+  //  return;
+  //}
+
+  //if(worker._executor == this) {
+  //  for(; first != last; ++first) {
+  //    worker._wsq.push(first->get(), [&](){ _freelist.push(worker._id, first->get()); });
+  //    _notifier.notify_one();
+  //  }
+  //  return;
+  //}
+
+  //size_t n = 0;
+  //for(; first != last; ++first, ++n) {
+  //  _freelist.push(first->get());
+  //}
+  //_notifier.notify_n(n);
 }
 
 // Procedure: _schedule
 template <typename I>
 inline void Executor::_schedule(I first, I last) {
   
-  //assert(nodes.size() >= num_nodes);
+  size_t num_nodes = last - first;
 
-  //size_t num_nodes = last - first;
-
-  //if(num_nodes == 0) {
-  //  return;
-  //}
-
-  //for(size_t i=0; i<num_nodes; i++) {
-  //  _freelist.push(*first++);
-  //}
-  //_notifier.notify_n(num_nodes);
-
-  if(first == last) {
+  if(num_nodes == 0) {
     return;
   }
-  
-  size_t n = 0;
-  for(; first != last; ++first, ++n) {
-    _freelist.push(*first);
+
+  for(size_t i=0; i<num_nodes; i++) {
+    _freelist.push(first[i].get());
   }
-  _notifier.notify_n(n);
+  _notifier.notify_n(num_nodes);
+
+  //if(first == last) {
+  //  return;
+  //}
+  //
+  //size_t n = 0;
+  //for(; first != last; ++first, ++n) {
+  //  _freelist.push(first->get());
+  //}
+  //_notifier.notify_n(n);
 }
 
 inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
@@ -1770,7 +1768,7 @@ inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
     
     // spawn the subflow if it is joinable and its graph is non-empty
     // implicit join is faster than Subflow::join as it does not involve corun
-    if(sf.joinable() && g._nodes.size() > sf._tag) {
+    if(sf.joinable() && g.size() > sf._tag) {
 
       // signal the executor to preempt this node
       node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
@@ -2112,32 +2110,13 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 }
 
 // Function: _set_up_graph
-//inline size_t Executor::_set_up_graph(
-//  Graph& g, Node* parent, Topology* tpg, int state
-//) {
-//  size_t num_sources = 0;
-//  for(size_t i=0; i<g._nodes.size(); i++) {
-//    auto node = g._nodes[i];
-//    node->_topology = tpg;
-//    node->_parent = parent;
-//    node->_state.store(state, std::memory_order_relaxed);
-//    node->_set_up_join_counter();
-//    node->_exception_ptr = nullptr;
-//    if(node->num_dependents() == 0) {
-//      std::swap(g._nodes[num_sources++], g._nodes[i]);
-//    }
-//  }
-//  return num_sources;
-//}
-
-// Function: _set_up_graph
 template <typename I>
 I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int state) {
 
   auto send = first;
   for(; first != last; ++first) {
 
-    auto node = *first;
+    auto node = first->get();
     node->_topology = tpg;
     node->_parent = parent;
     node->_state.store(state, std::memory_order_relaxed);
@@ -2239,7 +2218,7 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined or detached");
   }
   
-  if(_graph._nodes.size() > _tag) {
+  if(_graph.size() > _tag) {
     auto sbeg = _graph.begin() + _tag;
     auto send = _executor._set_up_graph(
       sbeg, _graph.end(), _parent, _parent->_topology, 0
@@ -2262,7 +2241,7 @@ inline void Subflow::detach() {
     TF_THROW("subflow already joined or detached");
   }
 
-  if(_graph._nodes.size() > _tag) {
+  if(_graph.size() > _tag) {
     auto sbeg = _graph.begin() + _tag;
     auto send = _executor._set_up_graph(
       sbeg, _graph.end(), nullptr, _parent->_topology, Node::DETACHED

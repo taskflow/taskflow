@@ -48,7 +48,7 @@ class to interact with the executor through taskflow composition.
 
 A graph object is move-only.
 */
-class Graph {
+class Graph : public std::vector<std::unique_ptr<Node>> {
 
   friend class Node;
   friend class FlowBuilder;
@@ -57,10 +57,6 @@ class Graph {
   friend class Executor;
 
   public:
-
-  using iterator = RandomAccessIterator<Node*>;
-  using const_iterator = ConstantRandomAccessIterator<Node*>;
-
 
   /**
   @brief constructs a graph object
@@ -75,12 +71,7 @@ class Graph {
   /**
   @brief constructs a graph using move semantics
   */
-  Graph(Graph&&);
-
-  /**
-  @brief destructs the graph object
-  */
-  ~Graph();
+  Graph(Graph&&) = default;
 
   /**
   @brief disabled copy assignment operator
@@ -90,51 +81,11 @@ class Graph {
   /**
   @brief assigns a graph using move semantics
   */
-  Graph& operator = (Graph&&);
-
-  /**
-  @brief queries if the graph is empty
-  */
-  bool empty() const;
-
-  /**
-  @brief queries the number of nodes in the graph
-  */
-  size_t size() const;
-
-  /**
-  @brief clears the graph
-  */
-  void clear();
+  Graph& operator = (Graph&&) = default;
   
-  /**
-  @brief queries the iterator to the first element
-  */
-  iterator begin() { return iterator(_nodes.data()); }
-
-  /**
-  @brief queries the constant iterator to the first element
-  */
-  const_iterator begin() const { return const_iterator(_nodes.data()); }
-
-  /**
-  @brief queries the iterator to the element following the last element
-  */
-  iterator end() { return iterator(_nodes.data() + _nodes.size()); }
-  
-  /**
-  @brief queries the iterator to the element following the last element
-  */
-  const_iterator end() const { return const_iterator(_nodes.data() + _nodes.size()); }
-
 
   private:
 
-  std::vector<Node*> _nodes;
-
-  void _clear();
-  //void _clear_detached();
-  void _merge(Graph&&);
   void _erase(Node*);
   
   /**
@@ -1122,76 +1073,16 @@ inline void Node::_process_exception() {
 // Graph definition
 // ----------------------------------------------------------------------------
 
-// Destructor
-inline Graph::~Graph() {
-  _clear();
-}
-
-// Move constructor
-inline Graph::Graph(Graph&& other) :
-  _nodes {std::move(other._nodes)} {
-}
-
-// Move assignment
-inline Graph& Graph::operator = (Graph&& other) {
-  _clear();
-  _nodes = std::move(other._nodes);
-  return *this;
-}
-
-// Procedure: clear
-inline void Graph::clear() {
-  _clear();
-}
-
-// Procedure: clear
-inline void Graph::_clear() {
-  for(auto node : _nodes) {
-    recycle(node);
-  }
-  _nodes.clear();
-}
-
-// Procedure: clear_detached
-//inline void Graph::_clear_detached() {
-//  size_t n = 0;
-//  for(size_t i=0; i<_nodes.size(); i++) {
-//    // detached nodes
-//    if((_nodes[i]->_state.load(std::memory_order_relaxed) & Node::DETACHED)) {
-//      recycle(_nodes[i]);  
-//    }
-//    // delete undetached node
-//    else {
-//      std::swap(_nodes[n++], _nodes[i]);
-//    }
-//  }
-//  _nodes.resize(n);
-//}
-
-// Procedure: merge
-inline void Graph::_merge(Graph&& g) {
-  for(auto n : g._nodes) {
-    _nodes.push_back(n);
-  }
-  g._nodes.clear();
-}
-
 // Function: erase
 inline void Graph::_erase(Node* node) {
-  if(auto I = std::find(_nodes.begin(), _nodes.end(), node); I != _nodes.end()) {
-    _nodes.erase(I);
-    recycle(node);
+
+  auto itr = std::find_if(begin(), end(), [&](auto& uptr){
+    return (uptr.get() == node);
+  });
+
+  if(itr != end()) {
+    erase(itr);
   }
-}
-
-// Function: size
-inline size_t Graph::size() const {
-  return _nodes.size();
-}
-
-// Function: empty
-inline bool Graph::empty() const {
-  return _nodes.empty();
 }
 
 /**
@@ -1199,8 +1090,8 @@ inline bool Graph::empty() const {
 */
 template <typename ...ArgsT>
 Node* Graph::_emplace_back(ArgsT&&... args) {
-  _nodes.push_back(animate(std::forward<ArgsT>(args)...));
-  return _nodes.back();
+  push_back(std::make_unique<Node>(std::forward<ArgsT>(args)...));
+  return back().get();
 }
 
 }  // end of namespace tf. ----------------------------------------------------
