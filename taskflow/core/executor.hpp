@@ -1493,15 +1493,24 @@ inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
+  #define TF_INVOKE_CONTINUATION()  \
+    if (cache) {                    \
+      node = cache;                 \
+      goto begin_invoke;            \
+    }
+
   begin_invoke:
 
   Node* cache {nullptr};
-  SmallVector<int> conds;
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
-    goto tear_down_invoke;
+    _tear_down_invoke(worker, node, cache);
+    TF_INVOKE_CONTINUATION();
+    return;
   }
+  
+  SmallVector<int> conds;
 
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
@@ -1543,7 +1552,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::ASYNC: {
       _invoke_async_task(worker, node);
       _tear_down_async(node);
-      return ;
+      return;
     }
     break;
 
@@ -1551,7 +1560,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::DEPENDENT_ASYNC: {
       _invoke_dependent_async_task(worker, node);
       _tear_down_dependent_async(worker, node, cache);
-      goto continue_invoke;
+      TF_INVOKE_CONTINUATION();
+      return;
     }
     break;
 
@@ -1610,18 +1620,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
   
   // clean up the node after execution
-  tear_down_invoke:
-
   _tear_down_invoke(worker, node, cache);
-
-  // bypass expensive queuing operations 
-  continue_invoke:
-
-  if (cache) {        
-    node = cache;     
-    cache = nullptr;  
-    goto begin_invoke;
-  }
+  TF_INVOKE_CONTINUATION();
 }
 
 // Procedure: _tear_down_invoke
