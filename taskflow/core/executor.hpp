@@ -1442,33 +1442,9 @@ inline void Executor::_schedule(Node* node) {
 template <typename I>
 void Executor::_schedule(Worker& worker, I first, I last) {
 
-  //assert(nodes.size() >= num_nodes);
-
-  size_t num_nodes = last - first;
-  
-  if(num_nodes == 0) {
-    return;
-  }
-
-  // caller is a worker to this pool - starting at v3.5 we do not use
-  // any complicated notification mechanism as the experimental result
-  // has shown no significant advantage.
-  if(worker._executor == this) {
-    for(size_t i=0; i<num_nodes; i++) {
-      auto node = *(first + i);
-      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
-      _notifier.notify_one();
-    }
-    return;
-  }
-
-  for(size_t i=0; i<num_nodes; i++) {
-    auto node = *(first + i);
-    _freelist.push(node);
-  }
-  _notifier.notify_n(num_nodes);
-
-  //if(first == last) {
+  //size_t num_nodes = last - first;
+  //
+  //if(num_nodes == 0) {
   //  return;
   //}
 
@@ -1476,18 +1452,42 @@ void Executor::_schedule(Worker& worker, I first, I last) {
   //// any complicated notification mechanism as the experimental result
   //// has shown no significant advantage.
   //if(worker._executor == this) {
-  //  for(; first != last; ++first) {
-  //    worker._wsq.push(*first, [&](){ _freelist.push(worker._id, *first); });
+  //  for(size_t i=0; i<num_nodes; i++) {
+  //    auto node = *first++;
+  //    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
   //    _notifier.notify_one();
   //  }
   //  return;
   //}
 
-  //size_t n = 0;
-  //for(; first != last; ++first, ++n) {
-  //  _freelist.push(*first);
+  //for(size_t i=0; i<num_nodes; i++) {
+  //  auto node = *first++;
+  //  _freelist.push(node);
   //}
-  //_notifier.notify_n(n);
+  //_notifier.notify_n(num_nodes);
+
+  if(first == last) {
+    return;
+  }
+
+  // caller is a worker to this pool - starting at v3.5 we do not use
+  // any complicated notification mechanism as the experimental result
+  // has shown no significant advantage.
+  if(worker._executor == this) {
+    while(first != last) {
+      auto node = *first++;
+      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
+      _notifier.notify_one();
+    }
+    return;
+  }
+
+  size_t n = 0;
+  while(first != last) {
+    _freelist.push(*first++);
+    ++n;
+  }
+  _notifier.notify_n(n);
 }
 
 // Procedure: _schedule
@@ -1496,26 +1496,27 @@ inline void Executor::_schedule(I first, I last) {
   
   //assert(nodes.size() >= num_nodes);
 
-  size_t num_nodes = last - first;
+  //size_t num_nodes = last - first;
 
-  if(num_nodes == 0) {
-    return;
-  }
-
-  for(size_t i=0; i<num_nodes; i++) {
-    _freelist.push(*(first + i));
-  }
-  _notifier.notify_n(num_nodes);
-
-  //if(first == last) {
+  //if(num_nodes == 0) {
   //  return;
   //}
-  //
-  //size_t n = 0;
-  //for(; first != last; ++first, ++n) {
-  //  _freelist.push(*first);
+
+  //for(size_t i=0; i<num_nodes; i++) {
+  //  _freelist.push(*first++);
   //}
-  //_notifier.notify_n(n);
+  //_notifier.notify_n(num_nodes);
+
+  if(first == last) {
+    return;
+  }
+  
+  size_t n = 0;
+  while(first != last) {
+    _freelist.push(*first++);
+    ++n;
+  }
+  _notifier.notify_n(n);
 }
 
 inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
