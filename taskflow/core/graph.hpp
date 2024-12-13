@@ -58,65 +58,90 @@ class Graph {
 
   public:
 
-    /**
-    @brief constructs a graph object
-    */
-    Graph() = default;
+  using iterator = RandomAccessIterator<Node*>;
+  using const_iterator = ConstantRandomAccessIterator<Node*>;
 
-    /**
-    @brief disabled copy constructor
-    */
-    Graph(const Graph&) = delete;
 
-    /**
-    @brief constructs a graph using move semantics
-    */
-    Graph(Graph&&);
+  /**
+  @brief constructs a graph object
+  */
+  Graph() = default;
 
-    /**
-    @brief destructs the graph object
-    */
-    ~Graph();
+  /**
+  @brief disabled copy constructor
+  */
+  Graph(const Graph&) = delete;
 
-    /**
-    @brief disabled copy assignment operator
-    */
-    Graph& operator = (const Graph&) = delete;
+  /**
+  @brief constructs a graph using move semantics
+  */
+  Graph(Graph&&);
 
-    /**
-    @brief assigns a graph using move semantics
-    */
-    Graph& operator = (Graph&&);
+  /**
+  @brief destructs the graph object
+  */
+  ~Graph();
 
-    /**
-    @brief queries if the graph is empty
-    */
-    bool empty() const;
+  /**
+  @brief disabled copy assignment operator
+  */
+  Graph& operator = (const Graph&) = delete;
 
-    /**
-    @brief queries the number of nodes in the graph
-    */
-    size_t size() const;
+  /**
+  @brief assigns a graph using move semantics
+  */
+  Graph& operator = (Graph&&);
 
-    /**
-    @brief clears the graph
-    */
-    void clear();
+  /**
+  @brief queries if the graph is empty
+  */
+  bool empty() const;
+
+  /**
+  @brief queries the number of nodes in the graph
+  */
+  size_t size() const;
+
+  /**
+  @brief clears the graph
+  */
+  void clear();
+  
+  /**
+  @brief queries the iterator to the first element
+  */
+  iterator begin() { return iterator(_nodes.data()); }
+
+  /**
+  @brief queries the constant iterator to the first element
+  */
+  const_iterator begin() const { return const_iterator(_nodes.data()); }
+
+  /**
+  @brief queries the iterator to the element following the last element
+  */
+  iterator end() { return iterator(_nodes.data() + _nodes.size()); }
+  
+  /**
+  @brief queries the iterator to the element following the last element
+  */
+  const_iterator end() const { return const_iterator(_nodes.data() + _nodes.size()); }
+
 
   private:
 
-    std::vector<Node*> _nodes;
+  std::vector<Node*> _nodes;
 
-    void _clear();
-    //void _clear_detached();
-    void _merge(Graph&&);
-    void _erase(Node*);
-    
-    /**
-    @private
-    */
-    template <typename ...ArgsT>
-    Node* _emplace_back(ArgsT&&...);
+  void _clear();
+  //void _clear_detached();
+  void _merge(Graph&&);
+  void _erase(Node*);
+  
+  /**
+  @private
+  */
+  template <typename ...ArgsT>
+  Node* _emplace_back(ArgsT&&...);
 };
 
 // ----------------------------------------------------------------------------
