@@ -427,18 +427,18 @@ void joined_subflow_exception_1(unsigned W) {
   std::atomic<bool> post_join {false};
 
   taskflow.emplace([&] (tf::Subflow& sf0) {
-    for (int i = 0; i < 16; ++i) {
+    for (int i = 0; i < 100; ++i) {
       sf0.emplace([&] (tf::Subflow& sf1) {
-        for (int j = 0; j < 16; ++j) {
+        for (int j = 0; j < 100; ++j) {
           sf1.emplace([] () {
             throw std::runtime_error("x");
-          });
+          }).name(std::string("sf1-child-") + std::to_string(j));
         }
         sf1.join();
         post_join = true;
-      });
+      }).name(std::string("sf1-") + std::to_string(i));
     }
-  });
+  }).name("sf0");
   
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
   REQUIRE(post_join == false);
@@ -513,22 +513,30 @@ void executor_corun_exception(unsigned W) {
   taskflow1.emplace([](){
     throw std::runtime_error("x");
   });
+
   taskflow2.emplace([&](){
     REQUIRE_THROWS_WITH_AS(executor.corun(taskflow1), "x", std::runtime_error);
   });
+
   executor.run(taskflow2).get();
   
-
   taskflow1.clear();
+  taskflow2.clear();
+
   for(size_t i=0; i<100; i++) {
     taskflow1.emplace([](tf::Subflow& sf){
       for(size_t j=0; j<100; j++) {
         sf.emplace([&](){
-          throw std::runtime_error("x");
+          throw std::runtime_error("y");
         });
       }
     });
   }
+  
+  taskflow2.emplace([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow1), "y", std::runtime_error);
+  });
+
   executor.run(taskflow2).get();
 }
 

@@ -36,7 +36,7 @@ string(FIND '${CMAKE_CXX_FLAGS}' "-fsanitize" sanitize)
 
 if(${sanitize} EQUAL -1)
   message(STATUS "Add test_exception to unit tests")
-  #list(APPEND TF_UNITTESTS test_exceptions)
+  list(APPEND TF_UNITTESTS test_exceptions)
 endif()
 
 

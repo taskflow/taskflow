@@ -630,6 +630,7 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+  friend class AnchorGuard;
 
   //template <typename T>
   //friend class Freelist;
@@ -649,6 +650,7 @@ class Node {
   constexpr static int DETACHED    = 2;
   constexpr static int EXCEPTION   = 4;
   constexpr static int PREEMPTED   = 8;
+  constexpr static int ANCHOR      = 16;
 
   using Placeholder = std::monostate;
 
@@ -801,7 +803,10 @@ class Node {
 
   bool _is_cancelled() const;
   bool _is_conditioner() const;
+  bool _is_preempted() const;
   bool _acquire_all(SmallVector<Node*>&);
+
+  Node* _anchor();
 
   SmallVector<Node*> _release_all();
 };
@@ -1039,6 +1044,11 @@ inline bool Node::_is_conditioner() const {
          _handle.index() == Node::MULTI_CONDITION;
 }
 
+// Function: _is_preempted
+inline bool Node::_is_preempted() const {
+  return _state.load(std::memory_order_relaxed) & Node::PREEMPTED;
+}
+
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
@@ -1060,6 +1070,15 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
+// Procedure: _anchor
+inline Node* Node::_anchor()  {
+  Node* v = _parent;
+  while(v && (v->_state.load(std::memory_order_relaxed) & Node::ANCHOR) == 0) {
+    v = v->_parent;
+  }
+  return v;
+}
+
 // Procedure: _process_exception
 inline void Node::_process_exception() {
   if(_exception_ptr) {
@@ -1070,19 +1089,40 @@ inline void Node::_process_exception() {
 }
 
 // ----------------------------------------------------------------------------
+// AnchorGuard
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+class AnchorGuard {
+
+  public:
+
+  AnchorGuard(Node* node) : _node{node} { 
+    _node->_state.fetch_or(Node::ANCHOR, std::memory_order_relaxed); 
+  }
+
+  ~AnchorGuard() {
+    _node->_state.fetch_and(~Node::ANCHOR, std::memory_order_relaxed);
+  }
+  
+  private:
+
+  Node* _node;
+};
+
+
+// ----------------------------------------------------------------------------
 // Graph definition
 // ----------------------------------------------------------------------------
 
 // Function: erase
 inline void Graph::_erase(Node* node) {
-
-  auto itr = std::find_if(begin(), end(), [&](auto& uptr){
-    return (uptr.get() == node);
-  });
-
-  if(itr != end()) {
-    erase(itr);
-  }
+  erase(
+    std::remove_if(begin(), end(), [&](auto& p){ return p.get() == node; }),
+    end()
+  );
 }
 
 /**

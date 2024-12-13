@@ -1709,24 +1709,47 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 inline void Executor::_process_exception(Worker&, Node* node) {
 
   constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
-  
-  // if the node has a parent, we store the exception in its parent
-  if(auto parent = node->_parent; parent && parent->_handle.index() != Node::MODULE) { 
-    if ((parent->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
-      parent->_exception_ptr = std::current_exception();
+
+  //std::cout << "processing exception from " << node->_name << std::endl;
+
+  // the exception occurs under a blocking corun
+  if(auto anchor = node->_anchor(); anchor) {
+    //std::cout << "\tfind anchor: " << anchor->_name << '\n';
+    // multiple tasks may throw, and we only take the first thrown exception
+    if((anchor->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
+      //std::cout << node->_name << " stores exception in anchor " << anchor->_name << std::endl;
+      anchor->_exception_ptr = std::current_exception();
     }
-    // TODO if the node has a topology, cancel it to enable early stop
-    //if(auto tpg = node->_topology; tpg) {
-    //  tpg->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
-    //}
   }
-  // multiple tasks may throw, so we only take the first thrown exception
-  else if(auto tpg = node->_topology; tpg && 
-    ((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0)
-  ) {
-    tpg->_exception_ptr = std::current_exception();
+  // otherwise, we simply store the exception in the topology and cancel it
+  else if(auto tpg = node->_topology; tpg) {
+    //std::cout << "\tno anchor - go to topology\n";
+    // multiple tasks may throw, and we only take the first thrown exception
+    if((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0) {
+      //std::cout << "store exception in topology " << std::endl;
+      tpg->_exception_ptr = std::current_exception();
+    }
   }
-  // TODO: skip the exception that is not associated with any taskflows
+
+  
+  //// if the node has a parent, we store the exception in its parent
+  //if(auto parent = node->_parent; parent && !parent->_is_preempted()) { 
+
+  //  if ((parent->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
+  //    parent->_exception_ptr = std::current_exception();
+  //  }
+  //  // TODO if the node has a topology, cancel it to enable early stop
+  //  //if(auto tpg = node->_topology; tpg) {
+  //  //  tpg->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
+  //  //}
+  //}
+  //// multiple tasks may throw, so we only take the first thrown exception
+  //else if(auto tpg = node->_topology; tpg && 
+  //  ((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0)
+  //) {
+  //  tpg->_exception_ptr = std::current_exception();
+  //}
+  //// TODO: skip the exception that is not associated with any taskflows
 }
 
 // Procedure: _invoke_static_task
@@ -1742,7 +1765,6 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
       case 1:
         Runtime rt(*this, worker, node);
         std::get_if<1>(&work)->operator()(rt);
-        node->_process_exception();
       break;
     }
   });
@@ -1750,7 +1772,7 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
 }
 
 // Procedure: _invoke_subflow_task
-inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
+inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
   //TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
 
   if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
@@ -1759,12 +1781,14 @@ inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
     auto& g = h.subgraph;
     
     // set up the subflow
-    Subflow sf(*this, w, node, g);
+    Subflow sf(*this, worker, node, g);
 
     // invoke the subflow callable
-    _observer_prologue(w, node);
-    h.work(sf);
-    _observer_epilogue(w, node);
+    _observer_prologue(worker, node);
+    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+      h.work(sf);
+    });
+    _observer_epilogue(worker, node);
     
     // spawn the subflow if it is joinable and its graph is non-empty
     // implicit join is faster than Subflow::join as it does not involve corun
@@ -1777,10 +1801,9 @@ inline bool Executor::_invoke_subflow_task(Worker& w, Node* node) {
       auto sbeg = g.begin() + sf._tag;
       auto send = _set_up_graph(sbeg, g.end(), node, node->_topology, 0);
       node->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
-      _schedule(w, sbeg, send);
+      _schedule(worker, sbeg, send);
       return true;
     }
-    //node->_process_exception();
   }
   else {
     node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
@@ -1794,18 +1817,26 @@ inline void Executor::_corun_graph(Worker& w, Node* p, Graph& g) {
 
   // assert(p);
 
-  // graph is empty and has no async tasks (subflow)
+  // graph is empty and has no async tasks
   if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {
     return;
   }
+  
+  // anchor this parent as the blocking point
+  {
+    AnchorGuard anchor(p);
 
-  auto send = _set_up_graph(g.begin(), g.end(), p, p->_topology, 0);
-  p->_join_counter.fetch_add(send - g.begin(), std::memory_order_relaxed);
-  _schedule(w, g.begin(), send);
+    auto send = _set_up_graph(g.begin(), g.end(), p, p->_topology, 0);
+    p->_join_counter.fetch_add(send - g.begin(), std::memory_order_relaxed);
+    _schedule(w, g.begin(), send);
 
-  _corun_until(w, [p] () -> bool { 
-    return p->_join_counter.load(std::memory_order_acquire) == 0; }
-  );
+    _corun_until(w, [p] () -> bool { 
+      return p->_join_counter.load(std::memory_order_acquire) == 0; }
+    );
+  }
+
+  // emit the exception to the blocker
+  p->_process_exception();
 }
 
 // Procedure: _invoke_condition_task
@@ -1823,7 +1854,6 @@ inline void Executor::_invoke_condition_task(
       case 1:
         Runtime rt(*this, worker, node);
         conds = { std::get_if<1>(&work)->operator()(rt) };
-        node->_process_exception();
       break;
     }
   });
@@ -1845,7 +1875,6 @@ inline void Executor::_invoke_multi_condition_task(
       case 1:
         Runtime rt(*this, worker, node);
         conds = std::get_if<1>(&work)->operator()(rt);
-        node->_process_exception();
       break;
     }
   });
@@ -1855,12 +1884,9 @@ inline void Executor::_invoke_multi_condition_task(
 // Procedure: _invoke_module_task
 inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
 
-  // spawns only non-empty module
-  if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
-
-    // first entry - not spawned yet
-    if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
-
+  // first entry - not spawned yet
+  if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
+    if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
       // signal the executor to preempt this node
       node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
 
@@ -1869,10 +1895,10 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
       _schedule(w, m->graph.begin(), send);
       return true;
     }
-    // second entry - already spawned
-    else {
-      node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
-    }
+  }
+  // second entry - already spawned
+  else {
+    node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
   }
   return false;
 }
@@ -2041,7 +2067,6 @@ void Executor::corun(T& target) {
 
   Node parent;  // auxiliary parent
   _corun_graph(*pt::worker, &parent, target.graph());
-  parent._process_exception();
 }
 
 // Function: corun_until
@@ -2053,8 +2078,6 @@ void Executor::corun_until(P&& predicate) {
   }
 
   _corun_until(*pt::worker, std::forward<P>(predicate));
-
-  // TODO: exception?
 }
 
 // Procedure: _increment_topology
@@ -2217,20 +2240,31 @@ inline void Subflow::join() {
   if(!joinable()) {
     TF_THROW("subflow already joined or detached");
   }
-  
+
   if(_graph.size() > _tag) {
-    auto sbeg = _graph.begin() + _tag;
-    auto send = _executor._set_up_graph(
-      sbeg, _graph.end(), _parent, _parent->_topology, 0
-    );
-    _parent->_join_counter.fetch_add(send-sbeg, std::memory_order_relaxed);
-    _executor._schedule(_worker, sbeg, send);
-    _executor._corun_until(_worker, [p=_parent] () -> bool { 
-      return p->_join_counter.load(std::memory_order_acquire) == 0; }
-    );
+
+    // anchor this parent as the blocking point
+    {
+      AnchorGuard anchor(_parent);
+
+      auto sbeg = _graph.begin() + _tag;
+      auto send = _executor._set_up_graph(
+        sbeg, _graph.end(), _parent, _parent->_topology, 0
+      );
+      _parent->_join_counter.fetch_add(send-sbeg, std::memory_order_relaxed);
+      _executor._schedule(_worker, sbeg, send);
+      _executor._corun_until(_worker, [p=_parent] () -> bool { 
+        return p->_join_counter.load(std::memory_order_acquire) == 0; }
+      );
+    }
+    _tag |= JOINED_BIT;
+    
+    //std::cout << "parent " << _parent->_name << " has exception? " << (_parent->_exception_ptr != nullptr) << std::endl;
+    _parent->_process_exception();
   }
-  
-  _tag |= JOINED_BIT;
+  else { 
+    _tag |= JOINED_BIT;
+  }
 }
 
 inline void Subflow::detach() {
@@ -2249,7 +2283,7 @@ inline void Subflow::detach() {
     _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
     _executor._schedule(_worker, sbeg, send);
   }
-
+  
   _tag |= JOINED_BIT;
 }
 
@@ -2276,21 +2310,23 @@ inline void Runtime::schedule(Task task) {
 template <typename T>
 void Runtime::corun(T&& target) {
   _executor._corun_graph(_worker, _parent, target.graph());
-  _parent->_process_exception();
 }
 
 // Procedure: corun_until
 template <typename P>
 void Runtime::corun_until(P&& predicate) {
   _executor._corun_until(_worker, std::forward<P>(predicate));
-  // TODO: exception?
 }
 
 // Function: corun_all
 inline void Runtime::corun_all() {
-  _executor._corun_until(_worker, [this] () -> bool { 
-    return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
-  });
+
+  {
+    AnchorGuard anchor(_parent);
+    _executor._corun_until(_worker, [this] () -> bool { 
+      return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
+    });
+  }
   _parent->_process_exception();
 }
 

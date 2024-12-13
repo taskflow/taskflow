@@ -1396,7 +1396,7 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
   // assert(_parent != nullptr);
   // clear undetached nodes in reversed order
   for(auto i = graph.rbegin(); i != graph.rend(); ++i) {
-    if(auto node = i->get(); (node->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
+    if((i->get()->_state.load(std::memory_order_relaxed) & Node::DETACHED) == 0) {
       --_tag;
     }
     else {
