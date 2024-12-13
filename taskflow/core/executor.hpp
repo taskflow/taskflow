@@ -1078,8 +1078,8 @@ class Executor {
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*);
   void _tear_down_async(Node*);
-  void _tear_down_dependent_async(Worker&, Node*);
-  void _tear_down_invoke(Worker&, Node*);
+  void _tear_down_dependent_async(Worker&, Node*, Node*&);
+  void _tear_down_invoke(Worker&, Node*, Node*&);
   void _increment_topology();
   void _decrement_topology();
   void _invoke(Worker&, Node*);
@@ -1092,6 +1092,7 @@ class Executor {
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
   void _corun_graph(Worker&, Node*, Graph&);
+  void _update_cache(Worker&, Node*&, Node*);
 
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
@@ -1482,28 +1483,25 @@ inline void Executor::_schedule(I first, I last) {
   _notifier.notify_n(n);
 }
 
+inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
+  if(cache) {
+    _schedule(worker, cache);
+  }
+  cache = node;
+}
+
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
-  // macro for continuous invoke to bypass queuing operations
-  #define TF_INVOKE_CONTINUATION()  \
-    if (worker._cache) {            \
-      node = worker._cache;         \
-      worker._cache = nullptr;      \
-      goto begin_invoke;            \
-    }
-
   begin_invoke:
+
+  Node* cache {nullptr};
+  SmallVector<int> conds;
 
   // no need to do other things if the topology is cancelled
   if(node->_is_cancelled()) {
-    _tear_down_invoke(worker, node);
-    TF_INVOKE_CONTINUATION();
-    return;
+    goto tear_down_invoke;
   }
-
-  // condition task
-  SmallVector<int> conds;
 
   // switch is faster than nested if-else due to jump table
   switch(node->_handle.index()) {
@@ -1552,9 +1550,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // dependent async task
     case Node::DEPENDENT_ASYNC: {
       _invoke_dependent_async_task(worker, node);
-      _tear_down_dependent_async(worker, node);
-      TF_INVOKE_CONTINUATION();
-      return;
+      _tear_down_dependent_async(worker, node, cache);
+      goto continue_invoke;
     }
     break;
 
@@ -1592,10 +1589,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           j.fetch_add(1, std::memory_order_relaxed);
-          if(worker._cache) {
-            _schedule(worker, worker._cache);
-          }
-          worker._cache = s;
+          _update_cache(worker, cache, s);
         }
       }
     }
@@ -1608,24 +1602,30 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         if(auto s = node->_successors[i]; 
           s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           j.fetch_add(1, std::memory_order_relaxed);
-          if(worker._cache) {
-            _schedule(worker, worker._cache);
-          }
-          worker._cache = s;
+          _update_cache(worker, cache, s);
         }
       }
     }
     break;
   }
+  
+  // clean up the node after execution
+  tear_down_invoke:
 
-  // tear_down the invoke
-  _tear_down_invoke(worker, node);
+  _tear_down_invoke(worker, node, cache);
 
-  TF_INVOKE_CONTINUATION();
+  // bypass expensive queuing operations 
+  continue_invoke:
+
+  if (cache) {        
+    node = cache;     
+    cache = nullptr;  
+    goto begin_invoke;
+  }
 }
 
 // Procedure: _tear_down_invoke
-inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
+inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache) {
   
   // we must check parent first before subtracting the join counter,
   // or it can introduce data race
@@ -1641,18 +1641,15 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node) {
       case Node::SUBFLOW: {
         if(auto state = parent->_state.load(std::memory_order_relaxed);
            parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          // only preempted parent needs to be re-invoked
           if(state & Node::PREEMPTED) {
-            //assert(worker._cache == nullptr);
-            worker._cache = parent;
+            _update_cache(worker, cache, parent);
           }
         }
       } break;
 
       case Node::MODULE: {
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          //assert(worker._cache == nullptr);
-          worker._cache = parent;
+          _update_cache(worker, cache, parent);
         }
       } break;
 

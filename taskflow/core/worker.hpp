@@ -77,7 +77,6 @@ class Worker {
     std::default_random_engine _rdgen;
     std::uniform_int_distribution<size_t> _rdvtm;
     std::thread _thread;
-    Node* _cache {nullptr};
     BoundedTaskQueue<Node*> _wsq;
 };
 

@@ -286,7 +286,7 @@ inline void Executor::_process_async_dependent(
 
 
 // Procedure: _tear_down_dependent_async
-inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node) {
+inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Node*& cache) {
 
   auto handle = std::get_if<Node::DependentAsync>(&(node->_handle));
 
@@ -300,15 +300,11 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node) {
   }
   
   // spawn successors whenever their dependencies are resolved
-  //worker._cache = nullptr;
   for(size_t i=0; i<node->_successors.size(); ++i) {
     if(auto s = node->_successors[i]; 
       s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1
     ) {
-      if(worker._cache) {
-        _schedule(worker, worker._cache);
-      }
-      worker._cache = s;
+      _update_cache(worker, cache, s);
     }
   }
   
