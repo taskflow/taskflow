@@ -1471,24 +1471,6 @@ void Executor::_schedule(Worker& worker, I first, I last) {
     _freelist.push(first[i].get());
   }
   _notifier.notify_n(num_nodes);
-
-  //if(first == last) {
-  //  return;
-  //}
-
-  //if(worker._executor == this) {
-  //  for(; first != last; ++first) {
-  //    worker._wsq.push(first->get(), [&](){ _freelist.push(worker._id, first->get()); });
-  //    _notifier.notify_one();
-  //  }
-  //  return;
-  //}
-
-  //size_t n = 0;
-  //for(; first != last; ++first, ++n) {
-  //  _freelist.push(first->get());
-  //}
-  //_notifier.notify_n(n);
 }
 
 // Procedure: _schedule
@@ -1505,16 +1487,6 @@ inline void Executor::_schedule(I first, I last) {
     _freelist.push(first[i].get());
   }
   _notifier.notify_n(num_nodes);
-
-  //if(first == last) {
-  //  return;
-  //}
-  //
-  //size_t n = 0;
-  //for(; first != last; ++first, ++n) {
-  //  _freelist.push(first->get());
-  //}
-  //_notifier.notify_n(n);
 }
 
 inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
@@ -1610,7 +1582,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // + We must use fetch_add instead of direct assigning
   //   because the user-space call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
-  if((node->_state.load(std::memory_order_relaxed) & Node::CONDITIONED)) {
+  if(node->_nstate & Node::CONDITIONED) {
     node->_join_counter.fetch_add(node->num_strong_dependents(), std::memory_order_relaxed);
   }
   else {
@@ -1673,7 +1645,7 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache
     // the node may be deleted
     switch(parent->_handle.index()) {
       case Node::SUBFLOW: {
-        if(auto state = parent->_state.load(std::memory_order_relaxed);
+        if(auto state = parent->_nstate;
            parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           if(state & Node::PREEMPTED) {
             _update_cache(worker, cache, parent);
@@ -1719,8 +1691,8 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
   auto anchor = node->_parent;
-  while(anchor && (anchor->_state.load(std::memory_order_relaxed) & Node::ANCHOR) == 0) {
-    anchor->_state.fetch_or(nflag, std::memory_order_relaxed);
+  while(anchor && (anchor->_nstate & Node::ANCHOR) == 0) {
+    anchor->_estate.fetch_or(nflag, std::memory_order_relaxed);
     anchor = anchor->_parent;
   }
 
@@ -1728,7 +1700,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   if(anchor) {
     //std::cout << "\tfind anchor: " << anchor->_name << '\n';
     // multiple tasks may throw, and we only take the first thrown exception
-    if((anchor->_state.fetch_or(nflag, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
+    if((anchor->_estate.fetch_or(nflag, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
       //std::cout << node->_name << " stores exception in anchor " << anchor->_name << std::endl;
       anchor->_exception_ptr = std::current_exception();
     }
@@ -1742,7 +1714,10 @@ inline void Executor::_process_exception(Worker&, Node* node) {
       tpg->_exception_ptr = std::current_exception();
     }
   }
-  // TODO: store the exception in worker?
+  //else {
+  //// TODO: store the exception in worker?
+  //  printf("don't know how to do with uncaught exception... %s", node->_name.c_str());
+  //}
 }
 
 // Procedure: _invoke_static_task
@@ -1768,7 +1743,7 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
 inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
   //TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
 
-  if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
+  if((node->_nstate & Node::PREEMPTED) == 0) {
     
     auto& h = *std::get_if<Node::Subflow>(&node->_handle);
     auto& g = h.subgraph;
@@ -1788,7 +1763,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     if(sf.joinable() && g.size() > sf._tag) {
 
       // signal the executor to preempt this node
-      node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
+      node->_nstate |= Node::PREEMPTED;
 
       // set up and schedule the graph
       auto sbeg = g.begin() + sf._tag;
@@ -1799,7 +1774,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     }
   }
   else {
-    node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
+    node->_nstate &= ~Node::PREEMPTED;
   }
 
   return false;
@@ -1827,8 +1802,8 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
     );
   }
 
-  // emit the exception to the blocker
-  p->_process_exception();
+  // rethrow the exception to the blocker
+  p->_rethrow_exception();
 }
 
 // Procedure: _invoke_condition_task
@@ -1877,11 +1852,10 @@ inline void Executor::_invoke_multi_condition_task(
 inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
 
   // first entry - not spawned yet
-  if((node->_state.load(std::memory_order_relaxed) & Node::PREEMPTED) == 0) {
+  if((node->_nstate & Node::PREEMPTED) == 0) {
     if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
       // signal the executor to preempt this node
-      node->_state.fetch_or(Node::PREEMPTED, std::memory_order_relaxed);
-
+      node->_nstate |= Node::PREEMPTED;
       auto send = _set_up_graph(m->graph.begin(), m->graph.end(), node, node->_topology, 0);
       node->_join_counter.fetch_add(send - m->graph.begin(), std::memory_order_relaxed);
       _schedule(w, m->graph.begin(), send);
@@ -1890,7 +1864,8 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
   }
   // second entry - already spawned
   else {
-    node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
+    //node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
+    node->_nstate &= ~Node::PREEMPTED;
   }
   return false;
 }
@@ -2134,7 +2109,8 @@ I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int stat
     auto node = first->get();
     node->_topology = tpg;
     node->_parent = parent;
-    node->_state.store(state, std::memory_order_relaxed);
+    node->_nstate = state;
+    node->_estate.store(0, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
 
@@ -2299,7 +2275,7 @@ inline void Runtime::corun_all() {
       return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
     });
   }
-  _parent->_process_exception();
+  _parent->_rethrow_exception();
 }
 
 // ----------------------------------------------------------------------------

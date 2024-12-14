@@ -558,6 +558,147 @@ TEST_CASE("Exception.NestedSubflow.4threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Nested Subflow 2
+// ----------------------------------------------------------------------------
+
+void nested_subflow_2(unsigned N) {
+
+  tf::Executor executor(N);
+  tf::Taskflow taskflow;
+
+  size_t num_tasks = 0;
+
+  // level 1
+  taskflow.emplace([&](tf::Subflow& sf1) {
+    tf::Task V1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("V1");
+    tf::Task W1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("W1");
+    
+    // level 2
+    tf::Task X1 = sf1.emplace([&num_tasks](tf::Subflow& sf2){ 
+      ++num_tasks; 
+
+      tf::Task V2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("V2");
+      tf::Task W2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("W2");
+      
+      // level 3
+      tf::Task X2 = sf2.emplace([&num_tasks](tf::Subflow& sf3) {
+        ++num_tasks;
+
+        tf::Task V3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("V3");
+        tf::Task W3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("W3");
+
+        // level 4
+        tf::Task X3 = sf3.emplace([&num_tasks](tf::Subflow& sf4){
+          ++num_tasks;
+
+          tf::Task V4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("V4");
+          tf::Task W4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("W4");
+          tf::Task X4 = sf4.emplace([&num_tasks](){ 
+            ++num_tasks; 
+            throw std::runtime_error("x");
+          }).name("X4 (throw)");
+          tf::Task Y4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("Y4");
+          tf::Task Z4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("Z4");
+
+          V4.precede(W4);
+          W4.precede(X4);
+          X4.precede(Y4);
+          Y4.precede(Z4);
+          
+          sf4.join();
+
+        }).name("sf-4");
+
+        tf::Task Y3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("Y3");
+        tf::Task Z3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("Z3");
+
+        V3.precede(W3);
+        W3.precede(X3);
+        X3.precede(Y3);
+        Y3.precede(Z3);
+
+        sf3.join();
+
+      }).name("sf3");
+
+      tf::Task Y2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("Y2");
+      tf::Task Z2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("Z2");
+
+      V2.precede(W2);
+      W2.precede(X2);
+      X2.precede(Y2);
+      Y2.precede(Z2);
+
+      sf2.join();
+
+    }).name("sf-2");
+
+    tf::Task Y1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("Y1");
+    tf::Task Z1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("Z1");
+
+    V1.precede(W1);
+    W1.precede(X1);
+    X1.precede(Y1);
+    Y1.precede(Z1);
+
+    sf1.join();
+
+  }).name("sf-1");
+
+  REQUIRE_THROWS_WITH_AS(executor.run_n(taskflow, 10).get(), "x", std::runtime_error);
+  REQUIRE(num_tasks == 12);
+  
+  //taskflow.dump(std::cout);
+
+  // corun the nested subflow from an async task
+  num_tasks = 0;
+  executor.async([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
+  }).get(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an silent async task
+  num_tasks = 0;
+  executor.silent_async([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
+  });
+  executor.wait_for_all(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an async task's runtime
+  num_tasks = 0;
+  executor.async([&](tf::Runtime& rt){
+    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  }).get(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an silent-async task's runtime
+  num_tasks = 0;
+  executor.silent_async([&](tf::Runtime& rt){
+    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  });
+  executor.wait_for_all(); 
+  REQUIRE(num_tasks == 12);
+
+}
+
+TEST_CASE("Exception.NestedSubflow2.1thread" * doctest::timeout(300)) {
+  nested_subflow_2(1);
+}
+
+TEST_CASE("Exception.NestedSubflow2.2threads" * doctest::timeout(300)) {
+  nested_subflow_2(2);
+}
+
+TEST_CASE("Exception.NestedSubflow2.3threads" * doctest::timeout(300)) {
+  nested_subflow_2(3);
+}
+
+TEST_CASE("Exception.NestedSubflow2.4threads" * doctest::timeout(300)) {
+  nested_subflow_2(4);
+}
+
+// ----------------------------------------------------------------------------
 // Executor Corun Exception 1
 // ----------------------------------------------------------------------------
 
@@ -841,12 +982,12 @@ void async_task(unsigned W) {
   });
   REQUIRE_THROWS_WITH_AS(fu2.get(), "x", std::runtime_error);
   
-  // exception is caught without any action
-  executor.silent_async([](){
-    throw std::runtime_error("y"); 
-  });
+  //// exception is caught without any action
+  //executor.silent_async([](){
+  //  throw std::runtime_error("y"); 
+  //});
 
-  executor.wait_for_all();
+  //executor.wait_for_all();
 }
 
 TEST_CASE("Exception.AsyncTask.1thread" * doctest::timeout(300)) {

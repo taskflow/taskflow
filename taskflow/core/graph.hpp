@@ -777,7 +777,8 @@ class Node {
 
   private:
   
-  std::atomic<int> _state {0};
+  int _nstate {0};
+  std::atomic<int> _estate {0};
 
   std::string _name;
   
@@ -791,23 +792,22 @@ class Node {
 
   std::atomic<size_t> _join_counter {0};
 
-  std::exception_ptr _exception_ptr {nullptr};
-  
   handle_t _handle;
+  
+  //std::atomic<bool> _exception_lock {false};
+  std::exception_ptr _exception_ptr {nullptr};
 
   // free list
   //Node* _freelist_next{nullptr};
 
   void _precede(Node*);
   void _set_up_join_counter();
-  void _process_exception();
+  void _rethrow_exception();
 
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _is_preempted() const;
   bool _acquire_all(SmallVector<Node*>&);
-
-  Node* _anchor();
 
   SmallVector<Node*> _release_all();
 };
@@ -1047,14 +1047,14 @@ inline bool Node::_is_conditioner() const {
 
 // Function: _is_preempted
 inline bool Node::_is_preempted() const {
-  return _state.load(std::memory_order_relaxed) & Node::PREEMPTED;
+  return _nstate & Node::PREEMPTED;
 }
 
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
   return (_topology && (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED)) ||
-         (_parent && (_parent->_state.load(std::memory_order_relaxed) & Node::CANCELLED));
+         (_parent && (_parent->_estate.load(std::memory_order_relaxed) & Node::CANCELLED));
 }
 
 // Procedure: _set_up_join_counter
@@ -1062,7 +1062,7 @@ inline void Node::_set_up_join_counter() {
   size_t c = 0;
   for(auto p : _dependents) {
     if(p->_is_conditioner()) {
-      _state.fetch_or(Node::CONDITIONED, std::memory_order_relaxed);
+      _nstate |= Node::CONDITIONED;
     }
     else {
       c++;
@@ -1071,17 +1071,8 @@ inline void Node::_set_up_join_counter() {
   _join_counter.store(c, std::memory_order_relaxed);
 }
 
-// Procedure: _anchor
-inline Node* Node::_anchor()  {
-  Node* v = _parent;
-  while(v && (v->_state.load(std::memory_order_relaxed) & Node::ANCHOR) == 0) {
-    v = v->_parent;
-  }
-  return v;
-}
-
-// Procedure: _process_exception
-inline void Node::_process_exception() {
+// Procedure: _rethrow_exception
+inline void Node::_rethrow_exception() {
   if(_exception_ptr) {
     auto e = _exception_ptr;
     _exception_ptr = nullptr;
@@ -1101,11 +1092,12 @@ class AnchorGuard {
   public:
 
   AnchorGuard(Node* node) : _node{node} { 
-    _node->_state.fetch_or(Node::ANCHOR, std::memory_order_relaxed); 
+    _node->_nstate |= Node::ANCHOR;
   }
 
   ~AnchorGuard() {
-    _node->_state.fetch_and(~Node::ANCHOR, std::memory_order_relaxed);
+    _node->_nstate &= ~Node::ANCHOR;
+    //_node->_state.fetch_and(~Node::ANCHOR, std::memory_order_relaxed);
   }
   
   private:
