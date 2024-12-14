@@ -1091,23 +1091,26 @@ class Executor {
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
-  void _corun_graph(Worker&, Node*, Graph&);
+
   void _update_cache(Worker&, Node*&, Node*);
 
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
 
   template <typename I>
-  I _set_up_graph(I first, I second, Node*, Topology*, int);
+  I _set_up_graph(I, I, Node*, Topology*, int);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
   
   template <typename I>
-  void _schedule(Worker&, I first, I last);
+  void _corun_graph(Worker&, Node*, I, I);
+  
+  template <typename I>
+  void _schedule(Worker&, I, I);
 
   template <typename I>
-  void _schedule(I first, I last);
+  void _schedule(I, I);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1813,12 +1816,11 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
 }
 
 // Procedure: _corun_graph
-inline void Executor::_corun_graph(Worker& w, Node* p, Graph& g) {
+template <typename I>
+void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
 
-  // assert(p);
-
-  // graph is empty and has no async tasks
-  if(g.empty() && p->_join_counter.load(std::memory_order_acquire) == 0) {
+  // empty graph
+  if(first == last) {
     return;
   }
   
@@ -1826,9 +1828,9 @@ inline void Executor::_corun_graph(Worker& w, Node* p, Graph& g) {
   {
     AnchorGuard anchor(p);
 
-    auto send = _set_up_graph(g.begin(), g.end(), p, p->_topology, 0);
-    p->_join_counter.fetch_add(send - g.begin(), std::memory_order_relaxed);
-    _schedule(w, g.begin(), send);
+    auto send = _set_up_graph(first, last, p, p->_topology, 0);
+    p->_join_counter.fetch_add(send - first, std::memory_order_relaxed);
+    _schedule(w, first, send);
 
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
@@ -2066,7 +2068,7 @@ void Executor::corun(T& target) {
   }
 
   Node parent;  // auxiliary parent
-  _corun_graph(*pt::worker, &parent, target.graph());
+  _corun_graph(*pt::worker, &parent, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_until
@@ -2153,6 +2155,8 @@ I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int stat
 
     // handle-specific clear
     switch(node->_handle.index()) {
+
+      // clear detached nodes
       case Node::SUBFLOW: {
         std::get_if<Node::Subflow>(&node->_handle)->subgraph.clear();
       } break;
@@ -2235,41 +2239,20 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
 inline void Subflow::join() {
 
-  // assert(this_worker().worker == &_worker);
-
   if(!joinable()) {
     TF_THROW("subflow already joined or detached");
   }
-
-  if(_graph.size() > _tag) {
-
-    // anchor this parent as the blocking point
-    {
-      AnchorGuard anchor(_parent);
-
-      auto sbeg = _graph.begin() + _tag;
-      auto send = _executor._set_up_graph(
-        sbeg, _graph.end(), _parent, _parent->_topology, 0
-      );
-      _parent->_join_counter.fetch_add(send-sbeg, std::memory_order_relaxed);
-      _executor._schedule(_worker, sbeg, send);
-      _executor._corun_until(_worker, [p=_parent] () -> bool { 
-        return p->_join_counter.load(std::memory_order_acquire) == 0; }
-      );
-    }
-    _tag |= JOINED_BIT;
     
-    //std::cout << "parent " << _parent->_name << " has exception? " << (_parent->_exception_ptr != nullptr) << std::endl;
-    _parent->_process_exception();
-  }
-  else { 
-    _tag |= JOINED_BIT;
-  }
+  // iterator to the begining of the subflow
+  auto gbeg = _graph.begin() + _tag;
+
+  // join here since corun graph may throw exception
+  _tag |= JOINED_BIT;
+
+  _executor._corun_graph(_worker, _parent, gbeg, _graph.end());
 }
 
 inline void Subflow::detach() {
-
-  // assert(this_worker().worker == &_worker);
 
   if(!joinable()) {
     TF_THROW("subflow already joined or detached");
@@ -2309,7 +2292,7 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
-  _executor._corun_graph(_worker, _parent, target.graph());
+  _executor._corun_graph(_worker, _parent, target.graph().begin(), target.graph().end());
 }
 
 // Procedure: corun_until

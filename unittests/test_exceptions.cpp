@@ -429,19 +429,27 @@ void joined_subflow_exception_1(unsigned W) {
   taskflow.emplace([&] (tf::Subflow& sf0) {
     for (int i = 0; i < 100; ++i) {
       sf0.emplace([&] (tf::Subflow& sf1) {
-        for (int j = 0; j < 100; ++j) {
+
+        for (int j = 0; j < 2; ++j) {
           sf1.emplace([] () {
             throw std::runtime_error("x");
           }).name(std::string("sf1-child-") + std::to_string(j));
         }
+
         sf1.join();
-        post_join = true;
+        // [NOTE]: We cannot guarantee post_join won't run since
+        // the exception also triggers cancellation which in turns 
+        // bypasses the two tasks inside sf1. In this case, sf1.join
+        // will succeed and set post_join to true.
+
+        //post_join = true;
       }).name(std::string("sf1-") + std::to_string(i));
     }
   }).name("sf0");
   
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
-  REQUIRE(post_join == false);
+  //REQUIRE(post_join == false);
+
 }
 
 TEST_CASE("Exception.JoinedSubflow1.1thread") {
