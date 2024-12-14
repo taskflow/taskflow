@@ -36,6 +36,7 @@ list(APPEND TF_EXAMPLES
   limited_concurrency
   cancel
   exception
+  subflow_exception
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

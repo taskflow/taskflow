@@ -651,6 +651,7 @@ class Node {
   constexpr static int EXCEPTION   = 4;
   constexpr static int PREEMPTED   = 8;
   constexpr static int ANCHOR      = 16;
+  constexpr static int CANCELLED   = 32;
 
   using Placeholder = std::monostate;
 
@@ -1052,8 +1053,8 @@ inline bool Node::_is_preempted() const {
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
-  return _topology &&
-         (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED);
+  return (_topology && (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED)) ||
+         (_parent && (_parent->_state.load(std::memory_order_relaxed) & Node::CANCELLED));
 }
 
 // Procedure: _set_up_join_counter

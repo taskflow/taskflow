@@ -1711,7 +1711,8 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _process_exception
 inline void Executor::_process_exception(Worker&, Node* node) {
 
-  constexpr static auto flag = Topology::EXCEPTION | Topology::CANCELLED;
+  constexpr static auto nflag = Node::EXCEPTION | Node::CANCELLED;
+  constexpr static auto tflag = Topology::EXCEPTION | Topology::CANCELLED;
 
   //std::cout << "processing exception from " << node->_name << std::endl;
 
@@ -1719,7 +1720,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   if(auto anchor = node->_anchor(); anchor) {
     //std::cout << "\tfind anchor: " << anchor->_name << '\n';
     // multiple tasks may throw, and we only take the first thrown exception
-    if((anchor->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
+    if((anchor->_state.fetch_or(nflag, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
       //std::cout << node->_name << " stores exception in anchor " << anchor->_name << std::endl;
       anchor->_exception_ptr = std::current_exception();
     }
@@ -1728,7 +1729,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   else if(auto tpg = node->_topology; tpg) {
     //std::cout << "\tno anchor - go to topology\n";
     // multiple tasks may throw, and we only take the first thrown exception
-    if((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0) {
+    if((tpg->_state.fetch_or(tflag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0) {
       //std::cout << "store exception in topology " << std::endl;
       tpg->_exception_ptr = std::current_exception();
     }
@@ -2325,7 +2326,6 @@ void Runtime::acquire(S&&... semaphores) {
   _executor._corun_until(_worker, [&](){ 
     return tf::try_acquire(std::forward<S>(semaphores)...); 
   });
-  // TODO: exception?
 }
   
 // Function:: acquire
@@ -2336,7 +2336,6 @@ void Runtime::acquire(I first, I last) {
   _executor._corun_until(_worker, [=](){ 
     return tf::try_acquire(first, last); 
   });
-  // TODO: exception?
 }
 
 // Function: release
