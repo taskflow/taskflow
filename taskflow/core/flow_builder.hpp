@@ -1378,6 +1378,10 @@ class Subflow : public FlowBuilder {
 
     Subflow(Executor&, Worker&, Node*, Graph&);
 
+    Subflow() = delete;
+    Subflow(const Subflow&) = delete;
+    Subflow(Subflow&&) = delete;
+
     Executor& _executor;
     Worker& _worker;
     Node* _parent;

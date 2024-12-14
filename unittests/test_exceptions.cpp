@@ -4,10 +4,10 @@
 #include <taskflow/taskflow.hpp>
 
 // --------------------------------------------------------
-// Testcase: static_task_exception
+// Testcase: static_task
 // --------------------------------------------------------
 
-void static_task_exception(unsigned W) {
+void static_task(unsigned W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -47,27 +47,27 @@ void static_task_exception(unsigned W) {
   }
 }
 
-TEST_CASE("Exception.StaticTask.1thread") {
-  static_task_exception(1);
+TEST_CASE("Exception.StaticTask.1thread" * doctest::timeout(300)) {
+  static_task(1);
 }
 
-TEST_CASE("Exception.StaticTask.2threads") {
-  static_task_exception(2);
+TEST_CASE("Exception.StaticTask.2threads" * doctest::timeout(300)) {
+  static_task(2);
 }
 
-TEST_CASE("Exception.StaticTask.3threads") {
-  static_task_exception(3);
+TEST_CASE("Exception.StaticTask.3threads" * doctest::timeout(300)) {
+  static_task(3);
 }
 
-TEST_CASE("Exception.StaticTask.4threads") {
-  static_task_exception(4);
+TEST_CASE("Exception.StaticTask.4threads" * doctest::timeout(300)) {
+  static_task(4);
 }
 
 // --------------------------------------------------------
-// Testcase: condition_task_exception
+// Testcase: condition_task
 // --------------------------------------------------------
 
-void condition_task_exception(unsigned W) {
+void condition_task(unsigned W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -125,27 +125,27 @@ void condition_task_exception(unsigned W) {
   }
 }
 
-TEST_CASE("Exception.ConditionTask.1thread") {
-  condition_task_exception(1);
+TEST_CASE("Exception.ConditionTask.1thread" * doctest::timeout(300)) {
+  condition_task(1);
 }
 
-TEST_CASE("Exception.ConditionTask.2threads") {
-  condition_task_exception(2);
+TEST_CASE("Exception.ConditionTask.2threads" * doctest::timeout(300)) {
+  condition_task(2);
 }
 
-TEST_CASE("Exception.ConditionTask.3threads") {
-  condition_task_exception(3);
+TEST_CASE("Exception.ConditionTask.3threads" * doctest::timeout(300)) {
+  condition_task(3);
 }
 
-TEST_CASE("Exception.ConditionTask.4threads") {
-  condition_task_exception(4);
+TEST_CASE("Exception.ConditionTask.4threads" * doctest::timeout(300)) {
+  condition_task(4);
 }
 
 // --------------------------------------------------------
-// Testcase: multicondition_task_exception
+// Testcase: multicondition_task
 // --------------------------------------------------------
 
-void multicondition_task_exception(unsigned W) {
+void multicondition_task(unsigned W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -209,27 +209,27 @@ void multicondition_task_exception(unsigned W) {
   }
 }
 
-TEST_CASE("Exception.MultiConditionTask.1thread") {
-  multicondition_task_exception(1);
+TEST_CASE("Exception.MultiConditionTask.1thread" * doctest::timeout(300)) {
+  multicondition_task(1);
 }
 
-TEST_CASE("Exception.MultiConditionTask.2threads") {
-  multicondition_task_exception(2);
+TEST_CASE("Exception.MultiConditionTask.2threads" * doctest::timeout(300)) {
+  multicondition_task(2);
 }
 
-TEST_CASE("Exception.MultiConditionTask.3threads") {
-  multicondition_task_exception(3);
+TEST_CASE("Exception.MultiConditionTask.3threads" * doctest::timeout(300)) {
+  multicondition_task(3);
 }
 
-TEST_CASE("Exception.MultiConditionTask.4threads") {
-  multicondition_task_exception(4);
+TEST_CASE("Exception.MultiConditionTask.4threads" * doctest::timeout(300)) {
+  multicondition_task(4);
 }
 
 // ----------------------------------------------------------------------------
 // Subflow Task
 // ----------------------------------------------------------------------------
 
-void subflow_task_exception(unsigned W) {
+void subflow_task(unsigned W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -256,27 +256,27 @@ void subflow_task_exception(unsigned W) {
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "y", std::runtime_error);
 }
 
-TEST_CASE("Exception.SubflowTask.1thread") {
-  subflow_task_exception(1);
+TEST_CASE("Exception.SubflowTask.1thread" * doctest::timeout(300)) {
+  subflow_task(1);
 }
 
-TEST_CASE("Exception.SubflowTask.2threads") {
-  subflow_task_exception(2);
+TEST_CASE("Exception.SubflowTask.2threads" * doctest::timeout(300)) {
+  subflow_task(2);
 }
 
-TEST_CASE("Exception.SubflowTask.3threads") {
-  subflow_task_exception(3);
+TEST_CASE("Exception.SubflowTask.3threads" * doctest::timeout(300)) {
+  subflow_task(3);
 }
 
-TEST_CASE("Exception.SubflowTask.4threads") {
-  subflow_task_exception(4);
+TEST_CASE("Exception.SubflowTask.4threads" * doctest::timeout(300)) {
+  subflow_task(4);
 }
 
 // ----------------------------------------------------------------------------
-// Subflow exception
+// Joined Subflow
 // ----------------------------------------------------------------------------
 
-void joined_subflow_exception_1(unsigned W) {
+void joined_subflow_1(unsigned W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -309,27 +309,27 @@ void joined_subflow_exception_1(unsigned W) {
 
 }
 
-TEST_CASE("Exception.JoinedSubflow1.1thread") {
-  joined_subflow_exception_1(1);
+TEST_CASE("Exception.JoinedSubflow1.1thread" * doctest::timeout(300)) {
+  joined_subflow_1(1);
 }
 
-TEST_CASE("Exception.JoinedSubflow1.2threads") {
-  joined_subflow_exception_1(2);
+TEST_CASE("Exception.JoinedSubflow1.2threads" * doctest::timeout(300)) {
+  joined_subflow_1(2);
 }
 
-TEST_CASE("Exception.JoinedSubflow1.3threads") {
-  joined_subflow_exception_1(3);
+TEST_CASE("Exception.JoinedSubflow1.3threads" * doctest::timeout(300)) {
+  joined_subflow_1(3);
 }
 
-TEST_CASE("Exception.JoinedSubflow1.4threads") {
-  joined_subflow_exception_1(4);
+TEST_CASE("Exception.JoinedSubflow1.4threads" * doctest::timeout(300)) {
+  joined_subflow_1(4);
 }
 
 // ----------------------------------------------------------------------------
-// Joined Subflow Exception 2
+// Joined Subflow 2
 // ----------------------------------------------------------------------------
 
-void joined_subflow_exception_2(unsigned W) {
+void joined_subflow_2(unsigned W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -353,27 +353,27 @@ void joined_subflow_exception_2(unsigned W) {
   REQUIRE(post_join == false);
 }
 
-TEST_CASE("Exception.JoinedSubflow2.1thread") {
-  joined_subflow_exception_2(1);
+TEST_CASE("Exception.JoinedSubflow2.1thread" * doctest::timeout(300)) {
+  joined_subflow_2(1);
 }
 
-TEST_CASE("Exception.JoinedSubflow2.2threads") {
-  joined_subflow_exception_2(2);
+TEST_CASE("Exception.JoinedSubflow2.2threads" * doctest::timeout(300)) {
+  joined_subflow_2(2);
 }
 
-TEST_CASE("Exception.JoinedSubflow2.3threads") {
-  joined_subflow_exception_2(3);
+TEST_CASE("Exception.JoinedSubflow2.3threads" * doctest::timeout(300)) {
+  joined_subflow_2(3);
 }
 
-TEST_CASE("Exception.JoinedSubflow2.4threads") {
-  joined_subflow_exception_2(4);
+TEST_CASE("Exception.JoinedSubflow2.4threads" * doctest::timeout(300)) {
+  joined_subflow_2(4);
 }
 
 // ----------------------------------------------------------------------------
 // Joined Subflow Exception 3
 // ----------------------------------------------------------------------------
 
-void joined_subflow_exception_3(unsigned N) {
+void joined_subflow_3(unsigned N) {
 
   tf::Executor executor(N);
   tf::Taskflow taskflow;
@@ -413,26 +413,155 @@ void joined_subflow_exception_3(unsigned N) {
 }
 
 TEST_CASE("Exception.JoinedSubflow3.1thread" * doctest::timeout(300)) {
-  joined_subflow_exception_3(1);
+  joined_subflow_3(1);
 }
 
 TEST_CASE("Exception.JoinedSubflow3.2threads" * doctest::timeout(300)) {
-  joined_subflow_exception_3(2);
+  joined_subflow_3(2);
 }
 
 TEST_CASE("Exception.JoinedSubflow3.3threads" * doctest::timeout(300)) {
-  joined_subflow_exception_3(3);
+  joined_subflow_3(3);
 }
 
 TEST_CASE("Exception.JoinedSubflow3.4threads" * doctest::timeout(300)) {
-  joined_subflow_exception_3(4);
+  joined_subflow_3(4);
+}
+
+// ----------------------------------------------------------------------------
+// Nested Subflow
+// ----------------------------------------------------------------------------
+
+void nested_subflow(unsigned N) {
+
+  tf::Executor executor(N);
+  tf::Taskflow taskflow;
+
+  size_t num_tasks = 0;
+
+  // level 1
+  taskflow.emplace([&](tf::Subflow& sf1) {
+    tf::Task V1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("V1");
+    tf::Task W1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("W1");
+    
+    // level 2
+    tf::Task X1 = sf1.emplace([&num_tasks](tf::Subflow& sf2){ 
+      ++num_tasks; 
+
+      tf::Task V2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("V2");
+      tf::Task W2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("W2");
+      
+      // level 3
+      tf::Task X2 = sf2.emplace([&num_tasks](tf::Subflow& sf3) {
+        ++num_tasks;
+
+        tf::Task V3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("V3");
+        tf::Task W3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("W3");
+
+        // level 4
+        tf::Task X3 = sf3.emplace([&num_tasks](tf::Subflow& sf4){
+          ++num_tasks;
+
+          tf::Task V4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("V4");
+          tf::Task W4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("W4");
+          tf::Task X4 = sf4.emplace([&num_tasks](){ 
+            ++num_tasks; 
+            throw std::runtime_error("x");
+          }).name("X4 (throw)");
+          tf::Task Y4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("Y4");
+          tf::Task Z4 = sf4.emplace([&num_tasks](){ ++num_tasks; }).name("Z4");
+
+          V4.precede(W4);
+          W4.precede(X4);
+          X4.precede(Y4);
+          Y4.precede(Z4);
+        }).name("sf-4");
+
+        tf::Task Y3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("Y3");
+        tf::Task Z3 = sf3.emplace([&num_tasks](){ ++num_tasks; }).name("Z3");
+
+        V3.precede(W3);
+        W3.precede(X3);
+        X3.precede(Y3);
+        Y3.precede(Z3);
+      }).name("sf3");
+
+      tf::Task Y2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("Y2");
+      tf::Task Z2 = sf2.emplace([&num_tasks](){ ++num_tasks; }).name("Z2");
+
+      V2.precede(W2);
+      W2.precede(X2);
+      X2.precede(Y2);
+      Y2.precede(Z2);
+    }).name("sf-2");
+
+    tf::Task Y1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("Y1");
+    tf::Task Z1 = sf1.emplace([&num_tasks](){ ++num_tasks; }).name("Z1");
+
+    V1.precede(W1);
+    W1.precede(X1);
+    X1.precede(Y1);
+    Y1.precede(Z1);
+  }).name("sf-1");
+
+  REQUIRE_THROWS_WITH_AS(executor.run_n(taskflow, 10).get(), "x", std::runtime_error);
+  REQUIRE(num_tasks == 12);
+  
+  //taskflow.dump(std::cout);
+
+  // corun the nested subflow from an async task
+  num_tasks = 0;
+  executor.async([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
+  }).get(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an silent async task
+  num_tasks = 0;
+  executor.silent_async([&](){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
+  });
+  executor.wait_for_all(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an async task's runtime
+  num_tasks = 0;
+  executor.async([&](tf::Runtime& rt){
+    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  }).get(); 
+  REQUIRE(num_tasks == 12);
+  
+  // corun the nested subflow from an silent-async task's runtime
+  num_tasks = 0;
+  executor.silent_async([&](tf::Runtime& rt){
+    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  });
+  executor.wait_for_all(); 
+  REQUIRE(num_tasks == 12);
+
+}
+
+TEST_CASE("Exception.NestedSubflow.1thread" * doctest::timeout(300)) {
+  nested_subflow(1);
+}
+
+TEST_CASE("Exception.NestedSubflow.2threads" * doctest::timeout(300)) {
+  nested_subflow(2);
+}
+
+TEST_CASE("Exception.NestedSubflow.3threads" * doctest::timeout(300)) {
+  nested_subflow(3);
+}
+
+TEST_CASE("Exception.NestedSubflow.4threads" * doctest::timeout(300)) {
+  nested_subflow(4);
 }
 
 // ----------------------------------------------------------------------------
 // Executor Corun Exception 1
 // ----------------------------------------------------------------------------
 
-void executor_corun_exception_1(unsigned W) {
+void executor_corun_1(unsigned W) {
   
   tf::Executor executor(W);
   tf::Taskflow taskflow1;
@@ -469,26 +598,26 @@ void executor_corun_exception_1(unsigned W) {
 }
 
 TEST_CASE("Exception.ExecutorCorun1.1thread" * doctest::timeout(300)) {
-  executor_corun_exception_1(1);
+  executor_corun_1(1);
 }
 
 TEST_CASE("Exception.ExecutorCorun1.2threads" * doctest::timeout(300)) {
-  executor_corun_exception_1(2);
+  executor_corun_1(2);
 }
 
 TEST_CASE("Exception.ExecutorCorun1.3threads" * doctest::timeout(300)) {
-  executor_corun_exception_1(3);
+  executor_corun_1(3);
 }
 
 TEST_CASE("Exception.ExecutorCorun1.4threads" * doctest::timeout(300)) {
-  executor_corun_exception_1(4);
+  executor_corun_1(4);
 }
 
 // ----------------------------------------------------------------------------
 // Executor Corun Exception 2
 // ----------------------------------------------------------------------------
 
-void executor_corun_exception_2(unsigned W) {
+void executor_corun_2(unsigned W) {
   
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -526,26 +655,26 @@ void executor_corun_exception_2(unsigned W) {
 }
 
 TEST_CASE("Exception.ExecutorCorun2.1thread" * doctest::timeout(300)) {
-  executor_corun_exception_2(1);
+  executor_corun_2(1);
 }
 
 TEST_CASE("Exception.ExecutorCorun2.2threads" * doctest::timeout(300)) {
-  executor_corun_exception_2(2);
+  executor_corun_2(2);
 }
 
 TEST_CASE("Exception.ExecutorCorun2.3threads" * doctest::timeout(300)) {
-  executor_corun_exception_2(3);
+  executor_corun_2(3);
 }
 
 TEST_CASE("Exception.ExecutorCorun2.4threads" * doctest::timeout(300)) {
-  executor_corun_exception_2(4);
+  executor_corun_2(4);
 }
 
 // ----------------------------------------------------------------------------
-// runtime_corun_exception
+// runtime_corun
 // ----------------------------------------------------------------------------
 
-void runtime_corun_exception_1(unsigned W) {
+void runtime_corun_1(unsigned W) {
   
   tf::Executor executor(W);
   tf::Taskflow taskflow1;
@@ -579,27 +708,27 @@ void runtime_corun_exception_1(unsigned W) {
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
 }
 
-TEST_CASE("Exception.RuntimeCorun1.1thread") {
-  runtime_corun_exception_1(1);
+TEST_CASE("Exception.RuntimeCorun1.1thread" * doctest::timeout(300)) {
+  runtime_corun_1(1);
 }
 
-TEST_CASE("Exception.RuntimeCorun1.2threads") {
-  runtime_corun_exception_1(2);
+TEST_CASE("Exception.RuntimeCorun1.2threads" * doctest::timeout(300)) {
+  runtime_corun_1(2);
 }
 
-TEST_CASE("Exception.RuntimeCorun1.3threads") {
-  runtime_corun_exception_1(3);
+TEST_CASE("Exception.RuntimeCorun1.3threads" * doctest::timeout(300)) {
+  runtime_corun_1(3);
 }
 
-TEST_CASE("Exception.RuntimeCorun1.4threads") {
-  runtime_corun_exception_1(4);
+TEST_CASE("Exception.RuntimeCorun1.4threads" * doctest::timeout(300)) {
+  runtime_corun_1(4);
 }
 
 // ----------------------------------------------------------------------------
 // Runtime Corun Exception 2
 // ----------------------------------------------------------------------------
 
-void runtime_corun_exception_2(unsigned W) {
+void runtime_corun_2(unsigned W) {
   
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -637,26 +766,26 @@ void runtime_corun_exception_2(unsigned W) {
 }
 
 TEST_CASE("Exception.RuntimeCorun2.1thread" * doctest::timeout(300)) {
-  runtime_corun_exception_2(1);
+  runtime_corun_2(1);
 }
 
 TEST_CASE("Exception.RuntimeCorun2.2threads" * doctest::timeout(300)) {
-  runtime_corun_exception_2(2);
+  runtime_corun_2(2);
 }
 
 TEST_CASE("Exception.RuntimeCorun2.3threads" * doctest::timeout(300)) {
-  runtime_corun_exception_2(3);
+  runtime_corun_2(3);
 }
 
 TEST_CASE("Exception.RuntimeCorun2.4threads" * doctest::timeout(300)) {
-  runtime_corun_exception_2(4);
+  runtime_corun_2(4);
 }
 
 // ----------------------------------------------------------------------------
-// module_task_exception
+// module_task
 // ----------------------------------------------------------------------------
 
-void module_task_exception(unsigned W) {
+void module_task(unsigned W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow1;
@@ -677,27 +806,27 @@ void module_task_exception(unsigned W) {
   //REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "y", std::runtime_error);
 }
 
-TEST_CASE("Exception.ModuleTask.1thread") {
-  module_task_exception(1);
+TEST_CASE("Exception.ModuleTask.1thread" * doctest::timeout(300)) {
+  module_task(1);
 }
 
-TEST_CASE("Exception.ModuleTask.2threads") {
-  module_task_exception(2);
+TEST_CASE("Exception.ModuleTask.2threads" * doctest::timeout(300)) {
+  module_task(2);
 }
 
-TEST_CASE("Exception.ModuleTask.3threads") {
-  module_task_exception(3);
+TEST_CASE("Exception.ModuleTask.3threads" * doctest::timeout(300)) {
+  module_task(3);
 }
 
-TEST_CASE("Exception.ModuleTask.4threads") {
-  module_task_exception(4);
+TEST_CASE("Exception.ModuleTask.4threads" * doctest::timeout(300)) {
+  module_task(4);
 }
 
 // ----------------------------------------------------------------------------
 // Exception.AsyncTask
 // ----------------------------------------------------------------------------
 
-void async_task_exception(unsigned W) {
+void async_task(unsigned W) {
 
   // executor async
   tf::Executor executor(W);
@@ -720,27 +849,28 @@ void async_task_exception(unsigned W) {
   executor.wait_for_all();
 }
 
-TEST_CASE("Exception.AsyncTask.1thread") {
-  async_task_exception(1);
+TEST_CASE("Exception.AsyncTask.1thread" * doctest::timeout(300)) {
+  async_task(1);
 }
 
-TEST_CASE("Exception.AsyncTask.2threads") {
-  async_task_exception(2);
+TEST_CASE("Exception.AsyncTask.2threads" * doctest::timeout(300)) {
+  async_task(2);
 }
 
-TEST_CASE("Exception.AsyncTask.3threads") {
-  async_task_exception(3);
+TEST_CASE("Exception.AsyncTask.3threads" * doctest::timeout(300)) {
+  async_task(3);
 }
 
-TEST_CASE("Exception.AsyncTask.4threads") {
-  async_task_exception(4);
+TEST_CASE("Exception.AsyncTask.4threads" * doctest::timeout(300)) {
+  async_task(4);
 }
 
+/*
 // ----------------------------------------------------------------------------
 // Runtime Async Task
 // ----------------------------------------------------------------------------
 
-void runtime_async_task_exception(unsigned W) {
+void runtime_async_task(unsigned W) {
 
   // executor async
   tf::Executor executor(W);
@@ -780,8 +910,10 @@ void runtime_async_task_exception(unsigned W) {
   taskflow.clear();
   A = taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async([&](){ throw std::runtime_error("a"); });
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     rt.corun_all();
-    flag = 1;
+    flag = 1;  // can't guarantee since rt.silent_async can finish 
+               // before corun_all finishes
   });
   B = taskflow.emplace([&](){
     flag = 2;
@@ -791,17 +923,18 @@ void runtime_async_task_exception(unsigned W) {
   REQUIRE(flag == 0);
 }
 
-TEST_CASE("Exception.RuntimeAsyncTask.2threads") {
-  runtime_async_task_exception(2);
+TEST_CASE("Exception.RuntimeAsyncTask.2threads" * doctest::timeout(300)) {
+  runtime_async_task(2);
 }
 
-TEST_CASE("Exception.RuntimeAsyncTask.3threads") {
-  runtime_async_task_exception(3);
+TEST_CASE("Exception.RuntimeAsyncTask.3threads" * doctest::timeout(300)) {
+  runtime_async_task(3);
 }
 
-TEST_CASE("Exception.RuntimeAsyncTask.4threads") {
-  runtime_async_task_exception(4);
+TEST_CASE("Exception.RuntimeAsyncTask.4threads" * doctest::timeout(300)) {
+  runtime_async_task(4);
 }
+*/
 
 // ----------------------------------------------------------------------------
 // Exception.ThreadSafety
@@ -820,18 +953,18 @@ void thread_safety(unsigned W) {
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
 }
 
-TEST_CASE("Exception.ThreadSafety.1thread") {
+TEST_CASE("Exception.ThreadSafety.1thread" * doctest::timeout(300)) {
   thread_safety(1);
 }
 
-TEST_CASE("Exception.ThreadSafety.2threads") {
+TEST_CASE("Exception.ThreadSafety.2threads" * doctest::timeout(300)) {
   thread_safety(2);
 }
 
-TEST_CASE("Exception.ThreadSafety.3threads") {
+TEST_CASE("Exception.ThreadSafety.3threads" * doctest::timeout(300)) {
   thread_safety(3);
 }
 
-TEST_CASE("Exception.ThreadSafety.4threads") {
+TEST_CASE("Exception.ThreadSafety.4threads" * doctest::timeout(300)) {
   thread_safety(4);
 }

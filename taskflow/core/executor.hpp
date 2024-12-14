@@ -1716,8 +1716,16 @@ inline void Executor::_process_exception(Worker&, Node* node) {
 
   //std::cout << "processing exception from " << node->_name << std::endl;
 
+  // find the anchor and mark the entire path with exception so recursive
+  // or nested tasks can be cancelled properly
+  auto anchor = node->_parent;
+  while(anchor && (anchor->_state.load(std::memory_order_relaxed) & Node::ANCHOR) == 0) {
+    anchor->_state.fetch_or(nflag, std::memory_order_relaxed);
+    anchor = anchor->_parent;
+  }
+
   // the exception occurs under a blocking corun
-  if(auto anchor = node->_anchor(); anchor) {
+  if(anchor) {
     //std::cout << "\tfind anchor: " << anchor->_name << '\n';
     // multiple tasks may throw, and we only take the first thrown exception
     if((anchor->_state.fetch_or(nflag, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
@@ -1734,26 +1742,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
       tpg->_exception_ptr = std::current_exception();
     }
   }
-
-  
-  //// if the node has a parent, we store the exception in its parent
-  //if(auto parent = node->_parent; parent && !parent->_is_preempted()) { 
-
-  //  if ((parent->_state.fetch_or(Node::EXCEPTION, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
-  //    parent->_exception_ptr = std::current_exception();
-  //  }
-  //  // TODO if the node has a topology, cancel it to enable early stop
-  //  //if(auto tpg = node->_topology; tpg) {
-  //  //  tpg->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
-  //  //}
-  //}
-  //// multiple tasks may throw, so we only take the first thrown exception
-  //else if(auto tpg = node->_topology; tpg && 
-  //  ((tpg->_state.fetch_or(flag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0)
-  //) {
-  //  tpg->_exception_ptr = std::current_exception();
-  //}
-  //// TODO: skip the exception that is not associated with any taskflows
+  // TODO: store the exception in worker?
 }
 
 // Procedure: _invoke_static_task
@@ -2068,8 +2057,8 @@ void Executor::corun(T& target) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
-  Node parent;  // auxiliary parent
-  _corun_graph(*pt::worker, &parent, target.graph().begin(), target.graph().end());
+  Node anchor;
+  _corun_graph(*pt::worker, &anchor, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_until
@@ -2304,7 +2293,6 @@ void Runtime::corun_until(P&& predicate) {
 
 // Function: corun_all
 inline void Runtime::corun_all() {
-
   {
     AnchorGuard anchor(_parent);
     _executor._corun_until(_worker, [this] () -> bool { 
