@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../taskflow.hpp"
 #include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
 
