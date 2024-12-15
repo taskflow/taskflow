@@ -1500,10 +1500,10 @@ inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
   #define TF_INVOKE_CONTINUATION()  \
-    if (cache) {                    \
-      node = cache;                 \
-      goto begin_invoke;            \
-    }
+  if (cache) {                      \
+    node = cache;                   \
+    goto begin_invoke;              \
+  }
 
   begin_invoke:
 
@@ -1582,16 +1582,22 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // + We must use fetch_add instead of direct assigning
   //   because the user-space call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
-  if(node->_nstate & Node::CONDITIONED) {
-    node->_join_counter.fetch_add(node->num_strong_dependents(), std::memory_order_relaxed);
-  }
-  else {
-    node->_join_counter.fetch_add(node->num_dependents(), std::memory_order_relaxed);
-  }
+  node->_join_counter.fetch_add(
+    node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
+  );
+
+  //if(node->_nstate & NSTATE::CONDITIONED) {
+  //  node->_join_counter.fetch_add(
+  //    node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
+  //  );
+  //}
+  //else {
+  //  node->_join_counter.fetch_add(node->num_dependents(), std::memory_order_relaxed);
+  //}
 
   // acquire the parent flow counter
-  auto& j = (node->_parent) ? node->_parent->_join_counter :
-                              node->_topology->_join_counter;
+  auto& join_counter = (node->_parent) ? node->_parent->_join_counter :
+                       node->_topology->_join_counter;
 
   // Invoke the task based on the corresponding type
   switch(node->_handle.index()) {
@@ -1604,7 +1610,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           auto s = node->_successors[cond];
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
-          j.fetch_add(1, std::memory_order_relaxed);
+          join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1617,7 +1623,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
         //if(auto s = node->_successors[i]; --(s->_join_counter) == 0) {
         if(auto s = node->_successors[i]; 
           s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          j.fetch_add(1, std::memory_order_relaxed);
+          join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1647,7 +1653,7 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache
       case Node::SUBFLOW: {
         if(auto state = parent->_nstate;
            parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          if(state & Node::PREEMPTED) {
+          if(state & NSTATE::PREEMPTED) {
             _update_cache(worker, cache, parent);
           }
         }
@@ -1683,40 +1689,34 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _process_exception
 inline void Executor::_process_exception(Worker&, Node* node) {
 
-  constexpr static auto nflag = Node::EXCEPTION | Node::CANCELLED;
-  constexpr static auto tflag = Topology::EXCEPTION | Topology::CANCELLED;
-
-  //std::cout << "processing exception from " << node->_name << std::endl;
+  constexpr static auto nflag = ESTATE::EXCEPTION | ESTATE::CANCELLED;
+  constexpr static auto tflag = ESTATE::EXCEPTION | ESTATE::CANCELLED;
 
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
   auto anchor = node->_parent;
-  while(anchor && (anchor->_nstate & Node::ANCHOR) == 0) {
+  while(anchor && (anchor->_nstate & NSTATE::ANCHOR) == 0) {
     anchor->_estate.fetch_or(nflag, std::memory_order_relaxed);
     anchor = anchor->_parent;
   }
 
-  // the exception occurs under a blocking corun
+  // the exception occurs under a blocking call (e.g., corun, join)
   if(anchor) {
-    //std::cout << "\tfind anchor: " << anchor->_name << '\n';
     // multiple tasks may throw, and we only take the first thrown exception
-    if((anchor->_estate.fetch_or(nflag, std::memory_order_relaxed) & Node::EXCEPTION) == 0) {
-      //std::cout << node->_name << " stores exception in anchor " << anchor->_name << std::endl;
+    if((anchor->_estate.fetch_or(nflag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       anchor->_exception_ptr = std::current_exception();
     }
   }
   // otherwise, we simply store the exception in the topology and cancel it
   else if(auto tpg = node->_topology; tpg) {
-    //std::cout << "\tno anchor - go to topology\n";
     // multiple tasks may throw, and we only take the first thrown exception
-    if((tpg->_state.fetch_or(tflag, std::memory_order_relaxed) & Topology::EXCEPTION) == 0) {
-      //std::cout << "store exception in topology " << std::endl;
+    if((tpg->_estate.fetch_or(tflag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       tpg->_exception_ptr = std::current_exception();
     }
   }
-  //else {
+  // orphan exception (e.g., silent_async)
+  // else {
   //// TODO: store the exception in worker?
-  //  printf("don't know how to do with uncaught exception... %s", node->_name.c_str());
   //}
 }
 
@@ -1741,9 +1741,8 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
 
 // Procedure: _invoke_subflow_task
 inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
-  //TF_EXECUTOR_EXCEPTION_HANDLER(w, node, {
 
-  if((node->_nstate & Node::PREEMPTED) == 0) {
+  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     
     auto& h = *std::get_if<Node::Subflow>(&node->_handle);
     auto& g = h.subgraph;
@@ -1763,7 +1762,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     if(sf.joinable() && g.size() > sf._tag) {
 
       // signal the executor to preempt this node
-      node->_nstate |= Node::PREEMPTED;
+      node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
       auto sbeg = g.begin() + sf._tag;
@@ -1774,7 +1773,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     }
   }
   else {
-    node->_nstate &= ~Node::PREEMPTED;
+    node->_nstate &= ~NSTATE::PREEMPTED;
   }
 
   return false;
@@ -1852,10 +1851,10 @@ inline void Executor::_invoke_multi_condition_task(
 inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
 
   // first entry - not spawned yet
-  if((node->_nstate & Node::PREEMPTED) == 0) {
+  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
       // signal the executor to preempt this node
-      node->_nstate |= Node::PREEMPTED;
+      node->_nstate |= NSTATE::PREEMPTED;
       auto send = _set_up_graph(m->graph.begin(), m->graph.end(), node, node->_topology, 0);
       node->_join_counter.fetch_add(send - m->graph.begin(), std::memory_order_relaxed);
       _schedule(w, m->graph.begin(), send);
@@ -1864,8 +1863,7 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
   }
   // second entry - already spawned
   else {
-    //node->_state.fetch_and(~Node::PREEMPTED, std::memory_order_relaxed);
-    node->_nstate &= ~Node::PREEMPTED;
+    node->_nstate &= ~NSTATE::PREEMPTED;
   }
   return false;
 }
@@ -2227,7 +2225,7 @@ inline void Subflow::detach() {
   if(_graph.size() > _tag) {
     auto sbeg = _graph.begin() + _tag;
     auto send = _executor._set_up_graph(
-      sbeg, _graph.end(), nullptr, _parent->_topology, Node::DETACHED
+      sbeg, _graph.end(), nullptr, _parent->_topology, NSTATE::DETACHED
     );
     _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
     _executor._schedule(_worker, sbeg, send);

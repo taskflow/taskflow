@@ -73,4 +73,20 @@ TF_FORCE_INLINE void launch_loop(
   }
 }
 
+// Function: launch_loop
+template <typename P, typename Loop>
+TF_FORCE_INLINE auto make_loop_task(P part, Loop loop) {
+  
+  constexpr bool is_default_wrapper_v = std::is_same_v<
+    typename std::decay_t<P>::closure_wrapper_type, DefaultClosureWrapper
+  >;
+
+  if constexpr(is_default_wrapper_v) {
+    return loop;
+  }
+  else {
+    return [=]() mutable { std::invoke(part.closure_wrapper(), loop); };
+  }
+}
+
 }  // end of namespace tf -----------------------------------------------------

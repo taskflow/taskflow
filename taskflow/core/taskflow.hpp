@@ -638,7 +638,7 @@ Future<T>::Future(std::future<T>&& f, std::weak_ptr<Topology> p) :
 template <typename T>
 bool Future<T>::cancel() {
   if(auto ptr = _topology.lock(); ptr) {
-    ptr->_state.fetch_or(Topology::CANCELLED, std::memory_order_relaxed);
+    ptr->_estate.fetch_or(ESTATE::CANCELLED, std::memory_order_relaxed);
     return true;
   }
   return false;

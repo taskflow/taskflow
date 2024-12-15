@@ -4,7 +4,6 @@ list(APPEND TF_EXAMPLES
   async
   runtime_async
   dependent_async
-  dependent_async_algorithm
   observer 
   subflow 
   fibonacci 

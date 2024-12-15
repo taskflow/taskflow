@@ -8,8 +8,33 @@
 
 namespace tf {
 
-// Procedure: throw_se
-// Throws the system error under a given error code.
+// node-specific states
+struct NSTATE {
+
+  using underlying_type = int;
+
+  constexpr static underlying_type NONE        = 0x00000000;  
+  constexpr static underlying_type CONDITIONED = 0x10000000;  
+  constexpr static underlying_type DETACHED    = 0x20000000;  
+  constexpr static underlying_type PREEMPTED   = 0x40000000;  
+  constexpr static underlying_type ANCHOR      = 0x80000000;  
+
+  // mask to isolate state bits - non-state bits store # weak dependents
+  constexpr static underlying_type MASK        = 0xF0000000;
+};
+
+// exception-specific states
+struct ESTATE {
+  
+  using underlying_type = int;  
+  
+  constexpr static underlying_type NONE        = 0; 
+  constexpr static underlying_type EXCEPTION   = 1;
+  constexpr static underlying_type CANCELLED   = 2;
+};
+
+// Procedure: throw_re
+// Throws runtime error under a given error code.
 template <typename... ArgsT>
 //void throw_se(const char* fname, const size_t line, Error::Code c, ArgsT&&... args) {
 void throw_re(const char* fname, const size_t line, ArgsT&&... args) {

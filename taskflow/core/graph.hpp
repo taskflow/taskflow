@@ -645,14 +645,6 @@ class Node {
   TF_ENABLE_POOLABLE_ON_THIS;
 #endif
 
-  // state bit flag
-  constexpr static int CONDITIONED = 1;
-  constexpr static int DETACHED    = 2;
-  constexpr static int EXCEPTION   = 4;
-  constexpr static int PREEMPTED   = 8;
-  constexpr static int ANCHOR      = 16;
-  constexpr static int CANCELLED   = 32;
-
   using Placeholder = std::monostate;
 
   // static work handle
@@ -745,6 +737,9 @@ class Node {
 
   public:
 
+  using execution_state_t = NSTATE::underlying_type;
+  using exception_state_t = std::atomic<ESTATE::underlying_type>;
+
   // variant index
   constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
   constexpr static auto STATIC          = get_index_v<Static, handle_t>;
@@ -777,8 +772,8 @@ class Node {
 
   private:
   
-  int _nstate {0};
-  std::atomic<int> _estate {0};
+  execution_state_t _nstate {NSTATE::NONE};
+  exception_state_t _estate {ESTATE::NONE};
 
   std::string _name;
   
@@ -1047,14 +1042,15 @@ inline bool Node::_is_conditioner() const {
 
 // Function: _is_preempted
 inline bool Node::_is_preempted() const {
-  return _nstate & Node::PREEMPTED;
+  return _nstate & NSTATE::PREEMPTED;
 }
 
 // Function: _is_cancelled
 // we currently only support cancellation of taskflow (no async task)
 inline bool Node::_is_cancelled() const {
-  return (_topology && (_topology->_state.load(std::memory_order_relaxed) & Topology::CANCELLED)) ||
-         (_parent && (_parent->_estate.load(std::memory_order_relaxed) & Node::CANCELLED));
+  return (_topology && (_topology->_estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED)) 
+         ||
+         (_parent && (_parent->_estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED));
 }
 
 // Procedure: _set_up_join_counter
@@ -1062,7 +1058,8 @@ inline void Node::_set_up_join_counter() {
   size_t c = 0;
   for(auto p : _dependents) {
     if(p->_is_conditioner()) {
-      _nstate |= Node::CONDITIONED;
+      //_nstate |= NSTATE::CONDITIONED;
+      _nstate = (_nstate + 1) | NSTATE::CONDITIONED;
     }
     else {
       c++;
@@ -1092,12 +1089,11 @@ class AnchorGuard {
   public:
 
   AnchorGuard(Node* node) : _node{node} { 
-    _node->_nstate |= Node::ANCHOR;
+    _node->_nstate |= NSTATE::ANCHOR;
   }
 
   ~AnchorGuard() {
-    _node->_nstate &= ~Node::ANCHOR;
-    //_node->_state.fetch_and(~Node::ANCHOR, std::memory_order_relaxed);
+    _node->_nstate &= ~NSTATE::ANCHOR;
   }
   
   private:
