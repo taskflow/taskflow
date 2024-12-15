@@ -63,23 +63,23 @@ bool find_if_not_loop(
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
 auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
+  using namespace std::string_literals;
+  
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Runtime& rt) mutable {
+  return [=, &result] (Subflow& sf) mutable {
 
     // fetch the stateful values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = rt.executor().num_workers();
+    size_t W = sf.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        result = std::find_if(beg, end, predicate);
-      });
+      launch_loop(part, [&](){ result = std::find_if(beg, end, predicate); });
       return;
     }
 
@@ -87,50 +87,46 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       W = N;
     }
     
-    std::atomic<size_t> offset(N);
+    auto offset = std::make_shared<std::atomic<size_t>>(N);
+    
+    // update the result iterator by the offset
+    auto finalize = sf.emplace([=, &result]() mutable {
+      result = std::next(beg, offset->load(std::memory_order_relaxed));
+    }).name("end");
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-
       size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
-      
         chunk_size = part.adjusted_chunk_size(N, W, w);
-
-        launch_loop(W, w, rt, part,
-          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
-            part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                return detail::find_if_loop(
-                  offset, beg, prev_e, part_b, part_e, predicate
-                );
-              }
-            );
-          }
-        );
-      }
-
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part, 
-        [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          part.loop_until(N, W, next, 
-            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+        sf.emplace(make_loop_task(part, [=] () mutable {
+          part.loop_until(N, W, curr_b, chunk_size,
+            [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_loop(
-                offset, beg, prev_e, curr_b, curr_e, predicate
+                *offset, beg, prev_e, part_b, part_e, predicate
               );
             }
           );
-        }
-      );
+        })).name("loop-"s + std::to_string(w))
+           .precede(finalize);
+      }
     }
-
-    // update the result iterator by the offset
-    result = std::next(beg, offset.load(std::memory_order_relaxed));
+    // dynamic partitioner
+    else {
+      auto next = std::make_shared<std::atomic<size_t>>(0);
+      for(size_t w=0; w<W; w++) {
+        sf.emplace(make_loop_task(part, [=] () mutable {
+          part.loop_until(N, W, *next, 
+            [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              return detail::find_if_loop(
+                *offset, beg, prev_e, curr_b, curr_e, predicate
+              );
+            }
+          );
+        })).name("loop-"s + std::to_string(w))
+           .precede(finalize);
+      }
+    }
   };
 }
 
@@ -138,16 +134,18 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
 auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
+  using namespace std::string_literals;
+  
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Runtime& rt) mutable {
+  return [=, &result] (Subflow& sf) mutable {
 
     // fetch the stateful values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = rt.executor().num_workers();
+    size_t W = sf.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -162,50 +160,46 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       W = N;
     }
     
-    std::atomic<size_t> offset(N);
+    auto offset = std::make_shared<std::atomic<size_t>>(N);
+
+    // update the result iterator by the offset
+    auto finalize = sf.emplace([=, &result]() mutable {
+      result = std::next(beg, offset->load(std::memory_order_relaxed));
+    }).name("end");
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-
       size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
-      
         chunk_size = part.adjusted_chunk_size(N, W, w);
-
-        launch_loop(W, w, rt, part,
-          [N, W, curr_b, chunk_size, beg, &predicate, &offset, &part] () mutable {
-            part.loop_until(N, W, curr_b, chunk_size,
-              [&, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-                return detail::find_if_not_loop(
-                  offset, beg, prev_e, part_b, part_e, predicate
-                );
-              }
-            );
-          }
-        );
-      }
-
-      rt.corun_all();
-    }
-    // dynamic partitioner
-    else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part,
-        [N, W, beg, &predicate, &offset, &next, &part] () mutable {
-          part.loop_until(N, W, next, 
-            [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+        sf.emplace(make_loop_task(part, [=] () mutable {
+          part.loop_until(N, W, curr_b, chunk_size,
+            [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_not_loop(
-                offset, beg, prev_e, curr_b, curr_e, predicate
+                *offset, beg, prev_e, part_b, part_e, predicate
               );
             }
           );
-        }
-      );
+        })).name("loop-"s + std::to_string(w))
+           .precede(finalize);
+      }
     }
-
-    // update the result iterator by the offset
-    result = std::next(beg, offset.load(std::memory_order_relaxed));
+    // dynamic partitioner
+    else {
+      auto next = std::make_shared<std::atomic<size_t>>(0);
+      for(size_t w=0; w<W; w++) {
+        sf.emplace(make_loop_task(part, [=] () mutable {
+          part.loop_until(N, W, *next, 
+            [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
+              return detail::find_if_not_loop(
+                *offset, beg, prev_e, curr_b, curr_e, predicate
+              );
+            }
+          );
+        })).name("loop-"s + std::to_string(w))
+           .precede(finalize);
+      }
+    }
   };
 }
 
