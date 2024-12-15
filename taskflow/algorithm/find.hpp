@@ -206,17 +206,19 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 // Function: make_min_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
 auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
+  
+  using namespace std::string_literals;
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Runtime& rt) mutable {
+  return [=, &result] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = rt.executor().num_workers();
+    size_t W = sf.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -231,7 +233,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
       W = N;
     }
 
-    std::mutex mutex;
+    auto mutex = std::make_shared<std::mutex>();
     
     // initialize the result to the first element
     result = beg++;
@@ -248,12 +250,11 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        launch_loop(W, w, rt, part,
-        [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
+        sf.emplace(make_loop_task(part, [=, &result] () mutable {
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(*mutex);
             if(comp(*beg, *result)) {
               result = beg;
             }
@@ -266,7 +267,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
         
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
+            [=, &smallest, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
 
               if(part_b > prev_e) {
                 std::advance(beg, part_b - prev_e);
@@ -285,21 +286,22 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(*mutex);
           if(comp(*smallest, *result)) {
             result = smallest;
           }
-        });
+        })).name("loop-"s + std::to_string(w));
       }
-      rt.corun_all();
     }
     // dynamic partitioner
     else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part, 
-        [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
+      auto next = std::make_shared<std::atomic<size_t>>(0);
+      
+      for(size_t w=0; w<W; w++) {
+
+        sf.emplace(make_loop_task(part, [=, &result] () mutable {
           // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+          size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
           if(s0 >= N) {
             return;
@@ -308,7 +310,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           std::advance(beg, s0);
 
           if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(*mutex);
             if(comp(*beg, *result)) {
               result = beg;
             }
@@ -321,8 +323,8 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           T smallest = comp(*beg1, *beg2) ? beg1 : beg2;
           
           // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
+          part.loop(N, W, *next, 
+            [=, &smallest, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*beg, *smallest)) {
@@ -334,12 +336,12 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(*mutex);
           if(comp(*smallest, *result)) {
             result = smallest;
           }
-        }
-      );
+        })).name("loop-"s + std::to_string(w));
+      }
     }
   };
 }
@@ -347,17 +349,19 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 // Function: make_max_element_task
 template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
 auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
+  
+  using namespace std::string_literals;
 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Runtime& rt) mutable {
+  return [=, &result] (Subflow& sf) mutable {
 
     // fetch the iterator values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = rt.executor().num_workers();
+    size_t W = sf.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -372,7 +376,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
       W = N;
     }
 
-    std::mutex mutex;
+    auto mutex = std::make_shared<std::mutex>();
     
     // initialize the result to the first element
     result = beg++;
@@ -389,12 +393,12 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        launch_loop(W, w, rt, part,
-        [beg, curr_b, N, W, chunk_size, &comp, &mutex, &result, &part] () mutable {
+        sf.emplace(make_loop_task(part, [=, &result] () mutable {
+
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(*mutex);
             if(comp(*result, *beg)) {
               result = beg;
             }
@@ -407,7 +411,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
         
           // loop reduce
           part.loop(N, W, curr_b, chunk_size,
-            [&, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
+            [=, &largest, prev_e=curr_b+2](size_t part_b, size_t part_e) mutable {
 
               if(part_b > prev_e) {
                 std::advance(beg, part_b - prev_e);
@@ -426,21 +430,22 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(*mutex);
           if(comp(*result, *largest)) {
             result = largest;
           }
-        });
+        })).name("loop-"s + std::to_string(w));
       }
-      rt.corun_all();
     }
     // dynamic partitioner
     else {
-      std::atomic<size_t> next(0);
-      launch_loop(N, W, rt, next, part,
-        [beg, N, W, &next, &comp, &mutex, &result, &part] () mutable {
+      auto next = std::make_shared<std::atomic<size_t>>(0);
+      
+      for(size_t w=0; w<W; w++) {
+
+        sf.emplace(make_loop_task(part, [=, &result] () mutable {
           // pre-reduce
-          size_t s0 = next.fetch_add(2, std::memory_order_relaxed);
+          size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
           if(s0 >= N) {
             return;
@@ -449,7 +454,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           std::advance(beg, s0);
 
           if(N - s0 == 1) {
-            std::lock_guard<std::mutex> lock(mutex);
+            std::lock_guard<std::mutex> lock(*mutex);
             if(comp(*result, *beg)) {
               result = beg;
             }
@@ -462,8 +467,8 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           T largest = comp(*beg1, *beg2) ? beg2 : beg1;
           
           // loop reduce
-          part.loop(N, W, next, 
-            [&, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
+          part.loop(N, W, *next, 
+            [=, &largest, prev_e=s0+2](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x=part_b; x<part_e; x++, beg++) {
                 if(comp(*largest, *beg)) {
@@ -475,16 +480,15 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           ); 
           
           // final reduce
-          std::lock_guard<std::mutex> lock(mutex);
+          std::lock_guard<std::mutex> lock(*mutex);
           if(comp(*result, *largest)) {
             result = largest;
           }
-        }
-      );
+        })).name("loop-"s + std::to_string(w));
+      }
     }
   };
 }
-
 
 
 // Function: find_if
