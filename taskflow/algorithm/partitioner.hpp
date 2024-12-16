@@ -130,6 +130,8 @@ template <typename C = DefaultClosureWrapper>
 class PartitionerBase : public IsPartitioner {
 
   public:
+    
+  constexpr static bool is_default_wrapper_v = std::is_same_v<C, DefaultClosureWrapper>;
   
   /** 
   @brief the closure type
@@ -170,10 +172,29 @@ class PartitionerBase : public IsPartitioner {
   const C& closure_wrapper() const { return _closure_wrapper; }
 
   /**
+  @brief acquire a mutable access to the closure wrapper object
+  */
+  C& closure_wrapper() { return _closure_wrapper; }
+
+  /**
   @brief modify the closure wrapper object
   */
   template <typename F>
   void closure_wrapper(F&& fn) { _closure_wrapper = std::forward<F>(fn); }
+
+  /**
+  @brief wraps the given callable with the associated closure wrapper
+  */
+  template <typename F>
+  TF_FORCE_INLINE decltype(auto) operator () (F&& callable) {
+    if constexpr(is_default_wrapper_v) {
+      return std::forward<F>(callable);
+    }
+    else {
+      // closure wrapper is stateful - capture it by reference
+      return [this, c=std::forward<F>(callable)]() mutable { _closure_wrapper(c); };
+    }
+  }
 
   protected:
   

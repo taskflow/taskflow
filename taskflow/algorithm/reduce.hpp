@@ -24,9 +24,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        for(; beg!=end; r = bop(r, *beg++));
-      });
+      part([&](){ for(; beg!=end; r = bop(r, *beg++)); })();
       return;
     }
 
@@ -47,7 +45,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -91,7 +89,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       
       for(size_t w=0; w<W; w++) {
 
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -154,9 +152,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        for(; beg!=end; r = bop(std::move(r), uop(*beg++))); 
-      });
+      part([&](){ for(; beg!=end; r = bop(std::move(r), uop(*beg++))); })();
       return;
     }
 
@@ -175,7 +171,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -219,7 +215,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       auto next = std::make_shared<std::atomic<size_t>>(0);
         
       for(size_t w=0; w<W; w++) {
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
 
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
@@ -289,9 +285,7 @@ auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++)));
-      });
+      part([&](){ for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++))); })();
       return;
     }   
 
@@ -310,7 +304,7 @@ auto make_transform_reduce_task(
     
         chunk_size = part.adjusted_chunk_size(N, W, w); 
 
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
           std::advance(beg1, curr_b);
           std::advance(beg2, curr_b);
 
@@ -353,7 +347,7 @@ auto make_transform_reduce_task(
     
       for(size_t w=0; w<W; w++) {
 
-        sf.emplace(make_loop_task(part, [=, &r] () mutable {
+        sf.emplace(part([=, &r] () mutable {
 
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);

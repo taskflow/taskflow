@@ -610,8 +610,8 @@ class FlowBuilder {
   // ------------------------------------------------------------------------
   // scan
   // ------------------------------------------------------------------------
-  
-  /**
+
+    /**
   @brief creates an STL-styled parallel inclusive-scan task
 
   @tparam B beginning iterator type
@@ -627,11 +627,11 @@ class FlowBuilder {
   @param part partitioning algorithm to schedule parallel iterations
 
   Performs the cumulative sum (aka prefix sum, aka scan) of the input range
-  and writes the result to the output range. 
+  and writes the result to the output range.
   Each element of the output range contains the
   running total of all earlier elements using the given binary operator
   for summation.
-  
+
   This function generates an @em inclusive scan, meaning that the N-th element
   of the output range is the sum of the first N input elements,
   so the N-th input element is included.
@@ -642,12 +642,12 @@ class FlowBuilder {
     input.begin(), input.end(), input.begin(), std::plus<int>{}
   );
   executor.run(taskflow).wait();
-  
+
   // input is {1, 3, 6, 10, 15}
   @endcode
-  
+
   Iterators are templated to enable stateful range using std::reference_wrapper.
-  
+
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP, typename P = DefaultPartitioner,

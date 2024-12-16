@@ -79,7 +79,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){ result = std::find_if(beg, end, predicate); });
+      part([&](){ result = std::find_if(beg, end, predicate); })();
       return;
     }
 
@@ -99,7 +99,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(make_loop_task(part, [=] () mutable {
+        sf.emplace(part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_loop(
@@ -115,7 +115,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W; w++) {
-        sf.emplace(make_loop_task(part, [=] () mutable {
+        sf.emplace(part([=] () mutable {
           part.loop_until(N, W, *next, 
             [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               return detail::find_if_loop(
@@ -150,9 +150,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        result = std::find_if_not(beg, end, predicate);
-      });
+      part([&](){ result = std::find_if_not(beg, end, predicate); })();
       return;
     }
 
@@ -172,7 +170,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(make_loop_task(part, [=] () mutable {
+        sf.emplace(part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_not_loop(
@@ -188,7 +186,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W; w++) {
-        sf.emplace(make_loop_task(part, [=] () mutable {
+        sf.emplace(part([=] () mutable {
           part.loop_until(N, W, *next, 
             [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               return detail::find_if_not_loop(
@@ -223,9 +221,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        result = std::min_element(beg, end, comp);
-      });
+      part([&](){ result = std::min_element(beg, end, comp); })();
       return;
     }
 
@@ -250,7 +246,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(make_loop_task(part, [=, &result] () mutable {
+        sf.emplace(part([=, &result] () mutable {
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
@@ -299,7 +295,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
       
       for(size_t w=0; w<W; w++) {
 
-        sf.emplace(make_loop_task(part, [=, &result] () mutable {
+        sf.emplace(part([=, &result] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -366,9 +362,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      launch_loop(part, [&](){
-        result = std::max_element(beg, end, comp);
-      });
+      part([&](){ result = std::max_element(beg, end, comp); })();
       return;
     }
 
@@ -393,7 +387,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(make_loop_task(part, [=, &result] () mutable {
+        sf.emplace(part([=, &result] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -443,7 +437,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
       
       for(size_t w=0; w<W; w++) {
 
-        sf.emplace(make_loop_task(part, [=, &result] () mutable {
+        sf.emplace(part([=, &result] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 

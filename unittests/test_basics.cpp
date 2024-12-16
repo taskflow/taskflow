@@ -18,8 +18,6 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto t4 = taskflow.composed_of(taskflow2);
   auto t5 = taskflow.emplace([](){ return tf::SmallVector{1, 2}; });
   auto t6 = taskflow.emplace([](tf::Runtime&){});
-  auto t7 = taskflow.emplace([](tf::Runtime&){ return 1; });
-  auto t8 = taskflow.emplace([](tf::Runtime&){ return tf::SmallVector{1, 2}; });
 
   REQUIRE(t1.type() == tf::TaskType::STATIC);
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
@@ -27,8 +25,6 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::CONDITION);
   REQUIRE(t6.type() == tf::TaskType::STATIC);
-  REQUIRE(t7.type() == tf::TaskType::CONDITION);
-  REQUIRE(t8.type() == tf::TaskType::CONDITION);
 }
 
 // --------------------------------------------------------

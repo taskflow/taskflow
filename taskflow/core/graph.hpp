@@ -129,6 +129,7 @@ class Runtime {
 
   friend class Executor;
   friend class FlowBuilder;
+  friend class PreemptionGuard;
 
   public:
   
@@ -539,6 +540,8 @@ class Runtime {
   */
   Node* _parent;
 
+  bool _preempted {false};
+
   /**
   @private
   */
@@ -631,6 +634,7 @@ class Node {
   friend class Subflow;
   friend class Runtime;
   friend class AnchorGuard;
+  friend class PreemptionGuard;
 
   //template <typename T>
   //friend class Freelist;
@@ -674,9 +678,7 @@ class Node {
     template <typename C>
     Condition(C&&);
     
-    std::variant<
-      std::function<int()>, std::function<int(Runtime&)>
-    > work;
+    std::function<int()> work;
   };
 
   // multi-condition work handle
@@ -685,9 +687,7 @@ class Node {
     template <typename C>
     MultiCondition(C&&);
 
-    std::variant<
-      std::function<SmallVector<int>()>, std::function<SmallVector<int>(Runtime&)>
-    > work;
+    std::function<SmallVector<int>()> work;
   };
 
   // module work handle

@@ -1077,16 +1077,16 @@ class Executor {
   void _schedule(Node*);
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*);
-  void _tear_down_async(Node*);
+  void _tear_down_async(Worker&, Node*, Node*&);
   void _tear_down_dependent_async(Worker&, Node*, Node*&);
   void _tear_down_invoke(Worker&, Node*, Node*&);
   void _increment_topology();
   void _decrement_topology();
   void _invoke(Worker&, Node*);
-  void _invoke_static_task(Worker&, Node*);
+
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-  void _invoke_async_task(Worker&, Node*);
+
   void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
@@ -1094,6 +1094,8 @@ class Executor {
 
   void _update_cache(Worker&, Node*&, Node*);
 
+  bool _invoke_static_task(Worker&, Node*);
+  bool _invoke_async_task(Worker&, Node*);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
 
@@ -1522,7 +1524,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   switch(node->_handle.index()) {
     // static task
     case Node::STATIC:{
-      _invoke_static_task(worker, node);
+      if(_invoke_static_task(worker, node)) {
+        return;
+      }
     }
     break;
 
@@ -1556,8 +1560,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // async task
     case Node::ASYNC: {
-      _invoke_async_task(worker, node);
-      _tear_down_async(node);
+      if(_invoke_async_task(worker, node)) {
+        return;
+      }
+      _tear_down_async(worker, node, cache);
+      TF_INVOKE_CONTINUATION();
       return;
     }
     break;
@@ -1721,22 +1728,41 @@ inline void Executor::_process_exception(Worker&, Node* node) {
 }
 
 // Procedure: _invoke_static_task
-inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-    auto& work = std::get_if<Node::Static>(&node->_handle)->work;
-    switch(work.index()) {
-      case 0:
+inline bool Executor::_invoke_static_task(Worker& worker, Node* node) {
+  auto& work = std::get_if<Node::Static>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      _observer_prologue(worker, node);
+      TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
         std::get_if<0>(&work)->operator()();
-      break;
+      });
+      _observer_epilogue(worker, node);
+    break;
 
-      case 1:
+    case 1:
+      // first time
+      if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+
         Runtime rt(*this, worker, node);
-        std::get_if<1>(&work)->operator()(rt);
-      break;
-    }
-  });
-  _observer_epilogue(worker, node);
+
+        _observer_prologue(worker, node);
+        TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+          std::get_if<1>(&work)->operator()(rt);
+        });
+        _observer_epilogue(worker, node);
+        
+        // here, we cannot check the state from node->_nstate due to data race
+        if(rt._preempted) {
+          return true;
+        }
+      }
+      // second time
+      else {
+        node->_nstate &= ~NSTATE::PREEMPTED;
+      }
+    break;
+  }
+  return false;
 }
 
 // Procedure: _invoke_subflow_task
@@ -1812,16 +1838,7 @@ inline void Executor::_invoke_condition_task(
   _observer_prologue(worker, node);
   TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     auto& work = std::get_if<Node::Condition>(&node->_handle)->work;
-    switch(work.index()) {
-      case 0:
-        conds = { std::get_if<0>(&work)->operator()() };
-      break;
-
-      case 1:
-        Runtime rt(*this, worker, node);
-        conds = { std::get_if<1>(&work)->operator()(rt) };
-      break;
-    }
+    conds = { work() };
   });
   _observer_epilogue(worker, node);
 }
@@ -1832,17 +1849,7 @@ inline void Executor::_invoke_multi_condition_task(
 ) {
   _observer_prologue(worker, node);
   TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-    auto& work = std::get_if<Node::MultiCondition>(&node->_handle)->work;
-    switch(work.index()) {
-      case 0:
-        conds = std::get_if<0>(&work)->operator()();
-      break;
-
-      case 1:
-        Runtime rt(*this, worker, node);
-        conds = std::get_if<1>(&work)->operator()(rt);
-      break;
-    }
+    conds = std::get_if<Node::MultiCondition>(&node->_handle)->work();
   });
   _observer_epilogue(worker, node);
 }
@@ -1869,22 +1876,42 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
 }
 
 // Procedure: _invoke_async_task
-inline void Executor::_invoke_async_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-    auto& work = std::get_if<Node::Async>(&node->_handle)->work;
-    switch(work.index()) {
-      case 0:
+inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
+  auto& work = std::get_if<Node::Async>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      _observer_prologue(worker, node);
+      TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
         std::get_if<0>(&work)->operator()();
-      break;
+      });
+      _observer_epilogue(worker, node);
+    break;
 
-      case 1:
+    case 1:
+      // first time
+      if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+
         Runtime rt(*this, worker, node);
-        std::get_if<1>(&work)->operator()(rt);
-      break;
-    }
-  });
-  _observer_epilogue(worker, node);
+
+        _observer_prologue(worker, node);
+        TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+          std::get_if<1>(&work)->operator()(rt);
+        });
+        _observer_epilogue(worker, node);
+        
+        // here, we cannot check the state from node->_nstate due to data race
+        if(rt._preempted) {
+          return true;
+        }
+      }
+      // second time
+      else {
+        node->_nstate &= ~NSTATE::PREEMPTED;
+      }
+    break;
+  }
+
+  return false;
 }
 
 // Procedure: _invoke_dependent_async_task
@@ -2391,6 +2418,32 @@ template <typename P, typename F>
 auto Runtime::async(P&& params, F&& f) {
   return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
+
+
+/**
+@private
+*/
+class PreemptionGuard {
+
+  public:
+
+  PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
+    _runtime._parent->_nstate |= NSTATE::PREEMPTED;
+    _runtime._preempted = true;
+    _runtime._parent->_join_counter.fetch_add(1, std::memory_order_release);
+  }
+
+  ~PreemptionGuard() {
+    if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      _runtime._preempted = false;
+      _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;
+    }
+  }
+  
+  private:
+
+  Runtime& _runtime;
+};
 
 #endif
 

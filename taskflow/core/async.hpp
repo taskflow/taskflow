@@ -85,14 +85,20 @@ inline void Executor::_schedule_async_task(Node* node) {
 }
 
 // Procedure: _tear_down_async
-inline void Executor::_tear_down_async(Node* node) {
-  // from runtime
-  if(node->_parent) {
-    node->_parent->_join_counter.fetch_sub(1, std::memory_order_release);
-  }
+inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache) {
+  
   // from executor
-  else {
+  if(auto parent = node->_parent; parent == nullptr) {
     _decrement_topology();
+  }
+  // from runtime
+  else {
+    if(auto state = parent->_nstate;
+       parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(state & NSTATE::PREEMPTED) {
+        _update_cache(worker, cache, parent);
+      }
+    }
   }
   recycle(node);
 }

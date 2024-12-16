@@ -4,6 +4,32 @@
 
 namespace tf {
 
+/*
+
+Block-parallel scan algorithm:
+
+-----------------------------------------------------------------
+|    block 1    |    block 2    |    block 3    |    block 4    |
+-----------------------------------------------------------------
+
+                -----------------------------
+                |  B1  |  B2  |  B3  |  B4  |  // scan block sum to auxilinary array
+                -----------------------------
+                |                           |
+                v                           v
+                -----------------------------
+                |  B1  |  B2  |  B3  |  B4  |  // scan block sums
+                -----------------------------
+                   |
+                   |                           // add scanned block sum i to all 
+                   |                           // values of scanned block i+1
+                   v
+-----------------------------------------------------------------
+|    block 1    |    block 2    |    block 3    |    block 4    |
+-----------------------------------------------------------------
+
+*/
+
 namespace detail {
 
 // Function: scan_loop
@@ -74,9 +100,7 @@ auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::inclusive_scan(s_beg, s_end, d_beg, bop);
-      });
+      part([&](){ std::inclusive_scan(s_beg, s_end, d_beg, bop); })();
       return;
     }
 
@@ -111,29 +135,6 @@ auto make_inclusive_scan_task(
 
         // block scan
         detail::scan_loop(rt, counter, buf, bop, result, W, w, chunk_size);
-        
-        //size_t offset = R ? Q + 1 : Q;
-        //size_t rest   = N - offset;
-        //size_t rest_Q = rest / W;
-        //size_t rest_R = rest % W;
-        //
-        //chunk_size = policy.chunk_size() == 0 ? 
-        //             rest_Q + (w < rest_R) : policy.chunk_size();
-        //
-        //size_t curr_b = policy.chunk_size() == 0 ? 
-        //                offset + (w<rest_R ? w*(rest_Q + 1) : rest_R + w*rest_Q) :
-        //                offset + w*policy.chunk_size();
-
-        //policy(N, W, curr_b, chunk_size,
-        //  [&, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-        //    std::advance(orig_d_beg, curr_b - prev_e);
-        //    for(size_t x = curr_b; x<curr_e; x++) {
-        //      size_t j = x < (Q+1)*R ? x/(Q+1) : (x-(Q+1)*R)/Q + R;
-        //      *orig_d_beg++ = bop(buf[j-1].data, *orig_d_beg);
-        //    }
-        //    prev_e = curr_e;
-        //  }
-        //);
       });
       
       std::advance(s_beg, chunk_size);
@@ -174,9 +175,7 @@ auto make_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::inclusive_scan(s_beg, s_end, d_beg, bop, init);
-      });
+      part([&](){ std::inclusive_scan(s_beg, s_end, d_beg, bop, init); })();
       return;
     }
 
@@ -255,9 +254,7 @@ auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop); 
-      });
+      part([&](){ std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop); })();
       return;
     }
 
@@ -329,9 +326,7 @@ auto make_transform_inclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop, init);
-      });
+      part([&](){ std::transform_inclusive_scan(s_beg, s_end, d_beg, bop, uop, init); })();
       return;
     }
 
@@ -409,9 +404,7 @@ auto make_exclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::exclusive_scan(s_beg, s_end, d_beg, init, bop);
-      });
+      part([&](){ std::exclusive_scan(s_beg, s_end, d_beg, init, bop); })();
       return;
     }
 
@@ -497,9 +490,7 @@ auto make_transform_exclusive_scan_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= 2) {
-      launch_loop(part, [&](){
-        std::transform_exclusive_scan(s_beg, s_end, d_beg, init, bop, uop);
-      });
+      part([&](){ std::transform_exclusive_scan(s_beg, s_end, d_beg, init, bop, uop); })();
       return;
     }
 
