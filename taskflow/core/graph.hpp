@@ -1087,13 +1087,15 @@ inline void Node::_rethrow_exception() {
 class AnchorGuard {
 
   public:
-
+  
+  // anchor is at estate as it may be accessed by multiple threads (e.g., corun's
+  // parent with tear_down_async's parent).
   AnchorGuard(Node* node) : _node{node} { 
-    _node->_nstate |= NSTATE::ANCHOR;
+    _node->_estate.fetch_or(ESTATE::ANCHOR, std::memory_order_relaxed);
   }
 
   ~AnchorGuard() {
-    _node->_nstate &= ~NSTATE::ANCHOR;
+    _node->_estate.fetch_and(~ESTATE::ANCHOR, std::memory_order_relaxed);
   }
   
   private:
@@ -1122,6 +1124,42 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
   push_back(std::make_unique<Node>(std::forward<ArgsT>(args)...));
   return back().get();
 }
+
+
+
+// ----------------------------------------------------------------------------
+// Preemption guard
+// ----------------------------------------------------------------------------
+/**
+@private
+*/
+class PreemptionGuard {
+
+  public:
+
+  PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
+    _runtime._parent->_nstate |= NSTATE::PREEMPTED;
+    _runtime._preempted = true;
+    _runtime._parent->_join_counter.fetch_add(1, std::memory_order_release);
+  }
+
+  ~PreemptionGuard() {
+    if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      _runtime._preempted = false;
+      _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;
+    }
+  }
+
+  PreemptionGuard(const PreemptionGuard&) = delete;
+  PreemptionGuard(PreemptionGuard&&) = delete;
+
+  PreemptionGuard& operator = (const PreemptionGuard&) = delete;
+  PreemptionGuard& operator = (PreemptionGuard&&) = delete;
+  
+  private:
+
+  Runtime& _runtime;
+};
 
 }  // end of namespace tf. ----------------------------------------------------
 

@@ -1098,6 +1098,7 @@ class Executor {
   bool _invoke_async_task(Worker&, Node*);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
+  bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&)>&);
 
   template <typename I>
   I _set_up_graph(I, I, Node*, Topology*, int);
@@ -1702,7 +1703,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
   auto anchor = node->_parent;
-  while(anchor && (anchor->_nstate & NSTATE::ANCHOR) == 0) {
+  while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHOR) == 0) {
     anchor->_estate.fetch_or(nflag, std::memory_order_relaxed);
     anchor = anchor->_parent;
   }
@@ -1740,25 +1741,8 @@ inline bool Executor::_invoke_static_task(Worker& worker, Node* node) {
     break;
 
     case 1:
-      // first time
-      if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-
-        Runtime rt(*this, worker, node);
-
-        _observer_prologue(worker, node);
-        TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-          std::get_if<1>(&work)->operator()(rt);
-        });
-        _observer_epilogue(worker, node);
-        
-        // here, we cannot check the state from node->_nstate due to data race
-        if(rt._preempted) {
-          return true;
-        }
-      }
-      // second time
-      else {
-        node->_nstate &= ~NSTATE::PREEMPTED;
+      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+        return true;
       }
     break;
   }
@@ -1888,29 +1872,39 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
     break;
 
     case 1:
-      // first time
-      if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-
-        Runtime rt(*this, worker, node);
-
-        _observer_prologue(worker, node);
-        TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-          std::get_if<1>(&work)->operator()(rt);
-        });
-        _observer_epilogue(worker, node);
-        
-        // here, we cannot check the state from node->_nstate due to data race
-        if(rt._preempted) {
-          return true;
-        }
-      }
-      // second time
-      else {
-        node->_nstate &= ~NSTATE::PREEMPTED;
+      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+        return true;
       }
     break;
   }
 
+  return false;
+}
+
+// Function: _invoke_internal_runtime
+inline bool Executor::_invoke_internal_runtime(
+  Worker& worker, Node* node, std::function<void(Runtime&)>& work
+) {
+  // first time
+  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+
+    Runtime rt(*this, worker, node);
+
+    _observer_prologue(worker, node);
+    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+      work(rt);
+    });
+    _observer_epilogue(worker, node);
+    
+    // here, we cannot check the state from node->_nstate due to data race
+    if(rt._preempted) {
+      return true;
+    }
+  }
+  // second time
+  else {
+    node->_nstate &= ~NSTATE::PREEMPTED;
+  }
   return false;
 }
 
@@ -2420,30 +2414,7 @@ auto Runtime::async(P&& params, F&& f) {
 }
 
 
-/**
-@private
-*/
-class PreemptionGuard {
 
-  public:
-
-  PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
-    _runtime._parent->_nstate |= NSTATE::PREEMPTED;
-    _runtime._preempted = true;
-    _runtime._parent->_join_counter.fetch_add(1, std::memory_order_release);
-  }
-
-  ~PreemptionGuard() {
-    if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      _runtime._preempted = false;
-      _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;
-    }
-  }
-  
-  private:
-
-  Runtime& _runtime;
-};
 
 #endif
 

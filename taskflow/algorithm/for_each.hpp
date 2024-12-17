@@ -28,12 +28,12 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
       return;
     }
     
+    PreemptionGuard preemption_guard(rt);
+    
     // use no more workers than the iteration count
     if(N < W) {
       W = N;
     }
-
-    PreemptionGuard preemption_guard(rt);
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {

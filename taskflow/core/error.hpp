@@ -17,7 +17,6 @@ struct NSTATE {
   constexpr static underlying_type CONDITIONED = 0x10000000;  
   constexpr static underlying_type DETACHED    = 0x20000000;  
   constexpr static underlying_type PREEMPTED   = 0x40000000;  
-  constexpr static underlying_type ANCHOR      = 0x80000000;  
 
   // mask to isolate state bits - non-state bits store # weak dependents
   constexpr static underlying_type MASK        = 0xF0000000;
@@ -31,6 +30,7 @@ struct ESTATE {
   constexpr static underlying_type NONE        = 0; 
   constexpr static underlying_type EXCEPTION   = 1;
   constexpr static underlying_type CANCELLED   = 2;
+  constexpr static underlying_type ANCHOR      = 4;  
 };
 
 // Procedure: throw_re

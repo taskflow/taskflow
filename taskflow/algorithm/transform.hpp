@@ -17,14 +17,14 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
   
-  return [=] (Subflow& sf) mutable {
+  return [=] (Runtime& rt) mutable {
 
     // fetch the stateful values
     B_t beg   = first1;
     E_t end   = last1;
     O_t d_beg = d_first;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -33,6 +33,8 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
       return;
     }
 
+    PreemptionGuard preemption_guard(rt);
+    
     if(N < W) {
       W = N;
     }
@@ -42,7 +44,7 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(part([=] () mutable {
+        auto loop_task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg, part_b - prev_e);
             std::advance(d_beg, part_b - prev_e);
@@ -51,14 +53,15 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
             }
             prev_e = part_e;
           });
-        })).name("loop-"s + std::to_string(w));
+        });
+        (w == W-1) ? loop_task() : rt.silent_async(loop_task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W; w++) {
-        sf.emplace(part([=] () mutable {
+        auto loop_task = part([=] () mutable {
           part.loop(N, W, *next, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg, part_b - prev_e);
             std::advance(d_beg, part_b - prev_e);
@@ -67,7 +70,8 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
             }
             prev_e = part_e;
           }); 
-        })).name("loop-"s + std::to_string(w));
+        });
+        (w == W-1) ? loop_task() : rt.silent_async(loop_task);
       }
     }
   };
@@ -87,7 +91,7 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
   using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
 
-  return [=] (Subflow& sf) mutable {
+  return [=] (Runtime& rt) mutable {
 
     // fetch the stateful values
     B1_t beg1 = first1;
@@ -95,7 +99,7 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
     B2_t beg2 = first2;
     O_t d_beg = d_first;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
 
     // only myself - no need to spawn another graph
@@ -103,6 +107,8 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
       part([=](){ std::transform(beg1, end1, beg2, d_beg, c); })();
       return;
     }
+    
+    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -113,7 +119,7 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
       size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(part([=] () mutable {
+        auto loop_task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg1, part_b - prev_e);
             std::advance(beg2, part_b - prev_e);
@@ -123,14 +129,15 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
             }
             prev_e = part_e;
           });
-        })).name("loop-"s + std::to_string(w));
+        });
+        (w == W-1) ? loop_task() : rt.silent_async(loop_task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W; w++) {
-        sf.emplace(part([=] () mutable {
+        auto loop_task = part([=] () mutable {
           part.loop(N, W, *next, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg1, part_b - prev_e);
             std::advance(beg2, part_b - prev_e);
@@ -140,7 +147,8 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
             }
             prev_e = part_e;
           });
-        })).name("loop-"s + std::to_string(w));
+        });
+        (w == W-1) ? loop_task() : rt.silent_async(loop_task);
       }
     }
   };
