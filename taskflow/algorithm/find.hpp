@@ -68,13 +68,13 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Subflow& sf) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the stateful values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -82,24 +82,29 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       part([&](){ result = std::find_if(beg, end, predicate); })();
       return;
     }
+    
+    PreemptionGuard preemption_guard(rt);
 
+    // use no more workers than the iteration count
     if(N < W) {
       W = N;
     }
     
-    auto offset = std::make_shared<std::atomic<size_t>>(N);
-    
-    // update the result iterator by the offset
-    auto finalize = sf.emplace([=, &result]() mutable {
-      result = std::next(beg, offset->load(std::memory_order_relaxed));
-    }).name("end");
+    // we leverage smart pointer to let the last task update the result
+    std::shared_ptr<std::atomic<size_t>> offset(
+      new std::atomic<size_t>(N),
+      [=, &result](std::atomic<size_t>* p) {
+        result = std::next(beg, p->load(std::memory_order_relaxed));
+        delete p;
+      }
+    );
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       size_t chunk_size;
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(part([=] () mutable {
+        auto task = part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_loop(
@@ -107,15 +112,18 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
               );
             }
           );
-        })).name("loop-"s + std::to_string(w))
-           .precede(finalize);
+          // must release the ownership before async is destroyed
+          // as the node deletion comes after the join counter reaches zero
+          offset.reset();
+        });
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
-      for(size_t w=0; w<W; w++) {
-        sf.emplace(part([=] () mutable {
+      for(size_t w=0; w<W;) {
+        auto task = part([=] () mutable {
           part.loop_until(N, W, *next, 
             [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               return detail::find_if_loop(
@@ -123,8 +131,11 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
               );
             }
           );
-        })).name("loop-"s + std::to_string(w))
-           .precede(finalize);
+          // must release the ownership before async is destroyed
+          // as the node deletion comes after the join counter reaches zero
+          offset.reset();
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };
@@ -139,13 +150,13 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Subflow& sf) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the stateful values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -154,23 +165,27 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       return;
     }
 
+    PreemptionGuard preemption_guard(rt);
+
     if(N < W) {
       W = N;
     }
     
-    auto offset = std::make_shared<std::atomic<size_t>>(N);
+    // we leverage smart pointer to let the last task update the result
+    std::shared_ptr<std::atomic<size_t>> offset(
+      new std::atomic<size_t>(N),
+      [=, &result](std::atomic<size_t>* p) {
+        result = std::next(beg, p->load(std::memory_order_relaxed));
+        delete p;
+      }
+    );
 
-    // update the result iterator by the offset
-    auto finalize = sf.emplace([=, &result]() mutable {
-      result = std::next(beg, offset->load(std::memory_order_relaxed));
-    }).name("end");
-    
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       size_t chunk_size;
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         chunk_size = part.adjusted_chunk_size(N, W, w);
-        sf.emplace(part([=] () mutable {
+        auto task = part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               return detail::find_if_not_loop(
@@ -178,15 +193,18 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
               );
             }
           );
-        })).name("loop-"s + std::to_string(w))
-           .precede(finalize);
+          // must release the ownership before async is destroyed
+          // as the node deletion comes after the join counter reaches zero
+          offset.reset();
+        });
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
-      for(size_t w=0; w<W; w++) {
-        sf.emplace(part([=] () mutable {
+      for(size_t w=0; w<W;) {
+        auto task = part([=] () mutable {
           part.loop_until(N, W, *next, 
             [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
               return detail::find_if_not_loop(
@@ -194,8 +212,11 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
               );
             }
           );
-        })).name("loop-"s + std::to_string(w))
-           .precede(finalize);
+          // must release the ownership before async is destroyed
+          // as the node deletion comes after the join counter reaches zero
+          offset.reset();
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };
@@ -210,13 +231,13 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Subflow& sf) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -225,10 +246,12 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
       return;
     }
 
+    PreemptionGuard preemption_guard(rt);
+
     if(N < W) {
       W = N;
     }
-
+    
     auto mutex = std::make_shared<std::mutex>();
     
     // initialize the result to the first element
@@ -240,13 +263,13 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
       
       size_t chunk_size;
 
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(part([=, &result] () mutable {
+        auto task = part([=, &result] () mutable {
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
@@ -286,16 +309,18 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           if(comp(*smallest, *result)) {
             result = smallest;
           }
-        })).name("loop-"s + std::to_string(w));
+        });
+        
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       
-      for(size_t w=0; w<W; w++) {
+      for(size_t w=0; w<W;) {
 
-        sf.emplace(part([=, &result] () mutable {
+        auto task = part([=, &result] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -336,7 +361,8 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
           if(comp(*smallest, *result)) {
             result = smallest;
           }
-        })).name("loop-"s + std::to_string(w));
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };
@@ -351,13 +377,13 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &result] (Subflow& sf) mutable {
+  return [=, &result] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = first;
     E_t end = last;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -365,6 +391,8 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
       part([&](){ result = std::max_element(beg, end, comp); })();
       return;
     }
+
+    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -381,13 +409,13 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
       
       size_t chunk_size;
 
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum needs to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(part([=, &result] () mutable {
+        auto task = part([=, &result] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -428,16 +456,17 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           if(comp(*result, *largest)) {
             result = largest;
           }
-        })).name("loop-"s + std::to_string(w));
+        });
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       
-      for(size_t w=0; w<W; w++) {
+      for(size_t w=0; w<W;) {
 
-        sf.emplace(part([=, &result] () mutable {
+        auto task = part([=, &result] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -478,7 +507,8 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
           if(comp(*result, *largest)) {
             result = largest;
           }
-        })).name("loop-"s + std::to_string(w));
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };

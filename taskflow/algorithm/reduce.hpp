@@ -13,13 +13,13 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &r=init] (Subflow& sf) mutable {
+  return [=, &r=init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -27,6 +27,8 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       part([&](){ for(; beg!=end; r = bop(r, *beg++)); })();
       return;
     }
+    
+    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -39,13 +41,13 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       
       size_t chunk_size;
 
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
         chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        sf.emplace(part([=, &r] () mutable {
+        auto task = part([=, &r] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -80,16 +82,18 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop(r, sum);
-        })).name("loop-"s + std::to_string(w));
+        });
+
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       
-      for(size_t w=0; w<W; w++) {
+      for(size_t w=0; w<W;) {
 
-        sf.emplace(part([=, &r] () mutable {
+        auto task = part([=, &r] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -124,7 +128,8 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop(r, sum);
-        })).name("loop-"s + std::to_string(w));
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };
@@ -141,13 +146,13 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &r=init] (Subflow& sf) mutable {
+  return [=, &r=init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
     E_t end = e;
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -155,6 +160,8 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       part([&](){ for(; beg!=end; r = bop(std::move(r), uop(*beg++))); })();
       return;
     }
+    
+    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -167,11 +174,11 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       
       size_t chunk_size;
 
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
       
         chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        sf.emplace(part([=, &r] () mutable {
+        auto task = part([=, &r] () mutable {
 
           std::advance(beg, curr_b);
 
@@ -207,15 +214,16 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop(std::move(r), std::move(sum));
-        })).name("loop-"s + std::to_string(w));
+        });
+
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
-        
-      for(size_t w=0; w<W; w++) {
-        sf.emplace(part([=, &r] () mutable {
+      for(size_t w=0; w<W;) {
+        auto task = part([=, &r] () mutable {
 
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
@@ -251,7 +259,8 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop(std::move(r), std::move(sum));
-        })).name("loop-"s + std::to_string(w));
+        });
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }
   };
@@ -273,14 +282,14 @@ auto make_transform_reduce_task(
   using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
   using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
 
-  return [=, &r=init] (Subflow& sf) mutable {
+  return [=, &r=init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B1_t beg1 = b1;
     E1_t end1 = e1;
     B2_t beg2 = b2; 
 
-    size_t W = sf.executor().num_workers();
+    size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
 
     // only myself - no need to spawn another graph
@@ -288,6 +297,8 @@ auto make_transform_reduce_task(
       part([&](){ for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++))); })();
       return;
     }   
+    
+    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -300,11 +311,11 @@ auto make_transform_reduce_task(
     
       size_t chunk_size;
 
-      for(size_t w=0, curr_b=0; w<W && curr_b < N; ++w, curr_b += chunk_size) {
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
     
         chunk_size = part.adjusted_chunk_size(N, W, w); 
 
-        sf.emplace(part([=, &r] () mutable {
+        auto task = part([=, &r] () mutable {
           std::advance(beg1, curr_b);
           std::advance(beg2, curr_b);
 
@@ -338,16 +349,18 @@ auto make_transform_reduce_task(
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop_r(std::move(r), std::move(sum));
-        })).name("loop-"s + std::to_string(w));
+        });
+
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }   
     }   
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
     
-      for(size_t w=0; w<W; w++) {
+      for(size_t w=0; w<W;) {
 
-        sf.emplace(part([=, &r] () mutable {
+        auto task = part([=, &r] () mutable {
 
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
@@ -387,7 +400,9 @@ auto make_transform_reduce_task(
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
           r = bop_r(std::move(r), std::move(sum));
-        })).name("loop-"s + std::to_string(w));
+        });
+        
+        (++w == W) ? task() : rt.silent_async(task);
       }
     }   
   };  
