@@ -29,6 +29,7 @@ Unbounded task queue is used by the executor.
 
 
 #include "core/executor.hpp"
+#include "core/runtime.hpp"
 #include "core/async.hpp"
 
 /**

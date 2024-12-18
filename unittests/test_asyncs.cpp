@@ -381,4 +381,3 @@ TEST_CASE("RuntimeAsync.8threads") {
 TEST_CASE("RuntimeAsync.11threads") {
   runtime_async(11);
 }
-

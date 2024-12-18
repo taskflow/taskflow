@@ -1083,21 +1083,18 @@ class Executor {
   void _increment_topology();
   void _decrement_topology();
   void _invoke(Worker&, Node*);
-
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-
-  void _invoke_dependent_async_task(Worker&, Node*);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
-
   void _update_cache(Worker&, Node*&, Node*);
 
   bool _invoke_static_task(Worker&, Node*);
-  bool _invoke_async_task(Worker&, Node*);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
+  bool _invoke_async_task(Worker&, Node*);
+  bool _invoke_dependent_async_task(Worker&, Node*);
   bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&)>&);
 
   template <typename I>
@@ -1572,7 +1569,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // dependent async task
     case Node::DEPENDENT_ASYNC: {
-      _invoke_dependent_async_task(worker, node);
+      if(_invoke_dependent_async_task(worker, node)) {
+        return;
+      }
       _tear_down_dependent_async(worker, node, cache);
       TF_INVOKE_CONTINUATION();
       return;
@@ -1584,7 +1583,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     break;
   }
 
-  // Reset the join counter to support the cyclic control flow.
+  // Reset the join counter with strong dependencies to support cycles.
   // + We must do this before scheduling the successors to avoid race
   //   condition on _dependents.
   // + We must use fetch_add instead of direct assigning
@@ -1593,15 +1592,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   node->_join_counter.fetch_add(
     node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
   );
-
-  //if(node->_nstate & NSTATE::CONDITIONED) {
-  //  node->_join_counter.fetch_add(
-  //    node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
-  //  );
-  //}
-  //else {
-  //  node->_join_counter.fetch_add(node->num_dependents(), std::memory_order_relaxed);
-  //}
 
   // acquire the parent flow counter
   auto& join_counter = (node->_parent) ? node->_parent->_join_counter :
@@ -1697,28 +1687,27 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 // Procedure: _process_exception
 inline void Executor::_process_exception(Worker&, Node* node) {
 
-  constexpr static auto nflag = ESTATE::EXCEPTION | ESTATE::CANCELLED;
-  constexpr static auto tflag = ESTATE::EXCEPTION | ESTATE::CANCELLED;
+  constexpr static auto flag = ESTATE::EXCEPTION | ESTATE::CANCELLED;
 
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
   auto anchor = node->_parent;
   while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHOR) == 0) {
-    anchor->_estate.fetch_or(nflag, std::memory_order_relaxed);
+    anchor->_estate.fetch_or(flag, std::memory_order_relaxed);
     anchor = anchor->_parent;
   }
 
   // the exception occurs under a blocking call (e.g., corun, join)
   if(anchor) {
     // multiple tasks may throw, and we only take the first thrown exception
-    if((anchor->_estate.fetch_or(nflag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
+    if((anchor->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       anchor->_exception_ptr = std::current_exception();
     }
   }
   // otherwise, we simply store the exception in the topology and cancel it
   else if(auto tpg = node->_topology; tpg) {
     // multiple tasks may throw, and we only take the first thrown exception
-    if((tpg->_estate.fetch_or(tflag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
+    if((tpg->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       tpg->_exception_ptr = std::current_exception();
     }
   }
@@ -1881,50 +1870,25 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
   return false;
 }
 
-// Function: _invoke_internal_runtime
-inline bool Executor::_invoke_internal_runtime(
-  Worker& worker, Node* node, std::function<void(Runtime&)>& work
-) {
-  // first time
-  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+// Procedure: _invoke_dependent_async_task
+inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
+  auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
+  switch(work.index()) {
+    case 0:
+      _observer_prologue(worker, node);
+      TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+        std::get_if<0>(&work)->operator()();
+      });
+      _observer_epilogue(worker, node);
+    break;
 
-    Runtime rt(*this, worker, node);
-
-    _observer_prologue(worker, node);
-    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-      work(rt);
-    });
-    _observer_epilogue(worker, node);
-    
-    // here, we cannot check the state from node->_nstate due to data race
-    if(rt._preempted) {
-      return true;
-    }
-  }
-  // second time
-  else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
+    case 1:
+      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+        return true;
+      }
+    break;
   }
   return false;
-}
-
-// Procedure: _invoke_dependent_async_task
-inline void Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
-  _observer_prologue(worker, node);
-  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-    auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
-    switch(work.index()) {
-      case 0:
-        std::get_if<0>(&work)->operator()();
-      break;
-
-      case 1:
-        Runtime rt(*this, worker, node);
-        std::get_if<1>(&work)->operator()(rt);
-      break;
-    }
-  });
-  _observer_epilogue(worker, node);
 }
 
 // Function: run
@@ -2254,167 +2218,6 @@ inline void Subflow::detach() {
   
   _tag |= JOINED_BIT;
 }
-
-// ############################################################################
-// Forward Declaration: Runtime
-// ############################################################################
-
-// Procedure: schedule
-inline void Runtime::schedule(Task task) {
-  
-  auto node = task._node;
-  // need to keep the invariant: when scheduling a task, the task must have
-  // zero dependency (join counter is 0)
-  // or we can encounter bug when inserting a nested flow (e.g., module task)
-  node->_join_counter.store(0, std::memory_order_relaxed);
-
-  auto& j = node->_parent ? node->_parent->_join_counter :
-                            node->_topology->_join_counter;
-  j.fetch_add(1, std::memory_order_relaxed);
-  _executor._schedule(_worker, node);
-}
-
-// Procedure: corun
-template <typename T>
-void Runtime::corun(T&& target) {
-  _executor._corun_graph(_worker, _parent, target.graph().begin(), target.graph().end());
-}
-
-// Procedure: corun_until
-template <typename P>
-void Runtime::corun_until(P&& predicate) {
-  _executor._corun_until(_worker, std::forward<P>(predicate));
-}
-
-// Function: corun_all
-inline void Runtime::corun_all() {
-  {
-    AnchorGuard anchor(_parent);
-    _executor._corun_until(_worker, [this] () -> bool { 
-      return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
-    });
-  }
-  _parent->_rethrow_exception();
-}
-
-// ----------------------------------------------------------------------------
-// Runtime: Semaphore series
-// ----------------------------------------------------------------------------
-
-// Function: acquire
-template <typename... S,
-  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
->
-void Runtime::acquire(S&&... semaphores) {
-  _executor._corun_until(_worker, [&](){ 
-    return tf::try_acquire(std::forward<S>(semaphores)...); 
-  });
-}
-  
-// Function:: acquire
-template <typename I,
-  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void>*
->
-void Runtime::acquire(I first, I last) {
-  _executor._corun_until(_worker, [=](){ 
-    return tf::try_acquire(first, last); 
-  });
-}
-
-// Function: release
-template <typename... S,
-  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>*
->
-void Runtime::release(S&&... semaphores){
-  tf::release(std::forward<S>(semaphores)...);
-}
-
-// Function:: release
-template <typename I,
-  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void>*
->
-void Runtime::release(I begin, I end) {
-  tf::release(begin, end);
-}
-
-// Destructor
-inline Runtime::~Runtime() {
-  // TODO: needs removal
-  //_executor._corun_until(_worker, [this] () -> bool { 
-  //  return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
-  //});
-}
-
-// ------------------------------------
-// Runtime::silent_async series
-// ------------------------------------
-
-// Function: _silent_async
-template <typename P, typename F>
-void Runtime::_silent_async(Worker& w, P&& params, F&& f) {
-
-  _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-
-  auto node = animate(
-    std::forward<P>(params), _parent->_topology, _parent, 0,
-    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-  );
-
-  _executor._schedule(w, node);
-}
-
-// Function: silent_async
-template <typename F>
-void Runtime::silent_async(F&& f) {
-  _silent_async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
-}
-
-// Function: silent_async
-template <typename P, typename F>
-void Runtime::silent_async(P&& params, F&& f) {
-  _silent_async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
-}
-
-// ------------------------------------
-// Runtime::async series
-// ------------------------------------
-
-// Function: _async
-template <typename P, typename F>
-auto Runtime::_async(Worker& w, P&& params, F&& f) {
-
-  _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-
-  using R = std::invoke_result_t<std::decay_t<F>>;
-
-  std::packaged_task<R()> p(std::forward<F>(f));
-  auto fu{p.get_future()};
-
-  auto node = animate(
-    std::forward<P>(params), _parent->_topology, _parent, 0, 
-    std::in_place_type_t<Node::Async>{},
-    [p=make_moc(std::move(p))] () mutable { p.object(); }
-  );
-
-  _executor._schedule(w, node);
-
-  return fu;
-}
-
-// Function: async
-template <typename F>
-auto Runtime::async(F&& f) {
-  return _async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
-}
-
-// Function: async
-template <typename P, typename F>
-auto Runtime::async(P&& params, F&& f) {
-  return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
-}
-
-
-
 
 #endif
 
