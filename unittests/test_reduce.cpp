@@ -118,22 +118,6 @@ TEST_CASE("Reduce.Guided.8threads" * doctest::timeout(300)) {
   reduce<tf::GuidedPartitioner<>>(8);
 }
 
-TEST_CASE("Reduce.Guided.9threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("Reduce.Guided.10threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("Reduce.Guided.11threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("Reduce.Guided.12threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(12);
-}
-
 // dynamic
 TEST_CASE("Reduce.Dynamic.1thread" * doctest::timeout(300)) {
   reduce<tf::DynamicPartitioner<>>(1);
@@ -165,22 +149,6 @@ TEST_CASE("Reduce.Dynamic.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("Reduce.Dynamic.8threads" * doctest::timeout(300)) {
   reduce<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("Reduce.Dynamic.9threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("Reduce.Dynamic.10threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("Reduce.Dynamic.11threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("Reduce.Dynamic.12threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -216,22 +184,6 @@ TEST_CASE("Reduce.Static.8threads" * doctest::timeout(300)) {
   reduce<tf::StaticPartitioner<>>(8);
 }
 
-TEST_CASE("Reduce.Static.9threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("Reduce.Static.10threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("Reduce.Static.11threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("Reduce.Static.12threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(12);
-}
-
 // random
 TEST_CASE("Reduce.Random.1thread" * doctest::timeout(300)) {
   reduce<tf::RandomPartitioner<>>(1);
@@ -263,22 +215,6 @@ TEST_CASE("Reduce.Random.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("Reduce.Random.8threads" * doctest::timeout(300)) {
   reduce<tf::RandomPartitioner<>>(8);
-}
-
-TEST_CASE("Reduce.Random.9threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("Reduce.Random.10threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("Reduce.Random.11threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("Reduce.Random.12threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(12);
 }
 
 // --------------------------------------------------------
@@ -362,22 +298,6 @@ TEST_CASE("ReduceSum.Guided.8threads" * doctest::timeout(300)) {
   reduce_sum<tf::GuidedPartitioner<>>(8);
 }
 
-TEST_CASE("ReduceSum.Guided.9threads" * doctest::timeout(300)) {
-  reduce_sum<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("ReduceSum.Guided.10threads" * doctest::timeout(300)) {
-  reduce_sum<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("ReduceSum.Guided.11threads" * doctest::timeout(300)) {
-  reduce_sum<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("ReduceSum.Guided.12threads" * doctest::timeout(300)) {
-  reduce_sum<tf::GuidedPartitioner<>>(12);
-}
-
 // dynamic
 TEST_CASE("ReduceSum.Dynamic.1thread" * doctest::timeout(300)) {
   reduce_sum<tf::DynamicPartitioner<>>(1);
@@ -409,22 +329,6 @@ TEST_CASE("ReduceSum.Dynamic.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("ReduceSum.Dynamic.8threads" * doctest::timeout(300)) {
   reduce_sum<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("ReduceSum.Dynamic.9threads" * doctest::timeout(300)) {
-  reduce_sum<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("ReduceSum.Dynamic.10threads" * doctest::timeout(300)) {
-  reduce_sum<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("ReduceSum.Dynamic.11threads" * doctest::timeout(300)) {
-  reduce_sum<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("ReduceSum.Dynamic.12threads" * doctest::timeout(300)) {
-  reduce_sum<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -460,22 +364,6 @@ TEST_CASE("ReduceSum.Static.8threads" * doctest::timeout(300)) {
   reduce_sum<tf::StaticPartitioner<>>(8);
 }
 
-TEST_CASE("ReduceSum.Static.9threads" * doctest::timeout(300)) {
-  reduce_sum<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("ReduceSum.Static.10threads" * doctest::timeout(300)) {
-  reduce_sum<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("ReduceSum.Static.11threads" * doctest::timeout(300)) {
-  reduce_sum<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("ReduceSum.Static.12threads" * doctest::timeout(300)) {
-  reduce_sum<tf::StaticPartitioner<>>(12);
-}
-
 // random
 TEST_CASE("ReduceSum.Random.1thread" * doctest::timeout(300)) {
   reduce_sum<tf::RandomPartitioner<>>(1);
@@ -508,23 +396,6 @@ TEST_CASE("ReduceSum.Random.7threads" * doctest::timeout(300)) {
 TEST_CASE("ReduceSum.Random.8threads" * doctest::timeout(300)) {
   reduce_sum<tf::RandomPartitioner<>>(8);
 }
-
-TEST_CASE("ReduceSum.Random.9threads" * doctest::timeout(300)) {
-  reduce_sum<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("ReduceSum.Random.10threads" * doctest::timeout(300)) {
-  reduce_sum<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("ReduceSum.Random.11threads" * doctest::timeout(300)) {
-  reduce_sum<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("ReduceSum.Random.12threads" * doctest::timeout(300)) {
-  reduce_sum<tf::RandomPartitioner<>>(12);
-}
-
 
 // ----------------------------------------------------------------------------
 // transform_reduce
@@ -619,22 +490,6 @@ TEST_CASE("TransformReduce.Guided.8threads" * doctest::timeout(300)) {
   transform_reduce<tf::GuidedPartitioner<>>(8);
 }
 
-TEST_CASE("TransformReduce.Guided.9threads" * doctest::timeout(300)) {
-  transform_reduce<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduce.Guided.10threads" * doctest::timeout(300)) {
-  transform_reduce<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduce.Guided.11threads" * doctest::timeout(300)) {
-  transform_reduce<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduce.Guided.12threads" * doctest::timeout(300)) {
-  transform_reduce<tf::GuidedPartitioner<>>(12);
-}
-
 // dynamic
 TEST_CASE("TransformReduce.Dynamic.1thread" * doctest::timeout(300)) {
   transform_reduce<tf::DynamicPartitioner<>>(1);
@@ -666,22 +521,6 @@ TEST_CASE("TransformReduce.Dynamic.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("TransformReduce.Dynamic.8threads" * doctest::timeout(300)) {
   transform_reduce<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("TransformReduce.Dynamic.9threads" * doctest::timeout(300)) {
-  transform_reduce<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduce.Dynamic.10threads" * doctest::timeout(300)) {
-  transform_reduce<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduce.Dynamic.11threads" * doctest::timeout(300)) {
-  transform_reduce<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduce.Dynamic.12threads" * doctest::timeout(300)) {
-  transform_reduce<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -717,22 +556,6 @@ TEST_CASE("TransformReduce.Static.8threads" * doctest::timeout(300)) {
   transform_reduce<tf::StaticPartitioner<>>(8);
 }
 
-TEST_CASE("TransformReduce.Static.9threads" * doctest::timeout(300)) {
-  transform_reduce<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduce.Static.10threads" * doctest::timeout(300)) {
-  transform_reduce<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduce.Static.11threads" * doctest::timeout(300)) {
-  transform_reduce<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduce.Static.12threads" * doctest::timeout(300)) {
-  transform_reduce<tf::StaticPartitioner<>>(12);
-}
-
 // random
 TEST_CASE("TransformReduce.Random.1thread" * doctest::timeout(300)) {
   transform_reduce<tf::RandomPartitioner<>>(1);
@@ -764,22 +587,6 @@ TEST_CASE("TransformReduce.Random.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("TransformReduce.Random.8threads" * doctest::timeout(300)) {
   transform_reduce<tf::RandomPartitioner<>>(8);
-}
-
-TEST_CASE("TransformReduce.Random.9threads" * doctest::timeout(300)) {
-  transform_reduce<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduce.Random.10threads" * doctest::timeout(300)) {
-  transform_reduce<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduce.Random.11threads" * doctest::timeout(300)) {
-  transform_reduce<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduce.Random.12threads" * doctest::timeout(300)) {
-  transform_reduce<tf::RandomPartitioner<>>(12);
 }
 
 // ----------------------------------------------------------------------------
@@ -1032,22 +839,6 @@ TEST_CASE("TransformReduceSum.Guided.8threads" * doctest::timeout(300)) {
   transform_reduce_sum<tf::GuidedPartitioner<>>(8);
 }
 
-TEST_CASE("TransformReduceSum.Guided.9threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduceSum.Guided.10threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduceSum.Guided.11threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduceSum.Guided.12threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::GuidedPartitioner<>>(12);
-}
-
 // dynamic
 TEST_CASE("TransformReduceSum.Dynamic.1thread" * doctest::timeout(300)) {
   transform_reduce_sum<tf::DynamicPartitioner<>>(1);
@@ -1079,22 +870,6 @@ TEST_CASE("TransformReduceSum.Dynamic.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("TransformReduceSum.Dynamic.8threads" * doctest::timeout(300)) {
   transform_reduce_sum<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("TransformReduceSum.Dynamic.9threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduceSum.Dynamic.10threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduceSum.Dynamic.11threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduceSum.Dynamic.12threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -1130,22 +905,6 @@ TEST_CASE("TransformReduceSum.Static.8threads" * doctest::timeout(300)) {
   transform_reduce_sum<tf::StaticPartitioner<>>(8);
 }
 
-TEST_CASE("TransformReduceSum.Static.9threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduceSum.Static.10threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduceSum.Static.11threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduceSum.Static.12threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::StaticPartitioner<>>(12);
-}
-
 // random
 TEST_CASE("TransformReduceSum.Random.1thread" * doctest::timeout(300)) {
   transform_reduce_sum<tf::RandomPartitioner<>>(1);
@@ -1177,22 +936,6 @@ TEST_CASE("TransformReduceSum.Random.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("TransformReduceSum.Random.8threads" * doctest::timeout(300)) {
   transform_reduce_sum<tf::RandomPartitioner<>>(8);
-}
-
-TEST_CASE("TransformReduceSum.Random.9threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("TransformReduceSum.Random.10threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("TransformReduceSum.Random.11threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("TransformReduceSum.Random.12threads" * doctest::timeout(300)) {
-  transform_reduce_sum<tf::RandomPartitioner<>>(12);
 }
 
 // ----------------------------------------------------------------------------
@@ -1254,48 +997,32 @@ TEST_CASE("BinaryTransformReduce.Guided.1thread" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.2threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.3threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.4threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.5threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.6threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.7threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduce.Guided.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Guided.8threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::GuidedPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduce.Guided.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduce.Guided.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduce.Guided.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduce.Guided.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::GuidedPartitioner<>>(12);
 }
 
 // dynamic
@@ -1303,48 +1030,32 @@ TEST_CASE("BinaryTransformReduce.Dynamic.1thread" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.2threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.3threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.4threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.5threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.6threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.7threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduce.Dynamic.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Dynamic.8threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduce.Dynamic.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduce.Dynamic.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduce.Dynamic.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduce.Dynamic.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -1352,48 +1063,32 @@ TEST_CASE("BinaryTransformReduce.Static.1thread" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.2threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.3threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.4threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.5threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.6threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.7threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduce.Static.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Static.8threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::StaticPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduce.Static.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduce.Static.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduce.Static.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduce.Static.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::StaticPartitioner<>>(12);
 }
 
 // random
@@ -1401,49 +1096,34 @@ TEST_CASE("BinaryTransformReduce.Random.1thread" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.2threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.3threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.4threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.5threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.6threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.7threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduce.Random.8threads" * doctest::timeout(300)) {
   binary_transform_reduce<tf::RandomPartitioner<>>(8);
 }
 
-TEST_CASE("BinaryTransformReduce.Random.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduce.Random.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduce.Random.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduce.Random.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce<tf::RandomPartitioner<>>(12);
-}
 // ----------------------------------------------------------------------------
 // binary_transform_reduce_sum
 // ----------------------------------------------------------------------------
@@ -1502,48 +1182,32 @@ TEST_CASE("BinaryTransformReduceSum.Guided.1thread" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.2threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.3threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.4threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.5threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.6threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.7threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Guided.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Guided.8threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::GuidedPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Guided.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::GuidedPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Guided.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::GuidedPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Guided.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::GuidedPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Guided.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::GuidedPartitioner<>>(12);
 }
 
 // dynamic
@@ -1551,48 +1215,32 @@ TEST_CASE("BinaryTransformReduceSum.Dynamic.1thread" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.2threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.3threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.4threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.5threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.6threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.7threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Dynamic.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Dynamic.8threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::DynamicPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Dynamic.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::DynamicPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Dynamic.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::DynamicPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Dynamic.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::DynamicPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Dynamic.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::DynamicPartitioner<>>(12);
 }
 
 // static
@@ -1600,48 +1248,32 @@ TEST_CASE("BinaryTransformReduceSum.Static.1thread" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.2threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.3threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.4threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.5threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.6threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.7threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Static.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Static.8threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::StaticPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Static.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::StaticPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Static.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::StaticPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Static.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::StaticPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Static.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::StaticPartitioner<>>(12);
 }
 
 // random
@@ -1649,48 +1281,32 @@ TEST_CASE("BinaryTransformReduceSum.Random.1thread" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(1);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.2thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.2threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(2);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.3thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.3threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(3);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.4thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.4threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(4);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.5thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.5threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(5);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.6thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.6threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(6);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.7thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.7threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(7);
 }
 
-TEST_CASE("BinaryTransformReduceSum.Random.8thread" * doctest::timeout(300)) {
+TEST_CASE("BinaryTransformReduceSum.Random.8threads" * doctest::timeout(300)) {
   binary_transform_reduce_sum<tf::RandomPartitioner<>>(8);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Random.9thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::RandomPartitioner<>>(9);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Random.10thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::RandomPartitioner<>>(10);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Random.11thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::RandomPartitioner<>>(11);
-}
-
-TEST_CASE("BinaryTransformReduceSum.Random.12thread" * doctest::timeout(300)) {
-  binary_transform_reduce_sum<tf::RandomPartitioner<>>(12);
 }
 
 // ----------------------------------------------------------------------------
@@ -1871,4 +1487,146 @@ TEST_CASE("ClosureWrapper.TransformReduce2.Dynamic" * doctest::timeout(300)) {
       REQUIRE(result == -((UPPER-1)*UPPER));
     }
   }
+}
+
+// --------------------------------------------------------
+// Silent Async Reduce
+// --------------------------------------------------------
+
+void silent_async(unsigned W) {
+
+  tf::Executor executor(W);
+
+  std::vector<int> vec(1000);
+
+  for(auto& i : vec) i = ::rand() % 100 - 50;
+
+  for(size_t n=1; n<vec.size(); n++) {
+
+    int smin = std::numeric_limits<int>::max();
+    int pmin = std::numeric_limits<int>::max();
+
+    auto beg = vec.begin();
+    auto end = vec.end();
+
+    for(auto itr = beg; itr != end; itr++) {
+      smin = std::min(*itr, smin);
+    }
+
+    tf::Task ptask;
+
+    executor.silent_async(tf::make_reduce_task(
+      beg, end, pmin, [](int& l, int& r){
+      return std::min(l, r);
+    }));
+
+    executor.wait_for_all();
+
+    REQUIRE(smin != std::numeric_limits<int>::max());
+    REQUIRE(pmin != std::numeric_limits<int>::max());
+    REQUIRE(smin == pmin);
+  }
+}
+
+TEST_CASE("Reduce.SilentAsync.1thread" * doctest::timeout(300)) {
+  silent_async(1);
+}
+
+TEST_CASE("Reduce.SilentAsync.2threads" * doctest::timeout(300)) {
+  silent_async(2);
+}
+
+TEST_CASE("Reduce.SilentAsync.3threads" * doctest::timeout(300)) {
+  silent_async(3);
+}
+
+TEST_CASE("Reduce.SilentAsync.4threads" * doctest::timeout(300)) {
+  silent_async(4);
+}
+
+TEST_CASE("Reduce.SilentAsync.5threads" * doctest::timeout(300)) {
+  silent_async(5);
+}
+
+TEST_CASE("Reduce.SilentAsync.6threads" * doctest::timeout(300)) {
+  silent_async(6);
+}
+
+TEST_CASE("Reduce.SilentAsync.7threads" * doctest::timeout(300)) {
+  silent_async(7);
+}
+
+TEST_CASE("Reduce.SilentAsync.8threads" * doctest::timeout(300)) {
+  silent_async(8);
+}
+
+// --------------------------------------------------------
+// Silent Dependent Async Reduce
+// --------------------------------------------------------
+
+void silent_dependent_async(unsigned W) {
+
+  tf::Executor executor(W);
+
+  std::vector<int> vec(1000);
+
+  for(auto& i : vec) i = ::rand() % 100 - 50;
+
+  for(size_t n=1; n<vec.size(); n++) {
+
+    int smin = std::numeric_limits<int>::max();
+    int pmin = std::numeric_limits<int>::max();
+
+    auto beg = vec.begin();
+    auto end = vec.end();
+
+    for(auto itr = beg; itr != end; itr++) {
+      smin = std::min(*itr, smin);
+    }
+
+    tf::Task ptask;
+
+    executor.silent_dependent_async(tf::make_reduce_task(
+      beg, end, pmin, [](int& l, int& r){
+      return std::min(l, r);
+    }));
+
+    executor.wait_for_all();
+
+    REQUIRE(smin != std::numeric_limits<int>::max());
+    REQUIRE(pmin != std::numeric_limits<int>::max());
+    REQUIRE(smin == pmin);
+  }
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.1thread" * doctest::timeout(300)) {
+  silent_dependent_async(1);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.2threads" * doctest::timeout(300)) {
+  silent_dependent_async(2);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.3threads" * doctest::timeout(300)) {
+  silent_dependent_async(3);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.4threads" * doctest::timeout(300)) {
+  silent_dependent_async(4);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.5threads" * doctest::timeout(300)) {
+  silent_dependent_async(5);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.6threads" * doctest::timeout(300)) {
+  silent_dependent_async(6);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.7threads" * doctest::timeout(300)) {
+  silent_dependent_async(7);
+}
+
+TEST_CASE("Reduce.SilentDependentAsync.8threads" * doctest::timeout(300)) {
+  silent_dependent_async(8);
 }

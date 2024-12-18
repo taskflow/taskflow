@@ -589,7 +589,7 @@ namespace tf {
 
 // Function: make_sort_task
 template <typename B, typename E, typename C>
-TF_FORCE_INLINE auto make_sort_task(B b, E e, C cmp) {
+auto make_sort_task(B b, E e, C cmp) {
   
   return [b, e, cmp] (Runtime& rt) mutable {
 
@@ -624,7 +624,7 @@ TF_FORCE_INLINE auto make_sort_task(B b, E e, C cmp) {
 }
   
 template <typename B, typename E>
-TF_FORCE_INLINE auto make_sort_task(B beg, E end) {
+auto make_sort_task(B beg, E end) {
   using value_type = std::decay_t<decltype(*std::declval<B>())>;
   return make_sort_task(beg, end, std::less<value_type>{});
 }

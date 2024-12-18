@@ -438,7 +438,10 @@ class Runtime {
   @private
   */
   Node* _parent;
-
+  
+  /**
+  @private
+  */
   bool _preempted {false};
 
   /**
@@ -620,6 +623,7 @@ auto Runtime::async(P&& params, F&& f) {
 // ----------------------------------------------------------------------------
 // Preemption guard
 // ----------------------------------------------------------------------------
+
 /**
 @private
 */
@@ -628,6 +632,9 @@ class PreemptionGuard {
   public:
 
   PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
+    if(_runtime._preempted == true) {
+      TF_THROW("runtime is not preemptable");
+    }
     _runtime._parent->_nstate |= NSTATE::PREEMPTED;
     _runtime._preempted = true;
     _runtime._parent->_join_counter.fetch_add(1, std::memory_order_release);

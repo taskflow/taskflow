@@ -47,35 +47,35 @@ void ps_pod(size_t W, size_t N) {
   REQUIRE(std::is_sorted(data.begin(), data.end()));
 }
 
-TEST_CASE("ParallelSort.int.1.100000") {
+TEST_CASE("ParallelSort.int.1.100000" * doctest::timeout(300)) {
   ps_pod<int>(1, 100000);
 }
 
-TEST_CASE("ParallelSort.int.2.100000") {
+TEST_CASE("ParallelSort.int.2.100000" * doctest::timeout(300)) {
   ps_pod<int>(2, 100000);
 }
 
-TEST_CASE("ParallelSort.int.3.100000") {
+TEST_CASE("ParallelSort.int.3.100000" * doctest::timeout(300)) {
   ps_pod<int>(3, 100000);
 }
 
-TEST_CASE("ParallelSort.int.4.100000") {
+TEST_CASE("ParallelSort.int.4.100000" * doctest::timeout(300)) {
   ps_pod<int>(4, 100000);
 }
 
-TEST_CASE("ParallelSort.ldouble.1.100000") {
+TEST_CASE("ParallelSort.ldouble.1.100000" * doctest::timeout(300)) {
   ps_pod<long double>(1, 100000);
 }
 
-TEST_CASE("ParallelSort.ldouble.2.100000") {
+TEST_CASE("ParallelSort.ldouble.2.100000" * doctest::timeout(300)) {
   ps_pod<long double>(2, 100000);
 }
 
-TEST_CASE("ParallelSort.ldouble.3.100000") {
+TEST_CASE("ParallelSort.ldouble.3.100000" * doctest::timeout(300)) {
   ps_pod<long double>(3, 100000);
 }
 
-TEST_CASE("ParallelSort.ldouble.4.100000") {
+TEST_CASE("ParallelSort.ldouble.4.100000" * doctest::timeout(300)) {
   ps_pod<long double>(4, 100000);
 }
 
@@ -118,19 +118,19 @@ void ps_object(size_t W, size_t N) {
   ));
 }
 
-TEST_CASE("ParallelSort.object.1.100000") {
+TEST_CASE("ParallelSort.object.1.100000" * doctest::timeout(300)) {
   ps_object(1, 100000);
 }
 
-TEST_CASE("ParallelSort.object.2.100000") {
+TEST_CASE("ParallelSort.object.2.100000" * doctest::timeout(300)) {
   ps_object(2, 100000);
 }
 
-TEST_CASE("ParallelSort.object.3.100000") {
+TEST_CASE("ParallelSort.object.3.100000" * doctest::timeout(300)) {
   ps_object(3, 100000);
 }
 
-TEST_CASE("ParallelSort.object.4.100000") {
+TEST_CASE("ParallelSort.object.4.100000" * doctest::timeout(300)) {
   ps_object(4, 100000);
 }
 
@@ -158,25 +158,103 @@ void move_only_ps(unsigned W) {
 
 }
 
-TEST_CASE("ParallelSort.MoveOnlyObject.1thread") {
+TEST_CASE("ParallelSort.MoveOnlyObject.1thread" * doctest::timeout(300)) {
   move_only_ps(1);
 }
 
-TEST_CASE("ParallelSort.MoveOnlyObject.2threads") {
+TEST_CASE("ParallelSort.MoveOnlyObject.2threads" * doctest::timeout(300)) {
   move_only_ps(2);
 }
 
-TEST_CASE("ParallelSort.MoveOnlyObject.3threads") {
+TEST_CASE("ParallelSort.MoveOnlyObject.3threads" * doctest::timeout(300)) {
   move_only_ps(3);
 }
 
-TEST_CASE("ParallelSort.MoveOnlyObject.4threads") {
+TEST_CASE("ParallelSort.MoveOnlyObject.4threads" * doctest::timeout(300)) {
   move_only_ps(4);
 }
 
 // ----------------------------------------------------------------------------
-// Parallel Sort with Async Tasks
+// Parallel Sort with Silent Async Tasks
 // ----------------------------------------------------------------------------
+
+void silent_async(size_t W) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Executor executor(W);
+  std::vector<int> data;
+
+  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
+    
+    data.resize(n);
+
+    for(auto& d : data) {
+      d = ::rand() % 1000 - 500;
+    }
+  
+    executor.silent_async(tf::make_sort_task(data.begin(), data.end()));
+    executor.wait_for_all();
+    REQUIRE(std::is_sorted(data.begin(), data.end()));
+  }
+}
+
+TEST_CASE("ParallelSort.SilentAsync.1thread" * doctest::timeout(300)) {
+  silent_async(1);
+}
+
+TEST_CASE("ParallelSort.SilentAsync.2threads" * doctest::timeout(300)) {
+  silent_async(2);
+}
+
+TEST_CASE("ParallelSort.SilentAsync.3threads" * doctest::timeout(300)) {
+  silent_async(3);
+}
+
+TEST_CASE("ParallelSort.SilentAsync.4threads" * doctest::timeout(300)) {
+  silent_async(4);
+}
+
+// ----------------------------------------------------------------------------
+// Parallel Sort with Silent Dependent Async Tasks
+// ----------------------------------------------------------------------------
+
+void silent_dependent_async(size_t W) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Executor executor(W);
+  std::vector<int> data;
+
+  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
+    
+    data.resize(n);
+
+    for(auto& d : data) {
+      d = ::rand() % 1000 - 500;
+    }
+  
+    executor.silent_dependent_async(tf::make_sort_task(data.begin(), data.end()));
+    executor.wait_for_all();
+    REQUIRE(std::is_sorted(data.begin(), data.end()));
+  }
+}
+
+TEST_CASE("ParallelSort.SilentDependentAsync.1thread" * doctest::timeout(300)) {
+  silent_dependent_async(1);
+}
+
+TEST_CASE("ParallelSort.SilentDependentAsync.2threads" * doctest::timeout(300)) {
+  silent_dependent_async(2);
+}
+
+TEST_CASE("ParallelSort.SilentDependentAsync.3threads" * doctest::timeout(300)) {
+  silent_dependent_async(3);
+}
+
+TEST_CASE("ParallelSort.SilentDependentAsync.4threads" * doctest::timeout(300)) {
+  silent_dependent_async(4);
+}
 
 
 // --------------------------------------------------------
