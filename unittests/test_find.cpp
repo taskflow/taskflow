@@ -873,5 +873,141 @@ TEST_CASE("ClosureWrapper.max_element.Dynamic" * doctest::timeout(300)) {
   }
 }
 
+// ----------------------------------------------------------------------------
+// silent async
+// ----------------------------------------------------------------------------
 
+void silent_async(unsigned W) {
+  
+  tf::Executor executor(W);
+  std::vector<int> input;
+  
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+
+    input.resize(n);
+
+    for(auto& i : input) {
+      i = ::rand() % (2 * n) + 1;
+    }
+
+    auto P1 = [] (int i) { return i == 5; };
+    auto P2 = [] (int i) { return i == 0; };
+
+    auto res1 = std::find_if(input.begin(), input.end(), P1);
+    auto res2 = std::find_if(input.begin(), input.end(), P2);
+    
+    REQUIRE(res2 == input.end());
+
+    std::vector<int>::iterator itr1, itr2, beg2, end2;
+
+    executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
+    executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
+    
+    executor.wait_for_all();
+    
+    REQUIRE(itr1 == res1);
+    REQUIRE(itr2 == res2);
+  }
+}
+
+TEST_CASE("FindIf.SilentAsync.1thread" * doctest::timeout(300)) {
+  silent_async(1);
+}
+
+TEST_CASE("FindIf.SilentAsync.2threads" * doctest::timeout(300)) {
+  silent_async(2);
+}
+
+TEST_CASE("FindIf.SilentAsync.3threads" * doctest::timeout(300)) {
+  silent_async(3);
+}
+
+TEST_CASE("FindIf.SilentAsync.4threads" * doctest::timeout(300)) {
+  silent_async(4);
+}
+
+TEST_CASE("FindIf.SilentAsync.5threads" * doctest::timeout(300)) {
+  silent_async(5);
+}
+
+TEST_CASE("FindIf.SilentAsync.6threads" * doctest::timeout(300)) {
+  silent_async(6);
+}
+
+TEST_CASE("FindIf.SilentAsync.7threads" * doctest::timeout(300)) {
+  silent_async(7);
+}
+
+TEST_CASE("FindIf.SilentAsync.8threads" * doctest::timeout(300)) {
+  silent_async(8);
+}
+
+// ----------------------------------------------------------------------------
+// silent dependent async
+// ----------------------------------------------------------------------------
+
+void silent_dependent_async(unsigned W) {
+  
+  tf::Executor executor(W);
+  std::vector<int> input;
+  
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+
+    input.resize(n);
+
+    for(auto& i : input) {
+      i = ::rand() % (2 * n) + 1;
+    }
+
+    auto P1 = [] (int i) { return i == 5; };
+    auto P2 = [] (int i) { return i == 0; };
+
+    auto res1 = std::find_if(input.begin(), input.end(), P1);
+    auto res2 = std::find_if(input.begin(), input.end(), P2);
+    
+    REQUIRE(res2 == input.end());
+
+    std::vector<int>::iterator itr1, itr2, beg2, end2;
+
+    executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
+    executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
+    
+    executor.wait_for_all();
+    
+    REQUIRE(itr1 == res1);
+    REQUIRE(itr2 == res2);
+  }
+}
+
+TEST_CASE("FindIf.SilentAsync.1thread" * doctest::timeout(300)) {
+  silent_dependent_async(1);
+}
+
+TEST_CASE("FindIf.SilentAsync.2threads" * doctest::timeout(300)) {
+  silent_dependent_async(2);
+}
+
+TEST_CASE("FindIf.SilentAsync.3threads" * doctest::timeout(300)) {
+  silent_dependent_async(3);
+}
+
+TEST_CASE("FindIf.SilentAsync.4threads" * doctest::timeout(300)) {
+  silent_dependent_async(4);
+}
+
+TEST_CASE("FindIf.SilentAsync.5threads" * doctest::timeout(300)) {
+  silent_dependent_async(5);
+}
+
+TEST_CASE("FindIf.SilentAsync.6threads" * doctest::timeout(300)) {
+  silent_dependent_async(6);
+}
+
+TEST_CASE("FindIf.SilentAsync.7threads" * doctest::timeout(300)) {
+  silent_dependent_async(7);
+}
+
+TEST_CASE("FindIf.SilentAsync.8threads" * doctest::timeout(300)) {
+  silent_dependent_async(8);
+}
 

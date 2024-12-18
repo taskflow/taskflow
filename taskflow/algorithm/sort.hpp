@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/async.hpp"
+#include "../taskflow.hpp"
 
 namespace tf::detail {
 
