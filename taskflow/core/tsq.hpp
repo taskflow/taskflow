@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../taskflow.hpp"
 #include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
 
@@ -8,6 +7,26 @@
 @file tsq.hpp
 @brief task queue include file
 */
+
+#ifndef TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE 
+/**
+@def TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE
+
+This macro defines the default size of the bounded task queue in Log2. 
+Bounded task queue is used by each worker.
+*/
+  #define TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE 8
+#endif
+
+#ifndef TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE 
+/**
+@def TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE
+
+This macro defines the default size of the unbounded task queue in Log2.
+Unbounded task queue is used by the executor.
+*/
+  #define TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE 10
+#endif
 
 namespace tf {
 
