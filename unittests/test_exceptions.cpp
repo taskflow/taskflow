@@ -922,6 +922,7 @@ TEST_CASE("Exception.RuntimeCorun2.4threads" * doctest::timeout(300)) {
   runtime_corun_2(4);
 }
 
+
 // ----------------------------------------------------------------------------
 // module_task
 // ----------------------------------------------------------------------------
@@ -1004,6 +1005,78 @@ TEST_CASE("Exception.AsyncTask.3threads" * doctest::timeout(300)) {
 
 TEST_CASE("Exception.AsyncTask.4threads" * doctest::timeout(300)) {
   async_task(4);
+}
+
+// ----------------------------------------------------------------------------
+// Async Task with Runtime
+// ----------------------------------------------------------------------------
+
+void async_task_with_runtime(unsigned W) {
+  
+  tf::Executor executor(W);
+  std::vector<std::future<void>> futures;
+
+  for(size_t i=0; i<1024; i++) {
+    futures.emplace_back(executor.async([](tf::Runtime&){
+      throw std::runtime_error("x");
+    }));
+  }
+  
+  for(auto& fu : futures) {
+    REQUIRE_THROWS_WITH_AS(fu.get(), "x", std::runtime_error);
+  }
+}
+
+TEST_CASE("Exception.AsyncTaskWithRuntime.1thread" * doctest::timeout(300)) {
+  async_task_with_runtime(1);
+}
+
+TEST_CASE("Exception.AsyncTaskWithRuntime.2threads" * doctest::timeout(300)) {
+  async_task_with_runtime(2);
+}
+
+TEST_CASE("Exception.AsyncTaskWithRuntime.3threads" * doctest::timeout(300)) {
+  async_task_with_runtime(3);
+}
+
+TEST_CASE("Exception.AsyncTaskWithRuntime.4threads" * doctest::timeout(300)) {
+  async_task_with_runtime(4);
+}
+
+// ----------------------------------------------------------------------------
+// Dependent Async Task with Runtime
+// ----------------------------------------------------------------------------
+
+void dependent_async_task_with_runtime(unsigned W) {
+  
+  tf::Executor executor(W);
+  std::vector<std::future<void>> futures;
+
+  for(size_t i=0; i<1024; i++) {
+    auto [t, f] = executor.dependent_async([](tf::Runtime&){
+      throw std::runtime_error("x");
+    });
+  }
+  
+  for(auto& fu : futures) {
+    REQUIRE_THROWS_WITH_AS(fu.get(), "x", std::runtime_error);
+  }
+}
+
+TEST_CASE("Exception.DependentAsyncTaskWithRuntime.1thread" * doctest::timeout(300)) {
+  dependent_async_task_with_runtime(1);
+}
+
+TEST_CASE("Exception.DependentAsyncTaskWithRuntime.2threads" * doctest::timeout(300)) {
+  dependent_async_task_with_runtime(2);
+}
+
+TEST_CASE("Exception.DependentAsyncTaskWithRuntime.3threads" * doctest::timeout(300)) {
+  dependent_async_task_with_runtime(3);
+}
+
+TEST_CASE("Exception.DependentAsyncTaskWithRuntime.4threads" * doctest::timeout(300)) {
+  dependent_async_task_with_runtime(4);
 }
 
 /*
@@ -1109,3 +1182,8 @@ TEST_CASE("Exception.ThreadSafety.3threads" * doctest::timeout(300)) {
 TEST_CASE("Exception.ThreadSafety.4threads" * doctest::timeout(300)) {
   thread_safety(4);
 }
+
+
+
+
+

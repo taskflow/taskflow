@@ -23,15 +23,15 @@ auto Executor::async(P&& params, F&& f) {
     auto fu{p.get_future()};
     
     _schedule_async_task(animate(
-      std::forward<P>(params), nullptr, nullptr, 0, 
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
           f(rt);
         }
         else {
-          p.object.set_value();
-          // TODO: exception
+          auto& eptr = rt._parent->_exception_ptr;
+          eptr ? p.object.set_exception(eptr) : p.object.set_value();
         }
       }
     ));
@@ -223,15 +223,15 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      std::forward<P>(params), nullptr, nullptr, num_dependents,
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, num_dependents,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
           f(rt); 
         }
         else {
-          p.object.set_value();
-          // TODO: exception
+          auto& eptr = rt._parent->_exception_ptr;
+          eptr ? p.object.set_exception(eptr) : p.object.set_value();
         }
       }
     ));

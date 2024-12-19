@@ -258,8 +258,8 @@ class Node {
 
   public:
 
-  using execution_state_t = NSTATE::underlying_type;
-  using exception_state_t = std::atomic<ESTATE::underlying_type>;
+  using nstate_t = NSTATE::underlying_type;
+  using estate_t = ESTATE::underlying_type;
 
   // variant index
   constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
@@ -274,16 +274,22 @@ class Node {
   Node() = default;
   
   template <typename... Args>
-  Node(NSTATE::underlying_type, ESTATE::underlying_type, const std::string&, Topology*, Node*, size_t, Args&&...);
-
-  template <typename... Args>
   Node(const std::string&, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
+  Node(nstate_t, estate_t, const std::string&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
   Node(const TaskParams&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
+  Node(nstate_t, estate_t, const TaskParams&, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
   Node(const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
+  
+  template <typename... Args>
+  Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
 
   //~Node();
 
@@ -296,8 +302,8 @@ class Node {
 
   private:
   
-  execution_state_t _nstate {NSTATE::NONE};
-  exception_state_t _estate {ESTATE::NONE};
+  nstate_t _nstate              {NSTATE::NONE};
+  std::atomic<estate_t> _estate {ESTATE::NONE};
 
   std::string _name;
   
@@ -313,7 +319,6 @@ class Node {
 
   handle_t _handle;
   
-  //std::atomic<bool> _exception_lock {false};
   std::exception_ptr _exception_ptr {nullptr};
 
   // free list
@@ -435,16 +440,12 @@ Node::DependentAsync::DependentAsync(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename... Args>
 Node::Node(
-  NSTATE::underlying_type nstate,
-  ESTATE::underlying_type estate,
   const std::string& name,
   Topology* topology, 
   Node* parent, 
   size_t join_counter,
   Args&&... args
 ) :
-  _nstate       {nstate},
-  _estate       {estate},
   _name         {name},
   _topology     {topology},
   _parent       {parent},
@@ -455,12 +456,16 @@ Node::Node(
 // Constructor
 template <typename... Args>
 Node::Node(
+  nstate_t nstate,
+  estate_t estate,
   const std::string& name,
   Topology* topology, 
   Node* parent, 
   size_t join_counter,
   Args&&... args
 ) :
+  _nstate       {nstate},
+  _estate       {estate},
   _name         {name},
   _topology     {topology},
   _parent       {parent},
@@ -488,12 +493,52 @@ Node::Node(
 // Constructor
 template <typename... Args>
 Node::Node(
+  nstate_t nstate,
+  estate_t estate,
+  const TaskParams& params,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  _nstate       {nstate},
+  _estate       {estate},
+  _name         {params.name},
+  _data         {params.data},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename... Args>
+Node::Node(
   const DefaultTaskParams&,
   Topology* topology, 
   Node* parent, 
   size_t join_counter,
   Args&&... args
 ) :
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename... Args>
+Node::Node(
+  nstate_t nstate,
+  estate_t estate,
+  const DefaultTaskParams&,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  _nstate       {nstate},
+  _estate       {estate},
   _topology     {topology},
   _parent       {parent},
   _join_counter {join_counter},

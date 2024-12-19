@@ -1692,7 +1692,9 @@ inline void Executor::_process_exception(Worker&, Node* node) {
 
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
-  auto anchor = node->_parent;
+  // since exception can come from asynchronous task (with runtime), the node
+  // itself can be anchored
+  auto anchor = node;
   while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHORED) == 0) {
     anchor->_estate.fetch_or(flag, std::memory_order_relaxed);
     anchor = anchor->_parent;
@@ -1703,6 +1705,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
     // multiple tasks may throw, and we only take the first thrown exception
     if((anchor->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       anchor->_exception_ptr = std::current_exception();
+      return;
     }
   }
   // otherwise, we simply store the exception in the topology and cancel it
@@ -1710,12 +1713,14 @@ inline void Executor::_process_exception(Worker&, Node* node) {
     // multiple tasks may throw, and we only take the first thrown exception
     if((tpg->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::EXCEPTION) == 0) {
       tpg->_exception_ptr = std::current_exception();
+      return;
     }
   }
-  // orphan exception (e.g., silent_async)
-  // else {
-  //// TODO: store the exception in worker?
-  //}
+  
+  // TODO: for now, we simply store the exception in this node; this can happen
+  // for execution that doesn't have any external control to capture the exception
+  // (e.g., silent async)
+  node->_exception_ptr = std::current_exception();
 }
 
 // Procedure: _invoke_static_task
