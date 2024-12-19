@@ -111,11 +111,11 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
       return;
     }
 
+    PreemptionGuard preemption_guard(rt);
+    
     if(N < W) {
       W = N;
     }
-
-    PreemptionGuard preemption_guard(rt);
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {

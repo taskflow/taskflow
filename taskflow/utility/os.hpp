@@ -243,8 +243,7 @@ The function operates as follows:
    CPU, allowing other threads to execute.
 
 @note This function is useful when you need to wait for a condition to be true, but
-      want to optimize CPU usage during the wait by using a busy-wait approach with
-      backoff.
+      want to optimize CPU usage during the wait by using a busy-wait approach.
 
 */
 template <typename P>

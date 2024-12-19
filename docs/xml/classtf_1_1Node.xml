@@ -10,41 +10,6 @@
     <innerclass refid="structtf_1_1Node_1_1Static" prot="private">tf::Node::Static</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Subflow" prot="private">tf::Node::Subflow</innerclass>
       <sectiondef kind="private-type">
-      <memberdef kind="enum" id="classtf_1_1Node_1a9218d33e5a97519896c687bc2581d4bc" prot="private" static="no" strong="yes">
-        <type>int</type>
-        <name>AsyncState</name>
-        <enumvalue id="classtf_1_1Node_1a9218d33e5a97519896c687bc2581d4bca6f8eb84e55e2f1c21cb428ae5b644a6e" prot="private">
-          <name>UNFINISHED</name>
-          <initializer>= 0</initializer>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="classtf_1_1Node_1a9218d33e5a97519896c687bc2581d4bcaaeff3f3f2731681b2ed6a27786a56203" prot="private">
-          <name>LOCKED</name>
-          <initializer>= 1</initializer>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="classtf_1_1Node_1a9218d33e5a97519896c687bc2581d4bca2c616b2713e2e0aed04b4c4752c88133" prot="private">
-          <name>FINISHED</name>
-          <initializer>= 2</initializer>
-          <briefdescription>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="165" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="165" bodyend="169"/>
-      </memberdef>
       <memberdef kind="typedef" id="classtf_1_1Node_1a8c001eed6bd8ac9bd348c2f710f9e0b1" prot="private" static="no">
         <type>std::monostate</type>
         <definition>using tf::Node::Placeholder =  std::monostate</definition>
@@ -56,7 +21,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="175" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="175" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="169" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="169" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1Node_1acd5ac6414ba9b85c15826fcbe924905e" prot="private" static="no">
         <type>std::variant&lt; Placeholder, Static, Subflow, Condition, MultiCondition, Module, Async, DependentAsync &gt;</type>
@@ -69,35 +34,35 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="250" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="259" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="248" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="257" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-type">
-      <memberdef kind="typedef" id="classtf_1_1Node_1ac7cb13a9dda2bb7ce2eb5ccab43f7b9c" prot="public" static="no">
+      <memberdef kind="typedef" id="classtf_1_1Node_1ab151f90f503f46380be59cf47c669a9d" prot="public" static="no">
         <type>NSTATE::underlying_type</type>
-        <definition>using tf::Node::execution_state_t =  NSTATE::underlying_type</definition>
+        <definition>using tf::Node::nstate_t =  NSTATE::underlying_type</definition>
         <argsstring></argsstring>
-        <name>execution_state_t</name>
+        <name>nstate_t</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="263" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="263" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="261" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="261" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="classtf_1_1Node_1ab17ab220c26f7dbb04817ef1de7008b8" prot="public" static="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; ESTATE::underlying_type &gt;</type>
-        <definition>using tf::Node::exception_state_t =  std::atomic&lt;ESTATE::underlying_type&gt;</definition>
+      <memberdef kind="typedef" id="classtf_1_1Node_1abc7e46dcbffd13c251b722c31109c0d3" prot="public" static="no">
+        <type>ESTATE::underlying_type</type>
+        <definition>using tf::Node::estate_t =  ESTATE::underlying_type</definition>
         <argsstring></argsstring>
-        <name>exception_state_t</name>
+        <name>estate_t</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="264" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="264" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="262" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="262" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="friend">
@@ -291,7 +256,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="267" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="267" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="265" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="265" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a5714ed4ff69cce23a1db12c258e66439" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -305,7 +270,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="268" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="268" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="266" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="266" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a6de84d178457b0f6ea089e08192dd7d3" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -319,7 +284,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="269" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="269" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="267" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="267" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a923ea39a548a7421f4ec56349c61c1eb" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -333,7 +298,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="270" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="270" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="268" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="268" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1aeb7855e09ce91f0a8c87ed3f4df5cac7" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -347,7 +312,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="271" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="271" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="269" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="269" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1aab8a9356eb42f9250e548818bbe30ae3" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -361,7 +326,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="272" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="272" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="270" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="270" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1ab298b962d4cadbfd38f1a398712e2880" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -375,7 +340,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="273" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="273" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="271" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="271" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a1beac9706176ad4f9e6062e8a6fa8bb2" prot="public" static="yes" constexpr="yes" mutable="no">
         <type>constexpr static auto</type>
@@ -389,13 +354,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="274" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="274" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="272" column="25" bodyfile="taskflow/core/graph.hpp" bodystart="272" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1Node_1adcc9c19708122147709ff7c3e4ad6022" prot="private" static="no" mutable="no">
-        <type>execution_state_t</type>
-        <definition>execution_state_t tf::Node::_nstate</definition>
+      <memberdef kind="variable" id="classtf_1_1Node_1afab50d4471d7a6d7c51b65d6e2c87c4a" prot="private" static="no" mutable="no">
+        <type>nstate_t</type>
+        <definition>nstate_t tf::Node::_nstate</definition>
         <argsstring></argsstring>
         <name>_nstate</name>
         <initializer>{NSTATE::NONE}</initializer>
@@ -405,11 +370,11 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="298" column="21" bodyfile="taskflow/core/graph.hpp" bodystart="298" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="305" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="305" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Node_1ab359810bebef3f19e6a7871a2526773a" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">exception_state_t</ref></type>
-        <definition>exception_state_t tf::Node::_estate</definition>
+      <memberdef kind="variable" id="classtf_1_1Node_1ae83317ed89ab7ad04edd776657de5654" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; estate_t &gt;</type>
+        <definition>std::atomic&lt;estate_t&gt; tf::Node::_estate</definition>
         <argsstring></argsstring>
         <name>_estate</name>
         <initializer>{ESTATE::NONE}</initializer>
@@ -419,7 +384,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="299" column="21" bodyfile="taskflow/core/graph.hpp" bodystart="299" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="306" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="306" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a4a022f2346fe70d56910bd4108dd0e05" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -432,7 +397,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="301" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="301" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="308" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="308" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a5458c5905ee4b28b70f368a522c198f2" prot="private" static="no" mutable="no">
         <type>void *</type>
@@ -446,7 +411,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="303" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="303" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="310" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="310" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1ae771748b9bb4f9a01116ddbc31f7bc2d" prot="private" static="no" mutable="no">
         <type>Topology *</type>
@@ -460,7 +425,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="305" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="305" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="312" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="312" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" prot="private" static="no" mutable="no">
         <type>Node *</type>
@@ -474,7 +439,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="306" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="306" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="313" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="313" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a45a3783b67e19091d8e02e5ab56c6b63" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
@@ -487,7 +452,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="308" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="308" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="315" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="315" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
@@ -500,7 +465,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="309" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="309" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="316" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="316" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
@@ -514,7 +479,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="311" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="311" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="318" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="318" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" prot="private" static="no" mutable="no">
         <type>handle_t</type>
@@ -527,7 +492,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="313" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="313" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="320" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="320" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
@@ -541,7 +506,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="316" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="316" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="322" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="322" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -556,7 +521,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="276" column="3"/>
+        <location file="taskflow/core/graph.hpp" line="274" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1adfceea099b09ccb6dcd63b6382ce070d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -592,7 +557,49 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="279" column="3"/>
+        <location file="taskflow/core/graph.hpp" line="277" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1aaae270fe76d3f142f426c0e6d177ad38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t, estate_t, const std::string &amp;, Topology *, Node *, size_t, Args &amp;&amp;...)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+        </param>
+        <param>
+          <type>estate_t</type>
+        </param>
+        <param>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <param>
+          <type>size_t</type>
+        </param>
+        <param>
+          <type>Args &amp;&amp;</type>
+          <declname>...</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="280" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a65675d673d5ed9c4309840254e62516b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -628,7 +635,49 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="282" column="3"/>
+        <location file="taskflow/core/graph.hpp" line="283" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1a24ec6bf1fa4aa86f278e2b12bbf6d172" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t, estate_t, const TaskParams &amp;, Topology *, Node *, size_t, Args &amp;&amp;...)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+        </param>
+        <param>
+          <type>estate_t</type>
+        </param>
+        <param>
+          <type>const <ref refid="structtf_1_1TaskParams" kindref="compound">TaskParams</ref> &amp;</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <param>
+          <type>size_t</type>
+        </param>
+        <param>
+          <type>Args &amp;&amp;</type>
+          <declname>...</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="286" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a1aacff0f33b84bded0a710bd041eacc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -664,7 +713,49 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="285" column="3"/>
+        <location file="taskflow/core/graph.hpp" line="289" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1aa04ef4278e9f1807b2c094204a9e1e48" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t, estate_t, const DefaultTaskParams &amp;, Topology *, Node *, size_t, Args &amp;&amp;...)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+        </param>
+        <param>
+          <type>estate_t</type>
+        </param>
+        <param>
+          <type>const <ref refid="structtf_1_1DefaultTaskParams" kindref="compound">DefaultTaskParams</ref> &amp;</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <param>
+          <type>size_t</type>
+        </param>
+        <param>
+          <type>Args &amp;&amp;</type>
+          <declname>...</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="292" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a7133911e093d82e5f5edd73124b60c6a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -677,7 +768,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="289" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="524" bodyend="526"/>
+        <location file="taskflow/core/graph.hpp" line="296" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="590" bodyend="592"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1abbb6a85cc8f62682ce8c78ad9851c0e5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -690,7 +781,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="290" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="529" bodyend="531"/>
+        <location file="taskflow/core/graph.hpp" line="297" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="595" bodyend="597"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1ad5eb7ac6418e89fccc300986b216510c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -703,7 +794,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="291" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="545" bodyend="553"/>
+        <location file="taskflow/core/graph.hpp" line="298" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="611" bodyend="619"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a7dbe963f0173062f3a6164f1ff581c5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -716,7 +807,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="292" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="534" bodyend="542"/>
+        <location file="taskflow/core/graph.hpp" line="299" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="600" bodyend="608"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a0214bc98366d4c24a1cae941cdffe119" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
@@ -729,7 +820,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="294" column="21" bodyfile="taskflow/core/graph.hpp" bodystart="556" bodyend="558"/>
+        <location file="taskflow/core/graph.hpp" line="301" column="21" bodyfile="taskflow/core/graph.hpp" bodystart="622" bodyend="624"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a803cea9b57cbb262284ab2324bec7580" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -769,7 +860,55 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="436" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="436" bodyend="448"/>
+        <location file="taskflow/core/graph.hpp" line="442" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="442" bodyend="454"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1ad3aafecacb2f3b8f3a482860fad53949" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t nstate, estate_t estate, const std::string &amp;name, Topology *topology, Node *parent, size_t join_counter, Args &amp;&amp;... args)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+          <declname>nstate</declname>
+        </param>
+        <param>
+          <type>estate_t</type>
+          <declname>estate</declname>
+        </param>
+        <param>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>Topology *</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type>Node *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>join_counter</declname>
+        </param>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="458" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="458" bodyend="474"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1afb060bbf0a83ffc6f8b3441665c1cc11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -809,7 +948,55 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="452" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="452" bodyend="465"/>
+        <location file="taskflow/core/graph.hpp" line="478" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="478" bodyend="491"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1a0605cc565bd447bf88d86404803290eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t nstate, estate_t estate, const TaskParams &amp;params, Topology *topology, Node *parent, size_t join_counter, Args &amp;&amp;... args)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+          <declname>nstate</declname>
+        </param>
+        <param>
+          <type>estate_t</type>
+          <declname>estate</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structtf_1_1TaskParams" kindref="compound">TaskParams</ref> &amp;</type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type>Topology *</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type>Node *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>join_counter</declname>
+        </param>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="495" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="495" bodyend="512"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a66a64a20e1cf38de06c44912c263a99b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -848,7 +1035,54 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="469" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="469" bodyend="480"/>
+        <location file="taskflow/core/graph.hpp" line="516" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="516" bodyend="527"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Node_1aa077ed7ef5c8aff205ecef4873202c97" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>Args</declname>
+            <defname>Args</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::Node::Node</definition>
+        <argsstring>(nstate_t nstate, estate_t estate, const DefaultTaskParams &amp;, Topology *topology, Node *parent, size_t join_counter, Args &amp;&amp;... args)</argsstring>
+        <name>Node</name>
+        <param>
+          <type>nstate_t</type>
+          <declname>nstate</declname>
+        </param>
+        <param>
+          <type>estate_t</type>
+          <declname>estate</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structtf_1_1DefaultTaskParams" kindref="compound">DefaultTaskParams</ref> &amp;</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+          <declname>topology</declname>
+        </param>
+        <param>
+          <type>Node *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>join_counter</declname>
+        </param>
+        <param>
+          <type>Args &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="531" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="531" bodyend="546"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -867,7 +1101,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="321" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="518" bodyend="521"/>
+        <location file="taskflow/core/graph.hpp" line="327" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="584" bodyend="587"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a30ffac5296d61687b8ebb9ff4716a26a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -880,7 +1114,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="322" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="580" bodyend="592"/>
+        <location file="taskflow/core/graph.hpp" line="328" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="646" bodyend="658"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a51d76bfe6ccba95580948cbfc7aca7d6" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -893,7 +1127,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="323" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="595" bodyend="601"/>
+        <location file="taskflow/core/graph.hpp" line="329" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="661" bodyend="667"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a4207c300c6ac0c564deef65c73e1ee96" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -906,7 +1140,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="325" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="573" bodyend="577"/>
+        <location file="taskflow/core/graph.hpp" line="331" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="639" bodyend="643"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1aed1c802d5794f881f9c47089003ef62c" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -919,7 +1153,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="326" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="561" bodyend="564"/>
+        <location file="taskflow/core/graph.hpp" line="332" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="627" bodyend="630"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a371ba225f514e86b9ae893f4168b50e0" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -932,7 +1166,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="327" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="567" bodyend="569"/>
+        <location file="taskflow/core/graph.hpp" line="333" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="633" bodyend="635"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1ac5778a60afb44cd54eb0247a04b38a91" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
@@ -948,7 +1182,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="328" column="8"/>
+        <location file="taskflow/core/graph.hpp" line="334" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Node_1a22ee0fc1f8a670b322f75ceff71f0cfa" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
@@ -961,19 +1195,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="330" column="15"/>
+        <location file="taskflow/core/graph.hpp" line="336" column="15"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/graph.hpp" line="148" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="148" bodyend="331"/>
+    <location file="taskflow/core/graph.hpp" line="148" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="148" bodyend="337"/>
     <listofallmembers>
       <member refid="classtf_1_1Node_1ac5778a60afb44cd54eb0247a04b38a91" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_acquire_all</name></member>
       <member refid="classtf_1_1Node_1a5458c5905ee4b28b70f368a522c198f2" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_data</name></member>
       <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_dependents</name></member>
-      <member refid="classtf_1_1Node_1ab359810bebef3f19e6a7871a2526773a" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_estate</name></member>
+      <member refid="classtf_1_1Node_1ae83317ed89ab7ad04edd776657de5654" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_estate</name></member>
       <member refid="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_exception_ptr</name></member>
       <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_handle</name></member>
       <member refid="classtf_1_1Node_1a4207c300c6ac0c564deef65c73e1ee96" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_is_cancelled</name></member>
@@ -981,7 +1215,7 @@
       <member refid="classtf_1_1Node_1a371ba225f514e86b9ae893f4168b50e0" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_is_preempted</name></member>
       <member refid="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_join_counter</name></member>
       <member refid="classtf_1_1Node_1a4a022f2346fe70d56910bd4108dd0e05" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_name</name></member>
-      <member refid="classtf_1_1Node_1adcc9c19708122147709ff7c3e4ad6022" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_nstate</name></member>
+      <member refid="classtf_1_1Node_1afab50d4471d7a6d7c51b65d6e2c87c4a" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_nstate</name></member>
       <member refid="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_parent</name></member>
       <member refid="classtf_1_1Node_1a7e6ccc13774475f9ee23af8d37a5311c" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_precede</name></member>
       <member refid="classtf_1_1Node_1a22ee0fc1f8a670b322f75ceff71f0cfa" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_release_all</name></member>
@@ -991,12 +1225,10 @@
       <member refid="classtf_1_1Node_1ae771748b9bb4f9a01116ddbc31f7bc2d" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_topology</name></member>
       <member refid="classtf_1_1Node_1a0aead7d7d8a25d0c29cc9419cc4fde65" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>AnchorGuard</name></member>
       <member refid="classtf_1_1Node_1ab298b962d4cadbfd38f1a398712e2880" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>ASYNC</name></member>
-      <member refid="classtf_1_1Node_1a9218d33e5a97519896c687bc2581d4bc" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>AsyncState</name></member>
       <member refid="classtf_1_1Node_1a842f41f7bc0f1de257dc369a61cc7eaf" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>AsyncTask</name></member>
       <member refid="classtf_1_1Node_1a923ea39a548a7421f4ec56349c61c1eb" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>CONDITION</name></member>
       <member refid="classtf_1_1Node_1a1beac9706176ad4f9e6062e8a6fa8bb2" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>DEPENDENT_ASYNC</name></member>
-      <member refid="classtf_1_1Node_1ab17ab220c26f7dbb04817ef1de7008b8" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>exception_state_t</name></member>
-      <member refid="classtf_1_1Node_1ac7cb13a9dda2bb7ce2eb5ccab43f7b9c" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>execution_state_t</name></member>
+      <member refid="classtf_1_1Node_1abc7e46dcbffd13c251b722c31109c0d3" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>estate_t</name></member>
       <member refid="classtf_1_1Node_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>Executor</name></member>
       <member refid="classtf_1_1Node_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1Node_1afab89afd724f1b07b1aaad6bdc61c47a" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>Graph</name></member>
@@ -1006,17 +1238,24 @@
       <member refid="classtf_1_1Node_1a0214bc98366d4c24a1cae941cdffe119" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>name</name></member>
       <member refid="classtf_1_1Node_1aebc4701caf53db89d260c75fba0e5050" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1adfceea099b09ccb6dcd63b6382ce070d" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1aaae270fe76d3f142f426c0e6d177ad38" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1a65675d673d5ed9c4309840254e62516b" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1a24ec6bf1fa4aa86f278e2b12bbf6d172" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1a1aacff0f33b84bded0a710bd041eacc6" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1aa04ef4278e9f1807b2c094204a9e1e48" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1a803cea9b57cbb262284ab2324bec7580" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1ad3aafecacb2f3b8f3a482860fad53949" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1afb060bbf0a83ffc6f8b3441665c1cc11" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1a0605cc565bd447bf88d86404803290eb" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1a66a64a20e1cf38de06c44912c263a99b" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1aa077ed7ef5c8aff205ecef4873202c97" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
+      <member refid="classtf_1_1Node_1ab151f90f503f46380be59cf47c669a9d" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>nstate_t</name></member>
       <member refid="classtf_1_1Node_1abbb6a85cc8f62682ce8c78ad9851c0e5" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_dependents</name></member>
       <member refid="classtf_1_1Node_1ad5eb7ac6418e89fccc300986b216510c" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_strong_dependents</name></member>
       <member refid="classtf_1_1Node_1a7133911e093d82e5f5edd73124b60c6a" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_successors</name></member>
       <member refid="classtf_1_1Node_1a7dbe963f0173062f3a6164f1ff581c5a" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_weak_dependents</name></member>
-      <member refid="classtf_1_1Node_1a421d0da10e52e8bd1036676efc63579e" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>PLACEHOLDER</name></member>
       <member refid="classtf_1_1Node_1a8c001eed6bd8ac9bd348c2f710f9e0b1" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>Placeholder</name></member>
+      <member refid="classtf_1_1Node_1a421d0da10e52e8bd1036676efc63579e" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>PLACEHOLDER</name></member>
       <member refid="classtf_1_1Node_1adb56fdbfd3879bf32dbc9b766e797b55" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>PreemptionGuard</name></member>
       <member refid="classtf_1_1Node_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>Runtime</name></member>
       <member refid="classtf_1_1Node_1a5714ed4ff69cce23a1db12c258e66439" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>STATIC</name></member>

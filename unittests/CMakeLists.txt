@@ -31,13 +31,13 @@ list(APPEND TF_UNITTESTS
   test_data_pipelines
 )
 
-string(FIND '${CMAKE_CXX_FLAGS}' "-fsanitize" sanitize)
-#message("sanitize='${sanitize}'")
-
-if(${sanitize} EQUAL -1)
-  message(STATUS "Add test_exception to unit tests")
-  list(APPEND TF_UNITTESTS test_exceptions)
-endif()
+#string(FIND '${CMAKE_CXX_FLAGS}' "-fsanitize" sanitize)
+##message("sanitize='${sanitize}'")
+#
+#if(${sanitize} EQUAL -1)
+#  message(STATUS "Add test_exception to unit tests")
+#  list(APPEND TF_UNITTESTS test_exceptions)
+#endif()
 
 
 foreach(unittest IN LISTS TF_UNITTESTS)

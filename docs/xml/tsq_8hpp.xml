@@ -162,6 +162,32 @@
     <innerclass refid="structtf_1_1UnboundedTaskQueue_1_1Array" prot="private">tf::UnboundedTaskQueue::Array</innerclass>
     <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="tsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" prot="public" static="no">
+        <name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name>
+        <initializer>8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This macro defines the default size of the bounded task queue in Log2. Bounded task queue is used by each worker. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="18" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="tsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" prot="public" static="no">
+        <name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name>
+        <initializer>10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This macro defines the default size of the unbounded task queue in Log2. Unbounded task queue is used by the executor. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="28" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
     <briefdescription>
 <para>task queue include file </para>
     </briefdescription>

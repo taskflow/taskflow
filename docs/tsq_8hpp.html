@@ -57,6 +57,7 @@
               <ul>
                 <li><a href="#namespaces">Namespaces</a></li>
                 <li><a href="#nested-classes">Classes</a></li>
+                <li><a href="#define-members">Defines</a></li>
               </ul>
             </li>
           </ul>
@@ -77,11 +78,39 @@
             </dt>
             <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="taskflow_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
               class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">tf::BoundedTaskQueue</a>
             </dt>
             <dd>class to create a lock-free bounded single-producer multiple-consumer queue</dd>
           </dl>
+        </section>
+        <section id="define-members">
+          <h2><a href="#define-members">Defines</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</a></span>
+            </dt>
+            <dd></dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">#define <a href="#a45e25b85f72dd5c43f2c9010205c3e37" class="m-doc">TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</a></span>
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Define documentation</h2>
+          <section class="m-doc-details" id="a603f6f29f0f179ee85ecde7d5311a76e"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc-self">TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</a></span>
+            </h3>
+<p>This macro defines the default size of the bounded task queue in Log2. Bounded task queue is used by each worker.</p>
+          </div></section>
+          <section class="m-doc-details" id="a45e25b85f72dd5c43f2c9010205c3e37"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">#define <a href="#a45e25b85f72dd5c43f2c9010205c3e37" class="m-doc-self">TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</a></span>
+            </h3>
+<p>This macro defines the default size of the unbounded task queue in Log2. Unbounded task queue is used by the executor.</p>
+          </div></section>
         </section>
       </div>
     </div>
