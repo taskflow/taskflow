@@ -27,10 +27,20 @@ struct ESTATE {
   
   using underlying_type = int;  
   
-  constexpr static underlying_type NONE        = 0; 
-  constexpr static underlying_type EXCEPTION   = 1;
-  constexpr static underlying_type CANCELLED   = 2;
-  constexpr static underlying_type ANCHOR      = 4;  
+  constexpr static underlying_type NONE      = 0; 
+  constexpr static underlying_type EXCEPTION = 1;
+  constexpr static underlying_type CANCELLED = 2;
+  constexpr static underlying_type ANCHORED  = 4;  
+};
+
+// async-specific states
+struct ASTATE {
+  
+  using underlying_type = int;
+
+  constexpr static underlying_type UNFINISHED = 0;
+  constexpr static underlying_type LOCKED     = 1;
+  constexpr static underlying_type FINISHED   = 2;
 };
 
 // Procedure: throw_re

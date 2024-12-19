@@ -81,7 +81,7 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="420" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="420" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaDeviceAllocator_1ac4b1781c2f116866927701d931bf8852" prot="public" static="no">
-        <type><ref refid="cpp/types/size_t" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
+        <type><ref refid="cpp/types/size_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::size_type =  std::size_t</definition>
         <argsstring></argsstring>
         <name>size_type</name>
@@ -95,7 +95,7 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="425" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="425" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaDeviceAllocator_1aaacd3b516ceaa9468e40dcf1a048a453" prot="public" static="no">
-        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
+        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::difference_type =  std::ptrdiff_t</definition>
         <argsstring></argsstring>
         <name>difference_type</name>
@@ -258,7 +258,7 @@
         <detaileddescription>
 <para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput>value_type</computeroutput>, and returns a pointer to the first element.</para>
 <para>The storage is aligned appropriately for object of type <computeroutput>value_type</computeroutput>, but they are not constructed.</para>
-<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
+<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
@@ -423,7 +423,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-A cudaDeviceAllocator enables device-specific allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
+A cudaDeviceAllocator enables device-specific allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
     </detaileddescription>
     <location file="taskflow/cuda/cuda_memory.hpp" line="393" column="1" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="393" bodyend="571"/>
     <listofallmembers>

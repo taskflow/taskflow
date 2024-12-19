@@ -442,12 +442,13 @@ inline void Taskflow::_dump(
   std::ostream& os, const Node* node, Dumper& dumper
 ) const {
 
+  // label of the node
   os << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
   else os << node->_name;
   os << "\" ";
 
-  // shape for node
+  // shape of the node
   switch(node->_handle.index()) {
 
     case Node::CONDITION:

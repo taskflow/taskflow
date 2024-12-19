@@ -23,7 +23,24 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="137" column="3" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="137" bodyend="-1"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="142" column="3" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classtf_1_1PartitionerBase_1ae70ae77c8d774ffd661924f425bcd6bf" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static bool</type>
+        <definition>constexpr static bool tf::PartitionerBase&lt; C &gt;::is_default_wrapper_v</definition>
+        <argsstring></argsstring>
+        <name>is_default_wrapper_v</name>
+        <initializer>= std::is_same_v&lt;C, <ref refid="structtf_1_1DefaultClosureWrapper" kindref="compound">DefaultClosureWrapper</ref>&gt;</initializer>
+        <briefdescription>
+<para>indicating if the given closure wrapper is a default wrapper (i.e., empty) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/algorithm/partitioner.hpp" line="137" column="25" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="137" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="protected-attrib">
@@ -40,7 +57,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="183" column="10" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="183" bodyend="-1"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="207" column="10" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="207" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" static="no" mutable="no">
         <type>C</type>
@@ -54,7 +71,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="188" column="5" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="188" bodyend="-1"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="212" column="5" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="212" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -70,7 +87,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="142" column="3"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="147" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -88,7 +105,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="147" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="147" bodyend="147"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="152" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="152" bodyend="152"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -110,7 +127,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="152" column="3" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="152" bodyend="155"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="157" column="3" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="157" bodyend="160"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -124,7 +141,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="160" column="10" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="160" bodyend="160"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="165" column="10" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="165"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -142,7 +159,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="165" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="165" bodyend="165"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="170" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="170" bodyend="170"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const C &amp;</type>
@@ -156,7 +173,21 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="170" column="11" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="170" bodyend="170"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="175" column="11" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="175" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a55a519288850c6cca366d1020bb22efe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>C &amp;</type>
+        <definition>C&amp; tf::PartitionerBase&lt; C &gt;::closure_wrapper</definition>
+        <argsstring>()</argsstring>
+        <name>closure_wrapper</name>
+        <briefdescription>
+<para>acquire a mutable access to the closure wrapper object </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/algorithm/partitioner.hpp" line="180" column="5" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="180" bodyend="180"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -179,7 +210,30 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="176" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="176" bodyend="176"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="186" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="186" bodyend="186"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1PartitionerBase_1a3edb7ab5e21326d2ba78680aeb965a83" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename F</type>
+          </param>
+        </templateparamlist>
+        <type>decltype(auto) TF_FORCE_INLINE</type>
+        <definition>decltype(auto) TF_FORCE_INLINE tf::PartitionerBase&lt; C &gt;::operator()</definition>
+        <argsstring>(F &amp;&amp;callable)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>F &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>wraps the given callable with the associated closure wrapper </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/algorithm/partitioner.hpp" line="192" column="28" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="192" bodyend="200"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -208,11 +262,11 @@ The class provides base methods to derive a partitioner that can be used to sche
 <para><simplesect kind="note"><para>Giving the partition size of 0 lets the Taskflow runtime automatically determines the partition size for the given partitioner.</para>
 </simplesect>
 In addition to partition size, the application can specify a closure wrapper for a partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -260,15 +314,18 @@ In addition to partition size, the application can specify a closure wrapper for
         <link refid="structtf_1_1DefaultClosureWrapper"/>
       </node>
     </collaborationgraph>
-    <location file="taskflow/algorithm/partitioner.hpp" line="130" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="130" bodyend="189"/>
+    <location file="taskflow/algorithm/partitioner.hpp" line="130" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="130" bodyend="213"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>_closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a55a519288850c6cca366d1020bb22efe" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a2b6152f24c2a3d6e750349d02ecb4595" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>closure_wrapper_type</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ae70ae77c8d774ffd661924f425bcd6bf" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>is_default_wrapper_v</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a3edb7ab5e21326d2ba78680aeb965a83" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>operator()</name></member>
       <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" virt="non-virtual"><scope>tf::PartitionerBase</scope><name>PartitionerBase</name></member>

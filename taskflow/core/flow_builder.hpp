@@ -618,7 +618,6 @@ class FlowBuilder {
   @tparam E ending iterator type
   @tparam D destination iterator type
   @tparam BOP summation operator type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -660,7 +659,6 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam BOP summation operator type
   @tparam T initial value type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -704,7 +702,6 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam T initial value type
   @tparam BOP summation operator type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -751,7 +748,6 @@ class FlowBuilder {
   @tparam D destination iterator type
   @tparam BOP summation operator type
   @tparam UOP transform operator type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -796,7 +792,6 @@ class FlowBuilder {
   @tparam BOP summation operator type
   @tparam UOP transform operator type
   @tparam T initial value type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range
@@ -843,7 +838,6 @@ class FlowBuilder {
   @tparam BOP summation operator type
   @tparam UOP transform operator type
   @tparam T initial value type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
 
   @param first start of input range
   @param last end of input range

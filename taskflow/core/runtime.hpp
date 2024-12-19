@@ -229,10 +229,10 @@ class Runtime {
   /**
   @brief co-runs the given target and waits until it completes
   
-  A target can be one of the following forms:
-    + a composable graph object with `tf::Graph& T::graph()` defined
+  A corunnable target must have `tf::Graph& T::graph()` defined.
 
   // co-run a taskflow and wait until all tasks complete
+  @code{.cpp}
   tf::Taskflow taskflow1, taskflow2;
   taskflow1.emplace([](){ std::cout << "running taskflow1\n"; });
   taskflow2.emplace([&](tf::Runtime& rt){
@@ -243,7 +243,7 @@ class Runtime {
   @endcode
 
   Although tf::Runtime::corun blocks until the operation completes, 
-  the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). 
+  the caller thread (worker) is not blocked (e.g., sleeping or holding any lock).
   Instead, the caller thread joins the work-stealing loop of the executor 
   and returns when all tasks in the target completes.
   
@@ -683,10 +683,42 @@ inline bool Executor::_invoke_internal_runtime(
       return true;
     }
   }
-  // second time
+  // second time - previously preempted
   else {
     node->_nstate &= ~NSTATE::PREEMPTED;
   }
+  return false;
+}
+
+// Function: _invoke_internal_runtime
+inline bool Executor::_invoke_internal_runtime(
+  Worker& worker, Node* node, std::function<void(Runtime&, bool)>& work
+) {
+    
+  Runtime rt(*this, worker, node);
+
+  // first time
+  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+
+    _observer_prologue(worker, node);
+    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+      work(rt, false);
+    });
+    _observer_epilogue(worker, node);
+    
+    // here, we cannot check the state from node->_nstate due to data race
+    if(rt._preempted) {
+      return true;
+    }
+  }
+  // second time - previously preempted
+  else {
+    node->_nstate &= ~NSTATE::PREEMPTED;
+  }
+
+  // clean up outstanding work
+  work(rt, true);
+
   return false;
 }
 

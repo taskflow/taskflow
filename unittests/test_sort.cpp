@@ -175,6 +175,88 @@ TEST_CASE("ParallelSort.MoveOnlyObject.4threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Parallel Sort with  Async Tasks
+// ----------------------------------------------------------------------------
+
+void async(size_t W) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Executor executor(W);
+  std::vector<int> data;
+
+  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
+    
+    data.resize(n);
+
+    for(auto& d : data) {
+      d = ::rand() % 1000 - 500;
+    }
+  
+    executor.async(tf::make_sort_task(data.begin(), data.end()));
+    executor.wait_for_all();
+    REQUIRE(std::is_sorted(data.begin(), data.end()));
+  }
+}
+
+TEST_CASE("ParallelSort.Async.1thread" * doctest::timeout(300)) {
+  async(1);
+}
+
+TEST_CASE("ParallelSort.Async.2threads" * doctest::timeout(300)) {
+  async(2);
+}
+
+TEST_CASE("ParallelSort.Async.3threads" * doctest::timeout(300)) {
+  async(3);
+}
+
+TEST_CASE("ParallelSort.Async.4threads" * doctest::timeout(300)) {
+  async(4);
+}
+
+// ----------------------------------------------------------------------------
+// Parallel Sort with Dependent Async Tasks
+// ----------------------------------------------------------------------------
+
+void dependent_async(size_t W) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+  
+  tf::Executor executor(W);
+  std::vector<int> data;
+
+  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
+    
+    data.resize(n);
+
+    for(auto& d : data) {
+      d = ::rand() % 1000 - 500;
+    }
+  
+    executor.dependent_async(tf::make_sort_task(data.begin(), data.end()));
+    executor.wait_for_all();
+    REQUIRE(std::is_sorted(data.begin(), data.end()));
+  }
+}
+
+TEST_CASE("ParallelSort.DependentAsync.1thread" * doctest::timeout(300)) {
+  dependent_async(1);
+}
+
+TEST_CASE("ParallelSort.DependentAsync.2threads" * doctest::timeout(300)) {
+  dependent_async(2);
+}
+
+TEST_CASE("ParallelSort.DependentAsync.3threads" * doctest::timeout(300)) {
+  dependent_async(3);
+}
+
+TEST_CASE("ParallelSort.DependentAsync.4threads" * doctest::timeout(300)) {
+  dependent_async(4);
+}
+
+// ----------------------------------------------------------------------------
 // Parallel Sort with Silent Async Tasks
 // ----------------------------------------------------------------------------
 

@@ -72,9 +72,9 @@
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>cudaFlow<sp/>to<sp/>a<sp/>DOT<sp/>format<sp/>through<sp/>std::cout</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>)</highlight></codeline>
+<codeline><highlight class="normal">capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>)</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/cudaflow_capturer_1.dot"></dotfile>
 </para>
 <para><simplesect kind="warning"><para>Inside <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref>, you should <emphasis>NOT</emphasis> modify the properties of the stream argument but only use it to capture <emphasis>asynchronous</emphasis> GPU operations (e.g., <computeroutput>kernel</computeroutput>, <computeroutput>cudaMemcpyAsync</computeroutput>). The stream argument is internal to the capturer use only.</para>
 </simplesect>
@@ -101,7 +101,7 @@
 <codeline><highlight class="normal">h2d.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(kernel);</highlight></codeline>
 <codeline><highlight class="normal">kernel.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h);</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/cudaflow_capturer_2.dot"></dotfile>
 </para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1CreateACapturerOnASpecificGPU">
@@ -153,7 +153,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/cudaflow_capturer_3.dot"></dotfile>
 </para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlowCapturer_1OffloadAcudaFlowCapturer">

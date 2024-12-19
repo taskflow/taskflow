@@ -2,6 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Graph" kind="class" language="C++" prot="public">
     <compoundname>tf::Graph</compoundname>
+    <basecompoundref refid="cpp/container/vector" prot="public" virt="non-virtual">std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</basecompoundref>
     <includes refid="graph_8hpp" local="no">taskflow/core/graph.hpp</includes>
       <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Graph_1a6db9d28bd448a131448276ee03de1e6d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
@@ -85,21 +86,6 @@
         <location file="taskflow/core/graph.hpp" line="57" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="57" bodyend="-1"/>
       </memberdef>
       </sectiondef>
-      <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1Graph_1ac5e4c434ae03bf37c5a275f9fdc9f97d" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Node * &gt;</type>
-        <definition>std::vector&lt;Node*&gt; tf::Graph::_nodes</definition>
-        <argsstring></argsstring>
-        <name>_nodes</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="108" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="108" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Graph_1a1cd3bae8cabb45810b25cdbdd4e89006" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -113,7 +99,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="64" column="5"/>
+        <location file="taskflow/core/graph.hpp" line="64" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Graph_1ade95936f49af81b9834e09e807033e61" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -130,16 +116,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="69" column="5"/>
+        <location file="taskflow/core/graph.hpp" line="69" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a5fcaca536e67632ff6dd3cf2c0284cfd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Graph_1a551bba43984da111cfe54090be6fe5be" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Graph::Graph</definition>
-        <argsstring>(Graph &amp;&amp;)</argsstring>
+        <argsstring>(Graph &amp;&amp;)=default</argsstring>
         <name>Graph</name>
         <param>
           <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;&amp;</type>
-          <defname>other</defname>
         </param>
         <briefdescription>
 <para>constructs a graph using move semantics </para>
@@ -148,21 +133,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="74" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="1154" bodyend="1156"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a493acc70cca8c0a09d7c407d28c59ee2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::Graph::~Graph</definition>
-        <argsstring>()</argsstring>
-        <name>~Graph</name>
-        <briefdescription>
-<para>destructs the graph object </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="79" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="1149" bodyend="1151"/>
+        <location file="taskflow/core/graph.hpp" line="74" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Graph_1a945eb240dd5d6840e282c525a1ea74e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
@@ -179,16 +150,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="84" column="11"/>
+        <location file="taskflow/core/graph.hpp" line="79" column="9"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a9104e2edd9e02c64d0102378f81ed9a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Graph_1a897011d7e0321d362f79ca6e23530295" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
-        <definition>Graph &amp; tf::Graph::operator=</definition>
-        <argsstring>(Graph &amp;&amp;)</argsstring>
+        <definition>Graph&amp; tf::Graph::operator=</definition>
+        <argsstring>(Graph &amp;&amp;)=default</argsstring>
         <name>operator=</name>
         <param>
           <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;&amp;</type>
-          <defname>other</defname>
         </param>
         <briefdescription>
 <para>assigns a graph using move semantics </para>
@@ -197,95 +167,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="89" column="11" bodyfile="taskflow/core/graph.hpp" bodystart="1159" bodyend="1163"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a30750e1be2657e491854791cd3afff06" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>bool</type>
-        <definition>bool tf::Graph::empty</definition>
-        <argsstring>() const</argsstring>
-        <name>empty</name>
-        <briefdescription>
-<para>queries if the graph is empty </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="94" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1213" bodyend="1215"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a790710289553897fa88672d9104d8ed1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>size_t</type>
-        <definition>size_t tf::Graph::size</definition>
-        <argsstring>() const</argsstring>
-        <name>size</name>
-        <briefdescription>
-<para>queries the number of nodes in the graph </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="99" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="1208" bodyend="1210"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a8213e42bf3f7460757db411181d78c4c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::Graph::clear</definition>
-        <argsstring>()</argsstring>
-        <name>clear</name>
-        <briefdescription>
-<para>clears the graph </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="104" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1166" bodyend="1168"/>
+        <location file="taskflow/core/graph.hpp" line="84" column="9"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1Graph_1a13b297fdc502102ee784495f6d4c3d1e" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::Graph::_clear</definition>
-        <argsstring>()</argsstring>
-        <name>_clear</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="110" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1171" bodyend="1176"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1ace2898fcb8cd86099dbf5d453a9cf0b4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::Graph::_clear_detached</definition>
-        <argsstring>()</argsstring>
-        <name>_clear_detached</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="111" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1179" bodyend="1189"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Graph_1a39d26ac29a3aa19650dcf31a7563b6ee" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::Graph::_merge</definition>
-        <argsstring>(Graph &amp;&amp;)</argsstring>
-        <name>_merge</name>
-        <param>
-          <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;&amp;</type>
-          <defname>g</defname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="112" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1192" bodyend="1197"/>
-      </memberdef>
       <memberdef kind="function" id="classtf_1_1Graph_1a6b50ab0846fe1720edc2dcc5147ba16b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Graph::_erase</definition>
@@ -301,7 +186,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="113" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="1200" bodyend="1205"/>
+        <location file="taskflow/core/graph.hpp" line="89" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="635" bodyend="640"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Graph_1a7e19ca35c105d72e35f86740e6e3d34e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -325,7 +210,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="119" column="10"/>
+        <location file="taskflow/core/graph.hpp" line="95" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Graph_1a4f4256f012b5b05fbaf3125d76faa9b6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -349,7 +234,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="1221" column="6" bodyfile="taskflow/core/graph.hpp" bodystart="1221" bodyend="1224"/>
+        <location file="taskflow/core/graph.hpp" line="646" column="6" bodyfile="taskflow/core/graph.hpp" bodystart="646" bodyend="649"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -359,29 +244,43 @@
 <para>A graph is the ultimate storage for a task dependency graph and is the main gateway to interact with an executor. A graph manages a set of nodes in a global object pool that animates and recycles node objects efficiently without going through repetitive and expensive memory allocations and deallocations. This class is mainly used for creating an opaque graph object in a custom class to interact with the executor through taskflow composition.</para>
 <para>A graph object is move-only. </para>
     </detaileddescription>
-    <location file="taskflow/core/graph.hpp" line="51" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="51" bodyend="120"/>
+    <inheritancegraph>
+      <node id="2">
+        <label>std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</label>
+      </node>
+      <node id="1">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</label>
+      </node>
+      <node id="1">
+        <label>tf::Graph</label>
+        <link refid="classtf_1_1Graph"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/core/graph.hpp" line="51" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="51" bodyend="96"/>
     <listofallmembers>
-      <member refid="classtf_1_1Graph_1a13b297fdc502102ee784495f6d4c3d1e" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_clear</name></member>
-      <member refid="classtf_1_1Graph_1ace2898fcb8cd86099dbf5d453a9cf0b4" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_clear_detached</name></member>
       <member refid="classtf_1_1Graph_1a7e19ca35c105d72e35f86740e6e3d34e" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_emplace_back</name></member>
       <member refid="classtf_1_1Graph_1a4f4256f012b5b05fbaf3125d76faa9b6" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_emplace_back</name></member>
       <member refid="classtf_1_1Graph_1a6b50ab0846fe1720edc2dcc5147ba16b" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_erase</name></member>
-      <member refid="classtf_1_1Graph_1a39d26ac29a3aa19650dcf31a7563b6ee" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_merge</name></member>
-      <member refid="classtf_1_1Graph_1ac5e4c434ae03bf37c5a275f9fdc9f97d" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>_nodes</name></member>
-      <member refid="classtf_1_1Graph_1a8213e42bf3f7460757db411181d78c4c" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>clear</name></member>
-      <member refid="classtf_1_1Graph_1a30750e1be2657e491854791cd3afff06" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>empty</name></member>
       <member refid="classtf_1_1Graph_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>Executor</name></member>
       <member refid="classtf_1_1Graph_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1Graph_1a1cd3bae8cabb45810b25cdbdd4e89006" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>Graph</name></member>
       <member refid="classtf_1_1Graph_1ade95936f49af81b9834e09e807033e61" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>Graph</name></member>
-      <member refid="classtf_1_1Graph_1a5fcaca536e67632ff6dd3cf2c0284cfd" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>Graph</name></member>
+      <member refid="classtf_1_1Graph_1a551bba43984da111cfe54090be6fe5be" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>Graph</name></member>
       <member refid="classtf_1_1Graph_1a6db9d28bd448a131448276ee03de1e6d" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>Node</name></member>
       <member refid="classtf_1_1Graph_1a945eb240dd5d6840e282c525a1ea74e4" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>operator=</name></member>
-      <member refid="classtf_1_1Graph_1a9104e2edd9e02c64d0102378f81ed9a9" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>operator=</name></member>
-      <member refid="classtf_1_1Graph_1a790710289553897fa88672d9104d8ed1" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>size</name></member>
+      <member refid="classtf_1_1Graph_1a897011d7e0321d362f79ca6e23530295" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>operator=</name></member>
       <member refid="classtf_1_1Graph_1aa48945297ede77a161defc88033ce8a6" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>Subflow</name></member>
       <member refid="classtf_1_1Graph_1af043dd6f6a359602805d9c7dd7539cca" prot="private" virt="non-virtual"><scope>tf::Graph</scope><name>Taskflow</name></member>
-      <member refid="classtf_1_1Graph_1a493acc70cca8c0a09d7c407d28c59ee2" prot="public" virt="non-virtual"><scope>tf::Graph</scope><name>~Graph</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

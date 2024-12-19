@@ -162,12 +162,6 @@ class Node {
   //template <typename T>
   //friend class Freelist;
 
-  enum class AsyncState : int {
-    UNFINISHED = 0,
-    LOCKED = 1,
-    FINISHED = 2
-  };
-
 #ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
 #endif
@@ -229,7 +223,9 @@ class Node {
     Async(T&&);
 
     std::variant<
-      std::function<void()>, std::function<void(Runtime&)>
+      std::function<void()>, 
+      std::function<void(Runtime&)>, 
+      std::function<void(Runtime&, bool)>
     > work;
   };
   
@@ -240,11 +236,13 @@ class Node {
     DependentAsync(C&&);
     
     std::variant<
-      std::function<void()>, std::function<void(Runtime&)>
+      std::function<void()>, 
+      std::function<void(Runtime&)>, 
+      std::function<void(Runtime&, bool)>
     > work;
    
     std::atomic<size_t> use_count {1};
-    std::atomic<AsyncState> state {AsyncState::UNFINISHED};
+    std::atomic<ASTATE::underlying_type> state {ASTATE::UNFINISHED};
   };
 
   using handle_t = std::variant<
@@ -274,6 +272,9 @@ class Node {
   constexpr static auto DEPENDENT_ASYNC = get_index_v<DependentAsync, handle_t>;
 
   Node() = default;
+  
+  template <typename... Args>
+  Node(NSTATE::underlying_type, ESTATE::underlying_type, const std::string&, Topology*, Node*, size_t, Args&&...);
 
   template <typename... Args>
   Node(const std::string&, Topology*, Node*, size_t, Args&&...);
@@ -430,6 +431,26 @@ Node::DependentAsync::DependentAsync(C&& c) : work {std::forward<C>(c)} {
 // ----------------------------------------------------------------------------
 // Definition for Node
 // ----------------------------------------------------------------------------
+
+// Constructor
+template <typename... Args>
+Node::Node(
+  NSTATE::underlying_type nstate,
+  ESTATE::underlying_type estate,
+  const std::string& name,
+  Topology* topology, 
+  Node* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  _nstate       {nstate},
+  _estate       {estate},
+  _name         {name},
+  _topology     {topology},
+  _parent       {parent},
+  _join_counter {join_counter},
+  _handle       {std::forward<Args>(args)...} {
+}
 
 // Constructor
 template <typename... Args>
@@ -614,11 +635,11 @@ class AnchorGuard {
   // anchor is at estate as it may be accessed by multiple threads (e.g., corun's
   // parent with tear_down_async's parent).
   AnchorGuard(Node* node) : _node{node} { 
-    _node->_estate.fetch_or(ESTATE::ANCHOR, std::memory_order_relaxed);
+    _node->_estate.fetch_or(ESTATE::ANCHORED, std::memory_order_relaxed);
   }
 
   ~AnchorGuard() {
-    _node->_estate.fetch_and(~ESTATE::ANCHOR, std::memory_order_relaxed);
+    _node->_estate.fetch_and(~ESTATE::ANCHORED, std::memory_order_relaxed);
   }
   
   private:

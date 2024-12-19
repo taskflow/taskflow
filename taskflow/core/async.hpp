@@ -17,14 +17,23 @@ auto Executor::async(P&& params, F&& f) {
   _increment_topology();
   
   // async task with runtime: [] (tf::Runtime&) { ... }
-  if constexpr (std::is_invocable_v<F, Runtime&>) {
-    using R = std::invoke_result_t<F, Runtime&>;
-    std::packaged_task<R(Runtime& rt)> p(std::forward<F>(f));
+  if constexpr (std::is_invocable_r_v<void, F, Runtime&>) {
+
+    std::promise<void> p;
     auto fu{p.get_future()};
+    
     _schedule_async_task(animate(
       std::forward<P>(params), nullptr, nullptr, 0, 
       std::in_place_type_t<Node::Async>{}, 
-      [p=make_moc(std::move(p))](tf::Runtime& rt) mutable { p.object(rt); }
+      [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
+        if(!reentered) {
+          f(rt);
+        }
+        else {
+          p.object.set_value();
+          // TODO: exception
+        }
+      }
     ));
     return fu;
   }
@@ -208,17 +217,23 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   size_t num_dependents = std::distance(first, last);
   
   // async with runtime: [] (tf::Runtime&) {}
-  if constexpr (std::is_invocable_v<F, Runtime&>) {
+  if constexpr (std::is_invocable_r_v<void, F, Runtime&>) {
 
-    using R = std::invoke_result_t<F, Runtime&>;
-    std::packaged_task<R(Runtime& rt)> p(std::forward<F>(func));
-    
+    std::promise<void> p;
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
       std::forward<P>(params), nullptr, nullptr, num_dependents,
       std::in_place_type_t<Node::DependentAsync>{},
-      [p=make_moc(std::move(p))] (tf::Runtime& rt) mutable { p.object(rt); }
+      [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
+        if(!reentered) {
+          f(rt); 
+        }
+        else {
+          p.object.set_value();
+          // TODO: exception
+        }
+      }
     ));
 
     for(; first != last; first++) {
@@ -270,18 +285,18 @@ inline void Executor::_process_async_dependent(
 
   add_successor:
 
-  auto target = Node::AsyncState::UNFINISHED;
+  auto target = ASTATE::UNFINISHED;
   
   // acquires the lock
-  if(state.compare_exchange_weak(target, Node::AsyncState::LOCKED,
+  if(state.compare_exchange_weak(target, ASTATE::LOCKED,
                                  std::memory_order_acq_rel,
                                  std::memory_order_acquire)) {
     task._node->_successors.push_back(node);
-    state.store(Node::AsyncState::UNFINISHED, std::memory_order_release);
+    state.store(ASTATE::UNFINISHED, std::memory_order_release);
   }
   // dep's state is FINISHED, which means dep finished its callable already
   // thus decrement the node's join counter by 1
-  else if (target == Node::AsyncState::FINISHED) {
+  else if (target == ASTATE::FINISHED) {
     num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
   }
   // another worker adding its async task to the same successors of this node
@@ -297,12 +312,12 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   auto handle = std::get_if<Node::DependentAsync>(&(node->_handle));
 
   // this async task comes from Executor
-  auto target = Node::AsyncState::UNFINISHED;
+  auto target = ASTATE::UNFINISHED;
 
-  while(!handle->state.compare_exchange_weak(target, Node::AsyncState::FINISHED,
+  while(!handle->state.compare_exchange_weak(target, ASTATE::FINISHED,
                                              std::memory_order_acq_rel,
                                              std::memory_order_relaxed)) {
-    target = Node::AsyncState::UNFINISHED;
+    target = ASTATE::UNFINISHED;
   }
   
   // spawn successors whenever their dependencies are resolved

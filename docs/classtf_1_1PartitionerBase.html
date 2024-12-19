@@ -69,6 +69,7 @@
               Reference
               <ul>
                 <li><a href="#pub-types">Public types</a></li>
+                <li><a href="#pub-static-attribs">Public static variables</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
                 <li><a href="#pro-attribs">Protected variables</a></li>
@@ -101,6 +102,15 @@
               using <a href="#a2b6152f24c2a3d6e750349d02ecb4595" class="m-doc-self">closure_wrapper_type</a> = C
             </dt>
             <dd>the closure type</dd>
+          </dl>
+        </section>
+        <section id="pub-static-attribs">
+          <h2><a href="#pub-static-attribs">Public static variables</a></h2>
+          <dl class="m-doc">
+            <dt id="ae70ae77c8d774ffd661924f425bcd6bf">
+              static bool <a href="#ae70ae77c8d774ffd661924f425bcd6bf" class="m-doc-self">is_default_wrapper_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>indicating if the given closure wrapper is a default wrapper (i.e., empty)</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -136,11 +146,20 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a929714296243b2c63e4f2baa2025d380" class="m-doc-self">closure_wrapper</a>(</span><span class="m-doc-wrap">) const -&gt; const C&amp;</span>
             </dt>
             <dd>acquire an immutable access to the closure wrapper object</dd>
+            <dt id="a55a519288850c6cca366d1020bb22efe">
+              <span class="m-doc-wrap-bumper">auto <a href="#a55a519288850c6cca366d1020bb22efe" class="m-doc-self">closure_wrapper</a>(</span><span class="m-doc-wrap">) -&gt; C&amp;</span>
+            </dt>
+            <dd>acquire a mutable access to the closure wrapper object</dd>
             <dt id="a99e23ce7c0faf3a932ab2b7ac51e58f4">
               <div class="m-doc-template">template&lt;typename F&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a99e23ce7c0faf3a932ab2b7ac51e58f4" class="m-doc-self">closure_wrapper</a>(</span><span class="m-doc-wrap">F&amp;&amp; fn)</span>
             </dt>
             <dd>modify the closure wrapper object</dd>
+            <dt id="a3edb7ab5e21326d2ba78680aeb965a83">
+              <div class="m-doc-template">template&lt;typename F&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a3edb7ab5e21326d2ba78680aeb965a83" class="m-doc-self">operator()</a>(</span><span class="m-doc-wrap">F&amp;&amp; callable) -&gt; decltype(auto) TF_FORCE_INLINE</span>
+            </dt>
+            <dd>wraps the given callable with the associated closure wrapper</dd>
           </dl>
         </section>
         <section id="pro-attribs">

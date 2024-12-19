@@ -47,7 +47,6 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Runtime <span class="m-thin">class</span>
-          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="graph_8hpp.html">&lt;taskflow/core/graph.hpp&gt;</a></div>
         </h1>
         <p>class to include a runtime object in a task</p>
         <nav class="m-block m-default">
@@ -56,8 +55,6 @@
             <li>
               Reference
               <ul>
-                <li><a href="#derived-classes">Derived classes</a></li>
-                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
@@ -75,24 +72,6 @@
 <span class="p">);</span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A runtime object is associated with the worker and the executor that runs the task.</p>
-        <section id="derived-classes">
-          <h2><a href="#derived-classes">Derived classes</a></h2>
-          <dl class="m-doc">
-            <dt>
-              class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
-            </dt>
-            <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
-          </dl>
-        </section>
-        <section id="typeless-methods">
-          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
-          <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a7bf472d4afca4eed0f1a0fe4168c1097" class="m-doc">~Runtime</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>destroys the runtime object</dd>
-          </dl>
-        </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
@@ -130,17 +109,6 @@
               F&amp;&amp; f)</span>
             </dt>
             <dd>runs the given function asynchronously without returning any future object</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename F&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#ab32a718db1cc32d997b68b4f8482fc7e" class="m-doc">silent_async_unchecked</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span>
-            </dt>
-            <dd>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename P, typename F&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#ae5144f53fe3a52e7d57de9e01815c814" class="m-doc">silent_async_unchecked</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
-              F&amp;&amp; f)</span>
-            </dt>
-            <dd>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span>
@@ -181,13 +149,6 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a7bf472d4afca4eed0f1a0fe4168c1097"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7bf472d4afca4eed0f1a0fe4168c1097" class="m-doc-self">~Runtime</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>destroys the runtime object</p>
-<p>Issues a <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to finish all spawned asynchronous tasks and then destroys the runtime object.</p>
-          </div></section>
           <section class="m-doc-details" id="a4ee48a82df1f9758a999d18e6015cec4"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Executor.html" class="m-doc">Executor</a>&amp; tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4ee48a82df1f9758a999d18e6015cec4" class="m-doc-self">executor</a>(</span><span class="m-doc-wrap">)</span></span>
@@ -383,11 +344,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">P</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>F</td>
+                  <td style="width: 1%">F</td>
                   <td>callable type</td>
                 </tr>
               </tbody>
@@ -410,83 +367,6 @@
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
 <span class="p">});</span></pre>
           </div></section>
-          <section class="m-doc-details" id="ab32a718db1cc32d997b68b4f8482fc7e"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename F&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab32a718db1cc32d997b68b4f8482fc7e" class="m-doc-self">silent_async_unchecked</a>(</span><span class="m-doc-wrap">F&amp;&amp; f)</span></span>
-            </h3>
-            <p>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">F</td>
-                  <td>callable type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>f</td>
-                  <td>callable</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The method bypass the check of the caller worker from the executor and thus can only called by the worker of this runtime.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
-<span class="w">  </span><span class="c1">// running by the worker of this runtime</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async_unchecked</span><span class="p">([](){});</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
-<span class="p">});</span></pre>
-          </div></section>
-          <section class="m-doc-details" id="ae5144f53fe3a52e7d57de9e01815c814"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P, typename F&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae5144f53fe3a52e7d57de9e01815c814" class="m-doc-self">silent_async_unchecked</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
-              F&amp;&amp; f)</span></span>
-            </h3>
-            <p>similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a> but the caller must be the worker of the runtime</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>task parameters type</td>
-                </tr>
-                <tr>
-                  <td>F</td>
-                  <td>callable type</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>params</td>
-                  <td>task parameters</td>
-                </tr>
-                <tr>
-                  <td>f</td>
-                  <td>callable</td>
-                </tr>
-              </tbody>
-            </table>
-<p>The method bypass the check of the caller worker from the executor and thus can only called by the worker of this runtime.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
-<span class="w">  </span><span class="c1">// running by the worker of this runtime</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async_unchecked</span><span class="p">(</span><span class="s">&quot;my task&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){});</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
-<span class="p">});</span></pre>
-          </div></section>
           <section class="m-doc-details" id="a1c772e90614302024cfa52fa86d75cac"><div>
             <h3>
               <div class="m-doc-template">
@@ -495,7 +375,13 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc-self">corun</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
             </h3>
             <p>co-runs the given target and waits until it completes</p>
-<p>A target can be one of the following forms:</p><ul><li>a composable graph object with <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; T::graph()</code> defined</li></ul><p>co-run a taskflow and wait until all tasks complete <a href="classtf_1_1Taskflow.html" class="m-doc">tf::<wbr />Taskflow</a> taskflow1, taskflow2; taskflow1.emplace([](){ <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a> &lt;&lt; &quot;running taskflow1\n&quot;; }); taskflow2.emplace([&amp;](<a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a>&amp; rt){ <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a> &lt;&lt; &quot;running taskflow2\n&quot;; rt.corun(taskflow1); }); executor.run(taskflow2).wait();</p><p>Although <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue corun.</p></aside>
+<p>A corunnable target must have <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; T::graph()</code> defined.</p><p>co-run a taskflow and wait until all tasks complete</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">,</span><span class="w"> </span><span class="n">taskflow2</span><span class="p">;</span>
+<span class="n">taskflow1</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">taskflow2</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Although <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Only the worker of this <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> can issue corun.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a078fc4e7202426221d45e44b08ad60e6"><div>
             <h3>

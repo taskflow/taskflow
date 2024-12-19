@@ -882,28 +882,30 @@ TEST_CASE("MultipleParallelForEach.Guided.4threads") {
 // ----------------------------------------------------------------------------
 // Async
 // ----------------------------------------------------------------------------
-/*
 void async(unsigned W) {
-
-  size_t N = 65536;
 
   tf::Executor executor(W);
   
-  std::vector<int> data(N);
-  
-  // initialize data to -10 and 10
-  executor.async(tf::make_for_each_task(
-    data.begin(), data.begin() + N/2, [](int& d){ d = -10; }
-  )); 
-  
-  executor.async(tf::make_for_each_index_task(
-    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
-  ));
+  std::vector<int> data;
 
-  executor.wait_for_all();
+  for(size_t N=0; N<=65536; N =((N == 0) ? 1 : N << 1)) {
 
-  for(size_t i=0; i<N; i++) {
-    REQUIRE(data[i] == ((i<N/2) ? -10 : 10));
+    data.resize(N);
+  
+    // initialize data to -10 and 10
+    executor.async(tf::make_for_each_task(
+      data.begin(), data.begin() + N/2, [](int& d){ d = -10; }
+    )); 
+    
+    executor.async(tf::make_for_each_index_task(
+      N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
+    ));
+
+    executor.wait_for_all();
+
+    for(size_t i=0; i<N; i++) {
+      REQUIRE(data[i] == ((i<N/2) ? -10 : 10));
+    }
   }
 
 }
@@ -939,7 +941,6 @@ TEST_CASE("ParallelFor.Async.7threads" * doctest::timeout(300)) {
 TEST_CASE("ParallelFor.Async.8threads" * doctest::timeout(300)) {
   async(8);
 }
-*/
 
 // ----------------------------------------------------------------------------
 // Silent Async
@@ -1001,32 +1002,34 @@ TEST_CASE("ParallelFor.SilentAsync.8threads" * doctest::timeout(300)) {
   silent_async(8);
 }
 
-/*
 // ----------------------------------------------------------------------------
 // DependentAsync
 // ----------------------------------------------------------------------------
 
 void dependent_async(unsigned W) {
 
-  size_t N = 65536;
-
   tf::Executor executor(W);
   
-  std::vector<int> data(N);
-  
-  // initialize data to -10 and 10
-  executor.dependent_async(tf::make_for_each_task(
-    data.begin(), data.begin() + N/2, [](int& d){ d = -10; }
-  )); 
-  
-  executor.dependent_async(tf::make_for_each_index_task(
-    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
-  ));
+  std::vector<int> data;
 
-  executor.wait_for_all();
+  for(size_t N=0; N<=65536; N =((N == 0) ? 1 : N << 1)) {
 
-  for(size_t i=0; i<N; i++) {
-    REQUIRE(data[i] == ((i<N/2) ? -10 : 10));
+    data.resize(N);
+  
+    // initialize data to -10 and 10
+    executor.dependent_async(tf::make_for_each_task(
+      data.begin(), data.begin() + N/2, [](int& d){ d = -10; }
+    )); 
+    
+    executor.dependent_async(tf::make_for_each_index_task(
+      N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
+    ));
+
+    executor.wait_for_all();
+
+    for(size_t i=0; i<N; i++) {
+      REQUIRE(data[i] == ((i<N/2) ? -10 : 10));
+    }
   }
 
 }
@@ -1061,7 +1064,7 @@ TEST_CASE("ParallelFor.DependentAsync.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("ParallelFor.DependentAsync.8threads" * doctest::timeout(300)) {
   dependent_async(8);
-} */
+} 
 
 // ----------------------------------------------------------------------------
 // Silent DependentAsync

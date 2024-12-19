@@ -23,7 +23,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="242" column="36" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="242" bodyend="242"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="266" column="36" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="266" bodyend="266"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -39,7 +39,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="247" column="3"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="271" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1ab5540d5761ed6dbaf037cd431367b9f2" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -57,7 +57,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="253" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="253" bodyend="253"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="277" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="277" bodyend="277"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a6a42cf5071fc665671345fefde2c5ec0" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
@@ -79,7 +79,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="258" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="258" bodyend="260"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="282" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="282" bodyend="284"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -106,7 +106,7 @@
           <declname>W</declname>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -119,7 +119,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="272" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="272" bodyend="312"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="296" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="296" bodyend="336"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1GuidedPartitioner_1a40dced9465b64dbc65018a9de64b39fd" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
@@ -144,7 +144,7 @@
           <declname>W</declname>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -157,7 +157,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/partitioner.hpp" line="320" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="320" bodyend="364"/>
+        <location file="taskflow/algorithm/partitioner.hpp" line="344" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="344" bodyend="388"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -175,11 +175,11 @@
 </parameterlist>
 The size of a partition is proportional to the number of unassigned iterations divided by the number of workers, and the size will gradually decrease to the given chunk size. The last partition may be smaller than the chunk size.</para>
 <para>In addition to partition size, the application can specify a closure wrapper for a guided partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -229,20 +229,23 @@ The size of a partition is proportional to the number of unassigned iterations d
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="taskflow/algorithm/partitioner.hpp" line="235" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="235" bodyend="366"/>
+    <location file="taskflow/algorithm/partitioner.hpp" line="259" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="259" bodyend="390"/>
     <listofallmembers>
       <member refid="classtf_1_1PartitionerBase_1a9ff56f7150ee4ff42b5006942f9c4b52" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>_closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a55a519288850c6cca366d1020bb22efe" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a2b6152f24c2a3d6e750349d02ecb4595" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>closure_wrapper_type</name></member>
       <member refid="classtf_1_1GuidedPartitioner_1ad922cf64fc355513c756247d4e2b69d3" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>GuidedPartitioner</name></member>
       <member refid="classtf_1_1GuidedPartitioner_1ab5540d5761ed6dbaf037cd431367b9f2" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>GuidedPartitioner</name></member>
       <member refid="classtf_1_1GuidedPartitioner_1a6a42cf5071fc665671345fefde2c5ec0" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>GuidedPartitioner</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ae70ae77c8d774ffd661924f425bcd6bf" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>is_default_wrapper_v</name></member>
       <member refid="classtf_1_1GuidedPartitioner_1ab1c854d9d6059ef5c8014afcdec8b026" prot="private" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>loop</name></member>
       <member refid="classtf_1_1GuidedPartitioner_1a40dced9465b64dbc65018a9de64b39fd" prot="private" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>loop_until</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a3edb7ab5e21326d2ba78680aeb965a83" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>operator()</name></member>
       <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" virt="non-virtual"><scope>tf::GuidedPartitioner</scope><name>PartitionerBase</name></member>

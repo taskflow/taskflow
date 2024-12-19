@@ -62,7 +62,7 @@
             </li>
           </ul>
         </nav>
-<p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is a derived class from <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> with a specialized mechanism to manage the execution of a child graph. By default, a subflow automatically <em>joins</em> its parent node. You may explicitly join or detach a subflow by calling <a href="#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
+<p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is spawned from the execution of a task to dynamically manage a child graph that may depend on runtime variables. You can explicitly join or detach a subflow by calling <a href="#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. By default, the Taskflow runtime will implicitly join a subflow it is is joinable.</p><p>The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
@@ -87,10 +87,6 @@
               class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
             </dt>
             <dd>class to build a task dependency graph</dd>
-            <dt>
-              class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
-            </dt>
-            <dd>class to include a runtime object in a task</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -105,13 +101,13 @@
             </dt>
             <dd>enables the subflow to detach from its parent task</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a540be503df4621be3e8342b99b1729a0" class="m-doc">reset</a>(</span><span class="m-doc-wrap">bool clear_graph = true)</span>
-            </dt>
-            <dd>resets the subflow to a joinable state</dd>
-            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#ac3805e898b6a55b6e5173c74c5555e57" class="m-doc">joinable</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the subflow is joinable</dd>
+            <dt id="a2cc0c8db3ce5e9ef985d61bd5d839510">
+              <span class="m-doc-wrap-bumper">auto <a href="#a2cc0c8db3ce5e9ef985d61bd5d839510" class="m-doc-self">executor</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>&amp; <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>acquires the associated executor</dd>
           </dl>
         </section>
         <section>
@@ -135,24 +131,6 @@
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
 <span class="p">});</span></pre><p>Only the worker that spawns this subflow can detach it.</p>
-          </div></section>
-          <section class="m-doc-details" id="a540be503df4621be3e8342b99b1729a0"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a540be503df4621be3e8342b99b1729a0" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">bool clear_graph = true)</span></span>
-            </h3>
-            <p>resets the subflow to a joinable state</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">clear_graph</td>
-                  <td>specifies whether to clear the associated graph (default <code>true</code>)</td>
-                </tr>
-              </tbody>
-            </table>
-<p>Clears the underlying task graph depending on the given variable <code>clear_graph</code> (default <code>true</code>) and then updates the subflow to a joinable state.</p>
           </div></section>
           <section class="m-doc-details" id="ac3805e898b6a55b6e5173c74c5555e57"><div>
             <h3>

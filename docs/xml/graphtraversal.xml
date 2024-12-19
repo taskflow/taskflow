@@ -28,7 +28,7 @@
 <sect1 id="graphtraversal_1GraphTraversalProblemFormulation">
 <title>Problem Formulation</title>
 <para>Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, we would like to traverse each vertex in order without breaking dependency constraints defined by edges. The following figure shows a graph of six vertices and seven edges. Each vertex represents a particular task and each edge represents a task dependency between two tasks.</para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/task-level-parallelism.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/task-level-parallelism.dot"></dotfile>
 </para>
 <para>Traversing the above graph in parallel, the maximum parallelism we can acquire is three. When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.</para>
 </sect1>
@@ -36,12 +36,12 @@
 <title>Graph Representation</title>
 <para>We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">Node<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>name;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref><sp/>name;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>idx;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>index<sp/>of<sp/>the<sp/>node<sp/>in<sp/>a<sp/>array</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>visited<sp/>{</highlight><highlight class="keyword">false</highlight><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>dependents<sp/>{0};<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>incoming<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;Node*&gt;</ref><sp/>successors;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>outgoing<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>dependents<sp/>{0};<sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>incoming<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;Node*&gt;</ref><sp/>successors;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>number<sp/>of<sp/>outgoing<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>precede(Node&amp;<sp/>n)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>successors.emplace_back(&amp;n);</highlight></codeline>
@@ -50,9 +50,9 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 <para>Based on the data structure, we randomly generate a DAG using ordered edges.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>make_dag(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_nodes,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>max_degree)<sp/>{</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>make_dag(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_nodes,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>max_degree)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes(</highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>Node[num_nodes]);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes(</highlight><highlight class="keyword">new</highlight><highlight class="normal"><sp/>Node[num_nodes]);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Make<sp/>sure<sp/>nodes<sp/>are<sp/>in<sp/>clean<sp/>state</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>
@@ -82,8 +82,8 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes<sp/>=<sp/>make_dag(100000,<sp/>4);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes<sp/>=<sp/>make_dag(100000,<sp/>4);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>the<sp/>traversal<sp/>task<sp/>for<sp/>each<sp/>node</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>++i)<sp/>{</highlight></codeline>
@@ -113,7 +113,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The code above has two parts to construct the parallel graph traversal. First, it iterates each node and constructs a traversal task for that node. Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end (successor) of that edge. The resulting taskflow structure is topologically equivalent to the given graph.</para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/graph_traversal_2.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_traversal_2.dot"></dotfile>
 </para>
 <para>With task parallelism, we flow computation naturally with the graph structure. The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism. You do not need to worry about details of scheduling.</para>
 </sect1>
@@ -124,7 +124,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>callable<sp/>of<sp/>traversing<sp/>a<sp/>node<sp/>using<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(Node*,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;)&gt;<sp/>traverse;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(Node*,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;)&gt;<sp/>traverse;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">traverse<sp/>=<sp/>[&amp;]<sp/>(Node*<sp/>n,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>subflow)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(!n-&gt;visited);</highlight></codeline>
@@ -139,10 +139,10 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes<sp/>=<sp/>make_dag(100000,<sp/>4);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr&lt;Node[]&gt;</ref><sp/>nodes<sp/>=<sp/>make_dag(100000,<sp/>4);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>find<sp/>the<sp/>source<sp/>nodes<sp/>(no<sp/>incoming<sp/>edges)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;Node*&gt;</ref><sp/>src;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;Node*&gt;</ref><sp/>src;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_nodes;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(nodes[i].dependents<sp/>==<sp/>0)<sp/>{<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>src.emplace_back(&amp;(nodes[i]));</highlight></codeline>
@@ -165,7 +165,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>A partial graph is shown as follows:</para>
-<para><dotfile name="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/images/graph_traversal_1.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_traversal_1.dot"></dotfile>
 </para>
 <para>In general, the dynamic version of graph traversal is slower than the static version due to the overhead incurred by spawning subflows. However, it may be useful for the situation where the graph structure is unknown at once but being partially explored during the traversal. </para>
 </sect1>

@@ -12,7 +12,11 @@
 //
 #include <taskflow/taskflow.hpp>  // the only include you need
 
+#include <any>
+
 int main(){
+
+  std::cout << sizeof(tf::Node) << std::endl;
 
   tf::Executor executor;
   tf::Taskflow taskflow("simple");

@@ -139,7 +139,7 @@
         <location file="taskflow/algorithm/pipeline.hpp" line="183" column="10" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="183" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeflow_1a444746d10472b56b8e6cb52fd35e3d84" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
+        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
         <definition>std::unordered_set&lt;size_t&gt; tf::Pipeflow::_dependents</definition>
         <argsstring></argsstring>
         <name>_dependents</name>
@@ -264,7 +264,7 @@
     <detaileddescription>
 <para><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> represents a <emphasis>scheduling token</emphasis> in the pipeline scheduling framework. A pipeflow is created by the pipeline scheduler at runtime to pass to the pipe callable. Users can query the present statistics of that scheduling token, including the line identifier, pipe identifier, and token identifier, and build their application algorithms based on these statistics. At the first stage, users can explicitly call the stop method to stop the pipeline scheduler.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;token<sp/>id=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.token()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;token<sp/>id=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.token()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>at<sp/>line=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.line()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>at<sp/>pipe=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.pipe()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>

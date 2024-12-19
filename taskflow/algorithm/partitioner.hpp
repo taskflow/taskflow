@@ -130,7 +130,10 @@ template <typename C = DefaultClosureWrapper>
 class PartitionerBase : public IsPartitioner {
 
   public:
-    
+  
+  /**
+  @brief indicating if the given closure wrapper is a default wrapper (i.e., empty)
+  */
   constexpr static bool is_default_wrapper_v = std::is_same_v<C, DefaultClosureWrapper>;
   
   /** 

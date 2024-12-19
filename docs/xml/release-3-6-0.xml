@@ -114,12 +114,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added parallel-scan algorithms to Taskflow<itemizedlist>
-<listitem><para>tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</para>
-</listitem><listitem><para>tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</para>
-</listitem><listitem><para>tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</para>
-</listitem><listitem><para>tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</para>
-</listitem><listitem><para>tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</para>
-</listitem><listitem><para>tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</para>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" kindref="member">tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" kindref="member">tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" kindref="member">tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" kindref="member">tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</ref></para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Added parallel-find algorithms to Taskflow<itemizedlist>
@@ -197,7 +197,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">std::optional&lt;int&gt;<sp/>res<sp/>=<sp/>fu.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>res<sp/>may<sp/>be<sp/>std::nullopt<sp/>or<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>use<sp/>std::future<sp/>instead</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
@@ -277,10 +277,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>users<sp/>are<sp/>responsible<sp/>of<sp/>wrapping<sp/>the<sp/>arumgnets<sp/>into<sp/>a<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/lucas/wsl2_workshop/NovaAI/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
+<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para>

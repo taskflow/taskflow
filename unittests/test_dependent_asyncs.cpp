@@ -946,10 +946,10 @@ TEST_CASE("DependentAsync.IterativeFibonacci.8threads" * doctest::timeout(300)) 
 void recursive_fibonacci(unsigned W) {
 
   tf::Executor executor(W);
-  
+
   std::function<int(int)> fib;
 
-  fib = [&](int N){
+  fib = [&](int N) -> int {
 
     if (N < 2) {
       return N; 
@@ -958,8 +958,8 @@ void recursive_fibonacci(unsigned W) {
     std::future<int> fu1, fu2;
     tf::AsyncTask t1, t2;
 
-    std::tie(t1, fu1) = executor.dependent_async(std::bind(fib, N-1));
-    std::tie(t2, fu2) = executor.dependent_async(std::bind(fib, N-2));
+    std::tie(t1, fu1) = executor.dependent_async([=, &fib](){ return fib(N-1); });
+    std::tie(t2, fu2) = executor.dependent_async([=, &fib](){ return fib(N-2); });
 
     executor.corun_until([&](){ return t1.is_done() && t2.is_done(); });
 
@@ -967,7 +967,7 @@ void recursive_fibonacci(unsigned W) {
   };
 
   for (size_t i = 0; i <= 11; ++i) {
-    auto [tn, fun] = executor.dependent_async(std::bind(fib, i));
+    auto [tn, fun] = executor.dependent_async([=, &fib]() { return fib(i); });
     REQUIRE(fun.get() == fibonacci[i]);
   }
 }

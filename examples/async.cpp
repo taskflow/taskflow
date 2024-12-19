@@ -18,9 +18,8 @@ int main() {
   });
 
   // create async tasks with runtime
-  std::future<int> fu2 = executor.async([](tf::Runtime& rt){
+  std::future<void> fu2 = executor.async([](tf::Runtime& rt){
     std::cout << "async task with a runtime: " << &rt << "\n";
-    return 1;
   });
 
   executor.silent_async([](tf::Runtime& rt){

@@ -1096,6 +1096,7 @@ class Executor {
   bool _invoke_async_task(Worker&, Node*);
   bool _invoke_dependent_async_task(Worker&, Node*);
   bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&)>&);
+  bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
   I _set_up_graph(I, I, Node*, Topology*, int);
@@ -1692,7 +1693,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   // find the anchor and mark the entire path with exception so recursive
   // or nested tasks can be cancelled properly
   auto anchor = node->_parent;
-  while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHOR) == 0) {
+  while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHORED) == 0) {
     anchor->_estate.fetch_or(flag, std::memory_order_relaxed);
     anchor = anchor->_parent;
   }
@@ -1859,9 +1860,17 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
       });
       _observer_epilogue(worker, node);
     break;
-
+    
+    // (Runtime&) -> void
     case 1:
       if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+        return true;
+      }
+    break;
+    
+    // (Runtime&, bool) -> void
+    case 2:
+      if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
         return true;
       }
     break;
@@ -1881,9 +1890,17 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
       });
       _observer_epilogue(worker, node);
     break;
-
+    
+    // (Runtime&) -> void
     case 1:
       if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+        return true;
+      }
+    break;
+
+    // (Runtime& bool) -> void
+    case 2:
+      if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
         return true;
       }
     break;
