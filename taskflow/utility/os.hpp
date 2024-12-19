@@ -182,7 +182,78 @@ inline bool has_env(const std::string& str) {
 //#endif
 //}
 
+/**
+@fn pause
 
+The `pause()` instruction is used in spin-wait loops to hint the CPU that the current 
+thread is in a busy-wait state. 
+It helps reduce power consumption and improves performance on hyper-threaded processors 
+by preventing the CPU from consuming unnecessary cycles while waiting. 
+It is particularly useful in low-contention scenarios, where the thread 
+is likely to quickly acquire the lock or condition it's waiting for, 
+avoiding an expensive context switch. 
+On modern x86 processors, this instruction can be invoked using @c __builtin_ia32_pause() 
+in GCC/Clang or @c _mm_pause() in MSVC. 
+In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.
+
+*/
+inline void pause() {
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    // x86 and x86_64: Use the PAUSE instruction
+  #if defined(_MSC_VER)
+    // Microsoft Visual C++
+    _mm_pause();
+  #elif defined(__GNUC__) || defined(__clang__)
+    // GCC and Clang
+    __builtin_ia32_pause();
+  #else
+    asm volatile("pause" ::: "memory");
+  #endif
+
+#elif defined(__aarch64__) || defined(__arm__)
+    // ARM and AArch64: Use the YIELD instruction
+  #if defined(__GNUC__) || defined(__clang__)
+    asm volatile("yield" ::: "memory");
+  #endif
+
+#else
+  // Fallback: Portable yield for unknown architectures
+  std::this_thread::yield();
+#endif
+}
+
+/**
+@brief spins until the given predicate becomes true
+
+@tparam P the type of the predicate function or callable.
+@param predicate the callable that returns a boolean value, which is checked in the loop.
+
+This function repeatedly checks the provided predicate in a spin-wait loop
+and uses a backoff strategy to minimize CPU waste during the wait. Initially,
+it uses the `pause()` instruction for the first 100 iterations to hint to the
+CPU that the thread is waiting, thus reducing power consumption and avoiding
+unnecessary cycles. After 100 iterations, it switches to yielding the CPU using
+`std::this_thread::yield()` to allow other threads to run and improve system
+responsiveness.
+
+The function operates as follows:
+1. For the first 100 iterations, it invokes `pause()` to reduce power consumption
+   during the spin-wait.
+2. After 100 iterations, it uses `std::this_thread::yield()` to relinquish the
+   CPU, allowing other threads to execute.
+
+@note This function is useful when you need to wait for a condition to be true, but
+      want to optimize CPU usage during the wait by using a busy-wait approach with
+      backoff.
+
+*/
+template <typename P>
+void spin_until(P&& predicate) {
+  size_t num_pauses = 0;
+  while(!predicate()) {
+    (num_pauses++ < 100) ? pause() : std::this_thread::yield();
+  }
+}
 
 }  // end of namespace tf -----------------------------------------------------
 

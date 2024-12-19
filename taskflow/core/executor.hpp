@@ -1717,9 +1717,9 @@ inline void Executor::_process_exception(Worker&, Node* node) {
     }
   }
   
-  // TODO: for now, we simply store the exception in this node; this can happen
-  // for execution that doesn't have any external control to capture the exception
-  // (e.g., silent async)
+  // for now, we simply store the exception in this node; this can happen in an 
+  // execution that does not have any external control to capture the exception,
+  // such as silent async task
   node->_exception_ptr = std::current_exception();
 }
 
