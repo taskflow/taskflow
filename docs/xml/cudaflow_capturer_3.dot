@@ -1,0 +1,14 @@
+digraph cudaFlow {
+rankdir="LR";
+p0x28fcca0[label="kernel" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x28fcca0 -> p0x28fd510;
+p0x28fd510[label="capturer" style="filled" color="black" fillcolor="purple" fontcolor="white" shape="folder"];
+subgraph cluster_p0x28fd510 {
+label="cudaSubflow: capturer";
+color="purple"
+p0x28fd5e0[label="kernel_1"];
+p0x28fd5e0 -> p0x28fd6b0;
+p0x28fd6b0[label="kernel_2"];
+p0x28fd6b0 -> p0x28fd510;
+}
+}

@@ -1,94 +1,96 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="namespacetf" kind="namespace" language="C++">
     <compoundname>tf</compoundname>
-    <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
-    <innerclass refid="classtf_1_1SmallVectorBase" prot="private">tf::SmallVectorBase</innerclass>
-    <innerclass refid="structtf_1_1SmallVectorStorage" prot="private">tf::SmallVectorStorage</innerclass>
-    <innerclass refid="classtf_1_1SmallVectorTemplateCommon" prot="private">tf::SmallVectorTemplateCommon</innerclass>
-    <innerclass refid="classtf_1_1SmallVectorTemplateBase" prot="private">tf::SmallVectorTemplateBase</innerclass>
-    <innerclass refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" prot="private">tf::SmallVectorTemplateBase&lt; T, true &gt;</innerclass>
-    <innerclass refid="classtf_1_1SmallVectorImpl" prot="private">tf::SmallVectorImpl</innerclass>
-    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_011_01_4" prot="private">tf::SmallVectorStorage&lt; T, 1 &gt;</innerclass>
-    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_010_01_4" prot="private">tf::SmallVectorStorage&lt; T, 0 &gt;</innerclass>
-    <innerclass refid="classtf_1_1SmallVector" prot="public">tf::SmallVector</innerclass>
-    <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
-    <innerclass refid="structtf_1_1TaskParams" prot="public">tf::TaskParams</innerclass>
-    <innerclass refid="structtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
-    <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1AnchorGuard" prot="private">tf::AnchorGuard</innerclass>
-    <innerclass refid="classtf_1_1UnboundedTaskQueue" prot="public">tf::UnboundedTaskQueue</innerclass>
-    <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
-    <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
-    <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
-    <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
-    <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
-    <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
-    <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
-    <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
     <innerclass refid="classtf_1_1AsyncTask" prot="public">tf::AsyncTask</innerclass>
-    <innerclass refid="classtf_1_1Runtime" prot="public">tf::Runtime</innerclass>
-    <innerclass refid="classtf_1_1PreemptionGuard" prot="private">tf::PreemptionGuard</innerclass>
-    <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
-    <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
-    <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
-    <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
-    <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
-    <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
-    <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
+    <innerclass refid="structtf_1_1CachelineAligned" prot="public">tf::CachelineAligned</innerclass>
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
-    <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
-    <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
-    <innerclass refid="structtf_1_1DefaultClosureWrapper" prot="public">tf::DefaultClosureWrapper</innerclass>
-    <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
-    <innerclass refid="classtf_1_1PartitionerBase" prot="public">tf::PartitionerBase</innerclass>
-    <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
-    <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
-    <innerclass refid="classtf_1_1StaticPartitioner" prot="public">tf::StaticPartitioner</innerclass>
-    <innerclass refid="classtf_1_1RandomPartitioner" prot="public">tf::RandomPartitioner</innerclass>
-    <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
-    <innerclass refid="classtf_1_1Pipeflow" prot="public">tf::Pipeflow</innerclass>
-    <innerclass refid="classtf_1_1Pipe" prot="public">tf::Pipe</innerclass>
-    <innerclass refid="classtf_1_1Pipeline" prot="public">tf::Pipeline</innerclass>
-    <innerclass refid="classtf_1_1ScalablePipeline" prot="public">tf::ScalablePipeline</innerclass>
-    <innerclass refid="classtf_1_1DataPipe" prot="public">tf::DataPipe</innerclass>
-    <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
-    <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01int_01_4" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01char_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01short_01_4" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01long_01_4" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01float_01_4" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory_3_01double_01_4" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
-    <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
+    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
     <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
     <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
-    <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
-    <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowOptimizerBase" prot="private">tf::cudaFlowOptimizerBase</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowSequentialOptimizer" prot="public">tf::cudaFlowSequentialOptimizer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowLinearOptimizer" prot="public">tf::cudaFlowLinearOptimizer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowRoundRobinOptimizer" prot="public">tf::cudaFlowRoundRobinOptimizer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
     <innerclass refid="classtf_1_1cudaExecutionPolicy" prot="public">tf::cudaExecutionPolicy</innerclass>
+    <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowLinearOptimizer" prot="public">tf::cudaFlowLinearOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowOptimizerBase" prot="private">tf::cudaFlowOptimizerBase</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowRoundRobinOptimizer" prot="public">tf::cudaFlowRoundRobinOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaFlowSequentialOptimizer" prot="public">tf::cudaFlowSequentialOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01double_01_4" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01float_01_4" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01int_01_4" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01long_01_4" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01short_01_4" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01char_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
+    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
+    <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
+    <innerclass refid="classtf_1_1DataPipe" prot="public">tf::DataPipe</innerclass>
+    <innerclass refid="classtf_1_1DataPipeline" prot="public">tf::DataPipeline</innerclass>
+    <innerclass refid="structtf_1_1DefaultClosureWrapper" prot="public">tf::DefaultClosureWrapper</innerclass>
+    <innerclass refid="structtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
+    <innerclass refid="classtf_1_1DeferredPipeflow" prot="private">tf::DeferredPipeflow</innerclass>
+    <innerclass refid="classtf_1_1DynamicPartitioner" prot="public">tf::DynamicPartitioner</innerclass>
+    <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
+    <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
+    <innerclass refid="classtf_1_1Future" prot="public">tf::Future</innerclass>
+    <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
+    <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
+    <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
+    <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
+    <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
+    <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
+    <innerclass refid="classtf_1_1PartitionerBase" prot="public">tf::PartitionerBase</innerclass>
+    <innerclass refid="classtf_1_1Pipe" prot="public">tf::Pipe</innerclass>
+    <innerclass refid="classtf_1_1Pipeflow" prot="public">tf::Pipeflow</innerclass>
+    <innerclass refid="classtf_1_1Pipeline" prot="public">tf::Pipeline</innerclass>
+    <innerclass refid="classtf_1_1PreemptionGuard" prot="private">tf::PreemptionGuard</innerclass>
+    <innerclass refid="structtf_1_1ProfileData" prot="private">tf::ProfileData</innerclass>
+    <innerclass refid="classtf_1_1RandomPartitioner" prot="public">tf::RandomPartitioner</innerclass>
+    <innerclass refid="classtf_1_1Runtime" prot="public">tf::Runtime</innerclass>
+    <innerclass refid="classtf_1_1ScalablePipeline" prot="public">tf::ScalablePipeline</innerclass>
+    <innerclass refid="structtf_1_1Segment" prot="private">tf::Segment</innerclass>
+    <innerclass refid="classtf_1_1Semaphore" prot="public">tf::Semaphore</innerclass>
+    <innerclass refid="classtf_1_1SmallVector" prot="public">tf::SmallVector</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorBase" prot="private">tf::SmallVectorBase</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorImpl" prot="private">tf::SmallVectorImpl</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage" prot="private">tf::SmallVectorStorage</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_010_01_4" prot="private">tf::SmallVectorStorage&lt; T, 0 &gt;</innerclass>
+    <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_011_01_4" prot="private">tf::SmallVectorStorage&lt; T, 1 &gt;</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateBase" prot="private">tf::SmallVectorTemplateBase</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" prot="private">tf::SmallVectorTemplateBase&lt; T, true &gt;</innerclass>
+    <innerclass refid="classtf_1_1SmallVectorTemplateCommon" prot="private">tf::SmallVectorTemplateCommon</innerclass>
+    <innerclass refid="classtf_1_1StaticPartitioner" prot="public">tf::StaticPartitioner</innerclass>
+    <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
+    <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
+    <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
+    <innerclass refid="structtf_1_1TaskParams" prot="public">tf::TaskParams</innerclass>
+    <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
+    <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
+    <innerclass refid="classtf_1_1TFProfObserver" prot="public">tf::TFProfObserver</innerclass>
+    <innerclass refid="structtf_1_1Timeline" prot="private">tf::Timeline</innerclass>
+    <innerclass refid="classtf_1_1UnboundedTaskQueue" prot="public">tf::UnboundedTaskQueue</innerclass>
+    <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
+    <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
     <innernamespace refid="namespacetf_1_1pt">tf::pt</innernamespace>
-      <sectiondef kind="enum">
+    <sectiondef kind="enum">
       <memberdef kind="enum" id="namespacetf_1a1355048578785a80414707ff308b395a" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>TaskType</name>
+        <qualifiedname>tf::TaskType</qualifiedname>
         <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" prot="public">
           <name>PLACEHOLDER</name>
           <initializer>= 0</initializer>
@@ -158,6 +160,7 @@
       <memberdef kind="enum" id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>ObserverType</name>
+        <qualifiedname>tf::ObserverType</qualifiedname>
         <enumvalue id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435dac19bf39d8838d00eddb556775fa8acce" prot="public">
           <name>TFPROF</name>
           <initializer>= 0</initializer>
@@ -192,6 +195,7 @@
       <memberdef kind="enum" id="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>PartitionerType</name>
+        <qualifiedname>tf::PartitionerType</qualifiedname>
         <enumvalue id="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0afe6f99ef1ec99efbdc19a9786cf1facc" prot="public">
           <name>STATIC</name>
           <briefdescription>
@@ -220,6 +224,7 @@
       <memberdef kind="enum" id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>PipeType</name>
+        <qualifiedname>tf::PipeType</qualifiedname>
         <enumvalue id="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" prot="public">
           <name>PARALLEL</name>
           <initializer>= 1</initializer>
@@ -250,6 +255,7 @@
       <memberdef kind="enum" id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" prot="public" static="no" strong="yes">
         <type>int</type>
         <name>cudaTaskType</name>
+        <qualifiedname>tf::cudaTaskType</qualifiedname>
         <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" prot="public">
           <name>EMPTY</name>
           <initializer>= 0</initializer>
@@ -324,13 +330,14 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="38"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="typedef">
-      <memberdef kind="typedef" id="namespacetf_1a24e111672ff15b86ab128b5ec1cf64ab" prot="private" static="no">
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacetf_1a4d296d21f4a109b13bdb773fe2b54b01" prot="private" static="no">
         <type>NonblockingNotifierV2</type>
-        <definition>using tf::DefaultNotifier = typedef NonblockingNotifierV2</definition>
+        <definition>using tf::DefaultNotifier =  NonblockingNotifierV2</definition>
         <argsstring></argsstring>
         <name>DefaultNotifier</name>
+        <qualifiedname>tf::DefaultNotifier</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -339,11 +346,12 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="27" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="27" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
-        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
-        <definition>using tf::observer_stamp_t = typedef std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
+      <memberdef kind="typedef" id="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" prot="public" static="no">
+        <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
+        <definition>using tf::observer_stamp_t =  std::chrono::time_point&lt;std::chrono::steady_clock&gt;</definition>
         <argsstring></argsstring>
         <name>observer_stamp_t</name>
+        <qualifiedname>tf::observer_stamp_t</qualifiedname>
         <briefdescription>
 <para>default time point type of observers </para>
         </briefdescription>
@@ -353,11 +361,12 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="20" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a66b72776c788898aee9e132b0ea9b405" prot="public" static="no">
+      <memberdef kind="typedef" id="namespacetf_1ace2c5adcd5039483eebb6dbdbb6f33e3" prot="public" static="no">
         <type><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">GuidedPartitioner</ref>&lt;&gt;</type>
-        <definition>using tf::DefaultPartitioner = typedef GuidedPartitioner&lt;&gt;</definition>
+        <definition>using tf::DefaultPartitioner =  GuidedPartitioner&lt;&gt;</definition>
         <argsstring></argsstring>
         <name>DefaultPartitioner</name>
+        <qualifiedname>tf::DefaultPartitioner</qualifiedname>
         <briefdescription>
 <para>default partitioner set to <ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref> </para>
         </briefdescription>
@@ -368,11 +377,12 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="820" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="820" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
+      <memberdef kind="typedef" id="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
-        <definition>using tf::cudaDefaultExecutionPolicy = typedef cudaExecutionPolicy&lt;512, 7&gt;</definition>
+        <definition>using tf::cudaDefaultExecutionPolicy =  cudaExecutionPolicy&lt;512, 7&gt;</definition>
         <argsstring></argsstring>
         <name>cudaDefaultExecutionPolicy</name>
+        <qualifiedname>tf::cudaDefaultExecutionPolicy</qualifiedname>
         <briefdescription>
 <para>default execution policy </para>
         </briefdescription>
@@ -382,22 +392,23 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_execution_policy.hpp" line="150" column="1" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="150" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="var">
+    </sectiondef>
+    <sectiondef kind="var">
       <memberdef kind="variable" id="namespacetf_1ad3a41adc2499a9519da3e77dc3e9849c" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
           <param>
             <type>typename P</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_task_params_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_task_params_v</definition>
         <argsstring></argsstring>
         <name>is_task_params_v</name>
+        <qualifiedname>tf::is_task_params_v</qualifiedname>
         <initializer>=
   std::is_same_v&lt;std::decay_t&lt;P&gt;, <ref refid="structtf_1_1TaskParams" kindref="compound">TaskParams</ref>&gt; ||
   std::is_same_v&lt;std::decay_t&lt;P&gt;, <ref refid="structtf_1_1DefaultTaskParams" kindref="compound">DefaultTaskParams</ref>&gt; ||
-  std::is_constructible_v&lt;<ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>, P&gt;</initializer>
+  std::is_constructible_v&lt;<ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>, P&gt;</initializer>
         <briefdescription>
 <para>determines if the given type is a task parameter type </para>
         </briefdescription>
@@ -405,7 +416,7 @@
 <para><ref refid="classtf_1_1Task" kindref="compound">Task</ref> parameters can be specified in one of the following types:<itemizedlist>
 <listitem><para><ref refid="structtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref>: assign the struct of defined parameters</para>
 </listitem><listitem><para><ref refid="structtf_1_1DefaultTaskParams" kindref="compound">tf::DefaultTaskParams</ref>: assign nothing</para>
-</listitem><listitem><para><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>: assign a name to the task </para>
+</listitem><listitem><para><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>: assign a name to the task </para>
 </listitem></itemizedlist>
 </para>
         </detaileddescription>
@@ -414,10 +425,11 @@
         <location file="taskflow/core/graph.hpp" line="136" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="136" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" constexpr="yes" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
-        <definition>constexpr std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
+        <type><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
+        <definition>std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
+        <qualifiedname>tf::TASK_TYPES</qualifiedname>
         <initializer>= {
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kindref="member">TaskType::PLACEHOLDER</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">TaskType::STATIC</ref>,
@@ -433,7 +445,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="42" column="29" bodyfile="taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="42" column="29" bodyfile="taskflow/core/task.hpp" bodystart="42" bodyend="49"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -441,10 +453,11 @@
             <type>typename C</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_subflow_task_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_subflow_task_v</definition>
         <argsstring></argsstring>
         <name>is_subflow_task_v</name>
+        <qualifiedname>tf::is_subflow_task_v</qualifiedname>
         <initializer>= 
   std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt; &amp;&amp;
   !std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
@@ -464,10 +477,11 @@
             <type>typename C</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_condition_task_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_condition_task_v</definition>
         <argsstring></argsstring>
         <name>is_condition_task_v</name>
+        <qualifiedname>tf::is_condition_task_v</qualifiedname>
         <initializer>= 
   (std::is_invocable_r_v&lt;int, C&gt; || std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
   !<ref refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kindref="member">is_subflow_task_v</ref>&lt;C&gt;</initializer>
@@ -475,7 +489,7 @@
 <para>determines if a callable is a condition task </para>
         </briefdescription>
         <detaileddescription>
-<para>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>
+<para>A condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;int()&gt;</ref> or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -487,10 +501,11 @@
             <type>typename C</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_multi_condition_task_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_multi_condition_task_v</definition>
         <argsstring></argsstring>
         <name>is_multi_condition_task_v</name>
+        <qualifiedname>tf::is_multi_condition_task_v</qualifiedname>
         <initializer>=
   (std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt; ||
   std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
@@ -499,7 +514,7 @@
 <para>determines if a callable is a multi-condition task </para>
         </briefdescription>
         <detaileddescription>
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>
+<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -511,10 +526,11 @@
             <type>typename C</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_static_task_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_static_task_v</definition>
         <argsstring></argsstring>
         <name>is_static_task_v</name>
+        <qualifiedname>tf::is_static_task_v</qualifiedname>
         <initializer>=
   (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
   !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt; &amp;&amp;
@@ -536,11 +552,12 @@
             <type>typename P</type>
           </param>
         </templateparamlist>
-        <type>constexpr bool</type>
-        <definition>constexpr bool tf::is_partitioner_v</definition>
+        <type>bool</type>
+        <definition>bool tf::is_partitioner_v</definition>
         <argsstring></argsstring>
         <name>is_partitioner_v</name>
-        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;IsPartitioner, P&gt;::value</initializer>
+        <qualifiedname>tf::is_partitioner_v</qualifiedname>
+        <initializer>= <ref refid="cpp/types/is_base_of" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_base_of</ref>&lt;IsPartitioner, P&gt;::value</initializer>
         <briefdescription>
 <para>determines if a type is a partitioner </para>
         </briefdescription>
@@ -551,8 +568,8 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="828" column="23" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="828" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="func">
+    </sectiondef>
+    <sectiondef kind="func">
       <memberdef kind="function" id="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -568,6 +585,7 @@
         <definition>static size_t tf::capacity_in_bytes</definition>
         <argsstring>(const SmallVector&lt; T, N &gt; &amp;X)</argsstring>
         <name>capacity_in_bytes</name>
+        <qualifiedname>tf::capacity_in_bytes</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; T, N &gt; &amp;</type>
           <declname>X</declname>
@@ -580,7 +598,814 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="1021" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1021" bodyend="1023"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a7f414301de196737b08e62431691feba" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt;(std::is_unsigned_v&lt; std::decay_t&lt; T &gt; &gt; &amp;&amp;sizeof(T)==8), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T tf::next_pow2</definition>
+        <argsstring>(T x)</argsstring>
+        <name>next_pow2</name>
+        <qualifiedname>tf::next_pow2</qualifiedname>
+        <param>
+          <type>T</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>rounds the given 64-bit unsigned integer to the nearest power of 2 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>rounds the given 32-bit unsigned integer to the nearest power of 2 </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="13" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="13" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a8d48a5014f34a9f97aae5269c2367e38" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; std::is_integral_v&lt; std::decay_t&lt; T &gt; &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tf::is_pow2</definition>
+        <argsstring>(const T &amp;x)</argsstring>
+        <name>is_pow2</name>
+        <qualifiedname>tf::is_pow2</qualifiedname>
+        <param>
+          <type>const T &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>checks if the given number is a power of 2 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function determines if the given integer is a power of 2.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the input. Must be an integral type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The integer to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if <computeroutput>x</computeroutput> is a power of 2, otherwise <computeroutput>false</computeroutput>.</para>
+</simplesect>
+<simplesect kind="note"><para>This function is constexpr and can be evaluated at compile time. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="59" column="16" bodyfile="taskflow/utility/math.hpp" bodystart="59" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a2bf015a9ef27c0efd2d3c73234317a06" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>int</type>
+        <definition>int tf::log2</definition>
+        <argsstring>(T n)</argsstring>
+        <name>log2</name>
+        <qualifiedname>tf::log2</qualifiedname>
+        <param>
+          <type>T</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Computes the floor of log2 of the given positive integer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function calculates the largest integer <computeroutput>log</computeroutput> such that <computeroutput>2^log &lt;= n</computeroutput>.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the input. Must be an integral type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>n</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The positive integer to compute log2 for. Assumes <computeroutput>n &gt; 0</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The floor of log2 of <computeroutput>n</computeroutput>.</para>
+</simplesect>
+<simplesect kind="note"><para>This function is constexpr and can be evaluated at compile time. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="76" column="15" bodyfile="taskflow/utility/math.hpp" bodystart="76" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a0b2dc0c0c931b9b627fc0a148085fa5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename RandItr</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>RandItr</type>
+        <definition>RandItr tf::median_of_three</definition>
+        <argsstring>(RandItr l, RandItr m, RandItr r, C cmp)</argsstring>
+        <name>median_of_three</name>
+        <qualifiedname>tf::median_of_three</qualifiedname>
+        <param>
+          <type>RandItr</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>RandItr</type>
+          <declname>m</declname>
+        </param>
+        <param>
+          <type>RandItr</type>
+          <declname>r</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>cmp</declname>
+        </param>
+        <briefdescription>
+<para>finds the median of three numbers pointed to by iterators using the given comparator </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function determines the median value of the elements pointed to by three random-access iterators using the provided comparator.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>RandItr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the random-access iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the comparator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>l</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the first element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>m</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the second element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>r</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the third element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The comparator used to compare the dereferenced iterator values. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The iterator pointing to the median value among the three elements. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="100" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="100" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a5f9a989c8de663d3ee010cbc6de13c91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename RandItr</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>RandItr</type>
+        <definition>RandItr tf::pseudo_median_of_nine</definition>
+        <argsstring>(RandItr beg, RandItr end, C cmp)</argsstring>
+        <name>pseudo_median_of_nine</name>
+        <qualifiedname>tf::pseudo_median_of_nine</qualifiedname>
+        <param>
+          <type>RandItr</type>
+          <declname>beg</declname>
+        </param>
+        <param>
+          <type>RandItr</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>cmp</declname>
+        </param>
+        <briefdescription>
+<para>finds the pseudo median of a range of items using a spread of nine numbers </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function computes an approximate median of a range of items by sampling nine values spread across the range and finding their median. It uses a combination of the <computeroutput>median_of_three</computeroutput> function to determine the pseudo median.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>RandItr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the random-access iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the comparator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>beg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the beginning of the range. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the end of the range. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The comparator used to compare the dereferenced iterator values. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The iterator pointing to the pseudo median of the range.</para>
+</simplesect>
+<simplesect kind="note"><para>The pseudo median is an approximation of the true median and may not be the exact middle value of the range. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="124" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="124" bodyend="133"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a8d3fa9252b0da87bff1df912d0a591fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Iter</type>
+          </param>
+          <param>
+            <type>typename Compare</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::sort2</definition>
+        <argsstring>(Iter a, Iter b, Compare comp)</argsstring>
+        <name>sort2</name>
+        <qualifiedname>tf::sort2</qualifiedname>
+        <param>
+          <type>Iter</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Compare</type>
+          <declname>comp</declname>
+        </param>
+        <briefdescription>
+<para>sorts two elements of dereferenced iterators using the given comparison function </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function compares two elements pointed to by iterators and swaps them if they are out of order according to the provided comparator.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Compare</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the comparator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the first element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the second element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>comp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The comparator used to compare the dereferenced iterator values. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="149" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="149" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a86489af717270b8c9b657b347215ef0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Iter</type>
+          </param>
+          <param>
+            <type>typename Compare</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::sort3</definition>
+        <argsstring>(Iter a, Iter b, Iter c, Compare comp)</argsstring>
+        <name>sort3</name>
+        <qualifiedname>tf::sort3</qualifiedname>
+        <param>
+          <type>Iter</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>Iter</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>Compare</type>
+          <declname>comp</declname>
+        </param>
+        <briefdescription>
+<para>Sorts three elements of dereferenced iterators using the given comparison function. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function sorts three elements pointed to by iterators in ascending order according to the provided comparator. The sorting is performed using a sequence of calls to the <computeroutput>sort2</computeroutput> function to ensure the correct order of elements.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the iterator. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Compare</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the comparator. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>a</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the first element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the second element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>c</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Iterator to the third element. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>comp</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The comparator used to compare the dereferenced iterator values. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="169" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="169" bodyend="173"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a00b75b92482d883f06282d5181e6f6f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; std::is_integral_v&lt; T &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T tf::unique_id</definition>
+        <argsstring>()</argsstring>
+        <name>unique_id</name>
+        <qualifiedname>tf::unique_id</qualifiedname>
+        <briefdescription>
+<para>generates a program-wide unique ID of the given type in a thread-safe manner </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function provides a globally unique identifier of the specified integral type. It uses a static <computeroutput><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref></computeroutput> counter to ensure thread safety and increments the counter in a relaxed memory ordering for efficiency.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the ID to generate. Must be an integral type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A unique ID of type <computeroutput>T</computeroutput>.</para>
+</simplesect>
+<simplesect kind="note"><para>The uniqueness of the ID is guaranteed only within the program&apos;s lifetime. </para>
+</simplesect>
+<simplesect kind="note"><para>The function does not throw exceptions. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="190" column="3" bodyfile="taskflow/utility/math.hpp" bodystart="190" bodyend="193"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a5002af34dc323ff28e87ae83203b2c36" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::atomic_max</definition>
+        <argsstring>(std::atomic&lt; T &gt; &amp;v, const T &amp;max_v) noexcept</argsstring>
+        <name>atomic_max</name>
+        <qualifiedname>tf::atomic_max</qualifiedname>
+        <param>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>max_v</declname>
+        </param>
+        <briefdescription>
+<para>updates an atomic variable with the maximum value </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function atomically updates the provided atomic variable <computeroutput>v</computeroutput> to hold the maximum of its current value and <computeroutput>max_v</computeroutput>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the atomic variable. Must be trivially copyable and comparable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The atomic variable to update. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>max_v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to compare with the current value of <computeroutput>v</computeroutput>.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the maximum value seen across all threads. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="211" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="211" bodyend="217"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a512ffa0d24a237b098f5de656b8bdcb0" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::atomic_min</definition>
+        <argsstring>(std::atomic&lt; T &gt; &amp;v, const T &amp;min_v) noexcept</argsstring>
+        <name>atomic_min</name>
+        <qualifiedname>tf::atomic_min</qualifiedname>
+        <param>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>min_v</declname>
+        </param>
+        <briefdescription>
+<para>updates an atomic variable with the minimum value </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function atomically updates the provided atomic variable <computeroutput>v</computeroutput> to hold the minimum of its current value and <computeroutput>min_v</computeroutput>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the atomic variable. Must be trivially copyable and comparable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The atomic variable to update. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>min_v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to compare with the current value of <computeroutput>v</computeroutput>.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="note"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the minimum value seen across all threads. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="235" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="235" bodyend="241"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a3f8e89aebc29d42259157723c874954d" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T tf::seed</definition>
+        <argsstring>() noexcept</argsstring>
+        <name>seed</name>
+        <qualifiedname>tf::seed</qualifiedname>
+        <briefdescription>
+<para>generates a random seed based on the current system clock </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function returns a seed value derived from the number of clock ticks since the epoch as measured by the system clock. The seed can be used to initialize random number generators.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type of the returned seed. Must be an integral type. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A seed value based on the system clock. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="255" column="10" bodyfile="taskflow/utility/math.hpp" bodystart="255" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1abbef08f01c467fd4f746c3247af892bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <definition>std::string tf::get_env</definition>
+        <argsstring>(const std::string &amp;str)</argsstring>
+        <name>get_env</name>
+        <qualifiedname>tf::get_env</qualifiedname>
+        <param>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+<para>retrieves the value of an environment variable </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the environment variable to retrieve. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The value of the environment variable as a string, or an empty string if not found.</para>
+</simplesect>
+<simplesect kind="note"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
+<listitem><para>On Windows, it uses <computeroutput>_dupenv_s</computeroutput> to fetch the value.</para>
+</listitem><listitem><para>On POSIX, it uses <computeroutput><ref refid="cpp/utility/program/getenv" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::getenv</ref></computeroutput>. </para>
+</listitem></itemizedlist>
+</para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="161" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="161" bodyend="177"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::has_env</definition>
+        <argsstring>(const std::string &amp;str)</argsstring>
+        <name>has_env</name>
+        <qualifiedname>tf::has_env</qualifiedname>
+        <param>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+<para>checks whether an environment variable is defined </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function determines if a specific environment variable exists in the current environment.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>str</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the environment variable to check. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the environment variable exists, <computeroutput>false</computeroutput> otherwise.</para>
+</simplesect>
+<simplesect kind="note"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
+<listitem><para>On Windows, it uses <computeroutput>_dupenv_s</computeroutput> to check for the variable&apos;s presence.</para>
+</listitem><listitem><para>On POSIX, it uses <computeroutput><ref refid="cpp/utility/program/getenv" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::getenv</ref></computeroutput> to check for the variable&apos;s presence. </para>
+</listitem></itemizedlist>
+</para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="192" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="192" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::pause</definition>
+        <argsstring>()</argsstring>
+        <name>pause</name>
+        <qualifiedname>tf::pause</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This function is used in spin-wait loops to hint the CPU that the current thread is in a busy-wait state. It helps reduce power consumption and improves performance on hyper-threaded processors by preventing the CPU from consuming unnecessary cycles while waiting. It is particularly useful in low-contention scenarios, where the thread is likely to quickly acquire the lock or condition it&apos;s waiting for, avoiding an expensive context switch. On modern x86 processors, this instruction can be invoked using <computeroutput>__builtin_ia32_pause()</computeroutput> in GCC/Clang or <computeroutput>_mm_pause()</computeroutput> in MSVC. In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="225" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="225" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::spin_until</definition>
+        <argsstring>(P &amp;&amp;predicate)</argsstring>
+        <name>spin_until</name>
+        <qualifiedname>tf::spin_until</qualifiedname>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>predicate</declname>
+        </param>
+        <briefdescription>
+<para>spins until the given predicate becomes true </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>P</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the type of the predicate function or callable. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>predicate</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the callable that returns a boolean value, which is checked in the loop.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <computeroutput><ref refid="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" kindref="member">pause()</ref></computeroutput> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <computeroutput><ref refid="cpp/thread/yield" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::yield()</ref></computeroutput> to allow other threads to run and improve system responsiveness.</para>
+<para>The function operates as follows:<orderedlist>
+<listitem><para>For the first 100 iterations, it invokes <computeroutput><ref refid="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" kindref="member">pause()</ref></computeroutput> to reduce power consumption during the spin-wait.</para>
+</listitem><listitem><para>After 100 iterations, it uses <computeroutput><ref refid="cpp/thread/yield" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::yield()</ref></computeroutput> to relinquish the CPU, allowing other threads to execute.</para>
+</listitem></orderedlist>
+</para>
+<para><simplesect kind="note"><para>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="275" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="275" bodyend="280"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1ad1c04f09c85eb38d06c7f51cc48ad91c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename...</type>
@@ -589,9 +1414,10 @@
           </param>
         </templateparamlist>
         <type>TF_FORCE_INLINE Node *</type>
-        <definition>TF_FORCE_INLINE Node* tf::animate</definition>
+        <definition>TF_FORCE_INLINE Node * tf::animate</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>animate</name>
+        <qualifiedname>tf::animate</qualifiedname>
         <param>
           <type>ArgsT &amp;&amp;...</type>
           <declname>args</declname>
@@ -609,6 +1435,7 @@
         <definition>TF_FORCE_INLINE void tf::recycle</definition>
         <argsstring>(Node *ptr)</argsstring>
         <name>recycle</name>
+        <qualifiedname>tf::recycle</qualifiedname>
         <param>
           <type>Node *</type>
           <declname>ptr</declname>
@@ -621,11 +1448,12 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="365" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="365" bodyend="371"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a18c45bc96e6725943e0a4396fa59b524" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
-        <definition>const char* tf::to_string</definition>
+        <definition>const char * tf::to_string</definition>
         <argsstring>(TaskType type)</argsstring>
         <name>to_string</name>
+        <qualifiedname>tf::to_string</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref></type>
           <declname>type</declname>
@@ -647,13 +1475,14 @@
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="65" column="19" bodyfile="taskflow/core/task.hpp" bodystart="65" bodyend="80"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
-        <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
+      <memberdef kind="function" id="namespacetf_1ad8b1b906950270c6b7bc19e7074daa23" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <definition>std::ostream &amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const Task &amp;task)</argsstring>
         <name>operator&lt;&lt;</name>
+        <qualifiedname>tf::operator&lt;&lt;</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -683,6 +1512,7 @@
         <definition>bool tf::try_acquire</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>try_acquire</name>
+        <qualifiedname>tf::try_acquire</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -746,6 +1576,7 @@ Tries to acquire all semaphores in the specified range.</para>
         <definition>bool tf::try_acquire</definition>
         <argsstring>(S &amp;&amp;... semaphores)</argsstring>
         <name>try_acquire</name>
+        <qualifiedname>tf::try_acquire</qualifiedname>
         <param>
           <type>S &amp;&amp;...</type>
           <declname>semaphores</declname>
@@ -786,6 +1617,7 @@ Tries to acquire all the semaphores.</para>
         <definition>void tf::release</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>release</name>
+        <qualifiedname>tf::release</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -846,6 +1678,7 @@ Releases all the semaphores in the given range. </para>
         <definition>void tf::release</definition>
         <argsstring>(S &amp;&amp;... semaphores)</argsstring>
         <name>release</name>
+        <qualifiedname>tf::release</qualifiedname>
         <param>
           <type>S &amp;&amp;...</type>
           <declname>semaphores</declname>
@@ -869,11 +1702,12 @@ Releases all the semaphores. </para>
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="245" column="6" bodyfile="taskflow/core/semaphore.hpp" bodystart="245" bodyend="247"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1ab7ec159c370bc052effcd0cdbc48047e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
-        <definition>const char* tf::to_string</definition>
+        <definition>const char * tf::to_string</definition>
         <argsstring>(ObserverType type)</argsstring>
         <name>to_string</name>
+        <qualifiedname>tf::to_string</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" kindref="member">ObserverType</ref></type>
           <declname>type</declname>
@@ -903,6 +1737,7 @@ Releases all the semaphores. </para>
         <definition>auto tf::make_data_pipe</definition>
         <argsstring>(PipeType d, C &amp;&amp;callable)</argsstring>
         <name>make_data_pipe</name>
+        <qualifiedname>tf::make_data_pipe</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
           <declname>d</declname>
@@ -941,19 +1776,19 @@ Releases all the semaphores. </para>
 </parameteritem>
 </parameterlist>
 <ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref> is a helper function to create a data pipe (<ref refid="classtf_1_1DataPipe" kindref="compound">tf::DataPipe</ref>) in a data-parallel pipeline (<ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref>). The first argument specifies the direction of the data pipe, either <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>, and the second argument is a callable to invoke by the pipeline scheduler. Input and output data types are specified via template parameters, which will always be decayed by the library to its original form for storage purpose. The callable must take the input data type in its first argument and returns a value of the output data type.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe&lt;int, std::string&gt;</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
 <para>The callable can additionally take a reference of <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>, which allows you to query the runtime information of a stage task, such as its line number and token number.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe&lt;int, std::string&gt;</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input,<sp/><ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
@@ -967,6 +1802,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_num_devices</definition>
         <argsstring>()</argsstring>
         <name>cuda_get_num_devices</name>
+        <qualifiedname>tf::cuda_get_num_devices</qualifiedname>
         <briefdescription>
 <para>queries the number of available devices </para>
         </briefdescription>
@@ -981,6 +1817,7 @@ Releases all the semaphores. </para>
         <definition>int tf::cuda_get_device</definition>
         <argsstring>()</argsstring>
         <name>cuda_get_device</name>
+        <qualifiedname>tf::cuda_get_device</qualifiedname>
         <briefdescription>
 <para>gets the current device associated with the caller thread </para>
         </briefdescription>
@@ -995,6 +1832,7 @@ Releases all the semaphores. </para>
         <definition>void tf::cuda_set_device</definition>
         <argsstring>(int id)</argsstring>
         <name>cuda_set_device</name>
+        <qualifiedname>tf::cuda_set_device</qualifiedname>
         <param>
           <type>int</type>
           <declname>id</declname>
@@ -1013,6 +1851,7 @@ Releases all the semaphores. </para>
         <definition>void tf::cuda_get_device_property</definition>
         <argsstring>(int i, cudaDeviceProp &amp;p)</argsstring>
         <name>cuda_get_device_property</name>
+        <qualifiedname>tf::cuda_get_device_property</qualifiedname>
         <param>
           <type>int</type>
           <declname>i</declname>
@@ -1035,6 +1874,7 @@ Releases all the semaphores. </para>
         <definition>cudaDeviceProp tf::cuda_get_device_property</definition>
         <argsstring>(int i)</argsstring>
         <name>cuda_get_device_property</name>
+        <qualifiedname>tf::cuda_get_device_property</qualifiedname>
         <param>
           <type>int</type>
           <declname>i</declname>
@@ -1053,8 +1893,9 @@ Releases all the semaphores. </para>
         <definition>void tf::cuda_dump_device_property</definition>
         <argsstring>(std::ostream &amp;os, const cudaDeviceProp &amp;p)</argsstring>
         <name>cuda_dump_device_property</name>
+        <qualifiedname>tf::cuda_dump_device_property</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -1075,6 +1916,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_threads_per_block</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_threads_per_block</name>
+        <qualifiedname>tf::cuda_get_device_max_threads_per_block</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1093,6 +1935,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_x_dim_per_block</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_x_dim_per_block</name>
+        <qualifiedname>tf::cuda_get_device_max_x_dim_per_block</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1111,6 +1954,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_y_dim_per_block</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_y_dim_per_block</name>
+        <qualifiedname>tf::cuda_get_device_max_y_dim_per_block</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1129,6 +1973,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_z_dim_per_block</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_z_dim_per_block</name>
+        <qualifiedname>tf::cuda_get_device_max_z_dim_per_block</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1147,6 +1992,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_x_dim_per_grid</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_x_dim_per_grid</name>
+        <qualifiedname>tf::cuda_get_device_max_x_dim_per_grid</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1165,6 +2011,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_y_dim_per_grid</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_y_dim_per_grid</name>
+        <qualifiedname>tf::cuda_get_device_max_y_dim_per_grid</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1183,6 +2030,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_z_dim_per_grid</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_z_dim_per_grid</name>
+        <qualifiedname>tf::cuda_get_device_max_z_dim_per_grid</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1201,6 +2049,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_max_shm_per_block</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_max_shm_per_block</name>
+        <qualifiedname>tf::cuda_get_device_max_shm_per_block</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1219,6 +2068,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_device_warp_size</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_warp_size</name>
+        <qualifiedname>tf::cuda_get_device_warp_size</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1237,6 +2087,7 @@ Releases all the semaphores. </para>
         <definition>int tf::cuda_get_device_compute_capability_major</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_compute_capability_major</name>
+        <qualifiedname>tf::cuda_get_device_compute_capability_major</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1255,6 +2106,7 @@ Releases all the semaphores. </para>
         <definition>int tf::cuda_get_device_compute_capability_minor</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_compute_capability_minor</name>
+        <qualifiedname>tf::cuda_get_device_compute_capability_minor</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1273,6 +2125,7 @@ Releases all the semaphores. </para>
         <definition>bool tf::cuda_get_device_unified_addressing</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_device_unified_addressing</name>
+        <qualifiedname>tf::cuda_get_device_unified_addressing</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1291,6 +2144,7 @@ Releases all the semaphores. </para>
         <definition>int tf::cuda_get_driver_version</definition>
         <argsstring>()</argsstring>
         <name>cuda_get_driver_version</name>
+        <qualifiedname>tf::cuda_get_driver_version</qualifiedname>
         <briefdescription>
 <para>queries the latest CUDA version (1000 * major + 10 * minor) supported by the driver </para>
         </briefdescription>
@@ -1305,6 +2159,7 @@ Releases all the semaphores. </para>
         <definition>int tf::cuda_get_runtime_version</definition>
         <argsstring>()</argsstring>
         <name>cuda_get_runtime_version</name>
+        <qualifiedname>tf::cuda_get_runtime_version</qualifiedname>
         <briefdescription>
 <para>queries the CUDA <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> version (1000 * major + 10 * minor) </para>
         </briefdescription>
@@ -1319,6 +2174,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_free_mem</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_free_mem</name>
+        <qualifiedname>tf::cuda_get_free_mem</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1337,6 +2193,7 @@ Releases all the semaphores. </para>
         <definition>size_t tf::cuda_get_total_mem</definition>
         <argsstring>(int d)</argsstring>
         <name>cuda_get_total_mem</name>
+        <qualifiedname>tf::cuda_get_total_mem</qualifiedname>
         <param>
           <type>int</type>
           <declname>d</declname>
@@ -1350,16 +2207,17 @@ Releases all the semaphores. </para>
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="31" column="15" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="31" bodyend="38"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a6f04fd3168c45eeb2dffb223e5c81e45" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a2548e58af071bf1dbbbc945c84f237c9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
           </param>
         </templateparamlist>
         <type>T *</type>
-        <definition>T* tf::cuda_malloc_device</definition>
+        <definition>T * tf::cuda_malloc_device</definition>
         <argsstring>(size_t N, int d)</argsstring>
         <name>cuda_malloc_device</name>
+        <qualifiedname>tf::cuda_malloc_device</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -1378,16 +2236,17 @@ Releases all the semaphores. </para>
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="48" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="48" bodyend="56"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1ab9b68b8f4336f13b190d573969cb1cf7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a76f4996669b2e81004749edbd3013d1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
           </param>
         </templateparamlist>
         <type>T *</type>
-        <definition>T* tf::cuda_malloc_device</definition>
+        <definition>T * tf::cuda_malloc_device</definition>
         <argsstring>(size_t N)</argsstring>
         <name>cuda_malloc_device</name>
+        <qualifiedname>tf::cuda_malloc_device</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -1402,16 +2261,17 @@ Releases all the semaphores. </para>
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="65" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="65" bodyend="72"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a8eed05685b030fc44703213a4ef86f11" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1ad289846c38e3f122e1315d906243fc8b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
           </param>
         </templateparamlist>
         <type>T *</type>
-        <definition>T* tf::cuda_malloc_shared</definition>
+        <definition>T * tf::cuda_malloc_shared</definition>
         <argsstring>(size_t N)</argsstring>
         <name>cuda_malloc_shared</name>
+        <qualifiedname>tf::cuda_malloc_shared</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -1436,6 +2296,7 @@ Releases all the semaphores. </para>
         <definition>void tf::cuda_free</definition>
         <argsstring>(T *ptr, int d)</argsstring>
         <name>cuda_free</name>
+        <qualifiedname>tf::cuda_free</qualifiedname>
         <param>
           <type>T *</type>
           <declname>ptr</declname>
@@ -1490,6 +2351,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
         <definition>void tf::cuda_free</definition>
         <argsstring>(T *ptr)</argsstring>
         <name>cuda_free</name>
+        <qualifiedname>tf::cuda_free</qualifiedname>
         <param>
           <type>T *</type>
           <declname>ptr</declname>
@@ -1527,6 +2389,7 @@ This methods call <computeroutput>cudaFree</computeroutput> to free the memory s
         <definition>void tf::cuda_memcpy_async</definition>
         <argsstring>(cudaStream_t stream, void *dst, const void *src, size_t count)</argsstring>
         <name>cuda_memcpy_async</name>
+        <qualifiedname>tf::cuda_memcpy_async</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -1591,6 +2454,7 @@ The method calls <computeroutput>cudaMemcpyAsync</computeroutput> with the given
         <definition>void tf::cuda_memset_async</definition>
         <argsstring>(cudaStream_t stream, void *devPtr, int value, size_t count)</argsstring>
         <name>cuda_memset_async</name>
+        <qualifiedname>tf::cuda_memset_async</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -1650,11 +2514,12 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="153" column="13" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="153" bodyend="160"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>constexpr const char *</type>
-        <definition>constexpr const char* tf::to_string</definition>
+      <memberdef kind="function" id="namespacetf_1a693cfec4e770c8d66fbd920ed8a07df0" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char * tf::to_string</definition>
         <argsstring>(cudaTaskType type)</argsstring>
         <name>to_string</name>
+        <qualifiedname>tf::to_string</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" kindref="member">cudaTaskType</ref></type>
           <declname>type</declname>
@@ -1668,13 +2533,14 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="taskflow/cuda/cuda_task.hpp" line="43" column="22" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="43" bodyend="54"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
-        <definition>std::ostream&amp; tf::operator&lt;&lt;</definition>
+      <memberdef kind="function" id="namespacetf_1a29ae31d817e4080f4030c2b311ddafe9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+        <definition>std::ostream &amp; tf::operator&lt;&lt;</definition>
         <argsstring>(std::ostream &amp;os, const cudaTask &amp;ct)</argsstring>
         <name>operator&lt;&lt;</name>
+        <qualifiedname>tf::operator&lt;&lt;</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <param>
@@ -1703,6 +2569,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         <definition>void tf::cuda_single_task</definition>
         <argsstring>(P &amp;&amp;p, C c)</argsstring>
         <name>cuda_single_task</name>
+        <qualifiedname>tf::cuda_single_task</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -1771,6 +2638,7 @@ The function launches a single kernel thread to run the given callable through t
         <definition>void tf::cuda_for_each</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, C c)</argsstring>
         <name>cuda_for_each</name>
+        <qualifiedname>tf::cuda_for_each</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -1875,6 +2743,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         <definition>void tf::cuda_for_each_index</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, I inc, C c)</argsstring>
         <name>cuda_for_each_index</name>
+        <qualifiedname>tf::cuda_for_each_index</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -1991,6 +2860,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         <definition>__global__ void tf::cuda_single_task</definition>
         <argsstring>(C callable)</argsstring>
         <name>cuda_single_task</name>
+        <qualifiedname>tf::cuda_single_task</qualifiedname>
         <param>
           <type>C</type>
           <declname>callable</declname>
@@ -2022,6 +2892,7 @@ This function is equivalent to a parallel execution of the following loop on a G
         <definition>void tf::cuda_transform</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, O output, C op)</argsstring>
         <name>cuda_transform</name>
+        <qualifiedname>tf::cuda_transform</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2152,6 +3023,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_transform</definition>
         <argsstring>(P &amp;&amp;p, I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
         <name>cuda_transform</name>
+        <qualifiedname>tf::cuda_transform</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2299,6 +3171,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_reduce</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
         <name>cuda_reduce</name>
+        <qualifiedname>tf::cuda_reduce</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2438,6 +3311,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_uninitialized_reduce</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
         <name>cuda_uninitialized_reduce</name>
+        <qualifiedname>tf::cuda_uninitialized_reduce</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2581,6 +3455,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_transform_reduce</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
         <name>cuda_transform_reduce</name>
+        <qualifiedname>tf::cuda_transform_reduce</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2743,6 +3618,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_uninitialized_transform_reduce</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
         <name>cuda_uninitialized_transform_reduce</name>
+        <qualifiedname>tf::cuda_uninitialized_transform_reduce</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -2903,6 +3779,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_inclusive_scan</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
         <name>cuda_inclusive_scan</name>
+        <qualifiedname>tf::cuda_inclusive_scan</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3041,6 +3918,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_transform_inclusive_scan</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
         <name>cuda_transform_inclusive_scan</name>
+        <qualifiedname>tf::cuda_transform_inclusive_scan</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3196,6 +4074,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_exclusive_scan</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
         <name>cuda_exclusive_scan</name>
+        <qualifiedname>tf::cuda_exclusive_scan</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3334,6 +4213,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_transform_exclusive_scan</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
         <name>cuda_transform_exclusive_scan</name>
+        <qualifiedname>tf::cuda_transform_exclusive_scan</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3501,6 +4381,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cuda_merge_by_key</definition>
         <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp, void *buf)</argsstring>
         <name>cuda_merge_by_key</name>
+        <qualifiedname>tf::cuda_merge_by_key</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3744,6 +4625,7 @@ Performs a key-value merge that copies elements from <computeroutput>[a_keys_fir
         <definition>void tf::cuda_merge</definition>
         <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_keys_it b_keys_last, c_keys_it c_keys_first, C comp, void *buf)</argsstring>
         <name>cuda_merge</name>
+        <qualifiedname>tf::cuda_merge</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -3909,6 +4791,7 @@ This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1e
         <definition>unsigned tf::cuda_sort_buffer_size</definition>
         <argsstring>(unsigned count)</argsstring>
         <name>cuda_sort_buffer_size</name>
+        <qualifiedname>tf::cuda_sort_buffer_size</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>count</declname>
@@ -3976,6 +4859,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         <definition>void tf::cuda_sort_by_key</definition>
         <argsstring>(P &amp;&amp;p, K_it k_first, K_it k_last, V_it v_first, C comp, void *buf)</argsstring>
         <name>cuda_sort_by_key</name>
+        <qualifiedname>tf::cuda_sort_by_key</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -4118,6 +5002,7 @@ Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> a
         <definition>void tf::cuda_sort</definition>
         <argsstring>(P &amp;&amp;p, K_it k_first, K_it k_last, C comp, void *buf)</argsstring>
         <name>cuda_sort</name>
+        <qualifiedname>tf::cuda_sort</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -4230,6 +5115,7 @@ This method is equivalent to <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e4
         <definition>void tf::cuda_find_if</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, U op)</argsstring>
         <name>cuda_find_if</name>
+        <qualifiedname>tf::cuda_find_if</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -4350,6 +5236,7 @@ The function launches kernels asynchronously to find the index <computeroutput>i
         <definition>void tf::cuda_min_element</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, O op, void *buf)</argsstring>
         <name>cuda_min_element</name>
+        <qualifiedname>tf::cuda_min_element</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -4462,7 +5349,7 @@ The function launches kernels asynchronously to find the smallest element in the
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -4485,6 +5372,7 @@ The function launches kernels asynchronously to find the smallest element in the
         <definition>void tf::cuda_max_element</definition>
         <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, O op, void *buf)</argsstring>
         <name>cuda_max_element</name>
+        <qualifiedname>tf::cuda_max_element</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>p</declname>
@@ -4597,18 +5485,19 @@ The function launches kernels asynchronously to find the largest element in the 
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/cuda/algorithm/find.hpp" line="285" column="6" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="285" bodyend="289"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a30fa078dcf625e9eada5a95af1467588" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>constexpr const char *</type>
-        <definition>constexpr const char* tf::version</definition>
+      <memberdef kind="function" id="namespacetf_1a06790e5f6898894392f247309626e1b4" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char * tf::version</definition>
         <argsstring>()</argsstring>
         <name>version</name>
+        <qualifiedname>tf::version</qualifiedname>
         <briefdescription>
 <para>queries the version information in a string format <computeroutput>major.minor.patch</computeroutput> </para>
         </briefdescription>
@@ -4619,7 +5508,7 @@ The function launches kernels asynchronously to find the largest element in the 
         </inbodydescription>
         <location file="taskflow/taskflow.hpp" line="93" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="93" bodyend="95"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>taskflow namespace </para>
     </briefdescription>

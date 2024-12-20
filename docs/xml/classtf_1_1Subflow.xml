@@ -1,15 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1Subflow" kind="class" language="C++" prot="public">
     <compoundname>tf::Subflow</compoundname>
     <basecompoundref refid="classtf_1_1FlowBuilder" prot="public" virt="non-virtual">tf::FlowBuilder</basecompoundref>
     <includes refid="flow__builder_8hpp" local="no">taskflow/core/flow_builder.hpp</includes>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Subflow_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::Subflow::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -19,13 +20,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1293" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1293" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1293" column="16" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1293" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Subflow_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class FlowBuilder</definition>
         <argsstring></argsstring>
         <name>FlowBuilder</name>
+        <qualifiedname>tf::Subflow::FlowBuilder</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1FlowBuilder" kindref="compound">FlowBuilder</ref></type>
         </param>
@@ -35,15 +37,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1294" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1294" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1294" column="16" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1294" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-static-attrib">
-      <memberdef kind="variable" id="classtf_1_1Subflow_1ae1b7e8ff40d1a09ec5d1441258f35eb0" prot="private" static="yes" constexpr="yes" mutable="no">
-        <type>constexpr static size_t</type>
-        <definition>constexpr static size_t tf::Subflow::JOINED_BIT</definition>
+    </sectiondef>
+    <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classtf_1_1Subflow_1a4c930925bf422ed1f9e13c6ec6d10ac7" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>size_t</type>
+        <definition>size_t tf::Subflow::JOINED_BIT</definition>
         <argsstring></argsstring>
         <name>JOINED_BIT</name>
+        <qualifiedname>tf::Subflow::JOINED_BIT</qualifiedname>
         <initializer>= (~size_t(0)) ^ ((~size_t(0)) &gt;&gt; 1)</initializer>
         <briefdescription>
         </briefdescription>
@@ -53,13 +56,14 @@
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="1357" column="29" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1357" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Subflow_1a31a68355e05081fed16fff307b6b4e33" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
         <definition>Executor&amp; tf::Subflow::_executor</definition>
         <argsstring></argsstring>
         <name>_executor</name>
+        <qualifiedname>tf::Subflow::_executor</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -73,6 +77,7 @@
         <definition>Worker&amp; tf::Subflow::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
+        <qualifiedname>tf::Subflow::_worker</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -86,6 +91,7 @@
         <definition>Node* tf::Subflow::_parent</definition>
         <argsstring></argsstring>
         <name>_parent</name>
+        <qualifiedname>tf::Subflow::_parent</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -99,6 +105,7 @@
         <definition>size_t tf::Subflow::_tag</definition>
         <argsstring></argsstring>
         <name>_tag</name>
+        <qualifiedname>tf::Subflow::_tag</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -107,13 +114,14 @@
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="1369" column="12" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1369" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Subflow::join</definition>
         <argsstring>()</argsstring>
         <name>join</name>
+        <qualifiedname>tf::Subflow::join</qualifiedname>
         <briefdescription>
 <para>enables the subflow to join its parent task </para>
         </briefdescription>
@@ -135,6 +143,7 @@
         <definition>void tf::Subflow::detach</definition>
         <argsstring>()</argsstring>
         <name>detach</name>
+        <qualifiedname>tf::Subflow::detach</qualifiedname>
         <briefdescription>
 <para>enables the subflow to detach from its parent task </para>
         </briefdescription>
@@ -156,6 +165,7 @@
         <definition>bool tf::Subflow::joinable</definition>
         <argsstring>() const noexcept</argsstring>
         <name>joinable</name>
+        <qualifiedname>tf::Subflow::joinable</qualifiedname>
         <briefdescription>
 <para>queries if the subflow is joinable </para>
         </briefdescription>
@@ -163,9 +173,9 @@
 <para>This member function queries if the subflow is joinable. When a subflow is joined or detached, it becomes not joinable.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>sf.<ref refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" kindref="member">joinable</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>true</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>sf.<ref refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" kindref="member">joinable</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>true</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">join</ref>();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>sf.<ref refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" kindref="member">joinable</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>false</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>sf.<ref refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" kindref="member">joinable</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>false</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -178,6 +188,7 @@
         <definition>Executor &amp; tf::Subflow::executor</definition>
         <argsstring>() noexcept</argsstring>
         <name>executor</name>
+        <qualifiedname>tf::Subflow::executor</qualifiedname>
         <briefdescription>
 <para>acquires the associated executor </para>
         </briefdescription>
@@ -187,13 +198,14 @@
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="1352" column="14" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1399" bodyend="1401"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
+    </sectiondef>
+    <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Subflow_1a84f5f8f179fd27d44ff6a02c7c482659" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Subflow::Subflow</definition>
         <argsstring>(Executor &amp;, Worker &amp;, Node *, Graph &amp;)</argsstring>
         <name>Subflow</name>
+        <qualifiedname>tf::Subflow::Subflow</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
           <defname>executor</defname>
@@ -223,6 +235,7 @@
         <definition>tf::Subflow::Subflow</definition>
         <argsstring>()=delete</argsstring>
         <name>Subflow</name>
+        <qualifiedname>tf::Subflow::Subflow</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -236,6 +249,7 @@
         <definition>tf::Subflow::Subflow</definition>
         <argsstring>(const Subflow &amp;)=delete</argsstring>
         <name>Subflow</name>
+        <qualifiedname>tf::Subflow::Subflow</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref> &amp;</type>
         </param>
@@ -252,6 +266,7 @@
         <definition>tf::Subflow::Subflow</definition>
         <argsstring>(Subflow &amp;&amp;)=delete</argsstring>
         <name>Subflow</name>
+        <qualifiedname>tf::Subflow::Subflow</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref> &amp;&amp;</type>
         </param>
@@ -263,7 +278,7 @@
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="1363" column="5"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to construct a subflow graph from the execution of a dynamic task </para>
     </briefdescription>
@@ -303,15 +318,15 @@
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="4">
+        <label>std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</label>
+      </node>
       <node id="2">
         <label>tf::FlowBuilder</label>
         <link refid="classtf_1_1FlowBuilder"/>
         <childnode refid="3" relation="usage">
           <edgelabel>_graph</edgelabel>
         </childnode>
-      </node>
-      <node id="4">
-        <label>std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</label>
       </node>
       <node id="3">
         <label>tf::Graph</label>
@@ -354,7 +369,7 @@
       <member refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>join</name></member>
       <member refid="classtf_1_1Subflow_1ac3805e898b6a55b6e5173c74c5555e57" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>joinable</name></member>
-      <member refid="classtf_1_1Subflow_1ae1b7e8ff40d1a09ec5d1441258f35eb0" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>JOINED_BIT</name></member>
+      <member refid="classtf_1_1Subflow_1a4c930925bf422ed1f9e13c6ec6d10ac7" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>JOINED_BIT</name></member>
       <member refid="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>linearize</name></member>
       <member refid="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>linearize</name></member>
       <member refid="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>max_element</name></member>

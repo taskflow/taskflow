@@ -4,40 +4,55 @@
 
 namespace tf {
 
-// rounds the given 64-bit unsigned integer to the nearest power of 2
+/**
+ * @brief rounds the given 64-bit unsigned integer to the nearest power of 2
+ */
 template <typename T, std::enable_if_t<
-  (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 8) , void
+  (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 8), void
 >* = nullptr>
 constexpr T next_pow2(T x) {
   if(x == 0) return 1;
   x--;
-  x |= x>>1;
-	x |= x>>2;
-	x |= x>>4;
-	x |= x>>8;
-	x |= x>>16;
-	x |= x>>32;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  x |= x >> 32;
   x++;
   return x;
 }
 
-// rounds the given 32-bit unsigned integer to the nearest power of 2
+/**
+ * @brief rounds the given 32-bit unsigned integer to the nearest power of 2
+ */
 template <typename T, std::enable_if_t<
   (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 4), void
 >* = nullptr>
-constexpr T next_pow2(T x) {
-  if(x == 0) return 1;
-  x--;
-  x |= x>>1;
-	x |= x>>2;
-	x |= x>>4;
-	x |= x>>8;
-	x |= x>>16;
-  x++;
-  return x;
+constexpr T next_pow2(T y) {
+  if(y == 0) return 1;
+  y--;
+  y |= y >> 1;
+  y |= y >> 2;
+  y |= y >> 4;
+  y |= y >> 8;
+  y |= y >> 16;
+  y++;
+  return y;
 }
 
-// checks if the given number if a power of 2
+/**
+ * @brief checks if the given number is a power of 2
+ *
+ * This function determines if the given integer is a power of 2.
+ *
+ * @tparam T The type of the input. Must be an integral type.
+ * @param x The integer to check.
+ * @return `true` if `x` is a power of 2, otherwise `false`.
+ *
+ * @note This function is constexpr and can be evaluated at compile time.
+ *
+ */
 template <typename T, std::enable_if_t<
   std::is_integral_v<std::decay_t<T>>, void>* = nullptr
 >
@@ -45,18 +60,18 @@ constexpr bool is_pow2(const T& x) {
   return x && (!(x&(x-1)));
 }
 
-//// finds the ceil of x divided by b
-//template <typename T, std::enable_if_t<
-//  std::is_integral_v<std::decay_t<T>>, void>* = nullptr
-//>
-//constexpr T ceil(const T& x, const T& y) {
-//  //return (x + y - 1) / y;
-//  return (x-1) / y + 1;
-//}
-
 /**
-@brief returns floor(log2(n)), assumes n > 0
-*/
+ * @brief Computes the floor of log2 of the given positive integer.
+ *
+ * This function calculates the largest integer `log` such that `2^log <= n`.
+ *
+ * @tparam T The type of the input. Must be an integral type.
+ * @param n The positive integer to compute log2 for. Assumes `n > 0`.
+ * @return The floor of log2 of `n`.
+ *
+ * @note This function is constexpr and can be evaluated at compile time.
+ *
+ */
 template<typename T>
 constexpr int log2(T n) {
   int log = 0;
@@ -67,9 +82,20 @@ constexpr int log2(T n) {
 }
 
 /**
-@brief finds the median of three numbers of dereferenced iterators using
-       the given comparator
-*/
+ * @brief finds the median of three numbers pointed to by iterators using the given comparator
+ *
+ * This function determines the median value of the elements pointed to by
+ * three random-access iterators using the provided comparator.
+ *
+ * @tparam RandItr The type of the random-access iterator.
+ * @tparam C The type of the comparator.
+ * @param l Iterator to the first element.
+ * @param m Iterator to the second element.
+ * @param r Iterator to the third element.
+ * @param cmp The comparator used to compare the dereferenced iterator values.
+ * @return The iterator pointing to the median value among the three elements.
+ *
+ */
 template <typename RandItr, typename C>
 RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp) {
   return cmp(*l, *m) ? (cmp(*m, *r) ? m : (cmp(*l, *r) ? r : l ))
@@ -77,8 +103,22 @@ RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp) {
 }
 
 /**
-@brief finds the pseudo median of a range of items using a spread of
-       nine numbers
+ * @brief finds the pseudo median of a range of items using a spread of nine numbers
+ *
+ * This function computes an approximate median of a range of items by sampling
+ * nine values spread across the range and finding their median. It uses a
+ * combination of the `median_of_three` function to determine the pseudo median.
+ *
+ * @tparam RandItr The type of the random-access iterator.
+ * @tparam C The type of the comparator.
+ * @param beg Iterator to the beginning of the range.
+ * @param end Iterator to the end of the range.
+ * @param cmp The comparator used to compare the dereferenced iterator values.
+ * @return The iterator pointing to the pseudo median of the range.
+ *
+ * @note The pseudo median is an approximation of the true median and may not
+ *       be the exact middle value of the range.
+ *
  */
 template <typename RandItr, typename C>
 RandItr pseudo_median_of_nine(RandItr beg, RandItr end, C cmp) {
@@ -93,18 +133,38 @@ RandItr pseudo_median_of_nine(RandItr beg, RandItr end, C cmp) {
 }
 
 /**
-@brief sorts two elements of dereferenced iterators using the given
-       comparison function
-*/
+ * @brief sorts two elements of dereferenced iterators using the given comparison function
+ *
+ * This function compares two elements pointed to by iterators and swaps them
+ * if they are out of order according to the provided comparator.
+ *
+ * @tparam Iter The type of the iterator.
+ * @tparam Compare The type of the comparator.
+ * @param a Iterator to the first element.
+ * @param b Iterator to the second element.
+ * @param comp The comparator used to compare the dereferenced iterator values.
+ *
+ */
 template<typename Iter, typename Compare>
 void sort2(Iter a, Iter b, Compare comp) {
   if (comp(*b, *a)) std::iter_swap(a, b);
 }
 
 /**
-@brief sorts three elements of dereferenced iterators using the given
-       comparison function
-*/
+ * @brief Sorts three elements of dereferenced iterators using the given comparison function.
+ *
+ * This function sorts three elements pointed to by iterators in ascending order
+ * according to the provided comparator. The sorting is performed using a sequence
+ * of calls to the `sort2` function to ensure the correct order of elements.
+ *
+ * @tparam Iter The type of the iterator.
+ * @tparam Compare The type of the comparator.
+ * @param a Iterator to the first element.
+ * @param b Iterator to the second element.
+ * @param c Iterator to the third element.
+ * @param comp The comparator used to compare the dereferenced iterator values.
+ *
+ */
 template<typename Iter, typename Compare>
 void sort3(Iter a, Iter b, Iter c, Compare comp) {
   sort2(a, b, comp);
@@ -113,8 +173,19 @@ void sort3(Iter a, Iter b, Iter c, Compare comp) {
 }
 
 /**
-@brief generates a program-wise unique id of the give type (thread-safe)
-*/
+ * @brief generates a program-wide unique ID of the given type in a thread-safe manner
+ *
+ * This function provides a globally unique identifier of the specified integral type.
+ * It uses a static `std::atomic` counter to ensure thread safety and increments the
+ * counter in a relaxed memory ordering for efficiency.
+ *
+ * @tparam T The type of the ID to generate. Must be an integral type.
+ * @return A unique ID of type `T`.
+ *
+ * @note The uniqueness of the ID is guaranteed only within the program's lifetime.
+ * @note The function does not throw exceptions.
+ *
+ */
 template <typename T, std::enable_if_t<std::is_integral_v<T>, void>* = nullptr>
 T unique_id() {
   static std::atomic<T> counter{0};
@@ -122,8 +193,20 @@ T unique_id() {
 }
 
 /**
-@brief updates an atomic variable with a maximum value
-*/
+ * @brief updates an atomic variable with the maximum value
+ *
+ * This function atomically updates the provided atomic variable `v` to hold
+ * the maximum of its current value and `max_v`. The update is performed using
+ * a relaxed memory ordering for efficiency in non-synchronizing contexts.
+ *
+ * @tparam T The type of the atomic variable. Must be trivially copyable and comparable.
+ * @param v The atomic variable to update.
+ * @param max_v The value to compare with the current value of `v`.
+ *
+ * @note If multiple threads call this function concurrently, the value of `v`
+ *       will be the maximum value seen across all threads.
+ *
+ */
 template <typename T>
 inline void atomic_max(std::atomic<T>& v, const T& max_v) noexcept {
   T prev = v.load(std::memory_order_relaxed);
@@ -134,8 +217,20 @@ inline void atomic_max(std::atomic<T>& v, const T& max_v) noexcept {
 }
 
 /**
-@brief updates an atomic variable with a minimum value
-*/
+ * @brief updates an atomic variable with the minimum value
+ *
+ * This function atomically updates the provided atomic variable `v` to hold
+ * the minimum of its current value and `min_v`. The update is performed using 
+ * a relaxed memory ordering for efficiency in non-synchronizing contexts.
+ *
+ * @tparam T The type of the atomic variable. Must be trivially copyable and comparable.
+ * @param v The atomic variable to update.
+ * @param min_v The value to compare with the current value of `v`.
+ *
+ * @note If multiple threads call this function concurrently, the value of `v` 
+ *       will be the minimum value seen across all threads.
+ *
+ */
 template <typename T>
 inline void atomic_min(std::atomic<T>& v, const T& min_v) noexcept {
   T prev = v.load(std::memory_order_relaxed);
@@ -146,8 +241,16 @@ inline void atomic_min(std::atomic<T>& v, const T& min_v) noexcept {
 }
 
 /**
-@brief get a random seed
-*/
+ * @brief generates a random seed based on the current system clock
+ *
+ * This function returns a seed value derived from the number of clock ticks
+ * since the epoch as measured by the system clock. The seed can be used
+ * to initialize random number generators.
+ *
+ * @tparam T The type of the returned seed. Must be an integral type.
+ * @return A seed value based on the system clock.
+ *
+ */
 template <typename T>
 inline T seed() noexcept {
   return std::chrono::system_clock::now().time_since_epoch().count();

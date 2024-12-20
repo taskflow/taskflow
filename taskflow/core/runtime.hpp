@@ -633,7 +633,7 @@ class PreemptionGuard {
 
   PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
     if(_runtime._preempted == true) {
-      TF_THROW("runtime is not preemptable");
+      TF_THROW("runtime is not preemptible");
     }
     _runtime._parent->_nstate |= NSTATE::PREEMPTED;
     _runtime._preempted = true;

@@ -36,18 +36,52 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-9-0_summary Release Summary
 
+This release improves scheduling performance with a decentralized work-stealing strategy 
+and enhances exception handling across all task types.
 
 @section release-3-9-0_new_features New Features
 
 @subsection release-3-9-0_taskflow_core Taskflow Core
 
++ improved the core scheduling algorithm using a decentralized work-stealing strategy
+  + tf::BoundedTaskQueue to optimize per-thread work-stealing latency
+  + tf::UnboundedTaskQueue to handle overflowed tasks
++ enhanced tf::Runtime to support preemptible execution flows
++ optimized task storage by storing detached tasks in their original subflows
++ optimized the query efficiency for strong dependencies by embedding their values in node states
++ updated tf::Graph to derive from a vector of unique pointers to nodes
+  + Graph node lifetimes are managed using std::unique_ptr
+  + Asynchronous task node lifetimes are managed using tf::Executor.
++ expanded unit tests to include more exception handling scenarios
++ removed the blocking behavior to avoid underutilized threads for the following tasks:
+  + module task ([#649](https://github.com/taskflow/taskflow/issues/649))
+  + subflow task
+  + all parallel algorithms (through preemptible async tasks)
++ removed std::bind from asynchronous tasks to ensure proper constexpr switch
+
 @subsection release-3-9-0_utilities Utilities
+
++ added @c tf::pause to relax CPU during busy spinning loop
++ added @c tf::seed to generate a random seed based on calling time point
++ added @c tf::atomic_min to update an atomic variable with the minimum value
++ added @c tf::atomic_max to update an atomic variable with the maximum value
 
 @section release-3-9-0_bug_fixes Bug Fixes 
 
++ fixed AppleClang compile error in tsq.hpp ([#651](https://github.com/taskflow/taskflow/pull/651))
++ fixed wrong range in uuid test ([#632](https://github.com/taskflow/taskflow/pull/632/))
++ fixed the exception bug in tf::Subflow::join ([#602](https://github.com/taskflow/taskflow/issues/602))
+
 @section release-3-9-0_breaking_changes Breaking Changes
 
++ decoupled tf::Subflow from inheriting tf::Runtime to accommodate distinct execution logic
+
 @section release-3-9-0_documentation Documentation
+
++ fixed missing documentation of tf::Executor due to Doxygen bugs ([#625](https://github.com/taskflow/taskflow/pull/625))
++ fixed benchmark instance names in documentation ([#621](https://github.com/taskflow/taskflow/pull/621))
++ revised @ref ExceptionHandling
++ revised @ref AsyncTasking
 
 @section release-3-9-0_miscellaneous_items Miscellaneous Items
 

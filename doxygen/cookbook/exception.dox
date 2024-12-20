@@ -98,6 +98,86 @@ catch(const std::runtime_error& e) {
 }
 @endcode
 
+@section CatchAnExceptionFromASubflow Catch an Exception from a Subflow
+
+When you join a subflow using tf::Subflow::join, you can catch an exception thrown by
+its children tasks.
+For example, the following code catches an exception from the child task `A` of the
+subflow `sf`:
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+taskflow.emplace([](tf::Subflow& sf) {
+  tf::Task A = sf.emplace([]() { 
+    std::cout << "Task A\n";
+    throw std::runtime_error("exception on A"); 
+  });
+  tf::Task B = sf.emplace([]() { 
+    std::cout << "Task B\n"; 
+  });
+  A.precede(B);
+  
+  // catch the exception
+  try {
+    sf.join();
+  }
+  catch(const std::runtime_error& re) {
+    std::cout << "exception thrown during subflow joining: " << re.what() << '\n';
+  }
+});
+
+executor.run(taskflow).get();
+@endcode
+
+When an exception is thrown, it will cancel the execution of the parent subflow.
+All the subsequent tasks that depend on that exception task will not run.
+The above code example has the following output:
+
+@code{.shell-session}
+Task A
+exception thrown during subflow joining: exception on A
+@endcode
+
+Uncaught exception will be propagated to the parent level until being explicitly caught.
+For example, the code below will propagate the exception to the parent of the subflow,
+which in this case in its taskflow.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+taskflow.emplace([](tf::Subflow& sf) {
+  tf::Task A = sf.emplace([]() {
+    std::cout << "Task A\n";
+    throw std::runtime_error("exception on A");
+  });
+  tf::Task B = sf.emplace([]() {
+    std::cout << "Task B\n"; 
+  }); 
+  A.precede(B);
+
+  // uncaught exception will propagate to the parent
+  sf.join();
+});
+
+try
+{
+  executor.run(taskflow).get();
+}
+catch (const std::runtime_error& re)
+{
+  std::cout << "exception thrown from running the taskflow: " << re.what() << '\n';
+}
+@endcode
+
+@code{.shell-session}
+Task A
+exception thrown from running the taskflow: exception on A
+@endcode
+
+
 @section CatchAnExceptionFromAnAsyncTask Catch an Exception from an Async Task
 
 Similar to @std_future, tf::Executor::async will store the exception in the shared

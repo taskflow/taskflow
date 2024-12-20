@@ -69,76 +69,9 @@ std::future<void> fu = executor.async("async task", [](){});
 executor.silent_async("silent async task", [](){});
 @endcode
 
-@section LaunchAsynchronousTasksFromAnSubflow Launch Asynchronous Tasks from a Subflow
-
-You can launch asynchronous tasks from tf::Subflow using
-tf::Subflow::async.
-Asynchronous tasks are independent tasks spawned
-during the execution of a subflow.
-When the subflow joins, all asynchronous tasks are guaranteed to finish.
-The following code creates 100 asynchronous tasks from a subflow
-and joins their executions explicitly using tf::Subflow::join.
-
-@code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-std::atomic<int> counter{0};
-
-taskflow.emplace([&] (tf::Subflow& sf){
-  std::vector<std::future<void>> futures;
-  for(int i=0; i<100; i++) {
-    futures.emplace_back(sf.async([&](){ ++counter; }));
-  }
-  sf.join();  // all of the 100 asynchronous tasks will finish by this join
-  assert(counter == 100);
-});
-
-executor.run(taskflow).wait();
-@endcode
-
-If you do not need the return value or the future to synchronize the execution, 
-you can use tf::Subflow::silent_async which has less overhead 
-when creating an asynchronous task compared to tf::Subflow::async.
-
-@code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-std::atomic<int> counter{0};
-
-taskflow.emplace([&] (tf::Subflow& sf){
-  for(int i=0; i<100; i++) {
-    sf.silent_async([&](){ ++counter; });
-  }
-  sf.join();  // all of the 100 asynchronous tasks will finish by this join
-  assert(counter == 100);
-});
-
-executor.run(taskflow).wait();
-@endcode
-
-@attention
-You should only create asynchronous tasks from a joinable subflow.
-Launching asynchronous tasks from a detached subflow results in
-undefined behavior.
-
-You can assign an asynchronous task a name 
-using the two overloads, tf::Subflow::async(const std::string& name, F&& f) 
-and tf::Subflow::silent_async(const std::string& name, F&& f).
-Both methods take an additional argument of a string.
-
-@code{.cpp}
-taskflow.emplace([](tf::Subflow& sf){
-  std::future<void> future = sf.async("name of the task", [](){});
-  sf.silent_async("another name of the task", [](){});
-  sf.join();
-});
-@endcode
 
 @section LaunchAsynchronousTasksFromARuntime Launch Asynchronous Tasks from a Runtime
 
-The asynchronous tasking feature of tf::Subflow is indeed derived from tf::Runtime.
 You can launch asynchronous tasks from tf::Runtime using
 tf::Runtime::async or tf::Runtime::silent_async.
 The following code creates 100 asynchronous tasks from a runtime
