@@ -20,7 +20,7 @@ def analyze(Y):
 ###########################################################
 def run(target, method, thread, round):
 
-  exe = target + '/' + target
+  exe = ../build/benchmarks/bench_{target}
   print(exe, '-m', method, '-t', thread, '-r', round)
 
   with open(tmp_file, "w") as ofs:

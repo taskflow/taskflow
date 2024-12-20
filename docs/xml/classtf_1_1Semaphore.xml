@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Semaphore" kind="class" language="C++" prot="public">
     <compoundname>tf::Semaphore</compoundname>
     <includes refid="semaphore_8hpp" local="no">taskflow/core/semaphore.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Node</definition>
         <argsstring></argsstring>
         <name>Node</name>
-        <qualifiedname>tf::Semaphore::Node</qualifiedname>
         <param>
           <type>Node</type>
         </param>
@@ -19,16 +18,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="68" column="16" bodyfile="taskflow/core/semaphore.hpp" bodystart="68" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="68" column="3" bodyfile="taskflow/core/semaphore.hpp" bodystart="68" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Semaphore_1abe01d3cb3ccb1b59d816f5bec36d5cc8" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
         <definition>std::atomic&lt;size_t&gt; tf::Semaphore::_count</definition>
         <argsstring></argsstring>
         <name>_count</name>
-        <qualifiedname>tf::Semaphore::_count</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -37,14 +35,13 @@
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="152" column="17" bodyfile="taskflow/core/semaphore.hpp" bodystart="152" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Semaphore_1a9f019c0fdcd9b1bbf1d7f46760878d2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Semaphore::Semaphore</definition>
         <argsstring>()</argsstring>
         <name>Semaphore</name>
-        <qualifiedname>tf::Semaphore::Semaphore</qualifiedname>
         <briefdescription>
 <para>constructs a default semaphore with count equal to zero </para>
         </briefdescription>
@@ -60,7 +57,6 @@
         <definition>tf::Semaphore::Semaphore</definition>
         <argsstring>(size_t count)</argsstring>
         <name>Semaphore</name>
-        <qualifiedname>tf::Semaphore::Semaphore</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>count</declname>
@@ -82,7 +78,6 @@
         <definition>size_t tf::Semaphore::count</definition>
         <argsstring>(std::memory_order memory_order=std::memory_order_seq_cst) const</argsstring>
         <name>count</name>
-        <qualifiedname>tf::Semaphore::count</qualifiedname>
         <param>
           <type>std::memory_order</type>
           <declname>memory_order</declname>
@@ -112,7 +107,6 @@ Queries the current value of the associated counter. </para>
         <definition>bool tf::Semaphore::try_acquire</definition>
         <argsstring>()</argsstring>
         <name>try_acquire</name>
-        <qualifiedname>tf::Semaphore::try_acquire</qualifiedname>
         <briefdescription>
 <para>tries to atomically decrement the internal counter by <computeroutput>1</computeroutput> if it is greater than <computeroutput>0</computeroutput> </para>
         </briefdescription>
@@ -130,7 +124,6 @@ Tries to atomically decrement the internal counter by <computeroutput>1</compute
         <definition>void tf::Semaphore::release</definition>
         <argsstring>(size_t n=1)</argsstring>
         <name>release</name>
-        <qualifiedname>tf::Semaphore::release</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>n</declname>
@@ -160,7 +153,6 @@ The release operation always succeeds as it simply increments the counter of thi
         <definition>void tf::Semaphore::reset</definition>
         <argsstring>(size_t count, std::memory_order memory_order=std::memory_order_seq_cst)</argsstring>
         <name>reset</name>
-        <qualifiedname>tf::Semaphore::reset</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>count</declname>
@@ -199,7 +191,7 @@ The release operation always succeeds as it simply increments the counter of thi
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="146" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="146" bodyend="148"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a semophore object for building a concurrency constraint </para>
     </briefdescription>
@@ -213,7 +205,7 @@ The release operation always succeeds as it simply increments the counter of thi
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>at<sp/>any<sp/>time)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>at<sp/>any<sp/>time)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>critical_section();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>

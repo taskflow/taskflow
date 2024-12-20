@@ -37,6 +37,11 @@ class Runtime {
   friend class Executor;
   friend class FlowBuilder;
   friend class PreemptionGuard;
+  
+  #define TF_RUNTIME_CHECK_CALLER(msg)                                \
+  if(pt::worker == nullptr || pt::worker->_executor != &_executor) {  \
+    TF_THROW(msg);                                                    \
+  }
 
   public:
   
@@ -248,26 +253,11 @@ class Runtime {
   and returns when all tasks in the target completes.
   
   @attention
-  Only the worker of this tf::Runtime can issue corun.
+  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
   */
   template <typename T>
   void corun(T&& target);
 
-  /**
-  @brief keeps running the work-stealing loop until the predicate becomes true
-  
-  @tparam P predicate type
-  @param predicate a boolean predicate to indicate when to stop the loop
-
-  The method keeps the caller worker running in the work-stealing loop
-  until the stop predicate becomes true.
-  
-  @attention
-  Only the worker of this tf::Runtime can issue corun.
-  */
-  template <typename P>
-  void corun_until(P&& predicate);
-  
   /**
   @brief corun all asynchronous tasks spawned by this runtime with other workers
 
@@ -295,7 +285,7 @@ class Runtime {
   @endcode
 
   @attention
-  Only the worker of this tf::Runtime can issue tf::Runtime::corun_all.
+  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
   */
   inline void corun_all();
 
@@ -477,6 +467,8 @@ inline Worker& Runtime::worker() {
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
   
+  TF_RUNTIME_CHECK_CALLER("schedule must be called by a worker of runtime's executor");
+  
   auto node = task._node;
   // need to keep the invariant: when scheduling a task, the task must have
   // zero dependency (join counter is 0)
@@ -492,21 +484,17 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
-  _executor._corun_graph(_worker, _parent, target.graph().begin(), target.graph().end());
-}
-
-// Procedure: corun_until
-template <typename P>
-void Runtime::corun_until(P&& predicate) {
-  _executor._corun_until(_worker, std::forward<P>(predicate));
+  TF_RUNTIME_CHECK_CALLER("corun must be called by a worker of runtime's executor");
+  _executor._corun_graph(*pt::worker, _parent, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_all
 inline void Runtime::corun_all() {
+  TF_RUNTIME_CHECK_CALLER("corun_all must be called by a worker of runtime's executor");
   {
     AnchorGuard anchor(_parent);
-    _executor._corun_until(_worker, [this] () -> bool { 
-      return _parent->_join_counter.load(std::memory_order_acquire) == 0; 
+    _executor._corun_until(_worker, [this] () -> bool {
+      return _parent->_join_counter.load(std::memory_order_acquire) == 0;
     });
   }
   _parent->_rethrow_exception();
@@ -573,12 +561,14 @@ void Runtime::_silent_async(Worker& w, P&& params, F&& f) {
 // Function: silent_async
 template <typename F>
 void Runtime::silent_async(F&& f) {
+  TF_RUNTIME_CHECK_CALLER("silent_async must be called by a worker of runtime's executor");
   _silent_async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: silent_async
 template <typename P, typename F>
 void Runtime::silent_async(P&& params, F&& f) {
+  TF_RUNTIME_CHECK_CALLER("silent_async must be called by a worker of runtime's executor");
   _silent_async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 
@@ -611,12 +601,14 @@ auto Runtime::_async(Worker& w, P&& params, F&& f) {
 // Function: async
 template <typename F>
 auto Runtime::async(F&& f) {
+  TF_RUNTIME_CHECK_CALLER("async must be called by a worker of runtime's executor");
   return _async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: async
 template <typename P, typename F>
 auto Runtime::async(P&& params, F&& f) {
+  TF_RUNTIME_CHECK_CALLER("async must be called by a worker of runtime's executor");
   return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 

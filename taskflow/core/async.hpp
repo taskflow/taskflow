@@ -305,7 +305,6 @@ inline void Executor::_process_async_dependent(
   }
 }
 
-
 // Procedure: _tear_down_dependent_async
 inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Node*& cache) {
 

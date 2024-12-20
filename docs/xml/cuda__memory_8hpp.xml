@@ -1,14 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__memory_8hpp" kind="file" language="C++">
     <compoundname>cuda_memory.hpp</compoundname>
     <includes refid="cuda__device_8hpp" local="yes">cuda_device.hpp</includes>
     <incdepgraph>
-      <node id="2">
-        <label>cuda_device.hpp</label>
-        <link refid="cuda__device_8hpp"/>
-        <childnode refid="3" relation="include">
-        </childnode>
+      <node id="3">
+        <label>cuda_error.hpp</label>
       </node>
       <node id="1">
         <label>taskflow/cuda/cuda_memory.hpp</label>
@@ -16,8 +13,11 @@
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="3">
-        <label>cuda_error.hpp</label>
+      <node id="2">
+        <label>cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
       </node>
     </incdepgraph>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>

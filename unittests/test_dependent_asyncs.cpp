@@ -988,12 +988,11 @@ TEST_CASE("DependentAsync.RecursiveFibonacci.8threads" * doctest::timeout(300)) 
   recursive_fibonacci(8);
 }
 
-/*
 // ----------------------------------------------------------------------------
-// Mixed algorithms
+// Mixed algorithms with Silent Dependent Async
 // ----------------------------------------------------------------------------
 
-void mixed_algorithms(unsigned W) {
+void mixed_algorithms_with_silent_dependent_async(unsigned W) {
 
   size_t N = 65536;
 
@@ -1079,43 +1078,168 @@ void mixed_algorithms(unsigned W) {
     REQUIRE(data2[i] == i*12 - 1);
     REQUIRE(data3[i] == (i+1)*-13);
     REQUIRE(data4[N-i-1] == 7-i);
-    //printf(
-    //  "data 0|1|2|3|4 [%2zu]=%5d|%5d|%5d|%5d|%5d\n", 
-    //  i, data[i], data1[i], data2[i], data3[i], data4[i]
-    //);
+  }
+
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.1thread" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(1);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.2threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(2);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.3threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(3);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.4threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(4);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.5threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(5);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.6threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(6);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.7threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(7);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(8);
+}
+
+// ----------------------------------------------------------------------------
+// Mixed Algorithm with Dependent Async
+// ----------------------------------------------------------------------------
+
+void mixed_algorithms_with_dependent_async(unsigned W) {
+
+  size_t N = 65536;
+
+  tf::Executor executor(W);
+  
+  int sum1{1}, sum2{1};
+  std::vector<int> data(N), data1(N), data2(N), data3(N), data4(N);
+  
+  // initialize data to 10
+  auto [A, fuA] = executor.dependent_async(tf::make_for_each_task(
+    data.begin(), data.begin() + N/2, [](int& d){ d = 10; }
+  )); 
+  
+  auto [B, fuB] = executor.dependent_async(tf::make_for_each_index_task(
+    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
+  ));
+  
+  // data1[i] = [11, 11, 11, ...]
+  auto [T1, fuT1] = executor.dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data1.begin(), [](int& d) { return d+1; }
+  ), A, B);
+  
+  // data2[i] = [12, 12, 12, ...]
+  auto [T2, fuT2] = executor.dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data2.begin(), [](int& d) { return d+2; }
+  ), A, B);
+  
+  // data3[i] = [13, 13, 13, ...]
+  auto [T3, fuT3] = executor.dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data3.begin(), [](int& d) { return d+3; }
+  ), A, B);
+
+  // data4[i] = [1, 1, 1, ...]
+  auto [T4, fuT4] = executor.dependent_async(tf::make_transform_task(
+    data1.begin(), data1.end(), data2.begin(), data4.begin(),
+    [](int a, int b){ return b - a; } 
+  ), T1, T2);
+  
+  // sum1 = 1 + [-1-1-1-1...]
+  auto [T5, fuT5] = executor.dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), sum1, std::plus<int>{}, [](int d){ return -d; }
+  ), T4);
+
+  auto [T6, fuT6] = executor.dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), data3.begin(), sum2, std::plus<int>{}, std::plus<int>{}
+  ), T3, T4);
+  
+  // inclusive scan over data1 [11, 22, 33, 44, ...]
+  auto [T7, fuT7] = executor.dependent_async(tf::make_inclusive_scan_task(
+    data1.begin(), data1.end(), data1.begin(), std::plus<int>{}
+  ), T5, T6);
+  
+  // exclusive scan over data2 [-1, 11, 23, 35, ...]
+  auto [T8, fuT8] = executor.dependent_async(tf::make_exclusive_scan_task(
+    data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{}
+  ), T5, T6);
+    
+  // transform inclusive scan over data3 [-13, -26, -39, ...]
+  auto [T9, fuT9] = executor.dependent_async(tf::make_transform_inclusive_scan_task(
+    data3.begin(), data3.end(), data3.begin(), std::plus<int>{},
+    [](int i){ return -i; }
+  ), T5, T6);
+  
+  // transform exclusive scan over data4 [7, 6, 5, 4, ...]
+  auto [T10, fuT10] = executor.dependent_async(tf::make_transform_exclusive_scan_task(
+    data4.begin(), data4.end(), data4.begin(), 7, std::plus<int>{},
+    [](int i){ return -i; }
+  ), T5, T6);
+  
+  // sort data4
+  auto [T11, fuT11] = executor.dependent_async(tf::make_sort_task(
+    data4.begin(), data4.end()
+  ), T10);
+  
+  executor.wait_for_all();
+
+  REQUIRE(sum1 == 1-N);
+  REQUIRE(sum2 == 1+N*14);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(data [i] == 10);
+    REQUIRE(data1[i] == (i+1)*11);
+    REQUIRE(data2[i] == i*12 - 1);
+    REQUIRE(data3[i] == (i+1)*-13);
+    REQUIRE(data4[N-i-1] == 7-i);
   }
 
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.1thread" * doctest::timeout(300)) {
-  mixed_algorithms(1);
+  mixed_algorithms_with_dependent_async(1);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.2threads" * doctest::timeout(300)) {
-  mixed_algorithms(2);
+  mixed_algorithms_with_dependent_async(2);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.3threads" * doctest::timeout(300)) {
-  mixed_algorithms(3);
+  mixed_algorithms_with_dependent_async(3);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.4threads" * doctest::timeout(300)) {
-  mixed_algorithms(4);
+  mixed_algorithms_with_dependent_async(4);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.5threads" * doctest::timeout(300)) {
-  mixed_algorithms(5);
+  mixed_algorithms_with_dependent_async(5);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.6threads" * doctest::timeout(300)) {
-  mixed_algorithms(6);
+  mixed_algorithms_with_dependent_async(6);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.7threads" * doctest::timeout(300)) {
-  mixed_algorithms(7);
+  mixed_algorithms_with_dependent_async(7);
 }
 
 TEST_CASE("DependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
-  mixed_algorithms(8);
+  mixed_algorithms_with_dependent_async(8);
 }
-*/
+
+
+
+

@@ -44,6 +44,7 @@ using tf::WorkerInterface.
 class Worker {
 
   friend class Executor;
+  friend class Runtime;
   friend class WorkerView;
 
   public:
@@ -93,7 +94,6 @@ namespace pt {
 inline thread_local Worker* worker {nullptr};
 
 }
-    
 
 // ----------------------------------------------------------------------------
 // Class Definition: WorkerView

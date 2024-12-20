@@ -5,7 +5,7 @@
   <title>tf namespace | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -68,74 +68,146 @@
           <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>
+              <div class="m-doc-template">template&lt;typename T, unsigned N = 2&gt;</div>
+              class <a href="classtf_1_1SmallVector.html" class="m-doc">SmallVector</a>
             </dt>
-            <dd>class to create a dependent asynchronous task (async task)</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
-              class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a>
-            </dt>
-            <dd>class to create a lock-free bounded single-producer multiple-consumer queue</dd>
+            <dd>class to define a vector optimized for small array</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               struct <a href="structtf_1_1CachelineAligned.html" class="m-doc">CachelineAligned</a>
             </dt>
             <dd>struct to ensure cacheline-aligned storage for an object.</dd>
             <dt>
+              class <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>
+            </dt>
+            <dd>class to create a graph object</dd>
+            <dt>
+              struct <a href="structtf_1_1TaskParams.html" class="m-doc">TaskParams</a>
+            </dt>
+            <dd>task parameters to use when creating an asynchronous task</dd>
+            <dt>
+              struct <a href="structtf_1_1DefaultTaskParams.html" class="m-doc">DefaultTaskParams</a>
+            </dt>
+            <dd>empty task parameter type for compile-time optimization</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">UnboundedTaskQueue</a>
+            </dt>
+            <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
+              class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a>
+            </dt>
+            <dd>class to create a lock-free bounded single-producer multiple-consumer queue</dd>
+            <dt>
+              class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
+            </dt>
+            <dd>class to build a task dependency graph</dd>
+            <dt>
+              class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
+            </dt>
+            <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
+            <dt>
+              class <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>
+            </dt>
+            <dd>class to create a worker in an executor</dd>
+            <dt>
+              class <a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a>
+            </dt>
+            <dd>class to create an immutable view of a worker in an executor</dd>
+            <dt>
+              class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
+            </dt>
+            <dd>class to create an executor</dd>
+            <dt>
+              class <a href="classtf_1_1Task.html" class="m-doc">Task</a>
+            </dt>
+            <dd>class to create a task handle over a node in a taskflow graph</dd>
+            <dt>
+              class <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>
+            </dt>
+            <dd>class to access task information from the observer interface</dd>
+            <dt>
+              class <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>
+            </dt>
+            <dd>class to create a dependent asynchronous task (async task)</dd>
+            <dt>
+              class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
+            </dt>
+            <dd>class to include a runtime object in a task</dd>
+            <dt>
+              class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>
+            </dt>
+            <dd>class to create a semophore object for building a concurrency constraint</dd>
+            <dt>
+              class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>
+            </dt>
+            <dd>class to create a taskflow object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1Future.html" class="m-doc">Future</a>
+            </dt>
+            <dd>class to access the result of an execution</dd>
+            <dt>
+              class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
+            </dt>
+            <dd>class to derive an executor observer</dd>
+            <dt>
               class <a href="classtf_1_1ChromeObserver.html" class="m-doc">ChromeObserver</a>
             </dt>
             <dd>class to create an observer based on Chrome tracing format</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              class <a href="classtf_1_1cudaDeviceAllocator.html" class="m-doc">cudaDeviceAllocator</a>
+              class <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a>
             </dt>
-            <dd>class to create a CUDA device allocator</dd>
+            <dd>class to create an observer based on the built-in taskflow profiler format</dd>
             <dt>
-              class <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>
+              struct <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA event</dd>
+            <dd>default closure wrapper that simply runs the given closure as is</dd>
             <dt>
-              <div class="m-doc-template">template&lt;unsigned NT, unsigned VT&gt;</div>
-              class <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
             </dt>
-            <dd>class to define execution policy for CUDA standard algorithms</dd>
+            <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
             <dt>
-              class <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
             </dt>
-            <dd>class to create a cudaFlow task dependency graph</dd>
+            <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
             <dt>
-              class <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a>
             </dt>
-            <dd>class to create a cudaFlow graph using stream capture</dd>
+            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
             <dt>
-              class <a href="classtf_1_1cudaFlowLinearOptimizer.html" class="m-doc">cudaFlowLinearOptimizer</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a>
             </dt>
-            <dd>class to capture a linear CUDA graph using a sequential stream</dd>
+            <dd>class to construct a static partitioner for scheduling parallel algorithms</dd>
             <dt>
-              class <a href="classtf_1_1cudaFlowRoundRobinOptimizer.html" class="m-doc">cudaFlowRoundRobinOptimizer</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
+              class <a href="classtf_1_1RandomPartitioner.html" class="m-doc">RandomPartitioner</a>
             </dt>
-            <dd>class to capture a CUDA graph using a round-robin algorithm</dd>
+            <dd>class to construct a random partitioner for scheduling parallel algorithms</dd>
             <dt>
-              class <a href="classtf_1_1cudaFlowSequentialOptimizer.html" class="m-doc">cudaFlowSequentialOptimizer</a>
+              class <a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a>
             </dt>
-            <dd>class to capture a CUDA graph using a sequential stream</dd>
+            <dd>class to create a pipeflow object used by the pipe callable</dd>
             <dt>
-              class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a>
+              <div class="m-doc-template">template&lt;typename C = <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;void(<a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a>&amp;)&gt;&gt;</div>
+              class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a>
             </dt>
-            <dd>class to create an RAII-styled context switch</dd>
+            <dd>class to create a pipe object for a pipeline stage</dd>
             <dt>
-              class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>
+              <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
+              class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA stream</dd>
+            <dd>class to create a pipeline scheduling framework</dd>
             <dt>
-              class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>
+              <div class="m-doc-template">template&lt;typename P&gt;</div>
+              class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a>
             </dt>
-            <dd>class to create a task handle over an internal node of a cudaFlow graph</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename T&gt;</div>
-              class <a href="classtf_1_1cudaUSMAllocator.html" class="m-doc">cudaUSMAllocator</a>
-            </dt>
-            <dd>class to create a unified shared memory (USM) allocator</dd>
+            <dd>class to create a scalable pipeline object</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename Input, typename Output, typename C&gt;</div>
               class <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a>
@@ -147,128 +219,56 @@
             </dt>
             <dd>class to create a data-parallel pipeline scheduling framework</dd>
             <dt>
-              struct <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>
+              class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a>
             </dt>
-            <dd>default closure wrapper that simply runs the given closure as is</dd>
-            <dt>
-              struct <a href="structtf_1_1DefaultTaskParams.html" class="m-doc">DefaultTaskParams</a>
-            </dt>
-            <dd>empty task parameter type for compile-time optimization</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
-              class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a>
-            </dt>
-            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
-            <dt>
-              class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
-            </dt>
-            <dd>class to create an executor</dd>
-            <dt>
-              class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
-            </dt>
-            <dd>class to build a task dependency graph</dd>
+            <dd>class to create an RAII-styled context switch</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              class <a href="classtf_1_1Future.html" class="m-doc">Future</a>
+              class <a href="classtf_1_1cudaDeviceAllocator.html" class="m-doc">cudaDeviceAllocator</a>
             </dt>
-            <dd>class to access the result of an execution</dd>
-            <dt>
-              class <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>
-            </dt>
-            <dd>class to create a graph object</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
-              class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
-            </dt>
-            <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
-            <dt>
-              class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
-            </dt>
-            <dd>class to derive an executor observer</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
-              class <a href="classtf_1_1PartitionerBase.html" class="m-doc">PartitionerBase</a>
-            </dt>
-            <dd>class to derive a partitioner for scheduling parallel algorithms</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;void(<a href="classtf_1_1Pipeflow.html" class="m-doc">tf::<wbr />Pipeflow</a>&amp;)&gt;&gt;</div>
-              class <a href="classtf_1_1Pipe.html" class="m-doc">Pipe</a>
-            </dt>
-            <dd>class to create a pipe object for a pipeline stage</dd>
-            <dt>
-              class <a href="classtf_1_1Pipeflow.html" class="m-doc">Pipeflow</a>
-            </dt>
-            <dd>class to create a pipeflow object used by the pipe callable</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename... Ps&gt;</div>
-              class <a href="classtf_1_1Pipeline.html" class="m-doc">Pipeline</a>
-            </dt>
-            <dd>class to create a pipeline scheduling framework</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
-              class <a href="classtf_1_1RandomPartitioner.html" class="m-doc">RandomPartitioner</a>
-            </dt>
-            <dd>class to construct a random partitioner for scheduling parallel algorithms</dd>
-            <dt>
-              class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
-            </dt>
-            <dd>class to include a runtime object in a task</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename P&gt;</div>
-              class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a>
-            </dt>
-            <dd>class to create a scalable pipeline object</dd>
-            <dt>
-              class <a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>
-            </dt>
-            <dd>class to create a semophore object for building a concurrency constraint</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename T, unsigned N = 2&gt;</div>
-              class <a href="classtf_1_1SmallVector.html" class="m-doc">SmallVector</a>
-            </dt>
-            <dd>class to define a vector optimized for small array</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename C = <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
-              class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a>
-            </dt>
-            <dd>class to construct a static partitioner for scheduling parallel algorithms</dd>
-            <dt>
-              class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a>
-            </dt>
-            <dd>class to construct a subflow graph from the execution of a dynamic task</dd>
-            <dt>
-              class <a href="classtf_1_1Task.html" class="m-doc">Task</a>
-            </dt>
-            <dd>class to create a task handle over a node in a taskflow graph</dd>
-            <dt>
-              class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>
-            </dt>
-            <dd>class to create a taskflow object</dd>
-            <dt>
-              struct <a href="structtf_1_1TaskParams.html" class="m-doc">TaskParams</a>
-            </dt>
-            <dd>task parameters to use when creating an asynchronous task</dd>
-            <dt>
-              class <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a>
-            </dt>
-            <dd>class to access task information from the observer interface</dd>
-            <dt>
-              class <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a>
-            </dt>
-            <dd>class to create an observer based on the built-in taskflow profiler format</dd>
+            <dd>class to create a CUDA device allocator</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">UnboundedTaskQueue</a>
+              class <a href="classtf_1_1cudaUSMAllocator.html" class="m-doc">cudaUSMAllocator</a>
             </dt>
-            <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
+            <dd>class to create a unified shared memory (USM) allocator</dd>
             <dt>
-              class <a href="classtf_1_1Worker.html" class="m-doc">Worker</a>
+              class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>
             </dt>
-            <dd>class to create a worker in an executor</dd>
+            <dd>class to create an RAII-styled wrapper over a native CUDA stream</dd>
             <dt>
-              class <a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a>
+              class <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>
             </dt>
-            <dd>class to create an immutable view of a worker in an executor</dd>
+            <dd>class to create an RAII-styled wrapper over a native CUDA event</dd>
+            <dt>
+              class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>
+            </dt>
+            <dd>class to create a task handle over an internal node of a cudaFlow graph</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a>
+            </dt>
+            <dd>class to create a cudaFlow task dependency graph</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlowSequentialOptimizer.html" class="m-doc">cudaFlowSequentialOptimizer</a>
+            </dt>
+            <dd>class to capture a CUDA graph using a sequential stream</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlowLinearOptimizer.html" class="m-doc">cudaFlowLinearOptimizer</a>
+            </dt>
+            <dd>class to capture a linear CUDA graph using a sequential stream</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlowRoundRobinOptimizer.html" class="m-doc">cudaFlowRoundRobinOptimizer</a>
+            </dt>
+            <dd>class to capture a CUDA graph using a round-robin algorithm</dd>
+            <dt>
+              class <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a>
+            </dt>
+            <dd>class to create a cudaFlow graph using stream capture</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;unsigned NT, unsigned VT&gt;</div>
+              class <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>
+            </dt>
+            <dd>class to define execution policy for CUDA standard algorithms</dd>
           </dl>
         </section>
         <section id="enum-members">
@@ -317,15 +317,15 @@
           <h2><a href="#typedef-members">Typedefs</a></h2>
           <dl class="m-doc">
             <dt>
-              using <a href="#a9c8f07d1c11444ff4dc15c63aa54da8d" class="m-doc">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
+              using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
             <dd>default time point type of observers</dd>
             <dt>
-              using <a href="#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
+              using <a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
             </dt>
             <dd>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></dd>
             <dt>
-              using <a href="#a0c8e4b43b5822445e2316659bbd44245" class="m-doc">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
+              using <a href="#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
             </dt>
             <dd>default execution policy</dd>
           </dl>
@@ -409,7 +409,7 @@
             </dt>
             <dd>checks whether an environment variable is defined</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd></dd>
             <dt>
@@ -418,11 +418,11 @@
             </dt>
             <dd>spins until the given predicate becomes true</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a18c45bc96e6725943e0a4396fa59b524" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert a task type to a human-readable string</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ad8b1b906950270c6b7bc19e7074daa23" class="m-doc">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              <span class="m-doc-wrap-bumper">auto <a href="#ad216aea4d0f648e149e47374ad015b1f" class="m-doc">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; task) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1Task.html" class="m-doc">Task</a></dd>
@@ -449,7 +449,7 @@
             </dt>
             <dd>tries to acquire all semaphores</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#ab7ec159c370bc052effcd0cdbc48047e" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#aa3fc0699b2c2b8f2f76bb39f91be1acb" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type) -&gt; const char*</span>
             </dt>
             <dd>convert an observer type to a human-readable string</dd>
             <dt>
@@ -550,18 +550,18 @@
             <dd>queries the total available memory (expensive call)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a2548e58af071bf1dbbbc945c84f237c9" class="m-doc">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N,
+              <span class="m-doc-wrap-bumper">auto <a href="#a6f04fd3168c45eeb2dffb223e5c81e45" class="m-doc">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N,
               int d) -&gt; T*</span>
             </dt>
             <dd>allocates memory on the given device for holding <code>N</code> elements of type <code>T</code></dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a76f4996669b2e81004749edbd3013d1a" class="m-doc">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N) -&gt; T*</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab9b68b8f4336f13b190d573969cb1cf7" class="m-doc">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N) -&gt; T*</span>
             </dt>
             <dd>allocates memory on the current device associated with the caller</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#ad289846c38e3f122e1315d906243fc8b" class="m-doc">cuda_malloc_shared</a>(</span><span class="m-doc-wrap">size_t N) -&gt; T*</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8eed05685b030fc44703213a4ef86f11" class="m-doc">cuda_malloc_shared</a>(</span><span class="m-doc-wrap">size_t N) -&gt; T*</span>
             </dt>
             <dd>allocates shared memory for holding <code>N</code> elements of type <code>T</code></dd>
             <dt>
@@ -590,11 +590,11 @@
             </dt>
             <dd>initializes or sets GPU memory to the given value byte by byte</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a693cfec4e770c8d66fbd920ed8a07df0" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>convert a cuda_task type to a human-readable string</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a29ae31d817e4080f4030c2b311ddafe9" class="m-doc">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              <span class="m-doc-wrap-bumper">auto <a href="#a9cca69f61d792afb3ad501b703d795c1" class="m-doc">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
             </dt>
             <dd>overload of ostream inserter operator for <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></dd>
@@ -805,7 +805,7 @@
             </dt>
             <dd>finds the index of the maximum element in a range</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a06790e5f6898894392f247309626e1b4" class="m-doc">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc">version</a>(</span><span class="m-doc-wrap">) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>queries the version information in a string format <code>major.minor.patch</code></dd>
           </dl>
@@ -1023,24 +1023,24 @@
         </section>
         <section>
           <h2>Typedef documentation</h2>
-          <section class="m-doc-details" id="a9c8f07d1c11444ff4dc15c63aa54da8d"><div>
+          <section class="m-doc-details" id="a8cff4bbd797dde4dfab096c3cc657833"><div>
             <h3>
-              using tf::<wbr /><a href="#a9c8f07d1c11444ff4dc15c63aa54da8d" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
+              using tf::<wbr /><a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="observer_8hpp.html">&lt;taskflow/core/observer.hpp&gt;</a></div>
             </h3>
             <p>default time point type of observers</p>
           </div></section>
-          <section class="m-doc-details" id="ace2c5adcd5039483eebb6dbdbb6f33e3"><div>
+          <section class="m-doc-details" id="a66b72776c788898aee9e132b0ea9b405"><div>
             <h3>
-              using tf::<wbr /><a href="#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
+              using tf::<wbr /><a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="partitioner_8hpp.html">&lt;taskflow/algorithm/partitioner.hpp&gt;</a></div>
             </h3>
             <p>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></p>
 <p>Guided partitioning algorithm can achieve stable and decent performance for most parallel algorithms.</p>
           </div></section>
-          <section class="m-doc-details" id="a0c8e4b43b5822445e2316659bbd44245"><div>
+          <section class="m-doc-details" id="a0e267ab3e1baeb1962f3b3a374de9553"><div>
             <h3>
-              using tf::<wbr /><a href="#a0c8e4b43b5822445e2316659bbd44245" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
+              using tf::<wbr /><a href="#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc-self">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__execution__policy_8hpp.html">&lt;taskflow/cuda/cuda_execution_policy.hpp&gt;</a></div>
             </h3>
             <p>default execution policy</p>
@@ -1474,7 +1474,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to fetch the value.</li><li>On POSIX, it uses <code><a href="http://en.cppreference.com/w/cpp/utility/program/getenv.html" class="m-doc-external">std::<wbr />getenv</a></code>.</li></ul></aside>
+<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to fetch the value.</li><li>On POSIX, it uses <code>std::getenv</code>.</li></ul></aside>
           </div></section>
           <section class="m-doc-details" id="adc9815b9f96b796675ba939078d25413"><div>
             <h3>
@@ -1498,11 +1498,11 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function determines if a specific environment variable exists in the current environment.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to check for the variable&#x27;s presence.</li><li>On POSIX, it uses <code><a href="http://en.cppreference.com/w/cpp/utility/program/getenv.html" class="m-doc-external">std::<wbr />getenv</a></code> to check for the variable&#x27;s presence.</li></ul></aside>
+<p>This function determines if a specific environment variable exists in the current environment.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to check for the variable&#x27;s presence.</li><li>On POSIX, it uses <code>std::getenv</code> to check for the variable&#x27;s presence.</li></ul></aside>
           </div></section>
-          <section class="m-doc-details" id="a3430ee9958ddb3ed09424e30475d9e2d"><div>
+          <section class="m-doc-details" id="aef9af2433294beb7d41680e5b33eafdd"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc-self">pause</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc-self">pause</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
 <p>This function is used in spin-wait loops to hint the CPU that the current thread is in a busy-wait state. It helps reduce power consumption and improves performance on hyper-threaded processors by preventing the CPU from consuming unnecessary cycles while waiting. It is particularly useful in low-contention scenarios, where the thread is likely to quickly acquire the lock or condition it&#x27;s waiting for, avoiding an expensive context switch. On modern x86 processors, this instruction can be invoked using <code>__builtin_ia32_pause()</code> in GCC/Clang or <code>_mm_pause()</code> in MSVC. In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.</p>
           </div></section>
@@ -1534,11 +1534,11 @@
                 </tr>
               </tbody>
             </table>
-<p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-info"><h4>Note</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
+<p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-info"><h4>Note</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
           </div></section>
-          <section class="m-doc-details" id="a18c45bc96e6725943e0a4396fa59b524"><div>
+          <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a18c45bc96e6725943e0a4396fa59b524" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>
+              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type)</span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
             </h3>
             <p>convert a task type to a human-readable string</p>
@@ -1549,9 +1549,9 @@
 <span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;module&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span><span class="w">           </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;async&quot;</span></pre>
           </div></section>
-          <section class="m-doc-details" id="ad8b1b906950270c6b7bc19e7074daa23"><div>
+          <section class="m-doc-details" id="ad216aea4d0f648e149e47374ad015b1f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad8b1b906950270c6b7bc19e7074daa23" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad216aea4d0f648e149e47374ad015b1f" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; task)</span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
             </h3>
@@ -1685,9 +1685,9 @@
             </table>
 <p>Releases all the semaphores.</p>
           </div></section>
-          <section class="m-doc-details" id="ab7ec159c370bc052effcd0cdbc48047e"><div>
+          <section class="m-doc-details" id="aa3fc0699b2c2b8f2f76bb39f91be1acb"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab7ec159c370bc052effcd0cdbc48047e" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type)</span></span>
+              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa3fc0699b2c2b8f2f76bb39f91be1acb" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#a192f7cb0fab2eb6f1c84f6046706435d" class="m-doc">ObserverType</a> type)</span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="observer_8hpp.html">&lt;taskflow/core/observer.hpp&gt;</a></div>
             </h3>
             <p>convert an observer type to a human-readable string</p>
@@ -1889,36 +1889,36 @@
             </h3>
             <p>queries the total available memory (expensive call)</p>
           </div></section>
-          <section class="m-doc-details" id="a2548e58af071bf1dbbbc945c84f237c9"><div>
+          <section class="m-doc-details" id="a6f04fd3168c45eeb2dffb223e5c81e45"><div>
             <h3>
               <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__memory_8hpp.html">&lt;taskflow/cuda/cuda_memory.hpp&gt;</a></div>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2548e58af071bf1dbbbc945c84f237c9" class="m-doc-self">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N,
+              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6f04fd3168c45eeb2dffb223e5c81e45" class="m-doc-self">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N,
               int d)</span></span>
             </h3>
             <p>allocates memory on the given device for holding <code>N</code> elements of type <code>T</code></p>
 <p>The function calls <code>cudaMalloc</code> to allocate <code>N*sizeof(T)</code> bytes of memory on the given device <code>d</code> and returns a pointer to the starting address of the device memory.</p>
           </div></section>
-          <section class="m-doc-details" id="a76f4996669b2e81004749edbd3013d1a"><div>
+          <section class="m-doc-details" id="ab9b68b8f4336f13b190d573969cb1cf7"><div>
             <h3>
               <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__memory_8hpp.html">&lt;taskflow/cuda/cuda_memory.hpp&gt;</a></div>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a76f4996669b2e81004749edbd3013d1a" class="m-doc-self">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N)</span></span>
+              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab9b68b8f4336f13b190d573969cb1cf7" class="m-doc-self">cuda_malloc_device</a>(</span><span class="m-doc-wrap">size_t N)</span></span>
             </h3>
             <p>allocates memory on the current device associated with the caller</p>
 <p>The function calls malloc_device from the current device associated with the caller.</p>
           </div></section>
-          <section class="m-doc-details" id="ad289846c38e3f122e1315d906243fc8b"><div>
+          <section class="m-doc-details" id="a8eed05685b030fc44703213a4ef86f11"><div>
             <h3>
               <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__memory_8hpp.html">&lt;taskflow/cuda/cuda_memory.hpp&gt;</a></div>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad289846c38e3f122e1315d906243fc8b" class="m-doc-self">cuda_malloc_shared</a>(</span><span class="m-doc-wrap">size_t N)</span></span>
+              <span class="m-doc-wrap-bumper">T* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8eed05685b030fc44703213a4ef86f11" class="m-doc-self">cuda_malloc_shared</a>(</span><span class="m-doc-wrap">size_t N)</span></span>
             </h3>
             <p>allocates shared memory for holding <code>N</code> elements of type <code>T</code></p>
 <p>The function calls <code>cudaMallocManaged</code> to allocate <code>N*sizeof(T)</code> bytes of memory and returns a pointer to the starting address of the shared memory.</p>
@@ -2058,16 +2058,16 @@
             </table>
 <p>The method calls <code>cudaMemsetAsync</code> with the given <code>stream</code> to fill the first <code>count</code> bytes of the memory area pointed to by <code>devPtr</code> with the constant byte value <code>value</code>.</p>
           </div></section>
-          <section class="m-doc-details" id="a693cfec4e770c8d66fbd920ed8a07df0"><div>
+          <section class="m-doc-details" id="af21fe1eaf680dbddc0503ef5d1a9a664"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a693cfec4e770c8d66fbd920ed8a07df0" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) <span class="m-label m-primary">constexpr</span></span></span>
+              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) <span class="m-label m-primary">constexpr</span></span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__task_8hpp.html">&lt;taskflow/cuda/cuda_task.hpp&gt;</a></div>
             </h3>
             <p>convert a cuda_task type to a human-readable string</p>
           </div></section>
-          <section class="m-doc-details" id="a29ae31d817e4080f4030c2b311ddafe9"><div>
+          <section class="m-doc-details" id="a9cca69f61d792afb3ad501b703d795c1"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a29ae31d817e4080f4030c2b311ddafe9" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9cca69f61d792afb3ad501b703d795c1" class="m-doc-self">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct)</span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__task_8hpp.html">&lt;taskflow/cuda/cuda_task.hpp&gt;</a></div>
             </h3>
@@ -3529,9 +3529,9 @@
 <span class="p">}</span>
 <span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">largest</span><span class="p">);</span></pre>
           </div></section>
-          <section class="m-doc-details" id="a06790e5f6898894392f247309626e1b4"><div>
+          <section class="m-doc-details" id="a30fa078dcf625e9eada5a95af1467588"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a06790e5f6898894392f247309626e1b4" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) <span class="m-label m-primary">constexpr</span></span></span>
+              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a30fa078dcf625e9eada5a95af1467588" class="m-doc-self">version</a>(</span><span class="m-doc-wrap">) <span class="m-label m-primary">constexpr</span></span></span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="taskflow_8hpp.html">&lt;taskflow/taskflow.hpp&gt;</a></div>
             </h3>
             <p>queries the version information in a string format <code>major.minor.patch</code></p>
@@ -3578,7 +3578,7 @@
               bool tf::<wbr /><a href="#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc-self">is_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a condition task</p>
-<p>A condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;int()&gt;</a> or std::function&lt;int(tf::Runtime&amp;)&gt;.</p>
+<p>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a78c40dc8776735b0f2c27cd446481aff"><div>
             <h3>
@@ -3658,7 +3658,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2024.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

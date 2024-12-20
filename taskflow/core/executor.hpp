@@ -1784,32 +1784,6 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
   return false;
 }
 
-// Procedure: _corun_graph
-template <typename I>
-void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
-
-  // empty graph
-  if(first == last) {
-    return;
-  }
-  
-  // anchor this parent as the blocking point
-  {
-    AnchorGuard anchor(p);
-
-    auto send = _set_up_graph(first, last, p, p->_topology, 0);
-    p->_join_counter.fetch_add(send - first, std::memory_order_relaxed);
-    _schedule(w, first, send);
-
-    _corun_until(w, [p] () -> bool { 
-      return p->_join_counter.load(std::memory_order_acquire) == 0; }
-    );
-  }
-
-  // rethrow the exception to the blocker
-  p->_rethrow_exception();
-}
-
 // Procedure: _invoke_condition_task
 inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
@@ -1858,6 +1832,7 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
 inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
   auto& work = std::get_if<Node::Async>(&node->_handle)->work;
   switch(work.index()) {
+    // void()
     case 0:
       _observer_prologue(worker, node);
       TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
@@ -1866,14 +1841,14 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
       _observer_epilogue(worker, node);
     break;
     
-    // (Runtime&) -> void
+    // void(Runtime&)
     case 1:
       if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
     
-    // (Runtime&, bool) -> void
+    // void(Runtime&, bool)
     case 2:
       if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
         return true;
@@ -1888,6 +1863,7 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
 inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
   auto& work = std::get_if<Node::DependentAsync>(&node->_handle)->work;
   switch(work.index()) {
+    // void()
     case 0:
       _observer_prologue(worker, node);
       TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
@@ -1896,14 +1872,14 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
       _observer_epilogue(worker, node);
     break;
     
-    // (Runtime&) -> void
+    // void(Runtime&)
     case 1:
       if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
 
-    // (Runtime& bool) -> void
+    // void(Runtime& bool)
     case 2:
       if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
         return true;
@@ -2050,6 +2026,32 @@ void Executor::corun_until(P&& predicate) {
   }
 
   _corun_until(*pt::worker, std::forward<P>(predicate));
+}
+
+// Procedure: _corun_graph
+template <typename I>
+void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
+
+  // empty graph
+  if(first == last) {
+    return;
+  }
+  
+  // anchor this parent as the blocking point
+  {
+    AnchorGuard anchor(p);
+
+    auto send = _set_up_graph(first, last, p, p->_topology, 0);
+    p->_join_counter.fetch_add(send - first, std::memory_order_relaxed);
+    _schedule(w, first, send);
+
+    _corun_until(w, [p] () -> bool { 
+      return p->_join_counter.load(std::memory_order_acquire) == 0; }
+    );
+  }
+
+  // rethrow the exception to the blocker
+  p->_rethrow_exception();
 }
 
 // Procedure: _increment_topology

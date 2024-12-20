@@ -44,6 +44,7 @@ struct ScanData {
 // Function: scan_loop
 template <typename S, typename Iterator, typename B>
 void scan_loop(
+  Runtime& rt,
   S& sdata,
   B bop, 
   Iterator d_beg, 
@@ -64,10 +65,7 @@ void scan_loop(
     return;
   } 
   
-  // simply do a loop until the counter becomes zero; we don't do corun
-  // as the block scan is typically very fast, and stealing a task can cause
-  // the worker to evict cached data from the block scan
-  spin_until([&](){ 
+  rt.executor().corun_until([&](){ 
     return sdata.counter.load(std::memory_order_acquire) == 0; }
   );
   
@@ -137,7 +135,7 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop) {
         }
 
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
       
       std::advance(s_beg, block_size);
@@ -208,7 +206,7 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop, T init) {
         }
         
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
 
       std::advance(s_beg, block_size);
@@ -281,7 +279,7 @@ auto make_transform_inclusive_scan_task(
         }
 
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
       
       std::advance(s_beg, block_size);
@@ -353,7 +351,7 @@ auto make_transform_inclusive_scan_task(
         }
         
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
 
       std::advance(s_beg, block_size);
@@ -437,7 +435,7 @@ auto make_exclusive_scan_task(
         *d_beg++ = local;
         
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
       
       std::advance(s_beg, block_size);
@@ -524,7 +522,7 @@ auto make_transform_exclusive_scan_task(
         *d_beg++ = local;
         
         // block scan
-        detail::scan_loop(*scan_data, bop, result, W, w, block_size);
+        detail::scan_loop(rt, *scan_data, bop, result, W, w, block_size);
       };
       
       std::advance(s_beg, block_size);
