@@ -50,14 +50,16 @@ and enhances exception handling across all task types.
 + optimized task storage by storing detached tasks in their original subflows
 + optimized the query efficiency for strong dependencies by embedding their values in node states
 + updated tf::Graph to derive from a vector of unique pointers to nodes
-  + Graph node lifetimes are managed using std::unique_ptr
-  + Asynchronous task node lifetimes are managed using tf::Executor.
+  + %Graph node lifetimes are managed by std::unique_ptr
+  + Asynchronous task node lifetimes are managed by tf::Executor.
 + expanded unit tests to include more exception handling scenarios
 + removed the blocking behavior to avoid underutilized threads for the following tasks:
   + module task ([#649](https://github.com/taskflow/taskflow/issues/649))
   + subflow task
   + all parallel algorithms (through preemptible async tasks)
 + removed std::bind from asynchronous tasks to ensure proper constexpr switch
++ added compile-time macros to enable specific features
+  + `TF_ENABLE_TASK_POOL` to enable the use of task pool
 
 @subsection release-3-9-0_utilities Utilities
 
@@ -76,6 +78,7 @@ and enhances exception handling across all task types.
 @section release-3-9-0_breaking_changes Breaking Changes
 
 + decoupled tf::Subflow from inheriting tf::Runtime to accommodate distinct execution logic
++ removed tf::Runtime::corun_until as it duplicates tf::Executor::corun_until
 
 @section release-3-9-0_documentation Documentation
 

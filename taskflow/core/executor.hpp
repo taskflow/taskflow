@@ -1247,8 +1247,6 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
   while(!stop_predicate()) {
 
-    //exploit:
-
     if(auto t = w._wsq.pop(); t) {
       _invoke(w, t);
     }
@@ -1285,11 +1283,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 // Function: _explore_task
 inline void Executor::_explore_task(Worker& w, Node*& t) {
 
-  //assert(_workers[w].wsq.empty());
   //assert(!t);
 
   size_t num_steals = 0;
-  size_t num_yields = 0;
 
   // Here, we write do-while to make the worker steal at once
   // from the assigned victim.
@@ -1302,9 +1298,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       break;
     }
 
-    if(num_steals++ > _MAX_STEALS) {
+    if (++num_steals > _MAX_STEALS) {
       std::this_thread::yield();
-      if(num_yields++ > 100) {
+      if (num_steals > _MAX_STEALS + 100) {
         break;
       }
     }

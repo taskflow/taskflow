@@ -102,7 +102,7 @@ inline thread_local Worker* worker {nullptr};
 /**
 @class WorkerView
 
-@brief class to create an immutable view of a worker in an executor
+@brief class to create an immutable view of a worker 
 
 An executor keeps a set of internal worker threads to run tasks.
 A worker view provides users an immutable interface to observe

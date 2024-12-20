@@ -40,7 +40,7 @@ namespace tf {
 
 @tparam T data type (must be a pointer type)
 
-@brief class to create a lock-free unbounded single-producer multiple-consumer queue
+@brief class to create a lock-free unbounded work-stealing queue
 
 This class implements the work-stealing queue described in the paper,
 <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.
@@ -297,7 +297,7 @@ UnboundedTaskQueue<T>::resize_array(Array* a, int64_t b, int64_t t) {
 @tparam T data type
 @tparam LogSize the base-2 logarithm of the queue size
 
-@brief class to create a lock-free bounded single-producer multiple-consumer queue
+@brief class to create a lock-free bounded work-stealing queue
 
 This class implements the work-stealing queue described in the paper, 
 "Correct and Efficient Work-Stealing for Weak Memory Models,"
