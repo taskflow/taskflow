@@ -281,8 +281,6 @@ void joined_subflow_1(unsigned W) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
-  std::atomic<bool> post_join {false};
-
   taskflow.emplace([&] (tf::Subflow& sf0) {
     for (int i = 0; i < 100; ++i) {
       sf0.emplace([&] (tf::Subflow& sf1) {

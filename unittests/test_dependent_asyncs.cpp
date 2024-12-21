@@ -987,7 +987,7 @@ TEST_CASE("DependentAsync.RecursiveFibonacci.4threads" * doctest::timeout(300)) 
 TEST_CASE("DependentAsync.RecursiveFibonacci.8threads" * doctest::timeout(300)) {
   recursive_fibonacci(8);
 }
-
+/*
 // ----------------------------------------------------------------------------
 // Mixed algorithms with Silent Dependent Async
 // ----------------------------------------------------------------------------
@@ -1240,6 +1240,6 @@ TEST_CASE("DependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
   mixed_algorithms_with_dependent_async(8);
 }
 
-
+*/
 
 

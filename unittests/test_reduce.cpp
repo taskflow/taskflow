@@ -1513,8 +1513,6 @@ void silent_async(unsigned W) {
       smin = std::min(*itr, smin);
     }
 
-    tf::Task ptask;
-
     executor.silent_async(tf::make_reduce_task(
       beg, end, pmin, [](int& l, int& r){
       return std::min(l, r);
@@ -1583,8 +1581,6 @@ void silent_dependent_async(unsigned W) {
     for(auto itr = beg; itr != end; itr++) {
       smin = std::min(*itr, smin);
     }
-
-    tf::Task ptask;
 
     executor.silent_dependent_async(tf::make_reduce_task(
       beg, end, pmin, [](int& l, int& r){

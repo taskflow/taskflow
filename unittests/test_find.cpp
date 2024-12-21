@@ -898,7 +898,7 @@ void silent_async(unsigned W) {
     
     REQUIRE(res2 == input.end());
 
-    std::vector<int>::iterator itr1, itr2, beg2, end2;
+    std::vector<int>::iterator itr1, itr2;
 
     executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
     executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
@@ -967,7 +967,7 @@ void silent_dependent_async(unsigned W) {
     
     REQUIRE(res2 == input.end());
 
-    std::vector<int>::iterator itr1, itr2, beg2, end2;
+    std::vector<int>::iterator itr1, itr2;
 
     executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
     executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
