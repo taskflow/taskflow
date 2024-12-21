@@ -174,9 +174,16 @@ class Node {
     template <typename C>
     Static(C&&);
 
-    std::variant<
-      std::function<void()>, std::function<void(Runtime&)>
-    > work;
+    std::function<void()> work;
+  };
+  
+  // runtime work handle
+  struct Runtime {
+
+    template <typename C>
+    Runtime(C&&);
+
+    std::function<void(tf::Runtime&)> work;
   };
 
   // subflow work handle
@@ -224,8 +231,8 @@ class Node {
 
     std::variant<
       std::function<void()>, 
-      std::function<void(Runtime&)>, 
-      std::function<void(Runtime&, bool)>
+      std::function<void(tf::Runtime&)>, 
+      std::function<void(tf::Runtime&, bool)>
     > work;
   };
   
@@ -237,8 +244,8 @@ class Node {
     
     std::variant<
       std::function<void()>, 
-      std::function<void(Runtime&)>, 
-      std::function<void(Runtime&, bool)>
+      std::function<void(tf::Runtime&)>, 
+      std::function<void(tf::Runtime&, bool)>
     > work;
    
     std::atomic<size_t> use_count {1};
@@ -248,6 +255,7 @@ class Node {
   using handle_t = std::variant<
     Placeholder,      // placeholder
     Static,           // static tasking
+    Runtime,          // runtime tasking
     Subflow,          // subflow tasking
     Condition,        // conditional tasking
     MultiCondition,   // multi-conditional tasking
@@ -264,6 +272,7 @@ class Node {
   // variant index
   constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
   constexpr static auto STATIC          = get_index_v<Static, handle_t>;
+  constexpr static auto RUNTIME         = get_index_v<Runtime, handle_t>;
   constexpr static auto SUBFLOW         = get_index_v<Subflow, handle_t>;
   constexpr static auto CONDITION       = get_index_v<Condition, handle_t>;
   constexpr static auto MULTI_CONDITION = get_index_v<MultiCondition, handle_t>;
@@ -377,6 +386,15 @@ TF_FORCE_INLINE void recycle(Node* ptr) {
 // Constructor
 template <typename C>
 Node::Static::Static(C&& c) : work {std::forward<C>(c)} {
+}
+
+// ----------------------------------------------------------------------------
+// Definition for Node::Runtime
+// ----------------------------------------------------------------------------
+
+// Constructor
+template <typename C>
+Node::Runtime::Runtime(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------

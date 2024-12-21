@@ -1083,6 +1083,7 @@ class Executor {
   void _increment_topology();
   void _decrement_topology();
   void _invoke(Worker&, Node*);
+  void _invoke_static_task(Worker&, Node*);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
   void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
@@ -1090,7 +1091,7 @@ class Executor {
   void _schedule_async_task(Node*);
   void _update_cache(Worker&, Node*&, Node*);
 
-  bool _invoke_static_task(Worker&, Node*);
+  bool _invoke_runtime_task(Worker&, Node*);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
   bool _invoke_async_task(Worker&, Node*);
@@ -1519,7 +1520,13 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   switch(node->_handle.index()) {
     // static task
     case Node::STATIC:{
-      if(_invoke_static_task(worker, node)) {
+      _invoke_static_task(worker, node);
+    }
+    break;
+    
+    // runtime task
+    case Node::RUNTIME:{
+      if(_invoke_runtime_task(worker, node)) {
         return;
       }
     }
@@ -1720,24 +1727,19 @@ inline void Executor::_process_exception(Worker&, Node* node) {
 }
 
 // Procedure: _invoke_static_task
-inline bool Executor::_invoke_static_task(Worker& worker, Node* node) {
-  auto& work = std::get_if<Node::Static>(&node->_handle)->work;
-  switch(work.index()) {
-    case 0:
-      _observer_prologue(worker, node);
-      TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-        std::get_if<0>(&work)->operator()();
-      });
-      _observer_epilogue(worker, node);
-    break;
+inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+    std::get_if<Node::Static>(&node->_handle)->work();
+  });
+  _observer_epilogue(worker, node);
+}
 
-    case 1:
-      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
-        return true;
-      }
-    break;
-  }
-  return false;
+// Procedure: _invoke_runtime_task
+inline bool Executor::_invoke_runtime_task(Worker& worker, Node* node) {
+  return _invoke_internal_runtime(
+    worker, node, std::get_if<Node::Runtime>(&node->_handle)->work
+  );
 }
 
 // Procedure: _invoke_subflow_task

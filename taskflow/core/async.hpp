@@ -37,7 +37,7 @@ auto Executor::async(P&& params, F&& f) {
     ));
     return fu;
   }
-  // async task without runtime: [] () { ... }
+  // async task: [] () { ... }
   else {
     using R = std::invoke_result_t<F>;
     std::packaged_task<R()> p(std::forward<F>(f));

@@ -23,6 +23,8 @@ enum class TaskType : int {
   PLACEHOLDER = 0,
   /** @brief static task type */
   STATIC,
+  /** @brief runtime task type */
+  RUNTIME,
   /** @brief dynamic (subflow) task type */
   SUBFLOW,
   /** @brief condition task type */
@@ -39,9 +41,10 @@ enum class TaskType : int {
 @private
 @brief array of all task types (used for iterating task types)
 */
-inline constexpr std::array<TaskType, 6> TASK_TYPES = {
+inline constexpr std::array<TaskType, 7> TASK_TYPES = {
   TaskType::PLACEHOLDER,
   TaskType::STATIC,
+  TaskType::RUNTIME,
   TaskType::SUBFLOW,
   TaskType::CONDITION,
   TaskType::MODULE,
@@ -56,6 +59,7 @@ The name of each task type is the litte-case string of its characters.
 @code{.cpp}
 TaskType::PLACEHOLDER     ->  "placeholder"
 TaskType::STATIC          ->  "static"
+TaskType::RUNTIME         ->  "runtime"
 TaskType::SUBFLOW         ->  "subflow"
 TaskType::CONDITION       ->  "condition"
 TaskType::MODULE          ->  "module"
@@ -69,6 +73,7 @@ inline const char* to_string(TaskType type) {
   switch(type) {
     case TaskType::PLACEHOLDER:      val = "placeholder";     break;
     case TaskType::STATIC:           val = "static";          break;
+    case TaskType::RUNTIME:          val = "runtime";         break;
     case TaskType::SUBFLOW:          val = "subflow";         break;
     case TaskType::CONDITION:        val = "condition";       break;
     case TaskType::MODULE:           val = "module";          break;
@@ -89,46 +94,47 @@ inline const char* to_string(TaskType type) {
 A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
 */
 template <typename C>
-constexpr bool is_subflow_task_v = 
-  std::is_invocable_r_v<void, C, Subflow&> &&
-  !std::is_invocable_r_v<void, C, Runtime&>;
+constexpr bool is_subflow_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 
 /**
 @brief determines if a callable is a condition task
 
-A condition task is a callable object constructible from std::function<int()>
-or std::function<int(tf::Runtime&)>.
+A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = 
-  (std::is_invocable_r_v<int, C> || std::is_invocable_r_v<int, C, Runtime&>) &&
-  !is_subflow_task_v<C>;
+constexpr bool is_condition_task_v = (std::is_invocable_r_v<int, C>) &&
+                                     !is_subflow_task_v<C>;
 
 /**
 @brief determines if a callable is a multi-condition task
 
 A multi-condition task is a callable object constructible from
-std::function<tf::SmallVector<int>()> or
-std::function<tf::SmallVector<int>(tf::Runtime&)>.
+std::function<tf::SmallVector<int>()>.
 */
 template <typename C>
 constexpr bool is_multi_condition_task_v =
-  (std::is_invocable_r_v<SmallVector<int>, C> ||
-  std::is_invocable_r_v<SmallVector<int>, C, Runtime&>) &&
+  (std::is_invocable_r_v<SmallVector<int>, C>) &&
   !is_subflow_task_v<C>;
 
 /**
 @brief determines if a callable is a static task
 
-A static task is a callable object constructible from std::function<void()>
-or std::function<void(tf::Runtime&)>.
+A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
 constexpr bool is_static_task_v =
-  (std::is_invocable_r_v<void, C> || std::is_invocable_r_v<void, C, Runtime&>) &&
+  std::is_invocable_r_v<void, C> &&
   !is_condition_task_v<C> &&
   !is_multi_condition_task_v<C> &&
   !is_subflow_task_v<C>;
+
+/**
+@brief determines if a callable is a runtime task
+
+A runtime task is a callable object constructible from std::function<void(tf::Runtime&)>.
+*/
+template <typename C>
+constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -467,6 +473,7 @@ inline TaskType Task::type() const {
   switch(_node->_handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
+    case Node::RUNTIME:         return TaskType::RUNTIME;
     case Node::SUBFLOW:         return TaskType::SUBFLOW;
     case Node::CONDITION:       return TaskType::CONDITION;
     case Node::MULTI_CONDITION: return TaskType::CONDITION;
@@ -512,6 +519,9 @@ Task& Task::work(C&& c) {
 
   if constexpr(is_static_task_v<C>) {
     _node->_handle.emplace<Node::Static>(std::forward<C>(c));
+  }
+  else if constexpr(is_runtime_task_v<C>) {
+    _node->_handle.emplace<Node::Runtime>(std::forward<C>(c));
   }
   else if constexpr(is_subflow_task_v<C>) {
     _node->_handle.emplace<Node::Subflow>(std::forward<C>(c));
@@ -655,6 +665,7 @@ inline TaskType TaskView::type() const {
   switch(_node._handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
+    case Node::RUNTIME:         return TaskType::RUNTIME;
     case Node::SUBFLOW:         return TaskType::SUBFLOW;
     case Node::CONDITION:       return TaskType::CONDITION;
     case Node::MULTI_CONDITION: return TaskType::CONDITION;

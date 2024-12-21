@@ -53,6 +53,7 @@ and enhances exception handling across all task types.
   + %Graph node lifetimes are managed by std::unique_ptr
   + Asynchronous task node lifetimes are managed by tf::Executor.
 + expanded unit tests to include more exception handling scenarios
++ decoupled tf::Runtime from static task to accommodate distinct execution logic
 + removed the blocking behavior to avoid underutilized threads for the following tasks:
   + module task ([#649](https://github.com/taskflow/taskflow/issues/649))
   + subflow task
@@ -78,6 +79,7 @@ and enhances exception handling across all task types.
 @section release-3-9-0_breaking_changes Breaking Changes
 
 + decoupled tf::Subflow from inheriting tf::Runtime to accommodate distinct execution logic
+  + tf::Subflow no longer supports tf::Runtime-specific features
 + removed tf::Runtime::corun_until as it duplicates tf::Executor::corun_until
 
 @section release-3-9-0_documentation Documentation

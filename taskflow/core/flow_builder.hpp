@@ -51,6 +51,28 @@ class FlowBuilder {
     std::enable_if_t<is_static_task_v<C>, void>* = nullptr
   >
   Task emplace(C&& callable);
+  
+  /**
+  @brief creates a runtime task
+
+  @tparam C callable type constructible from std::function<void(tf::Runtime&)>
+
+  @param callable callable to construct a runtime task
+
+  @return a tf::Task handle
+
+  The following example creates a runtime task.
+
+  @code{.cpp}
+  tf::Task static_task = taskflow.emplace([](tf::Runtime&){});
+  @endcode
+
+  Please refer to @ref RuntimeTasking for details.
+  */
+  template <typename C,
+    std::enable_if_t<is_runtime_task_v<C>, void>* = nullptr
+  >
+  Task emplace(C&& callable);
 
   /**
   @brief creates a dynamic task
@@ -1147,6 +1169,14 @@ template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back("", nullptr, nullptr, 0,
     std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
+  ));
+}
+
+// Function: emplace
+template <typename C, std::enable_if_t<is_runtime_task_v<C>, void>*>
+Task FlowBuilder::emplace(C&& c) {
+  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+    std::in_place_type_t<Node::Runtime>{}, std::forward<C>(c)
   ));
 }
 

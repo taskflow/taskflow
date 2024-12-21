@@ -24,7 +24,7 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   REQUIRE(t3.type() == tf::TaskType::SUBFLOW);
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::CONDITION);
-  REQUIRE(t6.type() == tf::TaskType::STATIC);
+  REQUIRE(t6.type() == tf::TaskType::RUNTIME);
 }
 
 // --------------------------------------------------------
