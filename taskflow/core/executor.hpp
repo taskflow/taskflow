@@ -1091,13 +1091,14 @@ class Executor {
   void _schedule_async_task(Node*);
   void _update_cache(Worker&, Node*&, Node*);
 
-  bool _invoke_runtime_task(Worker&, Node*);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
+  bool _invoke_module_task_impl(Worker&, Node*, Graph&);
   bool _invoke_async_task(Worker&, Node*);
   bool _invoke_dependent_async_task(Worker&, Node*);
-  bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&)>&);
-  bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&, bool)>&);
+  bool _invoke_runtime_task(Worker&, Node*);
+  bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&)>&);
+  bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
   I _set_up_graph(I, I, Node*, Topology*, int);
@@ -1721,13 +1722,6 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
   _observer_epilogue(worker, node);
 }
 
-// Procedure: _invoke_runtime_task
-inline bool Executor::_invoke_runtime_task(Worker& worker, Node* node) {
-  return _invoke_internal_runtime(
-    worker, node, std::get_if<Node::Runtime>(&node->_handle)->work
-  );
-}
-
 // Procedure: _invoke_subflow_task
 inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
 
@@ -1793,17 +1787,25 @@ inline void Executor::_invoke_multi_condition_task(
 
 // Procedure: _invoke_module_task
 inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
+  return _invoke_module_task_impl(w, node, std::get_if<Node::Module>(&node->_handle)->graph);  
+}
+
+// Procedure: _invoke_module_task_impl
+inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& graph) {
+
+  // No need to do anything for empty graph
+  if(graph.empty()) {
+    return false;
+  }
 
   // first entry - not spawned yet
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-    if(auto m = std::get_if<Node::Module>(&node->_handle); m->graph.size()) {
-      // signal the executor to preempt this node
-      node->_nstate |= NSTATE::PREEMPTED;
-      auto send = _set_up_graph(m->graph.begin(), m->graph.end(), node, node->_topology, 0);
-      node->_join_counter.fetch_add(send - m->graph.begin(), std::memory_order_relaxed);
-      _schedule(w, m->graph.begin(), send);
-      return true;
-    }
+    // signal the executor to preempt this node
+    node->_nstate |= NSTATE::PREEMPTED;
+    auto send = _set_up_graph(graph.begin(), graph.end(), node, node->_topology, 0);
+    node->_join_counter.fetch_add(send - graph.begin(), std::memory_order_relaxed);
+    _schedule(w, graph.begin(), send);
+    return true;
   }
   // second entry - already spawned
   else {
@@ -1811,6 +1813,7 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
   }
   return false;
 }
+
 
 // Procedure: _invoke_async_task
 inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
@@ -1827,14 +1830,14 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
     
     // void(Runtime&)
     case 1:
-      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+      if(_invoke_runtime_task_impl(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
     
     // void(Runtime&, bool)
     case 2:
-      if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
+      if(_invoke_runtime_task_impl(worker, node, *std::get_if<2>(&work))) {
         return true;
       }
     break;
@@ -1858,14 +1861,14 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
     
     // void(Runtime&)
     case 1:
-      if(_invoke_internal_runtime(worker, node, *std::get_if<1>(&work))) {
+      if(_invoke_runtime_task_impl(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
 
     // void(Runtime&, bool)
     case 2:
-      if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
+      if(_invoke_runtime_task_impl(worker, node, *std::get_if<2>(&work))) {
         return true;
       }
     break;
@@ -1992,6 +1995,8 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
 // Function: corun
 template <typename T>
 void Executor::corun(T& target) {
+
+  static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
   
   if(pt::worker == nullptr || pt::worker->_executor != this) {
     TF_THROW("corun must be called by a worker of the executor");

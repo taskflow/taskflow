@@ -732,6 +732,50 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
   return back().get();
 }
 
+// ----------------------------------------------------------------------------
+// Graph checker
+// ----------------------------------------------------------------------------
+
+/**
+@private
+ */
+template <typename T, typename = void>
+struct has_graph : std::false_type {};
+
+/**
+@private
+ */
+template <typename T>
+struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
+    : std::is_same<decltype(std::declval<T>().graph()), Graph&> {};
+
+/**
+ * @brief determines if the given type has a member function `Graph& graph()`
+ *
+ * This trait determines if the provided type `T` contains a member function
+ * with the exact signature `Graph& graph()`. It uses SFINAE and `std::void_t`
+ * to detect the presence of the member function and its return type.
+ *
+ * @tparam T The type to inspect.
+ * @retval true If the type `T` has a member function `Graph& graph()`.
+ * @retval false Otherwise.
+ *
+ * Example usage:
+ * @code
+ * struct Graph {}; // Define Graph type for testing
+ *
+ * struct A {
+ *     Graph& graph(); // Member function exists
+ * };
+ *
+ * struct C {}; // No graph function
+ *
+ * static_assert(has_graph_v<A>, "A has graph()");
+ * static_assert(!has_graph_v<C>, "C does not have graph()");
+ * @endcode
+ */
+template <typename T>
+constexpr bool has_graph_v = has_graph<T>::value;
 
 
 }  // end of namespace tf. ----------------------------------------------------

@@ -38,7 +38,7 @@ auto Executor::async(P&& params, F&& f) {
     return fu;
   }
   // async task: [] () { ... }
-  else {
+  else if constexpr (std::is_invocable_v<F>){
     using R = std::invoke_result_t<F>;
     std::packaged_task<R()> p(std::forward<F>(f));
     auto fu{p.get_future()};
@@ -48,6 +48,9 @@ auto Executor::async(P&& params, F&& f) {
       [p=make_moc(std::move(p))]() mutable { p.object(); }
     ));
     return fu;
+  }
+  else {
+    static_assert(dependent_false_v<F>, "invalid async callable");
   }
 }
 
@@ -247,7 +250,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     return std::make_pair(std::move(task), std::move(fu));
   }
   // async without runtime: [] () {}
-  else {
+  else if constexpr(std::is_invocable_v<F>) {
 
     using R = std::invoke_result_t<std::decay_t<F>>;
     std::packaged_task<R()> p(std::forward<F>(func));
@@ -269,6 +272,9 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     }
 
     return std::make_pair(std::move(task), std::move(fu));
+  }
+  else {
+    static_assert(dependent_false_v<F>, "invalid async callable");
   }
 }
 

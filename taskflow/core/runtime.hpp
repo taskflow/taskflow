@@ -484,6 +484,9 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
+
+  static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
+
   TF_RUNTIME_CHECK_CALLER("corun must be called by a worker of runtime's executor");
   _executor._corun_graph(*pt::worker, _parent, target.graph().begin(), target.graph().end());
 }
@@ -655,8 +658,15 @@ class PreemptionGuard {
 // Executor Forward Declaration
 // ----------------------------------------------------------------------------
 
-// Function: _invoke_internal_runtime
-inline bool Executor::_invoke_internal_runtime(
+// Procedure: _invoke_runtime_task
+inline bool Executor::_invoke_runtime_task(Worker& worker, Node* node) {
+  return _invoke_runtime_task_impl(
+    worker, node, std::get_if<Node::Runtime>(&node->_handle)->work
+  );
+}
+
+// Function: _invoke_runtime_task_impl
+inline bool Executor::_invoke_runtime_task_impl(
   Worker& worker, Node* node, std::function<void(Runtime&)>& work
 ) {
   // first time
@@ -682,8 +692,8 @@ inline bool Executor::_invoke_internal_runtime(
   return false;
 }
 
-// Function: _invoke_internal_runtime
-inline bool Executor::_invoke_internal_runtime(
+// Function: _invoke_runtime_task_impl
+inline bool Executor::_invoke_runtime_task_impl(
   Worker& worker, Node* node, std::function<void(Runtime&, bool)>& work
 ) {
     
