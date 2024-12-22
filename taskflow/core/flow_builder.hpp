@@ -1323,7 +1323,16 @@ class Subflow : public FlowBuilder {
   friend class Executor;
   friend class FlowBuilder;
 
+  template <typename T>
+  friend class std::optional;
+
   public:
+    
+    /**
+    @brief constructs a subflow object
+    */
+    Subflow(Executor&, Worker&, Node*, Graph&);
+  
 
     /**
     @brief enables the subflow to join its parent task
@@ -1380,14 +1389,17 @@ class Subflow : public FlowBuilder {
     @brief acquires the associated executor
     */
     Executor& executor() noexcept;
+    
+    /**
+    @brief acquires the associated graph
+    */
+    Graph& graph() { return _graph; }
 
   private:
     
     // with only the most significant bit set: 1000...000
     constexpr static size_t JOINED_BIT = (~size_t(0)) ^ ((~size_t(0)) >> 1);
-
-    Subflow(Executor&, Worker&, Node*, Graph&);
-
+    
     Subflow() = delete;
     Subflow(const Subflow&) = delete;
     Subflow(Subflow&&) = delete;

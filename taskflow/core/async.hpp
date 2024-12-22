@@ -17,7 +17,7 @@ auto Executor::async(P&& params, F&& f) {
   _increment_topology();
   
   // async task with runtime: [] (tf::Runtime&) { ... }
-  if constexpr (std::is_invocable_r_v<void, F, Runtime&>) {
+  if constexpr (is_runtime_task_v<F>) {
 
     std::promise<void> p;
     auto fu{p.get_future()};
@@ -31,6 +31,32 @@ auto Executor::async(P&& params, F&& f) {
         }
         else {
           auto& eptr = rt._parent->_exception_ptr;
+          eptr ? p.object.set_exception(eptr) : p.object.set_value();
+        }
+      }
+    ));
+    return fu;
+  }
+  else if constexpr (is_subflow_task_v<F>) {
+    std::promise<void> p;
+    auto fu{p.get_future()};
+    Graph graph;
+    
+    _schedule_async_task(animate(
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, 0, 
+      std::in_place_type_t<Node::Async>{}, 
+      [p=MoC{std::move(p)}, f=std::forward<F>(f), graph=MoC{std::move(graph)}] (
+        Worker& worker, 
+        Node* node, 
+        std::optional<tf::Subflow>& sf, 
+        bool reentered
+      ) mutable { 
+        if(!reentered) {
+          sf.emplace(*worker._executor, worker, node, graph.object);
+          f(*sf);
+        }
+        else {
+          auto& eptr = node->_exception_ptr;
           eptr ? p.object.set_exception(eptr) : p.object.set_value();
         }
       }
@@ -102,8 +128,8 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
   }
   // from runtime
   else {
-    if(auto state = parent->_nstate;
-       parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+    auto state = parent->_nstate;
+    if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       if(state & NSTATE::PREEMPTED) {
         _update_cache(worker, cache, parent);
       }
@@ -217,7 +243,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   size_t num_dependents = std::distance(first, last);
   
   // async with runtime: [] (tf::Runtime&) {}
-  if constexpr (std::is_invocable_r_v<void, F, Runtime&>) {
+  if constexpr (is_runtime_task_v<F>) {
 
     std::promise<void> p;
     auto fu{p.get_future()};

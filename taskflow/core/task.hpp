@@ -102,8 +102,7 @@ constexpr bool is_subflow_task_v = std::is_invocable_r_v<void, C, Subflow&>;
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-constexpr bool is_condition_task_v = (std::is_invocable_r_v<int, C>) &&
-                                     !is_subflow_task_v<C>;
+constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
 
 /**
 @brief determines if a callable is a multi-condition task
@@ -112,9 +111,7 @@ A multi-condition task is a callable object constructible from
 std::function<tf::SmallVector<int>()>.
 */
 template <typename C>
-constexpr bool is_multi_condition_task_v =
-  (std::is_invocable_r_v<SmallVector<int>, C>) &&
-  !is_subflow_task_v<C>;
+constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int>, C>;
 
 /**
 @brief determines if a callable is a static task
@@ -122,11 +119,9 @@ constexpr bool is_multi_condition_task_v =
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-constexpr bool is_static_task_v =
-  std::is_invocable_r_v<void, C> &&
-  !is_condition_task_v<C> &&
-  !is_multi_condition_task_v<C> &&
-  !is_subflow_task_v<C>;
+constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
+                                  !is_condition_task_v<C>        &&
+                                  !is_multi_condition_task_v<C>;
 
 /**
 @brief determines if a callable is a runtime task
