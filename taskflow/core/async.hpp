@@ -37,32 +37,6 @@ auto Executor::async(P&& params, F&& f) {
     ));
     return fu;
   }
-  else if constexpr (is_subflow_task_v<F>) {
-    std::promise<void> p;
-    auto fu{p.get_future()};
-    Graph graph;
-    
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=MoC{std::move(p)}, f=std::forward<F>(f), graph=MoC{std::move(graph)}] (
-        Worker& worker, 
-        Node* node, 
-        std::optional<tf::Subflow>& sf, 
-        bool reentered
-      ) mutable { 
-        if(!reentered) {
-          sf.emplace(*worker._executor, worker, node, graph.object);
-          f(*sf);
-        }
-        else {
-          auto& eptr = node->_exception_ptr;
-          eptr ? p.object.set_exception(eptr) : p.object.set_value();
-        }
-      }
-    ));
-    return fu;
-  }
   // async task: [] () { ... }
   else {
     using R = std::invoke_result_t<F>;

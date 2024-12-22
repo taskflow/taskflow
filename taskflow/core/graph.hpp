@@ -231,9 +231,8 @@ class Node {
 
     std::variant<
       std::function<void()>, 
-      std::function<void(tf::Runtime&)>, 
-      std::function<void(tf::Runtime&, bool)>,
-      std::function<void(Worker&, Node*, std::optional<tf::Subflow>&, bool)>
+      std::function<void(tf::Runtime&)>,       // silent async
+      std::function<void(tf::Runtime&, bool)>  // async
     > work;
   };
   
@@ -245,8 +244,8 @@ class Node {
     
     std::variant<
       std::function<void()>, 
-      std::function<void(tf::Runtime&)>, 
-      std::function<void(tf::Runtime&, bool)>
+      std::function<void(tf::Runtime&)>,       // silent async
+      std::function<void(tf::Runtime&, bool)>  // async
     > work;
    
     std::atomic<size_t> use_count {1};

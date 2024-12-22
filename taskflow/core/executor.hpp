@@ -1098,7 +1098,6 @@ class Executor {
   bool _invoke_dependent_async_task(Worker&, Node*);
   bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&)>&);
   bool _invoke_internal_runtime(Worker&, Node*, std::function<void(Runtime&, bool)>&);
-  bool _invoke_internal_subflow(Worker&, Node*, std::function<void(Worker&, Node*, std::optional<tf::Subflow>&, bool)>&);
 
   template <typename I>
   I _set_up_graph(I, I, Node*, Topology*, int);
@@ -1769,48 +1768,6 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
   return false;
 }
 
-// Procedure: _invoke_internal_subflow
-inline bool Executor::_invoke_internal_subflow(
-  Worker& worker, 
-  Node* node,
-  std::function<void(Worker&, Node*, std::optional<tf::Subflow>&, bool)>& work
-) {
-
-  std::optional<tf::Subflow> sf;
-    
-  if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-    
-    // invoke the subflow callable
-    _observer_prologue(worker, node);
-    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
-      work(worker, node, sf, false);
-    });
-    _observer_epilogue(worker, node);
-    
-    // spawn the subflow if it is joinable and its graph is non-empty
-    // implicit join is faster than Subflow::join as it does not involve corun
-    if(sf->joinable() && sf->_graph.size() > sf->_tag) {
-    
-      // signal the executor to preempt this node
-      node->_nstate |= NSTATE::PREEMPTED;
-
-      // set up and schedule the graph
-      auto sbeg = sf->_graph.begin() + sf->_tag;
-      auto send = _set_up_graph(sbeg, sf->_graph.end(), node, node->_topology, 0);
-      node->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
-      _schedule(worker, sbeg, send);
-      return true;
-    }
-  }
-  else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
-  }
-
-  work(worker, node, sf, true);
-
-  return false;
-}
-
 // Procedure: _invoke_condition_task
 inline void Executor::_invoke_condition_task(
   Worker& worker, Node* node, SmallVector<int>& conds
@@ -1881,13 +1838,6 @@ inline bool Executor::_invoke_async_task(Worker& worker, Node* node) {
         return true;
       }
     break;
-    
-    // void(Worker&, Node*, std::optional<Subflow>&, bool)
-    case 3:
-      if(_invoke_internal_subflow(worker, node, *std::get_if<3>(&work))) {
-        return true;
-      }
-    break;
   }
 
   return false;
@@ -1913,7 +1863,7 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
       }
     break;
 
-    // void(Runtime& bool)
+    // void(Runtime&, bool)
     case 2:
       if(_invoke_internal_runtime(worker, node, *std::get_if<2>(&work))) {
         return true;
