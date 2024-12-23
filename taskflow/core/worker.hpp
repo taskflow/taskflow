@@ -68,6 +68,11 @@ class Worker {
     @brief queries the current capacity of the queue
     */
     inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
+    
+    /**
+    @brief acquire the associated executor
+    */
+    inline Executor* executor() { return _executor; }
 
   private:
 
@@ -91,7 +96,7 @@ namespace pt {
 /**
 @private
 */
-inline thread_local Worker* worker {nullptr};
+inline thread_local Worker* this_worker {nullptr};
 
 }
 

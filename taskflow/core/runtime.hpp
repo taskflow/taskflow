@@ -38,9 +38,9 @@ class Runtime {
   friend class FlowBuilder;
   friend class PreemptionGuard;
   
-  #define TF_RUNTIME_CHECK_CALLER(msg)                                \
-  if(pt::worker == nullptr || pt::worker->_executor != &_executor) {  \
-    TF_THROW(msg);                                                    \
+  #define TF_RUNTIME_CHECK_CALLER(msg)                                          \
+  if(pt::this_worker == nullptr || pt::this_worker->_executor != &_executor) {  \
+    TF_THROW(msg);                                                              \
   }
 
   public:
@@ -433,18 +433,6 @@ class Runtime {
   @private
   */
   bool _preempted {false};
-
-  /**
-  @private
-  */
-  template <typename P, typename F>
-  auto _async(Worker& w, P&& params, F&& f);
-  
-  /**
-  @private
-  */
-  template <typename P, typename F>
-  void _silent_async(Worker& w, P&& params, F&& f);
 };
 
 // constructor
@@ -488,7 +476,7 @@ void Runtime::corun(T&& target) {
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
 
   TF_RUNTIME_CHECK_CALLER("corun must be called by a worker of runtime's executor");
-  _executor._corun_graph(*pt::worker, _parent, target.graph().begin(), target.graph().end());
+  _executor._corun_graph(*pt::this_worker, _parent, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_all
@@ -547,42 +535,36 @@ void Runtime::release(I begin, I end) {
 // Runtime::silent_async series
 // ------------------------------------
 
-// Function: _silent_async
-template <typename P, typename F>
-void Runtime::_silent_async(Worker& w, P&& params, F&& f) {
-
-  _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-
-  auto node = animate(
-    std::forward<P>(params), _parent->_topology, _parent, 0,
-    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-  );
-
-  _executor._schedule(w, node);
-}
-
 // Function: silent_async
 template <typename F>
 void Runtime::silent_async(F&& f) {
-  TF_RUNTIME_CHECK_CALLER("silent_async must be called by a worker of runtime's executor");
-  _silent_async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
+  silent_async(DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: silent_async
 template <typename P, typename F>
 void Runtime::silent_async(P&& params, F&& f) {
-  TF_RUNTIME_CHECK_CALLER("silent_async must be called by a worker of runtime's executor");
-  _silent_async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
+  _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
+  _executor._schedule_async_task(animate(
+    std::forward<P>(params), _parent->_topology, _parent, 0,
+    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
+  ));
 }
 
 // ------------------------------------
 // Runtime::async series
 // ------------------------------------
 
-// Function: _async
-template <typename P, typename F>
-auto Runtime::_async(Worker& w, P&& params, F&& f) {
+// Function: async
+template <typename F>
+auto Runtime::async(F&& f) {
+  return async(DefaultTaskParams{}, std::forward<F>(f));
+}
 
+// Function: async
+template <typename P, typename F>
+auto Runtime::async(P&& params, F&& f) {
+  
   _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
 
   using R = std::invoke_result_t<std::decay_t<F>>;
@@ -590,29 +572,13 @@ auto Runtime::_async(Worker& w, P&& params, F&& f) {
   std::packaged_task<R()> p(std::forward<F>(f));
   auto fu{p.get_future()};
 
-  auto node = animate(
+  _executor._schedule_async_task(animate(
     std::forward<P>(params), _parent->_topology, _parent, 0, 
     std::in_place_type_t<Node::Async>{},
     [p=make_moc(std::move(p))] () mutable { p.object(); }
-  );
-
-  _executor._schedule(w, node);
+  ));
 
   return fu;
-}
-
-// Function: async
-template <typename F>
-auto Runtime::async(F&& f) {
-  TF_RUNTIME_CHECK_CALLER("async must be called by a worker of runtime's executor");
-  return _async(*pt::worker, DefaultTaskParams{}, std::forward<F>(f));
-}
-
-// Function: async
-template <typename P, typename F>
-auto Runtime::async(P&& params, F&& f) {
-  TF_RUNTIME_CHECK_CALLER("async must be called by a worker of runtime's executor");
-  return _async(*pt::worker, std::forward<P>(params), std::forward<F>(f));
 }
 
 // ----------------------------------------------------------------------------

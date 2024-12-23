@@ -1180,13 +1180,13 @@ inline size_t Executor::num_taskflows() const {
 
 // Function: _this_worker
 //inline Worker* Executor::_this_worker() const {
-//  auto w = pt::worker;
+//  auto w = pt::this_worker;
 //  return (w && w->_executor == this) ? w : nullptr;
 //}
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto w = pt::worker;
+  auto w = pt::this_worker;
   return (w && w->_executor == this) ? static_cast<int>(w->_id) : -1;
 }
 
@@ -1206,7 +1206,7 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._waiter = &_notifier._waiters[id];
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
-      pt::worker = &w;
+      pt::this_worker = &w;
       _latch.arrive_and_wait();  // synchronize with the main thread
       
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
@@ -1970,7 +1970,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::lock_guard<std::mutex> lock(f._mutex);
     f._topologies.push(t);
     if(f._topologies.size() == 1) {
-      _set_up_topology(pt::worker, t.get());
+      _set_up_topology(pt::this_worker, t.get());
     }
   }
 
@@ -1998,23 +1998,23 @@ void Executor::corun(T& target) {
 
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
   
-  if(pt::worker == nullptr || pt::worker->_executor != this) {
+  if(pt::this_worker == nullptr || pt::this_worker->_executor != this) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
   Node anchor;
-  _corun_graph(*pt::worker, &anchor, target.graph().begin(), target.graph().end());
+  _corun_graph(*pt::this_worker, &anchor, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_until
 template <typename P>
 void Executor::corun_until(P&& predicate) {
   
-  if(pt::worker == nullptr || pt::worker->_executor != this) {
+  if(pt::this_worker == nullptr || pt::this_worker->_executor != this) {
     TF_THROW("corun_until must be called by a worker of the executor");
   }
 
-  _corun_until(*pt::worker, std::forward<P>(predicate));
+  _corun_until(*pt::this_worker, std::forward<P>(predicate));
 }
 
 // Procedure: _corun_graph

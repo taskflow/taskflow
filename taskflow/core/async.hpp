@@ -70,13 +70,11 @@ void Executor::silent_async(P&& params, F&& f) {
 
   _increment_topology();
   
-  auto node = animate(
+  _schedule_async_task(animate(
     std::forward<P>(params), nullptr, nullptr, 0, 
     // handle
     std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-  );
-
-  _schedule_async_task(node);
+  ));
 }
 
 // Function: silent_async
@@ -93,7 +91,8 @@ void Executor::silent_async(F&& f) {
 inline void Executor::_schedule_async_task(Node* node) {  
   // Here we don't use _this_worker since _schedule will check if the
   // given worker belongs to this executor.
-  (pt::worker) ? _schedule(*pt::worker, node) : _schedule(node);
+  (pt::this_worker && pt::this_worker->_executor == this) ? _schedule(*pt::this_worker, node) : 
+                                                            _schedule(node);
 }
 
 // Procedure: _tear_down_async
