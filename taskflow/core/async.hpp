@@ -13,45 +13,8 @@ namespace tf {
 // Function: async
 template <typename P, typename F>
 auto Executor::async(P&& params, F&& f) {
-
   _increment_topology();
-  
-  // async task with runtime: [] (tf::Runtime&) { ... }
-  if constexpr (is_runtime_task_v<F>) {
-
-    std::promise<void> p;
-    auto fu{p.get_future()};
-    
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
-        if(!reentered) {
-          f(rt);
-        }
-        else {
-          auto& eptr = rt._parent->_exception_ptr;
-          eptr ? p.object.set_exception(eptr) : p.object.set_value();
-        }
-      }
-    ));
-    return fu;
-  }
-  // async task: [] () { ... }
-  else if constexpr (std::is_invocable_v<F>){
-    using R = std::invoke_result_t<F>;
-    std::packaged_task<R()> p(std::forward<F>(f));
-    auto fu{p.get_future()};
-    _schedule_async_task(animate(
-      std::forward<P>(params), nullptr, nullptr, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=make_moc(std::move(p))]() mutable { p.object(); }
-    ));
-    return fu;
-  }
-  else {
-    static_assert(dependent_false_v<F>, "invalid async callable");
-  }
+  return _async(std::forward<P>(params), std::forward<F>(f), nullptr, nullptr);
 }
 
 // Function: async
@@ -67,12 +30,9 @@ auto Executor::async(F&& f) {
 // Function: silent_async
 template <typename P, typename F>
 void Executor::silent_async(P&& params, F&& f) {
-
   _increment_topology();
-  
   _schedule_async_task(animate(
     std::forward<P>(params), nullptr, nullptr, 0, 
-    // handle
     std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
   ));
 }

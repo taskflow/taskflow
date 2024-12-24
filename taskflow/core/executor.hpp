@@ -1114,6 +1114,9 @@ class Executor {
 
   template <typename I>
   void _schedule(I, I);
+
+  template <typename P, typename F>
+  auto _async(P&&, F&&, Topology*, Node*);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
