@@ -22,6 +22,8 @@ struct NSTATE {
   constexpr static underlying_type MASK        = 0xF0000000;
 };
 
+using nstate_t = NSTATE::underlying_type;
+
 // exception-specific states
 struct ESTATE {
   
@@ -33,6 +35,8 @@ struct ESTATE {
   constexpr static underlying_type ANCHORED  = 4;  
 };
 
+using estate_t = ESTATE::underlying_type;
+
 // async-specific states
 struct ASTATE {
   
@@ -42,6 +46,8 @@ struct ASTATE {
   constexpr static underlying_type LOCKED     = 1;
   constexpr static underlying_type FINISHED   = 2;
 };
+
+using astate_t = ASTATE::underlying_type;
 
 // Procedure: throw_re
 // Throws runtime error under a given error code.

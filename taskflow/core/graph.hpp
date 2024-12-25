@@ -266,9 +266,6 @@ class Node {
 
   public:
 
-  using nstate_t = NSTATE::underlying_type;
-  using estate_t = ESTATE::underlying_type;
-
   // variant index
   constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
   constexpr static auto STATIC          = get_index_v<Static, handle_t>;

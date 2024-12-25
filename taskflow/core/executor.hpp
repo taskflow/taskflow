@@ -1101,7 +1101,7 @@ class Executor {
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
-  I _set_up_graph(I, I, Node*, Topology*, int);
+  I _set_up_graph(I, I, Node*, Topology*, nstate_t);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
@@ -1752,7 +1752,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
 
       // set up and schedule the graph
       auto sbeg = g.begin() + sf._tag;
-      auto send = _set_up_graph(sbeg, g.end(), node, node->_topology, 0);
+      auto send = _set_up_graph(sbeg, g.end(), node, node->_topology, NSTATE::NONE);
       node->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
       _schedule(worker, sbeg, send);
       return true;
@@ -1805,7 +1805,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    auto send = _set_up_graph(graph.begin(), graph.end(), node, node->_topology, 0);
+    auto send = _set_up_graph(graph.begin(), graph.end(), node, node->_topology, NSTATE::NONE);
     node->_join_counter.fetch_add(send - graph.begin(), std::memory_order_relaxed);
     _schedule(w, graph.begin(), send);
     return true;
@@ -2033,7 +2033,7 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
   {
     AnchorGuard anchor(p);
 
-    auto send = _set_up_graph(first, last, p, p->_topology, 0);
+    auto send = _set_up_graph(first, last, p, p->_topology, NSTATE::NONE);
     p->_join_counter.fetch_add(send - first, std::memory_order_relaxed);
     _schedule(w, first, send);
 
@@ -2091,7 +2091,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   auto& g = tpg->_taskflow._graph;
   //g._clear_detached();
   
-  auto send = _set_up_graph(g.begin(), g.end(), nullptr, tpg, 0);
+  auto send = _set_up_graph(g.begin(), g.end(), nullptr, tpg, NSTATE::NONE);
   tpg->_num_sources = send - g.begin();
   tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
 
@@ -2100,7 +2100,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
 // Function: _set_up_graph
 template <typename I>
-I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, int state) {
+I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, nstate_t state) {
 
   auto send = first;
   for(; first != last; ++first) {

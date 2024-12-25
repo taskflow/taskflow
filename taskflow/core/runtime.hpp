@@ -720,6 +720,21 @@ auto Executor::_async(P&& params, F&& f, Topology* topology, Node* parent) {
     ));
     return fu;
   }
+  //// 
+  //else if constexpr (has_graph_v<F>) {
+  //  return _async([graph=&f](tf::Runtime& rt){
+
+  //    if(graph.empty()) {
+  //      return;
+  //    }
+
+  //    PreemptionGuard preemption_guard(rt);
+
+  //    //auto send = _set_up_graph(graph.begin(), graph.end(), rt._parent, rt._parent->_topology, 0);
+  //    //node->_join_counter.fetch_add(send - graph.begin(), std::memory_order_relaxed);
+  //    //_schedule(w, graph.begin(), send);
+  //  });
+  //}
   else {
     static_assert(dependent_false_v<F>, "invalid async callable");
   }
