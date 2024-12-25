@@ -750,19 +750,21 @@ struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
  * @brief determines if the given type has a member function `Graph& graph()`
  *
  * This trait determines if the provided type `T` contains a member function
- * with the exact signature `Graph& graph()`. It uses SFINAE and `std::void_t`
+ * with the exact signature `tf::Graph& graph()`. It uses SFINAE and `std::void_t`
  * to detect the presence of the member function and its return type.
  *
  * @tparam T The type to inspect.
- * @retval true If the type `T` has a member function `Graph& graph()`.
+ * @retval true If the type `T` has a member function `tf::Graph& graph()`.
  * @retval false Otherwise.
  *
  * Example usage:
  * @code
- * struct Graph {}; // Define Graph type for testing
  *
  * struct A {
- *     Graph& graph(); // Member function exists
+ *   tf::Graph& graph() { return my_graph; };
+ *   tf::Graph my_graph;
+ *
+ *   // other custom members to alter my_graph
  * };
  *
  * struct C {}; // No graph function

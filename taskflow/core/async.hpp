@@ -31,10 +31,9 @@ auto Executor::async(F&& f) {
 template <typename P, typename F>
 void Executor::silent_async(P&& params, F&& f) {
   _increment_topology();
-  _schedule_async_task(animate(
-    std::forward<P>(params), nullptr, nullptr, 0, 
-    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-  ));
+  _silent_async(
+    std::forward<P>(params), std::forward<F>(f), nullptr, nullptr
+  );
 }
 
 // Function: silent_async
@@ -126,7 +125,7 @@ tf::AsyncTask Executor::silent_dependent_async(
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
   
-  for(; first != last; first++){
+  for(; first != last; first++) {
     _process_async_dependent(task._node, *first, num_dependents);
   }
 
@@ -211,9 +210,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   // async without runtime: [] () {}
   else if constexpr(std::is_invocable_v<F>) {
 
-    using R = std::invoke_result_t<std::decay_t<F>>;
-    std::packaged_task<R()> p(std::forward<F>(func));
-
+    std::packaged_task p(std::forward<F>(func));
     auto fu{p.get_future()};
 
     AsyncTask task(animate(

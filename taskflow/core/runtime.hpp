@@ -545,10 +545,9 @@ void Runtime::silent_async(F&& f) {
 template <typename P, typename F>
 void Runtime::silent_async(P&& params, F&& f) {
   _parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-  _executor._schedule_async_task(animate(
-    std::forward<P>(params), _parent->_topology, _parent, 0,
-    std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-  ));
+  _executor._silent_async(
+    std::forward<P>(params), std::forward<F>(f), _parent->_topology, _parent
+  );
 }
 
 // ------------------------------------
@@ -684,8 +683,26 @@ inline bool Executor::_invoke_runtime_task_impl(
 // Executor Members that Depend on Runtime
 // ----------------------------------------------------------------------------
 
+template <typename T>
+auto Executor::_make_module_task(T&& target) {
+
+  return [this, &target=std::forward<T>(target)](tf::Runtime& rt){
+    
+    auto& graph = target.graph();
+
+    if(graph.empty()) {
+      return;
+    }
+
+    PreemptionGuard preemption_guard(rt);
+    _schedule_graph_with_parent(
+      rt._worker, graph.begin(), graph.end(), rt._parent, NSTATE::NONE
+    );
+  };
+}
+
 template <typename P, typename F>
-auto Executor::_async(P&& params, F&& f, Topology* topology, Node* parent) {
+auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
   
   // async task with runtime: [] (tf::Runtime&) { ... }
   if constexpr (is_runtime_task_v<F>) {
@@ -694,7 +711,7 @@ auto Executor::_async(P&& params, F&& f, Topology* topology, Node* parent) {
     auto fu{p.get_future()};
     
     _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), topology, parent, 0, 
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
@@ -708,37 +725,55 @@ auto Executor::_async(P&& params, F&& f, Topology* topology, Node* parent) {
     ));
     return fu;
   }
-  // async task: [] () { ... }
+  // async task with closure: [] () { ... }
   else if constexpr (std::is_invocable_v<F>){
-    using R = std::invoke_result_t<F>;
-    std::packaged_task<R()> p(std::forward<F>(f));
+    std::packaged_task p(std::forward<F>(f));
     auto fu{p.get_future()};
     _schedule_async_task(animate(
-      std::forward<P>(params), topology, parent, 0, 
+      std::forward<P>(params), tpg, parent, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=make_moc(std::move(p))]() mutable { p.object(); }
     ));
     return fu;
   }
-  //// 
-  //else if constexpr (has_graph_v<F>) {
-  //  return _async([graph=&f](tf::Runtime& rt){
-
-  //    if(graph.empty()) {
-  //      return;
-  //    }
-
-  //    PreemptionGuard preemption_guard(rt);
-
-  //    //auto send = _set_up_graph(graph.begin(), graph.end(), rt._parent, rt._parent->_topology, 0);
-  //    //node->_join_counter.fetch_add(send - graph.begin(), std::memory_order_relaxed);
-  //    //_schedule(w, graph.begin(), send);
-  //  });
-  //}
+  // async task with `Graph& F::graph()` defined
+  else if constexpr (has_graph_v<F>) {
+    return _async(std::forward<P>(params), _make_module_task(std::forward<F>(f)), tpg, parent);
+  }
   else {
-    static_assert(dependent_false_v<F>, "invalid async callable");
+    static_assert(dependent_false_v<F>, 
+      "invalid async target - must be one of the following types:\n\
+      (1) [] (tf::Runtime&) -> void {}\n\
+      (2) [] () -> auto { ... return ... }\n\
+      (3) a object that has `tf::Graph& graph()` defined\n"
+    );
   }
 
+}
+
+// Function: _silent_async
+template <typename P, typename F>
+void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
+  // silent task 
+  if constexpr (is_runtime_task_v<F> || std::is_invocable_v<F>) {
+    _schedule_async_task(animate(
+      std::forward<P>(params), tpg, parent, 0,
+      std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
+    ));
+  }
+  // async task with `Graph& F::graph()` defined
+  else if constexpr (has_graph_v<F>) {
+    _silent_async(std::forward<P>(params), _make_module_task(std::forward<F>(f)), tpg, parent);
+  }
+  // invalid silent async target
+  else {
+    static_assert(dependent_false_v<F>, 
+      "invalid silent_async target - must be one of the following types:\n\
+      (1) [] (tf::Runtime&) -> void {}\n\
+      (2) [] () -> auto { ... return ... }\n\
+      (3) a object that has `tf::Graph& graph()` defined\n"
+    );
+  }
 }
 
 

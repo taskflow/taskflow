@@ -1066,8 +1066,6 @@ class Executor {
 
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
-  bool _wait_for_task(Worker&, Node*&);
-
   void _observer_prologue(Worker&, Node*);
   void _observer_epilogue(Worker&, Node*);
   void _spawn(size_t);
@@ -1091,6 +1089,7 @@ class Executor {
   void _schedule_async_task(Node*);
   void _update_cache(Worker&, Node*&, Node*);
 
+  bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
   bool _invoke_module_task_impl(Worker&, Node*, Graph&);
@@ -1101,7 +1100,7 @@ class Executor {
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
-  I _set_up_graph(I, I, Node*, Topology*, nstate_t);
+  I _set_up_graph(I, I, Topology*, Node*, nstate_t);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
@@ -1115,8 +1114,17 @@ class Executor {
   template <typename I>
   void _schedule(I, I);
 
+  template <typename I>
+  void _schedule_graph_with_parent(Worker&, I, I, Node*, nstate_t);
+
   template <typename P, typename F>
   auto _async(P&&, F&&, Topology*, Node*);
+
+  template <typename P, typename F>
+  void _silent_async(P&&, F&&, Topology*, Node*);
+
+  template <typename T>
+  auto _make_module_task(T&&);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1490,6 +1498,15 @@ inline void Executor::_schedule(I first, I last) {
   }
   _notifier.notify_n(num_nodes);
 }
+  
+template <typename I>
+void Executor::_schedule_graph_with_parent(
+  Worker& worker, I beg, I end, Node* parent, nstate_t nstate
+) {
+  auto send = _set_up_graph(beg, end, parent->_topology, parent, nstate);
+  parent->_join_counter.fetch_add(send - beg, std::memory_order_relaxed);
+  _schedule(worker, beg, send);
+}
 
 inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
@@ -1497,7 +1514,7 @@ inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   }
   cache = node;
 }
-
+  
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
@@ -1751,10 +1768,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      auto sbeg = g.begin() + sf._tag;
-      auto send = _set_up_graph(sbeg, g.end(), node, node->_topology, NSTATE::NONE);
-      node->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
-      _schedule(worker, sbeg, send);
+      _schedule_graph_with_parent(worker, g.begin() + sf._tag, g.end(), node, NSTATE::NONE);
       return true;
     }
   }
@@ -1805,9 +1819,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    auto send = _set_up_graph(graph.begin(), graph.end(), node, node->_topology, NSTATE::NONE);
-    node->_join_counter.fetch_add(send - graph.begin(), std::memory_order_relaxed);
-    _schedule(w, graph.begin(), send);
+    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node, NSTATE::NONE);
     return true;
   }
   // second entry - already spawned
@@ -2032,11 +2044,7 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
   // anchor this parent as the blocking point
   {
     AnchorGuard anchor(p);
-
-    auto send = _set_up_graph(first, last, p, p->_topology, NSTATE::NONE);
-    p->_join_counter.fetch_add(send - first, std::memory_order_relaxed);
-    _schedule(w, first, send);
-
+    _schedule_graph_with_parent(w, first, last, p, NSTATE::NONE);
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
     );
@@ -2091,7 +2099,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   auto& g = tpg->_taskflow._graph;
   //g._clear_detached();
   
-  auto send = _set_up_graph(g.begin(), g.end(), nullptr, tpg, NSTATE::NONE);
+  auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr, NSTATE::NONE);
   tpg->_num_sources = send - g.begin();
   tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
 
@@ -2100,7 +2108,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
 // Function: _set_up_graph
 template <typename I>
-I Executor::_set_up_graph(I first, I last, Node* parent, Topology* tpg, nstate_t state) {
+I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t state) {
 
   auto send = first;
   for(; first != last; ++first) {
@@ -2226,7 +2234,7 @@ inline void Subflow::detach() {
   if(_graph.size() > _tag) {
     auto sbeg = _graph.begin() + _tag;
     auto send = _executor._set_up_graph(
-      sbeg, _graph.end(), nullptr, _parent->_topology, NSTATE::DETACHED
+      sbeg, _graph.end(), _parent->_topology, nullptr, NSTATE::DETACHED
     );
     _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
     _executor._schedule(_worker, sbeg, send);

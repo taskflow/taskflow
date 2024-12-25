@@ -50,15 +50,14 @@ int main() {
   });
 
   executor.run(taskflow).wait();
+  
+  // reset the counter and run the taskflow again through async tasking
+  counter = 0;
+  executor.async(taskflow).get();
 
 
   return 0;
 }
-
-
-
-
-
 
 
 
