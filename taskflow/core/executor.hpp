@@ -55,6 +55,7 @@ class Executor {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+  friend class Algorithm;
 
   public:
 
@@ -1123,8 +1124,6 @@ class Executor {
   template <typename P, typename F>
   void _silent_async(P&&, F&&, Topology*, Node*);
 
-  template <typename T>
-  auto _make_module_task(T&&);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT

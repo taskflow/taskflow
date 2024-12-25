@@ -37,6 +37,7 @@ class Runtime {
   friend class Executor;
   friend class FlowBuilder;
   friend class PreemptionGuard;
+  friend class Algorithm;
   
   #define TF_RUNTIME_CHECK_CALLER(msg)                                          \
   if(pt::this_worker == nullptr || pt::this_worker->_executor != &_executor) {  \
@@ -683,24 +684,6 @@ inline bool Executor::_invoke_runtime_task_impl(
 // Executor Members that Depend on Runtime
 // ----------------------------------------------------------------------------
 
-template <typename T>
-auto Executor::_make_module_task(T&& target) {
-
-  return [this, &target=std::forward<T>(target)](tf::Runtime& rt){
-    
-    auto& graph = target.graph();
-
-    if(graph.empty()) {
-      return;
-    }
-
-    PreemptionGuard preemption_guard(rt);
-    _schedule_graph_with_parent(
-      rt._worker, graph.begin(), graph.end(), rt._parent, NSTATE::NONE
-    );
-  };
-}
-
 template <typename P, typename F>
 auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
   
@@ -736,16 +719,11 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
     ));
     return fu;
   }
-  // async task with `Graph& F::graph()` defined
-  else if constexpr (has_graph_v<F>) {
-    return _async(std::forward<P>(params), _make_module_task(std::forward<F>(f)), tpg, parent);
-  }
   else {
     static_assert(dependent_false_v<F>, 
       "invalid async target - must be one of the following types:\n\
       (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n\
-      (3) a object that has `tf::Graph& graph()` defined\n"
+      (2) [] () -> auto { ... return ... }\n"
     );
   }
 
@@ -761,17 +739,12 @@ void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
       std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
     ));
   }
-  // async task with `Graph& F::graph()` defined
-  else if constexpr (has_graph_v<F>) {
-    _silent_async(std::forward<P>(params), _make_module_task(std::forward<F>(f)), tpg, parent);
-  }
   // invalid silent async target
   else {
     static_assert(dependent_false_v<F>, 
       "invalid silent_async target - must be one of the following types:\n\
       (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n\
-      (3) a object that has `tf::Graph& graph()` defined\n"
+      (2) [] () -> auto { ... return ... }\n"
     );
   }
 }
