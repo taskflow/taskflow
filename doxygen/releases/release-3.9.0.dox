@@ -61,6 +61,7 @@ and enhances exception handling across all task types.
 + removed std::bind from asynchronous tasks to ensure proper constexpr switch
 + added compile-time macros to enable specific features
   + `TF_ENABLE_TASK_POOL` to enable the use of task pool
++ added taskflow execution through asynchronous tasking with tf::make_module_task
 
 @subsection release-3-9-0_utilities Utilities
 

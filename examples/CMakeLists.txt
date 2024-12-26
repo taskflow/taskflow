@@ -2,6 +2,7 @@ list(APPEND TF_EXAMPLES
   simple 
   attach_data
   async
+  async_module
   runtime_async
   dependent_async
   observer 

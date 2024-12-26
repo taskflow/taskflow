@@ -7,6 +7,7 @@
 #include <taskflow/algorithm/reduce.hpp>
 #include <taskflow/algorithm/scan.hpp>
 #include <taskflow/algorithm/sort.hpp>
+#include <taskflow/algorithm/module.hpp>
 
 // ----------------------------------------------------------------------------
 // embarrassing parallelism
@@ -987,132 +988,6 @@ TEST_CASE("DependentAsync.RecursiveFibonacci.4threads" * doctest::timeout(300)) 
 TEST_CASE("DependentAsync.RecursiveFibonacci.8threads" * doctest::timeout(300)) {
   recursive_fibonacci(8);
 }
-/*
-// ----------------------------------------------------------------------------
-// Mixed algorithms with Silent Dependent Async
-// ----------------------------------------------------------------------------
-
-void mixed_algorithms_with_silent_dependent_async(unsigned W) {
-
-  size_t N = 65536;
-
-  tf::Executor executor(W);
-  
-  int sum1{1}, sum2{1};
-  std::vector<int> data(N), data1(N), data2(N), data3(N), data4(N);
-  
-  // initialize data to 10
-  tf::AsyncTask A = executor.silent_dependent_async(tf::make_for_each_task(
-    data.begin(), data.begin() + N/2, [](int& d){ d = 10; }
-  )); 
-  
-  tf::AsyncTask B = executor.silent_dependent_async(tf::make_for_each_index_task(
-    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
-  ));
-  
-  // data1[i] = [11, 11, 11, ...]
-  tf::AsyncTask T1 = executor.silent_dependent_async(tf::make_transform_task(
-    data.begin(), data.end(), data1.begin(), [](int& d) { return d+1; }
-  ), A, B);
-  
-  // data2[i] = [12, 12, 12, ...]
-  tf::AsyncTask T2 = executor.silent_dependent_async(tf::make_transform_task(
-    data.begin(), data.end(), data2.begin(), [](int& d) { return d+2; }
-  ), A, B);
-  
-  // data3[i] = [13, 13, 13, ...]
-  tf::AsyncTask T3 = executor.silent_dependent_async(tf::make_transform_task(
-    data.begin(), data.end(), data3.begin(), [](int& d) { return d+3; }
-  ), A, B);
-
-  // data4[i] = [1, 1, 1, ...]
-  tf::AsyncTask T4 = executor.silent_dependent_async(tf::make_transform_task(
-    data1.begin(), data1.end(), data2.begin(), data4.begin(),
-    [](int a, int b){ return b - a; } 
-  ), T1, T2);
-  
-  // sum1 = 1 + [-1-1-1-1...]
-  tf::AsyncTask T5 = executor.silent_dependent_async(tf::make_transform_reduce_task(
-    data4.begin(), data4.end(), sum1, std::plus<int>{}, [](int d){ return -d; }
-  ), T4);
-
-  tf::AsyncTask T6 = executor.silent_dependent_async(tf::make_transform_reduce_task(
-    data4.begin(), data4.end(), data3.begin(), sum2, std::plus<int>{}, std::plus<int>{}
-  ), T3, T4);
-  
-  // inclusive scan over data1 [11, 22, 33, 44, ...]
-  tf::AsyncTask T7 = executor.silent_dependent_async(tf::make_inclusive_scan_task(
-    data1.begin(), data1.end(), data1.begin(), std::plus<int>{}
-  ), T5, T6);
-  
-  // exclusive scan over data2 [-1, 11, 23, 35, ...]
-  tf::AsyncTask T8 = executor.silent_dependent_async(tf::make_exclusive_scan_task(
-    data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{}
-  ), T5, T6);
-    
-  // transform inclusive scan over data3 [-13, -26, -39, ...]
-  tf::AsyncTask T9 = executor.silent_dependent_async(tf::make_transform_inclusive_scan_task(
-    data3.begin(), data3.end(), data3.begin(), std::plus<int>{},
-    [](int i){ return -i; }
-  ), T5, T6);
-  
-  // transform exclusive scan over data4 [7, 6, 5, 4, ...]
-  tf::AsyncTask T10 = executor.silent_dependent_async(tf::make_transform_exclusive_scan_task(
-    data4.begin(), data4.end(), data4.begin(), 7, std::plus<int>{},
-    [](int i){ return -i; }
-  ), T5, T6);
-  
-  // sort data4
-  tf::AsyncTask T11 = executor.silent_dependent_async(tf::make_sort_task(
-    data4.begin(), data4.end()
-  ), T10);
-  
-  executor.wait_for_all();
-
-  REQUIRE(sum1 == 1-N);
-  REQUIRE(sum2 == 1+N*14);
-
-  for(size_t i=0; i<N; i++) {
-    REQUIRE(data [i] == 10);
-    REQUIRE(data1[i] == (i+1)*11);
-    REQUIRE(data2[i] == i*12 - 1);
-    REQUIRE(data3[i] == (i+1)*-13);
-    REQUIRE(data4[N-i-1] == 7-i);
-  }
-
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.1thread" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(1);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.2threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(2);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.3threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(3);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.4threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(4);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.5threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(5);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.6threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(6);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.7threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(7);
-}
-
-TEST_CASE("SilentDependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
-  mixed_algorithms_with_silent_dependent_async(8);
-}
 
 // ----------------------------------------------------------------------------
 // Mixed Algorithm with Dependent Async
@@ -1167,31 +1042,34 @@ void mixed_algorithms_with_dependent_async(unsigned W) {
   ), T3, T4);
   
   // inclusive scan over data1 [11, 22, 33, 44, ...]
-  auto [T7, fuT7] = executor.dependent_async(tf::make_inclusive_scan_task(
-    data1.begin(), data1.end(), data1.begin(), std::plus<int>{}
-  ), T5, T6);
+  tf::Taskflow G7;
+  G7.inclusive_scan(data1.begin(), data1.end(), data1.begin(), std::plus<int>{});
+  auto [T7, fuT7] = executor.dependent_async(tf::make_module_task(G7), T5, T6);
   
   // exclusive scan over data2 [-1, 11, 23, 35, ...]
-  auto [T8, fuT8] = executor.dependent_async(tf::make_exclusive_scan_task(
-    data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{}
-  ), T5, T6);
+  tf::Taskflow G8;
+  G8.exclusive_scan(data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{});
+  auto [T8, fuT8] = executor.dependent_async(tf::make_module_task(G8), T5, T6);
     
   // transform inclusive scan over data3 [-13, -26, -39, ...]
-  auto [T9, fuT9] = executor.dependent_async(tf::make_transform_inclusive_scan_task(
-    data3.begin(), data3.end(), data3.begin(), std::plus<int>{},
-    [](int i){ return -i; }
-  ), T5, T6);
+  tf::Taskflow G9;
+  G9.transform_inclusive_scan(
+    data3.begin(), data3.end(), data3.begin(), std::plus<int>{}, [](int i) {return -i;}
+  );
+  auto [T9, fuT9] = executor.dependent_async(tf::make_module_task(G9), T5, T6);
   
   // transform exclusive scan over data4 [7, 6, 5, 4, ...]
-  auto [T10, fuT10] = executor.dependent_async(tf::make_transform_exclusive_scan_task(
+  tf::Taskflow G10;
+  G10.transform_exclusive_scan(
     data4.begin(), data4.end(), data4.begin(), 7, std::plus<int>{},
     [](int i){ return -i; }
-  ), T5, T6);
+  );
+  auto [T10, fuT10] = executor.dependent_async(tf::make_module_task(G10), T5, T6);
   
   // sort data4
-  auto [T11, fuT11] = executor.dependent_async(tf::make_sort_task(
-    data4.begin(), data4.end()
-  ), T10);
+  auto [T11, fuT11] = executor.dependent_async(
+    tf::make_sort_task(data4.begin(), data4.end()), T10
+  );
   
   executor.wait_for_all();
 
@@ -1240,6 +1118,133 @@ TEST_CASE("DependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
   mixed_algorithms_with_dependent_async(8);
 }
 
-*/
+// ----------------------------------------------------------------------------
+// Mixed Algorithm with Silent Dependent Async
+// ----------------------------------------------------------------------------
+
+void mixed_algorithms_with_silent_dependent_async(unsigned W) {
+
+  size_t N = 65536;
+
+  tf::Executor executor(W);
+  
+  int sum1{1}, sum2{1};
+  std::vector<int> data(N), data1(N), data2(N), data3(N), data4(N);
+  
+  // initialize data to 10
+  auto A = executor.silent_dependent_async(tf::make_for_each_task(
+    data.begin(), data.begin() + N/2, [](int& d){ d = 10; }
+  )); 
+  
+  auto B = executor.silent_dependent_async(tf::make_for_each_index_task(
+    N/2, N, size_t{1}, [&] (size_t i) { data[i] = 10; }
+  ));
+  
+  // data1[i] = [11, 11, 11, ...]
+  auto T1 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data1.begin(), [](int& d) { return d+1; }
+  ), A, B);
+  
+  // data2[i] = [12, 12, 12, ...]
+  auto T2 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data2.begin(), [](int& d) { return d+2; }
+  ), A, B);
+  
+  // data3[i] = [13, 13, 13, ...]
+  auto T3 = executor.silent_dependent_async(tf::make_transform_task(
+    data.begin(), data.end(), data3.begin(), [](int& d) { return d+3; }
+  ), A, B);
+
+  // data4[i] = [1, 1, 1, ...]
+  auto T4 = executor.silent_dependent_async(tf::make_transform_task(
+    data1.begin(), data1.end(), data2.begin(), data4.begin(),
+    [](int a, int b){ return b - a; } 
+  ), T1, T2);
+  
+  // sum1 = 1 + [-1-1-1-1...]
+  auto T5 = executor.silent_dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), sum1, std::plus<int>{}, [](int d){ return -d; }
+  ), T4);
+
+  auto T6 = executor.silent_dependent_async(tf::make_transform_reduce_task(
+    data4.begin(), data4.end(), data3.begin(), sum2, std::plus<int>{}, std::plus<int>{}
+  ), T3, T4);
+  
+  // inclusive scan over data1 [11, 22, 33, 44, ...]
+  tf::Taskflow G7;
+  G7.inclusive_scan(data1.begin(), data1.end(), data1.begin(), std::plus<int>{});
+  auto T7 = executor.silent_dependent_async(tf::make_module_task(G7), T5, T6);
+  
+  // exclusive scan over data2 [-1, 11, 23, 35, ...]
+  tf::Taskflow G8;
+  G8.exclusive_scan(data2.begin(), data2.end(), data2.begin(), -1, std::plus<int>{});
+  auto T8 = executor.silent_dependent_async(tf::make_module_task(G8), T5, T6);
+    
+  // transform inclusive scan over data3 [-13, -26, -39, ...]
+  tf::Taskflow G9;
+  G9.transform_inclusive_scan(
+    data3.begin(), data3.end(), data3.begin(), std::plus<int>{}, [](int i) {return -i;}
+  );
+  auto T9 = executor.silent_dependent_async(tf::make_module_task(G9), T5, T6);
+  
+  // transform exclusive scan over data4 [7, 6, 5, 4, ...]
+  tf::Taskflow G10;
+  G10.transform_exclusive_scan(
+    data4.begin(), data4.end(), data4.begin(), 7, std::plus<int>{},
+    [](int i){ return -i; }
+  );
+  auto T10 = executor.silent_dependent_async(tf::make_module_task(G10), T5, T6);
+  
+  // sort data4
+  auto T11 = executor.silent_dependent_async(
+    tf::make_sort_task(data4.begin(), data4.end()), T10
+  );
+  
+  executor.wait_for_all();
+
+  REQUIRE(sum1 == 1-N);
+  REQUIRE(sum2 == 1+N*14);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(data [i] == 10);
+    REQUIRE(data1[i] == (i+1)*11);
+    REQUIRE(data2[i] == i*12 - 1);
+    REQUIRE(data3[i] == (i+1)*-13);
+    REQUIRE(data4[N-i-1] == 7-i);
+  }
+
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.1thread" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(1);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.2threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(2);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.3threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(3);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.4threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(4);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.5threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(5);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.6threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(6);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.7threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(7);
+}
+
+TEST_CASE("SilentDependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300)) {
+  mixed_algorithms_with_silent_dependent_async(8);
+}
 
 

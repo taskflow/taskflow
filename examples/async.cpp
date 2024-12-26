@@ -1,7 +1,6 @@
 // The program demonstrates how to create asynchronous task
 // from an executor and a subflow.
 #include <taskflow/taskflow.hpp>
-#include <taskflow/algorithm/module.hpp>
 
 int main() {
 
@@ -52,11 +51,6 @@ int main() {
 
   executor.run(taskflow).wait();
   
-  // reset the counter and run the taskflow again through async tasking
-  counter = 0;
-  executor.async(tf::make_module_task(taskflow)).get();
-
-
   return 0;
 }
 
