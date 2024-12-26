@@ -276,6 +276,104 @@ TEST_CASE("Module3.8threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Module Algorithm with Taskflow Launch
+// ----------------------------------------------------------------------------
+
+void module4(unsigned W) {
+
+  tf::Executor executor(W);
+
+  tf::Taskflow f0;
+
+  int cnt {0};
+
+  auto A = f0.emplace([&cnt](){ ++cnt; });
+  auto B = f0.emplace([&cnt](){ ++cnt; });
+  auto C = f0.emplace([&cnt](){ ++cnt; });
+  auto D = f0.emplace([&cnt](){ ++cnt; });
+  auto E = f0.emplace([&cnt](){ ++cnt; });
+
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  tf::Taskflow f1;
+
+  // module 1
+  std::tie(A, B, C, D, E) = f1.emplace(
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; }
+  );
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+  auto m1_1 = f1.emplace(tf::make_module_task(f0));
+  E.precede(m1_1);
+
+  executor.run(f1).get();
+  REQUIRE(cnt == 10);
+
+  cnt = 0;
+  executor.run_n(f1, 100).get();
+  REQUIRE(cnt == 10 * 100);
+
+  auto m1_2 = f1.emplace(tf::make_module_task(f0));
+  m1_1.precede(m1_2);
+
+  for(int n=0; n<100; n++) {
+    cnt = 0;
+    executor.run_n(f1, n).get();
+    REQUIRE(cnt == 15*n);
+  }
+
+  cnt = 0;
+  for(int n=0; n<100; n++) {
+    executor.run(f1);
+  }
+
+  executor.wait_for_all();
+
+  REQUIRE(cnt == 1500);
+}
+
+TEST_CASE("Module4.1thread" * doctest::timeout(300)) {
+  module4(1);
+}
+
+TEST_CASE("Module4.2threads" * doctest::timeout(300)) {
+  module4(2);
+}
+
+TEST_CASE("Module4.3threads" * doctest::timeout(300)) {
+  module4(3);
+}
+
+TEST_CASE("Module4.4threads" * doctest::timeout(300)) {
+  module4(4);
+}
+
+TEST_CASE("Module4.5threads" * doctest::timeout(300)) {
+  module4(5);
+}
+
+TEST_CASE("Module4.6threads" * doctest::timeout(300)) {
+  module4(6);
+}
+
+TEST_CASE("Module4.7threads" * doctest::timeout(300)) {
+  module4(7);
+}
+
+TEST_CASE("Module4.8threads" * doctest::timeout(300)) {
+  module4(8);
+}
+
+// ----------------------------------------------------------------------------
 // Parallel Modules
 // ----------------------------------------------------------------------------
 
@@ -643,4 +741,5 @@ TEST_CASE("Module.DependentAsyncLaunch.7threads" * doctest::timeout(300)) {
 TEST_CASE("Module.DependentAsyncLaunch.8threads" * doctest::timeout(300)) {
   module_with_silent_dependent_async_launch(8);
 }
+
 

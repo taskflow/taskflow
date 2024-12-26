@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Taskflow Algorithms | Taskflow QuickStart</title>
+  <title>Module Wrapper | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,9 +46,16 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          Taskflow Algorithms
+          Module Wrapper
         </h1>
-<p>Taskflow defines a set of algorithm primitives to perform common parallel algorithms:</p><ul><li><a href="PartitioningAlgorithm.html" class="m-doc">Partitioning Algorithm</a></li><li><a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a></li><li><a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a></li><li><a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a></li><li><a href="ParallelSort.html" class="m-doc">Parallel Sort</a></li><li><a href="ParallelScan.html" class="m-doc">Parallel Scan</a></li><li><a href="ParallelFind.html" class="m-doc">Parallel Find</a></li><li><a href="ModuleTask.html" class="m-doc">Module Task</a></li><li><a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a></li><li><a href="TaskParallelScalablePipeline.html" class="m-doc">Task-parallel Scalable Pipeline</a></li><li><a href="TaskParallelPipelineWithTokenDependencies.html" class="m-doc">Task-parallel Pipeline with Token Dependencies</a></li><li><a href="DataParallelPipeline.html" class="m-doc">Data-parallel Pipeline</a></li></ul>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#ModuleWrapperInclude">Include the Header</a></li>
+            <li><a href="#WhatIsAModuleWrapper">What is a Module Wrapper?</a></li>
+          </ul>
+        </nav>
+<p>Taskflow provides template methods that construct tasks over graphs to integrate reusable components within your taskflow applications.</p><section id="ModuleWrapperInclude"><h2><a href="#ModuleWrapperInclude">Include the Header</a></h2><p>You need to include the header file, <code><a href="module_8hpp_source.html" class="m-doc">taskflow/<wbr />algorithm/<wbr />module.hpp</a></code>, for creating a module task over any schedulable graph target.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/module.hpp&gt;</span></pre></section><section id="WhatIsAModuleWrapper"><h2><a href="#WhatIsAModuleWrapper">What is a Module Wrapper?</a></h2><p>A module wrapper creates a task over a schedulable target using <a href="namespacetf.html#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>.</p><p>A parallel scan task performs the cumulative sum, also known as <em>prefix sum</em> or <em>scan</em>, of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator</p></section>
       </div>
     </div>
   </div>

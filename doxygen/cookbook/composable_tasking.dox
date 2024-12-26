@@ -65,7 +65,7 @@ Debrief:
 @li Line 34 enforces the module task to run before task f2D
 
 
-@section CreateAModuleTask Create a Module Task
+@section CreateAModuleTaskFromATaskflow Create a Module Task from a %Taskflow
 
 The task created from Taskflow::composed_of is a @em module task
 that runs on a pre-defined taskflow.
@@ -90,7 +90,8 @@ they are associated with the same graph.
 %Taskflow allows you to create a custom graph object that can participate in
 the scheduling using composition.
 To become a module task,
-your class `T` must define a method `T::graph()` that returns a reference to a tf::Graph object.
+your class `T` must define the method `T::graph()` that returns a reference to the tf::Graph object
+managed by `T`.
 The following example defines a custom graph object that can be assembled in a taskflow
 throw composition:
 
@@ -98,7 +99,7 @@ throw composition:
  1: struct CustomGraph {
  2:   tf::Graph graph;
  3:   CustomGraph() {
- 4:     tf::FlowBuilder builder(graph);
+ 4:     tf::FlowBuilder builder(graph);  // inherit all task builders in tf::Taskflow
  5:     tf::Task task = builder.emplace([](){
  6:       std::cout << "a task\n";  // static task
  7:     });
@@ -121,18 +122,13 @@ Debrief:
 The composition method tf::Taskflow::composed_of requires the target to define
 the `graph()` method that returns a reference to a tf::Graph object
 defined by the target.
-At runtime, the executor will run dependent tasks in that graph
-using the same work-stealing scheduling algorithm as other taskflows.
-%Taskflow leverages this powerful feature to design high-level algorithms, 
-such as tf::Pipeline.
+At runtime, the executor will schedule tasks in that graph
+using the same work-stealing algorithm as other taskflows.
 
-@note
-While %Taskflow gives you the flexibility to create a composable graph object,
-you should consider using tf::Graph as an opaque data structure just to interact
-with the library.
-Additionally, as other module tasks, %Taskflow does not own the lifetime of
-a custom composable graph object but keeps a soft mapping to it.
-You should keep the graph object alive during its execution.
+@attention
+Users are responsible for ensuring the given target remains valid throughout its execution.
+The executor does not assume ownership of the target object.
+
 
 */
 

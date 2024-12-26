@@ -97,11 +97,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>optimized task storage by storing detached tasks in their original subflows</para>
 </listitem><listitem><para>optimized the query efficiency for strong dependencies by embedding their values in node states</para>
 </listitem><listitem><para>updated <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> to derive from a vector of unique pointers to nodes<itemizedlist>
-<listitem><para><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> node lifetimes are managed using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></para>
-</listitem><listitem><para>Asynchronous task node lifetimes are managed using <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>.</para>
+<listitem><para>Graph node lifetimes are managed by <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></para>
+</listitem><listitem><para>Asynchronous task node lifetimes are managed by <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>expanded unit tests to include more exception handling scenarios</para>
+</listitem><listitem><para>decoupled <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> from static task to accommodate distinct execution logic</para>
 </listitem><listitem><para>removed the blocking behavior to avoid underutilized threads for the following tasks:<itemizedlist>
 <listitem><para>module task (<ulink url="https://github.com/taskflow/taskflow/issues/649">#649</ulink>)</para>
 </listitem><listitem><para>subflow task</para>
@@ -109,6 +110,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>removed std::bind from asynchronous tasks to ensure proper constexpr switch</para>
+</listitem><listitem><para>added compile-time macros to enable specific features<itemizedlist>
+<listitem><para><computeroutput>TF_ENABLE_TASK_POOL</computeroutput> to enable the use of task pool</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>added taskflow execution through asynchronous tasking with <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -136,7 +142,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-9-0_1release-3-9-0_breaking_changes">
 <title>Breaking Changes</title>
 <para><itemizedlist>
-<listitem><para>decoupled <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> from inheriting <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to accommodate distinct execution logic</para>
+<listitem><para>decoupled <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> from inheriting <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to accommodate distinct execution logic<itemizedlist>
+<listitem><para><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> no longer supports <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>-specific features</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>removed tf::Runtime::corun_until as it duplicates <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
@@ -147,6 +157,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>fixed benchmark instance names in documentation (<ulink url="https://github.com/taskflow/taskflow/pull/621">#621</ulink>)</para>
 </listitem><listitem><para>revised <ref refid="ExceptionHandling" kindref="compound">Exception Handling</ref></para>
 </listitem><listitem><para>revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref></para>
+</listitem><listitem><para>added <ref refid="ModuleTask" kindref="compound">Module Task</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>

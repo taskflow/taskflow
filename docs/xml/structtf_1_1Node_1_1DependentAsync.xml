@@ -3,9 +3,9 @@
   <compounddef id="structtf_1_1Node_1_1DependentAsync" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::DependentAsync</compoundname>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1ac82b5f5c4a41bf36dfbce553ff091eae" prot="public" static="no" mutable="no">
-        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;)&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;, bool)&gt; &gt;</type>
-        <definition>std::variant&lt; std::function&lt;void()&gt;, std::function&lt;void(Runtime&amp;)&gt;, std::function&lt;void(Runtime&amp;, bool)&gt; &gt; tf::Node::DependentAsync::work</definition>
+      <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a07b31cf8a6cc3a22e2aa6fd8ec87a597" prot="public" static="no" mutable="no">
+        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;)&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;, bool)&gt; &gt;</type>
+        <definition>std::variant&lt; std::function&lt;void()&gt;, std::function&lt;void(tf::Runtime&amp;)&gt;, std::function&lt;void(tf::Runtime&amp;, bool)&gt; &gt; tf::Node::DependentAsync::work</definition>
         <argsstring></argsstring>
         <name>work</name>
         <briefdescription>
@@ -14,7 +14,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="242" column="2" bodyfile="taskflow/core/graph.hpp" bodystart="242" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="249" column="2" bodyfile="taskflow/core/graph.hpp" bodystart="249" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" prot="public" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
@@ -28,7 +28,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="244" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="244" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="251" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="251" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1DependentAsync_1a89ae782200f185eeee0d29f0990d5104" prot="public" static="no" mutable="no">
         <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; ASTATE::underlying_type &gt;</type>
@@ -42,7 +42,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="245" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="245" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="252" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="252" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -66,7 +66,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="236" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="433" bodyend="434"/>
+        <location file="taskflow/core/graph.hpp" line="243" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="448" bodyend="449"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -90,12 +90,12 @@
         <label>std::atomic&lt; size_t &gt;</label>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/graph.hpp" line="233" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="233" bodyend="246"/>
+    <location file="taskflow/core/graph.hpp" line="240" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="240" bodyend="253"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a37927e314ca437d682dcaa40f86960e8" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>DependentAsync</name></member>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a89ae782200f185eeee0d29f0990d5104" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>state</name></member>
       <member refid="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>use_count</name></member>
-      <member refid="structtf_1_1Node_1_1DependentAsync_1ac82b5f5c4a41bf36dfbce553ff091eae" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>work</name></member>
+      <member refid="structtf_1_1Node_1_1DependentAsync_1a07b31cf8a6cc3a22e2aa6fd8ec87a597" prot="public" virt="non-virtual"><scope>tf::Node::DependentAsync</scope><name>work</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

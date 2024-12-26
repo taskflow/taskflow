@@ -1,0 +1,162 @@
+namespace tf {
+
+/** @page ModuleTask Module Task
+
+%Taskflow provides template methods that let users create reusable building blocks
+called @em modules.
+Users can connect modules together to build more complex parallel algorithms.
+
+@tableofcontents
+
+@section ModuleTaskInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/module.hpp</tt>,
+for creating a module task over a schedulable graph target.
+
+@code{.cpp}
+#include <taskflow/algorithm/module.hpp>
+@endcode
+
+@section WhatIsAModuleTask What is a Module Task
+
+Similar to @ref ComposableTasking, but in a more generic setting,
+the template function, tf::make_module_task,
+allows you to create a task over a taskflow graph that can be executed by an executor.
+This provides a flexible way to encapsulate and reuse complex task logic within your 
+%Taskflow applications.
+The example below demonstrates how to create and launch multiple taskflows in parallel 
+using asynchronous tasking:
+
+@code{.cpp}
+tf::Executor executor;
+
+tf::Taskflow A;
+tf::Taskflow B;
+tf::Taskflow C;
+tf::Taskflow D;
+
+A.emplace([](){ printf("Taskflow A\n"); }); 
+B.emplace([](){ printf("Taskflow B\n"); }); 
+C.emplace([](){ printf("Taskflow C\n"); }); 
+D.emplace([](){ printf("Taskflow D\n"); }); 
+
+// launch the four taskflows using asynchronous tasking
+executor.async(tf::make_module_task(A));
+executor.async(tf::make_module_task(B));
+executor.async(tf::make_module_task(C));
+executor.async(tf::make_module_task(D));
+executor.wait_for_all();  
+@endcode
+
+@dotfile images/module_task_1.dot
+
+Since the four taskflows are launched asynchronously without any dependencies between them,
+we can observe any order of the output message:
+
+@code{.shell-session}
+# one possible output
+Taskflow B
+Taskflow C
+Taskflow A
+Taskflow D
+
+# another possible output
+Taskflow D
+Taskflow A
+Taskflow B
+Taskflow C
+@endcode
+
+If you need to enforce dependencies among these four taskflows,
+you can use dependent-async tasks.
+The example below launches the four taskflows one by one in sequential:
+
+@code{.cpp}
+tf::Executor executor;
+
+tf::Taskflow A;
+tf::Taskflow B;
+tf::Taskflow C;
+tf::Taskflow D;
+
+A.emplace([](){ printf("Taskflow A\n"); }); 
+B.emplace([](){ printf("Taskflow B\n"); }); 
+C.emplace([](){ printf("Taskflow C\n"); }); 
+D.emplace([](){ printf("Taskflow D\n"); }); 
+
+auto TA = executor.silent_dependent_async(tf::make_module_task(A));
+auto TB = executor.silent_dependent_async(tf::make_module_task(B), TA);
+auto TC = executor.silent_dependent_async(tf::make_module_task(C), TB);
+auto [TD, FD] = executor.dependent_async(tf::make_module_task(D), TC);
+FD.get();
+@endcode
+
+@dotfile images/module_task_1.dot
+
+@code{.shell-session}
+# dependent-async tasks enforce a sequential execution of the four taskflows
+Taskflow A
+Taskflow B
+Taskflow C
+Taskflow D
+@endcode
+
+The module task maker, tf::make_module_task, functions basically similar to tf::Taskflow::composed_of 
+but provides a more generic interface that can be used beyond %Taskflow.
+For instance, the following two approaches achieve the same functionality.
+
+@code{.cpp}
+// approach 1: composition using composed_of
+tf::Task m1 = taskflow1.composed_of(taskflow2);
+
+// approach 2: composition using make_module_task
+tf::Task m1 = taskflow1.emplace(tf::make_module_task(taskflow2));
+@endcode
+
+@attention
+Similar to tf::Taskflow::composed_of, tf::make_module_task does not assume ownership of 
+the provided taskflow but a soft reference.
+You are responsible for ensuring that the encapsulated taskflow remains valid
+throughout its execution.
+
+
+@section CreateAModuleTaskOverACustomGraph Create a Module Task over a Custom Graph
+
+In addition to encapsulate taskflow graphs, you can create a module task to schedule 
+a custom graph target.
+A schedulable target (of type `T`) must define the method `T::graph()` that returns a reference 
+to the tf::Graph object managed by `T`.
+The following example defines a custom graph that can be scheduled through making module tasks:
+
+@code{.cpp}
+struct CustomGraph {
+  tf::Graph graph;
+  CustomGraph() {
+    // use flow builder to inherit all task creation methods in tf::Taskflow
+    tf::FlowBuilder builder(graph);
+    tf::Task task = builder.emplace([](){
+      std::cout << "a task\n";  // static task
+    });
+  }
+  // returns a reference to the graph for taskflow composition
+  Graph& graph() { return graph; }
+};
+
+CustomGraph target;
+executor.async(tf::make_module_task(target));
+@endcode
+
+@attention
+Users are responsible for ensuring the given custom graph remains valid throughout its execution.
+The executor does not assume ownership of the custom graph.
+
+
+*/
+
+}
+
+
+
+
+
+

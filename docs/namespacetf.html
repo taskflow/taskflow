@@ -93,12 +93,12 @@
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">UnboundedTaskQueue</a>
             </dt>
-            <dd>class to create a lock-free unbounded single-producer multiple-consumer queue</dd>
+            <dd>class to create a lock-free unbounded work-stealing queue</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
               class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a>
             </dt>
-            <dd>class to create a lock-free bounded single-producer multiple-consumer queue</dd>
+            <dd>class to create a lock-free bounded work-stealing queue</dd>
             <dt>
               class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a>
             </dt>
@@ -114,7 +114,7 @@
             <dt>
               class <a href="classtf_1_1WorkerView.html" class="m-doc">WorkerView</a>
             </dt>
-            <dd>class to create an immutable view of a worker in an executor</dd>
+            <dd>class to create an immutable view of a worker</dd>
             <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
@@ -277,6 +277,7 @@
             <dt>
               <span class="m-doc-wrap-bumper">enum class <a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>: int { </span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">PLACEHOLDER</a> = 0,
               <a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">STATIC</a>,
+              <a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">RUNTIME</a>,
               <a href="#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" class="m-doc">SUBFLOW</a>,
               <a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">CONDITION</a>,
               <a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">MODULE</a>,
@@ -458,6 +459,11 @@
               C&amp;&amp; callable) -&gt; auto</span>
             </dt>
             <dd>function to construct a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>)</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target) -&gt; auto</span>
+            </dt>
+            <dd>creates a module task using the given target</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#abffa70155a5f160b7ceb86ee52ab2136" class="m-doc">cuda_get_num_devices</a>(</span><span class="m-doc-wrap">) -&gt; size_t</span>
             </dt>
@@ -819,7 +825,12 @@
             </dt>
             <dd>determines if the given type is a task parameter type</dd>
             <dt>
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 6&gt; <a href="#a872cf263ab68abc7c3180710fb792528" class="m-doc">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              bool <a href="#aea3945d9b15c96a72540ea4fe61947e7" class="m-doc">has_graph_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if the given type has a member function <code><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; graph()</code></dd>
+            <dt>
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; <a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc">TASK_TYPES</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>array of all task types (used for iterating task types)</dd>
             <dt>
@@ -842,6 +853,11 @@
               bool <a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc">is_static_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
             </dt>
             <dd>determines if a callable is a static task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              bool <a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc">is_runtime_task_v</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>determines if a callable is a runtime task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               bool <a href="#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_partitioner_v</a> <span class="m-label m-flat m-primary">constexpr</span>
@@ -870,6 +886,12 @@
                   <td><a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc-self" id="a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc">STATIC</a></td>
                   <td>
                   <p>static task type</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc-self" id="a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8">RUNTIME</a></td>
+                  <td>
+                  <p>runtime task type</p>
                   </td>
                 </tr>
                 <tr>
@@ -1544,6 +1566,7 @@
             <p>convert a task type to a human-readable string</p>
 <p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span><span class="w">     </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;placeholder&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;static&quot;</span>
+<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;runtime&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">SUBFLOW</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;subflow&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span><span class="w">       </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;condition&quot;</span>
 <span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;module&quot;</span>
@@ -1732,6 +1755,63 @@
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="aae281ad3b89a5c421a1f4058f425e54c"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc-self">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
+            </h3>
+            <p>creates a module task using the given target</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>Type of the target object, which must define the method <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; graph()</code>.</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>target</td>
+                  <td>The target object used to create the module task.</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>module task that can be used by Taskflow or asynchronous tasking.</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This example demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">C</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
+
+<span class="n">A</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Taskflow A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span>
+<span class="n">B</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Taskflow B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span>
+<span class="n">C</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Taskflow C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span>
+<span class="n">D</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Taskflow D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span><span class="w"> </span>
+
+<span class="c1">// launch the four taskflows using asynchronous tasking</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">A</span><span class="p">));</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">B</span><span class="p">));</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">C</span><span class="p">));</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">D</span><span class="p">));</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">  </span></pre><p>The module task maker, <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, is basically the same as <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">);</span>
+
+<span class="c1">// approach 2: composition using make_module_task</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">));</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>Users are responsible for ensuring that the given target remains valid throughout its execution. The executor does not assume ownership of the target object.</p></aside>
           </div></section>
           <section class="m-doc-details" id="abffa70155a5f160b7ceb86ee52ab2136"><div>
             <h3>
@@ -3551,9 +3631,41 @@
             <p>determines if the given type is a task parameter type</p>
 <p><a href="classtf_1_1Task.html" class="m-doc">Task</a> parameters can be specified in one of the following types:</p><ul><li><a href="structtf_1_1TaskParams.html" class="m-doc">tf::<wbr />TaskParams</a>: assign the struct of defined parameters</li><li><a href="structtf_1_1DefaultTaskParams.html" class="m-doc">tf::<wbr />DefaultTaskParams</a>: assign nothing</li><li><a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>: assign a name to the task</li></ul>
           </div></section>
-          <section class="m-doc-details" id="a872cf263ab68abc7c3180710fb792528"><div>
+          <section class="m-doc-details" id="aea3945d9b15c96a72540ea4fe61947e7"><div>
             <h3>
-              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 6&gt; tf::<wbr /><a href="#a872cf263ab68abc7c3180710fb792528" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-primary">constexpr</span>
+              <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="graph_8hpp.html">&lt;taskflow/core/graph.hpp&gt;</a></div>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              bool tf::<wbr /><a href="#aea3945d9b15c96a72540ea4fe61947e7" class="m-doc-self">has_graph_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if the given type has a member function <code><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; graph()</code></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>The type to inspect.</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This trait determines if the provided type <code>T</code> contains a member function with the exact signature <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; graph()</code>. It uses SFINAE and <code>std::void_t</code> to detect the presence of the member function and its return type.</p><p>Example usage:</p><pre class="m-code"><span class="k">struct</span><span class="w"> </span><span class="nc">A</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">graph</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_graph</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Graph</span><span class="w"> </span><span class="n">my_graph</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// other custom members to alter my_graph</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">C</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="c1">// No graph function</span>
+
+<span class="k">static_assert</span><span class="p">(</span><span class="n">has_graph_v</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;A has graph()&quot;</span><span class="p">);</span>
+<span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">has_graph_v</span><span class="o">&lt;</span><span class="n">C</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;C does not have graph()&quot;</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a3d823d8776745f3348dc87bba2fcc91b"><div>
+            <h3>
+              <a href="http://en.cppreference.com/w/cpp/container/array.html" class="m-doc-external">std::<wbr />array</a>&lt;<a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a>, 7&gt; tf::<wbr /><a href="#a3d823d8776745f3348dc87bba2fcc91b" class="m-doc-self">TASK_TYPES</a> <span class="m-label m-primary">constexpr</span>
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
             </h3>
             <p>array of all task types (used for iterating task types)</p>
@@ -3578,7 +3690,7 @@
               bool tf::<wbr /><a href="#a00ca2fc2de0e679a7d9b8039340343df" class="m-doc-self">is_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a condition task</p>
-<p>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;.</p>
+<p>A condition task is a callable object constructible from std::function&lt;int()&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a78c40dc8776735b0f2c27cd446481aff"><div>
             <h3>
@@ -3589,7 +3701,7 @@
               bool tf::<wbr /><a href="#a78c40dc8776735b0f2c27cd446481aff" class="m-doc-self">is_multi_condition_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a multi-condition task</p>
-<p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt; or <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;.</p>
+<p>A multi-condition task is a callable object constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function</a>&lt;tf::SmallVector&lt;int&gt;()&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a11fc9c98eb3a0d3a9aa55598b1f4d614"><div>
             <h3>
@@ -3600,7 +3712,18 @@
               bool tf::<wbr /><a href="#a11fc9c98eb3a0d3a9aa55598b1f4d614" class="m-doc-self">is_static_task_v</a> <span class="m-label m-primary">constexpr</span>
             </h3>
             <p>determines if a callable is a static task</p>
-<p>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
+<p>A static task is a callable object constructible from std::function&lt;void()&gt;.</p>
+          </div></section>
+          <section class="m-doc-details" id="af3d94f0be0f7b49e195c4e92737b1f85"><div>
+            <h3>
+              <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
+              <div class="m-doc-template">
+                template&lt;typename C&gt;
+              </div>
+              bool tf::<wbr /><a href="#af3d94f0be0f7b49e195c4e92737b1f85" class="m-doc-self">is_runtime_task_v</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>determines if a callable is a runtime task</p>
+<p>A runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;.</p>
           </div></section>
           <section class="m-doc-details" id="a73c20705fc54763f195a00b6e626e301"><div>
             <h3>

@@ -18,6 +18,7 @@
     <innerclass refid="structtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1AnchorGuard" prot="private">tf::AnchorGuard</innerclass>
+    <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
     <innerclass refid="classtf_1_1UnboundedTaskQueue" prot="public">tf::UnboundedTaskQueue</innerclass>
     <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
@@ -107,6 +108,14 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
+        <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" prot="public">
+          <name>RUNTIME</name>
+          <briefdescription>
+<para>runtime task type </para>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
         <enumvalue id="namespacetf_1a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" prot="public">
           <name>SUBFLOW</name>
           <briefdescription>
@@ -154,7 +163,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="21" column="1" bodyfile="taskflow/core/task.hpp" bodystart="21" bodyend="36"/>
+        <location file="taskflow/core/task.hpp" line="21" column="1" bodyfile="taskflow/core/task.hpp" bodystart="21" bodyend="38"/>
       </memberdef>
       <memberdef kind="enum" id="namespacetf_1a192f7cb0fab2eb6f1c84f6046706435d" prot="public" static="no" strong="yes">
         <type>int</type>
@@ -414,14 +423,74 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="136" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="136" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a872cf263ab68abc7c3180710fb792528" prot="private" static="no" constexpr="yes" mutable="no">
-        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 6 &gt;</type>
-        <definition>constexpr std::array&lt;TaskType, 6&gt; tf::TASK_TYPES</definition>
+      <memberdef kind="variable" id="namespacetf_1aea3945d9b15c96a72540ea4fe61947e7" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool tf::has_graph_v</definition>
+        <argsstring></argsstring>
+        <name>has_graph_v</name>
+        <initializer>= has_graph&lt;T&gt;::value</initializer>
+        <briefdescription>
+<para>determines if the given type has a member function <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref>&amp; graph()</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This trait determines if the provided type <computeroutput>T</computeroutput> contains a member function with the exact signature <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; graph()</computeroutput>. It uses SFINAE and <computeroutput>std::void_t</computeroutput> to detect the presence of the member function and its return type.</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The type to inspect. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="retval"><parameteritem>
+<parameternamelist>
+<parametername>true</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>If the type <computeroutput>T</computeroutput> has a member function <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; graph()</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>false</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Otherwise.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::Graph&amp;<sp/>graph()<sp/>{<sp/>return<sp/>my_graph;<sp/>};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::Graph<sp/>my_graph;</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal"><sp/><sp/>//<sp/>other<sp/>custom<sp/>members<sp/>to<sp/>alter<sp/>my_graph</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">struct<sp/>C<sp/>{};<sp/>//<sp/>No<sp/>graph<sp/>function</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">static_assert(has_graph_v&lt;A&gt;,<sp/>&quot;A<sp/>has<sp/>graph()&quot;);</highlight></codeline>
+<codeline><highlight class="normal">static_assert(!has_graph_v&lt;C&gt;,<sp/>&quot;C<sp/>does<sp/>not<sp/>have<sp/>graph()&quot;);</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="777" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="777" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
+        <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
+        <definition>constexpr std::array&lt;TaskType, 7&gt; tf::TASK_TYPES</definition>
         <argsstring></argsstring>
         <name>TASK_TYPES</name>
         <initializer>= {
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kindref="member">TaskType::PLACEHOLDER</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">TaskType::STATIC</ref>,
+  <ref refid="namespacetf_1a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" kindref="member">TaskType::RUNTIME</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" kindref="member">TaskType::SUBFLOW</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kindref="member">TaskType::CONDITION</ref>,
   <ref refid="namespacetf_1a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" kindref="member">TaskType::MODULE</ref>,
@@ -434,7 +503,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="42" column="29" bodyfile="taskflow/core/task.hpp" bodystart="42" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="44" column="29" bodyfile="taskflow/core/task.hpp" bodystart="44" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -446,9 +515,7 @@
         <definition>constexpr bool tf::is_subflow_task_v</definition>
         <argsstring></argsstring>
         <name>is_subflow_task_v</name>
-        <initializer>= 
-  std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt; &amp;&amp;
-  !std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
+        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a dynamic task </para>
         </briefdescription>
@@ -457,7 +524,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="92" column="16" bodyfile="taskflow/core/task.hpp" bodystart="92" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="97" column="16" bodyfile="taskflow/core/task.hpp" bodystart="97" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -469,18 +536,16 @@
         <definition>constexpr bool tf::is_condition_task_v</definition>
         <argsstring></argsstring>
         <name>is_condition_task_v</name>
-        <initializer>= 
-  (std::is_invocable_r_v&lt;int, C&gt; || std::is_invocable_r_v&lt;int, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
-  !<ref refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kindref="member">is_subflow_task_v</ref>&lt;C&gt;</initializer>
+        <initializer>= std::is_invocable_r_v&lt;int, C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a condition task </para>
         </briefdescription>
         <detaileddescription>
-<para>A condition task is a callable object constructible from std::function&lt;int()&gt; or std::function&lt;int(tf::Runtime&amp;)&gt;. </para>
+<para>A condition task is a callable object constructible from std::function&lt;int()&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="103" column="16" bodyfile="taskflow/core/task.hpp" bodystart="103" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="105" column="16" bodyfile="taskflow/core/task.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -492,19 +557,16 @@
         <definition>constexpr bool tf::is_multi_condition_task_v</definition>
         <argsstring></argsstring>
         <name>is_multi_condition_task_v</name>
-        <initializer>=
-  (std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt; ||
-  std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
-  !<ref refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kindref="member">is_subflow_task_v</ref>&lt;C&gt;</initializer>
+        <initializer>= std::is_invocable_r_v&lt;<ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt;int&gt;, C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a multi-condition task </para>
         </briefdescription>
         <detaileddescription>
-<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt; or <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;(tf::Runtime&amp;)&gt;. </para>
+<para>A multi-condition task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;tf::SmallVector&lt;int&gt;()&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="115" column="16" bodyfile="taskflow/core/task.hpp" bodystart="115" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="114" column="16" bodyfile="taskflow/core/task.hpp" bodystart="114" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -516,20 +578,39 @@
         <definition>constexpr bool tf::is_static_task_v</definition>
         <argsstring></argsstring>
         <name>is_static_task_v</name>
-        <initializer>=
-  (std::is_invocable_r_v&lt;void, C&gt; || std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;) &amp;&amp;
-  !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt; &amp;&amp;
-  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt; &amp;&amp;
-  !<ref refid="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" kindref="member">is_subflow_task_v</ref>&lt;C&gt;</initializer>
+        <initializer>= std::is_invocable_r_v&lt;void, C&gt; &amp;&amp;
+                                  !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt;        &amp;&amp;
+                                  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt;</initializer>
         <briefdescription>
 <para>determines if a callable is a static task </para>
         </briefdescription>
         <detaileddescription>
-<para>A static task is a callable object constructible from std::function&lt;void()&gt; or std::function&lt;void(tf::Runtime&amp;)&gt;. </para>
+<para>A static task is a callable object constructible from std::function&lt;void()&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="127" column="16" bodyfile="taskflow/core/task.hpp" bodystart="127" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="122" column="16" bodyfile="taskflow/core/task.hpp" bodystart="122" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetf_1af3d94f0be0f7b49e195c4e92737b1f85" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>constexpr bool</type>
+        <definition>constexpr bool tf::is_runtime_task_v</definition>
+        <argsstring></argsstring>
+        <name>is_runtime_task_v</name>
+        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
+        <briefdescription>
+<para>determines if a callable is a runtime task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A runtime task is a callable object constructible from std::function&lt;void(tf::Runtime&amp;)&gt;. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/task.hpp" line="132" column="16" bodyfile="taskflow/core/task.hpp" bodystart="132" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a73c20705fc54763f195a00b6e626e301" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -1395,7 +1476,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="354" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="354" bodyend="360"/>
+        <location file="taskflow/core/graph.hpp" line="360" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="360" bodyend="366"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1412,7 +1493,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="365" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="365" bodyend="371"/>
+        <location file="taskflow/core/graph.hpp" line="371" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="371" bodyend="377"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1430,6 +1511,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
 <para>The name of each task type is the litte-case string of its characters.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" kindref="member">TaskType::PLACEHOLDER</ref><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;placeholder&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">TaskType::STATIC</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;static&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" kindref="member">TaskType::RUNTIME</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;runtime&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" kindref="member">TaskType::SUBFLOW</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;subflow&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" kindref="member">TaskType::CONDITION</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;condition&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" kindref="member">TaskType::MODULE</ref><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-&gt;<sp/><sp/></highlight><highlight class="stringliteral">&quot;module&quot;</highlight><highlight class="normal"></highlight></codeline>
@@ -1438,7 +1520,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="65" column="19" bodyfile="taskflow/core/task.hpp" bodystart="65" bodyend="80"/>
+        <location file="taskflow/core/task.hpp" line="69" column="19" bodyfile="taskflow/core/task.hpp" bodystart="69" bodyend="85"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -1460,7 +1542,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="549" column="8" bodyfile="taskflow/core/task.hpp" bodystart="549" bodyend="552"/>
+        <location file="taskflow/core/task.hpp" line="554" column="8" bodyfile="taskflow/core/task.hpp" bodystart="554" bodyend="557"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a53463bb4958601e2772d848da92d9040" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1754,6 +1836,79 @@ Releases all the semaphores. </para>
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/algorithm/data_pipeline.hpp" line="171" column="6" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="171" bodyend="173"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Algorithm::make_module_task</definition>
+        <argsstring>(T &amp;&amp;target)</argsstring>
+        <name>make_module_task</name>
+        <param>
+          <type>T &amp;&amp;</type>
+          <declname>target</declname>
+        </param>
+        <briefdescription>
+<para>creates a module task using the given target </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Type of the target object, which must define the method <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; graph()</computeroutput>. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>target</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The target object used to create the module task. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>module task that can be used by Taskflow or asynchronous tasking.</para>
+</simplesect>
+This example demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>A;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>B;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>C;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>D;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>A\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>four<sp/>taskflows<sp/>using<sp/>asynchronous<sp/>tasking</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(B));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(C));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/></highlight></codeline>
+</programlisting></para>
+<para>The module task maker, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, is basically the same as <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>approach<sp/>1:<sp/>composition<sp/>using<sp/>composed_of</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(taskflow2);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>approach<sp/>2:<sp/>composition<sp/>using<sp/>make_module_task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.emplace(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(taskflow2));</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="attention"><para>Users are responsible for ensuring that the given target remains valid throughout its execution. The executor does not assume ownership of the target object. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/algorithm/module.hpp" line="77" column="6" bodyfile="taskflow/algorithm/module.hpp" bodystart="77" bodyend="79"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -5410,7 +5565,7 @@ The function launches kernels asynchronously to find the largest element in the 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="93" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="93" bodyend="95"/>
+        <location file="taskflow/taskflow.hpp" line="94" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="94" bodyend="96"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

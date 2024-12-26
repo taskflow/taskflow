@@ -246,7 +246,7 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="8">
+      <node id="9">
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
       </node>
@@ -256,14 +256,14 @@
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="12">
+      <node id="13">
         <label>taskflow/cuda/algorithm/sort.hpp</label>
         <link refid="sort_8hpp"/>
       </node>
-      <node id="6">
+      <node id="7">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
-        <childnode refid="7" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -272,21 +272,25 @@
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="5">
+      <node id="6">
         <label>taskflow/cuda/cudaflow.hpp</label>
         <link refid="cudaflow_8hpp"/>
-        <childnode refid="6" relation="include">
-        </childnode>
-        <childnode refid="8" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
         </childnode>
       </node>
-      <node id="10">
+      <node id="11">
         <label>taskflow/cuda/algorithm/scan.hpp</label>
         <link refid="scan_8hpp"/>
+      </node>
+      <node id="5">
+        <label>taskflow/algorithm/module.hpp</label>
+        <link refid="module_8hpp_source"/>
       </node>
       <node id="2">
         <label>taskflow/taskflow.hpp</label>
@@ -295,26 +299,28 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
       </node>
-      <node id="11">
+      <node id="12">
         <label>taskflow/cuda/algorithm/merge.hpp</label>
         <link refid="merge_8hpp"/>
-        <childnode refid="12" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="9">
+      <node id="10">
         <label>taskflow/cuda/algorithm/reduce.hpp</label>
         <link refid="reduce_8hpp"/>
-        <childnode refid="10" relation="include">
+        <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="7" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
       </node>
       <node id="4">
         <label>taskflow/algorithm/data_pipeline.hpp</label>
         <link refid="data__pipeline_8hpp_source"/>
       </node>
-      <node id="7">
+      <node id="8">
         <label>taskflow/cuda/algorithm/find.hpp</label>
         <link refid="find_8hpp"/>
       </node>
@@ -326,8 +332,8 @@
       <memberdef kind="define" id="runtime_8hpp_1a0b140fb327db1df313203abc7782693b" prot="public" static="no">
         <name>TF_RUNTIME_CHECK_CALLER</name>
         <param><defname>msg</defname></param>
-        <initializer>  if(pt::worker == nullptr || pt::worker-&gt;_executor != &amp;_executor) {  \
-    TF_THROW(msg);                                                    \
+        <initializer>  if(pt::this_worker == nullptr || pt::this_worker-&gt;_executor != &amp;_executor) {  \
+    TF_THROW(msg);                                                              \
   }</initializer>
         <briefdescription>
         </briefdescription>
@@ -335,7 +341,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="41" column="11" bodyfile="taskflow/core/runtime.hpp" bodystart="41" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="42" column="11" bodyfile="taskflow/core/runtime.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="ModuleWrapper" kind="page">
+    <compoundname>ModuleWrapper</compoundname>
+    <title>Module Wrapper</title>
+    <tableofcontents>
+      <tocsect>
+        <name>Include the Header</name>
+        <reference>ModuleWrapper_1ModuleWrapperInclude</reference>
+    </tocsect>
+      <tocsect>
+        <name>What is a Module Wrapper?</name>
+        <reference>ModuleWrapper_1WhatIsAModuleWrapper</reference>
+    </tocsect>
+    </tableofcontents>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Taskflow provides template methods that construct tasks over graphs to integrate reusable components within your taskflow applications.</para>
+<sect1 id="ModuleWrapper_1ModuleWrapperInclude">
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput><ref refid="module_8hpp_source" kindref="compound">taskflow/algorithm/module.hpp</ref></computeroutput>, for creating a module task over any schedulable graph target.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/module.hpp&gt;</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="ModuleWrapper_1WhatIsAModuleWrapper">
+<title>What is a Module Wrapper?</title>
+<para>A module wrapper creates a task over a schedulable target using <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>.</para>
+<para>A parallel scan task performs the cumulative sum, also known as <emphasis>prefix sum</emphasis> or <emphasis>scan</emphasis>, of the input range and writes the result to the output range. Each element of the output range contains the running total of all earlier elements using the given binary operator </para>
+</sect1>
+    </detaileddescription>
+    <location file="doxygen/algorithms/module.dox"/>
+  </compounddef>
+</doxygen>

@@ -36,7 +36,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1132" column="9" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1132" bodyend="-1"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1154" column="9" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1154" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -56,7 +56,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="31" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1141" bodyend="1143"/>
+        <location file="taskflow/core/flow_builder.hpp" line="31" column="3" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1163" bodyend="1165"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -107,7 +107,58 @@ The following example creates a static task.</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="53" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1147" bodyend="1151"/>
+        <location file="taskflow/core/flow_builder.hpp" line="53" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1169" bodyend="1173"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1af3d94f0be0f7b49e195c4e92737b1f85" kindref="member">is_runtime_task_v</ref>&lt; C &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
+        <definition>Task tf::FlowBuilder::emplace</definition>
+        <argsstring>(C &amp;&amp;callable)</argsstring>
+        <name>emplace</name>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>creates a runtime task </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>callable type constructible from std::function&lt;void(tf::Runtime&amp;)&gt;</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>callable to construct a runtime task</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> handle</para>
+</simplesect>
+The following example creates a runtime task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>static_task<sp/>=<sp/>taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;){});</highlight></codeline>
+</programlisting></para>
+<para>Please refer to <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref> for details. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/flow_builder.hpp" line="75" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -161,7 +212,7 @@ The following example creates a dynamic task (<ref refid="classtf_1_1Subflow" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="79" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="101" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -223,7 +274,7 @@ The following example creates an if-else block using one condition task and thre
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="113" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="135" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -286,7 +337,7 @@ The following example creates a multi-condition task that selectively jumps to t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="149" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="171" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1f6118326ad434f6c839007a1a79fe1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -343,7 +394,7 @@ The method returns a tuple of tasks each corresponding to the given callable tar
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="176" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1179" bodyend="1181"/>
+        <location file="taskflow/core/flow_builder.hpp" line="198" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1209" bodyend="1211"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a5627f7962099ac7c4986993cffa7b909" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -380,7 +431,7 @@ Removes a task and its input and output dependencies from the graph associated w
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="198" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1184" bodyend="1205"/>
+        <location file="taskflow/core/flow_builder.hpp" line="220" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1214" bodyend="1235"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -450,7 +501,7 @@ The example below demonstrates a taskflow composition using the <computeroutput>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="252" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1209" bodyend="1214"/>
+        <location file="taskflow/core/flow_builder.hpp" line="274" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1239" bodyend="1244"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
@@ -479,7 +530,7 @@ A placeholder task maps to a node in the taskflow graph, but it does not have an
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="278" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1217" bodyend="1222"/>
+        <location file="taskflow/core/flow_builder.hpp" line="300" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1247" bodyend="1252"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -514,7 +565,7 @@ This member function creates linear dependencies over a vector of tasks.</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="297" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1243" bodyend="1245"/>
+        <location file="taskflow/core/flow_builder.hpp" line="319" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1273" bodyend="1275"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -548,7 +599,7 @@ This member function creates linear dependencies over a list of tasks.</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="314" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1248" bodyend="1250"/>
+        <location file="taskflow/core/flow_builder.hpp" line="336" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1278" bodyend="1280"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -669,7 +720,7 @@ The task spawns asynchronous tasks that applies the callable object to each obje
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="353" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="375" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -819,7 +870,7 @@ The task spawns asynchronous tasks that applies the callable object to each inde
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="394" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="416" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -967,7 +1018,7 @@ The task spawns asynchronous tasks that applies the callable object to an input 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="439" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="461" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1138,7 +1189,7 @@ The task spawns asynchronous tasks that applies the callable object to two input
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="480" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="502" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1afb24798ebf46e253a40b01bffb1da6a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1282,7 +1333,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="519" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="541" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1aa62d24438c0860e76153ffd129deba41" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1453,7 +1504,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="563" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="585" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1adcd90e5b46299f4ccab33caf46edcbc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1647,7 +1698,7 @@ The task spawns asynchronous tasks to perform parallel reduction over <computero
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="606" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="628" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1769,7 +1820,7 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="652" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="674" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1914,7 +1965,7 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="695" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="717" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a4e0d618d8eb0b3b2e5e00443a10bf512" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2059,7 +2110,7 @@ Performs the cumulative sum (aka prefix sum, aka scan) of the input range and wr
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="737" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="759" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a82f3c3f49a2d52cd52f6eac07a659e9c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2205,7 +2256,7 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="784" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="806" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a49f7e17d02c708035b9134d8c6c89f90" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2375,7 +2426,7 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="830" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="852" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a8549478ef819699b30f8daf88f04d577" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2544,7 +2595,7 @@ Write the cumulative sum (aka prefix sum, aka scan) of the input range to the ou
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="875" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="897" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a46a96f5889e6ac87b1ff8d6313b5f471" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2699,7 +2750,7 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="927" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="949" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a95fa2719fa7bbe7d171cf474ddb06726" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2854,7 +2905,7 @@ Returns an iterator to the first element in the range <computeroutput>[first, la
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="975" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="997" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6bf43eeaa81900084a472be1d36d46a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3010,7 +3061,7 @@ Finds the smallest element in the <computeroutput>[first, last)</computeroutput>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1027" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1049" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3166,7 +3217,7 @@ Finds the largest element in the <computeroutput>[first, last)</computeroutput> 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1079" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1101" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3256,7 +3307,7 @@ The task spawns asynchronous tasks to sort elements in the range <computeroutput
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1104" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1126" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1FlowBuilder_1a7d844e9856c7c65b26ccdb83ffdab1d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3323,7 +3374,7 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1125" column="8"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1147" column="8"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -3347,7 +3398,7 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/flow_builder.hpp" line="1137" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1226" bodyend="1240"/>
+        <location file="taskflow/core/flow_builder.hpp" line="1159" column="8" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1256" bodyend="1270"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -3392,11 +3443,12 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/flow_builder.hpp" line="22" column="1" bodyfile="taskflow/core/flow_builder.hpp" bodystart="22" bodyend="1138"/>
+    <location file="taskflow/core/flow_builder.hpp" line="22" column="1" bodyfile="taskflow/core/flow_builder.hpp" bodystart="22" bodyend="1160"/>
     <listofallmembers>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a04115519f61efc42d018ea697054135d" prot="private" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>_linearize</name></member>
       <member refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>composed_of</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>emplace</name></member>
       <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>emplace</name></member>
       <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>emplace</name></member>
       <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>emplace</name></member>

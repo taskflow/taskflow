@@ -9,8 +9,8 @@
         <reference>ComposableTasking_1ComposeATaskflow</reference>
     </tocsect>
       <tocsect>
-        <name>Create a Module Task</name>
-        <reference>ComposableTasking_1CreateAModuleTask</reference>
+        <name>Create a Module Task from a %Taskflow</name>
+        <reference>ComposableTasking_1CreateAModuleTaskFromATaskflow</reference>
     </tocsect>
       <tocsect>
         <name>Create a Custom Composable Graph</name>
@@ -78,8 +78,8 @@
 </itemizedlist>
 </para>
 </sect1>
-<sect1 id="ComposableTasking_1CreateAModuleTask">
-<title>Create a Module Task</title>
+<sect1 id="ComposableTasking_1CreateAModuleTaskFromATaskflow">
+<title>Create a Module Task from a %Taskflow</title>
 <para>The task created from <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">Taskflow::composed_of</ref> is a <emphasis>module</emphasis> task that runs on a pre-defined taskflow. A module task does not own the taskflow but maintains a soft mapping to the taskflow. You can create multiple module tasks from the same taskflow but only one module task can run at one time. For example, the following composition is valid. Even though the two module tasks <computeroutput>module1</computeroutput> and <computeroutput>module2</computeroutput> refer to the same taskflow <computeroutput>F1</computeroutput>, the dependency link prevents <computeroutput>F1</computeroutput> from multiple executions at the same time.</para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/composition_static_2.dot"></dotfile>
 </para>
@@ -89,11 +89,11 @@
 </sect1>
 <sect1 id="ComposableTasking_1CreateACustomComposableGraph">
 <title>Create a Custom Composable Graph</title>
-<para>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <computeroutput>T</computeroutput> must define a method <computeroutput>T::graph()</computeroutput> that returns a reference to a <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</para>
+<para>Taskflow allows you to create a custom graph object that can participate in the scheduling using composition. To become a module task, your class <computeroutput>T</computeroutput> must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to the <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object managed by <computeroutput>T</computeroutput>. The following example defines a custom graph object that can be assembled in a taskflow throw composition:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CustomGraph<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><sp/><sp/><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref><sp/>graph;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/><sp/><sp/>CustomGraph()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/>4:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);</highlight></codeline>
+<codeline><highlight class="normal"><sp/>4:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);<sp/><sp/></highlight><highlight class="comment">//<sp/>inherit<sp/>all<sp/>task<sp/>builders<sp/>in<sp/>tf::Taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>builder.emplace([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/>6:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
@@ -113,8 +113,8 @@
 </listitem><listitem><para>Lines 13-14 creates a module task for the declared graph object in the taskflow</para>
 </listitem></itemizedlist>
 </para>
-<para>The composition method <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> requires the target to define the <computeroutput>graph()</computeroutput> method that returns a reference to a <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object defined by the target. At runtime, the executor will run dependent tasks in that graph using the same work-stealing scheduling algorithm as other taskflows. Taskflow leverages this powerful feature to design high-level algorithms, such as <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>.</para>
-<para><simplesect kind="note"><para>While Taskflow gives you the flexibility to create a composable graph object, you should consider using <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> as an opaque data structure just to interact with the library. Additionally, as other module tasks, Taskflow does not own the lifetime of a custom composable graph object but keeps a soft mapping to it. You should keep the graph object alive during its execution. </para>
+<para>The composition method <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> requires the target to define the <computeroutput>graph()</computeroutput> method that returns a reference to a <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object defined by the target. At runtime, the executor will schedule tasks in that graph using the same work-stealing algorithm as other taskflows.</para>
+<para><simplesect kind="attention"><para>Users are responsible for ensuring the given target remains valid throughout its execution. The executor does not assume ownership of the target object. </para>
 </simplesect>
 </para>
 </sect1>

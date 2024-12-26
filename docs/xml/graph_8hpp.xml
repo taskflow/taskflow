@@ -184,13 +184,13 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="18">
+      <node id="19">
         <label>taskflow/core/observer.hpp</label>
         <link refid="observer_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="13">
+      <node id="14">
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
       </node>
@@ -200,7 +200,7 @@
         <childnode refid="7" relation="include">
         </childnode>
       </node>
-      <node id="17">
+      <node id="18">
         <label>taskflow/cuda/algorithm/sort.hpp</label>
         <link refid="sort_8hpp"/>
       </node>
@@ -212,10 +212,10 @@
         <childnode refid="7" relation="include">
         </childnode>
       </node>
-      <node id="11">
+      <node id="12">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
-        <childnode refid="12" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -223,7 +223,7 @@
         <link refid="task_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="19" relation="include">
         </childnode>
       </node>
       <node id="8">
@@ -237,7 +237,7 @@
         <link refid="graph_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
+        <childnode refid="20" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -246,21 +246,25 @@
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="10">
+      <node id="11">
         <label>taskflow/cuda/cudaflow.hpp</label>
         <link refid="cudaflow_8hpp"/>
-        <childnode refid="11" relation="include">
-        </childnode>
-        <childnode refid="13" relation="include">
+        <childnode refid="12" relation="include">
         </childnode>
         <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="16" relation="include">
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
         </childnode>
       </node>
-      <node id="15">
+      <node id="16">
         <label>taskflow/cuda/algorithm/scan.hpp</label>
         <link refid="scan_8hpp"/>
+      </node>
+      <node id="10">
+        <label>taskflow/algorithm/module.hpp</label>
+        <link refid="module_8hpp_source"/>
       </node>
       <node id="7">
         <label>taskflow/taskflow.hpp</label>
@@ -269,32 +273,34 @@
         </childnode>
         <childnode refid="10" relation="include">
         </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
       </node>
-      <node id="19">
+      <node id="20">
         <label>taskflow/core/async_task.hpp</label>
         <link refid="async__task_8hpp"/>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="16">
+      <node id="17">
         <label>taskflow/cuda/algorithm/merge.hpp</label>
         <link refid="merge_8hpp"/>
-        <childnode refid="17" relation="include">
+        <childnode refid="18" relation="include">
         </childnode>
       </node>
-      <node id="14">
+      <node id="15">
         <label>taskflow/cuda/algorithm/reduce.hpp</label>
         <link refid="reduce_8hpp"/>
-        <childnode refid="15" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
       <node id="9">
         <label>taskflow/algorithm/data_pipeline.hpp</label>
         <link refid="data__pipeline_8hpp_source"/>
       </node>
-      <node id="12">
+      <node id="13">
         <label>taskflow/cuda/algorithm/find.hpp</label>
         <link refid="find_8hpp"/>
       </node>
@@ -310,6 +316,7 @@
     <innerclass refid="structtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Static" prot="private">tf::Node::Static</innerclass>
+    <innerclass refid="structtf_1_1Node_1_1Runtime" prot="private">tf::Node::Runtime</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Subflow" prot="private">tf::Node::Subflow</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Condition" prot="private">tf::Node::Condition</innerclass>
     <innerclass refid="structtf_1_1Node_1_1MultiCondition" prot="private">tf::Node::MultiCondition</innerclass>
@@ -317,6 +324,7 @@
     <innerclass refid="structtf_1_1Node_1_1Async" prot="private">tf::Node::Async</innerclass>
     <innerclass refid="structtf_1_1Node_1_1DependentAsync" prot="private">tf::Node::DependentAsync</innerclass>
     <innerclass refid="classtf_1_1AnchorGuard" prot="private">tf::AnchorGuard</innerclass>
+    <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <briefdescription>
 <para>graph include file </para>
