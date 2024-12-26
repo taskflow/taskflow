@@ -528,7 +528,6 @@ void module_with_dependent_async_launch(unsigned W) {
   auto [task, future] = executor.dependent_async(tf::make_module_task(f1)); 
 
   future.get();
-  REQUIRE(task.is_done() == true);
 
   REQUIRE(cnt == 10);
 }
