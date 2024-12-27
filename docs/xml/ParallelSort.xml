@@ -45,7 +45,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(data.begin(),<sp/>data.end()));</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>Elements are compared using the operator <computeroutput>&lt;</computeroutput>.</para>
+<para><simplesect kind="attention"><para>Elements are compared using the operator <computeroutput>&lt;</computeroutput>.</para>
 </simplesect>
 </para>
 </sect1>
@@ -65,7 +65,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">assert(std::is_sorted(data.begin(),<sp/>data.end(),<sp/><ref refid="cpp/utility/functional/greater" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::greater&lt;int&gt;</ref>{}));</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para><ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> is not stable. That is, two or more objects with equal keys may not appear in the same order before sorting.</para>
+<para><simplesect kind="attention"><para><ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref> is not stable. That is, two or more objects with equal keys may not appear in the same order before sorting.</para>
 </simplesect>
 </para>
 </sect1>

@@ -164,7 +164,7 @@ using the option @c -dlink:
 
 This step links all the <i>device object code</i> and places it into @c gpuCode.o.
 
-@note
+@attention
 Note that this step does not link the CPU object code
 and discards the CPU object code in @c main.o and @c cudaflow.o.
 
@@ -189,7 +189,7 @@ does not conflict with the code in @c gpuCode.o.
 @c g++ ignores device code because it does not know how to link it, 
 and the device code in @c gpuCode.o is already linked and ready to go. 
 
-@note
+@attention
 This intentional ignorance is extremely useful in large builds 
 where intermediate objects may have both CPU and GPU code. 
 In this case, we just let the GPU and CPU linkers each do its own job, 

@@ -1092,7 +1092,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function determines if the given integer is a power of 2.</p><aside class="m-note m-info"><h4>Note</h4><p>This function is constexpr and can be evaluated at compile time.</p></aside>
+<p>This function determines if the given integer is a power of 2.</p><aside class="m-note m-warning"><h4>Attention</h4><p>This function is constexpr and can be evaluated at compile time.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a2bf015a9ef27c0efd2d3c73234317a06"><div>
             <h3>
@@ -1128,7 +1128,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function calculates the largest integer <code>log</code> such that <code>2^log &lt;= n</code>.</p><aside class="m-note m-info"><h4>Note</h4><p>This function is constexpr and can be evaluated at compile time.</p></aside>
+<p>This function calculates the largest integer <code>log</code> such that <code>2^log &lt;= n</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>This function is constexpr and can be evaluated at compile time.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a0b2dc0c0c931b9b627fc0a148085fa5e"><div>
             <h3>
@@ -1233,7 +1233,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function computes an approximate median of a range of items by sampling nine values spread across the range and finding their median. It uses a combination of the <code>median_of_three</code> function to determine the pseudo median.</p><aside class="m-note m-info"><h4>Note</h4><p>The pseudo median is an approximation of the true median and may not be the exact middle value of the range.</p></aside>
+<p>This function computes an approximate median of a range of items by sampling nine values spread across the range and finding their median. It uses a combination of the <code>median_of_three</code> function to determine the pseudo median.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The pseudo median is an approximation of the true median and may not be the exact middle value of the range.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a8d3fa9252b0da87bff1df912d0a591fe"><div>
             <h3>
@@ -1353,7 +1353,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function provides a globally unique identifier of the specified integral type. It uses a static <code><a href="http://en.cppreference.com/w/cpp/atomic/atomic.html" class="m-doc-external">std::<wbr />atomic</a></code> counter to ensure thread safety and increments the counter in a relaxed memory ordering for efficiency.</p><aside class="m-note m-info"><h4>Note</h4><p>The uniqueness of the ID is guaranteed only within the program&#x27;s lifetime.</p><p>The function does not throw exceptions.</p></aside>
+<p>This function provides a globally unique identifier of the specified integral type. It uses a static <code><a href="http://en.cppreference.com/w/cpp/atomic/atomic.html" class="m-doc-external">std::<wbr />atomic</a></code> counter to ensure thread safety and increments the counter in a relaxed memory ordering for efficiency.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The uniqueness of the ID is guaranteed only within the program&#x27;s lifetime.</p><p>The function does not throw exceptions.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a5002af34dc323ff28e87ae83203b2c36"><div>
             <h3>
@@ -1388,7 +1388,7 @@
                 </tr>
               </tbody>
             </table>
-<p>This function atomically updates the provided atomic variable <code>v</code> to hold the maximum of its current value and <code>max_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p><aside class="m-note m-info"><h4>Note</h4><p>If multiple threads call this function concurrently, the value of <code>v</code> will be the maximum value seen across all threads.</p></aside>
+<p>This function atomically updates the provided atomic variable <code>v</code> to hold the maximum of its current value and <code>max_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p><aside class="m-note m-warning"><h4>Attention</h4><p>If multiple threads call this function concurrently, the value of <code>v</code> will be the maximum value seen across all threads.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a512ffa0d24a237b098f5de656b8bdcb0"><div>
             <h3>
@@ -1423,7 +1423,7 @@
                 </tr>
               </tbody>
             </table>
-<p>This function atomically updates the provided atomic variable <code>v</code> to hold the minimum of its current value and <code>min_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p><aside class="m-note m-info"><h4>Note</h4><p>If multiple threads call this function concurrently, the value of <code>v</code> will be the minimum value seen across all threads.</p></aside>
+<p>This function atomically updates the provided atomic variable <code>v</code> to hold the minimum of its current value and <code>min_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p><aside class="m-note m-warning"><h4>Attention</h4><p>If multiple threads call this function concurrently, the value of <code>v</code> will be the minimum value seen across all threads.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a3f8e89aebc29d42259157723c874954d"><div>
             <h3>
@@ -1474,7 +1474,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to fetch the value.</li><li>On POSIX, it uses <code>std::getenv</code>.</li></ul></aside>
+<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to fetch the value.</li><li>On POSIX, it uses <code>std::getenv</code>.</li></ul></aside>
           </div></section>
           <section class="m-doc-details" id="adc9815b9f96b796675ba939078d25413"><div>
             <h3>
@@ -1498,7 +1498,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function determines if a specific environment variable exists in the current environment.</p><aside class="m-note m-info"><h4>Note</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to check for the variable&#x27;s presence.</li><li>On POSIX, it uses <code>std::getenv</code> to check for the variable&#x27;s presence.</li></ul></aside>
+<p>This function determines if a specific environment variable exists in the current environment.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to check for the variable&#x27;s presence.</li><li>On POSIX, it uses <code>std::getenv</code> to check for the variable&#x27;s presence.</li></ul></aside>
           </div></section>
           <section class="m-doc-details" id="aef9af2433294beb7d41680e5b33eafdd"><div>
             <h3>
@@ -1534,7 +1534,7 @@
                 </tr>
               </tbody>
             </table>
-<p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-info"><h4>Note</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
+<p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-warning"><h4>Attention</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
             <h3>

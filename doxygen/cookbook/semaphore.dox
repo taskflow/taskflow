@@ -15,10 +15,10 @@ You can let a task acquire/release one or multiple semaphores before/after
 executing its work.
 A task can acquire and release a semaphore, 
 or just acquire or just release it. 
-A tf::Semaphore object starts with an initial count.
-As long as that count is above 0, tasks can acquire the semaphore and do
+A tf::Semaphore object starts with an initial value.
+As long as that value is above 0, tasks can acquire the semaphore and do
 their work.
-If the count is 0 or less, a task trying to acquire the semaphore will not run
+If the value is 0 or less, a task trying to acquire the semaphore will not run
 but goes to a waiting list of that semaphore.
 When the semaphore is released by another task, 
 it reschedules all tasks on that waiting list.
@@ -27,7 +27,7 @@ it reschedules all tasks on that waiting list.
 tf::Executor executor(8);   // create an executor of 8 workers
 tf::Taskflow taskflow;
 
-tf::Semaphore semaphore(1); // create a semaphore with initial count 1
+tf::Semaphore semaphore(1); // create a semaphore with initial value of 1
 
 std::vector<tf::Task> tasks {
   taskflow.emplace([](){ std::cout << "A" << std::endl; }),
@@ -49,7 +49,7 @@ executor.run(taskflow).wait();
 
 The above example creates five tasks with no dependencies between them.
 Under normal circumstances, the five tasks would be executed concurrently.
-However, this example has a semaphore with initial count 1,
+However, this example has a semaphore with initial value of 1,
 and all tasks need to acquire that semaphore before running and release that
 semaphore after they are done.
 This organization limits the number of concurrently running tasks to only one.
@@ -78,7 +78,7 @@ which will limit only three workers to run the five tasks,
 tf::Executor executor(8);   // create an executor of 8 workers
 tf::Taskflow taskflow;
 
-tf::Semaphore semaphore(3); // create a semaphore with initial count 3
+tf::Semaphore semaphore(3); // create a semaphore with initial value of 3
 
 std::vector<tf::Task> tasks {
   taskflow.emplace([](){ std::cout << "A" << std::endl; }),
@@ -102,41 +102,6 @@ ABC
 ED
 @endcode
 
-
-
-<!-- You can use semaphores to limit the concurrency across different sections 
-of taskflow graphs.
-When you submit multiple taskflows to an executor, the executor view them 
-as a bag of dependent tasks.
-It does not matter which task in which taskflow graph acquires or releases 
-a semaphore.
-
-@code{.cpp}
-tf::Executor executor(8);   // create an executor of 8 workers
-tf::Taskflow taskflow1;
-tf::Taskflow taskflow2;
-
-tf::Semaphore semaphore(1); // create a semaphore with initial count 1
-
-taskflow1.emplace([](){std::cout << "task in taskflow1"; })
-         .acquire(semaphore)
-         .release(semaphore);
-
-taskflow2.emplace([](){std::cout << "task in taskflow2"; })
-         .acquire(semaphore)
-         .release(semaphore);
-
-executor.run(taskflow1);
-executor.run(taskflow2);
-executor.wait_for_all();
-@endcode
-
-The above examples creates one task from each taskflow and submits
-the two taskflows to the executor. 
-Again, under normal circumstances, the two tasks can run concurrently, 
-but the semaphore restricts one worker to run the two task sequentially 
-in arbitrary order.
--->
 
 Semaphores are powerful for limiting the maximum concurrency of not only 
 a section of tasks but also different sections of tasks.
@@ -177,6 +142,42 @@ before running its work and not to release it until its paired @c to task
 is done.
 This constraint forces each pair of tasks to run sequentially,
 while the order of which pair runs first is up to the scheduler.
+
+
+@section UseSemaphoresAcrossDifferentTasks Use Semaphores Across Different Tasks
+
+You can use semaphores to limit the concurrency across different sections 
+of taskflow graphs.
+When you submit multiple taskflows to an executor, the executor view them 
+as a bag of dependent tasks.
+It does not matter which task in which taskflow graph acquires or releases 
+a semaphore.
+
+@code{.cpp}
+tf::Executor executor(8);   // create an executor of 8 workers
+tf::Taskflow taskflow1;
+tf::Taskflow taskflow2;
+
+tf::Semaphore semaphore(1); // create a semaphore with initial value of 1
+
+taskflow1.emplace([](){std::cout << "task in taskflow1"; })
+         .acquire(semaphore)
+         .release(semaphore);
+
+taskflow2.emplace([](){std::cout << "task in taskflow2"; })
+         .acquire(semaphore)
+         .release(semaphore);
+
+executor.run(taskflow1);
+executor.run(taskflow2);
+executor.wait_for_all();
+@endcode
+
+The above examples creates one task from each taskflow and submits
+the two taskflows to the executor. 
+Again, under normal circumstances, the two tasks can run concurrently, 
+but the semaphore restricts one worker to run the two task sequentially 
+in arbitrary order.
 
 @section DefineAConflictGraph Define a Conflict Graph
 
@@ -229,19 +230,76 @@ A task can acquire and release multiple semaphores.
 When the executor runs a task, it will try to acquire all semaphores needed by that task.
 When the executor finishes that task, it will release all acquired semaphores by that task.
 
-@section UnderstandTheLimitationOfSemaphores Understand the Limitations of Semaphores
+@section ResetASemaphore Reset a Semaphore
 
-Currently, tf::Semaphore has limited support for exception and cancellation. 
-When a task encounters exception or a taskflow is requested to cancel,
-the subsequent acquire and release logic of semaphores may cause undefined behaviors.
-To resolve this situation, you should reset the semahpore through tf::Semaphore::reset
-before using it again in the next run.
+You can reset a semaphore to its initial state using tf::Semaphore::reset(), 
+or set a new maximum value with tf::Semaphore::reset(size_t new_max_value).
+The method tf::Semaphore::value() allows you to query the current value of the semaphore, 
+which represents the number of available acquisitions.
+
+@code{.cpp}
+tf::Semaphore semaphore(4);
+assert(semaphore.value() == 4 && semaphore.max_value() == 4);
+
+// reset the semaphore to a new value
+semaphore.reset(11);
+assert(semaphore.value() == 11 && semaphore.max_value() == 11);
+@endcode
+
+@attention
+When a semaphore is acquired more times than its maximum value,
+an exception will be thrown.
+
+@section UnderstandTheLimitationOfSemaphores Understand the Limitation of Semaphores
 
 Currently, tf::Semaphore has limited support for exception handling and taskflow cancellation. 
 If a task throws an exception or the taskflow is canceled, 
 subsequent acquire and release operations on the semaphore may result in undefined behavior. 
 To ensure correct behavior, you should call tf::Semaphore::reset before reusing the semaphore 
 in the next run.
+For instance, in the code below, when task `B` throws an exception, the executor
+will cancel the execution of the taskflow. 
+That is, tasks `C` and `D` will not run, and thus no task will release the 
+acquired semaphore.
+To resolve this situation, we must reset the semaphore to a clean state
+for the next run.
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+tf::Semaphore semaphore(1);
+
+tf::Task A = taskflow.emplace([](){});
+tf::Task B = taskflow.emplace([](){ throw std::runtime_error("exception"); });
+tf::Task C = taskflow.emplace([](){});
+tf::Task D = taskflow.emplace([](){});
+A.precede(B);
+B.precede(C);
+C.precede(D);
+
+A.acquire(semaphore);
+D.release(semaphore);
+
+// current semaphore has a value of 1
+assert(semaphore.value() == 1);
+
+// when B throws the exception, D will not run and thus semaphore is not released
+try {
+  executor.run(taskflow).get();
+}
+catch(std::runtime_error& e) {
+  std::cout << e.what() << std::endl;
+}
+
+// since A acquired the semaphore, its value is 0
+assert(semaphore.value() == 0);
+
+// reset the semaphore to a clean state before running the taskflow again
+semaphore.reset();
+assert(semaphore.value() == 1);
+
+executor.run(taskflow).get();
+@endcode
 
 
 */

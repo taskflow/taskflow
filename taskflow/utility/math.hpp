@@ -50,7 +50,7 @@ constexpr T next_pow2(T y) {
  * @param x The integer to check.
  * @return `true` if `x` is a power of 2, otherwise `false`.
  *
- * @note This function is constexpr and can be evaluated at compile time.
+ * @attention This function is constexpr and can be evaluated at compile time.
  *
  */
 template <typename T, std::enable_if_t<
@@ -69,7 +69,7 @@ constexpr bool is_pow2(const T& x) {
  * @param n The positive integer to compute log2 for. Assumes `n > 0`.
  * @return The floor of log2 of `n`.
  *
- * @note This function is constexpr and can be evaluated at compile time.
+ * @attention This function is constexpr and can be evaluated at compile time.
  *
  */
 template<typename T>
@@ -116,7 +116,7 @@ RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp) {
  * @param cmp The comparator used to compare the dereferenced iterator values.
  * @return The iterator pointing to the pseudo median of the range.
  *
- * @note The pseudo median is an approximation of the true median and may not
+ * @attention The pseudo median is an approximation of the true median and may not
  *       be the exact middle value of the range.
  *
  */
@@ -182,8 +182,8 @@ void sort3(Iter a, Iter b, Iter c, Compare comp) {
  * @tparam T The type of the ID to generate. Must be an integral type.
  * @return A unique ID of type `T`.
  *
- * @note The uniqueness of the ID is guaranteed only within the program's lifetime.
- * @note The function does not throw exceptions.
+ * @attention The uniqueness of the ID is guaranteed only within the program's lifetime.
+ * @attention The function does not throw exceptions.
  *
  */
 template <typename T, std::enable_if_t<std::is_integral_v<T>, void>* = nullptr>
@@ -203,7 +203,7 @@ T unique_id() {
  * @param v The atomic variable to update.
  * @param max_v The value to compare with the current value of `v`.
  *
- * @note If multiple threads call this function concurrently, the value of `v`
+ * @attention If multiple threads call this function concurrently, the value of `v`
  *       will be the maximum value seen across all threads.
  *
  */
@@ -227,7 +227,7 @@ inline void atomic_max(std::atomic<T>& v, const T& max_v) noexcept {
  * @param v The atomic variable to update.
  * @param min_v The value to compare with the current value of `v`.
  *
- * @note If multiple threads call this function concurrently, the value of `v` 
+ * @attention If multiple threads call this function concurrently, the value of `v` 
  *       will be the minimum value seen across all threads.
  *
  */

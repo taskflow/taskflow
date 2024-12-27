@@ -1196,6 +1196,57 @@ TEST_CASE("Exception.ThreadSafety.4threads" * doctest::timeout(300)) {
 }
 
 
+// ----------------------------------------------------------------------------
+// Semaphores
+// ----------------------------------------------------------------------------
 
+void semaphore1(unsigned W) {
 
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+  tf::Semaphore semaphore(1);
+  
+  tf::Task A = taskflow.emplace([](){});
+  tf::Task B = taskflow.emplace([](){ throw std::runtime_error("exception"); });
+  tf::Task C = taskflow.emplace([](){});
+  tf::Task D = taskflow.emplace([](){});
+
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  
+  A.acquire(semaphore);
+  D.release(semaphore);
+
+  REQUIRE(semaphore.value() == 1);
+  
+  // when B throws the exception, D will not run and thus semaphore is not released
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "exception", std::runtime_error);
+
+  REQUIRE(semaphore.value() == 0);
+  
+  // reset the semaphore to a clean state before running the taskflow again
+  semaphore.reset();
+  
+  REQUIRE(semaphore.value() == 1);
+  
+  // run it again
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "exception", std::runtime_error);
+}
+
+TEST_CASE("Exception.Semaphore.1thread" * doctest::timeout(300)) {
+  semaphore1(1);
+}
+
+TEST_CASE("Exception.Semaphore.2threads" * doctest::timeout(300)) {
+  semaphore1(2);
+}
+
+TEST_CASE("Exception.Semaphore.3threads" * doctest::timeout(300)) {
+  semaphore1(3);
+}
+
+TEST_CASE("Exception.Semaphore.4threads" * doctest::timeout(300)) {
+  semaphore1(4);
+}
 

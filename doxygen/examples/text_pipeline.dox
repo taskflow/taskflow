@@ -166,7 +166,7 @@ using data_type = std::variant<
 std::array<std::array<data_type, num_pipes>, num_lines> mybuffer;
 @endcode
 
-@note
+@attention
 One-dimensional buffer is sufficient because %Taskflow enables only one scheduling token
 per line at a time.
 

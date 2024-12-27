@@ -24,7 +24,7 @@ To use %Taskflow v3.8.0, you need a compiler that supports C++17:
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
-@note
+@attention
 Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
 
@@ -33,7 +33,7 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 This releases (1) enhances the scheduling performance through C++20 atomic notification
 and a bounded queue strategy and (2) revised the semaphore model for better runtime control.
 
-@note
+@attention
 When compiling %Taskflow with C++20, applications should see improved performance due
 to C++20 atomic wait and notification.
 

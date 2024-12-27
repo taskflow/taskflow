@@ -48,7 +48,7 @@ can run in parallel.
 This type of parallelism is also referred to as @em wavefront parallelism,
 which sweeps parallel elements in a diagonal direction.
 
-@note
+@attention
 Depending on the graph size and the number of stage tasks,
 task graph parallelism and pipeline parallelism can bring very different
 performance results.
@@ -181,7 +181,7 @@ void f3(const std::string& node) {
 }
 @endcode
 
-@note
+@attention
 A key advantage of %Taskflow's pipeline programming model is that we do not provide any
 data abstraction but give users full control over data management, which is typically
 application-dependent.

@@ -480,7 +480,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="821" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="821" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="808" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="808" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -733,7 +733,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para><computeroutput>true</computeroutput> if <computeroutput>x</computeroutput> is a power of 2, otherwise <computeroutput>false</computeroutput>.</para>
 </simplesect>
-<simplesect kind="note"><para>This function is constexpr and can be evaluated at compile time. </para>
+<simplesect kind="attention"><para>This function is constexpr and can be evaluated at compile time. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -780,7 +780,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para>The floor of log2 of <computeroutput>n</computeroutput>.</para>
 </simplesect>
-<simplesect kind="note"><para>This function is constexpr and can be evaluated at compile time. </para>
+<simplesect kind="attention"><para>This function is constexpr and can be evaluated at compile time. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -954,7 +954,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para>The iterator pointing to the pseudo median of the range.</para>
 </simplesect>
-<simplesect kind="note"><para>The pseudo median is an approximation of the true median and may not be the exact middle value of the range. </para>
+<simplesect kind="attention"><para>The pseudo median is an approximation of the true median and may not be the exact middle value of the range. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -1160,9 +1160,9 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para>A unique ID of type <computeroutput>T</computeroutput>.</para>
 </simplesect>
-<simplesect kind="note"><para>The uniqueness of the ID is guaranteed only within the program&apos;s lifetime. </para>
+<simplesect kind="attention"><para>The uniqueness of the ID is guaranteed only within the program&apos;s lifetime. </para>
 </simplesect>
-<simplesect kind="note"><para>The function does not throw exceptions. </para>
+<simplesect kind="attention"><para>The function does not throw exceptions. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -1219,7 +1219,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="note"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the maximum value seen across all threads. </para>
+<simplesect kind="attention"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the maximum value seen across all threads. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -1276,7 +1276,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="note"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the minimum value seen across all threads. </para>
+<simplesect kind="attention"><para>If multiple threads call this function concurrently, the value of <computeroutput>v</computeroutput> will be the minimum value seen across all threads. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -1341,7 +1341,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para>The value of the environment variable as a string, or an empty string if not found.</para>
 </simplesect>
-<simplesect kind="note"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
+<simplesect kind="attention"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
 <listitem><para>On Windows, it uses <computeroutput>_dupenv_s</computeroutput> to fetch the value.</para>
 </listitem><listitem><para>On POSIX, it uses <computeroutput>std::getenv</computeroutput>. </para>
 </listitem></itemizedlist>
@@ -1378,7 +1378,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
 </parameterlist>
 <simplesect kind="return"><para><computeroutput>true</computeroutput> if the environment variable exists, <computeroutput>false</computeroutput> otherwise.</para>
 </simplesect>
-<simplesect kind="note"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
+<simplesect kind="attention"><para>The implementation differs between Windows and POSIX platforms:<itemizedlist>
 <listitem><para>On Windows, it uses <computeroutput>_dupenv_s</computeroutput> to check for the variable&apos;s presence.</para>
 </listitem><listitem><para>On POSIX, it uses <computeroutput>std::getenv</computeroutput> to check for the variable&apos;s presence. </para>
 </listitem></itemizedlist>
@@ -1446,7 +1446,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
 </listitem><listitem><para>After 100 iterations, it uses <computeroutput><ref refid="cpp/thread/yield" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::yield()</ref></computeroutput> to relinquish the CPU, allowing other threads to execute.</para>
 </listitem></orderedlist>
 </para>
-<para><simplesect kind="note"><para>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach. </para>
+<para><simplesect kind="attention"><para>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach. </para>
 </simplesect>
 </para>
         </detaileddescription>
@@ -1476,7 +1476,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="367" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="367" bodyend="373"/>
+        <location file="taskflow/core/graph.hpp" line="365" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="365" bodyend="371"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1493,7 +1493,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="378" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="378" bodyend="384"/>
+        <location file="taskflow/core/graph.hpp" line="376" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="376" bodyend="382"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

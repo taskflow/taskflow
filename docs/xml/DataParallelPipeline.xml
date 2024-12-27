@@ -104,7 +104,7 @@
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">)</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> passes the data in reference to your callable at which you can take it in copy or in reference depending on application needs.</para>
+<para><simplesect kind="attention"><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> passes the data in reference to your callable at which you can take it in copy or in reference depending on application needs.</para>
 </simplesect>
 For the first pipe, the input type should always be <computeroutput>void</computeroutput> and the callable must take a <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> reference in its argument. In this example, we will stop the pipeline when processing five tokens.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;void,<sp/>int&gt;(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>-&gt;<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">{</highlight></codeline>

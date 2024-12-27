@@ -23,7 +23,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.async([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">assert(future.get()<sp/>==<sp/>1);</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>Unlike std::async, the future object returned from <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> does not block on destruction until completing the function.</para>
+<para><simplesect kind="attention"><para>Unlike std::async, the future object returned from <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> does not block on destruction until completing the function.</para>
 </simplesect>
 If you do not need the return value or use a future to synchronize the execution, you are encouraged to use <ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">tf::Executor::silent_async</ref> which returns nothing and thus has less overhead (i.e., no shared state management) compared to <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.silent_async([](){</highlight></codeline>
@@ -41,7 +41,7 @@ If you do not need the return value or use a future to synchronize the execution
 <codeline><highlight class="normal">executor.run(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">executor.wait_for_all();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>all<sp/>tasks<sp/>to<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>Asynchronous tasks created from an executor does not belong to any taskflows. The lifetime of an asynchronous task is managed automatically by the executor that creates the task.</para>
+<para><simplesect kind="attention"><para>Asynchronous tasks created from an executor does not belong to any taskflows. The lifetime of an asynchronous task is managed automatically by the executor that creates the task.</para>
 </simplesect>
 You can name an asynchronous task using the overloads, tf::Executor::async(const std::string&amp; name, F&amp;&amp; f) and tf::Executor::silent_async(const std::string&amp; name, F&amp;&amp; f), that take a string in the first argument. Assigned names will appear in the observers of the executor.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.async(</highlight><highlight class="stringliteral">&quot;async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
@@ -89,7 +89,7 @@ You can name an asynchronous task using the overloads, tf::Executor::async(const
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>By default, <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> does not join like <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. All pending asynchronous tasks spawned by <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> are no longer controllable when their parent runtime disappears. It is your responsibility to properly synchronize spawned asynchronous tasks using <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref>.</para>
-<para><simplesect kind="note"><para>Creating asynchronous tasks from a runtime allows users to efficiently implement parallel algorithms using recursion, such as parallel sort (<ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref>), that demands dynamic parallelism at runtime. </para>
+<para><simplesect kind="attention"><para>Creating asynchronous tasks from a runtime allows users to efficiently implement parallel algorithms using recursion, such as parallel sort (<ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref>), that demands dynamic parallelism at runtime. </para>
 </simplesect>
 </para>
 </sect1>

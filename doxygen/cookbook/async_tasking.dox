@@ -20,7 +20,7 @@ std::future<int> future = executor.async([](){ return 1; });
 assert(future.get() == 1);
 @endcode
 
-@note
+@attention
 Unlike std::async, the future object returned from tf::Executor::async does not block on destruction
 until completing the function.
 
@@ -53,7 +53,7 @@ executor.run(taskflow);
 executor.wait_for_all();   // wait for all tasks to finish
 @endcode
 
-@note
+@attention
 Asynchronous tasks created from an executor does not belong to any taskflows.
 The lifetime of an asynchronous task is managed automatically by the
 executor that creates the task.
@@ -129,7 +129,7 @@ are no longer controllable when their parent runtime disappears.
 It is your responsibility to properly synchronize spawned
 asynchronous tasks using tf::Runtime::corun_all.
 
-@note
+@attention
 Creating asynchronous tasks from a runtime allows users to efficiently implement
 parallel algorithms using recursion, such as parallel sort (tf::Taskflow::sort),
 that demands dynamic parallelism at runtime.

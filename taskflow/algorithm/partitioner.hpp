@@ -89,7 +89,7 @@ tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartiti
 In most situations, tf::GuidedPartitioner can deliver decent performance and
 is thus used as our default partitioner.
 
-@note
+@attention
 Giving the partition size of 0 lets the %Taskflow runtime automatically determines
 the partition size for the given partitioner.
 
@@ -121,7 +121,7 @@ taskflow.for_each_index(0, 100, 1,
 executor.run(taskflow).wait();
 @endcode
 
-@note
+@attention
 The default closure wrapper (tf::DefaultClosureWrapper) does nothing but invoke
 the partitioned task (closure).
 

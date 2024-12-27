@@ -57,7 +57,7 @@
 <para><image type="html" name="cuda_graph_benefit.png"></image>
 </para>
 <para>In this example, a sequence of short kernels is launched one-by-one by the CPU. The CPU launching overhead creates a significant gap in between the kernels. If we replace this sequence of kernels with a CUDA graph, initially we will need to spend a little extra time on building the graph and launching the whole graph in one go on the first occasion, but subsequent executions will be very fast, as there will be very little gap between the kernels. The difference is more pronounced when the same sequence of operations is repeated many times, for example, many training epochs in machine learning workloads. In that case, the initial costs of building and launching the graph will be amortized over the entire training iterations.</para>
-<para><simplesect kind="note"><para>A comprehensive introduction about CUDA Graph can be referred to the <ulink url="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#cuda-graphs">CUDA Graph Programming Guide</ulink>.</para>
+<para><simplesect kind="attention"><para>A comprehensive introduction about CUDA Graph can be referred to the <ulink url="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#cuda-graphs">CUDA Graph Programming Guide</ulink>.</para>
 </simplesect>
 </para>
 </sect1>

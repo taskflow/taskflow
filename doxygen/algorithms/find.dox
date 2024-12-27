@@ -174,7 +174,7 @@ executor.run(taskflow).wait();
 assert(*result == 2);
 @endcode
 
-@note
+@attention
 When using tf::Taskflow::max_element to find the large element,
 we will still need to use std::less as our comparison function.
 Details can be referred to 
@@ -209,7 +209,7 @@ taskflow.find_if(
 );
 @endcode
 
-@note
+@attention
 By default, parallel-find tasks use tf::DefaultPartitioner
 if no partitioner is specified. 
 

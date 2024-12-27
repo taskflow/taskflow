@@ -75,7 +75,7 @@
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
-<para><simplesect kind="note"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
+<para><simplesect kind="attention"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
 </simplesect>
 </para>
 </sect1>
@@ -150,7 +150,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>removed tf::Runtime::corun_until as it duplicates <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref></para>
-</listitem><listitem><para>disabled <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>-based semaphore interface due to flaws of corun (<ulink url="https://github.com/taskflow/taskflow/issues/647">#647</ulink>)<itemizedlist>
+</listitem><listitem><para>removed <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>-based semaphore interface due to significant flaws of blocking corun (<ulink url="https://github.com/taskflow/taskflow/issues/647">#647</ulink>)<itemizedlist>
 <listitem><para>details can be referred to <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref></para>
 </listitem></itemizedlist>
 </para>

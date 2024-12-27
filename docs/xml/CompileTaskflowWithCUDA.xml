@@ -141,7 +141,7 @@
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>
 <para>This step links all the <emphasis>device object code</emphasis> and places it into <computeroutput>gpuCode.o</computeroutput>.</para>
-<para><simplesect kind="note"><para>Note that this step does not link the CPU object code and discards the CPU object code in <computeroutput>main.o</computeroutput> and <computeroutput>cudaflow.o</computeroutput>.</para>
+<para><simplesect kind="attention"><para>Note that this step does not link the CPU object code and discards the CPU object code in <computeroutput>main.o</computeroutput> and <computeroutput>cudaflow.o</computeroutput>.</para>
 </simplesect>
 To complete the link to an executable, you can use, for example, <computeroutput>ld</computeroutput> or <computeroutput>g++</computeroutput>.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>replace<sp/>/usr/local/cuda/lib64<sp/>with<sp/>your<sp/>own<sp/>CUDA<sp/>library<sp/>installation<sp/>path</highlight></codeline>
@@ -154,7 +154,7 @@ To complete the link to an executable, you can use, for example, <computeroutput
 <codeline><highlight class="normal">cudaflow.cpp!</highlight></codeline>
 </programlisting></para>
 <para>We give <computeroutput>g++</computeroutput> all of the objects again because it needs the CPU object code, which is not in <computeroutput>gpuCode.o</computeroutput>. The device code stored in the original objects, <computeroutput>main.o</computeroutput> and <computeroutput>cudaflow.o</computeroutput>, does not conflict with the code in <computeroutput>gpuCode.o</computeroutput>. <computeroutput>g++</computeroutput> ignores device code because it does not know how to link it, and the device code in <computeroutput>gpuCode.o</computeroutput> is already linked and ready to go.</para>
-<para><simplesect kind="note"><para>This intentional ignorance is extremely useful in large builds where intermediate objects may have both CPU and GPU code. In this case, we just let the GPU and CPU linkers each do its own job, noting that the CPU linker is always the last one we run. The CUDA <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> API library is automatically linked when we use <computeroutput>nvcc</computeroutput> for linking, but we must explicitly link it (<computeroutput>-lcudart</computeroutput>) when using another linker. </para>
+<para><simplesect kind="attention"><para>This intentional ignorance is extremely useful in large builds where intermediate objects may have both CPU and GPU code. In this case, we just let the GPU and CPU linkers each do its own job, noting that the CPU linker is always the last one we run. The CUDA <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> API library is automatically linked when we use <computeroutput>nvcc</computeroutput> for linking, but we must explicitly link it (<computeroutput>-lcudart</computeroutput>) when using another linker. </para>
 </simplesect>
 </para>
 </sect2>

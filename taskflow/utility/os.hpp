@@ -153,7 +153,7 @@ struct CachelineAligned {
  * @param str The name of the environment variable to retrieve.
  * @return The value of the environment variable as a string, or an empty string if not found.
  *
- * @note The implementation differs between Windows and POSIX platforms:
+ * @attention The implementation differs between Windows and POSIX platforms:
  *  - On Windows, it uses `_dupenv_s` to fetch the value.
  *  - On POSIX, it uses `std::getenv`.
  *
@@ -184,7 +184,7 @@ inline std::string get_env(const std::string& str) {
  * @param str The name of the environment variable to check.
  * @return `true` if the environment variable exists, `false` otherwise.
  *
- * @note The implementation differs between Windows and POSIX platforms:
+ * @attention The implementation differs between Windows and POSIX platforms:
  *  - On Windows, it uses `_dupenv_s` to check for the variable's presence.
  *  - On POSIX, it uses `std::getenv` to check for the variable's presence.
  *
@@ -267,7 +267,7 @@ inline void pause() {
  * 2. After 100 iterations, it uses `std::this_thread::yield()` to relinquish the
  *    CPU, allowing other threads to execute.
  * 
- * @note This function is useful when you need to wait for a condition to be true, but
+ * @attention This function is useful when you need to wait for a condition to be true, but
  *       want to optimize CPU usage during the wait by using a busy-wait approach.
  * 
  */

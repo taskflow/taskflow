@@ -30,7 +30,7 @@ To use %Taskflow v3.9.0, you need a compiler that supports C++17:
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
-@note
+@attention
 Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
 
@@ -83,7 +83,7 @@ and enhances exception handling across all task types.
 + decoupled tf::Subflow from inheriting tf::Runtime to accommodate distinct execution logic
   + tf::Subflow no longer supports tf::Runtime-specific features
 + removed tf::Runtime::corun_until as it duplicates tf::Executor::corun_until
-+ disabled tf::Runtime-based semaphore interface due to flaws of corun ([#647](https://github.com/taskflow/taskflow/issues/647))
++ removed tf::Runtime-based semaphore interface due to significant flaws of blocking corun ([#647](https://github.com/taskflow/taskflow/issues/647))
   + details can be referred to @ref LimitTheMaximumConcurrency
 
 @section release-3-9-0_documentation Documentation

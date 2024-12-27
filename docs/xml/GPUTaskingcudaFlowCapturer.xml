@@ -122,7 +122,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref> is an RAII-styled wrapper to perform <emphasis>scoped</emphasis> switch to the given GPU context. When the scope is destroyed, it switches back to the original context.</para>
-<para><simplesect kind="note"><para>By default, a cudaFlow capturer runs on the current GPU associated with the caller, which is typically <computeroutput>0</computeroutput>.</para>
+<para><simplesect kind="attention"><para>By default, a cudaFlow capturer runs on the current GPU associated with the caller, which is typically <computeroutput>0</computeroutput>.</para>
 </simplesect>
 </para>
 </sect1>

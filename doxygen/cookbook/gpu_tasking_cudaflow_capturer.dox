@@ -125,7 +125,7 @@ tf::cudaScopedDevice is an RAII-styled wrapper to perform @em scoped switch
 to the given GPU context.
 When the scope is destroyed, it switches back to the original context.
 
-@note
+@attention
 By default, a %cudaFlow capturer runs on the current GPU associated with the caller, 
 which is typically @c 0.
 

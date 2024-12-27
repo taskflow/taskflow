@@ -55,7 +55,7 @@
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_pipeline_3.dot"></dotfile>
 </para>
 <para>As we can see, tasks in diagonal lines (lower-left to upper-right) can run in parallel. This type of parallelism is also referred to as <emphasis>wavefront</emphasis> parallelism, which sweeps parallel elements in a diagonal direction.</para>
-<para><simplesect kind="note"><para>Depending on the graph size and the number of stage tasks, task graph parallelism and pipeline parallelism can bring very different performance results. For example, a small graph will a long chain of stage tasks may perform better with pipeline parallelism than task graph parallelism, and vice versa.</para>
+<para><simplesect kind="attention"><para>Depending on the graph size and the number of stage tasks, task graph parallelism and pipeline parallelism can bring very different performance results. For example, a small graph will a long chain of stage tasks may perform better with pipeline parallelism than task graph parallelism, and vice versa.</para>
 </simplesect>
 </para>
 </sect1>
@@ -163,7 +163,7 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f3(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>A key advantage of Taskflow&apos;s pipeline programming model is that we do not provide any data abstraction but give users full control over data management, which is typically application-dependent. In an application like this graph processing pipeline, data is managed in a global custom graph data structure, and any data abstraction provided by the library can become a unnecessary overhead.</para>
+<para><simplesect kind="attention"><para>A key advantage of Taskflow&apos;s pipeline programming model is that we do not provide any data abstraction but give users full control over data management, which is typically application-dependent. In an application like this graph processing pipeline, data is managed in a global custom graph data structure, and any data abstraction provided by the library can become a unnecessary overhead.</para>
 </simplesect>
 </para>
 </sect2>

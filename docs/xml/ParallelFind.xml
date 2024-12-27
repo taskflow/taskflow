@@ -146,7 +146,7 @@
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">assert(*result<sp/>==<sp/>2);</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>When using <ref refid="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to <ulink url="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</ulink>.</para>
+<para><simplesect kind="attention"><para>When using <ref refid="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" kindref="member">tf::Taskflow::max_element</ref> to find the large element, we will still need to use <ref refid="cpp/utility/functional/less" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::less</ref> as our comparison function. Details can be referred to <ulink url="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</ulink>.</para>
 </simplesect>
 </para>
 </sect1>
@@ -169,7 +169,7 @@
 <codeline><highlight class="normal"><sp/><sp/>vec.begin(),<sp/>vec.end(),<sp/>result,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{<sp/>return<sp/>i<sp/>==<sp/>-1;<sp/>},<sp/>guided_partitioner</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para>By default, parallel-find tasks use <ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para>
+<para><simplesect kind="attention"><para>By default, parallel-find tasks use <ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para>
 </simplesect>
 </para>
 </sect1>

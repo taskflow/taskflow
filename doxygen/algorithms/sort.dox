@@ -37,7 +37,7 @@ executor.run(taskflow).wait();
 assert(std::is_sorted(data.begin(), data.end()));
 @endcode
 
-@note
+@attention
 Elements are compared using the operator @c <.
 
 @section SortARangeOfItemsWithACustomComparator Sort a Range of Items with a Custom Comparator
@@ -61,7 +61,7 @@ executor.run(taskflow).wait();
 assert(std::is_sorted(data.begin(), data.end(), std::greater<int>{}));
 @endcode
 
-@note
+@attention
 tf::Taskflow::sort is not stable. That is, two or more objects with equal keys
 may not appear in the same order before sorting.
 

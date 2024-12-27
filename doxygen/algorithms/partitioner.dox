@@ -47,7 +47,7 @@ tf::StaticPartitioner may deliver the best performance.
 On the other hand, if the work unit per iteration is irregular and unbalanced, 
 tf::GuidedPartitioner or tf::DynamicPartitioner can outperform tf::StaticPartitioner.
 
-@note
+@attention
 By default, all parallel algorithms in %Taskflow use tf::DefaultPartitioner,
 which is based on guided scheduling via tf::GuidedPartitioner.
 

@@ -133,7 +133,7 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/conditional-tasking-2.dot"></dotfile>
 </para>
 <para>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</para>
-<para><simplesect kind="note"><para>Conditional tasking lets you make in-task control-flow decisions to enable <emphasis>end-to-end</emphasis> parallelism, instead of resorting to client-side partition or synchronizing your task graph at the decision points of control flow.</para>
+<para><simplesect kind="attention"><para>Conditional tasking lets you make in-task control-flow decisions to enable <emphasis>end-to-end</emphasis> parallelism, instead of resorting to client-side partition or synchronizing your task graph at the decision points of control flow.</para>
 </simplesect>
 </para>
 </sect1>
@@ -459,7 +459,7 @@ Condition task can go cyclic to describe <emphasis>iterative</emphasis> control 
 </programlisting></para>
 <para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/multi-condition-task-1.dot"></dotfile>
 </para>
-<para><simplesect kind="note"><para>The return type of a multi-condition task is <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>, which provides C++ vector-style functionalities but comes with small buffer optimization.</para>
+<para><simplesect kind="attention"><para>The return type of a multi-condition task is <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref>, which provides C++ vector-style functionalities but comes with small buffer optimization.</para>
 </simplesect>
 One important application of conditional tasking is implementing <emphasis>iterative control flow</emphasis>. You can use multi-condition tasks to create multiple loops that run concurrently. The following code creates a sequential chain of four loops in which each loop increments a counter variable ten times. When the program completes, the value of the counter variable is <computeroutput>40</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>

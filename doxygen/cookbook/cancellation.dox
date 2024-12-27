@@ -37,7 +37,7 @@ fu.cancel();
 fu.get();
 @endcode
 
-@note
+@attention
 tf::Future::cancel is @em non-deterministic and @em out-of-order.
 
 When you request a cancellation, the executor will stop scheduling 

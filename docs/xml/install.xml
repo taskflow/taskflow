@@ -160,7 +160,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DCMAKE_CXX_FLAGS=&quot;-fsanitize=undefined<sp/>-g&quot;</highlight></codeline>
 </programlisting></para>
 <para>Our <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> incorporates thread sanitizer (<ulink url="https://clang.llvm.org/docs/ThreadSanitizer.html">-fsanitize=thread</ulink>), address sanitizer (<ulink url="https://clang.llvm.org/docs/AddressSanitizer.html">-fsanitize=address</ulink>), and leak sanitizer (<ulink url="https://clang.llvm.org/docs/LeakSanitizer.html">-fsanitize=leak</ulink>) to detect data race, illegal memory address, and memory leak. To our best knowledge, Taskflow is one of the very few parallel programming libraries that are free from data race.</para>
-<para><simplesect kind="note"><para>Some sanitizers are supported by certain computing architectures. You can find the information about architecture support of each sanitizer at <ulink url="https://clang.llvm.org/docs/index.html">Clang Documentation</ulink> and <ulink url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html">GCC Instrumentation Options</ulink>.</para>
+<para><simplesect kind="attention"><para>Some sanitizers are supported by certain computing architectures. You can find the information about architecture support of each sanitizer at <ulink url="https://clang.llvm.org/docs/index.html">Clang Documentation</ulink> and <ulink url="https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html">GCC Instrumentation Options</ulink>.</para>
 </simplesect>
 </para>
 </sect1>

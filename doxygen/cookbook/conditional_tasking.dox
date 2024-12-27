@@ -125,7 +125,7 @@ or proceeds to @c L on returning @c 1
 
 You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.
 
-@note
+@attention
 Conditional tasking lets you make in-task control-flow decisions to
 enable @em end-to-end parallelism, 
 instead of resorting to client-side partition or synchronizing your task graph
@@ -495,7 +495,7 @@ executor.run(taskflow).wait();
 
 @dotfile images/multi-condition-task-1.dot
 
-@note
+@attention
 The return type of a multi-condition task is tf::SmallVector,
 which provides C++ vector-style functionalities but comes with small buffer optimization.
 

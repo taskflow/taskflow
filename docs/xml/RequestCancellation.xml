@@ -38,7 +38,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>cancellation<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">fu.get();</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para><ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> is <emphasis>non-deterministic</emphasis> and <emphasis>out-of-order</emphasis>.</para>
+<para><simplesect kind="attention"><para><ref refid="classtf_1_1Future_1a3bf5f104864ab2590b6409712d3a469b" kindref="member">tf::Future::cancel</ref> is <emphasis>non-deterministic</emphasis> and <emphasis>out-of-order</emphasis>.</para>
 </simplesect>
 When you request a cancellation, the executor will stop scheduling the rest tasks of the taskflow. Tasks that are already running will continue to finish, but their successor tasks will not be scheduled to run. A cancellation is considered complete when all these running tasks finish. To wait for a cancellation to complete, you may explicitly call <computeroutput>tf::Future::get</computeroutput>.</para>
 <para><simplesect kind="attention"><para>It is your responsibility to ensure that the taskflow remains alive before the cancellation completes.</para>

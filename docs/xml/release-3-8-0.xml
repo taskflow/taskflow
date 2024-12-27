@@ -75,14 +75,14 @@
 </listitem>
 </itemizedlist>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
-<para><simplesect kind="note"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
+<para><simplesect kind="attention"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
 </simplesect>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
 <title>Release Summary</title>
 <para>This releases (1) enhances the scheduling performance through C++20 atomic notification and a bounded queue strategy and (2) revised the semaphore model for better runtime control.</para>
-<para><simplesect kind="note"><para>When compiling Taskflow with C++20, applications should see improved performance due to C++20 atomic wait and notification.</para>
+<para><simplesect kind="attention"><para>When compiling Taskflow with C++20, applications should see improved performance due to C++20 atomic wait and notification.</para>
 </simplesect>
 </para>
 </sect1>

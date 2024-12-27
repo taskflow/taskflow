@@ -50,7 +50,7 @@ a <i>parallel</i> type,
 where a serial pipe processes data tokens sequentially and
 a parallel pipe processes different data tokens simultaneously.
 
-@note
+@attention
 Due to the nature of pipeline, %Taskflow requires the first pipe to be a serial type.
 The pipeline scheduling algorithm operates in a circular fashion with a factor of line count.
 
@@ -151,7 +151,7 @@ The following figure shows the data layout of @c buffer.
 
 @dotfile images/pipeline_memory_layout.dot
 
-@note
+@attention
 In practice, you may need to add padding to the data type of the buffer or 
 align it with the cacheline size to avoid false sharing.
 If the data type varies at different pipes, you can use @std_variant to store the
@@ -169,7 +169,7 @@ after the callable.
 As we can see from this example, tf::Pipeline gives you the full control to customize
 your application data on top of a pipeline scheduling framework.
 
-@note
+@attention
 1. Calling tf::Pipeflow::stop() not at the first pipe has no effect on the pipeline scheduling.
 2. In most cases, std::thread::hardware_concurrency is a good number for line count.
 
