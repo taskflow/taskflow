@@ -1,33 +1,33 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="ModuleTask" kind="page">
-    <compoundname>ModuleTask</compoundname>
-    <title>Module Task</title>
+  <compounddef id="ModuleAlgorithm" kind="page">
+    <compoundname>ModuleAlgorithm</compoundname>
+    <title>Module Algorithm</title>
     <tableofcontents>
       <tocsect>
         <name>Include the Header</name>
-        <reference>ModuleTask_1ModuleTaskInclude</reference>
+        <reference>ModuleAlgorithm_1ModuleAlgorithmInclude</reference>
     </tocsect>
       <tocsect>
         <name>What is a Module Task</name>
-        <reference>ModuleTask_1WhatIsAModuleTask</reference>
+        <reference>ModuleAlgorithm_1WhatIsAModuleTask</reference>
     </tocsect>
       <tocsect>
         <name>Create a Module Task over a Custom Graph</name>
-        <reference>ModuleTask_1CreateAModuleTaskOverACustomGraph</reference>
+        <reference>ModuleAlgorithm_1CreateAModuleTaskOverACustomGraph</reference>
     </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow provides template methods that let users create reusable building blocks called <emphasis>modules</emphasis>. Users can connect modules together to build more complex parallel algorithms.</para>
-<sect1 id="ModuleTask_1ModuleTaskInclude">
+<sect1 id="ModuleAlgorithm_1ModuleAlgorithmInclude">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput><ref refid="module_8hpp_source" kindref="compound">taskflow/algorithm/module.hpp</ref></computeroutput>, for creating a module task over a schedulable graph target.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/module.hpp&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
-<sect1 id="ModuleTask_1WhatIsAModuleTask">
+<sect1 id="ModuleAlgorithm_1WhatIsAModuleTask">
 <title>What is a Module Task</title>
 <para>Similar to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>, but in a more generic setting, the template function, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, allows you to create a task over a taskflow graph that can be executed by an executor. This provides a flexible way to encapsulate and reuse complex task logic within your Taskflow applications. The example below demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
@@ -91,7 +91,7 @@
 <codeline><highlight class="normal">Taskflow<sp/>C</highlight></codeline>
 <codeline><highlight class="normal">Taskflow<sp/>D</highlight></codeline>
 </programlisting></para>
-<para>The module task maker, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, functions basically similar to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</para>
+<para>The module task maker, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, functions basically similar to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> but provides a more generic interface that can be used beyond Taskflow. Specifically, the following two approaches achieve the same functionality.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>approach<sp/>1:<sp/>composition<sp/>using<sp/>composed_of</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(taskflow2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -102,7 +102,7 @@
 </simplesect>
 </para>
 </sect1>
-<sect1 id="ModuleTask_1CreateAModuleTaskOverACustomGraph">
+<sect1 id="ModuleAlgorithm_1CreateAModuleTaskOverACustomGraph">
 <title>Create a Module Task over a Custom Graph</title>
 <para>In addition to encapsulate taskflow graphs, you can create a module task to schedule a custom graph target. A schedulable target (of type <computeroutput>T</computeroutput>) must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to the <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object managed by <computeroutput>T</computeroutput>. The following example defines a custom graph that can be scheduled through making module tasks:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CustomGraph<sp/>{</highlight></codeline>

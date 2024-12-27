@@ -13,77 +13,67 @@
         <reference>LimitTheMaximumConcurrency_1DefineAConflictGraph</reference>
     </tocsect>
       <tocsect>
-        <name>Use a Semaphore across Different Tasks</name>
-        <reference>LimitTheMaximumConcurrency_1UseASemaphoreAcrossDifferentTasks</reference>
+        <name>Understand the Limitations of Semaphores</name>
+        <reference>LimitTheMaximumConcurrency_1UnderstandTheLimitationOfSemaphores</reference>
     </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This chapters discusses how to limit the maximum concurrency or parallelism of workers running inside tasks.</para>
+<para>This chapters discusses how to limit the concurrency or the maximum number of workers in your Taskflow applications.</para>
 <sect1 id="LimitTheMaximumConcurrency_1DefineASemaphore">
 <title>Define a Semaphore</title>
 <para>Taskflow provides a mechanism, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref>, for you to limit the maximum concurrency in a section of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>1000<sp/>independent<sp/>tasks<sp/>in<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;<sp/><sp/></highlight><highlight class="comment">//<sp/>only<sp/>one<sp/>worker<sp/>will<sp/>increment<sp/>the<sp/>counter<sp/>at<sp/>any<sp/>time</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>task<sp/>:<sp/>tasks)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>each<sp/>task<sp/>acquires<sp/>and<sp/>release<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(semaphore);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
-<para>The above example creates 1000 tasks with no dependencies between them. Each task increments <computeroutput>counter</computeroutput> by one. Since this increment operation is protected by the semaphore initialized with a count of <computeroutput>1</computeroutput>, no multiple workers will run this operation at the same time. In other words, the semaphore limits the parallelism of the 1000 tasks to 1.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/semaphore1.dot"></dotfile>
+</para>
+<para>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This organization limits the number of concurrently running tasks to only one. One possible output is shown below:</para>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>the<sp/>output<sp/>is<sp/>a<sp/>sequential<sp/>chain<sp/>of<sp/>five<sp/>tasks</highlight></codeline>
+<codeline><highlight class="normal">A</highlight></codeline>
+<codeline><highlight class="normal">B</highlight></codeline>
+<codeline><highlight class="normal">E</highlight></codeline>
+<codeline><highlight class="normal">D</highlight></codeline>
+<codeline><highlight class="normal">C</highlight></codeline>
+</programlisting></para>
 <para><simplesect kind="attention"><para>It is your responsibility to ensure the semaphore stays alive during the execution of tasks that acquire and release it. The executor and taskflow do not manage lifetime of any semaphores.</para>
 </simplesect>
-We can create a semaphore with a different count value, such as 3, to limit the parallelism of independent tasks to 3.</para>
+For the same example above, we can limit the semaphore concurrency to another value different from 1, say 3, which will limit only three workers to run the five tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, <computeroutput>D</computeroutput>, and <computeroutput>E</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(3);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>3</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>that<sp/>acquires<sp/>and<sp/>releases<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;tf::Task&gt;</ref><sp/>tasks<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>that<sp/>acquires<sp/>and<sp/>releases<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>that<sp/>acquires<sp/>and<sp/>releases<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>that<sp/>acquires<sp/>and<sp/>releases<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>that<sp/>acquires<sp/>and<sp/>releases<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>task<sp/>:<sp/>tasks)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>each<sp/>task<sp/>acquires<sp/>and<sp/>release<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
@@ -91,7 +81,7 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal">ABC</highlight></codeline>
 <codeline><highlight class="normal">ED</highlight></codeline>
 </programlisting></para>
-<para><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> is also useful for limiting the maximum concurrency across multiple task groups. For instance, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on different task groups. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</para>
+<para>Semaphores are powerful for limiting the maximum concurrency of not only a section of tasks but also different sections of tasks. Specifically, you can have one task acquire a semaphore and have another task release that semaphore to impose concurrency on subgraphs of tasks. The following example serializes the execution of five pairs of tasks using a semaphore rather than explicit dependencies.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>creates<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);</highlight></codeline>
@@ -100,17 +90,13 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter<sp/>=<sp/>0;<sp/><sp/></highlight><highlight class="comment">//<sp/>non-atomic<sp/>integer<sp/>counter</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>f<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;from-&quot;</highlight><highlight class="normal">s<sp/>+<sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(i));</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>t<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;to-&quot;</highlight><highlight class="normal">s<sp/>+<sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(i));</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>f<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/>counter++;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;from-&quot;</highlight><highlight class="normal">s<sp/>+<sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(i));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>t<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){<sp/>counter++;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;to-&quot;</highlight><highlight class="normal">s<sp/>+<sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(i));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>f.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(t);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>f.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>t.<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(semaphore);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>
@@ -133,26 +119,17 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>conflict_AB(1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>conflict_AC(1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>A<sp/>cannot<sp/>run<sp/>in<sp/>parallel<sp/>with<sp/>task<sp/>B<sp/>and<sp/>task<sp/>C</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(conflict_AB,<sp/>conflict_AC);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(conflict_AB,<sp/>conflict_AC);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>B<sp/>cannot<sp/>run<sp/>in<sp/>parallel<sp/>with<sp/>task<sp/>A</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(conflict_AB);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(conflict_AB);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>describe<sp/>the<sp/>conflict<sp/>between<sp/>A<sp/>and<sp/>B</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(conflict_AB).<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(conflict_AB);</highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(conflict_AB).<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(conflict_AB);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>C<sp/>cannot<sp/>run<sp/>in<sp/>parallel<sp/>with<sp/>task<sp/>A</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>C<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(conflict_AC);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(conflict_AC);</highlight></codeline>
-<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>describe<sp/>the<sp/>conflict<sp/>between<sp/>A<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(conflict_AC).<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(conflict_AC);</highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(conflict_AC).<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(conflict_AC);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
@@ -160,45 +137,14 @@ We can create a semaphore with a different count value, such as 3, to limit the 
 <codeline><highlight class="normal">A</highlight></codeline>
 <codeline><highlight class="normal">BC</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="note"><para><ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">tf::Runtime::acquire</ref> can acquire multiple semaphores at a time, similarly for <ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">tf::Runtime::release</ref> which can release multiple semaphores at a time. When acquiring a semaphore, the calling worker will <emphasis>corun</emphasis> until the semaphore is successfully acquired. This corun behavior allows us to avoid any deadlock that could possibly happen when using semaphores with other tasks.</para>
+<para><simplesect kind="attention"><para>A task can acquire and release multiple semaphores. When the executor runs a task, it will try to acquire all semaphores needed by that task. When the executor finishes that task, it will release all acquired semaphores by that task.</para>
 </simplesect>
 </para>
 </sect1>
-<sect1 id="LimitTheMaximumConcurrency_1UseASemaphoreAcrossDifferentTasks">
-<title>Use a Semaphore across Different Tasks</title>
-<para>You can use <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> across different types of tasks, such as async tasks, taskflow tasks, and your application code. <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> does not impose any restriction on which task to use.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow1,<sp/>taskflow2;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>counter(0);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>2000;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;N;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>acquire<sp/>and<sp/>release<sp/>the<sp/>semaphore<sp/>from<sp/>a<sp/>task<sp/>in<sp/>taskflow1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow1.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>acquire<sp/>and<sp/>release<sp/>the<sp/>semaphore<sp/>from<sp/>a<sp/>task<sp/>in<sp/>another<sp/>taskflow2</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>acquire<sp/>and<sp/>release<sp/>the<sp/>semaphore<sp/>from<sp/>an<sp/>async<sp/>task</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kindref="member">acquire</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>counter++;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kindref="member">release</ref>(s);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
-<codeline><highlight class="normal">assert(counter<sp/>==<sp/>3*N);</highlight></codeline>
-</programlisting> </para>
+<sect1 id="LimitTheMaximumConcurrency_1UnderstandTheLimitationOfSemaphores">
+<title>Understand the Limitations of Semaphores</title>
+<para>Currently, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> has limited support for exception and cancellation. When a task encounters exception or a taskflow is requested to cancel, the subsequent acquire and release logic of semaphores may cause undefined behaviors. To resolve this situation, you should reset the semahpore through <ref refid="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" kindref="member">tf::Semaphore::reset</ref> before using it again in the next run.</para>
+<para>Currently, <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> has limited support for exception handling and taskflow cancellation. If a task throws an exception or the taskflow is canceled, subsequent acquire and release operations on the semaphore may result in undefined behavior. To ensure correct behavior, you should call <ref refid="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" kindref="member">tf::Semaphore::reset</ref> before reusing the semaphore in the next run. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/cookbook/semaphore.dox"/>

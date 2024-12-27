@@ -12,6 +12,7 @@
     <includes local="no">iterator</includes>
     <includes local="no">memory</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
+    <includedby refid="semaphore_8hpp" local="yes">taskflow/core/semaphore.hpp</includedby>
     <incdepgraph>
       <node id="9">
         <label>iterator</label>
@@ -84,6 +85,8 @@
         <label>taskflow/utility/small_vector.hpp</label>
         <link refid="small__vector_8hpp"/>
         <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
         </childnode>
       </node>
       <node id="19">
@@ -189,6 +192,12 @@
       <node id="14">
         <label>taskflow/cuda/algorithm/find.hpp</label>
         <link refid="find_8hpp"/>
+      </node>
+      <node id="22">
+        <label>taskflow/core/semaphore.hpp</label>
+        <link refid="semaphore_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
       </node>
       <node id="5">
         <label>taskflow/core/taskflow.hpp</label>

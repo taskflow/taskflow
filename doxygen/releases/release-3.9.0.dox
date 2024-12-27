@@ -62,6 +62,7 @@ and enhances exception handling across all task types.
 + added compile-time macros to enable specific features
   + `TF_ENABLE_TASK_POOL` to enable the use of task pool
 + added taskflow execution through asynchronous tasking with tf::make_module_task
+  + details can be referred to @ref ModuleAlgorithm
 
 @subsection release-3-9-0_utilities Utilities
 
@@ -82,6 +83,8 @@ and enhances exception handling across all task types.
 + decoupled tf::Subflow from inheriting tf::Runtime to accommodate distinct execution logic
   + tf::Subflow no longer supports tf::Runtime-specific features
 + removed tf::Runtime::corun_until as it duplicates tf::Executor::corun_until
++ disabled tf::Runtime-based semaphore interface due to flaws of corun ([#647](https://github.com/taskflow/taskflow/issues/647))
+  + details can be referred to @ref LimitTheMaximumConcurrency
 
 @section release-3-9-0_documentation Documentation
 
@@ -89,7 +92,8 @@ and enhances exception handling across all task types.
 + fixed benchmark instance names in documentation ([#621](https://github.com/taskflow/taskflow/pull/621))
 + revised @ref ExceptionHandling
 + revised @ref AsyncTasking
-+ added @ref ModuleTask
++ revised @ref LimitTheMaximumConcurrency
++ added @ref ModuleAlgorithm
 
 @section release-3-9-0_miscellaneous_items Miscellaneous Items
 

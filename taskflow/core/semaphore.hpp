@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
 #include <mutex>
 
 #include "declarations.hpp"
+#include "../utility/small_vector.hpp"
 
 /**
 @file semaphore.hpp
@@ -41,209 +41,129 @@ tf::Taskflow taskflow;
 
 tf::Semaphore semaphore(1); // create a semaphore with initial count 1
 
-for(size_t i=0; i<1000; i++) {
-  taskflow.emplace([&](tf::Runtime& rt){ 
-    rt.acquire(semaphore);
-    std::cout << "critical section here (one worker at any time)\n"; 
-    critical_section();
-    rt.release(semaphore);
-  });
+SmallVector<tf::Task> tasks {
+  taskflow.emplace([](){ std::cout << "A" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "B" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "C" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "D" << std::endl; }),
+  taskflow.emplace([](){ std::cout << "E" << std::endl; })
+};
+
+for(auto & task : tasks) {  // each task acquires and release the semaphore
+  task.acquire(semaphore);
+  task.release(semaphore);
 }
 
 executor.run(taskflow).wait();
 @endcode
 
-The above example creates a taskflow of 1000 independent tasks while
-only one worker will run @c critical_section at any time
-due to the semaphore constraint.
-This arrangement limits the parallelism of @c critical_section to 
-just one.
-
-@note %Taskflow use a non-blocking algorithm to implement the acquisition
-of semaphores and thus is deadlock-free.
+The above example creates five tasks with no dependencies between them.
+Under normal circumstances, the five tasks would be executed concurrently.
+However, this example has a semaphore with initial count 1,
+and all tasks need to acquire that semaphore before running and release that
+semaphore after they are done.
+This arrangement limits the number of concurrently running tasks to only one.
 
 */
 class Semaphore {
 
   friend class Node;
+  friend class Executor;
 
   public:
 
     /**
-    @brief constructs a default semaphore with count equal to zero
-
-    Application can use tf::Semaphore::reset to reset the counter of 
-    the semaphore later.
-    */
-    Semaphore() : _count(0) { };
-
-    /**
-    @brief constructs a semaphore with the given count
+    @brief constructs a semaphore with the given value (i.e., counter)
 
     A semaphore creates a constraint that limits the maximum concurrency,
     i.e., the number of workers, in a set of tasks.
 
     @code{.cpp}
-    tf::Semaphore semaphore(4);  // a semaphore initialized with 4
+    tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
     @endcode
     */
-    explicit Semaphore(size_t count) : _count(count) {
-    }
+    explicit Semaphore(size_t max_value);
 
     /**
-    @brief queries the current value of the associated counter
-
-    @param memory_order the memory order of this load (default std::memory_order_seq_cst)
-
-    Queries the current value of the associated counter.
+    @brief queries the current counter value
     */
-    size_t count(std::memory_order memory_order = std::memory_order_seq_cst) const {
-      return _count.load(memory_order);
-    }
+    size_t value() const;
 
     /**
-    @brief tries to atomically decrement the internal counter by @c 1 if it is greater than @c 0
-
-    @return @c true if it decremented the internal counter, otherwise @c false
-
-    Tries to atomically decrement the internal counter by @c 1. If the operation succeeds,
-    returns @c true, otherwise @c false.
+    @brief queries the maximum allowable value of this semaphore
     */
-    bool try_acquire() {
-      auto old = _count.load(std::memory_order_acquire);
-      if(old == 0) {
-        return false;
-      }
-      return _count.compare_exchange_strong(
-        old, old - 1, std::memory_order_acquire, std::memory_order_relaxed
-      );
-    }
+    size_t max_value() const;
 
     /**
-    @brief atomically increment the internal counter by @c n
-
-    @param n the value by which the internal counter will be incremented
-    
-    The release operation always succeeds as it simply increments 
-    the counter of this semaphore.
+    @brief resets the semaphores to a clean state
     */
-    void release(size_t n = 1) {
-      _count.fetch_add(n, std::memory_order_release);
-    }
+    void reset();
     
     /**
-    @brief resets the semaphore to the given count
-
-    @param count the new count value
-    @param memory_order memory order to which this operation will be applied
-                        (default std::memory_order_seq_cst)
-    
-    @note
-    Calling tf::Semaphore::reset will immediately change the underlying
-    counter to the given @c count value, regardless other threads acquiring 
-    or releasing the semaphore.
+    @brief resets the semaphores to a clean state with the given new maximum value
     */
-    void reset(size_t count, std::memory_order memory_order = std::memory_order_seq_cst) {
-      _count.store(count, memory_order);
-    }
+    void reset(size_t new_max_value);
 
   private:
 
-    std::atomic<size_t> _count;
+    mutable std::mutex _mtx;
+    
+    size_t _max_value;
+    size_t _cur_value;
+
+    SmallVector<Node*> _waiters;
+
+    bool _try_acquire_or_wait(Node*);
+
+    SmallVector<Node*> _release();
 };
 
-/**
-@brief tries to acquire all semaphores in the specified range
+inline Semaphore::Semaphore(size_t max_value) :
+  _max_value(max_value),
+  _cur_value(max_value) {
+}
 
-@tparam I iterator type
-@param first iterator to the beginning (inclusive)
-@param last iterator to the end (exclusive)
-
-Tries to acquire all semaphores in the specified range.
-
-@return @c true if all semaphores are acquired, otherwise @c false
-*/
-template <typename I,
-  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
->
-bool try_acquire(I first, I last) {
-  // Ideally, we should use a better deadlock-avoidance algorithm but
-  // in practice the number of semaphores is small and
-  // tf::Semaphore does not provide blocking require. Hence, we are 
-  // mostly safe here. This is similar to the GCC try_lock implementation:
-  // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
-  for(I ptr = first; ptr != last; ptr++) {
-    if(ptr->try_acquire() == false) {
-      for(I ptr2 = first; ptr2 != ptr; ptr2++) {
-        ptr2->release();
-      }
-      return false;
-    }
+inline bool Semaphore::_try_acquire_or_wait(Node* me) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  if(_cur_value > 0) {
+    --_cur_value;
+    return true;
   }
-  return true;
-}
-
-/**
-@brief tries to acquire all semaphores
-
-@param semaphores semaphores to acquire
-
-Tries to acquire all the semaphores.
-
-@return @c true if all semaphores are acquired, otherwise @c false
-*/
-template<typename... S, 
-  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
->
-bool try_acquire(S&&... semaphores) {
-  // Ideally, we should use a better deadlock-avoidance algorithm but
-  // in practice the number of semaphores is small and
-  // tf::Semaphore does not provide blocking require. Hence, we are 
-  // mostly safe here. This is similar to the GCC try_lock implementation:
-  // https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/mutex
-  constexpr size_t N = sizeof...(S);
-  std::array<Semaphore*, N> items { std::addressof(semaphores)... };
-  for(size_t i=0; i<N; i++) {
-    if(items[i]->try_acquire() == false) {
-      for(size_t j=0; j<i; j++) {
-        items[j]->release();
-      }
-      return false;
-    }
+  else {
+    _waiters.push_back(me);
+    return false;
   }
-  return true;
 }
 
-/**
-@brief tries to acquire all semaphores in the specified range
-
-@tparam I iterator type
-@param first iterator to the beginning (inclusive)
-@param last iterator to the end (exclusive)
-
-Releases all the semaphores in the given range.
-*/
-template <typename I,
-  std::enable_if_t<std::is_same_v<deref_t<I>, Semaphore>, void> * = nullptr
->
-void release(I first, I last) {
-  std::for_each(first, last, [](tf::Semaphore& semaphore){ 
-    semaphore.release();
-  });
+inline SmallVector<Node*> Semaphore::_release() {
+  std::lock_guard<std::mutex> lock(_mtx);
+  if(_cur_value >= _max_value) {
+    TF_THROW("can't release the semaphore more than its maximum value: ", _max_value);
+  }
+  ++_cur_value;
+  SmallVector<Node*> r{std::move(_waiters)};
+  return r;
 }
 
-/**
-@brief tries to acquire all semaphores
+inline size_t Semaphore::max_value() const {
+  return _max_value; 
+}
 
-@param semaphores semaphores to release
+inline size_t Semaphore::value() const {
+  std::lock_guard<std::mutex> lock(_mtx);
+  return _cur_value;
+}
 
-Releases all the semaphores.
-*/
-template<typename... S, 
-  std::enable_if_t<all_same_v<Semaphore, std::decay_t<S>...>, void>* = nullptr
->
-void release(S&&... semaphores) {
-  (semaphores.release(), ...);
+inline void Semaphore::reset() {
+  std::lock_guard<std::mutex> lock(_mtx);
+  _cur_value = _max_value;
+  _waiters.clear();
+}
+
+inline void Semaphore::reset(size_t new_max_value) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  _cur_value = (_max_value = new_max_value);
+  _waiters.clear();
 }
 
 }  // end of namespace tf. ---------------------------------------------------

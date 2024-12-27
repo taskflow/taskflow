@@ -1468,16 +1468,15 @@ void Executor::_schedule(Worker& worker, I first, I last) {
   // This problem is specific to MSVC which has strict iterator arithmetics.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; i++) {
-      worker._wsq.push(
-        first[i].get(), [&](){ _freelist.push(worker._id, first[i].get()); }
-      );
+      auto node = detail::get_node_ptr(first[i]);
+      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
       _notifier.notify_one();
     }
     return;
   }
 
   for(size_t i=0; i<num_nodes; i++) {
-    _freelist.push(first[i].get());
+    _freelist.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }
@@ -1493,7 +1492,7 @@ inline void Executor::_schedule(I first, I last) {
   }
 
   for(size_t i=0; i<num_nodes; i++) {
-    _freelist.push(first[i].get());
+    _freelist.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }
@@ -1526,13 +1525,29 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   begin_invoke:
 
   Node* cache {nullptr};
+  
+  // if this is the second invoke due to preemption, directly jump to invoke task
+  if(node->_nstate & NSTATE::PREEMPTED) {
+    goto invoke_task;
+  }
 
-  // no need to do other things if the topology is cancelled
+  // if the work has been cancelled, there is no need to continue
   if(node->_is_cancelled()) {
     _tear_down_invoke(worker, node, cache);
     TF_INVOKE_CONTINUATION();
     return;
   }
+
+  // if acquiring semaphore(s) exists, acquire them first
+  if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
+    SmallVector<Node*> nodes;
+    if(!node->_acquire_all(nodes)) {
+      _schedule(worker, nodes.begin(), nodes.end());
+      return;
+    }
+  }
+  
+  invoke_task:
   
   SmallVector<int> conds;
 
@@ -1605,6 +1620,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // monostate (placeholder)
     default:
     break;
+  }
+
+  // if releasing semaphores exist, release them
+  if(node->_semaphores && !node->_semaphores->to_release.empty()) {
+    auto waiters = node->_release_all();
+    _schedule(worker, waiters.begin(), waiters.end());
   }
 
   // Reset the join counter with strong dependencies to support cycles.

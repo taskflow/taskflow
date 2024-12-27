@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Module Task | Taskflow QuickStart</title>
+  <title>Taskflow Algorithms &raquo; Module Algorithm | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,17 +46,18 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          Module Task
+          <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
+          Module Algorithm
         </h1>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
-            <li><a href="#ModuleTaskInclude">Include the Header</a></li>
+            <li><a href="#ModuleAlgorithmInclude">Include the Header</a></li>
             <li><a href="#WhatIsAModuleTask">What is a Module Task</a></li>
             <li><a href="#CreateAModuleTaskOverACustomGraph">Create a Module Task over a Custom Graph</a></li>
           </ul>
         </nav>
-<p>Taskflow provides template methods that let users create reusable building blocks called <em>modules</em>. Users can connect modules together to build more complex parallel algorithms.</p><section id="ModuleTaskInclude"><h2><a href="#ModuleTaskInclude">Include the Header</a></h2><p>You need to include the header file, <code><a href="module_8hpp_source.html" class="m-doc">taskflow/<wbr />algorithm/<wbr />module.hpp</a></code>, for creating a module task over a schedulable graph target.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/module.hpp&gt;</span></pre></section><section id="WhatIsAModuleTask"><h2><a href="#WhatIsAModuleTask">What is a Module Task</a></h2><p>Similar to <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a>, but in a more generic setting, the template function, <a href="namespacetf.html#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, allows you to create a task over a taskflow graph that can be executed by an executor. This provides a flexible way to encapsulate and reuse complex task logic within your Taskflow applications. The example below demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<p>Taskflow provides template methods that let users create reusable building blocks called <em>modules</em>. Users can connect modules together to build more complex parallel algorithms.</p><section id="ModuleAlgorithmInclude"><h2><a href="#ModuleAlgorithmInclude">Include the Header</a></h2><p>You need to include the header file, <code><a href="module_8hpp_source.html" class="m-doc">taskflow/<wbr />algorithm/<wbr />module.hpp</a></code>, for creating a module task over a schedulable graph target.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/module.hpp&gt;</span></pre></section><section id="WhatIsAModuleTask"><h2><a href="#WhatIsAModuleTask">What is a Module Task</a></h2><p>Similar to <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a>, but in a more generic setting, the template function, <a href="namespacetf.html#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, allows you to create a task over a taskflow graph that can be executed by an executor. This provides a flexible way to encapsulate and reuse complex task logic within your Taskflow applications. The example below demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
@@ -168,7 +169,7 @@
 <span class="go">Taskflow A</span>
 <span class="go">Taskflow B</span>
 <span class="go">Taskflow C</span>
-<span class="go">Taskflow D</span></pre><p>The module task maker, <a href="namespacetf.html#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, functions basically similar to <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
+<span class="go">Taskflow D</span></pre><p>The module task maker, <a href="namespacetf.html#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, functions basically similar to <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. Specifically, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">);</span>
 
 <span class="c1">// approach 2: composition using make_module_task</span>

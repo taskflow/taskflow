@@ -704,6 +704,7 @@
     <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" kind="variable"><name>_dependents</name></member>
     <member refid="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" kind="variable"><name>_join_counter</name></member>
     <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" kind="variable"><name>_handle</name></member>
+    <member refid="classtf_1_1Node_1a26a8c9bfbbd1c62dbd49545d9d49a8f4" kind="variable"><name>_semaphores</name></member>
     <member refid="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" kind="variable"><name>_exception_ptr</name></member>
     <member refid="classtf_1_1Node_1aebc4701caf53db89d260c75fba0e5050" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1adfceea099b09ccb6dcd63b6382ce070d" kind="function"><name>Node</name></member>
@@ -730,7 +731,7 @@
     <member refid="classtf_1_1Node_1aed1c802d5794f881f9c47089003ef62c" kind="function"><name>_is_conditioner</name></member>
     <member refid="classtf_1_1Node_1a371ba225f514e86b9ae893f4168b50e0" kind="function"><name>_is_preempted</name></member>
     <member refid="classtf_1_1Node_1ac5778a60afb44cd54eb0247a04b38a91" kind="function"><name>_acquire_all</name></member>
-    <member refid="classtf_1_1Node_1a22ee0fc1f8a670b322f75ceff71f0cfa" kind="function"><name>_release_all</name></member>
+    <member refid="classtf_1_1Node_1a69f967fa92024d7b31cc30d010ccf207" kind="function"><name>_release_all</name></member>
   </compound>
   <compound refid="classtf_1_1ObserverInterface" kind="class"><name>tf::ObserverInterface</name>
     <member refid="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" kind="function"><name>~ObserverInterface</name></member>
@@ -877,10 +878,6 @@
     <member refid="classtf_1_1Runtime_1a532d8cd09ebee59023e3ad65f3220f4e" kind="function"><name>silent_async</name></member>
     <member refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kind="function"><name>corun</name></member>
     <member refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kind="function"><name>corun_all</name></member>
-    <member refid="classtf_1_1Runtime_1ada6b02ea097968de011bb3825a7ec48b" kind="function"><name>acquire</name></member>
-    <member refid="classtf_1_1Runtime_1aee253a907d8ade4e3162f1b2ea8a97cf" kind="function"><name>acquire</name></member>
-    <member refid="classtf_1_1Runtime_1acc36e4d62a17e19e07f0c82a4c5f1d95" kind="function"><name>release</name></member>
-    <member refid="classtf_1_1Runtime_1a83ebb3537650dd6e7ea32a60ece8462c" kind="function"><name>release</name></member>
     <member refid="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" kind="function"><name>Runtime</name></member>
   </compound>
   <compound refid="classtf_1_1ScalablePipeline" kind="class"><name>tf::ScalablePipeline</name>
@@ -935,13 +932,22 @@
   </compound>
   <compound refid="classtf_1_1Semaphore" kind="class"><name>tf::Semaphore</name>
     <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" kind="friend"><name>Node</name></member>
-    <member refid="classtf_1_1Semaphore_1abe01d3cb3ccb1b59d816f5bec36d5cc8" kind="variable"><name>_count</name></member>
-    <member refid="classtf_1_1Semaphore_1a9f019c0fdcd9b1bbf1d7f46760878d2a" kind="function"><name>Semaphore</name></member>
-    <member refid="classtf_1_1Semaphore_1aafbb7c98f5e510f2ba053b3e9fd2cb25" kind="function"><name>Semaphore</name></member>
-    <member refid="classtf_1_1Semaphore_1aa3d4f0f1930f5d5ec6238a9d1460b06b" kind="function"><name>count</name></member>
-    <member refid="classtf_1_1Semaphore_1a2bbcb0be1e7e767d5911ad79d63b59f0" kind="function"><name>try_acquire</name></member>
-    <member refid="classtf_1_1Semaphore_1a495348aa6280a4d2756a42fbf23fbe20" kind="function"><name>release</name></member>
-    <member refid="classtf_1_1Semaphore_1a6d0481c1a39eddc6497aad21695c0e8e" kind="function"><name>reset</name></member>
+    <member refid="classtf_1_1Semaphore_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" kind="variable"><name>_mtx</name></member>
+    <member refid="classtf_1_1Semaphore_1a3e58194192dcfdac92d186b67c96498d" kind="variable"><name>_max_value</name></member>
+    <member refid="classtf_1_1Semaphore_1af749214114dbfccd36adffa337eb44ca" kind="variable"><name>_cur_value</name></member>
+    <member refid="classtf_1_1Semaphore_1a2c266637822af51b6ea77a47e35ad3fd" kind="variable"><name>_waiters</name></member>
+    <member refid="classtf_1_1Semaphore_1abbd094f2f48025fbf0707ae977307a3e" kind="function"><name>Semaphore</name></member>
+    <member refid="classtf_1_1Semaphore_1a8ba4d8f7a70fe36b883eb0ad1aa8dcd1" kind="function"><name>value</name></member>
+    <member refid="classtf_1_1Semaphore_1a2871b5f5d7527c822abe871d99a482b3" kind="function"><name>max_value</name></member>
+    <member refid="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" kind="function"><name>reset</name></member>
+    <member refid="classtf_1_1Semaphore_1a3193f673011ac0a8527284fa8f68ee6a" kind="function"><name>reset</name></member>
+    <member refid="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" kind="function"><name>_try_acquire_or_wait</name></member>
+    <member refid="classtf_1_1Semaphore_1ac1a53439f7aca5dad47772f53d666103" kind="function"><name>_release</name></member>
+  </compound>
+  <compound refid="structtf_1_1Node_1_1Semaphores" kind="struct"><name>tf::Node::Semaphores</name>
+    <member refid="structtf_1_1Node_1_1Semaphores_1a38c40511dbc9e8f719398c316752b2c1" kind="variable"><name>to_acquire</name></member>
+    <member refid="structtf_1_1Node_1_1Semaphores_1ae8315d3611ad7b475f62dda20aa36445" kind="variable"><name>to_release</name></member>
   </compound>
   <compound refid="classtf_1_1SmallVector" kind="class"><name>tf::SmallVector</name>
     <member refid="classtf_1_1SmallVector_1a752752b1856c279b5ccb7c71106ddae0" kind="variable"><name>Storage</name></member>
@@ -1149,6 +1155,8 @@
     <member refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kind="function"><name>composed_of</name></member>
     <member refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kind="function"><name>precede</name></member>
     <member refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kind="function"><name>succeed</name></member>
+    <member refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kind="function"><name>release</name></member>
+    <member refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kind="function"><name>acquire</name></member>
     <member refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kind="function"><name>data</name></member>
     <member refid="classtf_1_1Task_1a302f51ed717d0a4e99edc50f92a571f3" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1Task_1aec3ab712e12137542b7e4bc311ee9f20" kind="function"><name>reset_work</name></member>
@@ -1903,10 +1911,6 @@
     <member refid="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" kind="function"><name>recycle</name></member>
     <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" kind="function"><name>operator&lt;&lt;</name></member>
-    <member refid="namespacetf_1a53463bb4958601e2772d848da92d9040" kind="function"><name>try_acquire</name></member>
-    <member refid="namespacetf_1a642de1b981de4303e2ea61006d3d02c8" kind="function"><name>try_acquire</name></member>
-    <member refid="namespacetf_1ac61af60917cda9b16b190a12034c7323" kind="function"><name>release</name></member>
-    <member refid="namespacetf_1aad83ac689ce52e0a7249c051ca76717b" kind="function"><name>release</name></member>
     <member refid="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kind="function"><name>make_data_pipe</name></member>
     <member refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kind="function"><name>make_module_task</name></member>
@@ -1974,6 +1978,7 @@
     <member refid="merge_8hpp_1a93988a64371309e28f815e1266b875f9a9e43f5291e6fcb2ad99c8e3f91acd179" kind="enumvalue"><name>UPPER</name></member>
     <member refid="scan_8hpp_1acb48d657669121bb9dfd45662e5bf9e1" kind="variable"><name>cudaScanRecursionThreshold</name></member>
     <member refid="small__vector_8hpp_1af7219c0a48eb7108171068b23dd93c92" kind="function"><name>NextCapacity</name></member>
+    <member refid="graph_8hpp_1a161a286a50a96357a744b6f0c6bc1911" kind="function"><name>get_node_ptr</name></member>
     <member refid="for__each_8hpp_1a25cd7b4ecddff9e32d577eba0f8455bb" kind="function"><name>cuda_for_each_kernel</name></member>
     <member refid="for__each_8hpp_1aa5625b737f69747c9fe334fc91b9dcb2" kind="function"><name>cuda_for_each_index_kernel</name></member>
     <member refid="transform_8hpp_1ac3c389313dfd125f579cd879bacb5b81" kind="function"><name>cuda_transform_kernel</name></member>
@@ -2387,7 +2392,7 @@
   </compound>
   <compound refid="ParallelFind" kind="page"><name>ParallelFind</name>
   </compound>
-  <compound refid="ModuleTask" kind="page"><name>ModuleTask</name>
+  <compound refid="ModuleAlgorithm" kind="page"><name>ModuleAlgorithm</name>
   </compound>
   <compound refid="TaskParallelPipeline" kind="page"><name>TaskParallelPipeline</name>
   </compound>

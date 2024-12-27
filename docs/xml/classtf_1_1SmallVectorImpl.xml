@@ -4,6 +4,7 @@
     <compoundname>tf::SmallVectorImpl</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</basecompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; Node * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; tf::Semaphore * &gt;</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVector" prot="public" virt="non-virtual">tf::SmallVector&lt; T, N &gt;</derivedcompoundref>
     <templateparamlist>
       <param>
@@ -615,6 +616,12 @@
         <childnode refid="4" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="6">
+        <label>tf::SmallVector&lt; tf::Semaphore * &gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
       <node id="1">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
         <childnode refid="2" relation="public-inheritance">
@@ -634,7 +641,7 @@
         <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="6">
+      <node id="7">
         <label>tf::SmallVector&lt; T, N &gt;</label>
         <link refid="classtf_1_1SmallVector"/>
         <childnode refid="1" relation="public-inheritance">

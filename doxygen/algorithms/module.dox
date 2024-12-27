@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page ModuleTask Module Task
+/** @page ModuleAlgorithm Module Algorithm
 
 %Taskflow provides template methods that let users create reusable building blocks
 called @em modules.
@@ -8,7 +8,7 @@ Users can connect modules together to build more complex parallel algorithms.
 
 @tableofcontents
 
-@section ModuleTaskInclude Include the Header
+@section ModuleAlgorithmInclude Include the Header
 
 You need to include the header file, <tt>taskflow/algorithm/module.hpp</tt>,
 for creating a module task over a schedulable graph target.
@@ -91,7 +91,7 @@ auto [TD, FD] = executor.dependent_async(tf::make_module_task(D), TC);
 FD.get();
 @endcode
 
-@dotfile images/module_task_1.dot
+@dotfile images/module_task_2.dot
 
 @code{.shell-session}
 # dependent-async tasks enforce a sequential execution of the four taskflows
@@ -103,7 +103,7 @@ Taskflow D
 
 The module task maker, tf::make_module_task, functions basically similar to tf::Taskflow::composed_of 
 but provides a more generic interface that can be used beyond %Taskflow.
-For instance, the following two approaches achieve the same functionality.
+Specifically, the following two approaches achieve the same functionality.
 
 @code{.cpp}
 // approach 1: composition using composed_of
