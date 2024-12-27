@@ -337,16 +337,14 @@ class Node {
   // free list
   //Node* _freelist_next{nullptr};
 
-  void _precede(Node*);
-  void _set_up_join_counter();
-  void _rethrow_exception();
-
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _is_preempted() const;
   bool _acquire_all(SmallVector<Node*>&);
-
-  SmallVector<Node*> _release_all();
+  void _release_all(SmallVector<Node*>&);
+  void _precede(Node*);
+  void _set_up_join_counter();
+  void _rethrow_exception();
 };
 
 // ----------------------------------------------------------------------------
@@ -690,16 +688,12 @@ inline void Node::_rethrow_exception() {
 
 // Function: _acquire_all
 inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {
-  
   // assert(_semaphores != nullptr);
-
   auto& to_acquire = _semaphores->to_acquire;
-
   for(size_t i = 0; i < to_acquire.size(); ++i) {
     if(!to_acquire[i]->_try_acquire_or_wait(this)) {
       for(size_t j = 1; j <= i; ++j) {
-        auto r = to_acquire[i-j]->_release();
-        nodes.insert(std::end(nodes), std::begin(r), std::end(r));
+        to_acquire[i-j]->_release(nodes);
       }
       return false;
     }
@@ -708,19 +702,12 @@ inline bool Node::_acquire_all(SmallVector<Node*>& nodes) {
 }
 
 // Function: _release_all
-inline SmallVector<Node*> Node::_release_all() {
-  
+inline void Node::_release_all(SmallVector<Node*>& nodes) {
   // assert(_semaphores != nullptr);
-
   auto& to_release = _semaphores->to_release;
-
-  SmallVector<Node*> nodes;
   for(const auto& sem : to_release) {
-    auto r = sem->_release();
-    nodes.insert(std::end(nodes), std::begin(r), std::end(r));
+    sem->_release(nodes);
   }
-
-  return nodes;
 }
 
 

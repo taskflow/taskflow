@@ -115,7 +115,7 @@ class Semaphore {
 
     bool _try_acquire_or_wait(Node*);
 
-    SmallVector<Node*> _release();
+    void _release(SmallVector<Node*>&);
 };
 
 inline Semaphore::Semaphore(size_t max_value) :
@@ -135,14 +135,24 @@ inline bool Semaphore::_try_acquire_or_wait(Node* me) {
   }
 }
 
-inline SmallVector<Node*> Semaphore::_release() {
+inline void Semaphore::_release(SmallVector<Node*>& dst) {
+
   std::lock_guard<std::mutex> lock(_mtx);
+
   if(_cur_value >= _max_value) {
     TF_THROW("can't release the semaphore more than its maximum value: ", _max_value);
   }
+
   ++_cur_value;
-  SmallVector<Node*> r{std::move(_waiters)};
-  return r;
+  
+  if(dst.empty()) {
+    dst.swap(_waiters);
+  }
+  else {
+    dst.reserve(dst.size() + _waiters.size());
+    dst.insert(dst.end(), _waiters.begin(), _waiters.end());
+    _waiters.clear();
+  }
 }
 
 inline size_t Semaphore::max_value() const {

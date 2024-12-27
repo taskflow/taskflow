@@ -3,7 +3,6 @@
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 
-/*
 // --------------------------------------------------------
 // Testcase: CriticalSection
 // --------------------------------------------------------
@@ -12,15 +11,19 @@ void critical_section(size_t W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
-  tf::CriticalSection section(1);
+  tf::Semaphore sema(1);
+  
+  REQUIRE(sema.value() == 1);
+  REQUIRE(sema.max_value() == 1);
 
   int N = 1000;
   int counter = 0;
 
   for(int i=0; i<N; ++i) {
-    tf::Task task = taskflow.emplace([&](){ counter++; })
-                            .name(std::to_string(i));
-    section.add(task);
+    taskflow.emplace([&](){ counter++; })
+            .name(std::to_string(i))
+            .acquire(sema)
+            .release(sema);
   }
 
   executor.run(taskflow).wait();
@@ -34,7 +37,8 @@ void critical_section(size_t W) {
   executor.wait_for_all();
 
   REQUIRE(counter == 4*N);
-  REQUIRE(section.count() == 1);
+  REQUIRE(sema.value() == 1);
+  REQUIRE(sema.max_value() == 1);
 }
 
 TEST_CASE("CriticalSection.1thread") {
@@ -60,7 +64,6 @@ TEST_CASE("CriticalSection.11threads") {
 TEST_CASE("CriticalSection.16threads") {
   critical_section(16);
 }
-*/
 
 // --------------------------------------------------------
 // Testcase: Semaphore
@@ -109,7 +112,7 @@ TEST_CASE("Semaphore.8threads") {
 // Testcase: OverlappedSemaphore
 // --------------------------------------------------------
 
-void overlapped_semaphore(size_t W) {
+void overlapped_semaphores(size_t W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -135,19 +138,19 @@ void overlapped_semaphore(size_t W) {
 }
 
 TEST_CASE("OverlappedSemaphore.1thread") {
-  overlapped_semaphore(1);
+  overlapped_semaphores(1);
 }
 
 TEST_CASE("OverlappedSemaphore.2threads") {
-  overlapped_semaphore(2);
+  overlapped_semaphores(2);
 }
 
 TEST_CASE("OverlappedSemaphore.4threads") {
-  overlapped_semaphore(4);
+  overlapped_semaphores(4);
 }
 
 TEST_CASE("OverlappedSemaphore.8threads") {
-  overlapped_semaphore(8);
+  overlapped_semaphores(8);
 }
 
 // --------------------------------------------------------

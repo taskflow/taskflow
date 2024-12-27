@@ -1540,9 +1540,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // if acquiring semaphore(s) exists, acquire them first
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
-    SmallVector<Node*> nodes;
-    if(!node->_acquire_all(nodes)) {
-      _schedule(worker, nodes.begin(), nodes.end());
+    SmallVector<Node*> waiters;
+    if(!node->_acquire_all(waiters)) {
+      _schedule(worker, waiters.begin(), waiters.end());
       return;
     }
   }
@@ -1624,7 +1624,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // if releasing semaphores exist, release them
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
-    auto waiters = node->_release_all();
+    SmallVector<Node*> waiters;
+    node->_release_all(waiters);
     _schedule(worker, waiters.begin(), waiters.end());
   }
 
