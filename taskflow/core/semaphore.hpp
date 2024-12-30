@@ -73,6 +73,14 @@ class Semaphore {
   public:
 
     /**
+    @brief constructs a default semaphore
+
+    A default semaphore has the value of zero. Users can call tf::Semaphore::reset
+    to reassign a new value to the semaphore.
+    */
+    Semaphore() = default;
+
+    /**
     @brief constructs a semaphore with the given value (i.e., counter)
 
     A semaphore creates a constraint that limits the maximum concurrency,
@@ -108,8 +116,8 @@ class Semaphore {
 
     mutable std::mutex _mtx;
     
-    size_t _max_value;
-    size_t _cur_value;
+    size_t _max_value{0};
+    size_t _cur_value{0};
 
     SmallVector<Node*> _waiters;
 
