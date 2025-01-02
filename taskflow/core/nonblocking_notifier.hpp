@@ -75,7 +75,7 @@ class NonblockingNotifierV1 {
       kSignaled,
     };
 
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     std::atomic<unsigned> state {0};
 #else
     std::mutex mu;
@@ -106,7 +106,7 @@ class NonblockingNotifierV1 {
   // commit_wait commits waiting.
   // only the waiter itself can call
   void commit_wait(Waiter* w) {
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
 #else
     w->state = Waiter::kNotSignaled;
@@ -211,7 +211,7 @@ class NonblockingNotifierV1 {
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     unsigned target = Waiter::kNotSignaled;
     if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
                                         std::memory_order_relaxed,
@@ -231,7 +231,7 @@ class NonblockingNotifierV1 {
     Waiter* next = nullptr;
     for (Waiter* w = waiters; w; w = next) {
       next = w->next.load(std::memory_order_relaxed);
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
       // We only notify if the other is waiting - this is why we use tri-state
       // variable instead of binary-state variable (i.e., atomic_flag)
       // Performance is about 0.1% faster
@@ -321,7 +321,7 @@ class NonblockingNotifierV2 {
       kSignaled,
     };
 
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     std::atomic<unsigned> state {0};
 #else
     std::mutex mu;
@@ -354,7 +354,7 @@ class NonblockingNotifierV2 {
 
   // commit_wait commits waiting after prepare_wait.
   void commit_wait(Waiter* w) {
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
 #else
     w->state = Waiter::kNotSignaled;
@@ -451,7 +451,7 @@ class NonblockingNotifierV2 {
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
     unsigned target = Waiter::kNotSignaled;
     if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
                                         std::memory_order_relaxed,
@@ -471,7 +471,7 @@ class NonblockingNotifierV2 {
     for (Waiter* next; w; w = next) {
       uint64_t wnext = w->next.load(std::memory_order_relaxed) & kStackMask;
       next = (wnext == kStackMask) ? nullptr : &_waiters[static_cast<size_t>(wnext)];
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
       if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == 
          Waiter::kWaiting) {
         w->state.notify_one();

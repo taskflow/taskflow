@@ -1,4 +1,4 @@
-#ifdef __cpp_lib_atomic_wait
+#if __cplusplus >= TF_CPP20
 
 #pragma once
 
