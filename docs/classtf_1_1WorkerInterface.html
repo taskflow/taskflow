@@ -62,7 +62,32 @@
             </li>
           </ul>
         </nav>
-<p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class allows users to customize worker properties when creating an executor. Examples include binding workers to specific CPU cores or invoking custom methods before and after a worker enters or leaves the work-stealing loop. When you create an executor, it spawns a set of workers to execute tasks with the following logic:</p><p>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<a href="classtf_1_1Worker.html" class="m-doc">Worker</a>&amp; worker)</p><p>pre-processing executor-specific worker information ...</p><p>enter the scheduling loop Here, <a href="#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">WorkerInterface::<wbr />scheduler_prologue</a> is invoked, if any worker_interface-&gt;scheduler_prologue(worker);</p><p>try { while(1) { perform_work_stealing_algorithm(); if(stop) { break; } } } catch(...) { exception_ptr = std::current_exception(); }</p><p>leaves the scheduling loop and joins this worker thread Here, <a href="#a3e6d68fd4041f433d1b7ca9e5786b57c" class="m-doc">WorkerInterface::<wbr />scheduler_epilogue</a> is invoked, if any worker_interface-&gt;scheduler_epilogue(worker, exception_ptr); ); }</p><aside class="m-note m-warning"><h4>Attention</h4><p><a href="#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">tf::<wbr />WorkerInterface::<wbr />scheduler_prologue</a> and tf::WorkerInterface::scheduler_eiplogue are invoked by each worker simultaneously.</p></aside>
+<p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class allows users to customize worker properties when creating an executor. Examples include binding workers to specific CPU cores or invoking custom methods before and after a worker enters or leaves the work-stealing loop. When you create an executor, it spawns a set of workers to execute tasks with the following logic:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">create_thread</span><span class="p">([](</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">worker</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// pre-processing executor-specific worker information</span>
+<span class="w">    </span><span class="c1">// ...</span>
+
+<span class="w">    </span><span class="c1">// enter the scheduling loop</span>
+<span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_prologue is invoked, if any</span>
+<span class="w">    </span><span class="n">worker_interface</span><span class="o">-&gt;</span><span class="n">scheduler_prologue</span><span class="p">(</span><span class="n">worker</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">perform_work_stealing_algorithm</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">exception_ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">current_exception</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// leaves the scheduling loop and joins this worker thread</span>
+<span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_epilogue is invoked, if any</span>
+<span class="w">    </span><span class="n">worker_interface</span><span class="o">-&gt;</span><span class="n">scheduler_epilogue</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span><span class="w"> </span><span class="n">exception_ptr</span><span class="p">);</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p><a href="#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">tf::<wbr />WorkerInterface::<wbr />scheduler_prologue</a> and tf::WorkerInterface::scheduler_eiplogue are invoked by each worker simultaneously.</p></aside>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">

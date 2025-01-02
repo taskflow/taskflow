@@ -16,7 +16,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="230" column="11"/>
+        <location file="taskflow/core/worker.hpp" line="232" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -44,7 +44,7 @@ The method is called by the constructor of an executor. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="238" column="16"/>
+        <location file="taskflow/core/worker.hpp" line="240" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -84,7 +84,7 @@ The method is called by the constructor of an executor. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="247" column="16"/>
+        <location file="taskflow/core/worker.hpp" line="249" column="16"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -92,16 +92,38 @@ The method is called by the constructor of an executor. </para>
     </briefdescription>
     <detaileddescription>
 <para>The <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> class allows users to customize worker properties when creating an executor. Examples include binding workers to specific CPU cores or invoking custom methods before and after a worker enters or leaves the work-stealing loop. When you create an executor, it spawns a set of workers to execute tasks with the following logic:</para>
-<para>for(size_t n=0; n&lt;num_workers; n++) { create_thread([](<ref refid="classtf_1_1Worker" kindref="compound">Worker</ref>&amp; worker)</para>
-<para>pre-processing executor-specific worker information ...</para>
-<para>enter the scheduling loop Here, <ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">WorkerInterface::scheduler_prologue</ref> is invoked, if any worker_interface-&gt;scheduler_prologue(worker);</para>
-<para>try { while(1) { perform_work_stealing_algorithm(); if(stop) { break; } } } catch(...) { exception_ptr = std::current_exception(); }</para>
-<para>leaves the scheduling loop and joins this worker thread Here, <ref refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kindref="member">WorkerInterface::scheduler_epilogue</ref> is invoked, if any worker_interface-&gt;scheduler_epilogue(worker, exception_ptr); ); }</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;num_workers;<sp/>n++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>create_thread([](Worker&amp;<sp/>worker)</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>pre-processing<sp/>executor-specific<sp/>worker<sp/>information</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>enter<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_prologue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>worker_interface-&gt;scheduler_prologue(worker);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>while(1)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>perform_work_stealing_algorithm();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>if(stop)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>break;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(...)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>exception_ptr<sp/>=<sp/><ref refid="cpp/error/current_exception" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::current_exception</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>leaves<sp/>the<sp/>scheduling<sp/>loop<sp/>and<sp/>joins<sp/>this<sp/>worker<sp/>thread</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_epilogue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>worker_interface-&gt;scheduler_epilogue(worker,<sp/>exception_ptr);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
 <para><simplesect kind="attention"><para><ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">tf::WorkerInterface::scheduler_prologue</ref> and tf::WorkerInterface::scheduler_eiplogue are invoked by each worker simultaneously. </para>
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/worker.hpp" line="223" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="223" bodyend="249"/>
+    <location file="taskflow/core/worker.hpp" line="225" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="225" bodyend="251"/>
     <listofallmembers>
       <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_epilogue</name></member>
       <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_prologue</name></member>

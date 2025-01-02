@@ -188,6 +188,7 @@ invoking custom methods before and after a worker enters or leaves the work-stea
 When you create an executor, it spawns a set of workers to execute tasks
 with the following logic:
 
+@code{.cpp}
 for(size_t n=0; n<num_workers; n++) {
   create_thread([](Worker& worker)
 
@@ -214,6 +215,7 @@ for(size_t n=0; n<num_workers; n++) {
     worker_interface->scheduler_epilogue(worker, exception_ptr);
   );
 }
+@endcode
 
 @attention
 tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_eiplogue 
