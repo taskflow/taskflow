@@ -49,33 +49,35 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="109" column="24" bodyfile="taskflow/core/semaphore.hpp" bodystart="109" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="117" column="24" bodyfile="taskflow/core/semaphore.hpp" bodystart="117" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1a3e58194192dcfdac92d186b67c96498d" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Semaphore::_max_value</definition>
         <argsstring></argsstring>
         <name>_max_value</name>
+        <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="111" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="111" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="119" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="119" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1af749214114dbfccd36adffa337eb44ca" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Semaphore::_cur_value</definition>
         <argsstring></argsstring>
         <name>_cur_value</name>
+        <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="112" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="112" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="120" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="120" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1a2c266637822af51b6ea77a47e35ad3fd" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
@@ -88,10 +90,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="114" column="17" bodyfile="taskflow/core/semaphore.hpp" bodystart="114" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="122" column="17" bodyfile="taskflow/core/semaphore.hpp" bodystart="122" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1Semaphore_1a6c5eda744df63aabf30398142a8c73c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::Semaphore::Semaphore</definition>
+        <argsstring>()=default</argsstring>
+        <name>Semaphore</name>
+        <briefdescription>
+<para>constructs a default semaphore </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A default semaphore has the value of zero. Users can call <ref refid="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" kindref="member">tf::Semaphore::reset</ref> to reassign a new value to the semaphore. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/semaphore.hpp" line="81" column="5"/>
+      </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1abbd094f2f48025fbf0707ae977307a3e" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Semaphore::Semaphore</definition>
@@ -111,7 +128,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="85" column="14" bodyfile="taskflow/core/semaphore.hpp" bodystart="121" bodyend="124"/>
+        <location file="taskflow/core/semaphore.hpp" line="93" column="14" bodyfile="taskflow/core/semaphore.hpp" bodystart="129" bodyend="132"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a8ba4d8f7a70fe36b883eb0ad1aa8dcd1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -125,7 +142,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="90" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="162" bodyend="165"/>
+        <location file="taskflow/core/semaphore.hpp" line="98" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="170" bodyend="173"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a2871b5f5d7527c822abe871d99a482b3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -139,7 +156,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="95" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="158" bodyend="160"/>
+        <location file="taskflow/core/semaphore.hpp" line="103" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="166" bodyend="168"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -153,7 +170,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="100" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="167" bodyend="171"/>
+        <location file="taskflow/core/semaphore.hpp" line="108" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="175" bodyend="179"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a3193f673011ac0a8527284fa8f68ee6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -171,7 +188,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="105" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="173" bodyend="177"/>
+        <location file="taskflow/core/semaphore.hpp" line="113" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="181" bodyend="185"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -190,7 +207,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="116" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="126" bodyend="136"/>
+        <location file="taskflow/core/semaphore.hpp" line="124" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="134" bodyend="144"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Semaphore_1a066258fab2fa8c2ee123b22f77a64ccf" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -207,7 +224,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="118" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="138" bodyend="156"/>
+        <location file="taskflow/core/semaphore.hpp" line="126" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="146" bodyend="164"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -237,7 +254,7 @@
 </programlisting></para>
 <para>The above example creates five tasks with no dependencies between them. Under normal circumstances, the five tasks would be executed concurrently. However, this example has a semaphore with initial count 1, and all tasks need to acquire that semaphore before running and release that semaphore after they are done. This arrangement limits the number of concurrently running tasks to only one. </para>
     </detaileddescription>
-    <location file="taskflow/core/semaphore.hpp" line="68" column="1" bodyfile="taskflow/core/semaphore.hpp" bodystart="68" bodyend="119"/>
+    <location file="taskflow/core/semaphore.hpp" line="68" column="1" bodyfile="taskflow/core/semaphore.hpp" bodystart="68" bodyend="127"/>
     <listofallmembers>
       <member refid="classtf_1_1Semaphore_1af749214114dbfccd36adffa337eb44ca" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_cur_value</name></member>
       <member refid="classtf_1_1Semaphore_1a3e58194192dcfdac92d186b67c96498d" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>_max_value</name></member>
@@ -250,6 +267,7 @@
       <member refid="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" prot="private" virt="non-virtual"><scope>tf::Semaphore</scope><name>Node</name></member>
       <member refid="classtf_1_1Semaphore_1ad0f7801055550b20b8c2ae6d6099f220" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>reset</name></member>
       <member refid="classtf_1_1Semaphore_1a3193f673011ac0a8527284fa8f68ee6a" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>reset</name></member>
+      <member refid="classtf_1_1Semaphore_1a6c5eda744df63aabf30398142a8c73c2" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>Semaphore</name></member>
       <member refid="classtf_1_1Semaphore_1abbd094f2f48025fbf0707ae977307a3e" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>Semaphore</name></member>
       <member refid="classtf_1_1Semaphore_1a8ba4d8f7a70fe36b883eb0ad1aa8dcd1" prot="public" virt="non-virtual"><scope>tf::Semaphore</scope><name>value</name></member>
     </listofallmembers>

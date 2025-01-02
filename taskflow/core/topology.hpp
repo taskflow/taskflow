@@ -32,8 +32,6 @@ class Topology {
 
     std::promise<void> _promise;
     
-    size_t _num_sources {0};
-
     std::function<bool()> _pred;
     std::function<void()> _call;
 

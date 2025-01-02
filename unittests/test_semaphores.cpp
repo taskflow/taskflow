@@ -407,6 +407,3 @@ TEST_CASE("Semaphore.LinearChain.8threads" * doctest::timeout(300)) {
 
 
 
-
-
-

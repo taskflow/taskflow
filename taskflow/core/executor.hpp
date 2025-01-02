@@ -1038,7 +1038,6 @@ class Executor {
     
   const size_t _MAX_STEALS;
   
-  //std::mutex _wsq_mutex;
   std::mutex _taskflows_mutex;
   
   std::vector<Worker> _workers;
@@ -2121,8 +2120,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   //g._clear_detached();
   
   auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr, NSTATE::NONE);
-  tpg->_num_sources = send - g.begin();
-  tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
+  tpg->_join_counter.store(send - g.begin(), std::memory_order_relaxed);
 
   w ? _schedule(*w, g.begin(), send) : _schedule(g.begin(), send);
 }
@@ -2173,9 +2171,10 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
-    auto& g = tpg->_taskflow._graph;
-    tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
-    _schedule(worker, g.begin(), g.begin() + tpg->_num_sources);
+    //auto& g = tpg->_taskflow._graph;
+    //tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
+    //_schedule(worker, g.begin(), g.begin() + tpg->_num_sources);
+    _set_up_topology(&worker, tpg);
   }
   // case 2: the final run of this topology
   else {

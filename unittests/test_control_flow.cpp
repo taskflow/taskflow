@@ -7,7 +7,7 @@
 // Testcase: Conditional Tasking
 // --------------------------------------------------------
 
-TEST_CASE("Cond.Types") {
+TEST_CASE("Cond.Types" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
 
@@ -704,35 +704,35 @@ void condition_subflow(unsigned W) {
 
 }
 
-TEST_CASE("CondSubflow.1thread") {
+TEST_CASE("CondSubflow.1thread" * doctest::timeout(300)) {
   condition_subflow(1);
 }
 
-TEST_CASE("CondSubflow.2threads") {
+TEST_CASE("CondSubflow.2threads" * doctest::timeout(300)) {
   condition_subflow(2);
 }
 
-TEST_CASE("CondSubflow.3threads") {
+TEST_CASE("CondSubflow.3threads" * doctest::timeout(300)) {
   condition_subflow(3);
 }
 
-TEST_CASE("CondSubflow.4threads") {
+TEST_CASE("CondSubflow.4threads" * doctest::timeout(300)) {
   condition_subflow(4);
 }
 
-TEST_CASE("CondSubflow.5threads") {
+TEST_CASE("CondSubflow.5threads" * doctest::timeout(300)) {
   condition_subflow(5);
 }
 
-TEST_CASE("CondSubflow.6threads") {
+TEST_CASE("CondSubflow.6threads" * doctest::timeout(300)) {
   condition_subflow(6);
 }
 
-TEST_CASE("CondSubflow.7threads") {
+TEST_CASE("CondSubflow.7threads" * doctest::timeout(300)) {
   condition_subflow(7);
 }
 
-TEST_CASE("CondSubflow.8threads") {
+TEST_CASE("CondSubflow.8threads" * doctest::timeout(300)) {
   condition_subflow(8);
 }
 
@@ -740,7 +740,7 @@ TEST_CASE("CondSubflow.8threads") {
 // Multi-conditional tasking
 // ----------------------------------------------------------------------------
 
-TEST_CASE("MultiCond.Types") {
+TEST_CASE("MultiCond.Types" * doctest::timeout(300)) {
 
   tf::Taskflow taskflow;
 
@@ -802,35 +802,35 @@ void multiple_branches(unsigned W) {
   REQUIRE(2*ans == counter);
 }
 
-TEST_CASE("MultipleBranches.1thread") {
+TEST_CASE("MultipleBranches.1thread" * doctest::timeout(300)) {
   multiple_branches(1);
 }
 
-TEST_CASE("MultipleBranches.2threads") {
+TEST_CASE("MultipleBranches.2threads" * doctest::timeout(300)) {
   multiple_branches(2);
 }
 
-TEST_CASE("MultipleBranches.3threads") {
+TEST_CASE("MultipleBranches.3threads" * doctest::timeout(300)) {
   multiple_branches(3);
 }
 
-TEST_CASE("MultipleBranches.4threads") {
+TEST_CASE("MultipleBranches.4threads" * doctest::timeout(300)) {
   multiple_branches(4);
 }
 
-TEST_CASE("MultipleBranches.5threads") {
+TEST_CASE("MultipleBranches.5threads" * doctest::timeout(300)) {
   multiple_branches(5);
 }
 
-TEST_CASE("MultipleBranches.6threads") {
+TEST_CASE("MultipleBranches.6threads" * doctest::timeout(300)) {
   multiple_branches(6);
 }
 
-TEST_CASE("MultipleBranches.7threads") {
+TEST_CASE("MultipleBranches.7threads" * doctest::timeout(300)) {
   multiple_branches(7);
 }
 
-TEST_CASE("MultipleBranches.8threads") {
+TEST_CASE("MultipleBranches.8threads" * doctest::timeout(300)) {
   multiple_branches(8);
 }
 
@@ -900,35 +900,35 @@ void multiple_loops(unsigned W) {
   REQUIRE(counter == 40);
 }
 
-TEST_CASE("MultipleLoops.1thread") {
+TEST_CASE("MultipleLoops.1thread" * doctest::timeout(300)) {
   multiple_loops(1);
 }
 
-TEST_CASE("MultipleLoops.2threads") {
+TEST_CASE("MultipleLoops.2threads" * doctest::timeout(300)) {
   multiple_loops(2);
 }
 
-TEST_CASE("MultipleLoops.3threads") {
+TEST_CASE("MultipleLoops.3threads" * doctest::timeout(300)) {
   multiple_loops(3);
 }
 
-TEST_CASE("MultipleLoops.4threads") {
+TEST_CASE("MultipleLoops.4threads" * doctest::timeout(300)) {
   multiple_loops(4);
 }
 
-TEST_CASE("MultipleLoops.5threads") {
+TEST_CASE("MultipleLoops.5threads" * doctest::timeout(300)) {
   multiple_loops(5);
 }
 
-TEST_CASE("MultipleLoops.6threads") {
+TEST_CASE("MultipleLoops.6threads" * doctest::timeout(300)) {
   multiple_loops(6);
 }
 
-TEST_CASE("MultipleLoops.7threads") {
+TEST_CASE("MultipleLoops.7threads" * doctest::timeout(300)) {
   multiple_loops(7);
 }
 
-TEST_CASE("MultipleLoops.8threads") {
+TEST_CASE("MultipleLoops.8threads" * doctest::timeout(300)) {
   multiple_loops(8);
 }
 
@@ -965,27 +965,76 @@ void binary_tree(unsigned w) {
   REQUIRE(((1<<N)-1)*N == counter);
 }
 
-TEST_CASE("MultiCondBinaryTree.1thread") {
+TEST_CASE("MultiCondBinaryTree.1thread" * doctest::timeout(300)) {
   binary_tree(1);
 }
 
-TEST_CASE("MultiCondBinaryTree.2threads") {
+TEST_CASE("MultiCondBinaryTree.2threads" * doctest::timeout(300)) {
   binary_tree(2);
 }
 
-TEST_CASE("MultiCondBinaryTree.3threads") {
+TEST_CASE("MultiCondBinaryTree.3threads" * doctest::timeout(300)) {
   binary_tree(3);
 }
 
-TEST_CASE("MultiCondBinaryTree.4threads") {
+TEST_CASE("MultiCondBinaryTree.4threads" * doctest::timeout(300)) {
   binary_tree(4);
 }
 
+// ----------------------------------------------------------------------------
+// Multi Cond Multiple Runs
+// ----------------------------------------------------------------------------
 
+void multi_cond_multiple_runs(unsigned W) {
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
 
+  bool flag = false;
 
+  auto [init, cond1, cond2, yes, no] = taskflow.emplace(
+    [] () { },
+    [] () { return 0; },
+    [] () { return 1; },
+    [&]() { flag = true; },
+    [] () { }
+  );
 
+  tf::Task tempTask1 = taskflow.emplace([]() {});
+  tf::Task tempTask2 = taskflow.emplace([]() {});
+  cond2.precede(tempTask2);
+  tempTask2.precede(yes);
+  init.precede(yes);
 
+  cond1.precede(tempTask1);
+  tempTask1.precede(yes);
+
+  REQUIRE(flag == false);
+
+  executor.run_n(taskflow, 1).wait();
+  REQUIRE(flag == false);
+  
+  executor.run_n(taskflow, 2).wait();
+  REQUIRE(flag == false);
+  
+  executor.run_n(taskflow, 3).wait();
+  REQUIRE(flag == false);
+}
+
+TEST_CASE("MultiCond.MultipleRuns.1thread" * doctest::timeout(300)) {
+  multi_cond_multiple_runs(1);
+}
+
+TEST_CASE("MultiCond.MultipleRuns.2threads" * doctest::timeout(300)) {
+  multi_cond_multiple_runs(2);
+}
+
+TEST_CASE("MultiCond.MultipleRuns.3threads" * doctest::timeout(300)) {
+  multi_cond_multiple_runs(3);
+}
+
+TEST_CASE("MultiCond.MultipleRuns.4threads" * doctest::timeout(300)) {
+  multi_cond_multiple_runs(4);
+}
 
 
 
