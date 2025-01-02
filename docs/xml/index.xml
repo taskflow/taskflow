@@ -494,8 +494,9 @@
     <member refid="classtf_1_1Executor_1a500d540a170f1da6e5247168bc6efa87" kind="variable"><name>_done</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
     <member refid="classtf_1_1Executor_1a0f74eb32b801b30164e36936204c4b66" kind="variable"><name>_freelist</name></member>
+    <member refid="classtf_1_1Executor_1a9b123d06eb807bf275ba761938624afc" kind="variable"><name>_worker_interface</name></member>
     <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
-    <member refid="classtf_1_1Executor_1a4910e89d89146b6d563d598b795eb4a9" kind="function"><name>Executor</name></member>
+    <member refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kind="function"><name>Executor</name></member>
     <member refid="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" kind="function"><name>~Executor</name></member>
     <member refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kind="function"><name>run</name></member>
     <member refid="classtf_1_1Executor_1a4b97752c00b788918cb8396fbb1b3ad0" kind="function"><name>run</name></member>
@@ -1305,6 +1306,12 @@
     <member refid="classtf_1_1Worker_1a5e1ec48fd2295d260e8f335ff22b95ae" kind="function"><name>queue_size</name></member>
     <member refid="classtf_1_1Worker_1a0c0505b0ce5b464d4458b5278265429a" kind="function"><name>queue_capacity</name></member>
     <member refid="classtf_1_1Worker_1a0fcc11826d72537655bf9bb50b68a3f5" kind="function"><name>executor</name></member>
+    <member refid="classtf_1_1Worker_1a8ece561266a54409268856ec5768a3c5" kind="function"><name>thread</name></member>
+  </compound>
+  <compound refid="classtf_1_1WorkerInterface" kind="class"><name>tf::WorkerInterface</name>
+    <member refid="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" kind="function"><name>~WorkerInterface</name></member>
+    <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kind="function"><name>scheduler_prologue</name></member>
+    <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kind="function"><name>scheduler_epilogue</name></member>
   </compound>
   <compound refid="structtf_1_1TFProfObserver_1_1WorkerSummary" kind="struct"><name>tf::TFProfObserver::WorkerSummary</name>
     <member refid="structtf_1_1TFProfObserver_1_1WorkerSummary_1a0e19f9b6dac7b433f0ff817c4cad7902" kind="variable"><name>id</name></member>
@@ -1910,8 +1917,10 @@
     <member refid="namespacetf_1adc9815b9f96b796675ba939078d25413" kind="function"><name>has_env</name></member>
     <member refid="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" kind="function"><name>pause</name></member>
     <member refid="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" kind="function"><name>spin_until</name></member>
+    <member refid="namespacetf_1aca023076d72224028bdfb5503011a8f5" kind="function"><name>affine</name></member>
     <member refid="namespacetf_1a7f414301de196737b08e62431691feba" kind="function"><name>animate</name></member>
     <member refid="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" kind="function"><name>recycle</name></member>
+    <member refid="namespacetf_1a97960776f3c78e18e68c79c336ba4f2d" kind="function"><name>make_worker_interface</name></member>
     <member refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1ad216aea4d0f648e149e47374ad015b1f" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1aa3fc0699b2c2b8f2f76bb39f91be1acb" kind="function"><name>to_string</name></member>
@@ -2183,6 +2192,8 @@
   </compound>
   <compound refid="release-3_81_80_8dox" kind="file"><name>release-3.1.0.dox</name>
   </compound>
+  <compound refid="release-3_810_80_8dox" kind="file"><name>release-3.10.0.dox</name>
+  </compound>
   <compound refid="release-3_82_80_8dox" kind="file"><name>release-3.2.0.dox</name>
   </compound>
   <compound refid="release-3_83_80_8dox" kind="file"><name>release-3.3.0.dox</name>
@@ -2300,6 +2311,8 @@
   <compound refid="Releases" kind="page"><name>Releases</name>
   </compound>
   <compound refid="release-roadmap" kind="page"><name>release-roadmap</name>
+  </compound>
+  <compound refid="release-3-10-0" kind="page"><name>release-3-10-0</name>
   </compound>
   <compound refid="release-3-9-0" kind="page"><name>release-3-9-0</name>
   </compound>

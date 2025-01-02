@@ -37,6 +37,7 @@ list(APPEND TF_EXAMPLES
   cancel
   exception
   subflow_exception
+  worker_interface
 )
 
 foreach(example IN LISTS TF_EXAMPLES)

@@ -1,15 +1,13 @@
 namespace tf {
 
-/** @page release-3-9-0 Release 3.9.0 (Master)
-
-%Taskflow 3.9.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+/** @page release-3-9-0 Release 3.9.0 (2025/01/02)
 
 @tableofcontents
+
+@section release-3-9-0_summary Release Summary
+
+This release improves scheduling performance with a decentralized work-stealing strategy 
+and enhances exception handling across all task types.
 
 @section release-3-9-0_download Download
 
@@ -33,11 +31,6 @@ To use %Taskflow v3.9.0, you need a compiler that supports C++17:
 @attention
 Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
-
-@section release-3-9-0_summary Release Summary
-
-This release improves scheduling performance with a decentralized work-stealing strategy 
-and enhances exception handling across all task types.
 
 @section release-3-9-0_new_features New Features
 
@@ -63,6 +56,9 @@ and enhances exception handling across all task types.
   + `TF_ENABLE_TASK_POOL` to enable the use of task pool
 + added taskflow execution through asynchronous tasking with tf::make_module_task
   + details can be referred to @ref ModuleAlgorithm
++ added tf::WorkerInterface for users to configure the behaviors of workers
+  + details can be referred to @ref ExecuteTaskflow
++ added worker interface example and unit tests
 
 @subsection release-3-9-0_utilities Utilities
 
@@ -70,6 +66,8 @@ and enhances exception handling across all task types.
 + added @c tf::seed to generate a random seed based on calling time point
 + added @c tf::atomic_min to update an atomic variable with the minimum value
 + added @c tf::atomic_max to update an atomic variable with the maximum value
++ added @c TF_CPP20 and @c TF_CPP17 macro for testing cpp versions
++ added tf::affine to affine a thread to a CPU core
 
 @section release-3-9-0_bug_fixes Bug Fixes 
 

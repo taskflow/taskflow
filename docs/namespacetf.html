@@ -116,6 +116,10 @@
             </dt>
             <dd>class to create an immutable view of a worker</dd>
             <dt>
+              class <a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>
+            </dt>
+            <dd>class to configure worker behavior in an executor</dd>
+            <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
             <dd>class to create an executor</dd>
@@ -418,6 +422,16 @@
               <span class="m-doc-wrap-bumper">void <a href="#a3abe09ef55c4f46e64ba88bff175c4f6" class="m-doc">spin_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
             </dt>
             <dd>spins until the given predicate becomes true</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#aca023076d72224028bdfb5503011a8f5" class="m-doc">affine</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/thread/thread.html" class="m-doc-external">std::<wbr />thread</a>&amp; thread,
+              unsigned int core_id) -&gt; bool</span>
+            </dt>
+            <dd>affines the given thread to a specific CPU core</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a97960776f3c78e18e68c79c336ba4f2d" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;T&gt;</span>
+            </dt>
+            <dd>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> type) -&gt; const char*</span>
             </dt>
@@ -1535,6 +1549,69 @@
               </tbody>
             </table>
 <p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-warning"><h4>Attention</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
+          </div></section>
+          <section class="m-doc-details" id="aca023076d72224028bdfb5503011a8f5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aca023076d72224028bdfb5503011a8f5" class="m-doc-self">affine</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/thread/thread.html" class="m-doc-external">std::<wbr />thread</a>&amp; thread,
+              unsigned int core_id)</span></span>
+            </h3>
+            <p>affines the given thread to a specific CPU core</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">thread</td>
+                  <td>the given thread</td>
+                </tr>
+                <tr>
+                  <td>core_id</td>
+                  <td>index of the CPU core to which the thread will be bound.</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td><code>true</code> if the binding was successful; <code>false</code> otherwise.</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This function sets the thread affinity, restricting the thread to run on the specified CPU core. It provides a portable implementation that supports various platforms, including Linux, macOS, and Windows.</p><p>Affining a thread to a specific core can improve performance by reducing cache misses and increasing locality for CPU-intensive tasks. However, misuse may lead to suboptimal performance in systems with dynamic workloads or varying resource availability.</p><aside class="m-note m-warning"><h4>Attention</h4><p>You must ensure the specified core ID is within the valid range for the system&#x27;s CPU cores. Passing an invalid core ID may result in undefined behavior or runtime errors.</p></aside>
+          </div></section>
+          <section class="m-doc-details" id="a97960776f3c78e18e68c79c336ba4f2d"><div>
+            <h3>
+              <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="worker_8hpp.html">&lt;taskflow/core/worker.hpp&gt;</a></div>
+              <div class="m-doc-template">
+                template&lt;typename T, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;T&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97960776f3c78e18e68c79c336ba4f2d" class="m-doc-self">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+            </h3>
+            <p>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">T</td>
+                  <td>type derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></td>
+                </tr>
+                <tr>
+                  <td>ArgsT</td>
+                  <td>argument types to construct <code>T</code></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>args</td>
+                  <td>arguments to forward to the constructor of <code>T</code></td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
           <section class="m-doc-details" id="a9ca58dc6c666698cc7373eb0262140ef"><div>
             <h3>

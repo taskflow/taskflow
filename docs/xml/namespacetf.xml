@@ -25,6 +25,7 @@
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
+    <innerclass refid="classtf_1_1WorkerInterface" prot="public">tf::WorkerInterface</innerclass>
     <innerclass refid="classtf_1_1Executor" prot="public">tf::Executor</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
@@ -1351,7 +1352,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="161" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="161" bodyend="177"/>
+        <location file="taskflow/utility/os.hpp" line="172" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="172" bodyend="188"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1388,7 +1389,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="192" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="192" bodyend="208"/>
+        <location file="taskflow/utility/os.hpp" line="203" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="203" bodyend="219"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1402,7 +1403,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="225" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="225" bodyend="248"/>
+        <location file="taskflow/utility/os.hpp" line="236" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="236" bodyend="259"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1452,7 +1453,53 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="275" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="275" bodyend="280"/>
+        <location file="taskflow/utility/os.hpp" line="286" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="286" bodyend="291"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1aca023076d72224028bdfb5503011a8f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::affine</definition>
+        <argsstring>(std::thread &amp;thread, unsigned int core_id)</argsstring>
+        <name>affine</name>
+        <param>
+          <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> &amp;</type>
+          <declname>thread</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>core_id</declname>
+        </param>
+        <briefdescription>
+<para>affines the given thread to a specific CPU core </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function sets the thread affinity, restricting the thread to run on the specified CPU core. It provides a portable implementation that supports various platforms, including Linux, macOS, and Windows.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>thread</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the given thread </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>core_id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>index of the CPU core to which the thread will be bound. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the binding was successful; <computeroutput>false</computeroutput> otherwise.</para>
+</simplesect>
+Affining a thread to a specific core can improve performance by reducing cache misses and increasing locality for CPU-intensive tasks. However, misuse may lead to suboptimal performance in systems with dynamic workloads or varying resource availability.</para>
+<para><simplesect kind="attention"><para>You must ensure the specified core ID is within the valid range for the system&apos;s CPU cores. Passing an invalid core ID may result in undefined behavior or runtime errors. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="315" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="315" bodyend="336"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a7f414301de196737b08e62431691feba" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1494,6 +1541,61 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="376" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="376" bodyend="382"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a97960776f3c78e18e68c79c336ba4f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; T &gt;</type>
+        <definition>std::unique_ptr&lt;T&gt; tf::make_worker_interface</definition>
+        <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
+        <name>make_worker_interface</name>
+        <param>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>helper function to create an instance derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type derived from <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ArgsT</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>argument types to construct <computeroutput>T</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>arguments to forward to the constructor of <computeroutput>T</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/worker.hpp" line="260" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="260" bodyend="266"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

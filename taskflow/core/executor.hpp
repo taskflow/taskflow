@@ -62,15 +62,22 @@ class Executor {
   /**
   @brief constructs the executor with @c N worker threads
 
-  @param N the number of workers (default std::thread::hardware_concurrency)
-  
+  @param N number of workers (default std::thread::hardware_concurrency)
+  @param wix interface class instance to configure workers' behaviors
+
   The constructor spawns @c N worker threads to run tasks in a
   work-stealing loop. The number of workers must be greater than zero
   or an exception will be thrown.
   By default, the number of worker threads is equal to the maximum
   hardware concurrency returned by std::thread::hardware_concurrency.
+
+  Users can alter the worker behavior, such as changing thread affinity,
+  via deriving an instance from tf::WorkerInterface.
   */
-  explicit Executor(size_t N = std::thread::hardware_concurrency());
+  explicit Executor(
+    size_t N = std::thread::hardware_concurrency(),
+    std::shared_ptr<WorkerInterface> wix = nullptr
+  );
 
   /**
   @brief destructs the executor
@@ -1060,6 +1067,7 @@ class Executor {
 
   Freelist<Node*> _freelist;
 
+  std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
   void _observer_prologue(Worker&, Node*);
@@ -1124,13 +1132,13 @@ class Executor {
 #ifndef DOXYGEN_GENERATING_OUTPUT
 
 // Constructor
-inline Executor::Executor(size_t N) :
-  _MAX_STEALS ((N+1) << 1),
-  _workers    (N),
-  _notifier   (N),
-  _latch      (N+1),
-  _freelist   (N)
-{
+inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
+  _MAX_STEALS      ((N+1) << 1),
+  _workers         (N),
+  _notifier        (N),
+  _latch           (N+1),
+  _freelist        (N),
+  _worker_interface(std::move(wix)) {
 
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
@@ -1202,7 +1210,6 @@ inline void Executor::_spawn(size_t N) {
   //       since the main thread may leave quicker than other thread
   //       and then destroy it, causing the other thread to dangle
   //       with the latch
-
   for(size_t id=0; id<N; ++id) {
 
     _workers[id]._id = id;
@@ -1212,36 +1219,51 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
       pt::this_worker = &w;
-      _latch.arrive_and_wait();  // synchronize with the main thread
+
+      // synchronize with the main thread to ensure all worker data
+      // has been set (e.g., _thread)
+      _latch.arrive_and_wait(); 
       
+      // initialize the random engine and seed for work-stealing
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
       );
       w._rdvtm = std::uniform_int_distribution<size_t>(0, 2*_workers.size()-2);
 
+      // before entering the work-stealing loop, call the scheduler prologue
+      if(_worker_interface) {
+        _worker_interface->scheduler_prologue(w);
+      }
+
       Node* t = nullptr;
-      
-      while(1) {
+      std::exception_ptr ptr = nullptr;
 
-        // execute the tasks.
-        _exploit_task(w, t);
+      // must use 1 as condition instead of !done because
+      // the previous worker may stop while the following workers
+      // are still preparing for entering the scheduling loop
+      try {
+        while(1) {
 
-        // wait for tasks
-        if(_wait_for_task(w, t) == false) {
-          break;
+          // execute the tasks.
+          _exploit_task(w, t);
+
+          // wait for tasks
+          if(_wait_for_task(w, t) == false) {
+            break;
+          }
         }
+      } 
+      catch(...) {
+        ptr = std::current_exception();
+      }
+      
+      // call the user-specified epilogue function
+      if(_worker_interface) {
+        _worker_interface->scheduler_epilogue(w, ptr);
       }
 
     });
-    
-    // POSIX-like system can use the following to affine threads to cores 
-    //cpu_set_t cpuset;
-    //CPU_ZERO(&cpuset);
-    //CPU_SET(id, &cpuset);
-    //pthread_setaffinity_np(
-    //  _threads[id].native_handle(), sizeof(cpu_set_t), &cpuset
-    //);
-  }
+  } 
 
   _latch.arrive_and_wait();
 }

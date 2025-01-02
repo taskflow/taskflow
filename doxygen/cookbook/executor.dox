@@ -437,6 +437,101 @@ However, the @em ready message always appears before the corresponding task mess
 (e.g., numbers)
 and then the  @em finished message.
 
+@section ModifyWorkerProperty Modify Worker Property
+
+You can change the property of each worker thread from its executor,
+such as assigning thread-processor affinity before the worker enters the scheduler loop
+and post-processing additional information after the worker leaves the scheduler loop,
+by passing an instance derived from tf::WorkerInterface to the executor.
+The example demonstrates the usage of tf::WorkerInterface and use tf::affine to affine
+a worker to a specific CPU core equal to its id:
+
+@code{.cpp}
+class CustomWorkerBehavior : public tf::WorkerInterface {
+
+  public:
+  
+  // to call before the worker enters the scheduling loop
+  void scheduler_prologue(tf::Worker& w) override {
+    printf("worker %lu prepares to enter the work-stealing loop\n", w.id());
+    
+    // now affine the worker to a particular CPU core equal to its id
+    if(tf::affine(w.thread(), w.id())) {
+      printf("successfully affines worker %lu to CPU core %lu\n", w.id(), w.id());
+    }
+    else {
+      printf("failed to affine worker %lu to CPU core %lu\n", w.id(), w.id());
+    }
+  }
+
+  // to call after the worker leaves the scheduling loop
+  void scheduler_epilogue(tf::Worker& w, std::exception_ptr) override {
+    printf("worker %lu left the work-stealing loop\n", w.id());
+  }
+};
+
+int main() {
+  tf::Executor executor(4, tf::make_worker_interface<CustomWorkerBehavior>());
+  return 0;
+}
+@endcode
+
+When running the program, we see the following one possible output:
+
+@code{.shell-session}
+worker 3 prepares to enter the work-stealing loop
+successfully affines worker 3 to CPU core 3
+worker 3 left the work-stealing loop
+worker 0 prepares to enter the work-stealing loop
+successfully affines worker 0 to CPU core 0
+worker 0 left the work-stealing loop
+worker 1 prepares to enter the work-stealing loop
+worker 2 prepares to enter the work-stealing loop
+successfully affines worker 1 to CPU core 1
+worker 1 left the work-stealing loop
+successfully affines worker 2 to CPU core 2
+worker 2 left the work-stealing loop
+@endcode
+
+
+When you create an executor, it spawns a set of worker threads to run tasks
+using a work-stealing scheduling algorithm.
+The execution logic of the scheduler and its interaction with each spawned worker
+via tf::WorkerInterface is given below:
+
+@code{.cpp}
+for(size_t n=0; n<num_workers; n++) {
+  create_thread([](Worker& worker)
+
+    // pre-processing executor-specific worker information
+    // ...
+
+    // enter the scheduling loop
+    // Here, WorkerInterface::scheduler_prologue is invoked, if any
+    worker_interface->scheduler_prologue(worker);
+    
+    try {
+      while(1) {
+        perform_work_stealing_algorithm();
+        if(stop) {
+          break;
+        }
+      }
+    } catch(...) {
+      exception_ptr = std::current_exception();
+    }
+
+    // leaves the scheduling loop and joins this worker thread
+    // Here, WorkerInterface::scheduler_epilogue is invoked, if any
+    worker_interface->scheduler_epilogue(worker, exception_ptr);
+  );
+}
+@endcode
+
+@attention
+tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_eiplogue 
+are invoked by each worker simultaneously.
+
 */
 
 }

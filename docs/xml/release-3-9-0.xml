@@ -2,8 +2,12 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-9-0" kind="page">
     <compoundname>release-3-9-0</compoundname>
-    <title>Release 3.9.0 (Master)</title>
+    <title>Release 3.9.0 (2025/01/02)</title>
     <tableofcontents>
+      <tocsect>
+        <name>Release Summary</name>
+        <reference>release-3-9-0_1release-3-9-0_summary</reference>
+    </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-3-9-0_1release-3-9-0_download</reference>
@@ -11,10 +15,6 @@
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-9-0_1release-3-9-0_system_requirements</reference>
-    </tocsect>
-      <tocsect>
-        <name>Release Summary</name>
-        <reference>release-3-9-0_1release-3-9-0_summary</reference>
     </tocsect>
       <tocsect>
         <name>New Features</name>
@@ -50,7 +50,10 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 3.9.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
+<sect1 id="release-3-9-0_1release-3-9-0_summary">
+<title>Release Summary</title>
+<para>This release improves scheduling performance with a decentralized work-stealing strategy and enhances exception handling across all task types.</para>
+</sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_download">
 <title>Download</title>
 <para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
@@ -78,10 +81,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><simplesect kind="attention"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features.</para>
 </simplesect>
 </para>
-</sect1>
-<sect1 id="release-3-9-0_1release-3-9-0_summary">
-<title>Release Summary</title>
-<para>This release improves scheduling performance with a decentralized work-stealing strategy and enhances exception handling across all task types.</para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_new_features">
 <title>New Features</title>
@@ -118,6 +117,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>details can be referred to <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref></para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> for users to configure the behaviors of workers<itemizedlist>
+<listitem><para>details can be referred to <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>added worker interface example and unit tests</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -128,6 +132,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a3f8e89aebc29d42259157723c874954d" kindref="member">tf::seed</ref></computeroutput> to generate a random seed based on calling time point</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a512ffa0d24a237b098f5de656b8bdcb0" kindref="member">tf::atomic_min</ref></computeroutput> to update an atomic variable with the minimum value</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a5002af34dc323ff28e87ae83203b2c36" kindref="member">tf::atomic_max</ref></computeroutput> to update an atomic variable with the maximum value</para>
+</listitem><listitem><para>added <computeroutput>TF_CPP20</computeroutput> and <computeroutput>TF_CPP17</computeroutput> macro for testing cpp versions</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1aca023076d72224028bdfb5503011a8f5" kindref="member">tf::affine</ref> to affine a thread to a CPU core</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
