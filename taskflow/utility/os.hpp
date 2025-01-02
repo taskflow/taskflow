@@ -117,18 +117,7 @@
   #define TF_CACHELINE_SIZE 64
 #endif
 
-// ----------------------------------------------------------------------------
-// Affinity
-// ----------------------------------------------------------------------------
-#if defined(__linux__)
-  #include <sched.h>
-  #include <pthread.h>
-#elif defined(_WIN32)
-  #include <windows.h>
-#elif defined(__APPLE__)
-  #include <mach/mach.h>
-  #include <mach/thread_policy.h>
-#endif
+
 
 namespace tf {
 
@@ -288,51 +277,6 @@ void spin_until(P&& predicate) {
   while(!predicate()) {
     (num_pauses++ < 100) ? pause() : std::this_thread::yield();
   }
-}
-
-
-/**
- * @brief affines the given thread to a specific CPU core
- *
- * This function sets the thread affinity, restricting the thread to run
- * on the specified CPU core. It provides a portable implementation that
- * supports various platforms, including Linux, macOS, and Windows.
- *
- * @param thread the given thread
- * @param core_id index of the CPU core to which the thread will be bound.
- * @return @c true if the binding was successful; @c false otherwise.
- *
- * Affining a thread to a specific core can improve performance by
- * reducing cache misses and increasing locality for CPU-intensive tasks.
- * However, misuse may lead to suboptimal performance in systems with
- * dynamic workloads or varying resource availability.
- *
- * @attention You must ensure the specified core ID is within the valid range for the
- * system's CPU cores. Passing an invalid core ID may result in undefined
- * behavior or runtime errors.
- *
- */
-bool affine(std::thread& thread, unsigned int core_id) {
-#if defined(__linux__)
-  cpu_set_t cpuset;
-  CPU_ZERO(&cpuset);
-  CPU_SET(core_id, &cpuset);
-  pthread_t native_handle = thread.native_handle();
-  return pthread_setaffinity_np(native_handle, sizeof(cpu_set_t), &cpuset) == 0;
-#elif defined(_WIN32)
-  HANDLE native_handle = static_cast<HANDLE>(thread.native_handle());
-  DWORD_PTR mask = 1ULL << core_id;
-  return SetThreadAffinityMask(native_handle, mask) != 0;
-#elif defined(__APPLE__)
-  thread_port_t native_handle = pthread_mach_thread_np(thread.native_handle());
-  thread_affinity_policy_data_t policy = {static_cast<integer_t>(core_id)};
-  return thread_policy_set(
-    native_handle, THREAD_AFFINITY_POLICY, (thread_policy_t)&policy, 1
-  ) == KERN_SUCCESS;
-#else
-  // Unsupported platform
-  return false;
-#endif
 }
 
 

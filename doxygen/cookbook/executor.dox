@@ -443,10 +443,19 @@ You can change the property of each worker thread from its executor,
 such as assigning thread-processor affinity before the worker enters the scheduler loop
 and post-processing additional information after the worker leaves the scheduler loop,
 by passing an instance derived from tf::WorkerInterface to the executor.
-The example demonstrates the usage of tf::WorkerInterface and use tf::affine to affine
-a worker to a specific CPU core equal to its id:
+The example demonstrates the usage of tf::WorkerInterface to affine
+a worker to a specific CPU core equal to its id on a linux platform:
 
 @code{.cpp}
+// affine the given thread to the given core index (linux-specific)
+bool affine(std::thread& thread, unsigned int core_id) {
+  cpu_set_t cpuset;
+  CPU_ZERO(&cpuset);
+  CPU_SET(core_id, &cpuset);
+  pthread_t native_handle = thread.native_handle();
+  return pthread_setaffinity_np(native_handle, sizeof(cpu_set_t), &cpuset) == 0;
+}
+
 class CustomWorkerBehavior : public tf::WorkerInterface {
 
   public:
@@ -456,7 +465,7 @@ class CustomWorkerBehavior : public tf::WorkerInterface {
     printf("worker %lu prepares to enter the work-stealing loop\n", w.id());
     
     // now affine the worker to a particular CPU core equal to its id
-    if(tf::affine(w.thread(), w.id())) {
+    if(affine(w.thread(), w.id())) {
       printf("successfully affines worker %lu to CPU core %lu\n", w.id(), w.id());
     }
     else {
