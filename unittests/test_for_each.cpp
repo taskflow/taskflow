@@ -601,11 +601,11 @@ TEST_CASE("ForEachIndex.HeterogeneousRange" * doctest::timeout(300)) {
 	tf::Executor ex;
 	tf::Taskflow flow;
 
-	std::size_t from = 1;
-	std::size_t to = 10;
-	int step = 1;
+	size_t from = 1;
+	size_t to = 10;
+	size_t step = 1;
 
-	flow.for_each_index(from, to, step, [&](int i) {
+	flow.for_each_index(from, to, step, [&](size_t i) {
 		counter.fetch_add(i, std::memory_order_relaxed);
 	});
 	ex.run(flow).wait();

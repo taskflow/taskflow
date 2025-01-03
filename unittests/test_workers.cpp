@@ -42,7 +42,7 @@ void worker_interface_basics(unsigned W) {
   REQUIRE(counter == W*2);
   REQUIRE(ids.size() == W);
 
-  std::sort(ids.begin(), ids.end(), std::less<int>{});
+  std::sort(ids.begin(), ids.end());
 
   for(size_t i=0; i<W; i++) {
     REQUIRE(ids[i] == i);

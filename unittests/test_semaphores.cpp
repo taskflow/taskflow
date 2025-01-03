@@ -41,71 +41,28 @@ void critical_section(size_t W) {
   REQUIRE(sema.max_value() == 1);
 }
 
-TEST_CASE("CriticalSection.1thread" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.1thread" * doctest::timeout(300)) {
   critical_section(1);
 }
 
-TEST_CASE("CriticalSection.2threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.2threads" * doctest::timeout(300)) {
   critical_section(2);
 }
 
-TEST_CASE("CriticalSection.3threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.3threads" * doctest::timeout(300)) {
   critical_section(3);
 }
 
-TEST_CASE("CriticalSection.7threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.7threads" * doctest::timeout(300)) {
   critical_section(7);
 }
 
-TEST_CASE("CriticalSection.11threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.11threads" * doctest::timeout(300)) {
   critical_section(11);
 }
 
-TEST_CASE("CriticalSection.16threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.CriticalSection.16threads" * doctest::timeout(300)) {
   critical_section(16);
-}
-
-// --------------------------------------------------------
-// Testcase: Semaphore
-// --------------------------------------------------------
-
-void semaphore(size_t W) {
-
-  tf::Executor executor(W);
-  tf::Taskflow taskflow;
-  tf::Semaphore semaphore(1);
-
-  int N = 1000;
-  int counter = 0;
-
-  for(int i=0; i<N; i++) {
-    auto f = taskflow.emplace([&](){ counter++; });
-    auto t = taskflow.emplace([&](){ counter++; });
-    f.precede(t);
-    f.acquire(semaphore);
-    t.release(semaphore);
-  }
-
-  executor.run(taskflow).wait();
-
-  REQUIRE(counter == 2*N);
-
-}
-
-TEST_CASE("Semaphore.1thread" * doctest::timeout(300)) {
-  semaphore(1);
-}
-
-TEST_CASE("Semaphore.2threads" * doctest::timeout(300)) {
-  semaphore(2);
-}
-
-TEST_CASE("Semaphore.4threads" * doctest::timeout(300)) {
-  semaphore(4);
-}
-
-TEST_CASE("Semaphore.8threads" * doctest::timeout(300)) {
-  semaphore(8);
 }
 
 // --------------------------------------------------------
@@ -137,19 +94,19 @@ void overlapped_semaphores(size_t W) {
   REQUIRE(semaphore4.value() == 4);
 }
 
-TEST_CASE("OverlappedSemaphore.1thread" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.Overlap.1thread" * doctest::timeout(300)) {
   overlapped_semaphores(1);
 }
 
-TEST_CASE("OverlappedSemaphore.2threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.Overlap.2threads" * doctest::timeout(300)) {
   overlapped_semaphores(2);
 }
 
-TEST_CASE("OverlappedSemaphore.4threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.Overlap.4threads" * doctest::timeout(300)) {
   overlapped_semaphores(4);
 }
 
-TEST_CASE("OverlappedSemaphore.8threads" * doctest::timeout(300)) {
+TEST_CASE("Semaphore.Overlap.8threads" * doctest::timeout(300)) {
   overlapped_semaphores(8);
 }
 
@@ -403,7 +360,52 @@ TEST_CASE("Semaphore.LinearChain.8threads" * doctest::timeout(300)) {
   linear_chain(8);
 }
 
+// ----------------------------------------------------------------------------
 
+/*
+void deadlock(unsigned W) {
 
+  tf::Executor exec(W);
+  tf::Taskflow flow;
+  tf::Semaphore semaphore(8);
 
+  for(size_t i = 0; i < 5; ++i) {
 
+    tf::Task commonTask = flow.emplace([i]() {
+      std::string str;
+      str.append("Common task for i = ").append(std::to_string(i)).append("\n");
+      std::cout << str;
+    }).name(std::string("Common i = ").append(std::to_string(i)));
+
+    for(size_t j = 0; j < 8; ++j) {
+      tf::Task preTask = flow.emplace([i, j]() {
+        std::string str;
+        str.append("Pre task for i = ").append(std::to_string(i)).append(", j = ").append(std::to_string(j)).append("\n");
+        std::cout << str;
+      }).name(std::string("Pre task i = ").append(std::to_string(i)).append(", j = ").append(std::to_string(j)));
+
+      tf::Task postTask = flow.emplace([i, j]() {
+        std::string str;
+        str.append("Post task for i = ").append(std::to_string(i)).append(", j = ").append(std::to_string(j)).append("\n");
+        std::cout << str;
+      }).name(std::string("Post task i = ").append(std::to_string(i)).append(", j = ").append(std::to_string(j)));
+
+      preTask.precede(commonTask);
+      postTask.succeed(commonTask);
+
+      preTask.acquire(semaphore);
+      postTask.release(semaphore);
+    }
+  }
+
+  flow.dump(std::cout);
+
+  std::cout << "Start!" << std::endl;
+  exec.run(flow).wait();
+  std::cout << "End!" << std::endl;
+}
+
+TEST_CASE("Semaphore.Deadlock.8threads" * doctest::timeout(300)) {
+  deadlock(8);
+}
+*/

@@ -39,7 +39,8 @@ inline T* align_cacheline(T* p) {
 #else
   std::size_t ip = reinterpret_cast<std::size_t>(p);
 #endif
-  ip = (ip + cacheline_size - 1) & -cacheline_size;
+  //ip = (ip + cacheline_size - 1) & -cacheline_size;
+  ip = (ip + cacheline_size - 1) & ~(cacheline_size - 1);
   return reinterpret_cast<T*>(ip);
 }
 
