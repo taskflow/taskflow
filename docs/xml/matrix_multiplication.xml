@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="matrix_multiplication" kind="page">
     <compoundname>matrix_multiplication</compoundname>
     <title>Matrix Multiplication</title>
@@ -7,23 +7,22 @@
       <tocsect>
         <name>Problem Formulation</name>
         <reference>matrix_multiplication_1MatrixMultiplicationProblem</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Parallel Patterns</name>
         <reference>matrix_multiplication_1MatrixMultiplicationParallelPattern</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Benchmarking</name>
         <reference>matrix_multiplication_1MatrixMultiplicationBenchmarking</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>We study the classic problem, <emphasis>2D matrix multiplication</emphasis>. We will start with a short introduction about the problem and then discuss how to solve it parallel CPUs.</para>
 <sect1 id="matrix_multiplication_1MatrixMultiplicationProblem">
-<title>Problem Formulation</title>
-<para>We are multiplying two matrices, <computeroutput>A</computeroutput> (<computeroutput>MxK</computeroutput>) and <computeroutput>B</computeroutput> (<computeroutput>KxN</computeroutput>). The numbers of columns of <computeroutput>A</computeroutput> must match the number of rows of <computeroutput>B</computeroutput>. The output matrix <computeroutput>C</computeroutput> has the shape of <computeroutput></computeroutput>(MxN) where <computeroutput>M</computeroutput> is the rows of <computeroutput>A</computeroutput> and <computeroutput>N</computeroutput> the columns of <computeroutput>B</computeroutput>. The following example multiplies a <computeroutput>3x3</computeroutput> matrix with a <computeroutput>3x2</computeroutput> matrix to derive a <computeroutput>3x2</computeroutput> matrix.</para>
+<title>Problem Formulation</title><para>We are multiplying two matrices, <computeroutput>A</computeroutput> (<computeroutput>MxK</computeroutput>) and <computeroutput>B</computeroutput> (<computeroutput>KxN</computeroutput>). The numbers of columns of <computeroutput>A</computeroutput> must match the number of rows of <computeroutput>B</computeroutput>. The output matrix <computeroutput>C</computeroutput> has the shape of <computeroutput></computeroutput>(MxN) where <computeroutput>M</computeroutput> is the rows of <computeroutput>A</computeroutput> and <computeroutput>N</computeroutput> the columns of <computeroutput>B</computeroutput>. The following example multiplies a <computeroutput>3x3</computeroutput> matrix with a <computeroutput>3x2</computeroutput> matrix to derive a <computeroutput>3x2</computeroutput> matrix.</para>
 <para><image type="html" name="matrix_multiplication_1.png" width="50%"></image>
 </para>
 <para>As a general view, for each element of <computeroutput>C</computeroutput> we iterate a complete row of <computeroutput>A</computeroutput> and a complete column of <computeroutput>B</computeroutput>, multiplying each element and summing them.</para>
@@ -41,8 +40,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="matrix_multiplication_1MatrixMultiplicationParallelPattern">
-<title>Parallel Patterns</title>
-<para>At a fine-grained level, computing each element of <computeroutput>C</computeroutput> is independent of each other. Similarly, computing each row of <computeroutput>C</computeroutput> or each column of <computeroutput>C</computeroutput> is also independent of one another. With task parallelism, we prefer <emphasis>coarse-grained</emphasis> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of <computeroutput>C</computeroutput> to multiply a row of <computeroutput>A</computeroutput> by every column of <computeroutput>B</computeroutput>.</para>
+<title>Parallel Patterns</title><para>At a fine-grained level, computing each element of <computeroutput>C</computeroutput> is independent of each other. Similarly, computing each row of <computeroutput>C</computeroutput> or each column of <computeroutput>C</computeroutput> is also independent of one another. With task parallelism, we prefer <emphasis>coarse-grained</emphasis> model to have each task perform rather large computation to amortize the overhead of creating and scheduling tasks. In this case, we avoid intensive tasks each working on only a single element. by creating a task per row of <computeroutput>C</computeroutput> to multiply a row of <computeroutput>A</computeroutput> by every column of <computeroutput>B</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>C<sp/>=<sp/>A<sp/>*<sp/>B</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>A<sp/>is<sp/>a<sp/>MxK<sp/>matrix,<sp/>B<sp/>is<sp/>a<sp/>KxN<sp/>matrix,<sp/>and<sp/>C<sp/>is<sp/>a<sp/>MxN<sp/>matrix</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>matrix_multiplication(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>A,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal">**<sp/>C,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>M,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>K,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
@@ -57,7 +55,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Instead of creating tasks one-by-one over a loop, you can leverage <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">Taskflow::for_each_index</ref> to create a <emphasis>parallel-for</emphasis> task. A parallel-for task spawns a subflow to perform parallel iterations over the given range.</para>
@@ -73,8 +71,7 @@
 <para>Please visit <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref> for more details.</para>
 </sect1>
 <sect1 id="matrix_multiplication_1MatrixMultiplicationBenchmarking">
-<title>Benchmarking</title>
-<para>Based on the discussion above, we compare the runtime of computing various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para>
+<title>Benchmarking</title><para>Based on the discussion above, we compare the runtime of computing various matrix sizes of <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput> between a sequential CPU and parallel CPUs on a machine of 12 Intel i7-8700 CPUs at 3.2 GHz.</para>
 <para> <table rows="7" cols="5"><row>
 <entry thead="yes" align='center'><para>A   </para>
 </entry><entry thead="yes" align='center'><para>B   </para>

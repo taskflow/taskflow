@@ -655,7 +655,7 @@ void binary_tree(unsigned W) {
   
   // iterate all other tasks level by level
   for(size_t i=0; i<L; i++) {
-    for(size_t n=0; n < static_cast<size_t>(1<<i); n++) {
+    for(size_t n=0; n < (size_t{1} << i); n++) {
       if(task_id == 1) {
         tasks_c.push_back(
           executor.silent_dependent_async(
@@ -685,7 +685,7 @@ void binary_tree(unsigned W) {
   
   task_id = 1;
   for(size_t i=0; i<L; i++) {
-    for(size_t n=0; n<static_cast<size_t>(1<<i); n++) {
+    for(size_t n=0; n < (size_t{1} << i); n++) {
       REQUIRE(data[task_id] == i + 1);
       //printf("data[%zu]=%d\n", task_id, data[task_id]);
       task_id++;
@@ -967,7 +967,7 @@ void recursive_fibonacci(unsigned W) {
     return fu1.get() + fu2.get();
   };
 
-  for (size_t i = 0; i <= 11; ++i) {
+  for (int i = 0; i <= 11; ++i) {
     auto [tn, fun] = executor.dependent_async([=, &fib]() { return fib(i); });
     REQUIRE(fun.get() == fibonacci[i]);
   }

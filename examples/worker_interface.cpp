@@ -18,7 +18,7 @@
 #endif
 
 // affine the given thread to a specific core
-bool affine(std::thread& thread, unsigned int core_id) {
+bool affine(std::thread& thread, size_t core_id) {
 #if defined(__linux__)
   cpu_set_t cpuset;
   CPU_ZERO(&cpuset);

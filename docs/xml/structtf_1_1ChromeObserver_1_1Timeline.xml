@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1ChromeObserver_1_1Timeline" kind="struct" language="C++" prot="private">
     <compoundname>tf::ChromeObserver::Timeline</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a3b3761840cd96e8af15e35ba65093e3d" prot="public" static="no" mutable="no">
-        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
+        <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
         <definition>observer_stamp_t tf::ChromeObserver::Timeline::origin</definition>
         <argsstring></argsstring>
         <name>origin</name>
+        <qualifiedname>tf::ChromeObserver::Timeline::origin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -17,10 +18,11 @@
         <location file="taskflow/core/observer.hpp" line="250" column="22" bodyfile="taskflow/core/observer.hpp" bodystart="250" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a68e28885dc55ee0c4a910efb8e89919e" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt;</type>
         <definition>std::vector&lt;std::vector&lt;Segment&gt; &gt; tf::ChromeObserver::Timeline::segments</definition>
         <argsstring></argsstring>
         <name>segments</name>
+        <qualifiedname>tf::ChromeObserver::Timeline::segments</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -30,10 +32,11 @@
         <location file="taskflow/core/observer.hpp" line="251" column="17" bodyfile="taskflow/core/observer.hpp" bodystart="251" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1ChromeObserver_1_1Timeline_1a9094de2f3a2857b6e0d8ccea358aaa0e" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/stack" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::stack</ref>&lt; <ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref> &gt; &gt;</type>
         <definition>std::vector&lt;std::stack&lt;observer_stamp_t&gt; &gt; tf::ChromeObserver::Timeline::stacks</definition>
         <argsstring></argsstring>
         <name>stacks</name>
+        <qualifiedname>tf::ChromeObserver::Timeline::stacks</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -42,32 +45,32 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="252" column="17" bodyfile="taskflow/core/observer.hpp" bodystart="252" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
       <node id="2">
+        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
+      </node>
+      <node id="4">
+        <label>std::vector&lt; std::stack&lt; std::chrono::time_point&lt; std::chrono::steady_clock &gt; &gt; &gt;</label>
+      </node>
+      <node id="3">
         <label>std::vector&lt; std::vector&lt; Segment &gt; &gt;</label>
       </node>
       <node id="1">
         <label>tf::ChromeObserver::Timeline</label>
         <childnode refid="2" relation="usage">
-          <edgelabel>segments</edgelabel>
-        </childnode>
-        <childnode refid="3" relation="usage">
-          <edgelabel>stacks</edgelabel>
-        </childnode>
-        <childnode refid="4" relation="usage">
           <edgelabel>origin</edgelabel>
         </childnode>
-      </node>
-      <node id="4">
-        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
-      </node>
-      <node id="3">
-        <label>std::vector&lt; std::stack&lt; time_point&lt; std::chrono::steady_clock &gt; &gt; &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>segments</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>stacks</edgelabel>
+        </childnode>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/observer.hpp" line="249" column="3" bodyfile="taskflow/core/observer.hpp" bodystart="249" bodyend="253"/>
