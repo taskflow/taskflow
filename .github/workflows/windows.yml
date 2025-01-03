@@ -3,6 +3,17 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
+  debug-test-cpp17:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
+
   release-test-cpp17:
     runs-on: windows-latest
     steps:
@@ -17,6 +28,17 @@ jobs:
 ###############################################################################
 # C++ 20 standard test:
 ###############################################################################
+  
+  debug-test-cpp20:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=20
+    - name: build
+      run: cmake --build build --parallel 10
+    - name: test
+      run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
   
   release-test-cpp20:
     runs-on: windows-latest
