@@ -20,7 +20,7 @@ for creating a parallel-transform task.
 
 Parallel-transform transforms a range of items, possibly
 with a different type for the transformed data, and stores the result in another range.
-The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&& part)
+The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)
 is equivalent to a parallel execution of the following loop:
 
 @code{.cpp}
@@ -86,7 +86,7 @@ in another range starting at @c d_first.
 @section ParallelBinaryTransformsOverARange Create a Binary Parallel-Transform Task
 
 You can use the overload, 
-tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&& part),
+tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part),
 to perform parallel transforms on two source ranges pointed by
 @c first1 and @c first2 using the binary
 operator @c c

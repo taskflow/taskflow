@@ -16,11 +16,9 @@ void for_each(int N) {
 
   taskflow.for_each(range.begin(), range.end(), [&] (int i) {
     printf("for_each on container item: %d\n", i);
-  });
+  }, tf::StaticPartitioner());
 
   executor.run(taskflow).get();
-
-  taskflow.dump(std::cout);
 }
 
 // Procedure: for_each_index
@@ -29,14 +27,23 @@ void for_each_index(int N) {
   tf::Executor executor;
   tf::Taskflow taskflow;
 
-  // [0, N) with step size 2
+  // [0, N) with a step size of 2
   taskflow.for_each_index(0, N, 2, [] (int i) {
     printf("for_each_index on index: %d\n", i);
   });
 
-  executor.run(taskflow).get();
+  executor.run(taskflow).wait();
+
+  // [0, N) with a step size of 2 using tf::IndexRange
+  tf::IndexRange<int> range(0, N, 2);
   
-  taskflow.dump(std::cout);
+  taskflow.for_each_index(range, [](tf::IndexRange<int>& range) {
+    for(int i=range.begin(); i<range.end(); i+=range.step_size()) {
+      printf("for_each_index on index (subrange): %d\n", i);
+    }
+  });
+  
+  executor.run(taskflow).wait();
 }
 
 // ----------------------------------------------------------------------------

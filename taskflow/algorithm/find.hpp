@@ -101,9 +101,8 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        chunk_size = part.adjusted_chunk_size(N, W, w);
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
@@ -182,9 +181,8 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        chunk_size = part.adjusted_chunk_size(N, W, w);
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
             [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
@@ -261,13 +259,11 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       
-      size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum needs to avoid copy at the first step
-        chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
+        auto chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
         auto task = part([=, &result] () mutable {
           std::advance(beg, curr_b);
@@ -407,13 +403,11 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       
-      size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum needs to avoid copy at the first step
-        chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
+        auto chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
         auto task = part([=, &result] () mutable {
 

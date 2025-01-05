@@ -182,6 +182,11 @@
             </dt>
             <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
             <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a>
+            </dt>
+            <dd>class to create an index range of integral indices with a step size</dd>
+            <dt>
               class <a href="classtf_1_1ObserverInterface.html" class="m-doc">ObserverInterface</a>
             </dt>
             <dd>class to derive an executor observer</dd>
@@ -422,6 +427,20 @@
               <span class="m-doc-wrap-bumper">void <a href="#a3abe09ef55c4f46e64ba88bff175c4f6" class="m-doc">spin_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
             </dt>
             <dd>spins until the given predicate becomes true</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a84959c9a3780bbb98451c5b8a52dcedd" class="m-doc">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
+              E end,
+              S step) -&gt; std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, bool&gt; <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>checks if the given index range is invalid</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a491336a2b20d6999c4d184a3a770d2f0" class="m-doc">distance</a>(</span><span class="m-doc-wrap">B beg,
+              E end,
+              S step) -&gt; std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, size_t&gt; <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>calculates the number of iterations in the given index range</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aa10195f7d5f2f1dd32bb852a9aa560f4" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;T&gt;</span>
@@ -1544,6 +1563,117 @@
               </tbody>
             </table>
 <p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-warning"><h4>Attention</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
+          </div></section>
+          <section class="m-doc-details" id="a84959c9a3780bbb98451c5b8a52dcedd"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E, typename S&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, bool&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a84959c9a3780bbb98451c5b8a52dcedd" class="m-doc-self">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
+              E end,
+              S step) <span class="m-label m-primary">constexpr</span></span></span>
+            </h3>
+            <p>checks if the given index range is invalid</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>type of the beginning index</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>type of the ending index</td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td>type of the step size</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>beg</td>
+                  <td>starting index of the range</td>
+                </tr>
+                <tr>
+                  <td>end</td>
+                  <td>ending index of the range</td>
+                </tr>
+                <tr>
+                  <td>step</td>
+                  <td>step size to traverse the range</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>returns <code>true</code> if the range is invalid; <code>false</code> otherwise.</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A range is considered invalid under the following conditions:</p><ul><li>The step is zero and the begin and end values are not equal.</li><li>A positive range (begin &lt; end) with a non-positive step.</li><li>A negative range (begin &gt; end) with a non-negative step.</li></ul>
+          </div></section>
+          <section class="m-doc-details" id="a491336a2b20d6999c4d184a3a770d2f0"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename B, typename E, typename S&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, size_t&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a491336a2b20d6999c4d184a3a770d2f0" class="m-doc-self">distance</a>(</span><span class="m-doc-wrap">B beg,
+              E end,
+              S step) <span class="m-label m-primary">constexpr</span></span></span>
+            </h3>
+            <p>calculates the number of iterations in the given index range</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">B</td>
+                  <td>type of the beginning index</td>
+                </tr>
+                <tr>
+                  <td>E</td>
+                  <td>type of the ending index</td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td>type of the step size</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>beg</td>
+                  <td>starting index of the range</td>
+                </tr>
+                <tr>
+                  <td>end</td>
+                  <td>ending index of the range</td>
+                </tr>
+                <tr>
+                  <td>step</td>
+                  <td>step size to traverse the range</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>returns the number of required iterations to traverse the range</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The distance of a range represents the number of required iterations to traverse the range from the beginning index to the ending index (exclusive) with the given step size.</p><p>Example 1:</p><pre class="m-code"><span class="c1">// Range: 0 to 10 with step size 2</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Returns 5, the sequence is [0, 2, 4, 6, 8]</span></pre><p>Example 2:</p><pre class="m-code"><span class="c1">// Range: 10 to 0 with step size -2</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Returns 5, the sequence is [10, 8, 6, 4, 2]</span></pre><p>Example 3:</p><pre class="m-code"><span class="c1">// Range: 5 to 20 with step size 5</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w">  </span><span class="c1">// Returns 3, the sequence is [5, 10, 15]</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>It is user&#x27;s responsibility to ensure the given index range is valid.</p></aside>
           </div></section>
           <section class="m-doc-details" id="aa10195f7d5f2f1dd32bb852a9aa560f4"><div>
             <h3>

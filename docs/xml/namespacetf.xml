@@ -49,6 +49,7 @@
     <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
     <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
     <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
+    <innerclass refid="classtf_1_1IndexRange" prot="public">tf::IndexRange</innerclass>
     <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
@@ -1488,6 +1489,205 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/utility/os.hpp" line="275" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="275" bodyend="280"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename B</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+          <param>
+            <type>typename S</type>
+          </param>
+        </templateparamlist>
+        <type>std::enable_if_t&lt; std::is_integral_v&lt; std::decay_t&lt; B &gt; &gt; &amp;&amp;std::is_integral_v&lt; std::decay_t&lt; E &gt; &gt; &amp;&amp;std::is_integral_v&lt; std::decay_t&lt; S &gt; &gt;, bool &gt;</type>
+        <definition>std::enable_if_t&lt; std::is_integral_v&lt; std::decay_t&lt; B &gt; &gt; &amp;&amp; std::is_integral_v&lt; std::decay_t&lt; E &gt; &gt; &amp;&amp; std::is_integral_v&lt; std::decay_t&lt; S &gt; &gt;, bool &gt; tf::is_index_range_invalid</definition>
+        <argsstring>(B beg, E end, S step)</argsstring>
+        <name>is_index_range_invalid</name>
+        <qualifiedname>tf::is_index_range_invalid</qualifiedname>
+        <param>
+          <type>B</type>
+          <declname>beg</declname>
+        </param>
+        <param>
+          <type>E</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>S</type>
+          <declname>step</declname>
+        </param>
+        <briefdescription>
+<para>checks if the given index range is invalid </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the beginning index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>E</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the ending index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>S</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the step size</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>beg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>starting index of the range </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ending index of the range </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>step</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>step size to traverse the range</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>returns <computeroutput>true</computeroutput> if the range is invalid; <computeroutput>false</computeroutput> otherwise.</para>
+</simplesect>
+A range is considered invalid under the following conditions:<itemizedlist>
+<listitem><para>The step is zero and the begin and end values are not equal.</para>
+</listitem><listitem><para>A positive range (begin &lt; end) with a non-positive step.</para>
+</listitem><listitem><para>A negative range (begin &gt; end) with a non-negative step. </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/iterator.hpp" line="30" column="1" bodyfile="taskflow/utility/iterator.hpp" bodystart="30" bodyend="34"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename B</type>
+          </param>
+          <param>
+            <type>typename E</type>
+          </param>
+          <param>
+            <type>typename S</type>
+          </param>
+        </templateparamlist>
+        <type>std::enable_if_t&lt; std::is_integral_v&lt; std::decay_t&lt; B &gt; &gt; &amp;&amp;std::is_integral_v&lt; std::decay_t&lt; E &gt; &gt; &amp;&amp;std::is_integral_v&lt; std::decay_t&lt; S &gt; &gt;, size_t &gt;</type>
+        <definition>std::enable_if_t&lt; std::is_integral_v&lt; std::decay_t&lt; B &gt; &gt; &amp;&amp; std::is_integral_v&lt; std::decay_t&lt; E &gt; &gt; &amp;&amp; std::is_integral_v&lt; std::decay_t&lt; S &gt; &gt;, size_t &gt; tf::distance</definition>
+        <argsstring>(B beg, E end, S step)</argsstring>
+        <name>distance</name>
+        <qualifiedname>tf::distance</qualifiedname>
+        <param>
+          <type>B</type>
+          <declname>beg</declname>
+        </param>
+        <param>
+          <type>E</type>
+          <declname>end</declname>
+        </param>
+        <param>
+          <type>S</type>
+          <declname>step</declname>
+        </param>
+        <briefdescription>
+<para>calculates the number of iterations in the given index range </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>B</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the beginning index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>E</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the ending index </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>S</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>type of the step size</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>beg</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>starting index of the range </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>end</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>ending index of the range </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>step</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>step size to traverse the range</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>returns the number of required iterations to traverse the range</para>
+</simplesect>
+The distance of a range represents the number of required iterations to traverse the range from the beginning index to the ending index (exclusive) with the given step size.</para>
+<para>Example 1: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>Range:<sp/>0<sp/>to<sp/>10<sp/>with<sp/>step<sp/>size<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dist<sp/>=<sp/><ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">distance</ref>(0,<sp/>10,<sp/>2);<sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>5,<sp/>the<sp/>sequence<sp/>is<sp/>[0,<sp/>2,<sp/>4,<sp/>6,<sp/>8]</highlight></codeline>
+</programlisting></para>
+<para>Example 2: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>Range:<sp/>10<sp/>to<sp/>0<sp/>with<sp/>step<sp/>size<sp/>-2</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dist<sp/>=<sp/><ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">distance</ref>(10,<sp/>0,<sp/>-2);<sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>5,<sp/>the<sp/>sequence<sp/>is<sp/>[10,<sp/>8,<sp/>6,<sp/>4,<sp/>2]</highlight></codeline>
+</programlisting></para>
+<para>Example 3: <programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>Range:<sp/>5<sp/>to<sp/>20<sp/>with<sp/>step<sp/>size<sp/>5</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dist<sp/>=<sp/><ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">distance</ref>(5,<sp/>20,<sp/>5);<sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>3,<sp/>the<sp/>sequence<sp/>is<sp/>[5,<sp/>10,<sp/>15]</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="attention"><para>It is user&apos;s responsibility to ensure the given index range is valid. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/iterator.hpp" line="77" column="1" bodyfile="taskflow/utility/iterator.hpp" bodystart="77" bodyend="79"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ad1c04f09c85eb38d06c7f51cc48ad91c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>

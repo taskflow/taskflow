@@ -41,9 +41,8 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        chunk_size = part.adjusted_chunk_size(N, W, w);
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg, part_b - prev_e);
@@ -116,9 +115,8 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      size_t chunk_size;
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        chunk_size = part.adjusted_chunk_size(N, W, w);
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
             std::advance(beg1, part_b - prev_e);

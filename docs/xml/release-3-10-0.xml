@@ -82,20 +82,48 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-10-0_1release-3-10-0_new_features">
 <title>New Features</title><sect2 id="release-3-10-0_1release-3-10-0_taskflow_core">
 <title>Taskflow Core</title><para><itemizedlist>
-<listitem><para>added debug mode for the windows CI to GitHub actions</para>
-</listitem><listitem><para>fixed MSVC compilation warnings due to signed conversion on sort</para>
+<listitem><para>fixed MSVC compilation warnings due to signed conversion on sort</para>
+</listitem><listitem><para>added debug mode for the windows CI to GitHub actions</para>
+</listitem><listitem><para>added index range-based parallel-for algorithm (<ulink url="https://github.com/taskflow/taskflow/issues/551">#551</ulink>)</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>initialize<sp/>data1<sp/>and<sp/>data2<sp/>to<sp/>10<sp/>using<sp/>two<sp/>different<sp/>approaches</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data1(100),<sp/>data2(100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>1:<sp/>initialize<sp/>data1<sp/>using<sp/>explicit<sp/>index<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_index(0,<sp/>100,<sp/>1,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>data1[i]<sp/>=<sp/>10;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>2:<sp/>initialize<sp/>data2<sp/>using<sp/>tf::IndexRange</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>100,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_index(range,<sp/>[&amp;](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref>&amp;<sp/>subrange){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=subrange.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;subrange.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=subrange.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>data2[i]<sp/>=<sp/>10;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="release-3-10-0_1release-3-10-0_utilities">
+<title>Utilities</title><para><itemizedlist>
+<listitem><para>added <ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange</ref> for index range-based parallel-for algorithm</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
-<sect2 id="release-3-10-0_1release-3-10-0_utilities">
-<title>Utilities</title></sect2>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_bug_fixes">
-<title>Bug Fixes</title></sect1>
+<title>Bug Fixes</title><para>Currently, there are no bug fixes.</para>
+</sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_breaking_changes">
-<title>Breaking Changes</title></sect1>
+<title>Breaking Changes</title><para>Currently, there are no breaking changes.</para>
+</sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_documentation">
-<title>Documentation</title></sect1>
+<title>Documentation</title><para><itemizedlist>
+<listitem><para>revised <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para>
+</listitem><listitem><para>revised <ref refid="ParallelFind" kindref="compound">Parallel Find</ref></para>
+</listitem></itemizedlist>
+</para>
+</sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_miscellaneous_items">
 <title>Miscellaneous Items</title><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>

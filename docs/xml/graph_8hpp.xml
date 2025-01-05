@@ -4,7 +4,7 @@
     <compoundname>graph.hpp</compoundname>
     <includes local="yes">../utility/macros.hpp</includes>
     <includes local="yes">../utility/traits.hpp</includes>
-    <includes local="yes">../utility/iterator.hpp</includes>
+    <includes refid="iterator_8hpp" local="yes">../utility/iterator.hpp</includes>
     <includes refid="os_8hpp" local="yes">../utility/os.hpp</includes>
     <includes refid="math_8hpp" local="yes">../utility/math.hpp</includes>
     <includes refid="small__vector_8hpp" local="yes">../utility/small_vector.hpp</includes>
@@ -20,19 +20,16 @@
     <includedby refid="async__task_8hpp" local="yes">taskflow/core/async_task.hpp</includedby>
     <includedby refid="task_8hpp" local="yes">taskflow/core/task.hpp</includedby>
     <incdepgraph>
-      <node id="4">
-        <label>../utility/iterator.hpp</label>
-      </node>
-      <node id="21">
+      <node id="22">
         <label>../utility/latch.hpp</label>
       </node>
       <node id="2">
         <label>../utility/macros.hpp</label>
       </node>
-      <node id="22">
+      <node id="23">
         <label>../utility/mpmc.hpp</label>
       </node>
-      <node id="20">
+      <node id="21">
         <label>../utility/serializer.hpp</label>
       </node>
       <node id="3">
@@ -47,13 +44,11 @@
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-        <childnode refid="5" relation="include">
-        </childnode>
-        <childnode refid="9" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="20" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
         <childnode refid="21" relation="include">
         </childnode>
@@ -65,24 +60,26 @@
         </childnode>
         <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="27" relation="include">
+        <childnode refid="26" relation="include">
         </childnode>
         <childnode refid="28" relation="include">
         </childnode>
         <childnode refid="29" relation="include">
         </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
       </node>
-      <node id="25">
+      <node id="26">
         <label>semaphore.hpp</label>
         <link refid="semaphore_8hpp"/>
-        <childnode refid="26" relation="include">
+        <childnode refid="27" relation="include">
         </childnode>
-        <childnode refid="24" relation="include">
+        <childnode refid="25" relation="include">
         </childnode>
-        <childnode refid="11" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="29">
+      <node id="30">
         <label>tsq.hpp</label>
         <link refid="tsq_8hpp"/>
         <childnode refid="2" relation="include">
@@ -90,36 +87,42 @@
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="9">
-        <label>../utility/math.hpp</label>
-        <link refid="math_8hpp_source"/>
-        <childnode refid="10" relation="include">
+      <node id="4">
+        <label>../utility/iterator.hpp</label>
+        <link refid="iterator_8hpp_source"/>
+        <childnode refid="5" relation="include">
         </childnode>
-      </node>
-      <node id="5">
-        <label>../utility/os.hpp</label>
-        <link refid="os_8hpp_source"/>
         <childnode refid="6" relation="include">
-        </childnode>
-        <childnode refid="7" relation="include">
-        </childnode>
-        <childnode refid="8" relation="include">
         </childnode>
       </node>
       <node id="11">
-        <label>../utility/small_vector.hpp</label>
-        <link refid="small__vector_8hpp"/>
+        <label>../utility/math.hpp</label>
+        <link refid="math_8hpp_source"/>
         <childnode refid="12" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
+      </node>
+      <node id="7">
+        <label>../utility/os.hpp</label>
+        <link refid="os_8hpp_source"/>
+        <childnode refid="8" relation="include">
         </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>../utility/small_vector.hpp</label>
+        <link refid="small__vector_8hpp"/>
         <childnode refid="14" relation="include">
         </childnode>
         <childnode refid="15" relation="include">
         </childnode>
-        <childnode refid="6" relation="include">
-        </childnode>
         <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
         </childnode>
         <childnode refid="17" relation="include">
         </childnode>
@@ -127,57 +130,62 @@
         </childnode>
         <childnode refid="19" relation="include">
         </childnode>
-      </node>
-      <node id="13">
-        <label>algorithm</label>
-      </node>
-      <node id="10">
-        <label>atomic</label>
-      </node>
-      <node id="14">
-        <label>cassert</label>
+        <childnode refid="20" relation="include">
+        </childnode>
       </node>
       <node id="15">
-        <label>cstddef</label>
-      </node>
-      <node id="7">
-        <label>cstdio</label>
-      </node>
-      <node id="6">
-        <label>cstdlib</label>
-      </node>
-      <node id="16">
-        <label>cstring</label>
-      </node>
-      <node id="24">
-        <label>declarations.hpp</label>
-      </node>
-      <node id="27">
-        <label>environment.hpp</label>
-      </node>
-      <node id="23">
-        <label>error.hpp</label>
-      </node>
-      <node id="17">
-        <label>initializer_list</label>
-      </node>
-      <node id="18">
-        <label>iterator</label>
+        <label>algorithm</label>
       </node>
       <node id="12">
-        <label>macros.hpp</label>
+        <label>atomic</label>
       </node>
-      <node id="19">
-        <label>memory</label>
+      <node id="16">
+        <label>cassert</label>
       </node>
-      <node id="26">
-        <label>mutex</label>
+      <node id="5">
+        <label>cstddef</label>
+      </node>
+      <node id="9">
+        <label>cstdio</label>
       </node>
       <node id="8">
-        <label>string</label>
+        <label>cstdlib</label>
+      </node>
+      <node id="17">
+        <label>cstring</label>
+      </node>
+      <node id="25">
+        <label>declarations.hpp</label>
       </node>
       <node id="28">
+        <label>environment.hpp</label>
+      </node>
+      <node id="24">
+        <label>error.hpp</label>
+      </node>
+      <node id="18">
+        <label>initializer_list</label>
+      </node>
+      <node id="19">
+        <label>iterator</label>
+      </node>
+      <node id="14">
+        <label>macros.hpp</label>
+      </node>
+      <node id="20">
+        <label>memory</label>
+      </node>
+      <node id="27">
+        <label>mutex</label>
+      </node>
+      <node id="10">
+        <label>string</label>
+      </node>
+      <node id="29">
         <label>topology.hpp</label>
+      </node>
+      <node id="6">
+        <label>type_traits</label>
       </node>
     </incdepgraph>
     <invincdepgraph>

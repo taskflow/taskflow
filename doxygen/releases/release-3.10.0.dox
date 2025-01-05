@@ -41,16 +41,44 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @subsection release-3-10-0_taskflow_core Taskflow Core
 
-+ added debug mode for the windows CI to GitHub actions
 + fixed MSVC compilation warnings due to signed conversion on sort
++ added debug mode for the windows CI to GitHub actions
++ added index range-based parallel-for algorithm ([#551](https://github.com/taskflow/taskflow/issues/551))
+
+@code{.cpp}
+// initialize data1 and data2 to 10 using two different approaches
+std::vector<int> data1(100), data2(100);
+
+// Approach 1: initialize data1 using explicit index range
+taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
+
+// Approach 2: initialize data2 using tf::IndexRange
+tf::IndexRange<int> range(0, 100, 1);
+taskflow.for_each_index(range, [&](tf::IndexRange<int>& subrange){
+  for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+    data2[i] = 10;
+  }
+});
+@endcode
 
 @subsection release-3-10-0_utilities Utilities
 
++ added tf::IndexRange for index range-based parallel-for algorithm
++ added tf::distance to calculate the number of iterations in an index range
++ added tf::is_index_range_invalid to check if the given index range is valid
+
 @section release-3-10-0_bug_fixes Bug Fixes 
+
+Currently, there are no bug fixes.
 
 @section release-3-10-0_breaking_changes Breaking Changes
 
+Currently, there are no breaking changes.
+
 @section release-3-10-0_documentation Documentation
+
++ revised @ref ParallelIterations
++ revised @ref ParallelFind
 
 @section release-3-10-0_miscellaneous_items Miscellaneous Items
 

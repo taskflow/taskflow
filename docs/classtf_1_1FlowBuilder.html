@@ -157,7 +157,14 @@
               C callable,
               P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
-            <dd>constructs an STL-styled index-based parallel-for task</dd>
+            <dd>constructs an index-based parallel-for task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5d8c756783e481372f27db6b6e6a5982" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">R range,
+              C callable,
+              P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
+            </dt>
+            <dd>constructs an index range-based parallel-for task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a97be7ceef6fa4276e3b074c10c13b826" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
@@ -797,7 +804,7 @@
               C callable,
               P part = P())</span></span>
             </h3>
-            <p>constructs an STL-styled index-based parallel-for task</p>
+            <p>constructs an index-based parallel-for task</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -865,6 +872,71 @@
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Iterators are templated to enable stateful range using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>. The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+          </div></section>
+          <section class="m-doc-details" id="a5d8c756783e481372f27db6b6e6a5982"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5d8c756783e481372f27db6b6e6a5982" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">R range,
+              C callable,
+              P part = P())</span></span>
+            </h3>
+            <p>constructs an index range-based parallel-for task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">R</td>
+                  <td>index range type (<a href="classtf_1_1IndexRange.html" class="m-doc">tf::<wbr />IndexRange</a>)</td>
+                </tr>
+                <tr>
+                  <td>C</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>P</td>
+                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>range</td>
+                  <td>index range</td>
+                </tr>
+                <tr>
+                  <td>callable</td>
+                  <td>callable object to apply to each valid index</td>
+                </tr>
+                <tr>
+                  <td>part</td>
+                  <td>partitioning algorithm to schedule parallel iterations</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The task spawns asynchronous tasks that applies the callable object to in the range <code>[first, last)</code> with the step size. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="c1">// [0, 17) with a step size of 2 using tf::IndexRange</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">IndexRange</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">// parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">IndexRange</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// iterate each index in the subrange</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">range</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">range</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">range</span><span class="p">.</span><span class="n">step_size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;iterate %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The callable needs to take a single argument of type <a href="classtf_1_1IndexRange.html" class="m-doc">tf::<wbr />IndexRange</a>.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a97be7ceef6fa4276e3b074c10c13b826"><div>
             <h3>

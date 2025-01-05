@@ -613,6 +613,95 @@ TEST_CASE("ForEachIndex.HeterogeneousRange" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// range-based for_each_index 
+// ----------------------------------------------------------------------------
+
+template <typename P>
+void range_based_for_each_index(unsigned w) {    
+  tf::Executor executor(w);
+  tf::Taskflow taskflow;
+  std::atomic<size_t> counter {0};
+
+  for(int beg=10; beg>=-10; --beg) {
+    for(int end=beg; end>=-10; --end) {
+      for(int s=1; s<=beg-end; ++s) {
+
+        size_t n = tf::distance(beg, end, -s);
+
+        for(size_t c=0; c<10; c++) {
+          taskflow.clear();
+          counter = 0;
+
+          tf::IndexRange range(beg, end, -s);
+          REQUIRE(range.size() == n);
+
+          taskflow.for_each_index(range, [&] (tf::IndexRange<int>& range) {
+            size_t l = 0;
+            for(auto j=range.begin(); j>range.end(); j+=range.step_size()) {
+              l++;
+            }
+            REQUIRE(range.size() == l);
+            counter.fetch_add(l, std::memory_order_relaxed);
+          }, P(c));
+          executor.run(taskflow).wait();
+          REQUIRE(n == counter);
+        }
+      }
+    }
+  }
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Static.1thread" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::StaticPartitioner<>>(1);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Static.2threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::StaticPartitioner<>>(2);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Static.3threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::StaticPartitioner<>>(3);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Static.4threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::StaticPartitioner<>>(4);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Guided.1thread" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::GuidedPartitioner<>>(1);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Guided.2threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::GuidedPartitioner<>>(2);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Guided.3threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::GuidedPartitioner<>>(3);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Guided.4threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::GuidedPartitioner<>>(4);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Dynamic.1thread" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::DynamicPartitioner<>>(1);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Dynamic.2threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::DynamicPartitioner<>>(2);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Dynamic.3threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::DynamicPartitioner<>>(3);
+}
+
+TEST_CASE("ForEach.NegativeIndexRange.Dynamic.4threads" * doctest::timeout(300)) {
+  range_based_for_each_index<tf::DynamicPartitioner<>>(4);
+}
+
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 // Closure Wrapper
 // ----------------------------------------------------------------------------
 

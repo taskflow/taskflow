@@ -39,7 +39,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="ParallelIterations_1A1IndexBasedParallelFor">
-<title>Create an Index-based Parallel-Iteration Task</title><para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&amp;&amp; part) represents parallel execution of the following loop:</para>
+<title>Create an Index-based Parallel-Iteration Task</title><para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index(B first, E last, S step, C callable, P part)</ref> represents parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
@@ -57,6 +57,21 @@
 <para>Notice that either positive or negative direction is defined in terms of the range, <computeroutput>[first, last)</computeroutput>, where <computeroutput>end</computeroutput> is excluded. In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98. In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2. An example of the Taskflow graph for the positive case under 12 workers is depicted below:</para>
 <para><dotfile name="parallel_for_1.dot"></dotfile>
 </para>
+<para>Instead of explicitly specifying the index range and the callable for each index invocation, the overload <ref refid="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" kindref="member">tf::Taskflow::for_each_index(R range, C callable, P part)</ref> provides you with a more flexible way to iterate over subranges of indices. This overload uses <ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange</ref> to partition the range into subranges, allowing finer control over how each subrange is processed. For instance, the code below does the same thing using two different approaches:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data1(100),<sp/>data2(100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>1:<sp/>initialize<sp/>data1<sp/>using<sp/>explicit<sp/>index<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_index(0,<sp/>100,<sp/>1,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>data1[i]<sp/>=<sp/>10;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>2:<sp/>initialize<sp/>data2<sp/>using<sp/>tf::IndexRange</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>100,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_index(range,<sp/>[&amp;](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref>&amp;<sp/>subrange){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=subrange.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;subrange.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=subrange.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>data2[i]<sp/>=<sp/>10;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>Both approaches produce the same result, but the second approach offers more flexibility in terms of how each partitioned subrange is iterated. This is particularly useful for applications that benefit from SIMD optimizations or other range-based processing strategies.</para>
 </sect1>
 <sect1 id="ParallelIterations_1ParallelForEachCaptureIndicesByReference">
 <title>Capture Indices by Reference</title><para>You can pass indices by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameter update between dependent tasks. This is especially useful when the range indices are unknown at the time of creating a for-each-index task, but is initialized from another task.</para>
@@ -85,7 +100,7 @@
 <para>When <computeroutput>init</computeroutput> finishes, the parallel-for task <computeroutput>pf</computeroutput> will see <computeroutput>first</computeroutput> as 0 and <computeroutput>last</computeroutput> as 1000 and performs parallel iterations over the 1000 items.</para>
 </sect1>
 <sect1 id="ParallelIterations_1A1IteratorBasedParallelFor">
-<title>Create an Iterator-based Parallel-Iteration Task</title><para>Iterator-based parallel-for performs parallel iterations over a range specified by two <ulink url="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</ulink>, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::Taskflow::for_each(B first, E last, C callable, P&amp;&amp; part) represents a parallel execution of the following loop:</para>
+<title>Create an Iterator-based Parallel-Iteration Task</title><para>Iterator-based parallel-for performs parallel iterations over a range specified by two <ulink url="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</ulink>, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kindref="member">tf::Taskflow::for_each(B first, E last, C callable, P part)</ref> represents a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -130,8 +145,9 @@
 <title>Configure a Partitioner</title><para>You can configure a partitioner for parallel-iteration tasks to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. The following example creates two parallel-iteration tasks using two different partitioners, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec(1024,<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::StaticPartitioner&gt;<sp/>static_partitioner;</highlight></codeline>
-<codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::GuidedPartitioner&gt;<sp/>guided_partitioner;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>partitioners<sp/>with<sp/>a<sp/>chunk<sp/>size<sp/>of<sp/>10</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref><sp/>static_partitioner(10);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner(10);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-iteration<sp/>task<sp/>with<sp/>static<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.for_each(</highlight></codeline>

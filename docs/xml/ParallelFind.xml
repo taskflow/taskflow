@@ -45,10 +45,10 @@
 <sect1 id="ParallelFind_1WhatIsAFindAlgorithm">
 <title>What is a Find Algorithm?</title><para>A find algorithm allows you to find an element in a range <computeroutput>[first, last)</computeroutput> that satisfies a specific criteria. The algorithm returns an iterator to the first found element in the range or returns <computeroutput>last</computeroutput> if there is no such iterator. Taskflow provides the following parallel-find algorithms:</para>
 <para><itemizedlist>
-<listitem><para>tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</para>
-</listitem><listitem><para>tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P&amp;&amp; part)</para>
-</listitem><listitem><para>tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</para>
-</listitem><listitem><para>tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P&amp;&amp; part)</para>
+<listitem><para><ref refid="classtf_1_1FlowBuilder_1a46a96f5889e6ac87b1ff8d6313b5f471" kindref="member">tf::Taskflow::find_if(B first, E last, T&amp; result, UOP predicate, P part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a95fa2719fa7bbe7d171cf474ddb06726" kindref="member">tf::Taskflow::find_if_not(B first, E last, T&amp; result, UOP predicate, P part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a6bf43eeaa81900084a472be1d36d46a6" kindref="member">tf::Taskflow::min_element(B first, E last, T&amp; result, C comp, P part)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1FlowBuilder_1a6be5d7f053a868647c3b9e0d9cdf6b68" kindref="member">tf::Taskflow::max_element(B first, E last, T&amp; result, C comp, P part)</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
@@ -149,8 +149,9 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>vec(1024,<sp/>-1);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>result;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::StaticPartitioner&gt;<sp/>static_partitioner;</highlight></codeline>
-<codeline><highlight class="normal">tf::ExecutionPolicy&lt;tf::GuidedPartitioner&gt;<sp/>guided_partitioner;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>two<sp/>partitioners<sp/>with<sp/>a<sp/>chunk<sp/>size<sp/>of<sp/>10</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref><sp/>static_partitioner(10);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner(10);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-find<sp/>task<sp/>with<sp/>a<sp/>static<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.find_if(</highlight></codeline>

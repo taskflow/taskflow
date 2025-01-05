@@ -592,6 +592,7 @@
     <member refid="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" kind="function"><name>linearize</name></member>
     <member refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kind="function"><name>for_each</name></member>
     <member refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kind="function"><name>for_each_index</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" kind="function"><name>for_each_index</name></member>
     <member refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1FlowBuilder_1afb24798ebf46e253a40b01bffb1da6a7" kind="function"><name>reduce</name></member>
@@ -648,6 +649,21 @@
     <member refid="classtf_1_1GuidedPartitioner_1a40dced9465b64dbc65018a9de64b39fd" kind="function"><name>loop_until</name></member>
   </compound>
   <compound refid="structtf_1_1has__graph" kind="struct"><name>tf::has_graph</name>
+  </compound>
+  <compound refid="classtf_1_1IndexRange" kind="class"><name>tf::IndexRange</name>
+    <member refid="classtf_1_1IndexRange_1a3cd586acdb38ba869833496c6d87e8df" kind="typedef"><name>index_type</name></member>
+    <member refid="classtf_1_1IndexRange_1ad07bb2a3f83ea55a9da2b79bfec80860" kind="variable"><name>_beg</name></member>
+    <member refid="classtf_1_1IndexRange_1a25ec20719388b32ffc20f46f6c6865f0" kind="variable"><name>_end</name></member>
+    <member refid="classtf_1_1IndexRange_1a6347193ad9681b2c4517d17dd2523014" kind="variable"><name>_step_size</name></member>
+    <member refid="classtf_1_1IndexRange_1ab9e48fe80add350412be71fa0a219e4d" kind="function"><name>IndexRange</name></member>
+    <member refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kind="function"><name>end</name></member>
+    <member refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kind="function"><name>step_size</name></member>
+    <member refid="classtf_1_1IndexRange_1a89a2d2560ca863540c9e6e768d22f31b" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1IndexRange_1ac182ff517daaa95c7e56251a74bcee7f" kind="function"><name>end</name></member>
+    <member refid="classtf_1_1IndexRange_1a5bf6139d14e72b7f4db3c4825122fc69" kind="function"><name>step_size</name></member>
+    <member refid="classtf_1_1IndexRange_1a2146e73c53a5f3dde2cda3c659b8b064" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1IndexRange_1abe3a1bf7a912d73ead27e3375cc660d7" kind="function"><name>discrete_domain</name></member>
   </compound>
   <compound refid="structtf_1_1cudaFlowCapturer_1_1Internal" kind="struct"><name>tf::cudaFlowCapturer::Internal</name>
   </compound>
@@ -1390,6 +1406,8 @@
     <member refid="namespacetf_1adc9815b9f96b796675ba939078d25413" kind="function"><name>has_env</name></member>
     <member refid="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" kind="function"><name>pause</name></member>
     <member refid="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" kind="function"><name>spin_until</name></member>
+    <member refid="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" kind="function"><name>is_index_range_invalid</name></member>
+    <member refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kind="function"><name>distance</name></member>
     <member refid="namespacetf_1ad1c04f09c85eb38d06c7f51cc48ad91c" kind="function"><name>animate</name></member>
     <member refid="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" kind="function"><name>recycle</name></member>
     <member refid="namespacetf_1aa10195f7d5f2f1dd32bb852a9aa560f4" kind="function"><name>make_worker_interface</name></member>
@@ -1760,6 +1778,8 @@
   <compound refid="cuda__task_8hpp" kind="file"><name>cuda_task.hpp</name>
   </compound>
   <compound refid="cudaflow_8hpp" kind="file"><name>cudaflow.hpp</name>
+  </compound>
+  <compound refid="iterator_8hpp" kind="file"><name>iterator.hpp</name>
   </compound>
   <compound refid="math_8hpp" kind="file"><name>math.hpp</name>
   </compound>

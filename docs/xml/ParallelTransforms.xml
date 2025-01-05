@@ -35,7 +35,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelTransformsOverARange">
-<title>Create a Unary Parallel-Transform Task</title><para>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c, P&amp;&amp; part) is equivalent to a parallel execution of the following loop:</para>
+<title>Create a Unary Parallel-Transform Task</title><para>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <ref refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)</ref> is equivalent to a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -75,7 +75,7 @@
 <para>When <computeroutput>init</computeroutput> finishes, the parallel-transform task <computeroutput>transform</computeroutput> will see <computeroutput>first</computeroutput> pointing to the beginning of <computeroutput>src</computeroutput> and <computeroutput>last</computeroutput> pointing to the end of <computeroutput>src</computeroutput>. Then, it simultaneously transforms these 1000 items by adding one to each element and stores the result in another range starting at <computeroutput>d_first</computeroutput>.</para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelBinaryTransformsOverARange">
-<title>Create a Binary Parallel-Transform Task</title><para>You can use the overload, tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P&amp;&amp; part), to perform parallel transforms on two source ranges pointed by <computeroutput>first1</computeroutput> and <computeroutput>first2</computeroutput> using the binary operator <computeroutput>c</computeroutput> and store the result in another range pointed by <computeroutput>d_first</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para>
+<title>Create a Binary Parallel-Transform Task</title><para>You can use the overload, <ref refid="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)</ref>, to perform parallel transforms on two source ranges pointed by <computeroutput>first1</computeroutput> and <computeroutput>first2</computeroutput> using the binary operator <computeroutput>c</computeroutput> and store the result in another range pointed by <computeroutput>d_first</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

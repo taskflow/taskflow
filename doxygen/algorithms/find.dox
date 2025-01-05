@@ -25,10 +25,10 @@ The algorithm returns an iterator to the first found element in the range
 or returns @c last if there is no such iterator.
 %Taskflow provides the following parallel-find algorithms:
 
-+ tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P&& part)
-+ tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P&& part)
-+ tf::Taskflow::min_element(B first, E last, T& result, C comp, P&& part)
-+ tf::Taskflow::max_element(B first, E last, T& result, C comp, P&& part)
++ tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P part)
++ tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P part)
++ tf::Taskflow::min_element(B first, E last, T& result, C comp, P part)
++ tf::Taskflow::max_element(B first, E last, T& result, C comp, P part)
 
 @section CreateAParallelFindIfTask Create a Parallel Find-If Task
 
@@ -195,8 +195,9 @@ another one with the guided partitioning algorithm:
 std::vector<int> vec(1024, -1);
 std::vector<int>::iterator result;
 
-tf::ExecutionPolicy<tf::StaticPartitioner> static_partitioner;
-tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
+// create two partitioners with a chunk size of 10
+tf::StaticPartitioner static_partitioner(10);
+tf::GuidedPartitioner guided_partitioner(10);
 
 // create a parallel-find task with a static partitioner
 taskflow.find_if(

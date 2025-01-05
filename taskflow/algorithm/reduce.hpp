@@ -39,13 +39,11 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       
-      size_t chunk_size;
-
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
-        chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
+        auto chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
         auto task = part([=, &r] () mutable {
 
@@ -171,12 +169,10 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      
-      size_t chunk_size;
 
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
       
-        chunk_size = part.adjusted_chunk_size(N, W, w);
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
 
         auto task = part([=, &r] () mutable {
 
@@ -308,12 +304,10 @@ auto make_transform_reduce_task(
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-    
-      size_t chunk_size;
 
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
     
-        chunk_size = part.adjusted_chunk_size(N, W, w); 
+        auto chunk_size = part.adjusted_chunk_size(N, W, w); 
 
         auto task = part([=, &r] () mutable {
           std::advance(beg1, curr_b);

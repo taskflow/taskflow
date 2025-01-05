@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>tf::IndexRange class | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <div class="m-doc-template">template&lt;typename T&gt;</div>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>IndexRange <span class="m-thin">class</span>
+        </h1>
+        <p>class to create an index range of integral indices with a step size</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">T</td>
+              <td>the integral type of the indices</td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#pub-types">Public types</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+<p>This class provides functionality for managing a range of indices, where the range is defined by a starting index, an ending index, and a step size. The indices must be of an integral type. For example, the range [0, 10) with a step size 2 represents the five elements, 0, 2, 4, 6, and 8.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is user&#x27;s responsibility to ensure the given range is valid.</p></aside>
+        <section id="pub-types">
+          <h2><a href="#pub-types">Public types</a></h2>
+          <dl class="m-doc">
+            <dt id="a3cd586acdb38ba869833496c6d87e8df">
+              using <a href="#a3cd586acdb38ba869833496c6d87e8df" class="m-doc-self">index_type</a> = T
+            </dt>
+            <dd>alias for the index type used in the range</dd>
+          </dl>
+        </section>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#ab9e48fe80add350412be71fa0a219e4d" class="m-doc">IndexRange</a>(</span><span class="m-doc-wrap">T beg,
+              T end,
+              T step_size) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>constructs an <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a> object</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a2b52381358ab392efa257e185a33d4af">
+              <span class="m-doc-wrap-bumper">auto <a href="#a2b52381358ab392efa257e185a33d4af" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap">) const -&gt; T</span>
+            </dt>
+            <dd>queries the starting index of the range</dd>
+            <dt id="a280096cb4056bc19b86da77d019434e4">
+              <span class="m-doc-wrap-bumper">auto <a href="#a280096cb4056bc19b86da77d019434e4" class="m-doc-self">end</a>(</span><span class="m-doc-wrap">) const -&gt; T</span>
+            </dt>
+            <dd>queries the ending index of the range</dd>
+            <dt id="aafd4f2d04614e550649cd9b7912e0bf1">
+              <span class="m-doc-wrap-bumper">auto <a href="#aafd4f2d04614e550649cd9b7912e0bf1" class="m-doc-self">step_size</a>(</span><span class="m-doc-wrap">) const -&gt; T</span>
+            </dt>
+            <dd>queries the step size of the range</dd>
+            <dt id="a89a2d2560ca863540c9e6e768d22f31b">
+              <span class="m-doc-wrap-bumper">void <a href="#a89a2d2560ca863540c9e6e768d22f31b" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap">T new_begin)</span>
+            </dt>
+            <dd>updates the starting index of the range</dd>
+            <dt id="ac182ff517daaa95c7e56251a74bcee7f">
+              <span class="m-doc-wrap-bumper">void <a href="#ac182ff517daaa95c7e56251a74bcee7f" class="m-doc-self">end</a>(</span><span class="m-doc-wrap">T new_end)</span>
+            </dt>
+            <dd>updates the ending index of the range</dd>
+            <dt id="a5bf6139d14e72b7f4db3c4825122fc69">
+              <span class="m-doc-wrap-bumper">void <a href="#a5bf6139d14e72b7f4db3c4825122fc69" class="m-doc-self">step_size</a>(</span><span class="m-doc-wrap">T new_step_size)</span>
+            </dt>
+            <dd>updates the step size of the range</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a2146e73c53a5f3dde2cda3c659b8b064" class="m-doc">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>queries the number of elements in the range</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#abe3a1bf7a912d73ead27e3375cc660d7" class="m-doc">discrete_domain</a>(</span><span class="m-doc-wrap">size_t part_beg,
+              size_t part_end) const -&gt; <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a></span>
+            </dt>
+            <dd>returns a range from the given discrete domain</dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="ab9e48fe80add350412be71fa0a219e4d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />IndexRange&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab9e48fe80add350412be71fa0a219e4d" class="m-doc-self">IndexRange</a>(</span><span class="m-doc-wrap">T beg,
+              T end,
+              T step_size) <span class="m-label m-info">explicit</span> </span></span>
+            </h3>
+            <p>constructs an <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a> object</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">beg</td>
+                  <td>starting index of the range</td>
+                </tr>
+                <tr>
+                  <td>end</td>
+                  <td>ending index of the range (exclusive)</td>
+                </tr>
+                <tr>
+                  <td>step_size</td>
+                  <td>step size between consecutive indices in the range</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="a2146e73c53a5f3dde2cda3c659b8b064"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />IndexRange&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2146e73c53a5f3dde2cda3c659b8b064" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the number of elements in the range</p>
+<p>The number of elements is equivalent to the number of iterations in the range. For instance, the range [0, 10) with step size of 2 will iterate five elements, 0, 2, 4, 6, and 8.</p>
+          </div></section>
+          <section class="m-doc-details" id="abe3a1bf7a912d73ead27e3375cc660d7"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a> tf::<wbr />IndexRange&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abe3a1bf7a912d73ead27e3375cc660d7" class="m-doc-self">discrete_domain</a>(</span><span class="m-doc-wrap">size_t part_beg,
+              size_t part_end) const</span></span>
+            </h3>
+            <p>returns a range from the given discrete domain</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">part_beg</td>
+                  <td>starting index of the discrete domain</td>
+                </tr>
+                <tr>
+                  <td>part_end</td>
+                  <td>ending index of the discrete domain</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a new <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a> object representing the given discrete domain</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The discrete domain of a range refers to a counter-based sequence indexed from 0 to <code>N</code>, where <code>N</code> is the size (i.e., number of iterated elements) of the range. For example, a discrete domain of the range [0, 10) with a step size of 2 corresponds to the sequence 0, 1, 2, 3, and 4, which map to the range elements 0, 2, 4, 6, and 8.</p><p>For a partitioned domain [<code>part_beg</code>, <code>part_end</code>), this function returns the corresponding range. For instance, the partitioned domain [2, 5) for the above example returns the range [4, 10) with the same step size of 2.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Users must ensure the specified domain is valid with respect to the range.</p></aside>
+          </div></section>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

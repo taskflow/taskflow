@@ -375,7 +375,7 @@ class FlowBuilder {
   Task for_each(B first, E last, C callable, P part = P());
   
   /**
-  @brief constructs an STL-styled index-based parallel-for task 
+  @brief constructs an index-based parallel-for task 
 
   @tparam B beginning index type (must be integral)
   @tparam E ending index type (must be integral)
@@ -413,9 +413,46 @@ class FlowBuilder {
   Please refer to @ref ParallelIterations for details.
   */
   template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
-  Task for_each_index(
-    B first, E last, S step, C callable, P part = P()
-  );
+  Task for_each_index(B first, E last, S step, C callable, P part = P());
+
+  /**
+  @brief constructs an index range-based parallel-for task
+
+  @tparam R index range type (tf::IndexRange)
+  @tparam C callable type
+  @tparam P partitioner type (default tf::DefaultPartitioner)
+
+  @param range index range 
+  @param callable callable object to apply to each valid index
+  @param part partitioning algorithm to schedule parallel iterations
+
+  @return a tf::Task handle
+
+  The task spawns asynchronous tasks that applies the callable object to 
+  in the range <tt>[first, last)</tt> with the step size.
+  This method is equivalent to the parallel execution of the following loop:
+
+  @code{.cpp}
+  // [0, 17) with a step size of 2 using tf::IndexRange
+  tf::IndexRange<int> range(0, 17, 2);
+  
+  // parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]
+  taskflow.for_each_index(range, [](tf::IndexRange<int>& range) {
+    // iterate each index in the subrange
+    for(int i=range.begin(); i<range.end(); i+=range.step_size()) {
+      printf("iterate %d\n", i);
+    }
+  });
+  
+  executor.run(taskflow).wait();
+  @endcode
+
+  The callable needs to take a single argument of type tf::IndexRange.
+
+  Please refer to @ref ParallelIterations for details.
+  */
+  template <typename R, typename C, typename P = DefaultPartitioner>
+  Task for_each_index(R range, C callable, P part = P());
 
   // ------------------------------------------------------------------------
   // transform

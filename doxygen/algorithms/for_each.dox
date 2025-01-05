@@ -19,7 +19,7 @@ for using parallel-iteration algorithms.
 @section A1IndexBasedParallelFor Create an Index-based Parallel-Iteration Task
 
 Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P&& part) 
+The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P part) 
 represents parallel execution of the following loop:
 
 @code{.cpp}
@@ -47,8 +47,38 @@ In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98.
 In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2.
 An example of the %Taskflow graph for the positive case under 12 workers is depicted below:
 
+
 <!-- @image html images/parallel_for_1.svg width=100% -->
 @dotfile images/parallel_for_1.dot
+
+Instead of explicitly specifying the index range and the callable for each index invocation,
+the overload 
+tf::Taskflow::for_each_index(R range, C callable, P part) provides you with a more flexible way to 
+iterate over subranges of indices.
+This overload uses tf::IndexRange to partition the range into subranges, 
+allowing finer control over how each subrange is processed.
+For instance, the code below does the same thing using two different approaches:
+
+@code{.cpp}
+std::vector<int> data1(100), data2(100);
+
+// Approach 1: initialize data1 using explicit index range
+taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
+
+// Approach 2: initialize data2 using tf::IndexRange
+tf::IndexRange<int> range(0, 100, 1);
+taskflow.for_each_index(range, [&](tf::IndexRange<int>& subrange){
+  for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+    data2[i] = 10;
+  }
+});
+@endcode
+
+Both approaches produce the same result, but the second approach offers more flexibility
+in terms of how each partitioned subrange is iterated. 
+This is particularly useful for applications that benefit from SIMD optimizations or 
+other range-based processing strategies.
+
 
 @section ParallelForEachCaptureIndicesByReference Capture Indices by Reference
 
@@ -88,7 +118,7 @@ When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c
 @section A1IteratorBasedParallelFor Create an Iterator-based Parallel-Iteration Task
 
 Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
-The task created by tf::Taskflow::for_each(B first, E last, C callable, P&& part) represents 
+The task created by tf::Taskflow::for_each(B first, E last, C callable, P part) represents 
 a parallel execution of the following loop:
 
 @code{.cpp}
@@ -157,8 +187,9 @@ another one with the guided partitioning algorithm:
 @code{.cpp}
 std::vector<int> vec(1024, 0);
 
-tf::ExecutionPolicy<tf::StaticPartitioner> static_partitioner;
-tf::ExecutionPolicy<tf::GuidedPartitioner> guided_partitioner;
+// create two partitioners with a chunk size of 10
+tf::StaticPartitioner static_partitioner(10);
+tf::GuidedPartitioner guided_partitioner(10);
 
 // create a parallel-iteration task with static partitioner
 taskflow.for_each(
