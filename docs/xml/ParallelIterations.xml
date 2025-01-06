@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="ParallelIterations" kind="page">
     <compoundname>ParallelIterations</compoundname>
     <title>Parallel Iterations</title>
@@ -65,7 +65,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>2:<sp/>initialize<sp/>data2<sp/>using<sp/>tf::IndexRange</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>100,<sp/>1);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.for_each_index(range,<sp/>[&amp;](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref>&amp;<sp/>subrange){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_index(range,<sp/>[&amp;](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>subrange){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=subrange.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;subrange.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=subrange.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>data2[i]<sp/>=<sp/>10;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
@@ -112,7 +112,7 @@
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list&lt;std::string&gt;</ref><sp/>list<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;hi&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;from&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;t&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;a&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;s&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;k&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;f&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;low&quot;</highlight><highlight class="normal">};</highlight></codeline>
-<codeline><highlight class="normal">taskflow.for_each(list.begin(),<sp/>list.end(),<sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>str){<sp/></highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each(list.begin(),<sp/>list.end(),<sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>str){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;parallel<sp/>for<sp/>on<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>str<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>

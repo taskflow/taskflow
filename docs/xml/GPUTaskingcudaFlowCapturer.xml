@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="GPUTaskingcudaFlowCapturer" kind="page">
     <compoundname>GPUTaskingcudaFlowCapturer</compoundname>
     <title>GPU Tasking (cudaFlowCapturer)</title>
@@ -65,12 +65,12 @@
 <codeline><highlight class="normal">task_1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task_2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>offload<sp/>captured<sp/>GPU<sp/>tasks<sp/>using<sp/>the<sp/>CUDA<sp/>Graph<sp/>execution<sp/>model</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal">tf::cudaStream<sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal">capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a952596fd7c46acee4c2459d8fe39da28" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>cudaFlow<sp/>to<sp/>a<sp/>DOT<sp/>format<sp/>through<sp/>std::cout</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>)</highlight></codeline>
+<codeline><highlight class="normal">capturer.<ref refid="classtf_1_1cudaFlowCapturer_1a90d1265bcc27647906bed6e6876c9aa7" kindref="member">dump</ref>(std::cout)</highlight></codeline>
 </programlisting></para>
 <para><dotfile name="cudaflow_capturer_1.dot"></dotfile>
 </para>

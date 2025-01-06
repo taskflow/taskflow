@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="release-3-10-0" kind="page">
     <compoundname>release-3-10-0</compoundname>
     <title>Release 3.10.0 (Master)</title>
@@ -101,12 +101,37 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
+<para><itemizedlist>
+<listitem><para>added index range-based parallel-reduction algorithm (<ulink url="https://github.com/taskflow/taskflow/issues/654">i#654</ulink>)</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;double&gt;</ref><sp/>data(100000);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.reduce_by_index(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>index<sp/>range</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;size_t&gt;</ref>(0,<sp/>N,<sp/>1),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>final<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>local<sp/>reducer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;size_t&gt;</ref><sp/>subrange,<sp/>std::optional&lt;double&gt;<sp/>running_total)<sp/>{<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>residual<sp/>=<sp/>running_total<sp/>?<sp/>*running_total<sp/>:<sp/>0.0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=subrange.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;subrange.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=subrange.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>data[i]<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>residual<sp/>+=<sp/>data[i];</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;partial<sp/>sum<sp/>=<sp/>%lf\n&quot;</highlight><highlight class="normal">,<sp/>residual);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>residual;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>global<sp/>reducer</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::plus&lt;double&gt;()</highlight></codeline>
+<codeline><highlight class="normal">);</highlight></codeline>
+</programlisting></para>
 </sect2>
 <sect2 id="release-3-10-0_1release-3-10-0_utilities">
 <title>Utilities</title><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange</ref> for index range-based parallel-for algorithm</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1af00f6babb0818202960cbbf0a83bd8e7" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1aa4db761760106ce6f6d2e7c1ac4d8520" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -120,6 +145,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-10-0_1release-3-10-0_documentation">
 <title>Documentation</title><para><itemizedlist>
 <listitem><para>revised <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para>
+</listitem><listitem><para>revised <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para>
 </listitem><listitem><para>revised <ref refid="ParallelFind" kindref="compound">Parallel Find</ref></para>
 </listitem></itemizedlist>
 </para>

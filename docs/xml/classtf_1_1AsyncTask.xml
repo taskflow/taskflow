@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1AsyncTask" kind="class" language="C++" prot="public">
     <compoundname>tf::AsyncTask</compoundname>
     <includes refid="async__task_8hpp" local="no">taskflow/core/async_task.hpp</includes>
@@ -278,11 +278,11 @@
     <detaileddescription>
 <para>A <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is a lightweight handle that retains <emphasis>shared</emphasis> ownership of a dependent asynchronous task (async task) created by an executor. This shared ownership ensures that the async task remains alive when adding it to the dependency list of another async task, thus avoiding the classical <ulink url="https://en.wikipedia.org/wiki/ABA_problem">ABA problem</ulink>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>main<sp/>thread<sp/>retains<sp/>shared<sp/>ownership<sp/>of<sp/>async<sp/>task<sp/>A</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
+<codeline><highlight class="normal">tf::AsyncTask<sp/>A<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>A<sp/>remains<sp/>alive<sp/>(i.e.,<sp/>at<sp/>least<sp/>one<sp/>ref<sp/>count<sp/>by<sp/>the<sp/>main<sp/>thread)<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>when<sp/>being<sp/>added<sp/>to<sp/>the<sp/>dependency<sp/>list<sp/>of<sp/>async<sp/>task<sp/>B</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){},<sp/>A);</highlight></codeline>
+<codeline><highlight class="normal">tf::AsyncTask<sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){},<sp/>A);</highlight></codeline>
 </programlisting></para>
 <para>Currently, <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is implemented based on the logic of C++ smart pointer <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed. </para>
     </detaileddescription>

@@ -38,7 +38,7 @@ void reduce_sum(
 
 int main(int argc, char* argv[]) {
 
-  CLI::App app{"MatrixMultiplication"};
+  CLI::App app{"Reduction"};
 
   unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");

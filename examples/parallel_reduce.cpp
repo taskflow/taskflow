@@ -3,8 +3,6 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/reduce.hpp>
 
-#define MAX_DATA_SIZE 40000000
-
 struct Data {
   int a {::rand()};
   int b {::rand()};
@@ -15,13 +13,13 @@ struct Data {
 
 // Procedure: reduce
 // This procedure demonstrates
-void reduce() {
+void reduce(size_t N) {
 
   std::cout << "Benchmark: reduce" << std::endl;
 
   std::vector<int> data;
-  data.reserve(MAX_DATA_SIZE);
-  for(int i=0; i<MAX_DATA_SIZE; ++i) {
+  data.reserve(N);
+  for(size_t i=0; i<N; ++i) {
     data.push_back(::rand());
   }
 
@@ -65,11 +63,11 @@ void reduce() {
 }
 
 // Procedure: transform_reduce
-void transform_reduce() {
+void transform_reduce(size_t N) {
 
   std::cout << "Benchmark: transform_reduce" << std::endl;
 
-  std::vector<Data> data(MAX_DATA_SIZE);
+  std::vector<Data> data(N);
 
   // sequential method
   auto sbeg = std::chrono::steady_clock::now();
@@ -100,21 +98,59 @@ void transform_reduce() {
   assert(tmin == smin);
 }
 
+void reduce_by_index(size_t N) {
+  
+  std::cout << "Benchmark: reduce_by_key" << std::endl;
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+  
+  std::vector<double> data(N);
+  double res = 1.0;
+
+  auto tbeg = std::chrono::steady_clock::now();
+  taskflow.reduce_by_index(
+    tf::IndexRange<size_t>(0, N, 1),
+    // final result
+    res,
+    // local reducer
+    [&](tf::IndexRange<size_t> subrange, std::optional<double> running_total) {
+      double residual = running_total ? *running_total : 0.0;
+      for(size_t i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+        data[i] = 1.0;
+        residual += data[i];
+      }
+      printf("partial sum = %lf\n", residual);
+      return residual;
+    },
+    // global reducer
+    std::plus<double>()
+  );
+  executor.run(taskflow).wait();
+  auto tend = std::chrono::steady_clock::now();
+  std::cout << "[taskflow] reduce_by_key "
+            << std::chrono::duration_cast<std::chrono::microseconds>(tend - tbeg).count()
+            << " us\n";
+}
+
 // ----------------------------------------------------------------------------
 
 // Function: main
 int main(int argc, char* argv[]) {
 
-  if(argc != 2) {
-    std::cerr << "usage: ./reduce [reduce|transform_reduce]" << std::endl;
+  if(argc != 3) {
+    std::cerr << "usage: ./reduce [reduce|transform_reduce|reduce_by_index] N" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
   if(std::strcmp(argv[1], "reduce") == 0) {
-    reduce();
+    reduce(std::stoul(argv[2]));
   }
   else if(std::strcmp(argv[1], "transform_reduce") == 0) {
-    transform_reduce();
+    transform_reduce(std::stoul(argv[2]));
+  }
+  else if(std::strcmp(argv[1], "reduce_by_index") == 0) {
+    reduce_by_index(std::stoul(argv[2]));
   }
   else {
     std::cerr << "invalid method " << argv[1] << std::endl;

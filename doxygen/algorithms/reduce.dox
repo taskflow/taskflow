@@ -128,7 +128,49 @@ It is possible that the binary operator will take @em r-value in both arguments,
 When data passing is expensive, 
 you may define the result type @c T to be move-constructible.
 
-@section ParallelReductionCfigureAPartitioner Configure a Partitioner
+@section ParallelReductionCreateAReduceByIndexTask Create a Reduce-by-Index Task
+
+Unlike @c tf::Taskflow::reduce, the @c tf::Taskflow::reduce_by_index function lets you perform a
+parallel reduction over an index range, but with more control over how each part of the range is processed.
+This is useful when you need to customize the reduction process for each subrange
+or you want to incorporate optimizations like SIMD.
+The example below performs a sum-reduction over all elements in @c data with @c res:  
+
+@code{.cpp}
+std::vector<double> data(100000);
+double res = 1.0;
+taskflow.reduce_by_index(
+  // index range
+  tf::IndexRange<size_t>(0, N, 1),
+  // final result
+  res,
+  // local reducer
+  [&](tf::IndexRange<size_t> subrange, std::optional<double> running_total) { 
+    double residual = running_total ? *running_total : 0.0;
+    for(size_t i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+      data[i] = 1.0;        // we initialize the data here
+      residual += data[i];
+    }
+    printf("partial sum = %lf\n", residual);
+    return residual;
+  },
+  // global reducer
+  std::plus<double>()
+);
+
+executor.run(taskflow).wait();
+assert(res == 100001);
+@endcode
+
+The local reducer @c lop computes a partial sum for each subrange, 
+and the global reducer @c gop combines the partial results into the final result and store it in @c res,
+whose initial value (i.e., @c 1.0 here) also participates in the reduction process.
+The second argument of the local reducer is a @std_optional type, which indicates the current partial sum
+until this subrange.
+Apparently, the first subrange does not have any partial sum since there is no running total from previous 
+subranges (i.e., @c running_total is @std_nullopt).
+
+@section ParallelReductionConfigureAPartitioner Configure a Partitioner
 
 You can configure a partitioner for parallel-reduction tasks to run with different
 scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.

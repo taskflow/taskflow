@@ -153,8 +153,6 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 template <typename R, typename C, typename P = DefaultPartitioner>
 auto make_for_each_index_task(R range, C c, P part = P()){
   
-  using namespace std::string_literals;
-
   using range_type = std::decay_t<unwrap_ref_decay_t<R>>;
 
   return [=] (Runtime& rt) mutable {
@@ -188,8 +186,7 @@ auto make_for_each_index_task(R range, C c, P part = P()){
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=] (size_t part_b, size_t part_e) {
-            auto part_range = range.discrete_domain(part_b, part_e);
-            c(part_range);
+            c(r.discrete_domain(part_b, part_e));
           });
         });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
@@ -201,8 +198,7 @@ auto make_for_each_index_task(R range, C c, P part = P()){
       for(size_t w=0; w<W;) {
         auto task = part([=] () mutable {
           part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) {
-            auto part_range = range.discrete_domain(part_b, part_e);
-            c(part_range);
+            c(r.discrete_domain(part_b, part_e));
           });
         });
         (++w == W) ? task() : rt.silent_async(task);

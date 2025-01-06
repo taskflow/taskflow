@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaDeviceAllocator" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaDeviceAllocator</compoundname>
     <includes refid="cuda__memory_8hpp" local="no">taskflow/cuda/cuda_memory.hpp</includes>
@@ -270,8 +270,8 @@
 <para>allocates block of storage. </para>
         </briefdescription>
         <detaileddescription>
-<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput>value_type</computeroutput>, and returns a pointer to the first element.</para>
-<para>The storage is aligned appropriately for object of type <computeroutput>value_type</computeroutput>, but they are not constructed.</para>
+<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput><ref refid="classtf_1_1cudaDeviceAllocator_1a37039db4f27e849c44b361c6d107903c" kindref="member">value_type</ref></computeroutput>, and returns a pointer to the first element.</para>
+<para>The storage is aligned appropriately for object of type <computeroutput><ref refid="classtf_1_1cudaDeviceAllocator_1a37039db4f27e849c44b361c6d107903c" kindref="member">value_type</ref></computeroutput>, but they are not constructed.</para>
 <para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>

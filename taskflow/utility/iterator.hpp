@@ -107,6 +107,11 @@ public:
   using index_type = T;
 
   /**
+  @brief constructs an index range object without any initialization
+  */
+  IndexRange() = default;
+
+  /**
    * @brief constructs an IndexRange object
    * @param beg starting index of the range
    * @param end ending index of the range (exclusive)
@@ -131,19 +136,29 @@ public:
   T step_size() const { return _step_size; }
 
   /**
+   * @brief updates the range with the new starting index, ending index, and step size
+   */
+  IndexRange<T>& reset(T begin, T end, T step_size) {
+    _beg = begin;
+    _end = end;
+    _step_size = step_size;
+    return *this;
+  }
+
+  /**
    * @brief updates the starting index of the range
    */
-  void begin(T new_begin) { _beg = new_begin; }
+  IndexRange<T>& begin(T new_begin) { _beg = new_begin; return *this; }
 
   /**
    * @brief updates the ending index of the range
    */
-  void end(T new_end) { _end = new_end; }
+  IndexRange<T>& end(T new_end) { _end = new_end; return *this; }
 
   /**
    * @brief updates the step size of the range
    */
-  void step_size(T new_step_size) { _step_size = new_step_size; }
+  IndexRange<T>& step_size(T new_step_size) { _step_size = new_step_size; return *this; }
 
   /**
    * @brief queries the number of elements in the range

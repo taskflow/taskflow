@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Task" kind="class" language="C++" prot="public">
     <compoundname>tf::Task</compoundname>
     <includes refid="task_8hpp" local="no">taskflow/core/task.hpp</includes>
@@ -626,20 +626,20 @@
 </parameteritem>
 </parameterlist>
 The following example shows how to attach user data to a task and run the task iteratively while changing the data value:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;attach<sp/>data<sp/>to<sp/>a<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow(</highlight><highlight class="stringliteral">&quot;attach<sp/>data<sp/>to<sp/>a<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>and<sp/>attach<sp/>it<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.placeholder();</highlight></codeline>
-<codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>).work([A](){</highlight></codeline>
+<codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>).work([A](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>*</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(A.data());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>iteratively<sp/>with<sp/>changing<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>++){</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>++){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>

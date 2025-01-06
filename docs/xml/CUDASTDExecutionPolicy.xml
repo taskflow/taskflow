@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="CUDASTDExecutionPolicy" kind="page">
     <compoundname>CUDASTDExecutionPolicy</compoundname>
     <title>Execution Policy</title>
@@ -51,7 +51,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">cudaStreamSynchronize(policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>());<sp/></highlight></codeline>
 </programlisting></para>
 <para>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in <ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>default_policy;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref><sp/>default_policy;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="CUDASTDExecutionPolicy_1CUDASTDAllocateMemoryBufferForAlgorithms">

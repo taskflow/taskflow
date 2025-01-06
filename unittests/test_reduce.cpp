@@ -41,7 +41,7 @@ struct MoveOnly2{
 // --------------------------------------------------------
 
 template <typename P>
-void reduce(unsigned W) {
+void reduce_min(unsigned W) {
 
   tf::Executor executor(W);
   tf::Taskflow taskflow;
@@ -86,135 +86,135 @@ void reduce(unsigned W) {
 }
 
 // guided
-TEST_CASE("Reduce.Guided.1thread" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(1);
+TEST_CASE("ReduceMin.Guided.1thread" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(1);
 }
 
-TEST_CASE("Reduce.Guided.2threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(2);
+TEST_CASE("ReduceMin.Guided.2threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(2);
 }
 
-TEST_CASE("Reduce.Guided.3threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(3);
+TEST_CASE("ReduceMin.Guided.3threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(3);
 }
 
-TEST_CASE("Reduce.Guided.4threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(4);
+TEST_CASE("ReduceMin.Guided.4threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(4);
 }
 
-TEST_CASE("Reduce.Guided.5threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(5);
+TEST_CASE("ReduceMin.Guided.5threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(5);
 }
 
-TEST_CASE("Reduce.Guided.6threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(6);
+TEST_CASE("ReduceMin.Guided.6threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(6);
 }
 
-TEST_CASE("Reduce.Guided.7threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(7);
+TEST_CASE("ReduceMin.Guided.7threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(7);
 }
 
-TEST_CASE("Reduce.Guided.8threads" * doctest::timeout(300)) {
-  reduce<tf::GuidedPartitioner<>>(8);
+TEST_CASE("ReduceMin.Guided.8threads" * doctest::timeout(300)) {
+  reduce_min<tf::GuidedPartitioner<>>(8);
 }
 
 // dynamic
-TEST_CASE("Reduce.Dynamic.1thread" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(1);
+TEST_CASE("ReduceMin.Dynamic.1thread" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(1);
 }
 
-TEST_CASE("Reduce.Dynamic.2threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(2);
+TEST_CASE("ReduceMin.Dynamic.2threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(2);
 }
 
-TEST_CASE("Reduce.Dynamic.3threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(3);
+TEST_CASE("ReduceMin.Dynamic.3threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(3);
 }
 
-TEST_CASE("Reduce.Dynamic.4threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(4);
+TEST_CASE("ReduceMin.Dynamic.4threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(4);
 }
 
-TEST_CASE("Reduce.Dynamic.5threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(5);
+TEST_CASE("ReduceMin.Dynamic.5threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(5);
 }
 
-TEST_CASE("Reduce.Dynamic.6threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(6);
+TEST_CASE("ReduceMin.Dynamic.6threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(6);
 }
 
-TEST_CASE("Reduce.Dynamic.7threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(7);
+TEST_CASE("ReduceMin.Dynamic.7threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(7);
 }
 
-TEST_CASE("Reduce.Dynamic.8threads" * doctest::timeout(300)) {
-  reduce<tf::DynamicPartitioner<>>(8);
+TEST_CASE("ReduceMin.Dynamic.8threads" * doctest::timeout(300)) {
+  reduce_min<tf::DynamicPartitioner<>>(8);
 }
 
 // static
-TEST_CASE("Reduce.Static.1thread" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(1);
+TEST_CASE("ReduceMin.Static.1thread" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(1);
 }
 
-TEST_CASE("Reduce.Static.2threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(2);
+TEST_CASE("ReduceMin.Static.2threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(2);
 }
 
-TEST_CASE("Reduce.Static.3threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(3);
+TEST_CASE("ReduceMin.Static.3threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(3);
 }
 
-TEST_CASE("Reduce.Static.4threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(4);
+TEST_CASE("ReduceMin.Static.4threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(4);
 }
 
-TEST_CASE("Reduce.Static.5threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(5);
+TEST_CASE("ReduceMin.Static.5threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(5);
 }
 
-TEST_CASE("Reduce.Static.6threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(6);
+TEST_CASE("ReduceMin.Static.6threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(6);
 }
 
-TEST_CASE("Reduce.Static.7threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(7);
+TEST_CASE("ReduceMin.Static.7threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(7);
 }
 
-TEST_CASE("Reduce.Static.8threads" * doctest::timeout(300)) {
-  reduce<tf::StaticPartitioner<>>(8);
+TEST_CASE("ReduceMin.Static.8threads" * doctest::timeout(300)) {
+  reduce_min<tf::StaticPartitioner<>>(8);
 }
 
 // random
-TEST_CASE("Reduce.Random.1thread" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(1);
+TEST_CASE("ReduceMin.Random.1thread" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(1);
 }
 
-TEST_CASE("Reduce.Random.2threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(2);
+TEST_CASE("ReduceMin.Random.2threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(2);
 }
 
-TEST_CASE("Reduce.Random.3threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(3);
+TEST_CASE("ReduceMin.Random.3threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(3);
 }
 
-TEST_CASE("Reduce.Random.4threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(4);
+TEST_CASE("ReduceMin.Random.4threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(4);
 }
 
-TEST_CASE("Reduce.Random.5threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(5);
+TEST_CASE("ReduceMin.Random.5threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(5);
 }
 
-TEST_CASE("Reduce.Random.6threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(6);
+TEST_CASE("ReduceMin.Random.6threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(6);
 }
 
-TEST_CASE("Reduce.Random.7threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(7);
+TEST_CASE("ReduceMin.Random.7threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(7);
 }
 
-TEST_CASE("Reduce.Random.8threads" * doctest::timeout(300)) {
-  reduce<tf::RandomPartitioner<>>(8);
+TEST_CASE("ReduceMin.Random.8threads" * doctest::timeout(300)) {
+  reduce_min<tf::RandomPartitioner<>>(8);
 }
 
 // --------------------------------------------------------
@@ -395,6 +395,194 @@ TEST_CASE("ReduceSum.Random.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("ReduceSum.Random.8threads" * doctest::timeout(300)) {
   reduce_sum<tf::RandomPartitioner<>>(8);
+}
+
+// --------------------------------------------------------
+// Testcase: reduce_by_index_sum
+// --------------------------------------------------------
+
+template <typename P>
+void reduce_by_index_sum(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  std::vector<int> vec(1000);
+
+  for(auto& i : vec) i = ::rand() % 100 - 50;
+
+  for(size_t n=1; n<vec.size(); n++) {
+    for(size_t c : {0, 1, 3, 7, 99}) {
+      
+      taskflow.clear();
+
+      int sum = 10;
+      int sol = 10;
+      tf::IndexRange<size_t> range;
+
+      auto stask = taskflow.emplace([&](){
+        range.reset(0, vec.size(), 1);
+        REQUIRE(range.size() == vec.size());
+        for(auto itr = vec.begin(); itr != vec.end(); itr++) {
+          sum += *itr;
+        }
+      });
+
+      tf::Task ptask;
+
+      ptask = taskflow.reduce_by_index(
+        std::ref(range),
+        sol,
+        [&](tf::IndexRange<size_t> subrange, std::optional<int> running_total){
+          int sum = running_total ? *running_total : 0;
+          for(size_t i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+            sum += vec[i];
+          }
+          return sum;
+        },
+        std::plus<int>(), 
+        P(c)
+      );
+
+      stask.precede(ptask);
+
+      executor.run(taskflow).wait();
+
+      REQUIRE(sol == sum);
+    }
+  }
+}
+
+// guided
+TEST_CASE("ReduceByIndexSum.Guided.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(1);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(2);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.3threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(3);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(4);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.5threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(5);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.6threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(6);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.7threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(7);
+}
+
+TEST_CASE("ReduceByIndexSum.Guided.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::GuidedPartitioner<>>(8);
+}
+
+// dynamic
+TEST_CASE("ReduceByIndexSum.Dynamic.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(1);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(2);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.3threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(3);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(4);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.5threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(5);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.6threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(6);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.7threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(7);
+}
+
+TEST_CASE("ReduceByIndexSum.Dynamic.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::DynamicPartitioner<>>(8);
+}
+
+// static
+TEST_CASE("ReduceByIndexSum.Static.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(1);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(2);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.3threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(3);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(4);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.5threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(5);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.6threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(6);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.7threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(7);
+}
+
+TEST_CASE("ReduceByIndexSum.Static.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::StaticPartitioner<>>(8);
+}
+
+// random
+TEST_CASE("ReduceByIndexSum.Random.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(1);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(2);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.3threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(3);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(4);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.5threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(5);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.6threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(6);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.7threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(7);
+}
+
+TEST_CASE("ReduceByIndexSum.Random.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum<tf::RandomPartitioner<>>(8);
 }
 
 // ----------------------------------------------------------------------------

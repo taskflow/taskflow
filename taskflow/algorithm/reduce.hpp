@@ -402,9 +402,100 @@ auto make_transform_reduce_task(
   };  
 }
 
-// ----------------------------------------------------------------------------
+
+// Function: make_reduce_by_index_task
+template <typename R, typename T, typename L, typename G, typename P = DefaultPartitioner>
+auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
+  
+  using range_type = std::decay_t<unwrap_ref_decay_t<R>>;
+
+  return [=, &init] (Runtime& rt) mutable {
+
+    // fetch the iterator values
+    range_type r = range;
+    
+    // nothing to be done if the range is invalid
+    if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
+      return;
+    }
+
+    size_t W = rt.executor().num_workers();
+    size_t N = r.size();
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= part.chunk_size()) {
+      part([&](){ init = lop(r, std::move(init)); })();
+      return;
+    }
+    
+    PreemptionGuard preemption_guard(rt);
+
+    if(N < W) {
+      W = N;
+    }
+
+    auto mutex = std::make_shared<std::mutex>();
+
+    // static partitioner
+    if constexpr(part.type() == PartitionerType::STATIC) {
+      
+      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
+        
+        // we force chunk size to be at least two because the temporary
+        // variable sum need to avoid copy at the first step
+        auto chunk_size = part.adjusted_chunk_size(N, W, w);
+        
+        auto task = part([=, &init] () mutable {
+
+          // temporary result so far
+          std::optional<T> tmp;
+
+          // loop reduce
+          part.loop(N, W, curr_b, chunk_size, [=, &tmp](size_t part_b, size_t part_e) mutable {
+              tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
+          }); 
+          
+          // final reduce - tmp is guaranteed to have value
+          // assert(tmp.has_value());
+          std::lock_guard<std::mutex> lock(*mutex);
+          init = gop(std::move(init), std::move(*tmp));
+        });
+
+        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
+      }
+    }
+    // dynamic partitioner
+    else {
+      auto next = std::make_shared<std::atomic<size_t>>(0);
+      
+      for(size_t w=0; w<W;) {
+
+        auto task = part([=, &init] () mutable {
+          
+          // temporary result so far
+          std::optional<T> tmp;
+          
+          // loop reduce
+          part.loop(N, W, *next, [=, &tmp](size_t part_b, size_t part_e) mutable {
+            tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
+          }); 
+          
+          // final reduce - need to check if the running total has value since
+          // this is a dynamic scheduler; the worker may not actually acquire any work
+          if(tmp) {
+            std::lock_guard<std::mutex> lock(*mutex);
+            init = gop(std::move(init), std::move(*tmp));
+          }
+        });
+        (++w == W) ? task() : rt.silent_async(task);
+      }
+    }
+  };
+}
+
+// ------------------------------------------------------------------------------------------------
 // default reduction
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Function: reduce
 template <typename B, typename E, typename T, typename O, typename P>
@@ -412,9 +503,9 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
   return emplace(make_reduce_task(beg, end, init, bop, part));
 }
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 // default transform and reduction
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 // Function: transform_reduce
 template <typename B, typename E, typename T, typename BOP, typename UOP, typename P,
@@ -423,9 +514,7 @@ template <typename B, typename E, typename T, typename BOP, typename UOP, typena
 Task FlowBuilder::transform_reduce(
   B beg, E end, T& init, BOP bop, UOP uop, P part
 ) {
-  return emplace(make_transform_reduce_task(
-    beg, end, init, bop, uop, part
-  ));
+  return emplace(make_transform_reduce_task(beg, end, init, bop, uop, part));
 }
 
 // Function: transform_reduce
@@ -437,12 +526,20 @@ template <
 Task FlowBuilder::transform_reduce(
   B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P part
 ) {
-  return emplace(make_transform_reduce_task(
-    beg1, end1, beg2, init, bop_r, bop_t, part
-  ));
+  return emplace(make_transform_reduce_task(beg1, end1, beg2, init, bop_r, bop_t, part));
 }
 
-}  // end of namespace tf -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// default reduce_by_key
+// ------------------------------------------------------------------------------------------------
+
+// Function: make_index_reduce_task
+template <typename R, typename T, typename L, typename G, typename P>
+Task FlowBuilder::reduce_by_index(R range, T& init, L lop, G gop, P part) {
+  return emplace(make_reduce_by_index_task(range, init, lop, gop, part));
+}
+
+}  // end of namespace tf -------------------------------------------------------------------------
 
 
 

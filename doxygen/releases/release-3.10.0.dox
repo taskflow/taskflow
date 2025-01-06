@@ -61,6 +61,31 @@ taskflow.for_each_index(range, [&](tf::IndexRange<int>& subrange){
 });
 @endcode
 
++ added index range-based parallel-reduction algorithm ([i#654](https://github.com/taskflow/taskflow/issues/654))
+
+@code{.cpp}
+std::vector<double> data(100000);
+double res = 1.0;
+taskflow.reduce_by_index(
+  // index range
+  tf::IndexRange<size_t>(0, N, 1),
+  // final result
+  res,
+  // local reducer
+  [&](tf::IndexRange<size_t> subrange, std::optional<double> running_total) { 
+    double residual = running_total ? *running_total : 0.0;
+    for(size_t i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
+      data[i] = 1.0;
+      residual += data[i];
+    }
+    printf("partial sum = %lf\n", residual);
+    return residual;
+  },
+  // global reducer
+  std::plus<double>()
+);
+@endcode
+
 @subsection release-3-10-0_utilities Utilities
 
 + added tf::IndexRange for index range-based parallel-for algorithm
@@ -78,6 +103,7 @@ Currently, there are no breaking changes.
 @section release-3-10-0_documentation Documentation
 
 + revised @ref ParallelIterations
++ revised @ref ParallelReduction
 + revised @ref ParallelFind
 
 @section release-3-10-0_miscellaneous_items Miscellaneous Items

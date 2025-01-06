@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="CUDASTDTransform" kind="page">
     <compoundname>CUDASTDTransform</compoundname>
     <title>Parallel Transforms</title>
@@ -33,7 +33,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The following example creates a transform kernel that transforms an input range of <computeroutput>N</computeroutput> items to an output range by multiplying each item by 10.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input[i]*10</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(</highlight></codeline>
@@ -52,7 +52,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The following example creates a transform kernel that transforms two input ranges of <computeroutput>N</computeroutput> items to an output range by summing each pair of items in the input ranges.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(policy,</highlight></codeline>

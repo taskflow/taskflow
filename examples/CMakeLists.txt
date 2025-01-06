@@ -18,7 +18,7 @@ list(APPEND TF_EXAMPLES
   visualization 
   parallel_for 
   parallel_sort
-  reduce 
+  parallel_reduce 
   inclusive_scan
   exclusive_scan
   pipeline
