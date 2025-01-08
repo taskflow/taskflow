@@ -7,13 +7,23 @@ void reduce_sum_taskflow(unsigned num_threads) {
   tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
-  double result;
+  double result = 0.0;
 
-  taskflow.reduce(vec.begin(), vec.end(), result, [](double l, double r){
-    return l + r;
-  });
+  taskflow.reduce_by_index(
+    tf::IndexRange<size_t>(0, vec.size(), 1),
+    result,
+    [&](tf::IndexRange<size_t> range, std::optional<double> running_total) {
+      double partial_sum = running_total ? *running_total : 0.0;
+      for(size_t i=range.begin(); i<range.end(); i+=range.step_size()) {
+        partial_sum += vec[i];
+      }
+      return partial_sum;
+    },
+    std::plus<double>()
+  );
 
   executor.run(taskflow).get();
+
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
