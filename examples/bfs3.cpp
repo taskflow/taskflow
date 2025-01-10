@@ -109,7 +109,6 @@ struct Frontiers {
 
   std::vector<vidType> this_frontiers;
   std::vector<vidType> next_frontiers;
-
   void resize(size_t N) {
     this_frontiers.resize(N);
     next_frontiers.resize(N);
@@ -127,11 +126,6 @@ Frontiers& get_frontiers() {
   return frontiers;
 }
 
-std::vector<vidType>& get_remainders() {
-  static std::vector<vidType> remainders;
-  return remainders;
-}
-
 // ----------------------------------------------------------------------------
 // Graph
 // ----------------------------------------------------------------------------
@@ -142,9 +136,9 @@ class Graph : public BaseGraph {
   uint64_t N;
   uint64_t M;
   
-  constexpr static size_t alpha {65536};
-  //constexpr static size_t alpha {1};
-  //constexpr static size_t gamma {64};  // minimum chunk size
+  //constexpr static size_t alpha {65536};
+  constexpr static size_t alpha {1};
+  constexpr static size_t gamma {64};  // minimum chunk size
 
   size_t W;
 
@@ -174,6 +168,7 @@ class Graph : public BaseGraph {
   }
   
   void BFS(vidType source, weight_type * distances) {
+
     ((N + M) < alpha) ? BFS_sequential(source, distances) : BFS_parallel(source, distances);
   }
 
@@ -182,7 +177,7 @@ class Graph : public BaseGraph {
   }
   
   // step - static scheduling
-  void step_td(
+  void step(
     size_t w, 
     size_t beg, 
     size_t end, 
@@ -205,158 +200,73 @@ class Graph : public BaseGraph {
     std::memcpy(next_frontiers + next_beg, local_frontiers.data(), local_frontiers.size()*sizeof(vidType));
   }
   
-  // step_bu
-  void step_bu(
-    size_t frontier_level,
+  // step - dynamic scheduling
+  void step(
     size_t w, 
-    size_t beg, 
-    size_t end, 
     weight_type* distances, 
-    const std::vector<vidType>& remainders,
+    size_t num_this_frontiers, 
+    std::atomic<size_t>& next, 
     std::atomic<size_t>& num_next_frontiers
   ) {
     auto& local_frontiers = get_threadpool().workers[w].local_frontiers;
     local_frontiers.clear();
     
-    for(size_t i=beg; i<end; i++) {
-      auto u = remainders[i];
-      for (eidType k = rowptr[u]; k < rowptr[u+1]; k++) {
-        auto v = col[k];
-        if(distances[v] == frontier_level) {
-          distances[u] = frontier_level + 1;
-          local_frontiers.push_back(u);
-          break;
+    size_t beg = next.fetch_add(gamma, std::memory_order_relaxed);
+
+    while(beg < num_this_frontiers) {
+      size_t end = std::min(beg + gamma, num_this_frontiers);
+      for(size_t i=beg; i<end; i++) {
+        auto u = this_frontiers[i];
+        for (eidType k = rowptr[u]; k < rowptr[u+1]; k++) {
+          auto v = col[k];
+          if(v != u && __sync_bool_compare_and_swap(&distances[v], std::numeric_limits<weight_type>::max(), distances[u] + 1)) {
+            local_frontiers.push_back(v);
+          }
         }
       }
+      beg = next.fetch_add(gamma, std::memory_order_relaxed);
     }
+      
     size_t next_beg = num_next_frontiers.fetch_add(local_frontiers.size(), std::memory_order_relaxed);
     std::memcpy(next_frontiers + next_beg, local_frontiers.data(), local_frontiers.size()*sizeof(vidType));
-  }
-  
-  // step - dynamic scheduling
-  //void step(
-  //  size_t w, 
-  //  weight_type* distances, 
-  //  size_t num_this_frontiers, 
-  //  std::atomic<size_t>& next, 
-  //  std::atomic<size_t>& num_next_frontiers
-  //) {
-  //  auto& local_frontiers = get_threadpool().workers[w].local_frontiers;
-  //  local_frontiers.clear();
-  //  
-  //  size_t beg = next.fetch_add(gamma, std::memory_order_relaxed);
-
-  //  while(beg < num_this_frontiers) {
-  //    size_t end = std::min(beg + gamma, num_this_frontiers);
-  //    for(size_t i=beg; i<end; i++) {
-  //      auto u = this_frontiers[i];
-  //      for (eidType k = rowptr[u]; k < rowptr[u+1]; k++) {
-  //        auto v = col[k];
-  //        if(v != u && __sync_bool_compare_and_swap(&distances[v], std::numeric_limits<weight_type>::max(), distances[u] + 1)) {
-  //          local_frontiers.push_back(v);
-  //        }
-  //      }
-  //    }
-  //    beg = next.fetch_add(gamma, std::memory_order_relaxed);
-  //  }
-  //    
-  //  size_t next_beg = num_next_frontiers.fetch_add(local_frontiers.size(), std::memory_order_relaxed);
-  //  std::memcpy(next_frontiers + next_beg, local_frontiers.data(), local_frontiers.size()*sizeof(vidType));
-  //}
-
-  size_t update_remainders(std::vector<vidType>& remainders, weight_type* distances) {
-    size_t rend = 0, num_cuts = 0;
-    for(size_t i=0; i<remainders.size(); ++i) {
-      // move source to the first partition
-      if(distances[remainders[i]] == std::numeric_limits<weight_type>::max()) {
-        std::swap(remainders[rend++], remainders[i]);
-      }
-      // frontier
-      else {
-        num_cuts += num_edges(remainders[i]);
-      }
-    }
-    remainders.resize(rend);
-    return num_cuts;
   }
   
   void BFS_parallel(vidType source, weight_type * distances) {
 
     //printf("parallel BFS\n");
     
-    // initialize source nodes
     std::atomic<size_t> num_next_frontiers(0);
     this_frontiers[0] = source;
     distances[source] = 0;
     size_t num_this_frontiers  = 1;
-    size_t frontier_level = 0;
-    
-    // initialize remainders
-    auto& remainders = get_remainders();
-    remainders.resize(N);
-    std::iota(remainders.begin(), remainders.end(), 0);
-
+    size_t num_remaining_nodes = N;
 
     std::vector<std::future<void>> futures;
   
     while(num_this_frontiers) {
-      
-      // update the remainders and swap this and next frontiers
-      size_t num_cuts = update_remainders(remainders, distances);
-      
-      //float load = num_cuts / (float) W;
-      //std::cout << "remainders " << remainders.size() 
-      //          << " cut = " << num_cuts
-      //          << " load = " << load 
-      //          << " level = " << frontier_level << std::endl;
 
-      // case 1: if remainders is small enough, we just do sequential bfs
-      if(remainders.size() <= 1024) {
+      if(num_remaining_nodes <= 1024) {
         step_through(num_this_frontiers, distances);
         break;
       }
-
-      // case 2: if the load is too large, we will do bottom up step (each worker scans more than 1024 cuts)
-      if(num_cuts >= 1024 * W) {
-        size_t chunk_size = (remainders.size() + W - 1) / W;
-        for(size_t w=0, beg=0, end; w<W && beg < remainders.size(); beg = end, w++) {
-          end = std::min(beg + chunk_size, remainders.size());
-          // last task
-          if(w + 1 == W || end == remainders.size()) {
-            step_bu(frontier_level, w, beg, end, distances, remainders, num_next_frontiers);
-            break;
-          }
-          else {
-            //executor.silent_async(task);
-            futures.push_back( get_threadpool().workers[w].async(
-              [this, frontier_level, w, beg, end, distances, &remainders, &num_next_frontiers](){
-                step_bu(frontier_level, w, beg, end, distances, remainders, num_next_frontiers);
-                return true;
-              })
-            );
-          }
-        }
-      }
-      // case 3: otherwise, we do top down
+      
       // distribute the work among workers using static scheduling algorithm
-      else {
-        size_t chunk_size = (num_this_frontiers + W - 1) / W;
-        for(size_t w=0, beg=0, end; w<W && beg < num_this_frontiers; beg = end, w++) {
-          end = std::min(beg + chunk_size, num_this_frontiers);
-          // last task
-          if(w + 1 == W || end == num_this_frontiers) {
-            step_td(w, beg, end, distances, num_next_frontiers);
-            break;
-          }
-          else {
-            //executor.silent_async(task);
-            futures.push_back( get_threadpool().workers[w].async(
-              [this, w, beg, end, distances, &num_next_frontiers](){
-                step_td(w, beg, end, distances, num_next_frontiers);
-                return true;
-              })
-            );
-          }
+      size_t chunk_size = std::max(gamma, (num_this_frontiers + W - 1) / W);
+      for(size_t w=0, beg=0, end; w<W && beg < num_this_frontiers; beg = end, w++) {
+        end = std::min(beg + chunk_size, num_this_frontiers);
+        // last task
+        if(w + 1 == W || end == num_this_frontiers) {
+          step(w, beg, end, distances, num_next_frontiers);
+          break;
+        }
+        else {
+          //executor.silent_async(task);
+          futures.push_back( get_threadpool().workers[w].async(
+            [this, w, beg, end, distances, &num_next_frontiers](){
+              step(w, beg, end, distances, num_next_frontiers);
+              return true;
+            })
+          );
         }
       }
 
@@ -382,11 +292,10 @@ class Graph : public BaseGraph {
       }
       futures.clear();
 
-
-
+      // swap this and next frontiers
+      num_remaining_nodes -= num_this_frontiers; 
       std::swap(this_frontiers, next_frontiers);
       num_this_frontiers = num_next_frontiers.exchange(0, std::memory_order_relaxed); 
-      frontier_level++;
     }
 
 
