@@ -12,15 +12,9 @@ struct BaseGraph {};
 #include <taskflow/taskflow.hpp>
 
 
-//constexpr static size_t SEQ_BFS {1<<20};
-constexpr static size_t SEQ_BFS  {0};      // > to parallel BFS
-constexpr static size_t SEQ_STEP {0};     // > to parallel step
-constexpr static size_t ALPHA = 15;
-constexpr static size_t BETA  = 18;
-
-
-constexpr static int TOP_DOWN = 0;
-constexpr static int BOTTOM_UP = 1;
+//constexpr static size_t ALPHA {1<<20};
+constexpr static size_t ALPHA {0};        // threshold to parallel BFS
+constexpr static size_t GAMMA {0};        // threshold to parallel step
 
 namespace tf {
 
@@ -162,7 +156,7 @@ class Graph : public BaseGraph {
     col       (in_col), 
     N         (in_N), 
     M         (in_M),
-    W         ((N + M) <= SEQ_BFS ? 0 : get_executor().num_workers()) {
+    W         ((N + M) <= ALPHA ? 0 : get_executor().num_workers()) {
 
     auto& frontiers = get_frontiers();
     frontiers.resize(N);
@@ -177,7 +171,7 @@ class Graph : public BaseGraph {
   }
 
   void BFS(vidType source, weight_type * distances) {
-    ((N + M) <= SEQ_BFS) ? BFS_sequential(source, distances) : BFS_parallel(source, distances);
+    ((N + M) <= ALPHA) ? BFS_sequential(source, distances) : BFS_parallel(source, distances);
   }
 
   size_t num_edges(vidType v) const {
@@ -237,7 +231,6 @@ class Graph : public BaseGraph {
     auto& local_frontiers = per_worker().local_frontiers;
     local_frontiers.clear();
     
-    size_t lmf = 0;
     for(vidType u=begu; u<endu; ++u) {
       // u is unexplored
       if(distances[u] == std::numeric_limits<weight_type>::max()) {
@@ -246,7 +239,6 @@ class Graph : public BaseGraph {
           if(distances[v] == frontier_level) {
             distances[u] = frontier_level + 1;
             local_frontiers.push_back(u);
-            lmf += num_edges(u);
             break;
           }
         }
@@ -254,7 +246,6 @@ class Graph : public BaseGraph {
     }
     size_t next_beg = num_next_frontiers.fetch_add(local_frontiers.size(), std::memory_order_relaxed);
     std::memcpy(next_frontiers + next_beg, local_frontiers.data(), local_frontiers.size()*sizeof(vidType));
-    __atomic_fetch_add(&mf, lmf, __ATOMIC_RELAXED);
   }
   
   // step_bu - sequential
@@ -268,7 +259,6 @@ class Graph : public BaseGraph {
           if(distances[v] == frontier_level) {
             distances[u] = frontier_level + 1;
             next_frontiers[num_next_frontiers++] = u; 
-            mf += num_edges(u);
             break;
           }
         }
@@ -294,36 +284,36 @@ class Graph : public BaseGraph {
     
     // initialize unexplored edge size
     mu = M;
-
-    int mode = TOP_DOWN;
-
+  
     while(num_this_frontiers) {
       
-      //if(mu < mf) {
-      //  throw std::runtime_error("bug\n");
-      //}
-        
+      // update the remainders 
+      if(mu < mf) {
+        throw std::runtime_error("bug\n");
+      }
       mu -= mf;
       num_remainders -= num_this_frontiers;
-
-      //printf("mf=%zu, mu=%zu\n", mf, mu);
-
+      
       // number of scans for top-down and buttom-up bfs
-      //size_t td_scans = mf + num_this_frontiers; 
-      //size_t bu_scans = N + mu;
+      size_t td_scans = mf + num_this_frontiers; 
+      size_t bu_scans = N + mu;
       
       //printf("ntf=%zu, remainders=%zu, mf=%zu, mu=%zu (td_scans=%zu, bu_scans=%zu)\n", num_this_frontiers, num_remainders, mf, mu, td_scans, bu_scans);
       
+      // reset data before moving on
+      mf = 0;
+      
+      // if the remaining work is fewer than the parallel threshold, do sequential bfs
+      //if(num_remainders <= 1024) {
+      //  step_through(distances);
+      //  break;
+      //}
+
       // case 2: if the number of bottom-up scans is fewer -> do bottom-up scan
-      if(mode == BOTTOM_UP) {
+      if(bu_scans < td_scans) {
         //printf("bottom up bfs\n");
-        
-        auto bu_scans = mu;
-        auto num_prev_frontiers = num_this_frontiers;
 
-        mf = 0;
-
-        if(bu_scans <= SEQ_STEP) {
+        if(bu_scans <= GAMMA) {
           num_this_frontiers = step_bu(distances);
         }
         else {
@@ -332,33 +322,17 @@ class Graph : public BaseGraph {
             [this, distances, &num_next_frontiers](tf::IndexRange<size_t> subrange) {
               step_bu(subrange.begin(), subrange.end(), distances, num_next_frontiers);
             },
-            tf::StaticPartitioner(SEQ_STEP)
+            tf::StaticPartitioner(GAMMA)
           ));
           executor.wait_for_all();
           num_this_frontiers = num_next_frontiers.exchange(0, std::memory_order_relaxed);
         }
-        
-        // no more benefit from bottom-up scan
-        if( (num_this_frontiers < num_prev_frontiers) && (num_this_frontiers <= (N/BETA)) ) {
-          mode = TOP_DOWN;
-        }
-        //if((num_this_frontiers >= num_prev_frontiers) || (num_this_frontiers > (N / BETA))) {
-        //  mode = BOTTOM_UP;
-        //}
-        //else {
-        //  mode = TOP_DOWN;
-        //}
       }
       // case 3: otherwise, we do top down
       // distribute the work among workers using static scheduling algorithm
       else {
-
-        auto td_scans = mf; // + num_this_frontiers;
-
-        mf = 0;
-
         //printf("top down bfs\n");
-        if(td_scans <= SEQ_STEP) {
+        if(td_scans <= GAMMA) {
           num_this_frontiers = step_td(distances);
         }
         else { 
@@ -367,22 +341,18 @@ class Graph : public BaseGraph {
             [this, distances, &num_next_frontiers](tf::IndexRange<size_t> subrange){
               step_td(subrange.begin(), subrange.end(), distances, num_next_frontiers);
             },
-            tf::StaticPartitioner(SEQ_STEP)
+            tf::StaticPartitioner(GAMMA)
           ));   
           executor.wait_for_all();
           num_this_frontiers = num_next_frontiers.exchange(0, std::memory_order_relaxed);
         }
-        
-        // we have enough frontiers to benefit from bottom-up step
-        if(mf > ((mu - mf) / ALPHA)) {
-          mode = BOTTOM_UP;
-        }
       }
-      
-      // reset data.
+
       std::swap(this_frontiers, next_frontiers);
       frontier_level++;
     }
+
+
   }
 
   void BFS_sequential(vidType source, weight_type * distances) {
