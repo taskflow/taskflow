@@ -808,7 +808,7 @@ class RandomPartitioner : public PartitionerBase<C> {
   private:
 
   float _alpha {0.01f};
-  float _beta  {0.5f};
+  float _beta  {0.50f};
 };
 
 /**
