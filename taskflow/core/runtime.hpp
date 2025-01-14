@@ -552,7 +552,8 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
   }
   // async task with closure: [] () { ... }
   else if constexpr (std::is_invocable_v<F>){
-    std::packaged_task p(std::forward<F>(f));
+    using R = std::invoke_result_t<F>;
+    std::packaged_task<R()> p(std::forward<F>(f));
     auto fu{p.get_future()};
     _schedule_async_task(animate(
       std::forward<P>(params), tpg, parent, 0, 

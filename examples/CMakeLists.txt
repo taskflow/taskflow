@@ -1,4 +1,5 @@
 list(APPEND TF_EXAMPLES
+  bfs
   simple 
   attach_data
   async

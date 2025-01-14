@@ -210,7 +210,8 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   // async without runtime: [] () {}
   else if constexpr(std::is_invocable_v<F>) {
 
-    std::packaged_task p(std::forward<F>(func));
+    using R = std::invoke_result_t<F>;
+    std::packaged_task<R()> p(std::forward<F>(func));
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
