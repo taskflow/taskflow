@@ -25,7 +25,9 @@ class Freelist {
   }
 
   void push(T item) {
-    push(reinterpret_cast<uintptr_t>(item) % _heads.size(), item);
+    uintptr_t hash = reinterpret_cast<uintptr_t>(item);
+    hash = hash ^ (hash >> 16);
+    push(hash % _heads.size(), item);
   }
 
   T steal(size_t w) {
