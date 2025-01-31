@@ -434,11 +434,11 @@ void reduce_by_index_sum(unsigned W) {
         std::ref(range),
         sol,
         [&](tf::IndexRange<size_t> subrange, std::optional<int> running_total){
-          int sum = running_total ? *running_total : 0;
+          int lsum = running_total ? *running_total : 0;
           for(size_t i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
-            sum += vec[i];
+            lsum += vec[i];
           }
-          return sum;
+          return lsum;
         },
         std::plus<int>(), 
         P(c)

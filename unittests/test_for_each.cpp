@@ -635,12 +635,12 @@ void range_based_for_each_index(unsigned w) {
           tf::IndexRange range(beg, end, -s);
           REQUIRE(range.size() == n);
 
-          taskflow.for_each_index(range, [&] (tf::IndexRange<int> range) {
+          taskflow.for_each_index(range, [&] (tf::IndexRange<int> lrange) {
             size_t l = 0;
-            for(auto j=range.begin(); j>range.end(); j+=range.step_size()) {
+            for(auto j=lrange.begin(); j>lrange.end(); j+=lrange.step_size()) {
               l++;
             }
-            REQUIRE(range.size() == l);
+            REQUIRE(lrange.size() == l);
             counter.fetch_add(l, std::memory_order_relaxed);
           }, P(c));
           executor.run(taskflow).wait();
@@ -729,12 +729,12 @@ void stateful_range_based_for_each_index(unsigned w) {
             REQUIRE(range.size() == n);
           });
 
-          auto loop_range = taskflow.for_each_index(std::ref(range), [&] (tf::IndexRange<int> range) {
+          auto loop_range = taskflow.for_each_index(std::ref(range), [&] (tf::IndexRange<int> lrange) {
             size_t l = 0;
-            for(auto j=range.begin(); j>range.end(); j+=range.step_size()) {
+            for(auto j=lrange.begin(); j>lrange.end(); j+=lrange.step_size()) {
               l++;
             }
-            REQUIRE(range.size() == l);
+            REQUIRE(lrange.size() == l);
             counter.fetch_add(l, std::memory_order_relaxed);
           }, P(c));
 
