@@ -1405,6 +1405,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   
   // Now I really need to relinquish my self to others
   _notifier.commit_wait(worker._waiter);
+  worker._vtm = worker._id;
   goto explore_task;
 
 }
