@@ -29,10 +29,10 @@ struct ESTATE {
   
   using underlying_type = int;  
   
-  constexpr static underlying_type NONE      = 0; 
-  constexpr static underlying_type EXCEPTION = 1;
-  constexpr static underlying_type CANCELLED = 2;
-  constexpr static underlying_type ANCHORED  = 4;  
+  constexpr static underlying_type NONE      = 0x00000000; 
+  constexpr static underlying_type EXCEPTION = 0x10000000;
+  constexpr static underlying_type CANCELLED = 0x20000000;
+  constexpr static underlying_type ANCHORED  = 0x40000000;  
 };
 
 using estate_t = ESTATE::underlying_type;

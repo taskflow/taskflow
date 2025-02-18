@@ -37,8 +37,8 @@ void for_each_index(int N) {
   // [0, N) with a step size of 2 using tf::IndexRange
   tf::IndexRange<int> range(0, N, 2);
   
-  taskflow.for_each_index(range, [](tf::IndexRange<int> range) {
-    for(int i=range.begin(); i<range.end(); i+=range.step_size()) {
+  taskflow.for_each_index(range, [](tf::IndexRange<int> subrange) {
+    for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
       printf("for_each_index on index (subrange): %d\n", i);
     }
   });
