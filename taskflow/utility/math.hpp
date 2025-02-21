@@ -269,10 +269,8 @@ inline T seed() noexcept {
  * @attention
  * The behavior is undefined when @c x is 0.
  */
-template <typename T>
-auto portable_ctz(T x) {
-
-  static_assert(std::is_unsigned_v<T>, "num_trailing_zeros only supports unsigned integer types");
+template <typename T, typename = std::enable_if_t<std::is_unsigned_v<T>>>
+auto ctz(T x) {
 
   #if defined(_MSC_VER)
     unsigned long index;

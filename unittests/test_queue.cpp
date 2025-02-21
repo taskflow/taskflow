@@ -14,7 +14,7 @@ void bounded_tsq_owner() {
 
   tf::BoundedTaskQueue<size_t*, LogSize> queue;
 
-  constexpr size_t N = (1 << LogSize) - 1;
+  constexpr size_t N = (1 << LogSize);
 
   std::vector<size_t*> data;
 

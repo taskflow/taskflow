@@ -625,26 +625,26 @@ TEST_CASE("NextPow2") {
 // ----------------------------------------------------------------------------
 
 TEST_CASE("CTZ") {
-  REQUIRE(tf::portable_ctz<uint32_t>(0b00000001) == 0);
-  REQUIRE(tf::portable_ctz<uint32_t>(0b00000010) == 1);
-  REQUIRE(tf::portable_ctz<uint32_t>(0b00000100) == 2);
-  REQUIRE(tf::portable_ctz<uint32_t>(0b10000000) == 7);
+  REQUIRE(tf::ctz<uint32_t>(0b00000001) == 0);
+  REQUIRE(tf::ctz<uint32_t>(0b00000010) == 1);
+  REQUIRE(tf::ctz<uint32_t>(0b00000100) == 2);
+  REQUIRE(tf::ctz<uint32_t>(0b10000000) == 7);
 
-  REQUIRE(tf::portable_ctz<uint64_t>(0b00000001ULL) == 0);
-  REQUIRE(tf::portable_ctz<uint64_t>(0b00000010ULL) == 1);
-  REQUIRE(tf::portable_ctz<uint64_t>(0b00000100ULL) == 2);
-  REQUIRE(tf::portable_ctz<uint64_t>(0x8000000000000000ULL) == 63);
+  REQUIRE(tf::ctz<uint64_t>(0b00000001ULL) == 0);
+  REQUIRE(tf::ctz<uint64_t>(0b00000010ULL) == 1);
+  REQUIRE(tf::ctz<uint64_t>(0b00000100ULL) == 2);
+  REQUIRE(tf::ctz<uint64_t>(0x8000000000000000ULL) == 63);
 
-  //REQUIRE(tf::portable_ctz<uint32_t>(0) == 32); // Undefined behavior, doesn't work for Windows
-  REQUIRE(tf::portable_ctz<uint32_t>(0xFFFFFFFF) == 0);
-  REQUIRE(tf::portable_ctz<uint32_t>(0x00010000) == 16);
-  REQUIRE(tf::portable_ctz<uint32_t>(0x80000000) == 31);
+  //REQUIRE(tf::ctz<uint32_t>(0) == 32); // Undefined behavior, doesn't work for Windows
+  REQUIRE(tf::ctz<uint32_t>(0xFFFFFFFF) == 0);
+  REQUIRE(tf::ctz<uint32_t>(0x00010000) == 16);
+  REQUIRE(tf::ctz<uint32_t>(0x80000000) == 31);
 
-  //REQUIRE(tf::portable_ctz<uint64_t>(0) == 64); // Undefined behavior, doesn't work for Windows
-  REQUIRE(tf::portable_ctz<uint64_t>(0xFFFFFFFFFFFFFFFFULL) == 0);
-  REQUIRE(tf::portable_ctz<uint64_t>(0x0000000100000000ULL) == 32);
-  REQUIRE(tf::portable_ctz<uint64_t>(0x0000000000008000ULL) == 15);
-  REQUIRE(tf::portable_ctz<uint64_t>(0x4000000000000000ULL) == 62);
+  //REQUIRE(tf::ctz<uint64_t>(0) == 64); // Undefined behavior, doesn't work for Windows
+  REQUIRE(tf::ctz<uint64_t>(0xFFFFFFFFFFFFFFFFULL) == 0);
+  REQUIRE(tf::ctz<uint64_t>(0x0000000100000000ULL) == 32);
+  REQUIRE(tf::ctz<uint64_t>(0x0000000000008000ULL) == 15);
+  REQUIRE(tf::ctz<uint64_t>(0x4000000000000000ULL) == 62);
 }
 
 

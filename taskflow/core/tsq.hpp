@@ -202,7 +202,7 @@ void UnboundedTaskQueue<T>::push(T o) {
   int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
-  // queue is full
+  // queue is full with one additional item (b-t+1)
   if TF_UNLIKELY(a->capacity() - 1 < (b - t)) {
     a = resize_array(a, b, t);
   }
@@ -415,8 +415,8 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_acquire);
 
-  // queue is full
-  if TF_UNLIKELY((b - t) >= BufferSize - 1) {
+  // queue is full with one additional item (b-t+1)
+  if TF_UNLIKELY((b - t) > BufferSize - 1) {
     return false;
   }
   
@@ -438,8 +438,8 @@ void BoundedTaskQueue<T, LogSize>::push(O&& o, C&& on_full) {
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_acquire);
 
-  // queue is full
-  if TF_UNLIKELY((b - t) >= BufferSize - 1) {
+  // queue is full with one additional item (b-t+1)
+  if TF_UNLIKELY((b - t) > BufferSize - 1) {
     on_full();
     return;
   }
