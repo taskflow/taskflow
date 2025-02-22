@@ -7,7 +7,7 @@
 // Starvation Test
 // ----------------------------------------------------------------------------
 
-void starvation_test(size_t W) {
+void starvation_branches(size_t W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -48,10 +48,55 @@ void starvation_test(size_t W) {
 
   REQUIRE(counter == W - W/2 + 100);
 
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.1thread" * doctest::timeout(300)) {
+  starvation_branches(1);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.2threads" * doctest::timeout(300)) {
+  starvation_branches(2);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.3threads" * doctest::timeout(300)) {
+  starvation_branches(3);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.4threads" * doctest::timeout(300)) {
+  starvation_branches(4);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.5threads" * doctest::timeout(300)) {
+  starvation_branches(5);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.6threads" * doctest::timeout(300)) {
+  starvation_branches(6);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.7threads" * doctest::timeout(300)) {
+  starvation_branches(7);
+}
+
+TEST_CASE("WorkStealing.Starvation.Branches.8threads" * doctest::timeout(300)) {
+  starvation_branches(8);
+}
+
+// ----------------------------------------------------------------------------
+// Starvation Linear Chain with Branches
+// ----------------------------------------------------------------------------
+
+void starvation_branch_with_pivot(size_t W) {
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+  std::atomic<size_t> counter{0};
+
+  tf::Task prev, curr;
+  
   // large linear chain followed by many branches
   size_t N = 1000;
   size_t target = 0;
-  taskflow.clear();
   counter = 0;
   
   for(size_t l=0; l<N; l++) {
@@ -92,43 +137,43 @@ void starvation_test(size_t W) {
   
 }
 
-TEST_CASE("WorkStealing.Starvation.1thread" * doctest::timeout(300)) {
-  starvation_test(1);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.1thread" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(1);
 }
 
-TEST_CASE("WorkStealing.Starvation.2threads" * doctest::timeout(300)) {
-  starvation_test(2);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.2threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(2);
 }
 
-TEST_CASE("WorkStealing.Starvation.3threads" * doctest::timeout(300)) {
-  starvation_test(3);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.3threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(3);
 }
 
-TEST_CASE("WorkStealing.Starvation.4threads" * doctest::timeout(300)) {
-  starvation_test(4);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.4threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(4);
 }
 
-TEST_CASE("WorkStealing.Starvation.5threads" * doctest::timeout(300)) {
-  starvation_test(5);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.5threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(5);
 }
 
-TEST_CASE("WorkStealing.Starvation.6threads" * doctest::timeout(300)) {
-  starvation_test(6);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.6threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(6);
 }
 
-TEST_CASE("WorkStealing.Starvation.7threads" * doctest::timeout(300)) {
-  starvation_test(7);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.7threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(7);
 }
 
-TEST_CASE("WorkStealing.Starvation.8threads" * doctest::timeout(300)) {
-  starvation_test(8);
+TEST_CASE("WorkStealing.Starvation.BranchesWithPivot.8threads" * doctest::timeout(300)) {
+  starvation_branch_with_pivot(8);
 }
 
 // ----------------------------------------------------------------------------
 // Starvation Loop Test
 // ----------------------------------------------------------------------------
 
-void starvation_loop_test(size_t W) {
+void starvation_loop(size_t W) {
 
   size_t L=100, B = 1024;
 
@@ -216,43 +261,43 @@ void starvation_loop_test(size_t W) {
   executor.run(taskflow).wait();
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.1thread" * doctest::timeout(300)) {
-  starvation_loop_test(1);
+TEST_CASE("WorkStealing.Starvation.Loop.1thread" * doctest::timeout(300)) {
+  starvation_loop(1);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.2threads" * doctest::timeout(300)) {
-  starvation_loop_test(2);
+TEST_CASE("WorkStealing.Starvation.Loop.2threads" * doctest::timeout(300)) {
+  starvation_loop(2);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.3threads" * doctest::timeout(300)) {
-  starvation_loop_test(3);
+TEST_CASE("WorkStealing.Starvation.Loop.3threads" * doctest::timeout(300)) {
+  starvation_loop(3);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.4threads" * doctest::timeout(300)) {
-  starvation_loop_test(4);
+TEST_CASE("WorkStealing.Starvation.Loop.4threads" * doctest::timeout(300)) {
+  starvation_loop(4);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.5threads" * doctest::timeout(300)) {
-  starvation_loop_test(5);
+TEST_CASE("WorkStealing.Starvation.Loop.5threads" * doctest::timeout(300)) {
+  starvation_loop(5);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.6threads" * doctest::timeout(300)) {
-  starvation_loop_test(6);
+TEST_CASE("WorkStealing.Starvation.Loop.6threads" * doctest::timeout(300)) {
+  starvation_loop(6);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.7threads" * doctest::timeout(300)) {
-  starvation_loop_test(7);
+TEST_CASE("WorkStealing.Starvation.Loop.7threads" * doctest::timeout(300)) {
+  starvation_loop(7);
 }
 
-TEST_CASE("WorkStealing.StarvationLoop.8threads" * doctest::timeout(300)) {
-  starvation_loop_test(8);
+TEST_CASE("WorkStealing.Starvation.Loop.8threads" * doctest::timeout(300)) {
+  starvation_loop(8);
 }
 
 // ----------------------------------------------------------------------------
 // Starvation Loop Test
 // ----------------------------------------------------------------------------
 
-void subflow_starvation_test(size_t W) {
+void subflow_starvation(size_t W) {
 
   size_t L=100, B = 1024;
 
@@ -344,42 +389,42 @@ void subflow_starvation_test(size_t W) {
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.1thread" * doctest::timeout(300)) {
-  subflow_starvation_test(1);
+  subflow_starvation(1);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.2threads" * doctest::timeout(300)) {
-  subflow_starvation_test(2);
+  subflow_starvation(2);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.3threads" * doctest::timeout(300)) {
-  subflow_starvation_test(3);
+  subflow_starvation(3);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.4threads" * doctest::timeout(300)) {
-  subflow_starvation_test(4);
+  subflow_starvation(4);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.5threads" * doctest::timeout(300)) {
-  subflow_starvation_test(5);
+  subflow_starvation(5);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.6threads" * doctest::timeout(300)) {
-  subflow_starvation_test(6);
+  subflow_starvation(6);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.7threads" * doctest::timeout(300)) {
-  subflow_starvation_test(7);
+  subflow_starvation(7);
 }
 
 TEST_CASE("WorkStealing.SubflowStarvation.8threads" * doctest::timeout(300)) {
-  subflow_starvation_test(8);
+  subflow_starvation(8);
 }
 
 // ----------------------------------------------------------------------------
 // Embarrassing Starvation Test
 // ----------------------------------------------------------------------------
 
-void embarrasing_starvation_test(size_t W) {
+void embarrasing_starvation(size_t W) {
 
   size_t B = 65536;
 
@@ -419,35 +464,35 @@ void embarrasing_starvation_test(size_t W) {
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.1thread" * doctest::timeout(300)) {
-  embarrasing_starvation_test(1);
+  embarrasing_starvation(1);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.2threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(2);
+  embarrasing_starvation(2);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.3threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(3);
+  embarrasing_starvation(3);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.4threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(4);
+  embarrasing_starvation(4);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.5threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(5);
+  embarrasing_starvation(5);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.6threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(6);
+  embarrasing_starvation(6);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.7threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(7);
+  embarrasing_starvation(7);
 }
 
 TEST_CASE("WorkStealing.EmbarrasingStarvation.8threads" * doctest::timeout(300)) {
-  embarrasing_starvation_test(8);
+  embarrasing_starvation(8);
 }
 
 // ----------------------------------------------------------------------------
@@ -798,7 +843,7 @@ TEST_CASE("WorkStealing.WavefrontStarvation.8threads") {
 // Oversubscription Test
 // ----------------------------------------------------------------------------
 
-void oversubscription_test(size_t W) {
+void oversubscription(size_t W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -841,46 +886,46 @@ void oversubscription_test(size_t W) {
 }
 
 TEST_CASE("WorkStealing.Oversubscription.2threads" * doctest::timeout(300)) {
-  oversubscription_test(2);
+  oversubscription(2);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.3threads" * doctest::timeout(300)) {
-  oversubscription_test(3);
+  oversubscription(3);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.4threads" * doctest::timeout(300)) {
-  oversubscription_test(4);
+  oversubscription(4);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.5threads" * doctest::timeout(300)) {
-  oversubscription_test(5);
+  oversubscription(5);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.6threads" * doctest::timeout(300)) {
-  oversubscription_test(6);
+  oversubscription(6);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.7threads" * doctest::timeout(300)) {
-  oversubscription_test(7);
+  oversubscription(7);
 }
 
 TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
-  oversubscription_test(8);
+  oversubscription(8);
 }
 
 //TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
-//  oversubscription_test(16);
+//  oversubscription(16);
 //}
 //
 //TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
-//  oversubscription_test(32);
+//  oversubscription(32);
 //}
 
 // ----------------------------------------------------------------------------
 // Continuation
 // ----------------------------------------------------------------------------
 
-void continuation_test(size_t W) {
+void continuation(size_t W) {
   
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -913,35 +958,35 @@ void continuation_test(size_t W) {
 }
 
 TEST_CASE("WorkStealing.Continuation.1thread" * doctest::timeout(300)) {
-  continuation_test(1);
+  continuation(1);
 }
 
 TEST_CASE("WorkStealing.Continuation.2threads" * doctest::timeout(300)) {
-  continuation_test(2);
+  continuation(2);
 }
 
 TEST_CASE("WorkStealing.Continuation.3threads" * doctest::timeout(300)) {
-  continuation_test(3);
+  continuation(3);
 }
 
 TEST_CASE("WorkStealing.Continuation.4threads" * doctest::timeout(300)) {
-  continuation_test(4);
+  continuation(4);
 }
 
 TEST_CASE("WorkStealing.Continuation.5threads" * doctest::timeout(300)) {
-  continuation_test(5);
+  continuation(5);
 }
 
 TEST_CASE("WorkStealing.Continuation.6threads" * doctest::timeout(300)) {
-  continuation_test(6);
+  continuation(6);
 }
 
 TEST_CASE("WorkStealing.Continuation.7threads" * doctest::timeout(300)) {
-  continuation_test(7);
+  continuation(7);
 }
 
 TEST_CASE("WorkStealing.Continuation.8threads" * doctest::timeout(300)) {
-  continuation_test(8);
+  continuation(8);
 }
 
 
