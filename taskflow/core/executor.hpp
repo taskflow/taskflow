@@ -1242,12 +1242,14 @@ inline void Executor::_spawn(size_t N) {
       // the previous worker may stop while the following workers
       // are still preparing for entering the scheduling loop
       try {
+
+        // worker loop
         while(1) {
 
-          // execute the tasks.
+          // drain out the local queue
           _exploit_task(w, t);
 
-          // wait for tasks
+          // steal and wait for tasks
           if(_wait_for_task(w, t) == false) {
             break;
           }
@@ -1461,7 +1463,12 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     return;
   }
   
-  _schedule(node);
+  // go through the centralized queue
+  {
+    std::scoped_lock lock(_wsq_mutex);
+    _wsq.push(node);
+  }
+  _notifier.notify_one();
 }
 
 // Procedure: _schedule

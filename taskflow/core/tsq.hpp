@@ -58,12 +58,14 @@ class UnboundedTaskQueue {
 
     int64_t C;
     int64_t M;
-    std::atomic<T>* S;
+    //std::atomic<T>* S;  // I don't think we actually need atomic here
+    T* S;
 
     explicit Array(int64_t c) :
       C {c},
       M {c-1},
-      S {new std::atomic<T>[static_cast<size_t>(C)]} {
+      S {new T[static_cast<size_t>(C)]} {
+      //S {new std::atomic<T>[static_cast<size_t>(C)]} {
     }
 
     ~Array() {
@@ -75,11 +77,13 @@ class UnboundedTaskQueue {
     }
 
     void push(int64_t i, T o) noexcept {
-      S[i & M].store(o, std::memory_order_relaxed);
+      //S[i & M].store(o, std::memory_order_relaxed);
+      S[i & M] = o;
     }
 
     T pop(int64_t i) noexcept {
-      return S[i & M].load(std::memory_order_relaxed);
+      //return S[i & M].load(std::memory_order_relaxed);
+      return S[i & M];
     }
 
     Array* resize(int64_t b, int64_t t) {
@@ -228,6 +232,7 @@ T UnboundedTaskQueue<T>::pop() {
 
   if(t <= b) {
     item = a->pop(b);
+    // last item -> now queue is empty
     if(t == b) {
       // the last item just got stolen
       if(!_top.compare_exchange_strong(t, t+1,
@@ -318,7 +323,8 @@ class BoundedTaskQueue {
 
   alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top {0};
   alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom {0};
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<T> _buffer[BufferSize];
+  //alignas(2*TF_CACHELINE_SIZE) std::atomic<T> _buffer[BufferSize];
+  alignas(2*TF_CACHELINE_SIZE) T _buffer[BufferSize];
 
   public:
     
@@ -420,7 +426,8 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
     return false;
   }
   
-  _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
+  //_buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
+  _buffer[b & BufferMask] = o;
 
   std::atomic_thread_fence(std::memory_order_release);
   
@@ -444,7 +451,8 @@ void BoundedTaskQueue<T, LogSize>::push(O&& o, C&& on_full) {
     return;
   }
   
-  _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
+  //_buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
+  _buffer[b & BufferMask] = o;
 
   std::atomic_thread_fence(std::memory_order_release);
   
@@ -464,7 +472,8 @@ T BoundedTaskQueue<T, LogSize>::pop() {
   T item {nullptr};
 
   if(t <= b) {
-    item = _buffer[b & BufferMask].load(std::memory_order_relaxed);
+    //item = _buffer[b & BufferMask].load(std::memory_order_relaxed);
+    item = _buffer[b & BufferMask];
     if(t == b) {
       // the last item just got stolen
       if(!_top.compare_exchange_strong(t, t+1, 
@@ -492,7 +501,8 @@ T BoundedTaskQueue<T, LogSize>::steal() {
   T item{nullptr};
 
   if(t < b) {
-    item = _buffer[t & BufferMask].load(std::memory_order_relaxed);
+    //item = _buffer[t & BufferMask].load(std::memory_order_relaxed);
+    item = _buffer[t & BufferMask];
     if(!_top.compare_exchange_strong(t, t+1,
                                      std::memory_order_seq_cst,
                                      std::memory_order_relaxed)) {
