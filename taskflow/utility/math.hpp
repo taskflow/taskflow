@@ -297,6 +297,50 @@ auto ctz(T x) {
   #endif
 }
 
+// ------------------------------------------------------------------------------------------------
+// coprime
+// ------------------------------------------------------------------------------------------------
+
+/**
+ * @brief computes a coprime of a given number
+ *
+ * This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with @c N.
+ * If @c N is less than 3, it returns 1 as a default coprime.
+ *
+ * @param N input number for which a coprime is to be found.
+ * @return the largest number < @c N that is coprime to N
+ */
+constexpr size_t coprime(size_t N) {
+  if(N < 3) {
+    return 1;
+  }
+  for (size_t x = N; --x > 0;) {
+    if (std::gcd(x, N) == 1) {
+      return x;
+    }
+  }
+  return 1;
+}
+
+/**
+ * @brief generates a compile-time array of coprimes for numbers from 0 to N-1
+ *
+ * This function constructs a constexpr array where each element at index `i` contains a coprime of `i`
+ * (the largest number less than `i` that is coprime to it).
+ *
+ * @tparam N the size of the array to generate (should be greater than 0).
+ * @return a constexpr array of size @c N where each index holds a coprime of its value.
+ */
+template <size_t N>
+constexpr std::array<size_t, N> make_coprimes() {
+  static_assert(N>0, "N must be greater than 0");
+  std::array<size_t, N> coprimes{};
+  for (size_t n = 0; n < N; ++n) {
+    coprimes[n] = coprime(n);
+  }
+  return coprimes;
+}
+
 
 //class XorShift64 {
 //

@@ -647,4 +647,70 @@ TEST_CASE("CTZ") {
   REQUIRE(tf::ctz<uint64_t>(0x4000000000000000ULL) == 62);
 }
 
+// ----------------------------------------------------------------------------
+// test coprimes
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Coprimes") {
+
+  // Compile-time checks for known values
+  static_assert(tf::coprime(1) == 1);
+  static_assert(tf::coprime(2) == 1);
+  static_assert(tf::coprime(3) == 2);
+  static_assert(tf::coprime(4) == 3);
+  static_assert(tf::coprime(5) == 4);
+  static_assert(tf::coprime(6) == 5);
+  static_assert(tf::coprime(7) == 6);
+  static_assert(tf::coprime(8) == 7);
+  static_assert(tf::coprime(9) == 8);
+  static_assert(tf::coprime(10) == 9);
+  static_assert(tf::coprime(11) == 10);
+  static_assert(tf::coprime(12) == 11);
+  static_assert(tf::coprime(13) == 12);
+  static_assert(tf::coprime(14) == 13);
+  static_assert(tf::coprime(15) == 14);
+  static_assert(tf::coprime(16) == 15);
+  static_assert(tf::coprime(17) == 16);
+  static_assert(tf::coprime(18) == 17);
+  static_assert(tf::coprime(19) == 18);
+  static_assert(tf::coprime(20) == 19);
+
+  constexpr auto coprime_table = tf::make_coprimes<51>();
+  
+  static_assert(coprime_table[1] == 1);
+  static_assert(coprime_table[2] == 1);
+  static_assert(coprime_table[3] == 2);
+  static_assert(coprime_table[4] == 3);
+  static_assert(coprime_table[5] == 4);
+  static_assert(coprime_table[6] == 5);
+  static_assert(coprime_table[7] == 6);
+  static_assert(coprime_table[8] == 7);
+  static_assert(coprime_table[9] == 8);
+  static_assert(coprime_table[10] == 9);
+  static_assert(coprime_table[11] == 10);
+  static_assert(coprime_table[12] == 11);
+  static_assert(coprime_table[13] == 12);
+  static_assert(coprime_table[14] == 13);
+  static_assert(coprime_table[15] == 14);
+  static_assert(coprime_table[16] == 15);
+  static_assert(coprime_table[17] == 16);
+  static_assert(coprime_table[18] == 17);
+  static_assert(coprime_table[19] == 18);
+  static_assert(coprime_table[20] == 19);
+
+  // Runtime assertions for all values up to 50
+  for (size_t i = 1; i <= 50; ++i) {
+    REQUIRE(std::gcd(i, coprime_table[i]) == 1);
+    REQUIRE(tf::coprime(i) == coprime_table[i]);
+    
+    // randomly generate a coprime
+    auto v = ::rand() % 1048 + 2;
+    auto c = tf::coprime(v);
+    REQUIRE(std::gcd(v, c) == 1);
+    REQUIRE(c < v);
+  }
+  
+}
+
+
 
