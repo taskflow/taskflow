@@ -3,7 +3,7 @@
 #include "observer.hpp"
 #include "taskflow.hpp"
 #include "async_task.hpp"
-//#include "freelist.hpp"
+#include "freelist.hpp"
 
 /**
 @file executor.hpp
@@ -1045,7 +1045,6 @@ class Executor {
     
   const size_t _MAX_STEALS;
   
-  std::mutex _wsq_mutex;
   std::mutex _taskflows_mutex;
   
   std::vector<Worker> _workers;
@@ -1066,7 +1065,7 @@ class Executor {
   
   std::list<Taskflow> _taskflows;
 
-  UnboundedTaskQueue<Node*> _wsq;
+  Freelist<Node*> _freelist;
 
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -1138,6 +1137,7 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _workers         (N),
   _notifier        (N),
   _latch           (N+1),
+  _freelist        (N),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {
@@ -1228,7 +1228,8 @@ inline void Executor::_spawn(size_t N) {
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
       );
-      w._rdvtm = std::uniform_int_distribution<size_t>(0, _workers.size() - 1);
+      //w._rdvtm = std::uniform_int_distribution<size_t>(0, _workers.size() - 1);
+      w._rdvtm = std::uniform_int_distribution<size_t>(0, _workers.size() + _freelist.size() - 2);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_interface) {
@@ -1286,9 +1287,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
 
-      t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
-      //t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-      //                                 _freelist.steal(w._vtm - _workers.size());
+      //t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
+                                       _freelist.steal(w._vtm - _workers.size());
 
       if(t) {
         _invoke(w, t);
@@ -1299,9 +1300,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
           std::this_thread::yield();
         }
         // skip worker-id
-        w._vtm = w._rdvtm(w._rdgen);
-        //auto r = w._rdvtm(w._rdgen);
-        //w._vtm = r + (r >= w._id);
+        //w._vtm = w._rdvtm(w._rdgen);
+        auto r = w._rdvtm(w._rdgen);
+        w._vtm = r + (r >= w._id);
         goto explore;
       }
       else {
@@ -1321,9 +1322,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   // Here, we write do-while to make the worker steal at once
   // from the assigned victim.
   do {
-    t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
-    //t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-    //                                 _freelist.steal(w._vtm - _workers.size());
+    //t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
+    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
+                                     _freelist.steal(w._vtm - _workers.size());
 
     if(t) {
       break;
@@ -1337,9 +1338,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
     }
 
     // skip worker-id
-    w._vtm = w._rdvtm(w._rdgen);
-    //auto r = w._rdvtm(w._rdgen);
-    //w._vtm = r + (r >= w._id);
+    //w._vtm = w._rdvtm(w._rdgen);
+    auto r = w._rdvtm(w._rdgen);
+    w._vtm = r + (r >= w._id);
   } 
 #if __cplusplus >= TF_CPP20
   // the _DONE can be checked later in wait_for_task?
@@ -1378,10 +1379,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   
   // ---- 2PC guard ----
   _notifier.prepare_wait(worker._waiter);
-
-  if(!_wsq.empty()) {
+  
+  // scan through the freelist
+  if(!_freelist.empty(worker._vtm)) {
     _notifier.cancel_wait(worker._waiter);
-    worker._vtm = worker._id;
+    worker._vtm += _workers.size();
     goto explore_task;
   }
 
@@ -1455,28 +1457,19 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node, [&](){ 
-      std::scoped_lock lock(_wsq_mutex);
-      _wsq.push(node);
-    });
+    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
     _notifier.notify_one();
     return;
   }
   
   // go through the centralized queue
-  {
-    std::scoped_lock lock(_wsq_mutex);
-    _wsq.push(node);
-  }
+  _freelist.push(node);
   _notifier.notify_one();
 }
 
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
-  {
-    std::scoped_lock lock(_wsq_mutex);
-    _wsq.push(node);
-  }
+  _freelist.push(node);
   _notifier.notify_one();
 }
 
@@ -1499,20 +1492,14 @@ void Executor::_schedule(Worker& worker, I first, I last) {
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; i++) {
       auto node = detail::get_node_ptr(first[i]);
-      worker._wsq.push(node, [&](){ 
-        std::scoped_lock lock(_wsq_mutex);
-        _wsq.push(node);
-      });
+      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
       _notifier.notify_one();
     }
     return;
   }
   
-  {
-    std::scoped_lock lock(_wsq_mutex);
-    for(size_t i=0; i<num_nodes; i++) {
-      _wsq.push(detail::get_node_ptr(first[i]));
-    }
+  for(size_t i=0; i<num_nodes; i++) {
+    _freelist.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }
@@ -1527,11 +1514,8 @@ inline void Executor::_schedule(I first, I last) {
     return;
   }
 
-  {
-    std::scoped_lock lock(_wsq_mutex);
-    for(size_t i=0; i<num_nodes; i++) {
-      _wsq.push(detail::get_node_ptr(first[i]));
-    }
+  for(size_t i=0; i<num_nodes; i++) {
+    _freelist.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }

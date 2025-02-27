@@ -712,5 +712,41 @@ TEST_CASE("Coprimes") {
   
 }
 
+// ----------------------------------------------------------------------------
+// Log2
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Floor of Log2") {
+
+  assert(tf::log2(1) == 0);
+  assert(tf::log2(2) == 1);
+  assert(tf::log2(4) == 2);
+  assert(tf::log2(8) == 3);
+  assert(tf::log2(16) == 4);
+  assert(tf::log2(32) == 5);
+  assert(tf::log2(64) == 6);
+  assert(tf::log2(128) == 7);
+  assert(tf::log2(256) == 8);
+
+  // Test non-powers of 2 (floor log2)
+  assert(tf::log2(3) == 1);
+  assert(tf::log2(5) == 2);
+  assert(tf::log2(6) == 2);
+  assert(tf::log2(7) == 2);
+  assert(tf::log2(9) == 3);
+  assert(tf::log2(10) == 3);
+  assert(tf::log2(15) == 3);
+  assert(tf::log2(17) == 4);
+  assert(tf::log2(31) == 4);
+  assert(tf::log2(33) == 5);
+  
+  // Test large values
+  assert(tf::log2(1023) == 9);
+  assert(tf::log2(1024) == 10);
+  assert(tf::log2(1025) == 10);
+  assert(tf::log2(std::numeric_limits<uint32_t>::max()) == 31);
+  assert(tf::log2(std::numeric_limits<uint64_t>::max()) == 63);
+}
+
 
 

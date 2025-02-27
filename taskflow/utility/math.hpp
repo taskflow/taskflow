@@ -62,24 +62,43 @@ constexpr bool is_pow2(const T& x) {
 }
 
 /**
- * @brief Computes the floor of log2 of the given positive integer.
+ * @brief computes the floor of the base-2 logarithm of a number using count-leading-zeros (CTL).
  *
- * This function calculates the largest integer `log` such that `2^log <= n`.
+ * This function efficiently calculates `log2(n)` for both 32-bit and 64-bit integers.
  *
- * @tparam T The type of the input. Must be an integral type.
- * @param n The positive integer to compute log2 for. Assumes `n > 0`.
- * @return The floor of log2 of `n`.
- *
- * @attention This function is constexpr and can be evaluated at compile time.
- *
+ * @tparam T integer type (uint32_t or uint64_t).
+ * @param ninput number.
+ * @return floor of `log2(n)`
  */
-template<typename T>
-constexpr int log2(T n) {
-  int log = 0;
+template <typename T>
+constexpr size_t log2(T n) {
+
+   static_assert(std::is_unsigned_v<T>, "log2 only supports unsigned integer types");
+
+   //if (n == 1) return 1;  // Special case: log2(1) = 1
+
+#if defined(_MSC_VER)
+  unsigned long index;
+  if constexpr (sizeof(T) == 8) {
+    _BitScanReverse64(&index, n);
+  } else {
+    _BitScanReverse(&index, static_cast<unsigned long>(n));
+  }
+  return static_cast<size_t>(index);
+#elif defined(__GNUC__) || defined(__clang__)
+  if constexpr (sizeof(T) == 8) {
+    return 63 - __builtin_clzll(n);
+  } else {
+    return 31 - __builtin_clz(n);
+  }
+#else
+  // Portable fallback: Uses bit shifts to count leading zeros manually
+  size_t log = 0;
   while (n >>= 1) {
     ++log;
   }
   return log;
+#endif
 }
 
 /**
