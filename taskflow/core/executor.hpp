@@ -1163,7 +1163,7 @@ inline Executor::~Executor() {
 #if __cplusplus >= TF_CPP20
   _done.test_and_set(std::memory_order_relaxed);
 #else
-  _done = true;
+  _done.store(true, std::memory_order_relaxed);
 #endif
   _notifier.notify_all();
 
@@ -1346,7 +1346,7 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   // the _DONE can be checked later in wait_for_task?
   while(!_done.test(std::memory_order_relaxed));
 #else
-  while(!_done);
+  while(!_done.load(std::memory_order_relaxed));
 #endif
 
 }
@@ -1397,7 +1397,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
 #if __cplusplus >= TF_CPP20
   if(_done.test(std::memory_order_relaxed)) {
 #else
-  if(_done) {
+  if(_done.load(std::memory_order_relaxed)) {
 #endif
     _notifier.cancel_wait(worker._waiter);
     _notifier.notify_all();
@@ -1526,7 +1526,7 @@ void Executor::_schedule_graph_with_parent(
   _schedule(worker, beg, send);
 }
 
-inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
+TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
     _schedule(worker, cache);
   }

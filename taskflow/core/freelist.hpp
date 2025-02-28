@@ -10,14 +10,12 @@ namespace tf {
 template <typename T>
 class Freelist {
 
-  friend class Executor;
-
+  public:
+  
   struct Bucket {
     std::mutex mutex;
     UnboundedTaskQueue<T> queue;
   };
-
-  public:
 
   TF_FORCE_INLINE Freelist(size_t N) : _buckets(N < 4 ? 1 : floor_log2(N)) {}
 
