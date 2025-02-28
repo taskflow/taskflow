@@ -1369,13 +1369,10 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   if(t) {
     return true;
   }
+
+  // we have tried hard to steal tasks, and the current landscape 
+  // is supposed to be empty for all
   
-  // The last thief who successfully stole a task will wake up
-  // another thief worker to avoid starvation.
-//  if(t) {
-//    _notifier.notify_one();
-//    return true;
-//  }
   
   // ---- 2PC guard ----
   _notifier.prepare_wait(worker._waiter);
@@ -1457,7 +1454,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
+    worker._wsq.push(node, [&](){ _freelist.push(node); });
     _notifier.notify_one();
     return;
   }
@@ -1492,7 +1489,7 @@ void Executor::_schedule(Worker& worker, I first, I last) {
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; i++) {
       auto node = detail::get_node_ptr(first[i]);
-      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
+      worker._wsq.push(node, [&](){ _freelist.push(node); });
       _notifier.notify_one();
     }
     return;

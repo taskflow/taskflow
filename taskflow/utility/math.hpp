@@ -71,7 +71,7 @@ constexpr bool is_pow2(const T& x) {
  * @return floor of `log2(n)`
  */
 template <typename T>
-constexpr size_t log2(T n) {
+constexpr size_t floor_log2(T n) {
 
    static_assert(std::is_unsigned_v<T>, "log2 only supports unsigned integer types");
 

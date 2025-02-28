@@ -19,15 +19,17 @@ class Freelist {
 
   public:
 
-  TF_FORCE_INLINE Freelist(size_t N) : _buckets(N) {}
+  TF_FORCE_INLINE Freelist(size_t N) : _buckets(N < 4 ? 1 : floor_log2(N)) {}
 
-  TF_FORCE_INLINE void push(size_t w, T item) {
-    std::scoped_lock lock(_buckets[w].mutex);
-    _buckets[w].queue.push(item);  
-  }
+  //TF_FORCE_INLINE void push(size_t w, T item) {
+  //  std::scoped_lock lock(_buckets[w].mutex);
+  //  _buckets[w].queue.push(item);  
+  //}
 
   TF_FORCE_INLINE void push(T item) {
-    push(reinterpret_cast<uintptr_t>(item) % _buckets.size(), item);
+    auto b = reinterpret_cast<uintptr_t>(item) % _buckets.size();
+    std::scoped_lock lock(_buckets[b].mutex);
+    _buckets[b].queue.push(item);
   }
 
   TF_FORCE_INLINE T steal(size_t w) {
