@@ -716,36 +716,36 @@ TEST_CASE("Coprimes") {
 // Log2
 // ----------------------------------------------------------------------------
 
-TEST_CASE("Floor of Log2") {
+TEST_CASE("FloorLog2") {
 
-  assert(tf::floor_log2(1) == 0);
-  assert(tf::floor_log2(2) == 1);
-  assert(tf::floor_log2(4) == 2);
-  assert(tf::floor_log2(8) == 3);
-  assert(tf::floor_log2(16) == 4);
-  assert(tf::floor_log2(32) == 5);
-  assert(tf::floor_log2(64) == 6);
-  assert(tf::floor_log2(128) == 7);
-  assert(tf::floor_log2(256) == 8);
+  REQUIRE(tf::floor_log2(1u) == 0);
+  REQUIRE(tf::floor_log2(2u) == 1);
+  REQUIRE(tf::floor_log2(4u) == 2);
+  REQUIRE(tf::floor_log2(8u) == 3);
+  REQUIRE(tf::floor_log2(16u) == 4);
+  REQUIRE(tf::floor_log2(32u) == 5);
+  REQUIRE(tf::floor_log2(64u) == 6);
+  REQUIRE(tf::floor_log2(128u) == 7);
+  REQUIRE(tf::floor_log2(256u) == 8);
 
   // Test non-powers of 2 (floor log2)
-  assert(tf::floor_log2(3) == 1);
-  assert(tf::floor_log2(5) == 2);
-  assert(tf::floor_log2(6) == 2);
-  assert(tf::floor_log2(7) == 2);
-  assert(tf::floor_log2(9) == 3);
-  assert(tf::floor_log2(10) == 3);
-  assert(tf::floor_log2(15) == 3);
-  assert(tf::floor_log2(17) == 4);
-  assert(tf::floor_log2(31) == 4);
-  assert(tf::floor_log2(33) == 5);
+  REQUIRE(tf::floor_log2(3u) == 1);
+  REQUIRE(tf::floor_log2(5u) == 2);
+  REQUIRE(tf::floor_log2(6u) == 2);
+  REQUIRE(tf::floor_log2(7u) == 2);
+  REQUIRE(tf::floor_log2(9u) == 3);
+  REQUIRE(tf::floor_log2(10u) == 3);
+  REQUIRE(tf::floor_log2(15u) == 3);
+  REQUIRE(tf::floor_log2(17u) == 4);
+  REQUIRE(tf::floor_log2(31u) == 4);
+  REQUIRE(tf::floor_log2(33u) == 5);
   
   // Test large values
-  assert(tf::floor_log2(1023) == 9);
-  assert(tf::floor_log2(1024) == 10);
-  assert(tf::floor_log2(1025) == 10);
-  assert(tf::floor_log2(std::numeric_limits<uint32_t>::max()) == 31);
-  assert(tf::floor_log2(std::numeric_limits<uint64_t>::max()) == 63);
+  REQUIRE(tf::floor_log2(1023u) == 9);
+  REQUIRE(tf::floor_log2(1024u) == 10);
+  REQUIRE(tf::floor_log2(1025u) == 10);
+  REQUIRE(tf::floor_log2(std::numeric_limits<uint32_t>::max()) == 31);
+  REQUIRE(tf::floor_log2(std::numeric_limits<uint64_t>::max()) == 63);
 }
 
 
