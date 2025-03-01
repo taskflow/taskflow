@@ -1043,8 +1043,6 @@ class Executor {
 
   private:
     
-  const size_t _MAX_STEALS;
-  
   std::mutex _taskflows_mutex;
   
   std::vector<Worker> _workers;
@@ -1061,11 +1059,12 @@ class Executor {
   size_t _num_topologies {0};
   std::atomic<bool> _done {0};
 #endif
-
   
   std::list<Taskflow> _taskflows;
 
   Freelist<Node*> _freelist;
+
+  const size_t _MAX_STEALS;
 
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -1133,11 +1132,11 @@ class Executor {
 
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
-  _MAX_STEALS      ((N+1) << 1),
   _workers         (N),
   _notifier        (N),
   _latch           (N+1),
   _freelist        (N),
+  _MAX_STEALS      ((N + _freelist.size() +1) << 1),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {

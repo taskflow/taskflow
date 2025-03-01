@@ -248,6 +248,13 @@ inline void pause() {
 }
 
 /**
+@brief pause CPU for a specified number of iterations
+*/
+inline void pause(size_t count) {
+  while(count-- > 0) pause();
+}
+
+/**
  * @brief spins until the given predicate becomes true
  * 
  * @tparam P the type of the predicate function or callable.
