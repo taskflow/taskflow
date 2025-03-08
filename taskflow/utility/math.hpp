@@ -75,8 +75,6 @@ constexpr size_t floor_log2(T n) {
 
    static_assert(std::is_unsigned_v<T>, "log2 only supports unsigned integer types");
 
-   //if (n == 1) return 1;  // Special case: log2(1) = 1
-
 #if defined(_MSC_VER)
   unsigned long index;
   if constexpr (sizeof(T) == 8) {
@@ -351,7 +349,7 @@ constexpr size_t coprime(size_t N) {
  * @return a constexpr array of size @c N where each index holds a coprime of its value.
  */
 template <size_t N>
-constexpr std::array<size_t, N> make_coprimes() {
+constexpr std::array<size_t, N> make_coprime_lut() {
   static_assert(N>0, "N must be greater than 0");
   std::array<size_t, N> coprimes{};
   for (size_t n = 0; n < N; ++n) {

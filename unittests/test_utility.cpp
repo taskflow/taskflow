@@ -675,7 +675,7 @@ TEST_CASE("Coprimes") {
   static_assert(tf::coprime(19) == 18);
   static_assert(tf::coprime(20) == 19);
 
-  constexpr auto coprime_table = tf::make_coprimes<51>();
+  constexpr auto coprime_table = tf::make_coprime_lut<51>();
   
   static_assert(coprime_table[1] == 1);
   static_assert(coprime_table[2] == 1);

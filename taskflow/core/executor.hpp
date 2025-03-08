@@ -1064,8 +1064,6 @@ class Executor {
 
   Freelist<Node*> _freelist;
 
-  const size_t _MAX_STEALS;
-
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
@@ -1136,7 +1134,7 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _notifier        (N),
   _latch           (N+1),
   _freelist        (N),
-  _MAX_STEALS      ((N + _freelist.size() +1) << 1),
+  //_MAX_STEALS      ((N + _freelist.size() +1) << 1),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {
@@ -1274,6 +1272,8 @@ inline void Executor::_spawn(size_t N) {
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
   
+  const size_t MAX_STEALS = ((_workers.size() + _freelist.size() + 1) << 1);
+  
   exploit:
 
   while(!stop_predicate()) {
@@ -1295,7 +1295,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
         goto exploit;
       }
       else if(!stop_predicate()) {
-        if(num_steals++ > _MAX_STEALS) {
+        if(num_steals++ > MAX_STEALS) {
           std::this_thread::yield();
         }
         // skip worker-id
@@ -1315,6 +1315,8 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 inline void Executor::_explore_task(Worker& w, Node*& t) {
 
   //assert(!t);
+  
+  const size_t MAX_STEALS = ((_workers.size() + _freelist.size() + 1) << 1);
 
   size_t num_steals = 0;
 
@@ -1329,9 +1331,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       break;
     }
 
-    if (++num_steals > _MAX_STEALS) {
+    if (++num_steals > MAX_STEALS) {
       std::this_thread::yield();
-      if (num_steals > _MAX_STEALS + 100) {
+      if (num_steals > MAX_STEALS + 100) {
         break;
       }
     }
@@ -1378,8 +1380,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   
   // scan through the freelist
   if(!_freelist.empty(worker._vtm)) {
-    _notifier.cancel_wait(worker._waiter);
     worker._vtm += _workers.size();
+    _notifier.cancel_wait(worker._waiter);
     goto explore_task;
   }
 
@@ -1387,8 +1389,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   // with _spawn which may initialize a worker at the same time.
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait(worker._waiter);
       worker._vtm = vtm;
+      _notifier.cancel_wait(worker._waiter);
       goto explore_task;
     }
   }
