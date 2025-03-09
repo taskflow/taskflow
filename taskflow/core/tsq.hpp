@@ -155,6 +155,9 @@ class UnboundedTaskQueue {
   */
   T steal();
 
+
+  T steal_with_hint(size_t& num_empty_steals);
+
   private:
 
   Array* resize_array(Array* a, int64_t b, int64_t t);
@@ -265,6 +268,30 @@ T UnboundedTaskQueue<T>::steal() {
     }
   }
 
+  return item;
+}
+
+// Function: steal
+template <typename T>
+T UnboundedTaskQueue<T>::steal_with_hint(size_t& num_empty_steals) {
+  
+  int64_t t = _top.load(std::memory_order_acquire);
+  std::atomic_thread_fence(std::memory_order_seq_cst);
+  int64_t b = _bottom.load(std::memory_order_acquire);
+
+  T item {nullptr};
+
+  if(t < b) {
+    num_empty_steals = 0;
+    Array* a = _array.load(std::memory_order_consume);
+    item = a->pop(t);
+    if(!_top.compare_exchange_strong(t, t+1,
+                                     std::memory_order_seq_cst,
+                                     std::memory_order_relaxed)) {
+      return nullptr;
+    }
+  }
+  ++num_empty_steals;
   return item;
 }
 
@@ -389,6 +416,8 @@ class BoundedTaskQueue {
   The return can be a @std_nullopt if this operation failed (not necessary empty).
   */
   T steal();
+
+  T steal_with_hint(size_t& num_empty_steals);
 };
 
 // Function: empty
@@ -500,6 +529,28 @@ T BoundedTaskQueue<T, LogSize>::steal() {
     }
   }
 
+  return item;
+}
+
+// Function: steal
+template <typename T, size_t LogSize>
+T BoundedTaskQueue<T, LogSize>::steal_with_hint(size_t& num_empty_steals) {
+  int64_t t = _top.load(std::memory_order_acquire);
+  std::atomic_thread_fence(std::memory_order_seq_cst);
+  int64_t b = _bottom.load(std::memory_order_acquire);
+  
+  T item {nullptr};
+
+  if(t < b) {
+    num_empty_steals = 0;
+    item = _buffer[t & BufferMask].load(std::memory_order_relaxed);
+    if(!_top.compare_exchange_strong(t, t+1,
+                                     std::memory_order_seq_cst,
+                                     std::memory_order_relaxed)) {
+      return nullptr;
+    }
+  }
+  ++num_empty_steals;
   return item;
 }
 

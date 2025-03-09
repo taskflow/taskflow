@@ -10,6 +10,8 @@ namespace tf {
 template <typename T>
 class Freelist {
 
+  friend class Executor;
+
   public:
   
   struct Bucket {
@@ -32,6 +34,10 @@ class Freelist {
 
   TF_FORCE_INLINE T steal(size_t w) {
     return _buckets[w].queue.steal();
+  }
+  
+  TF_FORCE_INLINE T steal_with_hint(size_t w, size_t& num_empty_steals) {
+    return _buckets[w].queue.steal_with_hint(num_empty_steals);
   }
 
   TF_FORCE_INLINE size_t size() const {

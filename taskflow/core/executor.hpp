@@ -516,6 +516,11 @@ class Executor {
   @endcode
   */
   size_t num_workers() const noexcept;
+  
+  /**
+  @brief queries the number of queues used in the work-stealing loop
+  */
+  size_t num_queues() const noexcept;
 
   /**
   @brief queries the number of running topologies at the time of this call
@@ -1174,6 +1179,11 @@ inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
 }
 
+// Function: num_queues
+inline size_t Executor::num_queues() const noexcept {
+  return _workers.size() + _freelist.size();
+}
+
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
 #if __cplusplus >= TF_CPP20
@@ -1225,8 +1235,8 @@ inline void Executor::_spawn(size_t N) {
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
       );
-      //w._rdvtm = std::uniform_int_distribution<size_t>(0, _workers.size() - 1);
-      w._rdvtm = std::uniform_int_distribution<size_t>(0, _workers.size() + _freelist.size() - 2);
+      //w._udist = std::uniform_int_distribution<size_t>(0, _workers.size() - 1);
+      w._udist = std::uniform_int_distribution<size_t>(0, _workers.size() + _freelist.size() - 2);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_interface) {
@@ -1272,7 +1282,7 @@ inline void Executor::_spawn(size_t N) {
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
   
-  const size_t MAX_STEALS = ((_workers.size() + _freelist.size() + 1) << 1);
+  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
   
   exploit:
 
@@ -1299,9 +1309,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
           std::this_thread::yield();
         }
         // skip worker-id
-        //w._vtm = w._rdvtm(w._rdgen);
-        auto r = w._rdvtm(w._rdgen);
-        w._vtm = r + (r >= w._id);
+        w._vtm = w._rdvtm();
         goto explore;
       }
       else {
@@ -1316,16 +1324,17 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
   //assert(!t);
   
-  const size_t MAX_STEALS = ((_workers.size() + _freelist.size() + 1) << 1);
+  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
 
   size_t num_steals = 0;
+  size_t num_empty_steals = 0;
 
   // Here, we write do-while to make the worker steal at once
   // from the assigned victim.
   do {
     //t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
-    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-                                     _freelist.steal(w._vtm - _workers.size());
+    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal_with_hint(num_empty_steals) : 
+                                     _freelist.steal_with_hint(w._vtm - _workers.size(), num_empty_steals);
 
     if(t) {
       break;
@@ -1333,15 +1342,16 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
 
     if (++num_steals > MAX_STEALS) {
       std::this_thread::yield();
-      if (num_steals > MAX_STEALS + 100) {
+      if(num_empty_steals == MAX_STEALS) {
         break;
       }
+      //if (num_steals > MAX_STEALS + 100) {
+      //  break;
+      //}
     }
 
     // skip worker-id
-    //w._vtm = w._rdvtm(w._rdgen);
-    auto r = w._rdvtm(w._rdgen);
-    w._vtm = r + (r >= w._id);
+    w._vtm = w._rdvtm();
   } 
 #if __cplusplus >= TF_CPP20
   // the _DONE can be checked later in wait_for_task?
@@ -1372,10 +1382,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   }
 
   // we have tried hard to steal tasks, and the current landscape 
-  // is supposed to be empty for all
+  // is supposed to be empty for all - ready to enter 2PC guard
   
-  
-  // ---- 2PC guard ----
   _notifier.prepare_wait(worker._waiter);
   
   // scan through the freelist
@@ -1385,8 +1393,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     goto explore_task;
   }
 
-  // We need to use index-based scanning to avoid data race
-  // with _spawn which may initialize a worker at the same time.
+  // we need to use index-based scanning to avoid data race with _spawan
+  // initializing workers at the same time
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       worker._vtm = vtm;
