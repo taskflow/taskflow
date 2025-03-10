@@ -1139,7 +1139,6 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _notifier        (N),
   _latch           (N+1),
   _freelist        (N),
-  //_MAX_STEALS      ((N + _freelist.size() +1) << 1),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {
@@ -1345,9 +1344,6 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
       if(num_empty_steals == MAX_STEALS) {
         break;
       }
-      //if (num_steals > MAX_STEALS + 100) {
-      //  break;
-      //}
     }
 
     // skip worker-id
@@ -1381,20 +1377,20 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     return true;
   }
 
-  // we have tried hard to steal tasks, and the current landscape 
-  // is supposed to be empty for all - ready to enter 2PC guard
-  
+  // Entering the 2PC guard as all queues should be empty
+  // after exhaustive task-stealing attempts.
   _notifier.prepare_wait(worker._waiter);
   
-  // scan through the freelist
+  // Condition #1: freelist should be empty
   if(!_freelist.empty(worker._vtm)) {
     worker._vtm += _workers.size();
     _notifier.cancel_wait(worker._waiter);
     goto explore_task;
   }
-
-  // we need to use index-based scanning to avoid data race with _spawan
-  // initializing workers at the same time
+  
+  // Condition #2: worker queues should be empty
+  // Note: We need to use index-based looping to avoid data race with _spawan
+  // which initializes other worker data structure at the same time
   for(size_t vtm=0; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       worker._vtm = vtm;
@@ -1402,7 +1398,8 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
       goto explore_task;
     }
   }
-
+  
+  // Condition #3: executor is still alive
 #if __cplusplus >= TF_CPP20
   if(_done.test(std::memory_order_relaxed)) {
 #else
@@ -1413,7 +1410,7 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
     return false;
   }
   
-  // Now I really need to relinquish my self to others
+  // Now I really need to relinquish my self to others.
   _notifier.commit_wait(worker._waiter);
   worker._vtm = worker._id;
   goto explore_task;
@@ -1489,7 +1486,7 @@ void Executor::_schedule(Worker& worker, I first, I last) {
     return;
   }
   
-  // [NOTE]: We cannot use first/last as the for-loop condition 
+  // NOTE: We cannot use first/last as the for-loop condition 
   // (e.g., for(; first != last; ++first)) since when a node is inserted
   // into the queue the node can run and finish immediately.
   // If this is the last node in the graph, it will tear down the parent

@@ -155,7 +155,17 @@ class UnboundedTaskQueue {
   */
   T steal();
 
+  /**
+  @brief attempts to steal a task with a hint mechanism
+  
+  @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
+  
+  This function tries to steal a task from the queue. If the steal attempt
+  is successful, the stolen task is returned. 
+  Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
+  otherwise, `num_empty_steals` is reset to zero.
 
+  */
   T steal_with_hint(size_t& num_empty_steals);
 
   private:
@@ -393,7 +403,7 @@ class BoundedTaskQueue {
   @tparam O data type 
   @tparam C callable type
   @param item the item to perfect-forward to the queue
-  @param on_full callable to invoke when the queue is faull (insertion fails)
+  @param on_full callable to invoke when the queue is full (insertion fails)
   
   Only the owner thread can insert an item to the queue. 
 
@@ -405,7 +415,7 @@ class BoundedTaskQueue {
   @brief pops out an item from the queue
 
   Only the owner thread can pop out an item from the queue. 
-  The return can be a @std_nullopt if this operation failed (empty queue).
+  The return can be a `nullptr` if this operation failed (empty queue).
   */
   T pop();
   
@@ -413,10 +423,20 @@ class BoundedTaskQueue {
   @brief steals an item from the queue
 
   Any threads can try to steal an item from the queue.
-  The return can be a @std_nullopt if this operation failed (not necessary empty).
+  The return can be a `nullptr` if this operation failed (not necessary empty).
   */
   T steal();
 
+  /**
+  @brief attempts to steal a task with a hint mechanism
+  
+  @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
+  
+  This function tries to steal a task from the queue. If the steal attempt
+  is successful, the stolen task is returned. 
+  Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
+  otherwise, `num_empty_steals` is reset to zero.
+  */
   T steal_with_hint(size_t& num_empty_steals);
 };
 
@@ -557,7 +577,7 @@ T BoundedTaskQueue<T, LogSize>::steal_with_hint(size_t& num_empty_steals) {
 // Function: capacity
 template <typename T, size_t LogSize>
 constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
-  return static_cast<size_t>(BufferSize - 1);
+  return static_cast<size_t>(BufferSize);
 }
 
 
