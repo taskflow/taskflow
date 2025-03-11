@@ -1056,13 +1056,11 @@ class Executor {
 #if __cplusplus >= TF_CPP20
   std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
-  std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 #else
   Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
-  std::atomic<bool> _done {0};
 #endif
   
   std::list<Taskflow> _taskflows;
@@ -1160,12 +1158,14 @@ inline Executor::~Executor() {
   wait_for_all();
 
   // shut down the scheduler
+  for(size_t i=0; i<_workers.size(); ++i) {
+  #if __cplusplus >= TF_CPP20
+    _workers[i]._done.test_and_set(std::memory_order_relaxed);
+  #else
+    _workers[i]._done.store(true, std::memory_order_relaxed);
+  #endif
+  }
 
-#if __cplusplus >= TF_CPP20
-  _done.test_and_set(std::memory_order_relaxed);
-#else
-  _done.store(true, std::memory_order_relaxed);
-#endif
   _notifier.notify_all();
 
   for(auto& w : _workers) {
@@ -1351,9 +1351,9 @@ inline void Executor::_explore_task(Worker& w, Node*& t) {
   } 
 #if __cplusplus >= TF_CPP20
   // the _DONE can be checked later in wait_for_task?
-  while(!_done.test(std::memory_order_relaxed));
+  while(!w._done.test(std::memory_order_relaxed));
 #else
-  while(!_done.load(std::memory_order_relaxed));
+  while(!w._done.load(std::memory_order_relaxed));
 #endif
 
 }
@@ -1401,12 +1401,11 @@ inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
   
   // Condition #3: executor is still alive
 #if __cplusplus >= TF_CPP20
-  if(_done.test(std::memory_order_relaxed)) {
+  if(worker._done.test(std::memory_order_relaxed)) {
 #else
-  if(_done.load(std::memory_order_relaxed)) {
+  if(worker._done.load(std::memory_order_relaxed)) {
 #endif
     _notifier.cancel_wait(worker._waiter);
-    _notifier.notify_all();
     return false;
   }
   

@@ -90,12 +90,19 @@ class Worker {
     std::default_random_engine _rdgen;
     std::uniform_int_distribution<size_t> _udist;
 
+  #if __cplusplus >= TF_CPP20
+    std::atomic_flag _done = ATOMIC_FLAG_INIT; 
+  #else
+    std::atomic<bool> _done {false};
+  #endif
+
     BoundedTaskQueue<Node*> _wsq;
 
     TF_FORCE_INLINE size_t _rdvtm() {
       auto r = _udist(_rdgen);
       return r + (r >= _id);
     }
+
 };
 
 
