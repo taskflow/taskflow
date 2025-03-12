@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Graph Processing Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -66,42 +66,42 @@
             <li><a href="#GraphPipelineReference">Reference</a></li>
           </ul>
         </nav>
-<p>We study a graph processing pipeline that propagates a sequence of linearly dependent tasks over a dependency graph. In this particular workload, we will learn how to transform task graph parallelism into pipeline parallelism.</p><section id="FormulateTheGraphProcessingPipelineProblem"><h2><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></h2><p>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <em>stage tasks</em>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <code>fi(u)</code> represents the <code>i</code><sup>th</sup>-stage task of node <code>u</code>, a dependency from <code>u</code> to <code>v</code> requires <code>fi(u)</code> to run before <code>fi(v)</code>. The following figures shows an example of three stage tasks in a DAG of three nodes (<code>A</code>, <code>B</code>, and <code>C</code>) and two dependencies (<code>A-&gt;B</code> and <code>A-&gt;C</code>):</p><div class="m-graph"><svg style="width: 17.000rem; height: 15.000rem;" viewBox="0.00 0.00 169.88 150.00">
-<g transform="scale(1 1) rotate(0) translate(4 146)">
+<p>We study a graph processing pipeline that propagates a sequence of linearly dependent tasks over a dependency graph. In this particular workload, we will learn how to transform task graph parallelism into pipeline parallelism.</p><section id="FormulateTheGraphProcessingPipelineProblem"><h2><a href="#FormulateTheGraphProcessingPipelineProblem">Formulate the Graph Processing Pipeline Problem</a></h2><p>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <em>stage tasks</em>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <code>fi(u)</code> represents the <code>i</code><sup>th</sup>-stage task of node <code>u</code>, a dependency from <code>u</code> to <code>v</code> requires <code>fi(u)</code> to run before <code>fi(v)</code>. The following figures shows an example of three stage tasks in a DAG of three nodes (<code>A</code>, <code>B</code>, and <code>C</code>) and two dependencies (<code>A-&gt;B</code> and <code>A-&gt;C</code>):</p><div class="m-graph"><svg style="width: 18.000rem; height: 14.800rem;" viewBox="0.00 0.00 180.00 148.00">
+<g transform="scale(1 1) rotate(0) translate(4 144)">
 <title>L</title>
 <g class="m-node m-flat">
 <title>a</title>
-<polygon points="116.5,-142 45,-142 45,-89 116.5,-89 116.5,-142"/>
-<text text-anchor="start" x="53" y="-128.5" font-family="Helvetica,sans-Serif" font-size="10.00">[Node A]</text>
-<text text-anchor="start" x="53" y="-117.25" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(A)</text>
-<text text-anchor="start" x="53" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(A)</text>
-<text text-anchor="start" x="53" y="-94.75" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(A)</text>
+<polygon points="124,-140 47,-140 47,-88 124,-88 124,-140"/>
+<text text-anchor="start" x="55" y="-128" font-family="Helvetica,sans-Serif" font-size="10.00">[Node A]</text>
+<text text-anchor="start" x="55" y="-117" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(A)</text>
+<text text-anchor="start" x="55" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(A)</text>
+<text text-anchor="start" x="55" y="-95" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(A)</text>
 </g>
 <g class="m-node m-flat">
 <title>b</title>
-<polygon points="71.5,-53 0,-53 0,0 71.5,0 71.5,-53"/>
-<text text-anchor="start" x="8" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">[Node B]</text>
-<text text-anchor="start" x="8" y="-28.25" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(B)</text>
-<text text-anchor="start" x="8" y="-17" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(B)</text>
-<text text-anchor="start" x="8" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(B)</text>
+<polygon points="77,-52 0,-52 0,0 77,0 77,-52"/>
+<text text-anchor="start" x="8" y="-40" font-family="Helvetica,sans-Serif" font-size="10.00">[Node B]</text>
+<text text-anchor="start" x="8" y="-29" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(B)</text>
+<text text-anchor="start" x="8" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(B)</text>
+<text text-anchor="start" x="8" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(B)</text>
 </g>
 <g class="m-edge">
 <title>a&#45;&gt;b</title>
-<path d="M67.49,-88.87C63.36,-80.89 58.73,-71.93 54.31,-63.38"/>
-<polygon points="57.47,-61.87 49.76,-54.59 51.25,-65.08 57.47,-61.87"/>
+<path d="M71.65,-87.66C67.11,-79.35 61.99,-69.98 57.15,-61.12"/>
+<polygon points="60.12,-59.25 52.25,-52.16 53.97,-62.61 60.12,-59.25"/>
 </g>
 <g class="m-node m-flat">
 <title>c</title>
-<polygon points="161.88,-53 89.62,-53 89.62,0 161.88,0 161.88,-53"/>
-<text text-anchor="start" x="97.62" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">[Node C]</text>
-<text text-anchor="start" x="97.62" y="-28.25" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(C)</text>
-<text text-anchor="start" x="97.62" y="-17" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(C)</text>
-<text text-anchor="start" x="97.62" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(C)</text>
+<polygon points="172,-52 95,-52 95,0 172,0 172,-52"/>
+<text text-anchor="start" x="103" y="-40" font-family="Helvetica,sans-Serif" font-size="10.00">[Node C]</text>
+<text text-anchor="start" x="103" y="-29" font-family="Helvetica,sans-Serif" font-size="10.00">Step 1: f1(C)</text>
+<text text-anchor="start" x="103" y="-18" font-family="Helvetica,sans-Serif" font-size="10.00">Step 2: f2(C)</text>
+<text text-anchor="start" x="103" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">Step 3: f3(C)</text>
 </g>
 <g class="m-edge">
 <title>a&#45;&gt;c</title>
-<path d="M94.01,-88.87C98.14,-80.89 102.77,-71.93 107.19,-63.38"/>
-<polygon points="110.25,-65.08 111.74,-54.59 104.03,-61.87 110.25,-65.08"/>
+<path d="M99.64,-87.66C104.28,-79.35 109.51,-69.98 114.45,-61.12"/>
+<polygon points="117.64,-62.59 119.46,-52.16 111.53,-59.18 117.64,-62.59"/>
 </g>
 </g>
 </svg>
@@ -111,47 +111,47 @@
 <g class="m-node m-flat">
 <title>f1_A</title>
 <polygon points="54,-324 0,-324 0,-288 54,-288 54,-324"/>
-<text text-anchor="middle" x="27" y="-302.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(A)</text>
+<text text-anchor="middle" x="27" y="-303.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(A)</text>
 </g>
 <g class="m-node m-flat">
 <title>f1_B</title>
 <polygon points="54,-252 0,-252 0,-216 54,-216 54,-252"/>
-<text text-anchor="middle" x="27" y="-230.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(B)</text>
+<text text-anchor="middle" x="27" y="-231.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(B)</text>
 </g>
 <g class="m-edge">
 <title>f1_A&#45;&gt;f1_B</title>
-<path d="M27,-287.7C27,-280.41 27,-271.73 27,-263.54"/>
-<polygon points="30.5,-263.62 27,-253.62 23.5,-263.62 30.5,-263.62"/>
+<path d="M27,-287.7C27,-279.98 27,-270.71 27,-262.11"/>
+<polygon points="30.5,-262.1 27,-252.1 23.5,-262.1 30.5,-262.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f2_A</title>
 <polygon points="126,-252 72,-252 72,-216 126,-216 126,-252"/>
-<text text-anchor="middle" x="99" y="-230.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(A)</text>
+<text text-anchor="middle" x="99" y="-231.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(A)</text>
 </g>
 <g class="m-node m-flat">
 <title>f2_B</title>
 <polygon points="126,-180 72,-180 72,-144 126,-144 126,-180"/>
-<text text-anchor="middle" x="99" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(B)</text>
+<text text-anchor="middle" x="99" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(B)</text>
 </g>
 <g class="m-edge">
 <title>f2_A&#45;&gt;f2_B</title>
-<path d="M99,-215.7C99,-208.41 99,-199.73 99,-191.54"/>
-<polygon points="102.5,-191.62 99,-181.62 95.5,-191.62 102.5,-191.62"/>
+<path d="M99,-215.7C99,-207.98 99,-198.71 99,-190.11"/>
+<polygon points="102.5,-190.1 99,-180.1 95.5,-190.1 102.5,-190.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f3_A</title>
 <polygon points="198,-180 144,-180 144,-144 198,-144 198,-180"/>
-<text text-anchor="middle" x="171" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(A)</text>
+<text text-anchor="middle" x="171" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(A)</text>
 </g>
 <g class="m-node m-flat">
 <title>f3_B</title>
 <polygon points="198,-108 144,-108 144,-72 198,-72 198,-108"/>
-<text text-anchor="middle" x="171" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(B)</text>
+<text text-anchor="middle" x="171" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(B)</text>
 </g>
 <g class="m-edge">
 <title>f3_A&#45;&gt;f3_B</title>
-<path d="M171,-143.7C171,-136.41 171,-127.73 171,-119.54"/>
-<polygon points="174.5,-119.62 171,-109.62 167.5,-119.62 174.5,-119.62"/>
+<path d="M171,-143.7C171,-135.98 171,-126.71 171,-118.11"/>
+<polygon points="174.5,-118.1 171,-108.1 167.5,-118.1 174.5,-118.1"/>
 </g>
 <g class="m-edge">
 <title>f1_B&#45;&gt;f2_A</title>
@@ -160,12 +160,12 @@
 <g class="m-node m-flat">
 <title>f1_C</title>
 <polygon points="54,-180 0,-180 0,-144 54,-144 54,-180"/>
-<text text-anchor="middle" x="27" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(C)</text>
+<text text-anchor="middle" x="27" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(C)</text>
 </g>
 <g class="m-edge">
 <title>f1_B&#45;&gt;f1_C</title>
-<path d="M27,-215.7C27,-208.41 27,-199.73 27,-191.54"/>
-<polygon points="30.5,-191.62 27,-181.62 23.5,-191.62 30.5,-191.62"/>
+<path d="M27,-215.7C27,-207.98 27,-198.71 27,-190.11"/>
+<polygon points="30.5,-190.1 27,-180.1 23.5,-190.1 30.5,-190.1"/>
 </g>
 <g class="m-edge">
 <title>f2_B&#45;&gt;f3_A</title>
@@ -174,22 +174,22 @@
 <g class="m-node m-flat">
 <title>f2_C</title>
 <polygon points="126,-108 72,-108 72,-72 126,-72 126,-108"/>
-<text text-anchor="middle" x="99" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(C)</text>
+<text text-anchor="middle" x="99" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(C)</text>
 </g>
 <g class="m-edge">
 <title>f2_B&#45;&gt;f2_C</title>
-<path d="M99,-143.7C99,-136.41 99,-127.73 99,-119.54"/>
-<polygon points="102.5,-119.62 99,-109.62 95.5,-119.62 102.5,-119.62"/>
+<path d="M99,-143.7C99,-135.98 99,-126.71 99,-118.11"/>
+<polygon points="102.5,-118.1 99,-108.1 95.5,-118.1 102.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f3_C</title>
 <polygon points="198,-36 144,-36 144,0 198,0 198,-36"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(C)</text>
+<text text-anchor="middle" x="171" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(C)</text>
 </g>
 <g class="m-edge">
 <title>f3_B&#45;&gt;f3_C</title>
-<path d="M171,-71.7C171,-64.41 171,-55.73 171,-47.54"/>
-<polygon points="174.5,-47.62 171,-37.62 167.5,-47.62 174.5,-47.62"/>
+<path d="M171,-71.7C171,-63.98 171,-54.71 171,-46.11"/>
+<polygon points="174.5,-46.1 171,-36.1 167.5,-46.1 174.5,-46.1"/>
 </g>
 <g class="m-edge">
 <title>f1_C&#45;&gt;f2_B</title>
@@ -207,107 +207,107 @@
 <g class="m-node m-flat">
 <title>f1_A</title>
 <polygon points="54,-180 0,-180 0,-144 54,-144 54,-180"/>
-<text text-anchor="middle" x="27" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(A)</text>
+<text text-anchor="middle" x="27" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(A)</text>
 </g>
 <g class="m-node m-flat">
 <title>f1_B</title>
 <polygon points="126,-180 72,-180 72,-144 126,-144 126,-180"/>
-<text text-anchor="middle" x="99" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(B)</text>
+<text text-anchor="middle" x="99" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(B)</text>
 </g>
 <g class="m-edge">
 <title>f1_A&#45;&gt;f1_B</title>
-<path d="M54.28,-162C56.28,-162 58.28,-162 60.29,-162"/>
-<polygon points="60.24,-165.5 70.24,-162 60.24,-158.5 60.24,-165.5"/>
+<path d="M54.28,-162C56.74,-162 59.19,-162 61.65,-162"/>
+<polygon points="61.75,-165.5 71.75,-162 61.75,-158.5 61.75,-165.5"/>
 </g>
 <g class="m-node m-flat">
 <title>f2_A</title>
 <polygon points="54,-108 0,-108 0,-72 54,-72 54,-108"/>
-<text text-anchor="middle" x="27" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(A)</text>
+<text text-anchor="middle" x="27" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(A)</text>
 </g>
 <g class="m-edge">
 <title>f1_A&#45;&gt;f2_A</title>
-<path d="M27,-143.7C27,-136.41 27,-127.73 27,-119.54"/>
-<polygon points="30.5,-119.62 27,-109.62 23.5,-119.62 30.5,-119.62"/>
+<path d="M27,-143.7C27,-135.98 27,-126.71 27,-118.11"/>
+<polygon points="30.5,-118.1 27,-108.1 23.5,-118.1 30.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f1_C</title>
 <polygon points="198,-180 144,-180 144,-144 198,-144 198,-180"/>
-<text text-anchor="middle" x="171" y="-158.12" font-family="Helvetica,sans-Serif" font-size="10.00">f1(C)</text>
+<text text-anchor="middle" x="171" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">f1(C)</text>
 </g>
 <g class="m-edge">
 <title>f1_B&#45;&gt;f1_C</title>
-<path d="M126.28,-162C128.28,-162 130.28,-162 132.29,-162"/>
-<polygon points="132.24,-165.5 142.24,-162 132.24,-158.5 132.24,-165.5"/>
+<path d="M126.28,-162C128.74,-162 131.19,-162 133.65,-162"/>
+<polygon points="133.75,-165.5 143.75,-162 133.75,-158.5 133.75,-165.5"/>
 </g>
 <g class="m-node m-flat">
 <title>f2_B</title>
 <polygon points="126,-108 72,-108 72,-72 126,-72 126,-108"/>
-<text text-anchor="middle" x="99" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(B)</text>
+<text text-anchor="middle" x="99" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(B)</text>
 </g>
 <g class="m-edge">
 <title>f1_B&#45;&gt;f2_B</title>
-<path d="M99,-143.7C99,-136.41 99,-127.73 99,-119.54"/>
-<polygon points="102.5,-119.62 99,-109.62 95.5,-119.62 102.5,-119.62"/>
+<path d="M99,-143.7C99,-135.98 99,-126.71 99,-118.11"/>
+<polygon points="102.5,-118.1 99,-108.1 95.5,-118.1 102.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f2_C</title>
 <polygon points="198,-108 144,-108 144,-72 198,-72 198,-108"/>
-<text text-anchor="middle" x="171" y="-86.12" font-family="Helvetica,sans-Serif" font-size="10.00">f2(C)</text>
+<text text-anchor="middle" x="171" y="-87.5" font-family="Helvetica,sans-Serif" font-size="10.00">f2(C)</text>
 </g>
 <g class="m-edge">
 <title>f1_C&#45;&gt;f2_C</title>
-<path d="M171,-143.7C171,-136.41 171,-127.73 171,-119.54"/>
-<polygon points="174.5,-119.62 171,-109.62 167.5,-119.62 174.5,-119.62"/>
+<path d="M171,-143.7C171,-135.98 171,-126.71 171,-118.11"/>
+<polygon points="174.5,-118.1 171,-108.1 167.5,-118.1 174.5,-118.1"/>
 </g>
 <g class="m-edge">
 <title>f2_A&#45;&gt;f2_B</title>
-<path d="M54.28,-90C56.28,-90 58.28,-90 60.29,-90"/>
-<polygon points="60.24,-93.5 70.24,-90 60.24,-86.5 60.24,-93.5"/>
+<path d="M54.28,-90C56.74,-90 59.19,-90 61.65,-90"/>
+<polygon points="61.75,-93.5 71.75,-90 61.75,-86.5 61.75,-93.5"/>
 </g>
 <g class="m-node m-flat">
 <title>f3_A</title>
 <polygon points="54,-36 0,-36 0,0 54,0 54,-36"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(A)</text>
+<text text-anchor="middle" x="27" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(A)</text>
 </g>
 <g class="m-edge">
 <title>f2_A&#45;&gt;f3_A</title>
-<path d="M27,-71.7C27,-64.41 27,-55.73 27,-47.54"/>
-<polygon points="30.5,-47.62 27,-37.62 23.5,-47.62 30.5,-47.62"/>
+<path d="M27,-71.7C27,-63.98 27,-54.71 27,-46.11"/>
+<polygon points="30.5,-46.1 27,-36.1 23.5,-46.1 30.5,-46.1"/>
 </g>
 <g class="m-edge">
 <title>f2_B&#45;&gt;f2_C</title>
-<path d="M126.28,-90C128.28,-90 130.28,-90 132.29,-90"/>
-<polygon points="132.24,-93.5 142.24,-90 132.24,-86.5 132.24,-93.5"/>
+<path d="M126.28,-90C128.74,-90 131.19,-90 133.65,-90"/>
+<polygon points="133.75,-93.5 143.75,-90 133.75,-86.5 133.75,-93.5"/>
 </g>
 <g class="m-node m-flat">
 <title>f3_B</title>
 <polygon points="126,-36 72,-36 72,0 126,0 126,-36"/>
-<text text-anchor="middle" x="99" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(B)</text>
+<text text-anchor="middle" x="99" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(B)</text>
 </g>
 <g class="m-edge">
 <title>f2_B&#45;&gt;f3_B</title>
-<path d="M99,-71.7C99,-64.41 99,-55.73 99,-47.54"/>
-<polygon points="102.5,-47.62 99,-37.62 95.5,-47.62 102.5,-47.62"/>
+<path d="M99,-71.7C99,-63.98 99,-54.71 99,-46.11"/>
+<polygon points="102.5,-46.1 99,-36.1 95.5,-46.1 102.5,-46.1"/>
 </g>
 <g class="m-node m-flat">
 <title>f3_C</title>
 <polygon points="198,-36 144,-36 144,0 198,0 198,-36"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">f3(C)</text>
+<text text-anchor="middle" x="171" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">f3(C)</text>
 </g>
 <g class="m-edge">
 <title>f2_C&#45;&gt;f3_C</title>
-<path d="M171,-71.7C171,-64.41 171,-55.73 171,-47.54"/>
-<polygon points="174.5,-47.62 171,-37.62 167.5,-47.62 174.5,-47.62"/>
+<path d="M171,-71.7C171,-63.98 171,-54.71 171,-46.11"/>
+<polygon points="174.5,-46.1 171,-36.1 167.5,-46.1 174.5,-46.1"/>
 </g>
 <g class="m-edge">
 <title>f3_A&#45;&gt;f3_B</title>
-<path d="M54.28,-18C56.28,-18 58.28,-18 60.29,-18"/>
-<polygon points="60.24,-21.5 70.24,-18 60.24,-14.5 60.24,-21.5"/>
+<path d="M54.28,-18C56.74,-18 59.19,-18 61.65,-18"/>
+<polygon points="61.75,-21.5 71.75,-18 61.75,-14.5 61.75,-21.5"/>
 </g>
 <g class="m-edge">
 <title>f3_B&#45;&gt;f3_C</title>
-<path d="M126.28,-18C128.28,-18 130.28,-18 132.29,-18"/>
-<polygon points="132.24,-21.5 142.24,-18 132.24,-14.5 132.24,-21.5"/>
+<path d="M126.28,-18C128.74,-18 131.19,-18 133.65,-18"/>
+<polygon points="133.75,-21.5 143.75,-18 133.75,-14.5 133.75,-21.5"/>
 </g>
 </g>
 </svg>
@@ -424,81 +424,81 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;stopped</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">})</span>
 <span class="w">                        </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;pipeline stopped&quot;</span><span class="p">);</span>
 <span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
-<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 30.500rem; height: 25.200rem;" viewBox="0.00 0.00 305.00 251.50">
-<g transform="scale(1 1) rotate(0) translate(4 247.5)">
+<span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 31.700rem; height: 25.100rem;" viewBox="0.00 0.00 317.00 251.00">
+<g transform="scale(1 1) rotate(0) translate(4 247)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c200</title>
-<polygon points="8,-8 8,-235.5 139,-235.5 139,-8 8,-8"/>
-<text text-anchor="middle" x="73.5" y="-222" font-family="Helvetica,sans-Serif" font-size="10.00">Graph Processing Pipeline</text>
+<polygon points="8,-8 8,-235 151,-235 151,-8 8,-8"/>
+<text text-anchor="middle" x="79.5" y="-223" font-family="Helvetica,sans-Serif" font-size="10.00">Graph Processing Pipeline</text>
 </g>
 <g class="m-cluster">
 <title>cluster_p0x7ffd7418c110</title>
-<polygon points="147,-81 147,-235.5 289,-235.5 289,-81 147,-81"/>
-<text text-anchor="middle" x="218" y="-222" font-family="Helvetica,sans-Serif" font-size="10.00">m1</text>
+<polygon points="159,-81 159,-235 301,-235 301,-81 159,-81"/>
+<text text-anchor="middle" x="230" y="-223" font-family="Helvetica,sans-Serif" font-size="10.00">m1</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000142e8</title>
-<ellipse cx="73" cy="-190.25" rx="49.85" ry="18"/>
-<text text-anchor="middle" x="73" y="-186.38" font-family="Helvetica,sans-Serif" font-size="10.00">starting pipeline</text>
+<ellipse cx="79" cy="-190" rx="56.52" ry="18"/>
+<text text-anchor="middle" x="79" y="-187.5" font-family="Helvetica,sans-Serif" font-size="10.00">starting pipeline</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000143d0</title>
-<polygon points="108.75,-125 41.25,-125 37.25,-121 37.25,-89 104.75,-89 108.75,-93 108.75,-125"/>
-<polyline points="104.75,-121 37.25,-121"/>
-<polyline points="104.75,-121 104.75,-89"/>
-<polyline points="104.75,-121 108.75,-125"/>
-<text text-anchor="middle" x="73" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline [m1]</text>
+<polygon points="120,-125 42,-125 38,-121 38,-89 116,-89 120,-93 120,-125"/>
+<polyline points="116,-121 38,-121 "/>
+<polyline points="116,-121 116,-89 "/>
+<polyline points="116,-121 120,-125 "/>
+<text text-anchor="middle" x="79" y="-104.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline [m1]</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc4000143d0</title>
-<path d="M73,-172.02C73,-161.75 73,-148.45 73,-136.64"/>
-<polygon points="76.5,-137 73,-127 69.5,-137 76.5,-137"/>
+<path d="M79,-171.82C79,-161.19 79,-147.31 79,-135.2"/>
+<polygon points="82.5,-135.15 79,-125.15 75.5,-135.15 82.5,-135.15"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc4000144b8</title>
-<ellipse cx="73" cy="-34" rx="51.18" ry="18"/>
-<text text-anchor="middle" x="73" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline stopped</text>
+<ellipse cx="79" cy="-34" rx="57.88" ry="18"/>
+<text text-anchor="middle" x="79" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">pipeline stopped</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000143d0&#45;&gt;p0x7bc4000144b8</title>
-<path d="M73,-88.81C73,-81.23 73,-72.1 73,-63.54"/>
-<polygon points="76.5,-63.54 73,-53.54 69.5,-63.54 76.5,-63.54"/>
+<path d="M79,-88.81C79,-80.79 79,-71.05 79,-62.07"/>
+<polygon points="82.5,-62.03 79,-52.03 75.5,-62.03 82.5,-62.03"/>
 </g>
 <g class="m-node">
 <title>p0x7bc400014030</title>
-<polygon points="198,-208.25 167.04,-190.25 198,-172.25 228.96,-190.25 198,-208.25"/>
-<text text-anchor="middle" x="198" y="-186.38" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+<polygon points="212,-208 178.9,-190 212,-172 245.1,-190 212,-208"/>
+<text text-anchor="middle" x="212" y="-187.5" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014118</title>
-<polygon points="209,-125 155,-125 155,-121 151,-121 151,-117 155,-117 155,-97 151,-97 151,-93 155,-93 155,-89 209,-89 209,-125"/>
-<polyline points="155,-121 159,-121 159,-117 155,-117"/>
-<polyline points="155,-97 159,-97 159,-93 155,-93"/>
-<text text-anchor="middle" x="182" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;0</text>
+<polygon points="221,-125 167,-125 167,-121 163,-121 163,-117 167,-117 167,-97 163,-97 163,-93 167,-93 167,-89 221,-89 221,-125"/>
+<polyline points="167,-121 171,-121 171,-117 167,-117 "/>
+<polyline points="167,-97 171,-97 171,-93 167,-93 "/>
+<text text-anchor="middle" x="194" y="-104.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;0</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M194.92,-173.58C192.85,-163.1 190.07,-149 187.62,-136.55"/>
-<polygon points="191.07,-135.93 185.7,-126.79 184.2,-137.28 191.07,-135.93"/>
-<text text-anchor="middle" x="193.58" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M208.61,-173.76C206.19,-162.84 202.85,-147.84 199.98,-134.93"/>
+<polygon points="203.39,-134.13 197.81,-125.13 196.56,-135.65 203.39,-134.13"/>
+<text text-anchor="middle" x="207.5" y="-146" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014200</title>
-<polygon points="281,-125 227,-125 227,-121 223,-121 223,-117 227,-117 227,-97 223,-97 223,-93 227,-93 227,-89 281,-89 281,-125"/>
-<polyline points="227,-121 231,-121 231,-117 227,-117"/>
-<polyline points="227,-97 231,-97 231,-93 227,-93"/>
-<text text-anchor="middle" x="254" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;1</text>
+<polygon points="293,-125 239,-125 239,-121 235,-121 235,-117 239,-117 239,-97 235,-97 235,-93 239,-93 239,-89 293,-89 293,-125"/>
+<polyline points="239,-121 243,-121 243,-117 239,-117 "/>
+<polyline points="239,-97 243,-97 243,-93 239,-93 "/>
+<text text-anchor="middle" x="266" y="-104.5" font-family="Helvetica,sans-Serif" font-size="10.00">rt&#45;1</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc400014030&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M206.51,-176.91C214.21,-165.73 225.83,-148.87 235.65,-134.63"/>
-<polygon points="238.43,-136.75 241.23,-126.53 232.67,-132.78 238.43,-136.75"/>
-<text text-anchor="middle" x="231.98" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M220.44,-176.34C228.05,-164.92 239.49,-147.77 248.99,-133.51"/>
+<polygon points="251.98,-135.34 254.61,-125.08 246.15,-131.46 251.98,-135.34"/>
+<text text-anchor="middle" x="245.5" y="-146" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 </g>
 </svg>
-</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">1</span>
+</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp"># </span>possible output <span class="m">1</span>
 <span class="go">ready</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>
@@ -511,7 +511,7 @@
 <span class="go">f3(C)</span>
 <span class="go">stopped</span>
 
-<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">2</span>
+<span class="gp"># </span>possible output <span class="m">2</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>
 <span class="go">f3(A)</span>
@@ -523,7 +523,7 @@
 <span class="go">f3(C)</span>
 <span class="go">stopped</span>
 
-<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">3</span>
+<span class="gp"># </span>possible output <span class="m">3</span>
 <span class="go">ready</span>
 <span class="go">f1(A)</span>
 <span class="go">f2(A)</span>
@@ -579,7 +579,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

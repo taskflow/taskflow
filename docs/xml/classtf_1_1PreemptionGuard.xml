@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1PreemptionGuard" kind="class" language="C++" prot="private">
     <compoundname>tf::PreemptionGuard</compoundname>
-    <sectiondef kind="private-attrib">
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1PreemptionGuard_1a2427d7e7df9507d42897403dc3e57fed" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;</type>
         <definition>Runtime&amp; tf::PreemptionGuard::_runtime</definition>
         <argsstring></argsstring>
         <name>_runtime</name>
-        <qualifiedname>tf::PreemptionGuard::_runtime</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -17,14 +16,13 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="450" column="11" bodyfile="taskflow/core/runtime.hpp" bodystart="450" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1PreemptionGuard_1a8c426fc91c06f5ffe824fa572598e8e6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::PreemptionGuard::PreemptionGuard</definition>
         <argsstring>(Runtime &amp;runtime)</argsstring>
         <name>PreemptionGuard</name>
-        <qualifiedname>tf::PreemptionGuard::PreemptionGuard</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref> &amp;</type>
           <declname>runtime</declname>
@@ -42,7 +40,6 @@
         <definition>tf::PreemptionGuard::~PreemptionGuard</definition>
         <argsstring>()</argsstring>
         <name>~PreemptionGuard</name>
-        <qualifiedname>tf::PreemptionGuard::~PreemptionGuard</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -56,7 +53,6 @@
         <definition>tf::PreemptionGuard::PreemptionGuard</definition>
         <argsstring>(const PreemptionGuard &amp;)=delete</argsstring>
         <name>PreemptionGuard</name>
-        <qualifiedname>tf::PreemptionGuard::PreemptionGuard</qualifiedname>
         <param>
           <type>const PreemptionGuard &amp;</type>
         </param>
@@ -73,7 +69,6 @@
         <definition>tf::PreemptionGuard::PreemptionGuard</definition>
         <argsstring>(PreemptionGuard &amp;&amp;)=delete</argsstring>
         <name>PreemptionGuard</name>
-        <qualifiedname>tf::PreemptionGuard::PreemptionGuard</qualifiedname>
         <param>
           <type>PreemptionGuard &amp;&amp;</type>
         </param>
@@ -85,12 +80,11 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="443" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1PreemptionGuard_1a292c1fc3d60a840d1e3393c6ca6bde49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1PreemptionGuard_1a7bd607b477cb267e649c1ec2ca8376bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>PreemptionGuard &amp;</type>
-        <definition>PreemptionGuard &amp; tf::PreemptionGuard::operator=</definition>
+        <definition>PreemptionGuard&amp; tf::PreemptionGuard::operator=</definition>
         <argsstring>(const PreemptionGuard &amp;)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::PreemptionGuard::operator=</qualifiedname>
         <param>
           <type>const PreemptionGuard &amp;</type>
         </param>
@@ -102,12 +96,11 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="445" column="19"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1PreemptionGuard_1a42a9c80992437568f334ecb628718deb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1PreemptionGuard_1a2ba31c7300bf810dcf144d58933913c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>PreemptionGuard &amp;</type>
-        <definition>PreemptionGuard &amp; tf::PreemptionGuard::operator=</definition>
+        <definition>PreemptionGuard&amp; tf::PreemptionGuard::operator=</definition>
         <argsstring>(PreemptionGuard &amp;&amp;)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::PreemptionGuard::operator=</qualifiedname>
         <param>
           <type>PreemptionGuard &amp;&amp;</type>
         </param>
@@ -119,7 +112,7 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="446" column="19"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -127,8 +120,8 @@
     <location file="taskflow/core/runtime.hpp" line="422" column="1" bodyfile="taskflow/core/runtime.hpp" bodystart="422" bodyend="451"/>
     <listofallmembers>
       <member refid="classtf_1_1PreemptionGuard_1a2427d7e7df9507d42897403dc3e57fed" prot="private" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>_runtime</name></member>
-      <member refid="classtf_1_1PreemptionGuard_1a292c1fc3d60a840d1e3393c6ca6bde49" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>operator=</name></member>
-      <member refid="classtf_1_1PreemptionGuard_1a42a9c80992437568f334ecb628718deb" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>operator=</name></member>
+      <member refid="classtf_1_1PreemptionGuard_1a7bd607b477cb267e649c1ec2ca8376bd" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>operator=</name></member>
+      <member refid="classtf_1_1PreemptionGuard_1a2ba31c7300bf810dcf144d58933913c8" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>operator=</name></member>
       <member refid="classtf_1_1PreemptionGuard_1a8c426fc91c06f5ffe824fa572598e8e6" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>PreemptionGuard</name></member>
       <member refid="classtf_1_1PreemptionGuard_1ae1c7a6eac52f4f50a548f63efab08c08" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>PreemptionGuard</name></member>
       <member refid="classtf_1_1PreemptionGuard_1ad2f3c41a590eabf4d4c6880b0253db70" prot="public" virt="non-virtual"><scope>tf::PreemptionGuard</scope><name>PreemptionGuard</name></member>

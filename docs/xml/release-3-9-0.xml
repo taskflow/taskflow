@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-9-0" kind="page">
     <compoundname>release-3-9-0</compoundname>
     <title>Release 3.9.0 (2025/01/02)</title>
@@ -7,57 +7,60 @@
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-9-0_1release-3-9-0_summary</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-3-9-0_1release-3-9-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-9-0_1release-3-9-0_system_requirements</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-9-0_1release-3-9-0_new_features</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Taskflow Core</name>
-            <reference>release-3-9-0_1release-3-9-0_taskflow_core</reference>
-          </tocsect>
-          <tocsect>
-            <name>Utilities</name>
-            <reference>release-3-9-0_1release-3-9-0_utilities</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-9-0_1release-3-9-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-9-0_1release-3-9-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-9-0_1release-3-9-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-9-0_1release-3-9-0_breaking_changes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-9-0_1release-3-9-0_documentation</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-9-0_1release-3-9-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="release-3-9-0_1release-3-9-0_summary">
-<title>Release Summary</title><para>This release improves scheduling performance with a decentralized work-stealing strategy and enhances exception handling across all task types.</para>
+<title>Release Summary</title>
+<para>This release improves scheduling performance with a decentralized work-stealing strategy and enhances exception handling across all task types.</para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_download">
-<title>Download</title><para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<title>Download</title>
+<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_system_requirements">
-<title>System Requirements</title><para>To use Taskflow v3.9.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title>
+<para>To use Taskflow v3.9.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -80,8 +83,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_new_features">
-<title>New Features</title><sect2 id="release-3-9-0_1release-3-9-0_taskflow_core">
-<title>Taskflow Core</title><para><itemizedlist>
+<title>New Features</title>
+<sect2 id="release-3-9-0_1release-3-9-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
 <listitem><para>improved the core scheduling algorithm using a decentralized work-stealing strategy<itemizedlist>
 <listitem><para><ref refid="classtf_1_1BoundedTaskQueue" kindref="compound">tf::BoundedTaskQueue</ref> to optimize per-thread work-stealing latency</para>
 </listitem><listitem><para><ref refid="classtf_1_1UnboundedTaskQueue" kindref="compound">tf::UnboundedTaskQueue</ref> to handle overflowed tasks</para>
@@ -91,7 +96,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>optimized task storage by storing detached tasks in their original subflows</para>
 </listitem><listitem><para>optimized the query efficiency for strong dependencies by embedding their values in node states</para>
 </listitem><listitem><para>updated <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> to derive from a vector of unique pointers to nodes<itemizedlist>
-<listitem><para>Graph node lifetimes are managed by <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></para>
+<listitem><para>Graph node lifetimes are managed by <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></para>
 </listitem><listitem><para>Asynchronous task node lifetimes are managed by <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>.</para>
 </listitem></itemizedlist>
 </para>
@@ -103,7 +108,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>all parallel algorithms (through preemptible async tasks)</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>removed <ref refid="cpp/utility/functional/bind" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bind</ref> from asynchronous tasks to ensure proper constexpr switch</para>
+</listitem><listitem><para>removed std::bind from asynchronous tasks to ensure proper constexpr switch</para>
 </listitem><listitem><para>added compile-time macros to enable specific features<itemizedlist>
 <listitem><para><computeroutput>TF_ENABLE_TASK_POOL</computeroutput> to enable the use of task pool</para>
 </listitem></itemizedlist>
@@ -121,8 +126,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-9-0_1release-3-9-0_utilities">
-<title>Utilities</title><para><itemizedlist>
-<listitem><para>added <computeroutput><ref refid="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" kindref="member">tf::pause</ref></computeroutput> to relax CPU during busy spinning loop</para>
+<title>Utilities</title>
+<para><itemizedlist>
+<listitem><para>added <computeroutput><ref refid="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" kindref="member">tf::pause</ref></computeroutput> to relax CPU during busy spinning loop</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a3f8e89aebc29d42259157723c874954d" kindref="member">tf::seed</ref></computeroutput> to generate a random seed based on calling time point</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a512ffa0d24a237b098f5de656b8bdcb0" kindref="member">tf::atomic_min</ref></computeroutput> to update an atomic variable with the minimum value</para>
 </listitem><listitem><para>added <computeroutput><ref refid="namespacetf_1a5002af34dc323ff28e87ae83203b2c36" kindref="member">tf::atomic_max</ref></computeroutput> to update an atomic variable with the maximum value</para>
@@ -132,7 +138,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect2>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_bug_fixes">
-<title>Bug Fixes</title><para><itemizedlist>
+<title>Bug Fixes</title>
+<para><itemizedlist>
 <listitem><para>fixed AppleClang compile error in <ref refid="tsq_8hpp" kindref="compound">tsq.hpp</ref> (<ulink url="https://github.com/taskflow/taskflow/pull/651">#651</ulink>)</para>
 </listitem><listitem><para>fixed wrong range in uuid test (<ulink url="https://github.com/taskflow/taskflow/pull/632/">#632</ulink>)</para>
 </listitem><listitem><para>fixed the exception bug in <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/602">#602</ulink>)</para>
@@ -142,7 +149,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_breaking_changes">
-<title>Breaking Changes</title><para><itemizedlist>
+<title>Breaking Changes</title>
+<para><itemizedlist>
 <listitem><para>decoupled <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> from inheriting <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to accommodate distinct execution logic<itemizedlist>
 <listitem><para><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> no longer supports <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>-specific features</para>
 </listitem></itemizedlist>
@@ -156,7 +164,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_documentation">
-<title>Documentation</title><para><itemizedlist>
+<title>Documentation</title>
+<para><itemizedlist>
 <listitem><para>fixed missing documentation of <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> due to Doxygen bugs (<ulink url="https://github.com/taskflow/taskflow/pull/625">#625</ulink>)</para>
 </listitem><listitem><para>fixed benchmark instance names in documentation (<ulink url="https://github.com/taskflow/taskflow/pull/621">#621</ulink>)</para>
 </listitem><listitem><para>revised <ref refid="ExceptionHandling" kindref="compound">Exception Handling</ref></para>
@@ -167,7 +176,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-9-0_1release-3-9-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
+<title>Miscellaneous Items</title>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-3.9.0.dox"/>

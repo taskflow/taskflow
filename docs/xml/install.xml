@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="install" kind="page">
     <compoundname>install</compoundname>
     <title>Building and Installing</title>
@@ -9,38 +9,39 @@
       <tocsect>
         <name>Supported Compilers</name>
         <reference>install_1BAISupportedCompilers</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Integrate Taskflow to Your Project</name>
         <reference>install_1BAIIntegrateTaskflowToYourProject</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Build Examples and Unit Tests</name>
         <reference>install_1BAIBuildExamplesAndUnitTests</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Build CUDA Examples and Unit Tests</name>
         <reference>install_1BAIBuildCUDACode</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Build Sanitizers</name>
         <reference>install_1BAIBuildSanitizers</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Build Benchmarks</name>
         <reference>install_1BAIBuildBenchmarks</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Build Documentation</name>
         <reference>install_1BAIBuildDocumentation</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>This page describes how to set up Taskflow in your project. We will also go through the building process of unit tests and examples.</para>
 <sect1 id="install_1BAISupportedCompilers">
-<title>Supported Compilers</title><para>To use Taskflow, you only need a compiler that supports C++17:</para>
+<title>Supported Compilers</title>
+<para>To use Taskflow, you only need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -60,7 +61,8 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="install_1BAIIntegrateTaskflowToYourProject">
-<title>Integrate Taskflow to Your Project</title><para>Taskflow is <emphasis>header-only</emphasis> and there is no need for installation. Simply download the source and copy the headers under the directory <computeroutput>taskflow/</computeroutput> to your project.</para>
+<title>Integrate Taskflow to Your Project</title>
+<para>Taskflow is <emphasis>header-only</emphasis> and there is no need for installation. Simply download the source and copy the headers under the directory <computeroutput>taskflow/</computeroutput> to your project.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>taskflow/</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cp<sp/>-r<sp/>taskflow<sp/>myproject/include/</highlight></codeline>
@@ -70,7 +72,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </programlisting></para>
 </sect1>
 <sect1 id="install_1BAIBuildExamplesAndUnitTests">
-<title>Build Examples and Unit Tests</title><para>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</para>
+<title>Build Examples and Unit Tests</title>
+<para>Taskflow uses CMake to build examples and unit tests. We recommend using out-of-source build.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cd<sp/>path/to/taskflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>mkdir<sp/>build</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cd<sp/>build</highlight></codeline>
@@ -137,14 +140,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>The above command turns off building Taskflow examples.</para>
 </sect1>
 <sect1 id="install_1BAIBuildCUDACode">
-<title>Build CUDA Examples and Unit Tests</title><para>To build CUDA code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput>. Cmake will automatically detect the existence of <computeroutput>nvcc</computeroutput> and use it to compile and link <computeroutput></computeroutput>.cu code.</para>
+<title>Build CUDA Examples and Unit Tests</title>
+<para>To build CUDA code, including unit tests and examples, enable the CMake option <computeroutput>TF_BUILD_CUDA</computeroutput> to <computeroutput>ON</computeroutput>. Cmake will automatically detect the existence of <computeroutput>nvcc</computeroutput> and use it to compile and link <computeroutput></computeroutput>.cu code.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_CUDA=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
 </programlisting></para>
 <para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for details.</para>
 </sect1>
 <sect1 id="install_1BAIBuildSanitizers">
-<title>Build Sanitizers</title><para>You can build Taskflow with <emphasis>sanitizers</emphasis> to detect a variety of errors, such as data race, memory leak, undefined behavior, and others. To enable a sanitizer, add the sanitizer flag to the CMake variable <computeroutput>CMAKE_CXX_FLAGS</computeroutput>. The following example enables thread sanitizer in building Taskflow code to detect data race:</para>
+<title>Build Sanitizers</title>
+<para>You can build Taskflow with <emphasis>sanitizers</emphasis> to detect a variety of errors, such as data race, memory leak, undefined behavior, and others. To enable a sanitizer, add the sanitizer flag to the CMake variable <computeroutput>CMAKE_CXX_FLAGS</computeroutput>. The following example enables thread sanitizer in building Taskflow code to detect data race:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>build<sp/>Taskflow<sp/>code<sp/>with<sp/>thread<sp/>sanitizer<sp/>to<sp/>detect<sp/>data<sp/>race</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DCMAKE_CXX_FLAGS=&quot;-fsanitize=thread<sp/>-g&quot;</highlight></codeline>
 <codeline></codeline>
@@ -160,14 +165,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="install_1BAIBuildBenchmarks">
-<title>Build Benchmarks</title><para>The Taskflow project contains a set of benchmarks to evaluate and compare the performance of <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> with existing parallel programming libraries. To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para>
+<title>Build Benchmarks</title>
+<para>The Taskflow project contains a set of benchmarks to evaluate and compare the performance of <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> with existing parallel programming libraries. To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_BENCHMARKS=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
 </programlisting></para>
 <para>Please visit the page <ref refid="BenchmarkTaskflow" kindref="compound">Benchmark Taskflow</ref> for details.</para>
 </sect1>
 <sect1 id="install_1BAIBuildDocumentation">
-<title>Build Documentation</title><para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, you need to first install doxygen:</para>
+<title>Build Documentation</title>
+<para>Taskflow uses <ulink url="https://www.doxygen.nl/index.html">Doxygen</ulink> and <ulink url="https://mcss.mosra.cz/documentation/doxygen/">m.css</ulink> to generate this documentation. The source of documentation is located in the folder <computeroutput>taskflow/doxygen</computeroutput> and the generated html is output to the folder <computeroutput>taskflow/docs</computeroutput>. To generate the documentation, you need to first install doxygen:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>ubuntu<sp/>as<sp/>an<sp/>example</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>sudo<sp/>apt-get<sp/>install<sp/>doxygen<sp/>graphviz</highlight></codeline>
 </programlisting></para>

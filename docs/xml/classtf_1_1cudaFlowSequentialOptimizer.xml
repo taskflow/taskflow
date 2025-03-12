@@ -1,16 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowSequentialOptimizer" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowSequentialOptimizer</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::cudaFlowOptimizerBase</basecompoundref>
     <includes refid="cuda__optimizer_8hpp" local="no">taskflow/cuda/cuda_optimizer.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1cudaFlowSequentialOptimizer_1a672b45d300c57d726c203c62f950efbd" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class cudaFlowCapturer</definition>
         <argsstring></argsstring>
         <name>cudaFlowCapturer</name>
-        <qualifiedname>tf::cudaFlowSequentialOptimizer::cudaFlowCapturer</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref></type>
         </param>
@@ -20,16 +19,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_optimizer.hpp" line="136" column="16" bodyfile="taskflow/cuda/cuda_optimizer.hpp" bodystart="136" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_optimizer.hpp" line="136" column="3" bodyfile="taskflow/cuda/cuda_optimizer.hpp" bodystart="136" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaFlowSequentialOptimizer_1a83c8d618b0e3ea4a838845bd819057e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaFlowSequentialOptimizer::cudaFlowSequentialOptimizer</definition>
         <argsstring>()=default</argsstring>
         <name>cudaFlowSequentialOptimizer</name>
-        <qualifiedname>tf::cudaFlowSequentialOptimizer::cudaFlowSequentialOptimizer</qualifiedname>
         <briefdescription>
 <para>constructs a sequential optimizer </para>
         </briefdescription>
@@ -39,14 +37,13 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_optimizer.hpp" line="143" column="5"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1cudaFlowSequentialOptimizer_1a0bf59a8ce8c0ee8dd2ae9f7af192e3ad" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
         <definition>cudaGraph_t tf::cudaFlowSequentialOptimizer::_optimize</definition>
         <argsstring>(cudaFlowGraph &amp;graph)</argsstring>
         <name>_optimize</name>
-        <qualifiedname>tf::cudaFlowSequentialOptimizer::_optimize</qualifiedname>
         <param>
           <type>cudaFlowGraph &amp;</type>
           <declname>graph</declname>
@@ -59,7 +56,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_optimizer.hpp" line="147" column="17" bodyfile="taskflow/cuda/cuda_optimizer.hpp" bodystart="150" bodyend="165"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to capture a CUDA graph using a sequential stream </para>
     </briefdescription>

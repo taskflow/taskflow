@@ -1,16 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaEvent" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaEvent</compoundname>
     <basecompoundref prot="public" virt="non-virtual">cudaObject&lt; cudaEvent_t, cudaEventCreator, cudaEventDeleter &gt;</basecompoundref>
     <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaEvent_1ad0b23cb864f0c7acee306f7fe49a3c23" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaEvent::cudaEvent</definition>
         <argsstring>(cudaEvent_t event)</argsstring>
         <name>cudaEvent</name>
-        <qualifiedname>tf::cudaEvent::cudaEvent</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -29,7 +28,6 @@
         <definition>tf::cudaEvent::cudaEvent</definition>
         <argsstring>()=default</argsstring>
         <name>cudaEvent</name>
-        <qualifiedname>tf::cudaEvent::cudaEvent</qualifiedname>
         <briefdescription>
 <para>constructs an RAII-styled CUDA event object </para>
         </briefdescription>
@@ -44,7 +42,6 @@
         <definition>tf::cudaEvent::cudaEvent</definition>
         <argsstring>(unsigned int flag)</argsstring>
         <name>cudaEvent</name>
-        <qualifiedname>tf::cudaEvent::cudaEvent</qualifiedname>
         <param>
           <type>unsigned int</type>
           <declname>flag</declname>
@@ -58,7 +55,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="221" column="14" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="221" bodyend="221"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create an RAII-styled wrapper over a native CUDA event </para>
     </briefdescription>

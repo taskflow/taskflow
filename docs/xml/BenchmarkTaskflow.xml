@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="BenchmarkTaskflow" kind="page">
     <compoundname>BenchmarkTaskflow</compoundname>
     <title>Benchmark Taskflow</title>
@@ -7,31 +7,32 @@
       <tocsect>
         <name>Compile and Run Benchmarks</name>
         <reference>BenchmarkTaskflow_1CompileAndRunBenchmarks</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Configure Run Options</name>
         <reference>BenchmarkTaskflow_1ConfigureRunOptions</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Specify the Run Model</name>
-            <reference>BenchmarkTaskflow_1SpecifyTheRunModel</reference>
-          </tocsect>
-          <tocsect>
-            <name>Specify the Number of Threads</name>
-            <reference>BenchmarkTaskflow_1SpecifyTheNumberOfThreads</reference>
-          </tocsect>
-          <tocsect>
-            <name>Specify the Number of Rounds</name>
-            <reference>BenchmarkTaskflow_1SpecifyTheNumberOfRounds</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Specify the Run Model</name>
+        <reference>BenchmarkTaskflow_1SpecifyTheRunModel</reference>
+    </tocsect>
+      <tocsect>
+        <name>Specify the Number of Threads</name>
+        <reference>BenchmarkTaskflow_1SpecifyTheNumberOfThreads</reference>
+    </tocsect>
+      <tocsect>
+        <name>Specify the Number of Rounds</name>
+        <reference>BenchmarkTaskflow_1SpecifyTheNumberOfRounds</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="BenchmarkTaskflow_1CompileAndRunBenchmarks">
-<title>Compile and Run Benchmarks</title><para>To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para>
+<title>Compile and Run Benchmarks</title>
+<para>To build the benchmark code, enable the CMake option <computeroutput>TF_BUILD_BENCHMARKS</computeroutput> to <computeroutput>ON</computeroutput> as follows:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>under<sp/>/taskflow/build</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cmake<sp/>../<sp/>-DTF_BUILD_BENCHMARKS=ON</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>make</highlight></codeline>
@@ -51,7 +52,7 @@
 <codeline><highlight class="normal"><sp/>664771<sp/><sp/><sp/><sp/><sp/><sp/>77.436</highlight></codeline>
 <codeline><highlight class="normal"><sp/>711200<sp/><sp/><sp/><sp/><sp/><sp/>83.957</highlight></codeline>
 </programlisting></para>
-<para>You can display the help message by giving the option <computeroutput>--help</computeroutput>.</para>
+<para>You can display the help message by giving the option <computeroutput><ndash/>help</computeroutput>.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>--help</highlight></codeline>
 <codeline><highlight class="normal">Graph<sp/>Traversal</highlight></codeline>
 <codeline><highlight class="normal">Usage:<sp/>./bench_graph_traversal<sp/>[OPTIONS]</highlight></codeline>
@@ -119,7 +120,8 @@
 </para>
 </sect1>
 <sect1 id="BenchmarkTaskflow_1ConfigureRunOptions">
-<title>Configure Run Options</title><para>We implement consistent options for each benchmark instance. Common options are:</para>
+<title>Configure Run Options</title>
+<para>We implement consistent options for each benchmark instance. Common options are:</para>
 <para><table rows="5" cols="3"><row>
 <entry thead="yes" align='center'><para>option   </para>
 </entry><entry thead="yes" align='center'><para>value   </para>
@@ -149,14 +151,16 @@
 </para>
 <para>You can configure the benchmarking environment by giving different options.</para>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheRunModel">
-<title>Specify the Run Model</title><para>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <ulink url="https://www.openmp.org/">OpenMP</ulink> and <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <computeroutput>-m</computeroutput>.</para>
+<title>Specify the Run Model</title>
+<para>In addition to a Taskflow-based implementation for each benchmark instance, we have implemented two baseline models using the state-of-the-art parallel programming libraries, <ulink url="https://www.openmp.org/">OpenMP</ulink> and <ulink url="https://github.com/oneapi-src/oneTBB">Intel TBB</ulink>, to measure and evaluate the performance of Taskflow. You can select different implementations by passing the option <computeroutput>-m</computeroutput>.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tf<sp/><sp/><sp/>#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>(default)</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tbb<sp/><sp/>#<sp/>run<sp/>the<sp/>TBB<sp/>implementation</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>omp<sp/><sp/>#<sp/>run<sp/>the<sp/>OpenMP<sp/>implementation</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfThreads">
-<title>Specify the Number of Threads</title><para>You can configure the number of threads to run a benchmark instance by passing the option <computeroutput>-t</computeroutput>. The default value is one.</para>
+<title>Specify the Number of Threads</title>
+<para>You can configure the number of threads to run a benchmark instance by passing the option <computeroutput>-t</computeroutput>. The default value is one.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>Taskflow<sp/>implementation<sp/>using<sp/>4<sp/>threads</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-m<sp/>tf<sp/>-t<sp/>4</highlight></codeline>
 </programlisting></para>
@@ -166,7 +170,8 @@
 </programlisting></para>
 </sect2>
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfRounds">
-<title>Specify the Number of Rounds</title><para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para>
+<title>Specify the Number of Rounds</title>
+<para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>runtime<sp/>in<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-r<sp/>10</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>

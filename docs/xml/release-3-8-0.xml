@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-8-0" kind="page">
     <compoundname>release-3-8-0</compoundname>
     <title>Release 3.8.0 (2024/10/02)</title>
@@ -7,57 +7,60 @@
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-8-0_1release-3-8-0_summary</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-3-8-0_1release-3-8-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-8-0_1release-3-8-0_system_requirements</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-8-0_1release-3-8-0_new_features</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Taskflow Core</name>
-            <reference>release-3-8-0_1release-3-8-0_taskflow_core</reference>
-          </tocsect>
-          <tocsect>
-            <name>Utilities</name>
-            <reference>release-3-8-0_1release-3-8-0_utilities</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-8-0_1release-3-8-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-8-0_1release-3-8-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-8-0_1release-3-8-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-8-0_1release-3-8-0_breaking_changes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-8-0_1release-3-8-0_documentation</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-8-0_1release-3-8-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="release-3-8-0_1release-3-8-0_summary">
-<title>Release Summary</title><para>This releases (1) enhances the scheduling performance through C++20 atomic notification and a bounded queue strategy and (2) revised the semaphore model for better runtime control.</para>
+<title>Release Summary</title>
+<para>This releases (1) enhances the scheduling performance through C++20 atomic notification and a bounded queue strategy and (2) revised the semaphore model for better runtime control.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_download">
-<title>Download</title><para>Taskflow 3.8.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.8.0">here</ulink>.</para>
+<title>Download</title>
+<para>Taskflow 3.8.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.8.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_system_requirements">
-<title>System Requirements</title><para>To use Taskflow v3.8.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title>
+<para>To use Taskflow v3.8.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -80,8 +83,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_new_features">
-<title>New Features</title><sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
-<title>Taskflow Core</title><para><itemizedlist>
+<title>New Features</title>
+<sect2 id="release-3-8-0_1release-3-8-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
 <listitem><para>Enhanced the core scheduling algorithm using a new bounded queue strategy</para>
 </listitem><listitem><para>Enhanced the core scheduling performance using C++20 atomic notification</para>
 </listitem></itemizedlist>
@@ -99,7 +104,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.acquire(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>here<sp/>only)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;critical<sp/>section<sp/>here<sp/>(one<sp/>worker<sp/>here<sp/>only)\n&quot;</highlight><highlight class="normal">;<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>critical_section();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.release(semaphore);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
@@ -117,10 +122,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-8-0_1release-3-8-0_utilities">
-<title>Utilities</title></sect2>
+<title>Utilities</title>
+</sect2>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_bug_fixes">
-<title>Bug Fixes</title><para><itemizedlist>
+<title>Bug Fixes</title>
+<para><itemizedlist>
 <listitem><para>Fixed the compilation error for not finding the C++ atomic library</para>
 </listitem><listitem><para>Fixed the missing <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> in asynchronous tasking</para>
 </listitem><listitem><para>Fixed the non-heterogeneity of <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref></para>
@@ -129,14 +136,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_breaking_changes">
-<title>Breaking Changes</title><para><itemizedlist>
+<title>Breaking Changes</title>
+<para><itemizedlist>
 <listitem><para>Removed the support of object pool by default</para>
 </listitem><listitem><para>Removed the support of prioritized tasking due to inconsistency with work stealing</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_documentation">
-<title>Documentation</title><para><itemizedlist>
+<title>Documentation</title>
+<para><itemizedlist>
 <listitem><para>Revised <ref refid="LimitTheMaximumConcurrency" kindref="compound">Limit the Maximum Concurrency</ref></para>
 </listitem><listitem><para>Removed Prioritized Tasking</para>
 </listitem><listitem><para>Fixed typos in multiple pages</para>
@@ -144,7 +153,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-8-0_1release-3-8-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
+<title>Miscellaneous Items</title>
+<para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you intend to collaborate with us on using Taskflow in your scientific computing projects. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-3.8.0.dox"/>

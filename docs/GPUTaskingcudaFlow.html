@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; GPU Tasking (cudaFlow) | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -110,56 +110,56 @@
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// dump the cudaflow</span>
 <span class="w">  </span><span class="n">cudaflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-<span class="p">}</span></pre><p>The cudaFlow graph consists of two CPU-to-GPU data copies (<code>h2d_x</code> and <code>h2d_y</code>), one kernel (<code>saxpy</code>), and two GPU-to-CPU data copies (<code>d2h_x</code> and <code>d2h_y</code>), in this order of their task dependencies.</p><div class="m-graph"><svg style="width: 24.200rem; height: 9.800rem;" viewBox="0.00 0.00 242.00 98.00">
+<span class="p">}</span></pre><p>The cudaFlow graph consists of two CPU-to-GPU data copies (<code>h2d_x</code> and <code>h2d_y</code>), one kernel (<code>saxpy</code>), and two GPU-to-CPU data copies (<code>d2h_x</code> and <code>d2h_y</code>), in this order of their task dependencies.</p><div class="m-graph"><svg style="width: 24.200rem; height: 9.800rem;" viewBox="0.00 0.00 242.31 98.00">
 <g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7f2870401a50</title>
-<ellipse cx="27" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_x</text>
+<ellipse cx="27.08" cy="-72" rx="27.16" ry="18"/>
+<text text-anchor="middle" x="27.08" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_x</text>
 </g>
 <g class="m-node">
 <title>p0x7f2870402bc0</title>
-<polygon points="144,-63 94,-63 90,-59 90,-27 140,-27 144,-31 144,-63"/>
-<polyline points="140,-59 90,-59"/>
-<polyline points="140,-59 140,-27"/>
-<polyline points="140,-59 144,-63"/>
-<text text-anchor="middle" x="117" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">saxpy</text>
+<polygon points="144.16,-63 94.16,-63 90.16,-59 90.16,-27 140.16,-27 144.16,-31 144.16,-63"/>
+<polyline points="140.16,-59 90.16,-59 "/>
+<polyline points="140.16,-59 140.16,-27 "/>
+<polyline points="140.16,-59 144.16,-63 "/>
+<text text-anchor="middle" x="117.16" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">saxpy</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
-<path d="M52.05,-64.62C60.3,-62.09 69.73,-59.2 78.78,-56.42"/>
-<polygon points="79.53,-59.85 88.06,-53.57 77.47,-53.16 79.53,-59.85"/>
+<path d="M52.15,-64.62C60.84,-61.96 70.85,-58.89 80.34,-55.98"/>
+<polygon points="81.42,-59.31 89.95,-53.03 79.37,-52.62 81.42,-59.31"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402310</title>
-<ellipse cx="207" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_x</text>
+<ellipse cx="207.24" cy="-72" rx="27.16" ry="18"/>
+<text text-anchor="middle" x="207.24" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_x</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
-<path d="M144.4,-53.1C152.8,-55.68 162.23,-58.57 171.13,-61.3"/>
-<polygon points="169.98,-64.61 180.57,-64.2 172.03,-57.92 169.98,-64.61"/>
+<path d="M144.58,-53.1C153.37,-55.79 163.27,-58.83 172.52,-61.67"/>
+<polygon points="171.64,-65.06 182.23,-64.64 173.69,-58.36 171.64,-65.06"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870402780</title>
-<ellipse cx="207" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_y</text>
+<ellipse cx="207.24" cy="-18" rx="27.16" ry="18"/>
+<text text-anchor="middle" x="207.24" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
-<path d="M144.4,-36.9C152.8,-34.32 162.23,-31.43 171.13,-28.7"/>
-<polygon points="172.03,-32.08 180.57,-25.8 169.98,-25.39 172.03,-32.08"/>
+<path d="M144.58,-36.9C153.37,-34.21 163.27,-31.17 172.52,-28.33"/>
+<polygon points="173.69,-31.64 182.23,-25.36 171.64,-24.94 173.69,-31.64"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f2870401eb0</title>
-<ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_y</text>
+<ellipse cx="27.08" cy="-18" rx="27.16" ry="18"/>
+<text text-anchor="middle" x="27.08" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_y</text>
 </g>
 <g class="m-edge">
 <title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
-<path d="M52.05,-25.38C60.3,-27.91 69.73,-30.8 78.78,-33.58"/>
-<polygon points="77.47,-36.84 88.06,-36.43 79.53,-30.15 77.47,-36.84"/>
+<path d="M52.15,-25.38C60.84,-28.04 70.85,-31.11 80.34,-34.02"/>
+<polygon points="79.37,-37.38 89.95,-36.97 81.42,-30.69 79.37,-37.38"/>
 </g>
 </g>
 </svg>
@@ -257,7 +257,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

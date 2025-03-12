@@ -41,6 +41,8 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @subsection release-3-10-0_taskflow_core Taskflow Core
 
++ improved work-stealing loop with an adaptive breaking strategy
++ improved shut-down signal detection using decentralized variables
 + fixed MSVC compilation warnings due to signed conversion on sort
 + added debug mode for the windows CI to GitHub actions
 + added index range-based parallel-for algorithm ([#551](https://github.com/taskflow/taskflow/issues/551))

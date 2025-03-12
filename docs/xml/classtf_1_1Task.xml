@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Task" kind="class" language="C++" prot="public">
     <compoundname>tf::Task</compoundname>
     <includes refid="task_8hpp" local="no">taskflow/core/task.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Task_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class FlowBuilder</definition>
         <argsstring></argsstring>
         <name>FlowBuilder</name>
-        <qualifiedname>tf::Task::FlowBuilder</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1FlowBuilder" kindref="compound">FlowBuilder</ref></type>
         </param>
@@ -19,14 +18,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="152" column="16" bodyfile="taskflow/core/task.hpp" bodystart="152" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="152" column="3" bodyfile="taskflow/core/task.hpp" bodystart="152" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Runtime</definition>
         <argsstring></argsstring>
         <name>Runtime</name>
-        <qualifiedname>tf::Task::Runtime</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref></type>
         </param>
@@ -36,14 +34,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="153" column="16" bodyfile="taskflow/core/task.hpp" bodystart="153" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="153" column="3" bodyfile="taskflow/core/task.hpp" bodystart="153" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1af043dd6f6a359602805d9c7dd7539cca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Taskflow</definition>
         <argsstring></argsstring>
         <name>Taskflow</name>
-        <qualifiedname>tf::Task::Taskflow</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref></type>
         </param>
@@ -53,14 +50,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="154" column="16" bodyfile="taskflow/core/task.hpp" bodystart="154" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="154" column="3" bodyfile="taskflow/core/task.hpp" bodystart="154" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1a0aa0e12e4a0ba023033e808fb2132fdf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class TaskView</definition>
         <argsstring></argsstring>
         <name>TaskView</name>
-        <qualifiedname>tf::Task::TaskView</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref></type>
         </param>
@@ -70,14 +66,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="155" column="16" bodyfile="taskflow/core/task.hpp" bodystart="155" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="155" column="3" bodyfile="taskflow/core/task.hpp" bodystart="155" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::Task::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -87,16 +82,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="156" column="16" bodyfile="taskflow/core/task.hpp" bodystart="156" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="156" column="3" bodyfile="taskflow/core/task.hpp" bodystart="156" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Task_1abff81069222d0f449e0b43136aea2f05" prot="private" static="no" mutable="no">
         <type>Node *</type>
         <definition>Node* tf::Task::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
-        <qualifiedname>tf::Task::_node</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -104,16 +98,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="381" column="10" bodyfile="taskflow/core/task.hpp" bodystart="381" bodyend="381"/>
+        <location file="taskflow/core/task.hpp" line="381" column="10" bodyfile="taskflow/core/task.hpp" bodystart="381" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Task_1a5ed7ba63e8eeaa0f21fe08c80aa474ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Task::Task</definition>
         <argsstring>()=default</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <briefdescription>
 <para>constructs an empty task </para>
         </briefdescription>
@@ -128,7 +121,6 @@
         <definition>tf::Task::Task</definition>
         <argsstring>(const Task &amp;other)</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>other</declname>
@@ -147,7 +139,6 @@
         <definition>Task &amp; tf::Task::operator=</definition>
         <argsstring>(const Task &amp;)</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::Task::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <defname>rhs</defname>
@@ -166,9 +157,8 @@
         <definition>Task &amp; tf::Task::operator=</definition>
         <argsstring>(std::nullptr_t)</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::Task::operator=</qualifiedname>
         <param>
-          <type><ref refid="cpp/types/nullptr_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::nullptr_t</ref></type>
+          <type><ref refid="cpp/types/nullptr_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::nullptr_t</ref></type>
           <defname>ptr</defname>
         </param>
         <briefdescription>
@@ -185,7 +175,6 @@
         <definition>bool tf::Task::operator==</definition>
         <argsstring>(const Task &amp;rhs) const</argsstring>
         <name>operator==</name>
-        <qualifiedname>tf::Task::operator==</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>rhs</declname>
@@ -204,7 +193,6 @@
         <definition>bool tf::Task::operator!=</definition>
         <argsstring>(const Task &amp;rhs) const</argsstring>
         <name>operator!=</name>
-        <qualifiedname>tf::Task::operator!=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>rhs</declname>
@@ -219,11 +207,10 @@
         <location file="taskflow/core/task.hpp" line="188" column="10" bodyfile="taskflow/core/task.hpp" bodystart="433" bodyend="435"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
         <definition>const std::string &amp; tf::Task::name</definition>
         <argsstring>() const</argsstring>
         <name>name</name>
-        <qualifiedname>tf::Task::name</qualifiedname>
         <briefdescription>
 <para>queries the name of the task </para>
         </briefdescription>
@@ -238,7 +225,6 @@
         <definition>size_t tf::Task::num_successors</definition>
         <argsstring>() const</argsstring>
         <name>num_successors</name>
-        <qualifiedname>tf::Task::num_successors</qualifiedname>
         <briefdescription>
 <para>queries the number of successors of the task </para>
         </briefdescription>
@@ -253,7 +239,6 @@
         <definition>size_t tf::Task::num_dependents</definition>
         <argsstring>() const</argsstring>
         <name>num_dependents</name>
-        <qualifiedname>tf::Task::num_dependents</qualifiedname>
         <briefdescription>
 <para>queries the number of predecessors of the task </para>
         </briefdescription>
@@ -268,7 +253,6 @@
         <definition>size_t tf::Task::num_strong_dependents</definition>
         <argsstring>() const</argsstring>
         <name>num_strong_dependents</name>
-        <qualifiedname>tf::Task::num_strong_dependents</qualifiedname>
         <briefdescription>
 <para>queries the number of strong dependents of the task </para>
         </briefdescription>
@@ -283,7 +267,6 @@
         <definition>size_t tf::Task::num_weak_dependents</definition>
         <argsstring>() const</argsstring>
         <name>num_weak_dependents</name>
-        <qualifiedname>tf::Task::num_weak_dependents</qualifiedname>
         <briefdescription>
 <para>queries the number of weak dependents of the task </para>
         </briefdescription>
@@ -298,9 +281,8 @@
         <definition>Task &amp; tf::Task::name</definition>
         <argsstring>(const std::string &amp;name)</argsstring>
         <name>name</name>
-        <qualifiedname>tf::Task::name</qualifiedname>
         <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <declname>name</declname>
         </param>
         <briefdescription>
@@ -334,7 +316,6 @@
         <definition>Task &amp; tf::Task::work</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>work</name>
-        <qualifiedname>tf::Task::work</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -379,7 +360,6 @@
         <definition>Task &amp; tf::Task::composed_of</definition>
         <argsstring>(T &amp;object)</argsstring>
         <name>composed_of</name>
-        <qualifiedname>tf::Task::composed_of</qualifiedname>
         <param>
           <type>T &amp;</type>
           <declname>object</declname>
@@ -426,7 +406,6 @@
         <definition>Task &amp; tf::Task::precede</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>precede</name>
-        <qualifiedname>tf::Task::precede</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -473,7 +452,6 @@
         <definition>Task &amp; tf::Task::succeed</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>succeed</name>
-        <qualifiedname>tf::Task::succeed</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -513,7 +491,6 @@
         <definition>Task &amp; tf::Task::release</definition>
         <argsstring>(Semaphore &amp;semaphore)</argsstring>
         <name>release</name>
-        <qualifiedname>tf::Task::release</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Semaphore" kindref="compound">Semaphore</ref> &amp;</type>
           <declname>semaphore</declname>
@@ -537,7 +514,6 @@
         <definition>Task &amp; tf::Task::release</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>release</name>
-        <qualifiedname>tf::Task::release</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -560,7 +536,6 @@
         <definition>Task &amp; tf::Task::acquire</definition>
         <argsstring>(Semaphore &amp;semaphore)</argsstring>
         <name>acquire</name>
-        <qualifiedname>tf::Task::acquire</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Semaphore" kindref="compound">Semaphore</ref> &amp;</type>
           <declname>semaphore</declname>
@@ -584,7 +559,6 @@
         <definition>Task &amp; tf::Task::acquire</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>acquire</name>
-        <qualifiedname>tf::Task::acquire</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -607,7 +581,6 @@
         <definition>Task &amp; tf::Task::data</definition>
         <argsstring>(void *data)</argsstring>
         <name>data</name>
-        <qualifiedname>tf::Task::data</qualifiedname>
         <param>
           <type>void *</type>
           <declname>data</declname>
@@ -626,21 +599,21 @@
 </parameteritem>
 </parameterlist>
 The following example shows how to attach user data to a task and run the task iteratively while changing the data value:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
-<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow(</highlight><highlight class="stringliteral">&quot;attach<sp/>data<sp/>to<sp/>a<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;attach<sp/>data<sp/>to<sp/>a<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>task<sp/>and<sp/>attach<sp/>it<sp/>the<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.placeholder();</highlight></codeline>
-<codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>).work([A](){</highlight></codeline>
+<codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>).work([A](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>*</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(A.data());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>iteratively<sp/>with<sp/>changing<sp/>data</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" kindref="member">data</ref>++){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>++){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="return"><para><computeroutput>*this</computeroutput> </para>
@@ -656,7 +629,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void tf::Task::reset</definition>
         <argsstring>()</argsstring>
         <name>reset</name>
-        <qualifiedname>tf::Task::reset</qualifiedname>
         <briefdescription>
 <para>resets the task handle to null </para>
         </briefdescription>
@@ -671,7 +643,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void tf::Task::reset_work</definition>
         <argsstring>()</argsstring>
         <name>reset_work</name>
-        <qualifiedname>tf::Task::reset_work</qualifiedname>
         <briefdescription>
 <para>resets the associated work to a placeholder </para>
         </briefdescription>
@@ -686,7 +657,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>bool tf::Task::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
-        <qualifiedname>tf::Task::empty</qualifiedname>
         <briefdescription>
 <para>queries if the task handle points to a task node </para>
         </briefdescription>
@@ -701,7 +671,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>bool tf::Task::has_work</definition>
         <argsstring>() const</argsstring>
         <name>has_work</name>
-        <qualifiedname>tf::Task::has_work</qualifiedname>
         <briefdescription>
 <para>queries if the task has a work assigned </para>
         </briefdescription>
@@ -721,7 +690,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void tf::Task::for_each_successor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_successor</name>
-        <qualifiedname>tf::Task::for_each_successor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -745,7 +713,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void tf::Task::for_each_dependent</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_dependent</name>
-        <qualifiedname>tf::Task::for_each_dependent</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -764,7 +731,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>size_t tf::Task::hash_value</definition>
         <argsstring>() const</argsstring>
         <name>hash_value</name>
-        <qualifiedname>tf::Task::hash_value</qualifiedname>
         <briefdescription>
 <para>obtains a hash value of the underlying node </para>
         </briefdescription>
@@ -779,7 +745,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>TaskType tf::Task::type</definition>
         <argsstring>() const</argsstring>
         <name>type</name>
-        <qualifiedname>tf::Task::type</qualifiedname>
         <briefdescription>
 <para>returns the task type </para>
         </briefdescription>
@@ -794,9 +759,8 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void tf::Task::dump</definition>
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::Task::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
@@ -813,7 +777,6 @@ The following example shows how to attach user data to a task and run the task i
         <definition>void * tf::Task::data</definition>
         <argsstring>() const</argsstring>
         <name>data</name>
-        <qualifiedname>tf::Task::data</qualifiedname>
         <briefdescription>
 <para>queries pointer to user data </para>
         </briefdescription>
@@ -823,14 +786,13 @@ The following example shows how to attach user data to a task and run the task i
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="374" column="10" bodyfile="taskflow/core/task.hpp" bodystart="607" bodyend="609"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Task_1a43d108a6cc0417cc470a00b5e95a65f5" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Task::Task</definition>
         <argsstring>(Node *)</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <param>
           <type>Node *</type>
           <defname>node</defname>
@@ -843,7 +805,7 @@ The following example shows how to attach user data to a task and run the task i
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="379" column="5" bodyfile="taskflow/core/task.hpp" bodystart="385" bodyend="386"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a task handle over a node in a taskflow graph </para>
     </briefdescription>

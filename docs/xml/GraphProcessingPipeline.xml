@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="GraphProcessingPipeline" kind="page">
     <compoundname>GraphProcessingPipeline</compoundname>
     <title>Graph Processing Pipeline</title>
@@ -7,51 +7,52 @@
       <tocsect>
         <name>Formulate the Graph Processing Pipeline Problem</name>
         <reference>GraphProcessingPipeline_1FormulateTheGraphProcessingPipelineProblem</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create a Graph Processing Pipeline</name>
         <reference>GraphProcessingPipeline_1CreateAGraphProcessingPipeline</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Find a Topological Order of the Graph</name>
-            <reference>GraphProcessingPipeline_1GraphPipelineFindATopologicalOrderOfTheGraph</reference>
-          </tocsect>
-          <tocsect>
-            <name>Define the Stage Function</name>
-            <reference>GraphProcessingPipeline_1GraphPipelineDefineTheStageFunction</reference>
-          </tocsect>
-          <tocsect>
-            <name>Define the Pipes</name>
-            <reference>GraphProcessingPipeline_1GraphPipelineDefineThePipes</reference>
-          </tocsect>
-          <tocsect>
-            <name>Define the Task Graph</name>
-            <reference>GraphProcessingPipeline_1GraphPipelineDefineTheTaskGraph</reference>
-          </tocsect>
-          <tocsect>
-            <name>Submit the Task Graph</name>
-            <reference>GraphProcessingPipeline_1GraphPipelineSubmitTheTaskGraph</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Find a Topological Order of the Graph</name>
+        <reference>GraphProcessingPipeline_1GraphPipelineFindATopologicalOrderOfTheGraph</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define the Stage Function</name>
+        <reference>GraphProcessingPipeline_1GraphPipelineDefineTheStageFunction</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define the Pipes</name>
+        <reference>GraphProcessingPipeline_1GraphPipelineDefineThePipes</reference>
+    </tocsect>
+      <tocsect>
+        <name>Define the Task Graph</name>
+        <reference>GraphProcessingPipeline_1GraphPipelineDefineTheTaskGraph</reference>
+    </tocsect>
+      <tocsect>
+        <name>Submit the Task Graph</name>
+        <reference>GraphProcessingPipeline_1GraphPipelineSubmitTheTaskGraph</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Reference</name>
         <reference>GraphProcessingPipeline_1GraphPipelineReference</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>We study a graph processing pipeline that propagates a sequence of linearly dependent tasks over a dependency graph. In this particular workload, we will learn how to transform task graph parallelism into pipeline parallelism.</para>
 <sect1 id="GraphProcessingPipeline_1FormulateTheGraphProcessingPipelineProblem">
-<title>Formulate the Graph Processing Pipeline Problem</title><para>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <emphasis>stage tasks</emphasis>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <computeroutput>fi(u)</computeroutput> represents the <computeroutput>i</computeroutput><superscript>th</superscript>-stage task of node <computeroutput>u</computeroutput>, a dependency from <computeroutput>u</computeroutput> to <computeroutput>v</computeroutput> requires <computeroutput>fi(u)</computeroutput> to run before <computeroutput>fi(v)</computeroutput>. The following figures shows an example of three stage tasks in a DAG of three nodes (<computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>) and two dependencies (<computeroutput>A-&gt;B</computeroutput> and <computeroutput>A-&gt;C</computeroutput>):</para>
-<para><dotfile name="graph_pipeline_1.dot"></dotfile>
+<title>Formulate the Graph Processing Pipeline Problem</title>
+<para>Given a directed acyclic graph (DAG), where each node encapsulates a sequence of linearly dependent tasks, namely <emphasis>stage tasks</emphasis>, and each edge represents a dependency between two tasks at the same stages of adjacent nodes. For example, assuming <computeroutput>fi(u)</computeroutput> represents the <computeroutput>i</computeroutput><superscript>th</superscript>-stage task of node <computeroutput>u</computeroutput>, a dependency from <computeroutput>u</computeroutput> to <computeroutput>v</computeroutput> requires <computeroutput>fi(u)</computeroutput> to run before <computeroutput>fi(v)</computeroutput>. The following figures shows an example of three stage tasks in a DAG of three nodes (<computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>) and two dependencies (<computeroutput>A-&gt;B</computeroutput> and <computeroutput>A-&gt;C</computeroutput>):</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_pipeline_1.dot"></dotfile>
 </para>
 <para>While we can directly create a taskflow for the DAG (i.e., each task in the taskflow runs <computeroutput>f1</computeroutput>, <computeroutput>f2</computeroutput>, and <computeroutput>f3</computeroutput> sequentially), we can describe the parallelism as a three-stage pipeline that propagates a topological order of the DAG through three stage tasks. Consider a valid topological order of this DAG, <computeroutput>A, B, C</computeroutput>, its pipeline parallelism can be illustrated in the following figure:</para>
-<para><dotfile name="graph_pipeline_2.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_pipeline_2.dot"></dotfile>
 </para>
 <para>At the beginning, <computeroutput>f1(A)</computeroutput> runs first. When <computeroutput>f1(A)</computeroutput> completes, it moves on to <computeroutput>f2(A)</computeroutput> and, meanwhile, <computeroutput>f1(B)</computeroutput> can start to run together with <computeroutput>f2(A)</computeroutput>, and so on so forth. The straight line represents two parallel tasks that can overlap in time in the pipeline. For example, <computeroutput>f3(A)</computeroutput>, <computeroutput>f2(B)</computeroutput>, and <computeroutput>f1(C)</computeroutput> can run simultaneously. The following figures shows the task dependency graph of this pipeline workload:</para>
-<para><dotfile name="graph_pipeline_3.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_pipeline_3.dot"></dotfile>
 </para>
 <para>As we can see, tasks in diagonal lines (lower-left to upper-right) can run in parallel. This type of parallelism is also referred to as <emphasis>wavefront</emphasis> parallelism, which sweeps parallel elements in a diagonal direction.</para>
 <para><simplesect kind="attention"><para>Depending on the graph size and the number of stage tasks, task graph parallelism and pipeline parallelism can bring very different performance results. For example, a small graph will a long chain of stage tasks may perform better with pipeline parallelism than task graph parallelism, and vice versa.</para>
@@ -59,29 +60,30 @@
 </para>
 </sect1>
 <sect1 id="GraphProcessingPipeline_1CreateAGraphProcessingPipeline">
-<title>Create a Graph Processing Pipeline</title><para>Using the example from the previous section, we create a three-stage pipeline that encapsulates the three stage tasks (<computeroutput>f1, f2, f3</computeroutput>) in three pipes. By finding a topological order of the graph, we can transform the node dependency into a sequence of linearly dependent data tokens to feed into the pipeline. The overall implementation is shown below:</para>
+<title>Create a Graph Processing Pipeline</title>
+<para>Using the example from the previous section, we create a three-stage pipeline that encapsulates the three stage tasks (<computeroutput>f1, f2, f3</computeroutput>) in three pipes. By finding a topological order of the graph, we can transform the node dependency into a sequence of linearly dependent data tokens to feed into the pipeline. The overall implementation is shown below:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>1st-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f1(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;f1(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f1(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f1(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>2nd-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;f2(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f2(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>3rd-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f3(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f3(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Taskflow<sp/>taskflow(</highlight><highlight class="stringliteral">&quot;graph<sp/>processing<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;graph<sp/>processing<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>2;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -89,14 +91,14 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>|-&gt;<sp/>B</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>A--|</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/>|-&gt;<sp/>C</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::vector&lt;std::string&gt;<sp/>nodes<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>nodes<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>pipeline<sp/>consists<sp/>of<sp/>three<sp/>serial<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>and<sp/>up<sp/>to<sp/>two<sp/>concurrent<sp/>scheduling<sp/>tokens</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Pipeline<sp/>pl(num_lines,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref><sp/>pl(num_lines,</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>first<sp/>pipe<sp/>calls<sp/>f1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>nodes.size())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
@@ -106,57 +108,59 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>second<sp/>pipe<sp/>calls<sp/>f2</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>f2(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>third<sp/>pipe<sp/>calls<sp/>f3</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>f3(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Task<sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Task<sp/>task<sp/>=<sp/>taskflow.composed_of(pl)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::Task<sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>task<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>init.precede(task);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>pipeline<sp/>graph<sp/>structure<sp/>(with<sp/>composition)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(std::cout);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <sect2 id="GraphProcessingPipeline_1GraphPipelineFindATopologicalOrderOfTheGraph">
-<title>Find a Topological Order of the Graph</title><para>The first step is to find a valid topological order of the graph, such that we can transform the graph dependency into a linear sequence. In this example, we simply hard-code it:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>nodes<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">};</highlight></codeline>
+<title>Find a Topological Order of the Graph</title>
+<para>The first step is to find a valid topological order of the graph, such that we can transform the graph dependency into a linear sequence. In this example, we simply hard-code it:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;std::string&gt;</ref><sp/>nodes<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">};</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="GraphProcessingPipeline_1GraphPipelineDefineTheStageFunction">
-<title>Define the Stage Function</title><para>This particular workload does not propagate data directly through the pipeline. In most situations, data is directly stored in a custom graph data structure, and the stage function will just need to know which node to process. For demo&apos;s sake, we simply output a message to show which stage function is processing which node:</para>
+<title>Define the Stage Function</title>
+<para>This particular workload does not propagate data directly through the pipeline. In most situations, data is directly stored in a custom graph data structure, and the stage function will just need to know which node to process. For demo&apos;s sake, we simply output a message to show which stage function is processing which node:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>1st-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f1(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;f1(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f1(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f1(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>2nd-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;f2(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f2(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f2(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>3rd-stage<sp/>function</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>node)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f3(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>f3(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>node)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;f3(%s)\n&quot;</highlight><highlight class="normal">,<sp/>node.c_str());</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="attention"><para>A key advantage of Taskflow&apos;s pipeline programming model is that we do not provide any data abstraction but give users full control over data management, which is typically application-dependent. In an application like this graph processing pipeline, data is managed in a global custom graph data structure, and any data abstraction provided by the library can become a unnecessary overhead.</para>
@@ -164,7 +168,8 @@
 </para>
 </sect2>
 <sect2 id="GraphProcessingPipeline_1GraphPipelineDefineThePipes">
-<title>Define the Pipes</title><para>The pipe structure is straightforward. Each pipe encapsulates the corresponding stage function and passes the node into the function argument. The first pipe will cease the pipeline scheduling when it has processed all nodes. To identify which node is being processed at a running pipe, we use <ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">tf::Pipeflow::token</ref> to find the index:</para>
+<title>Define the Pipes</title>
+<para>The pipe structure is straightforward. Each pipe encapsulates the corresponding stage function and passes the node into the function argument. The first pipe will cease the pipeline scheduling when it has processed all nodes. To identify which node is being processed at a running pipe, we use <ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">tf::Pipeflow::token</ref> to find the index:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>first<sp/>pipe<sp/>calls<sp/>f1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.token()<sp/>==<sp/>nodes.size())<sp/>{</highlight></codeline>
@@ -176,33 +181,35 @@
 <codeline><highlight class="normal">}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>second<sp/>pipe<sp/>calls<sp/>f2</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>f2(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal">}},</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>third<sp/>pipe<sp/>calls<sp/>f3</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>f3(nodes[pf.token()]);</highlight></codeline>
 <codeline><highlight class="normal">}}</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="GraphProcessingPipeline_1GraphPipelineDefineTheTaskGraph">
-<title>Define the Task Graph</title><para>To build up the taskflow for the pipeline, we create a module task with the defined pipeline structure and connect it with two tasks that output helper messages before and after the pipeline:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<title>Define the Task Graph</title>
+<para>To build up the taskflow for the pipeline, we create a module task with the defined pipeline structure and connect it with two tasks that output helper messages before and after the pipeline:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">init.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task);</highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="graph_pipeline_4.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/graph_pipeline_4.dot"></dotfile>
 </para>
 </sect2>
 <sect2 id="GraphProcessingPipeline_1GraphPipelineSubmitTheTaskGraph">
-<title>Submit the Task Graph</title><para>Finally, we submit the taskflow to the execution and run it once:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<title>Submit the Task Graph</title>
+<para>Finally, we submit the taskflow to the execution and run it once:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>Three possible outputs are shown below:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>possible<sp/>output<sp/>1</highlight></codeline>
@@ -246,7 +253,8 @@
 </sect2>
 </sect1>
 <sect1 id="GraphProcessingPipeline_1GraphPipelineReference">
-<title>Reference</title><para>We have applied the graph processing pipeline technique to speed up a circuit analysis problem. Details can be referred to our publication below:</para>
+<title>Reference</title>
+<para>We have applied the graph processing pipeline technique to speed up a circuit analysis problem. Details can be referred to our publication below:</para>
 <para><itemizedlist>
 <listitem><para>Cheng-Hsiang Chiu and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/dac2022.pdf">Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2022 </para>
 </listitem></itemizedlist>

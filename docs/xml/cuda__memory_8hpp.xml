@@ -1,14 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__memory_8hpp" kind="file" language="C++">
     <compoundname>cuda_memory.hpp</compoundname>
     <includes refid="cuda__device_8hpp" local="yes">cuda_device.hpp</includes>
     <incdepgraph>
-      <node id="2">
-        <label>cuda_device.hpp</label>
-        <link refid="cuda__device_8hpp"/>
-        <childnode refid="3" relation="include">
-        </childnode>
+      <node id="3">
+        <label>cuda_error.hpp</label>
       </node>
       <node id="1">
         <label>taskflow/cuda/cuda_memory.hpp</label>
@@ -16,22 +13,25 @@
         <childnode refid="2" relation="include">
         </childnode>
       </node>
-      <node id="3">
-        <label>cuda_error.hpp</label>
+      <node id="2">
+        <label>cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
       </node>
     </incdepgraph>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
-    <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01int_01_4" prot="private">tf::cudaSharedMemory&lt; int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01int_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01char_01_4" prot="private">tf::cudaSharedMemory&lt; char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01char_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned char &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01short_01_4" prot="private">tf::cudaSharedMemory&lt; short &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01long_01_4" prot="private">tf::cudaSharedMemory&lt; long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01unsigned_01long_01_4" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01bool_01_4" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01float_01_4" prot="private">tf::cudaSharedMemory&lt; float &gt;</innerclass>
+    <innerclass refid="structtf_1_1cudaSharedMemory_3_01double_01_4" prot="private">tf::cudaSharedMemory&lt; double &gt;</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
     <innerclass refid="structtf_1_1cudaDeviceAllocator_1_1rebind" prot="public">tf::cudaDeviceAllocator::rebind</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>

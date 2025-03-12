@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1detail_1_1cudaBlockScan" kind="struct" language="C++" prot="private">
     <compoundname>tf::detail::cudaBlockScan</compoundname>
     <innerclass refid="uniontf_1_1detail_1_1cudaBlockScan_1_1storage__t" prot="private">tf::detail::cudaBlockScan::storage_t</innerclass>
@@ -13,13 +13,12 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-    <sectiondef kind="public-static-attrib">
+      <sectiondef kind="public-static-attrib">
       <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1ade947dae7ff7d1a8d33cb937f0c9d93a" prot="public" static="yes" mutable="no">
         <type>const unsigned</type>
         <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_warps</definition>
         <argsstring></argsstring>
         <name>num_warps</name>
-        <qualifiedname>tf::detail::cudaBlockScan::num_warps</qualifiedname>
         <initializer>= nt / CUDA_WARP_SIZE</initializer>
         <briefdescription>
         </briefdescription>
@@ -34,8 +33,7 @@
         <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_passes</definition>
         <argsstring></argsstring>
         <name>num_passes</name>
-        <qualifiedname>tf::detail::cudaBlockScan::num_passes</qualifiedname>
-        <initializer>= <ref refid="namespacetf_1a2bf015a9ef27c0efd2d3c73234317a06" kindref="member">log2</ref>(nt)</initializer>
+        <initializer>= log2(nt)</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -49,7 +47,6 @@
         <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::capacity</definition>
         <argsstring></argsstring>
         <name>capacity</name>
-        <qualifiedname>tf::detail::cudaBlockScan::capacity</qualifiedname>
         <initializer>= nt + num_warps</initializer>
         <briefdescription>
         </briefdescription>
@@ -59,8 +56,8 @@
         </inbodydescription>
         <location file="taskflow/cuda/algorithm/scan.hpp" line="47" column="25" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="47" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1detail_1_1cudaBlockScan_1a5ac5687ea52d5b6378bd22f4e0bf3b2d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -71,7 +68,6 @@
         <definition>__device__ cudaScanResult&lt; T &gt; tf::detail::cudaBlockScan&lt; nt, T &gt;::operator()</definition>
         <argsstring>(unsigned tid, T x, storage_t &amp;storage, unsigned count=nt, op_t op=op_t(), T init=T(), cudaScanType type=cudaScanType::EXCLUSIVE) const</argsstring>
         <name>operator()</name>
-        <qualifiedname>tf::detail::cudaBlockScan::operator()</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>tid</declname>
@@ -127,7 +123,6 @@
         <definition>__device__ cudaScanResult&lt; T, vt &gt; tf::detail::cudaBlockScan&lt; nt, T &gt;::operator()</definition>
         <argsstring>(unsigned tid, cudaArray&lt; T, vt &gt; x, storage_t &amp;storage, T carry_in=T(), bool use_carry_in=false, unsigned count=nt, op_t op=op_t(), T init=T(), cudaScanType type=cudaScanType::EXCLUSIVE) const</argsstring>
         <name>operator()</name>
-        <qualifiedname>tf::detail::cudaBlockScan::operator()</qualifiedname>
         <param>
           <type>unsigned</type>
           <declname>tid</declname>
@@ -178,7 +173,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/algorithm/scan.hpp" line="70" column="29" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="118" bodyend="169"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

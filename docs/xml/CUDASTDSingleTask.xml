@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CUDASTDSingleTask" kind="page">
     <compoundname>CUDASTDSingleTask</compoundname>
     <title>Single Task</title>
@@ -7,25 +7,27 @@
       <tocsect>
         <name>Include the Header</name>
         <reference>CUDASTDSingleTask_1CUDASTDSingleTaskIncludeTheHeader</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Run a Task with a Single Thread</name>
         <reference>CUDASTDSingleTask_1CUDASTDSingleTaskRunATaskWithASingleThread</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow provides a standard template method for running a callable using a single GPU thread.</para>
 <sect1 id="CUDASTDSingleTask_1CUDASTDSingleTaskIncludeTheHeader">
-<title>Include the Header</title><para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para>
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="for__each_8hpp" kindref="compound">taskflow/cuda/algorithm/for_each.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="CUDASTDSingleTask_1CUDASTDSingleTaskRunATaskWithASingleThread">
-<title>Run a Task with a Single Thread</title><para>You can launch a kernel with only one GPU thread running it, which is handy when you want to set up a single or a few variables that do not need multiple threads. The following example creates a single-task kernel that sets a device variable to <computeroutput>1</computeroutput>.</para>
+<title>Run a Task with a Single Thread</title>
+<para>You can launch a kernel with only one GPU thread running it, which is handy when you want to set up a single or a few variables that do not need multiple threads. The following example creates a single-task kernel that sets a device variable to <computeroutput>1</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>single-task<sp/>kernel<sp/>asynchronously<sp/>through<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="namespacetf_1a2ff1cf81426c856fc6db1f6ead47878f" kindref="member">tf::cuda_single_task</ref>(policy,<sp/>[gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>

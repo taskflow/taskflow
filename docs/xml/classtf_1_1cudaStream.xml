@@ -1,16 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaStream" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaStream</compoundname>
     <basecompoundref prot="public" virt="non-virtual">cudaObject&lt; cudaStream_t, cudaStreamCreator, cudaStreamDeleter &gt;</basecompoundref>
     <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaStream_1ab29390d447e334d4945caf78b24d6ca6" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaStream::cudaStream</definition>
         <argsstring>(cudaStream_t stream)</argsstring>
         <name>cudaStream</name>
-        <qualifiedname>tf::cudaStream::cudaStream</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -30,7 +29,6 @@
         <definition>tf::cudaStream::cudaStream</definition>
         <argsstring>()=default</argsstring>
         <name>cudaStream</name>
-        <qualifiedname>tf::cudaStream::cudaStream</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -45,7 +43,6 @@
         <definition>void tf::cudaStream::synchronize</definition>
         <argsstring>() const</argsstring>
         <name>synchronize</name>
-        <qualifiedname>tf::cudaStream::synchronize</qualifiedname>
         <briefdescription>
 <para>synchronizes the associated stream </para>
         </briefdescription>
@@ -61,7 +58,6 @@
         <definition>void tf::cudaStream::begin_capture</definition>
         <argsstring>(cudaStreamCaptureMode m=cudaStreamCaptureModeGlobal) const</argsstring>
         <name>begin_capture</name>
-        <qualifiedname>tf::cudaStream::begin_capture</qualifiedname>
         <param>
           <type>cudaStreamCaptureMode</type>
           <declname>m</declname>
@@ -88,7 +84,6 @@
         <definition>cudaGraph_t tf::cudaStream::end_capture</definition>
         <argsstring>() const</argsstring>
         <name>end_capture</name>
-        <qualifiedname>tf::cudaStream::end_capture</qualifiedname>
         <briefdescription>
 <para>ends graph capturing on the stream </para>
         </briefdescription>
@@ -104,7 +99,6 @@
         <definition>void tf::cudaStream::record</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>record</name>
-        <qualifiedname>tf::cudaStream::record</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -124,7 +118,6 @@
         <definition>void tf::cudaStream::wait</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>wait</name>
-        <qualifiedname>tf::cudaStream::wait</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -139,7 +132,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="150" column="10" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="150" bodyend="155"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create an RAII-styled wrapper over a native CUDA stream </para>
     </briefdescription>

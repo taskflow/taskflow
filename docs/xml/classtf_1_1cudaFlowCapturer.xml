@@ -1,17 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlowCapturer" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlowCapturer</compoundname>
     <includes refid="cuda__capturer_8hpp" local="no">taskflow/cuda/cuda_capturer.hpp</includes>
     <innerclass refid="structtf_1_1cudaFlowCapturer_1_1External" prot="private">tf::cudaFlowCapturer::External</innerclass>
     <innerclass refid="structtf_1_1cudaFlowCapturer_1_1Internal" prot="private">tf::cudaFlowCapturer::Internal</innerclass>
-    <sectiondef kind="private-type">
+      <sectiondef kind="private-type">
       <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1a5f92f6ccad52aed18441d80bc186049f" prot="private" static="no">
         <type>std::variant&lt; External, Internal &gt;</type>
         <definition>using tf::cudaFlowCapturer::handle_t =  std::variant&lt;External, Internal&gt;</definition>
         <argsstring></argsstring>
         <name>handle_t</name>
-        <qualifiedname>tf::cudaFlowCapturer::handle_t</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -20,32 +19,26 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_capturer.hpp" line="71" column="3" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="71" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1a5109c571ccd740aa6884221f85cd926c" prot="private" static="no">
+      <memberdef kind="typedef" id="classtf_1_1cudaFlowCapturer_1a9e390b0f7cb62729b1f04a5f37430ac8" prot="private" static="no">
         <type>std::variant&lt; <ref refid="classtf_1_1cudaFlowRoundRobinOptimizer" kindref="compound">cudaFlowRoundRobinOptimizer</ref>, <ref refid="classtf_1_1cudaFlowSequentialOptimizer" kindref="compound">cudaFlowSequentialOptimizer</ref>, <ref refid="classtf_1_1cudaFlowLinearOptimizer" kindref="compound">cudaFlowLinearOptimizer</ref> &gt;</type>
-        <definition>using tf::cudaFlowCapturer::Optimizer =  std::variant&lt;
-    cudaFlowRoundRobinOptimizer,
-    cudaFlowSequentialOptimizer,
-    cudaFlowLinearOptimizer
-  &gt;</definition>
+        <definition>using tf::cudaFlowCapturer::Optimizer =  std::variant&lt; cudaFlowRoundRobinOptimizer, cudaFlowSequentialOptimizer, cudaFlowLinearOptimizer &gt;</definition>
         <argsstring></argsstring>
         <name>Optimizer</name>
-        <qualifiedname>tf::cudaFlowCapturer::Optimizer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_capturer.hpp" line="73" column="3" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="73" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_capturer.hpp" line="73" column="3" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="77" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="friend">
+      </sectiondef>
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1cudaFlowCapturer_1a9f64f729511a922781a59663ff1c6250" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class cudaFlow</definition>
         <argsstring></argsstring>
         <name>cudaFlow</name>
-        <qualifiedname>tf::cudaFlowCapturer::cudaFlow</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref></type>
         </param>
@@ -55,14 +48,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_capturer.hpp" line="59" column="16" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="59" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_capturer.hpp" line="59" column="3" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="59" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::cudaFlowCapturer::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -72,16 +64,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_capturer.hpp" line="60" column="16" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="60" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_capturer.hpp" line="60" column="3" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="60" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1cudaFlowCapturer_1aaaebe71b8297f4e14ba132a664401628" prot="private" static="no" mutable="no">
         <type>cudaFlowGraph</type>
         <definition>cudaFlowGraph tf::cudaFlowCapturer::_cfg</definition>
         <argsstring></argsstring>
         <name>_cfg</name>
-        <qualifiedname>tf::cudaFlowCapturer::_cfg</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -95,7 +86,6 @@
         <definition>Optimizer tf::cudaFlowCapturer::_optimizer</definition>
         <argsstring></argsstring>
         <name>_optimizer</name>
-        <qualifiedname>tf::cudaFlowCapturer::_optimizer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -109,7 +99,6 @@
         <definition>cudaGraphExec tf::cudaFlowCapturer::_exe</definition>
         <argsstring></argsstring>
         <name>_exe</name>
-        <qualifiedname>tf::cudaFlowCapturer::_exe</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -117,16 +106,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_capturer.hpp" line="518" column="19" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="518" bodyend="518"/>
+        <location file="taskflow/cuda/cuda_capturer.hpp" line="518" column="19" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="518" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a0ddccd6faa338047921269bfe964b774" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaFlowCapturer::cudaFlowCapturer</definition>
         <argsstring>()=default</argsstring>
         <name>cudaFlowCapturer</name>
-        <qualifiedname>tf::cudaFlowCapturer::cudaFlowCapturer</qualifiedname>
         <briefdescription>
 <para>constructs a standalone <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref> </para>
         </briefdescription>
@@ -142,7 +130,6 @@
         <definition>tf::cudaFlowCapturer::~cudaFlowCapturer</definition>
         <argsstring>()=default</argsstring>
         <name>~cudaFlowCapturer</name>
-        <qualifiedname>tf::cudaFlowCapturer::~cudaFlowCapturer</qualifiedname>
         <briefdescription>
 <para>destructs the <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref> </para>
         </briefdescription>
@@ -157,7 +144,6 @@
         <definition>tf::cudaFlowCapturer::cudaFlowCapturer</definition>
         <argsstring>(cudaFlowCapturer &amp;&amp;)=default</argsstring>
         <name>cudaFlowCapturer</name>
-        <qualifiedname>tf::cudaFlowCapturer::cudaFlowCapturer</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref> &amp;&amp;</type>
         </param>
@@ -170,12 +156,11 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_capturer.hpp" line="97" column="5"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a6ca58c46c76224c26810c8487e8747bc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaFlowCapturer_1a8e9d99a9bd07761156ab8445a07dbdec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref> &amp;</type>
-        <definition>cudaFlowCapturer &amp; tf::cudaFlowCapturer::operator=</definition>
+        <definition>cudaFlowCapturer&amp; tf::cudaFlowCapturer::operator=</definition>
         <argsstring>(cudaFlowCapturer &amp;&amp;)=default</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::cudaFlowCapturer::operator=</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">cudaFlowCapturer</ref> &amp;&amp;</type>
         </param>
@@ -193,7 +178,6 @@
         <definition>bool tf::cudaFlowCapturer::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
-        <qualifiedname>tf::cudaFlowCapturer::empty</qualifiedname>
         <briefdescription>
 <para>queries the emptiness of the graph </para>
         </briefdescription>
@@ -208,7 +192,6 @@
         <definition>size_t tf::cudaFlowCapturer::num_tasks</definition>
         <argsstring>() const</argsstring>
         <name>num_tasks</name>
-        <qualifiedname>tf::cudaFlowCapturer::num_tasks</qualifiedname>
         <briefdescription>
 <para>queries the number of tasks </para>
         </briefdescription>
@@ -223,7 +206,6 @@
         <definition>void tf::cudaFlowCapturer::clear</definition>
         <argsstring>()</argsstring>
         <name>clear</name>
-        <qualifiedname>tf::cudaFlowCapturer::clear</qualifiedname>
         <briefdescription>
 <para>clear this cudaFlow capturer </para>
         </briefdescription>
@@ -238,9 +220,8 @@
         <definition>void tf::cudaFlowCapturer::dump</definition>
         <argsstring>(std::ostream &amp;os) const</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::cudaFlowCapturer::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <briefdescription>
@@ -257,9 +238,8 @@
         <definition>void tf::cudaFlowCapturer::dump_native_graph</definition>
         <argsstring>(std::ostream &amp;os) const</argsstring>
         <name>dump_native_graph</name>
-        <qualifiedname>tf::cudaFlowCapturer::dump_native_graph</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <briefdescription>
@@ -285,7 +265,6 @@
         <definition>cudaTask tf::cudaFlowCapturer::on</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>on</name>
-        <qualifiedname>tf::cudaFlowCapturer::on</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -332,7 +311,6 @@ This methods applies a stream created by the flow to capture a sequence of CUDA 
         <definition>void tf::cudaFlowCapturer::on</definition>
         <argsstring>(cudaTask task, C &amp;&amp;callable)</argsstring>
         <name>on</name>
-        <qualifiedname>tf::cudaFlowCapturer::on</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -356,7 +334,6 @@ This methods applies a stream created by the flow to capture a sequence of CUDA 
         <definition>cudaTask tf::cudaFlowCapturer::noop</definition>
         <argsstring>()</argsstring>
         <name>noop</name>
-        <qualifiedname>tf::cudaFlowCapturer::noop</qualifiedname>
         <briefdescription>
 <para>captures a no-operation task </para>
         </briefdescription>
@@ -374,7 +351,6 @@ An empty node performs no operation during execution, but can be used for transi
         <definition>void tf::cudaFlowCapturer::noop</definition>
         <argsstring>(cudaTask task)</argsstring>
         <name>noop</name>
-        <qualifiedname>tf::cudaFlowCapturer::noop</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -394,7 +370,6 @@ An empty node performs no operation during execution, but can be used for transi
         <definition>cudaTask tf::cudaFlowCapturer::memcpy</definition>
         <argsstring>(void *dst, const void *src, size_t count)</argsstring>
         <name>memcpy</name>
-        <qualifiedname>tf::cudaFlowCapturer::memcpy</qualifiedname>
         <param>
           <type>void *</type>
           <declname>dst</declname>
@@ -447,7 +422,6 @@ The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation
         <definition>void tf::cudaFlowCapturer::memcpy</definition>
         <argsstring>(cudaTask task, void *dst, const void *src, size_t count)</argsstring>
         <name>memcpy</name>
-        <qualifiedname>tf::cudaFlowCapturer::memcpy</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -488,7 +462,6 @@ The method captures a <computeroutput>cudaMemcpyAsync</computeroutput> operation
         <definition>cudaTask tf::cudaFlowCapturer::copy</definition>
         <argsstring>(T *tgt, const T *src, size_t num)</argsstring>
         <name>copy</name>
-        <qualifiedname>tf::cudaFlowCapturer::copy</qualifiedname>
         <param>
           <type>T *</type>
           <declname>tgt</declname>
@@ -561,7 +534,6 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         <definition>void tf::cudaFlowCapturer::copy</definition>
         <argsstring>(cudaTask task, T *tgt, const T *src, size_t num)</argsstring>
         <name>copy</name>
-        <qualifiedname>tf::cudaFlowCapturer::copy</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -593,7 +565,6 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         <definition>cudaTask tf::cudaFlowCapturer::memset</definition>
         <argsstring>(void *ptr, int v, size_t n)</argsstring>
         <name>memset</name>
-        <qualifiedname>tf::cudaFlowCapturer::memset</qualifiedname>
         <param>
           <type>void *</type>
           <declname>ptr</declname>
@@ -646,7 +617,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>void tf::cudaFlowCapturer::memset</definition>
         <argsstring>(cudaTask task, void *ptr, int value, size_t n)</argsstring>
         <name>memset</name>
-        <qualifiedname>tf::cudaFlowCapturer::memset</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -688,7 +658,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>cudaTask tf::cudaFlowCapturer::kernel</definition>
         <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
-        <qualifiedname>tf::cudaFlowCapturer::kernel</qualifiedname>
         <param>
           <type>dim3</type>
           <declname>g</declname>
@@ -794,7 +763,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>void tf::cudaFlowCapturer::kernel</definition>
         <argsstring>(cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT &amp;&amp;... args)</argsstring>
         <name>kernel</name>
-        <qualifiedname>tf::cudaFlowCapturer::kernel</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -839,7 +807,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>cudaTask tf::cudaFlowCapturer::single_task</definition>
         <argsstring>(C c)</argsstring>
         <name>single_task</name>
-        <qualifiedname>tf::cudaFlowCapturer::single_task</qualifiedname>
         <param>
           <type>C</type>
           <declname>c</declname>
@@ -882,7 +849,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>void tf::cudaFlowCapturer::single_task</definition>
         <argsstring>(cudaTask task, C c)</argsstring>
         <name>single_task</name>
-        <qualifiedname>tf::cudaFlowCapturer::single_task</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -914,7 +880,6 @@ The method captures a <computeroutput>cudaMemsetAsync</computeroutput> operation
         <definition>cudaTask tf::cudaFlowCapturer::for_each</definition>
         <argsstring>(I first, I last, C callable)</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::cudaFlowCapturer::for_each</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -998,7 +963,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlowCapturer::for_each</definition>
         <argsstring>(cudaTask task, I first, I last, C callable)</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::cudaFlowCapturer::for_each</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -1038,7 +1002,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlowCapturer::for_each_index</definition>
         <argsstring>(I first, I last, I step, C callable)</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::cudaFlowCapturer::for_each_index</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -1140,7 +1103,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlowCapturer::for_each_index</definition>
         <argsstring>(cudaTask task, I first, I last, I step, C callable)</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::cudaFlowCapturer::for_each_index</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -1187,7 +1149,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlowCapturer::transform</definition>
         <argsstring>(I first, I last, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlowCapturer::transform</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -1294,7 +1255,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlowCapturer::transform</definition>
         <argsstring>(cudaTask task, I first, I last, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlowCapturer::transform</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -1344,7 +1304,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlowCapturer::transform</definition>
         <argsstring>(I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlowCapturer::transform</qualifiedname>
         <param>
           <type>I1</type>
           <declname>first1</declname>
@@ -1474,7 +1433,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlowCapturer::transform</definition>
         <argsstring>(cudaTask task, I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlowCapturer::transform</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -1524,7 +1482,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>OPT &amp; tf::cudaFlowCapturer::make_optimizer</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>make_optimizer</name>
-        <qualifiedname>tf::cudaFlowCapturer::make_optimizer</qualifiedname>
         <param>
           <type>ArgsT &amp;&amp;...</type>
           <declname>args</declname>
@@ -1578,7 +1535,6 @@ We currently supports the following optimization algorithms to capture a user-de
         <definition>cudaGraph_t tf::cudaFlowCapturer::capture</definition>
         <argsstring>()</argsstring>
         <name>capture</name>
-        <qualifiedname>tf::cudaFlowCapturer::capture</qualifiedname>
         <briefdescription>
 <para>captures the <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> and turns it into a CUDA <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> </para>
         </briefdescription>
@@ -1593,7 +1549,6 @@ We currently supports the following optimization algorithms to capture a user-de
         <definition>void tf::cudaFlowCapturer::run</definition>
         <argsstring>(cudaStream_t stream)</argsstring>
         <name>run</name>
-        <qualifiedname>tf::cudaFlowCapturer::run</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -1623,7 +1578,6 @@ Offloads the present cudaFlowCapturer onto a GPU asynchronously via the given st
         <definition>cudaGraph_t tf::cudaFlowCapturer::native_graph</definition>
         <argsstring>()</argsstring>
         <name>native_graph</name>
-        <qualifiedname>tf::cudaFlowCapturer::native_graph</qualifiedname>
         <briefdescription>
 <para>acquires a reference to the underlying CUDA graph </para>
         </briefdescription>
@@ -1638,7 +1592,6 @@ Offloads the present cudaFlowCapturer onto a GPU asynchronously via the given st
         <definition>cudaGraphExec_t tf::cudaFlowCapturer::native_executable</definition>
         <argsstring>()</argsstring>
         <name>native_executable</name>
-        <qualifiedname>tf::cudaFlowCapturer::native_executable</qualifiedname>
         <briefdescription>
 <para>acquires a reference to the underlying CUDA graph executable </para>
         </briefdescription>
@@ -1648,13 +1601,13 @@ Offloads the present cudaFlowCapturer onto a GPU asynchronously via the given st
         </inbodydescription>
         <location file="taskflow/cuda/cuda_capturer.hpp" line="510" column="21" bodyfile="taskflow/cuda/cuda_capturer.hpp" bodystart="649" bodyend="651"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a cudaFlow graph using stream capture </para>
     </briefdescription>
     <detaileddescription>
 <para>The usage of <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> is similar to <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>, except users can call the method <ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">tf::cudaFlowCapturer::on</ref> to capture a sequence of asynchronous CUDA operations through the given stream. The following example creates a CUDA graph that captures two kernel tasks, <computeroutput>task_1</computeroutput> and <computeroutput>task_2</computeroutput>, where <computeroutput>task_1</computeroutput> runs before <computeroutput>task_2</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::cudaFlowCapturer&amp;<sp/>capturer){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>capturer){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>capture<sp/>my_kernel_1<sp/>through<sp/>the<sp/>given<sp/>stream<sp/>managed<sp/>by<sp/>the<sp/>capturer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>task_1<sp/>=<sp/>capturer.<ref refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" kindref="member">on</ref>([&amp;](cudaStream_t<sp/>stream){</highlight></codeline>
@@ -1707,8 +1660,8 @@ Offloads the present cudaFlowCapturer onto a GPU asynchronously via the given st
       <member refid="classtf_1_1cudaFlowCapturer_1aeb826786f1580bae1335d94ffbeb7e02" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>num_tasks</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ad0d937ae0d77239f148b66a77e35db41" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>on</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a5215d459df3a0d7bccac1a1f2ce9d1ee" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>on</name></member>
-      <member refid="classtf_1_1cudaFlowCapturer_1a6ca58c46c76224c26810c8487e8747bc" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>operator=</name></member>
-      <member refid="classtf_1_1cudaFlowCapturer_1a5109c571ccd740aa6884221f85cd926c" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>Optimizer</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a8e9d99a9bd07761156ab8445a07dbdec" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaFlowCapturer_1a9e390b0f7cb62729b1f04a5f37430ac8" prot="private" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>Optimizer</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a952596fd7c46acee4c2459d8fe39da28" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>run</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1ac944c7d20056e0633ef84f1a25b52296" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>single_task</name></member>
       <member refid="classtf_1_1cudaFlowCapturer_1a2f7e439c336aa43781c3ef1ef0d71154" prot="public" virt="non-virtual"><scope>tf::cudaFlowCapturer</scope><name>single_task</name></member>

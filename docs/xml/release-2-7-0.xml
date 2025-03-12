@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-2-7-0" kind="page">
     <compoundname>release-2-7-0</compoundname>
     <title>Release 2.7.0 (2020/10/01)</title>
@@ -7,33 +7,35 @@
       <tocsect>
         <name>Download</name>
         <reference>release-2-7-0_1release-2-7-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-2-7-0_1release-2-7-0_new_features</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-2-7-0_1release-2-7-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Deprecated Items</name>
         <reference>release-2-7-0_1release-2-7-0_deprecated_items</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-2-7-0_1release-2-7-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 2.7.0 is the 9th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
 <sect1 id="release-2-7-0_1release-2-7-0_download">
-<title>Download</title><para>Taskflow 2.7.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.7.0">here</ulink>.</para>
+<title>Download</title>
+<para>Taskflow 2.7.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.7.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-2-7-0_1release-2-7-0_new_features">
-<title>New Features</title><para><itemizedlist>
+<title>New Features</title>
+<para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> to support asynchronously calling a function (see <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref>) </para>
 </listitem>
 <listitem><para>added kernel algorithm, <ref refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kindref="member">tf::cudaFlow::for_each</ref> </para>
@@ -46,10 +48,12 @@
 </para>
 </sect1>
 <sect1 id="release-2-7-0_1release-2-7-0_bug_fixes">
-<title>Bug Fixes</title><para>There are no bug fixes in this release.</para>
+<title>Bug Fixes</title>
+<para>There are no bug fixes in this release.</para>
 </sect1>
 <sect1 id="release-2-7-0_1release-2-7-0_deprecated_items">
-<title>Deprecated Items</title><para><itemizedlist>
+<title>Deprecated Items</title>
+<para><itemizedlist>
 <listitem><para>removed redundant methods, tf::Taskflow::broadcast, tf::Taskflow::precede, tf::Taskflow::succeed </para>
 </listitem>
 <listitem><para>removed tf::cudaFlow::predicate (replaced with tf::cudaFlow::join_until) </para>
@@ -60,7 +64,8 @@
 </para>
 </sect1>
 <sect1 id="release-2-7-0_1release-2-7-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para><itemizedlist>
+<title>Miscellaneous Items</title>
+<para><itemizedlist>
 <listitem><para>added <ref refid="Contributing" kindref="compound">Contributing</ref> </para>
 </listitem>
 <listitem><para>added <ref refid="Governance" kindref="compound">Governance</ref> </para>

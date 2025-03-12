@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="ModuleAlgorithm" kind="page">
     <compoundname>ModuleAlgorithm</compoundname>
     <title>Module Algorithm</title>
@@ -7,27 +7,29 @@
       <tocsect>
         <name>Include the Header</name>
         <reference>ModuleAlgorithm_1ModuleAlgorithmInclude</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>What is a Module Task</name>
         <reference>ModuleAlgorithm_1WhatIsAModuleTask</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create a Module Task over a Custom Graph</name>
         <reference>ModuleAlgorithm_1CreateAModuleTaskOverACustomGraph</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow provides template methods that let users create reusable building blocks called <emphasis>modules</emphasis>. Users can connect modules together to build more complex parallel algorithms.</para>
 <sect1 id="ModuleAlgorithm_1ModuleAlgorithmInclude">
-<title>Include the Header</title><para>You need to include the header file, <computeroutput><ref refid="module_8hpp_source" kindref="compound">taskflow/algorithm/module.hpp</ref></computeroutput>, for creating a module task over a schedulable graph target.</para>
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput><ref refid="module_8hpp_source" kindref="compound">taskflow/algorithm/module.hpp</ref></computeroutput>, for creating a module task over a schedulable graph target.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/module.hpp&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="ModuleAlgorithm_1WhatIsAModuleTask">
-<title>What is a Module Task</title><para>Similar to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>, but in a more generic setting, the template function, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, allows you to create a task over a taskflow graph that can be executed by an executor. This provides a flexible way to encapsulate and reuse complex task logic within your Taskflow applications. The example below demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</para>
+<title>What is a Module Task</title>
+<para>Similar to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>, but in a more generic setting, the template function, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, allows you to create a task over a taskflow graph that can be executed by an executor. This provides a flexible way to encapsulate and reuse complex task logic within your Taskflow applications. The example below demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>A;</highlight></codeline>
@@ -35,10 +37,10 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>C;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>D;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">A.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>A\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">B.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>A\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>four<sp/>taskflows<sp/>using<sp/>asynchronous<sp/>tasking</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
@@ -47,7 +49,7 @@
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/></highlight></codeline>
 </programlisting></para>
-<para><dotfile name="module_task_1.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/module_task_1.dot"></dotfile>
 </para>
 <para>Since the four taskflows are launched asynchronously without any dependencies between them, we can observe any order of the output message:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>one<sp/>possible<sp/>output</highlight></codeline>
@@ -70,10 +72,10 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>C;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>D;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">A.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>A\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">B.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
-<codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">A.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>A\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">B.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
+<codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TA<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TB<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(B),<sp/>TA);</highlight></codeline>
@@ -81,7 +83,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[TD,<sp/>FD]<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">dependent_async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(D),<sp/>TC);</highlight></codeline>
 <codeline><highlight class="normal">FD.get();</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="module_task_2.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/module_task_2.dot"></dotfile>
 </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>dependent-async<sp/>tasks<sp/>enforce<sp/>a<sp/>sequential<sp/>execution<sp/>of<sp/>the<sp/>four<sp/>taskflows</highlight></codeline>
 <codeline><highlight class="normal">Taskflow<sp/>A</highlight></codeline>
@@ -101,14 +103,15 @@
 </para>
 </sect1>
 <sect1 id="ModuleAlgorithm_1CreateAModuleTaskOverACustomGraph">
-<title>Create a Module Task over a Custom Graph</title><para>In addition to encapsulate taskflow graphs, you can create a module task to schedule a custom graph target. A schedulable target (of type <computeroutput>T</computeroutput>) must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to the <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object managed by <computeroutput>T</computeroutput>. The following example defines a custom graph that can be scheduled through making module tasks:</para>
+<title>Create a Module Task over a Custom Graph</title>
+<para>In addition to encapsulate taskflow graphs, you can create a module task to schedule a custom graph target. A schedulable target (of type <computeroutput>T</computeroutput>) must define the method <computeroutput>T::graph()</computeroutput> that returns a reference to the <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> object managed by <computeroutput>T</computeroutput>. The following example defines a custom graph that can be scheduled through making module tasks:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CustomGraph<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref><sp/>graph;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>CustomGraph()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>flow<sp/>builder<sp/>to<sp/>inherit<sp/>all<sp/>task<sp/>creation<sp/>methods<sp/>in<sp/>tf::Taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1FlowBuilder" kindref="compound">tf::FlowBuilder</ref><sp/>builder(graph);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>builder.emplace([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;a<sp/>task\n&quot;</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>static<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>returns<sp/>a<sp/>reference<sp/>to<sp/>the<sp/>graph<sp/>for<sp/>taskflow<sp/>composition</highlight><highlight class="normal"></highlight></codeline>

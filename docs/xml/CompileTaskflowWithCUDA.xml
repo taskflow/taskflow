@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="CompileTaskflowWithCUDA" kind="page">
     <compoundname>CompileTaskflowWithCUDA</compoundname>
     <title>Compile Taskflow with CUDA</title>
@@ -7,34 +7,36 @@
       <tocsect>
         <name>Install CUDA Compiler</name>
         <reference>CompileTaskflowWithCUDA_1InstallCUDACompiler</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Compile Source Code Directly</name>
         <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADirectly</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Compile Source Code Separately</name>
         <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDASeparately</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Link Objects Using nvcc</name>
-            <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking</reference>
-          </tocsect>
-          <tocsect>
-            <name>Link Objects Using Different Linkers</name>
-            <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Link Objects Using nvcc</name>
+        <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking</reference>
+    </tocsect>
+      <tocsect>
+        <name>Link Objects Using Different Linkers</name>
+        <reference>CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="CompileTaskflowWithCUDA_1InstallCUDACompiler">
-<title>Install CUDA Compiler</title><para>To compile Taskflow with CUDA code, you need a <computeroutput>nvcc</computeroutput> compiler. Please visit the official page of <ulink url="https://developer.nvidia.com/cuda-downloads">Downloading CUDA Toolkit</ulink>.</para>
+<title>Install CUDA Compiler</title>
+<para>To compile Taskflow with CUDA code, you need a <computeroutput>nvcc</computeroutput> compiler. Please visit the official page of <ulink url="https://developer.nvidia.com/cuda-downloads">Downloading CUDA Toolkit</ulink>.</para>
 </sect1>
 <sect1 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADirectly">
-<title>Compile Source Code Directly</title><para>Taskflow&apos;s GPU programming interface for CUDA is <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. Consider the following <computeroutput>simple.cu</computeroutput> program that launches a single kernel function to output a message:</para>
+<title>Compile Source Code Directly</title>
+<para>Taskflow&apos;s GPU programming interface for CUDA is <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. Consider the following <computeroutput>simple.cu</computeroutput> program that launches a single kernel function to output a message:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cudaflow.hpp&gt;</highlight><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/cuda/for_each.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
@@ -48,17 +50,17 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task2<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>a<sp/>single-threaded<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/>printf(</highlight><highlight class="stringliteral">&quot;hello<sp/>cudaFlow!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;hello<sp/>cudaFlow!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaflow<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::cudaStream<sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;gpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
@@ -69,7 +71,8 @@
 </programlisting></para>
 </sect1>
 <sect1 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDASeparately">
-<title>Compile Source Code Separately</title><para>Large GPU applications often compile a program into separate objects and link them together to form an executable or a library. You can compile your CPU code and GPU code separately with Taskflow using <computeroutput>nvcc</computeroutput> and other compilers (such as <computeroutput>g++</computeroutput> and <computeroutput>clang++</computeroutput>). Consider the following example that defines two tasks on two different pieces (<computeroutput>main.cpp</computeroutput> and <computeroutput>cudaflow.cpp</computeroutput>) of source code:</para>
+<title>Compile Source Code Separately</title>
+<para>Large GPU applications often compile a program into separate objects and link them together to form an executable or a library. You can compile your CPU code and GPU code separately with Taskflow using <computeroutput>nvcc</computeroutput> and other compilers (such as <computeroutput>g++</computeroutput> and <computeroutput>clang++</computeroutput>). Consider the following example that defines two tasks on two different pieces (<computeroutput>main.cpp</computeroutput> and <computeroutput>cudaflow.cpp</computeroutput>) of source code:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>main.cpp</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -80,13 +83,13 @@
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task1<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;main.cpp!\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task1<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;main.cpp!\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;cpu<sp/>task&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task2<sp/>=<sp/>make_cudaflow(taskflow);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>task1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -99,7 +102,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>of<sp/>a<sp/>single-threaded<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/>printf(</highlight><highlight class="stringliteral">&quot;cudaflow.cpp!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([]<sp/>__device__<sp/>()<sp/>{<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;cudaflow.cpp!\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaflow<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
@@ -116,13 +119,14 @@
 <codeline><highlight class="normal">#<sp/>now<sp/>we<sp/>have<sp/>the<sp/>two<sp/>compiled<sp/>.o<sp/>objects,<sp/>main.o<sp/>and<sp/>cudaflow.o</highlight></codeline>
 <codeline><highlight class="normal">main.o<sp/>cudaflow.o<sp/></highlight></codeline>
 </programlisting></para>
-<para>The <computeroutput>--extended-lambda</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate GPU code for the lambda defined with <computeroutput><bold>device</bold></computeroutput>. The <computeroutput>-x cu</computeroutput> tells <computeroutput>nvcc</computeroutput> to treat the input files as <computeroutput></computeroutput>.cu files containing both CPU and GPU code. By default, <computeroutput>nvcc</computeroutput> treats <computeroutput></computeroutput>.cpp files as CPU-only code. This option is required to have <computeroutput>nvcc</computeroutput> generate device code here, but it is also a handy way to avoid renaming source files in larger projects. The <computeroutput>–dc</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate device code for later linking.</para>
+<para>The <computeroutput><ndash/>extended-lambda</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate GPU code for the lambda defined with <computeroutput><bold>device</bold></computeroutput>. The <computeroutput>-x cu</computeroutput> tells <computeroutput>nvcc</computeroutput> to treat the input files as <computeroutput></computeroutput>.cu files containing both CPU and GPU code. By default, <computeroutput>nvcc</computeroutput> treats <computeroutput></computeroutput>.cpp files as CPU-only code. This option is required to have <computeroutput>nvcc</computeroutput> generate device code here, but it is also a handy way to avoid renaming source files in larger projects. The <computeroutput>–dc</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate device code for later linking.</para>
 <para>You may also need to specify the target architecture to tell <computeroutput>nvcc</computeroutput> to target on a compatible SM architecture using the option -arch. For instance, the following command requires device code linking to have compute capability 7.5 or later:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>--extended-lambda<sp/>-x<sp/>cu<sp/>-arch=sm_75<sp/>-I<sp/>path/to/taskflow<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-dc<sp/>cudaflow.cpp<sp/>-o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>
 <sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking">
-<title>Link Objects Using nvcc</title><para>Using <computeroutput>nvcc</computeroutput> to link compiled object code is nothing special but replacing the normal compiler with <computeroutput>nvcc</computeroutput> and it takes care of all the necessary steps:</para>
+<title>Link Objects Using nvcc</title>
+<para>Using <computeroutput>nvcc</computeroutput> to link compiled object code is nothing special but replacing the normal compiler with <computeroutput>nvcc</computeroutput> and it takes care of all the necessary steps:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>main.o<sp/>cudaflow.o<sp/>-o<sp/>main</highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>main<sp/>program<sp/></highlight></codeline>
@@ -132,7 +136,8 @@
 </programlisting></para>
 </sect2>
 <sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers">
-<title>Link Objects Using Different Linkers</title><para>You can choose to use a compiler other than <computeroutput>nvcc</computeroutput> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <computeroutput>nvcc</computeroutput> link the CUDA device code, using the option <computeroutput>-dlink:</computeroutput> </para>
+<title>Link Objects Using Different Linkers</title>
+<para>You can choose to use a compiler other than <computeroutput>nvcc</computeroutput> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <computeroutput>nvcc</computeroutput> link the CUDA device code, using the option <computeroutput>-dlink:</computeroutput> </para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>
 <para>This step links all the <emphasis>device object code</emphasis> and places it into <computeroutput>gpuCode.o</computeroutput>.</para>

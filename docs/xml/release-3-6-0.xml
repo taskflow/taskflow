@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
     <title>Release 3.6.0 (2023/05/07)</title>
@@ -7,63 +7,65 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-6-0_1release-3-6-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-6-0_1release-3-6-0_system_requirements</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-6-0_1release-3-6-0_summary</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-6-0_1release-3-6-0_new_features</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Taskflow Core</name>
-            <reference>release-3-6-0_1release-3-6-0_taskflow_core</reference>
-          </tocsect>
-          <tocsect>
-            <name>cudaFlow</name>
-            <reference>release-3-6-0_1release-3-6-0_cudaflow</reference>
-          </tocsect>
-          <tocsect>
-            <name>Utilities</name>
-            <reference>release-3-6-0_1release-3-6-0_utilities</reference>
-          </tocsect>
-          <tocsect>
-            <name>Taskflow Profiler (TFProf)</name>
-            <reference>release-3-6-0_1release-3-6-0_profiler</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-6-0_1release-3-6-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>cudaFlow</name>
+        <reference>release-3-6-0_1release-3-6-0_cudaflow</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-6-0_1release-3-6-0_utilities</reference>
+    </tocsect>
+      <tocsect>
+        <name>Taskflow Profiler (TFProf)</name>
+        <reference>release-3-6-0_1release-3-6-0_profiler</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-6-0_1release-3-6-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-6-0_1release-3-6-0_breaking_changes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-6-0_1release-3-6-0_documentation</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-6-0_1release-3-6-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.6.0 is the 7th release in the 3.x line! This release includes several new changes, such as dynamic task graph parallelism, improved parallel algorithms, modified GPU tasking interface, documentation, examples, and unit tests.</para>
 <sect1 id="release-3-6-0_1release-3-6-0_download">
-<title>Download</title><para>Taskflow 3.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</ulink>.</para>
+<title>Download</title>
+<para>Taskflow 3.6.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.6.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_system_requirements">
-<title>System Requirements</title><para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title>
+<para>To use Taskflow v3.6.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -83,11 +85,14 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_summary">
-<title>Release Summary</title><para>This release contains several changes to largely enhance the programmability of GPU tasking and standard parallel algorithms. More importantly, we have introduced a new dependent asynchronous tasking model that offers great flexibility for expressing dynamic task graph parallelism.</para>
+<title>Release Summary</title>
+<para>This release contains several changes to largely enhance the programmability of GPU tasking and standard parallel algorithms. More importantly, we have introduced a new dependent asynchronous tasking model that offers great flexibility for expressing dynamic task graph parallelism.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_new_features">
-<title>New Features</title><sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
-<title>Taskflow Core</title><para><itemizedlist>
+<title>New Features</title>
+<sect2 id="release-3-6-0_1release-3-6-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
 <listitem><para>Added new async methods to support dynamic task graph creation<itemizedlist>
 <listitem><para><ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, Tasks&amp;&amp;... tasks)</ref></para>
 </listitem><listitem><para><ref refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" kindref="member">tf::Executor::dependent_async(F&amp;&amp; func, I first, I last)</ref></para>
@@ -143,7 +148,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
-<title>cudaFlow</title><para><itemizedlist>
+<title>cudaFlow</title>
+<para><itemizedlist>
 <listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> due to update limitation</para>
 </listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
 <listitem><para>all usage of <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para>
@@ -153,20 +159,23 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_utilities">
-<title>Utilities</title><para><itemizedlist>
+<title>Utilities</title>
+<para><itemizedlist>
 <listitem><para>Added all_same templates to check if a parameter pack has the same type</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-3-6-0_1release-3-6-0_profiler">
-<title>Taskflow Profiler (TFProf)</title><para><itemizedlist>
+<title>Taskflow Profiler (TFProf)</title>
+<para><itemizedlist>
 <listitem><para>Removed cudaFlow and syclFlow tasks</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_bug_fixes">
-<title>Bug Fixes</title><para><itemizedlist>
+<title>Bug Fixes</title>
+<para><itemizedlist>
 <listitem><para>Fixed the compilation error caused by clashing <computeroutput>MAX_PRIORITY</computeroutput> wtih <computeroutput>winspool.h</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/pull/459">#459</ulink>)</para>
 </listitem><listitem><para>Fixed the compilation error caused by <ref refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kindref="member">tf::TaskView::for_each_successor</ref> and <ref refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kindref="member">tf::TaskView::for_each_dependent</ref></para>
 </listitem><listitem><para>Fixed the infinite-loop bug when corunning a module task from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref></para>
@@ -175,7 +184,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_breaking_changes">
-<title>Breaking Changes</title><para><itemizedlist>
+<title>Breaking Changes</title>
+<para><itemizedlist>
 <listitem><para>Dropped support for cancelling asynchronous tasks</para>
 </listitem></itemizedlist>
 </para>
@@ -187,7 +197,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">std::optional&lt;int&gt;<sp/>res<sp/>=<sp/>fu.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>res<sp/>may<sp/>be<sp/>std::nullopt<sp/>or<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>use<sp/>std::future<sp/>instead</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>fu<sp/>=<sp/>executor.async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
@@ -253,7 +263,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>(and<sp/>similarly<sp/>for<sp/>other<sp/>parallel<sp/>algorithms)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" kindref="member">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
@@ -267,10 +277,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>async<sp/>allows<sp/>passing<sp/>arguments<sp/>to<sp/>the<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.async([](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>},<sp/>4);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>users<sp/>are<sp/>responsible<sp/>of<sp/>wrapping<sp/>the<sp/>arumgnets<sp/>into<sp/>a<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>){});</highlight></codeline>
+<codeline><highlight class="normal">executor.async([i=4](<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/>std::endl;<sp/>){});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>Replaced <computeroutput>named_async</computeroutput> with an overload that takes the name string on the first argument</para>
@@ -284,7 +294,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </programlisting></para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_documentation">
-<title>Documentation</title><para><itemizedlist>
+<title>Documentation</title>
+<para><itemizedlist>
 <listitem><para>Revised <ref refid="RequestCancellation" kindref="compound">Request Cancellation</ref> to remove support of cancelling async tasks</para>
 </listitem><listitem><para>Revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to include asynchronous tasking from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
 <listitem><para><ref refid="AsyncTasking_1LaunchAsynchronousTasksFromARuntime" kindref="member">Launch Asynchronous Tasks from a Runtime</ref></para>
@@ -311,7 +322,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-6-0_1release-3-6-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>We have published Taskflow in the following venues:</para>
+<title>Miscellaneous Items</title>
+<para>We have published Taskflow in the following venues:</para>
 <para><itemizedlist>
 <listitem><para>Dian-Lun Lin, Yanqing Zhang, Haoxing Ren, Shih-Hsin Wang, Brucek Khailany and Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/2023-dac.pdf">GenFuzz: GPU-accelerated Hardware Fuzzing using Genetic Algorithm with Multiple Inputs</ulink>," <emphasis>ACM/IEEE Design Automation Conference (DAC)</emphasis>, San Francisco, CA, 2023</para>
 </listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/ipdps23.pdf">qTask: Task-parallel Quantum Circuit Simulation with Incrementality</ulink>," <emphasis>IEEE International Parallel and Distributed Processing Symposium (IPDPS)</emphasis>, St. Petersburg, Florida, 2023</para>

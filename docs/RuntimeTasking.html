@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Interact with the Runtime | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -69,48 +69,48 @@
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">);</span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><div class="m-graph"><svg style="width: 20.600rem; height: 12.700rem;" viewBox="0.00 0.00 206.00 127.25">
-<g transform="scale(1 1) rotate(0) translate(4 123.25)">
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><div class="m-graph"><svg style="width: 20.600rem; height: 12.700rem;" viewBox="0.00 0.00 206.00 127.00">
+<g transform="scale(1 1) rotate(0) translate(4 123)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7bc400014030</title>
 <ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
+<text text-anchor="middle" x="27" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014118</title>
 <ellipse cx="99" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
+<text text-anchor="middle" x="99" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7bc400014200</title>
 <polygon points="198,-36 144,-36 144,-32 140,-32 140,-28 144,-28 144,-8 140,-8 140,-4 144,-4 144,0 198,0 198,-36"/>
-<polyline points="144,-32 148,-32 148,-28 144,-28"/>
-<polyline points="144,-8 148,-8 148,-4 144,-4"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
+<polyline points="144,-32 148,-32 148,-28 144,-28 "/>
+<polyline points="144,-8 148,-8 148,-4 144,-4 "/>
+<text text-anchor="middle" x="171" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
 </g>
 <g class="m-node">
 <title>p0x7bc4000142e8</title>
-<polygon points="99,-119.25 72,-101.25 99,-83.25 126,-101.25 99,-119.25"/>
-<text text-anchor="middle" x="99" y="-97.38" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
+<polygon points="99,-119 72,-101 99,-83 126,-101 99,-119"/>
+<text text-anchor="middle" x="99" y="-98.5" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc400014030</title>
-<path stroke-dasharray="5,2" d="M89.29,-89.29C78.7,-77.34 61.44,-57.86 47.77,-42.44"/>
-<polygon points="50.47,-40.21 41.22,-35.05 45.23,-44.85 50.47,-40.21"/>
-<text text-anchor="middle" x="69.94" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<path stroke-dasharray="5,2" d="M89.29,-89.08C78.5,-76.94 60.79,-57.02 47.01,-41.51"/>
+<polygon points="49.47,-39.02 40.22,-33.87 44.24,-43.67 49.47,-39.02"/>
+<text text-anchor="middle" x="71.5" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M99,-83.02C99,-72.75 99,-59.45 99,-47.64"/>
-<polygon points="102.5,-48 99,-38 95.5,-48 102.5,-48"/>
-<text text-anchor="middle" x="101.62" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M99,-82.82C99,-72.19 99,-58.31 99,-46.2"/>
+<polygon points="102.5,-46.15 99,-36.15 95.5,-46.15 102.5,-46.15"/>
+<text text-anchor="middle" x="102.5" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 <g class="m-edge">
 <title>p0x7bc4000142e8&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M108.71,-89.29C118.79,-77.92 134.9,-59.74 148.22,-44.71"/>
-<polygon points="150.65,-47.24 154.66,-37.44 145.41,-42.6 150.65,-47.24"/>
-<text text-anchor="middle" x="141.94" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M108.71,-89.08C118.97,-77.53 135.51,-58.93 148.96,-43.79"/>
+<polygon points="151.64,-46.05 155.67,-36.25 146.41,-41.4 151.64,-46.05"/>
+<text text-anchor="middle" x="142.5" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 </g>
 </svg>
@@ -206,7 +206,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="GPUTaskingcudaFlow" kind="page">
     <compoundname>GPUTaskingcudaFlow</compoundname>
     <title>GPU Tasking (cudaFlow)</title>
@@ -7,51 +7,53 @@
       <tocsect>
         <name>Include the Header</name>
         <reference>GPUTaskingcudaFlow_1GPUTaskingcudaFlowIncludeTheHeader</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>What is a CUDA Graph?</name>
         <reference>GPUTaskingcudaFlow_1WhatIsACudaGraph</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create a cudaFlow</name>
         <reference>GPUTaskingcudaFlow_1Create_a_cudaFlow</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Compile a cudaFlow Program</name>
         <reference>GPUTaskingcudaFlow_1Compile_a_cudaFlow_program</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Run a cudaFlow on Specific GPU</name>
         <reference>GPUTaskingcudaFlow_1run_a_cudaflow_on_a_specific_gpu</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create Memory Operation Tasks</name>
         <reference>GPUTaskingcudaFlow_1GPUMemoryOperations</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Offload a cudaFlow</name>
         <reference>GPUTaskingcudaFlow_1OffloadAcudaFlow</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Update a cudaFlow</name>
         <reference>GPUTaskingcudaFlow_1UpdateAcudaFlow</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Integrate a cudaFlow into Taskflow</name>
         <reference>GPUTaskingcudaFlow_1IntegrateCudaFlowIntoTaskflow</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Modern scientific computing typically leverages GPU-powered parallel processing cores to speed up large-scale applications. This chapter discusses how to implement CPU-GPU heterogeneous tasking algorithms with <ulink url="https://developer.nvidia.com/cuda-zone">Nvidia CUDA</ulink>.</para>
 <sect1 id="GPUTaskingcudaFlow_1GPUTaskingcudaFlowIncludeTheHeader">
-<title>Include the Header</title><para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a GPU task graph using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>, for creating a GPU task graph using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1WhatIsACudaGraph">
-<title>What is a CUDA Graph?</title><para>CUDA Graph is a new execution model that enables a series of CUDA kernels to be defined and encapsulated as a single unit, i.e., a task graph of operations, rather than a sequence of individually-launched operations. This organization allows launching multiple GPU operations through a single CPU operation and hence reduces the launching overheads, especially for kernels of short running time. The benefit of CUDA Graph can be demonstrated in the figure below:</para>
+<title>What is a CUDA Graph?</title>
+<para>CUDA Graph is a new execution model that enables a series of CUDA kernels to be defined and encapsulated as a single unit, i.e., a task graph of operations, rather than a sequence of individually-launched operations. This organization allows launching multiple GPU operations through a single CPU operation and hence reduces the launching overheads, especially for kernels of short running time. The benefit of CUDA Graph can be demonstrated in the figure below:</para>
 <para><image type="html" name="cuda_graph_benefit.png"></image>
 </para>
 <para>In this example, a sequence of short kernels is launched one-by-one by the CPU. The CPU launching overhead creates a significant gap in between the kernels. If we replace this sequence of kernels with a CUDA graph, initially we will need to spend a little extra time on building the graph and launching the whole graph in one go on the first occasion, but subsequent executions will be very fast, as there will be very little gap between the kernels. The difference is more pronounced when the same sequence of operations is repeated many times, for example, many training epochs in machine learning workloads. In that case, the initial costs of building and launching the graph will be amortized over the entire training iterations.</para>
@@ -60,7 +62,8 @@
 </para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1Create_a_cudaFlow">
-<title>Create a cudaFlow</title><para>Taskflow leverages <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink> to enable concurrent CPU-GPU tasking using a task graph model called <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. A cudaFlow manages a CUDA graph explicitly to execute dependent GPU operations in a single CPU call. The following example implements a cudaFlow that performs an saxpy (A·X Plus Y) workload:</para>
+<title>Create a cudaFlow</title>
+<para>Taskflow leverages <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink> to enable concurrent CPU-GPU tasking using a task graph model called <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>. A cudaFlow manages a CUDA graph explicitly to execute dependent GPU operations in a single CPU call. The following example implements a cudaFlow that performs an saxpy (A·X Plus Y) workload:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="cudaflow_8hpp" kindref="compound">taskflow/cuda/cudaflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>saxpy<sp/>(single-precision<sp/>A·X<sp/>Plus<sp/>Y)<sp/>kernel</highlight><highlight class="normal"></highlight></codeline>
@@ -76,8 +79,8 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>1&lt;&lt;20;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>size<sp/>of<sp/>the<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::vector&lt;float&gt;<sp/>hx(N,<sp/>1.0f);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>x<sp/>vector<sp/>at<sp/>host</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::vector&lt;float&gt;<sp/>hy(N,<sp/>2.0f);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>y<sp/>vector<sp/>at<sp/>host</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>hx(N,<sp/>1.0f);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>x<sp/>vector<sp/>at<sp/>host</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;float&gt;</ref><sp/>hy(N,<sp/>2.0f);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>y<sp/>vector<sp/>at<sp/>host</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*dx{</highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>x<sp/>vector<sp/>at<sp/>device</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>*dy{</highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">};<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>y<sp/>vector<sp/>at<sp/>device</highlight><highlight class="normal"></highlight></codeline>
@@ -85,16 +88,16 @@
 <codeline><highlight class="normal"><sp/><sp/>cudaMalloc(&amp;dx,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cudaMalloc(&amp;dy,<sp/>N*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaFlow<sp/>cudaflow;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cudaflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>data<sp/>transfer<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>h2d_x<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>h2d_y<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>d2h_x<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>d2h_y<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_x<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_x&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>h2d_y<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(dy,<sp/>hy.data(),<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;h2d_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_x<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(hx.data(),<sp/>dx,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_x&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>d2h_y<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kindref="member">copy</ref>(hy.data(),<sp/>dy,<sp/>N).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;d2h_y&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>saxpy&lt;&lt;&lt;(N+255)/256,<sp/>256,<sp/>0&gt;&gt;&gt;(N,<sp/>2.0f,<sp/>dx,<sp/>dy)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>kernel<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kernel<sp/>=<sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kindref="member">kernel</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>(N+255)/256,<sp/>256,<sp/>0,<sp/>saxpy,<sp/>N,<sp/>2.0f,<sp/>dx,<sp/>dy</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>).<ref refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;saxpy&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -102,28 +105,30 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h_x,<sp/>d2h_y);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>cudaflow<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaStream<sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>cudaflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">dump</ref>(std::cout);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cudaflow.<ref refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The cudaFlow graph consists of two CPU-to-GPU data copies (<computeroutput>h2d_x</computeroutput> and <computeroutput>h2d_y</computeroutput>), one kernel (<computeroutput>saxpy</computeroutput>), and two GPU-to-CPU data copies (<computeroutput>d2h_x</computeroutput> and <computeroutput>d2h_y</computeroutput>), in this order of their task dependencies.</para>
-<para><dotfile name="saxpy.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/saxpy.dot"></dotfile>
 </para>
 <para>We do not expend yet another effort on simplifying kernel programming but focus on tasking CUDA operations and their dependencies. In other words, <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> is a lightweight C++ abstraction over CUDA Graph. This organization lets users fully take advantage of CUDA features that are commensurate with their domain knowledge, while leaving difficult task parallelism details to Taskflow.</para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1Compile_a_cudaFlow_program">
-<title>Compile a cudaFlow Program</title><para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> to compile a cudaFlow program:</para>
+<title>Compile a cudaFlow Program</title>
+<para>Use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink> to compile a cudaFlow program:</para>
 <para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>my_cudaflow.cu<sp/>-I<sp/>path/to/include/taskflow<sp/>-O2<sp/>-o<sp/>my_cudaflow</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./my_cudaflow</highlight></codeline>
 </programlisting></para>
 <para>Please visit the page <ref refid="CompileTaskflowWithCUDA" kindref="compound">Compile Taskflow with CUDA</ref> for more details.</para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1run_a_cudaflow_on_a_specific_gpu">
-<title>Run a cudaFlow on Specific GPU</title><para>By default, a cudaFlow runs on the current GPU context associated with the caller, which is typically GPU <computeroutput>0</computeroutput>. Each CUDA GPU has an integer identifier in the range of <computeroutput>[0, N)</computeroutput> to represent the context of that GPU, where <computeroutput>N</computeroutput> is the number of GPUs in the system. You can run a cudaFlow on a specific GPU by switching the context to a different GPU using <ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref>. The code below creates a cudaFlow and runs it on GPU <computeroutput>2</computeroutput>.</para>
+<title>Run a cudaFlow on Specific GPU</title>
+<para>By default, a cudaFlow runs on the current GPU context associated with the caller, which is typically GPU <computeroutput>0</computeroutput>. Each CUDA GPU has an integer identifier in the range of <computeroutput>[0, N)</computeroutput> to represent the context of that GPU, where <computeroutput>N</computeroutput> is the number of GPUs in the system. You can run a cudaFlow on a specific GPU by switching the context to a different GPU using <ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref>. The code below creates a cudaFlow and runs it on GPU <computeroutput>2</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>RAII-styled<sp/>switcher<sp/>to<sp/>the<sp/>context<sp/>of<sp/>GPU<sp/>2</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>context(2);</highlight></codeline>
@@ -144,7 +149,8 @@
 </para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1GPUMemoryOperations">
-<title>Create Memory Operation Tasks</title><para>cudaFlow provides a set of methods for users to manipulate device memory. There are two categories, <emphasis>raw</emphasis> data and <emphasis>typed</emphasis> data. Raw data operations are methods with prefix <computeroutput>mem</computeroutput>, such as <computeroutput>memcpy</computeroutput> and <computeroutput>memset</computeroutput>, that operate in <emphasis>bytes</emphasis>. Typed data operations such as <computeroutput>copy</computeroutput>, <computeroutput>fill</computeroutput>, and <computeroutput>zero</computeroutput>, take <emphasis>logical count</emphasis> of elements. For instance, the following three methods have the same result of zeroing <computeroutput>sizeof(int)*count</computeroutput> bytes of the device memory area pointed to by <computeroutput>target</computeroutput>.</para>
+<title>Create Memory Operation Tasks</title>
+<para>cudaFlow provides a set of methods for users to manipulate device memory. There are two categories, <emphasis>raw</emphasis> data and <emphasis>typed</emphasis> data. Raw data operations are methods with prefix <computeroutput>mem</computeroutput>, such as <computeroutput>memcpy</computeroutput> and <computeroutput>memset</computeroutput>, that operate in <emphasis>bytes</emphasis>. Typed data operations such as <computeroutput>copy</computeroutput>, <computeroutput>fill</computeroutput>, and <computeroutput>zero</computeroutput>, take <emphasis>logical count</emphasis> of elements. For instance, the following three methods have the same result of zeroing <computeroutput>sizeof(int)*count</computeroutput> bytes of the device memory area pointed to by <computeroutput>target</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>target;</highlight></codeline>
 <codeline><highlight class="normal">cudaMalloc(&amp;target,<sp/>count*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -162,7 +168,8 @@
 </programlisting></para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1OffloadAcudaFlow">
-<title>Offload a cudaFlow</title><para>To offload a cudaFlow to a GPU, you need to use <ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">tf::cudaFlow::run</ref> and pass a <ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref> created on that GPU. The run method is asynchronous and can be explicitly synchronized through the given stream.</para>
+<title>Offload a cudaFlow</title>
+<para>To offload a cudaFlow to a GPU, you need to use <ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">tf::cudaFlow::run</ref> and pass a <ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref> created on that GPU. The run method is asynchronous and can be explicitly synchronized through the given stream.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>a<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">cudaflow.<ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">run</ref>(stream);</highlight></codeline>
@@ -172,7 +179,8 @@
 <para>When you offload a cudaFlow using <ref refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kindref="member">tf::cudaFlow::run</ref>, the runtime transforms that cudaFlow (i.e., application GPU task graph) into a native executable instance and submit it to the CUDA runtime for execution. There is always an one-to-one mapping between cudaFlow and its native CUDA graph representation (except those constructed by using <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>).</para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1UpdateAcudaFlow">
-<title>Update a cudaFlow</title><para>Many GPU applications require you to launch a cudaFlow multiple times and update node parameters (e.g., kernel parameters and memory addresses) between iterations. cudaFlow allows you to update the parameters of created tasks and run the updated cudaFlow with new parameters. Every task-creation method in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> has an overload to update the parameters of a created task by that method.</para>
+<title>Update a cudaFlow</title>
+<para>Many GPU applications require you to launch a cudaFlow multiple times and update node parameters (e.g., kernel parameters and memory addresses) between iterations. cudaFlow allows you to update the parameters of created tasks and run the updated cudaFlow with new parameters. Every task-creation method in <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> has an overload to update the parameters of a created task by that method.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -203,7 +211,8 @@
 </para>
 </sect1>
 <sect1 id="GPUTaskingcudaFlow_1IntegrateCudaFlowIntoTaskflow">
-<title>Integrate a cudaFlow into Taskflow</title><para>You can create a task to enclose a cudaFlow and run it from a worker thread. The usage of the cudaFlow remains the same except that the cudaFlow is run by a worker thread from a taskflow task. The following example runs a cudaFlow from a static task:</para>
+<title>Integrate a cudaFlow into Taskflow</title>
+<para>You can create a task to enclose a cudaFlow and run it from a worker thread. The usage of the cudaFlow remains the same except that the cudaFlow is run by a worker thread from a taskflow task. The following example runs a cudaFlow from a static task:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

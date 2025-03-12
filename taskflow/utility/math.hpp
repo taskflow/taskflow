@@ -67,7 +67,7 @@ constexpr bool is_pow2(const T& x) {
  * This function efficiently calculates `log2(n)` for both 32-bit and 64-bit integers.
  *
  * @tparam T integer type (uint32_t or uint64_t).
- * @param ninput number.
+ * @param n input number.
  * @return floor of `log2(n)`
  */
 template <typename T>
