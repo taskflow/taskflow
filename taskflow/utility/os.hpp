@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+#include <thread>
 
 #define TF_OS_LINUX 0
 #define TF_OS_DRAGONFLY 0

@@ -13,7 +13,6 @@
 #include "../utility/small_vector.hpp"
 #include "../utility/serializer.hpp"
 #include "../utility/latch.hpp"
-#include "../utility/mpmc.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"

@@ -4,6 +4,8 @@
 #include <atomic>
 #include <optional>
 
+#include "os.hpp"
+
 namespace tf {
 
 /**
