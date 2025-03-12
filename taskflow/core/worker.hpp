@@ -23,7 +23,6 @@ namespace tf {
 #ifdef TF_ENABLE_ATOMIC_NOTIFIER
   using DefaultNotifier = AtomicNotifierV2;
 #else
-  //using DefaultNotifier = AtomicNotifierV2;
   using DefaultNotifier = NonblockingNotifierV2;
 #endif
 
@@ -80,6 +79,12 @@ class Worker {
     std::thread& thread() { return _thread; }
 
   private:
+  
+  #if __cplusplus >= TF_CPP20
+    std::atomic_flag _done = ATOMIC_FLAG_INIT; 
+  #else
+    std::atomic<bool> _done {false};
+  #endif
 
     size_t _id;
     size_t _vtm;
@@ -89,12 +94,6 @@ class Worker {
     
     std::default_random_engine _rdgen;
     std::uniform_int_distribution<size_t> _udist;
-
-  #if __cplusplus >= TF_CPP20
-    std::atomic_flag _done = ATOMIC_FLAG_INIT; 
-  #else
-    std::atomic<bool> _done {false};
-  #endif
 
     BoundedTaskQueue<Node*> _wsq;
 

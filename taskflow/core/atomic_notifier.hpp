@@ -8,7 +8,7 @@
 
 namespace tf {
 
-class AtomicNotifier {
+class AtomicNotifierV1 {
 
   friend class Executor;
 
@@ -18,8 +18,8 @@ class AtomicNotifier {
     alignas (2*TF_CACHELINE_SIZE) uint32_t epoch;
   };
 
-  AtomicNotifier(size_t N) noexcept : _state(0), _waiters(N) {}
-  ~AtomicNotifier() { assert((_state.load() & WAITER_MASK) == 0); } 
+  AtomicNotifierV1(size_t N) noexcept : _state(0), _waiters(N) {}
+  ~AtomicNotifierV1() { assert((_state.load() & WAITER_MASK) == 0); } 
 
   void notify_one() noexcept;
   void notify_all() noexcept;
@@ -31,10 +31,10 @@ class AtomicNotifier {
 
  private:
 
-  AtomicNotifier(const AtomicNotifier&) = delete;
-  AtomicNotifier(AtomicNotifier&&) = delete;
-  AtomicNotifier& operator=(const AtomicNotifier&) = delete;
-  AtomicNotifier& operator=(AtomicNotifier&&) = delete;
+  AtomicNotifierV1(const AtomicNotifierV1&) = delete;
+  AtomicNotifierV1(AtomicNotifierV1&&) = delete;
+  AtomicNotifierV1& operator=(const AtomicNotifierV1&) = delete;
+  AtomicNotifierV1& operator=(AtomicNotifierV1&&) = delete;
 
   // This requires 64-bit
   static_assert(sizeof(int) == 4, "bad platform");
@@ -53,21 +53,21 @@ class AtomicNotifier {
   static constexpr uint64_t WAITER_MASK {EPOCH_INC - 1};
 };
 
-inline void AtomicNotifier::notify_one() noexcept {
+inline void AtomicNotifierV1::notify_one() noexcept {
   uint64_t prev = _state.fetch_add(EPOCH_INC, std::memory_order_acq_rel);
   if(TF_UNLIKELY(prev & WAITER_MASK))  { // has waiter (typically unlikely)
     _state.notify_one();
   }
 }
 
-inline void AtomicNotifier::notify_all() noexcept {
+inline void AtomicNotifierV1::notify_all() noexcept {
   uint64_t prev = _state.fetch_add(EPOCH_INC, std::memory_order_acq_rel);
   if(TF_UNLIKELY(prev & WAITER_MASK))  { // has waiter (typically unlikely)
     _state.notify_all();
   }
 }
   
-inline void AtomicNotifier::notify_n(size_t n) noexcept {
+inline void AtomicNotifierV1::notify_n(size_t n) noexcept {
   if(n >= _waiters.size()) {
     notify_all();
   }
@@ -78,23 +78,23 @@ inline void AtomicNotifier::notify_n(size_t n) noexcept {
   }
 }
 
-inline size_t AtomicNotifier::size() const noexcept {
+inline size_t AtomicNotifierV1::size() const noexcept {
   return _waiters.size();
 }
 
-inline void AtomicNotifier::prepare_wait(Waiter* waiter) noexcept {
+inline void AtomicNotifierV1::prepare_wait(Waiter* waiter) noexcept {
   uint64_t prev = _state.fetch_add(WAITER_INC, std::memory_order_acq_rel);
   waiter->epoch = (prev >> EPOCH_SHIFT);
 }
 
-inline void AtomicNotifier::cancel_wait(Waiter*) noexcept {
+inline void AtomicNotifierV1::cancel_wait(Waiter*) noexcept {
   // memory_order_relaxed would suffice for correctness, but the faster
   // #waiters gets to 0, the less likely it is that we'll do spurious wakeups
   // (and thus system calls).
   _state.fetch_sub(WAITER_INC, std::memory_order_seq_cst);
 }
 
-inline void AtomicNotifier::commit_wait(Waiter* waiter) noexcept {
+inline void AtomicNotifierV1::commit_wait(Waiter* waiter) noexcept {
   uint64_t prev = _state.load(std::memory_order_acquire);
   while((prev >> EPOCH_SHIFT) == waiter->epoch) {
     _state.wait(prev, std::memory_order_acquire); 

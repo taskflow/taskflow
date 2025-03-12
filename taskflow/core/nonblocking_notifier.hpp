@@ -309,12 +309,35 @@ class NonblockingNotifierV1 {
 class NonblockingNotifierV2 {
 
   friend class Executor;
+  
+  // State_ layout:
+  // - low kWaiterBits is a stack of waiters committed wait
+  //   (indexes in _waiters array are used as stack elements,
+  //   kStackMask means empty stack).
+  // - next kWaiterBits is count of waiters in prewait state.
+  // - next kWaiterBits is count of pending signals.
+  // - remaining bits are ABA counter for the stack.
+  //   (stored in Waiter node and incremented on push).
+  static const uint64_t kWaiterBits = 14;
+  static const uint64_t kStackMask = (1ull << kWaiterBits) - 1;
+  static const uint64_t kWaiterShift = kWaiterBits;
+  static const uint64_t kWaiterMask = ((1ull << kWaiterBits) - 1) << kWaiterShift;
+  static const uint64_t kWaiterInc = 1ull << kWaiterShift;
+  static const uint64_t kSignalShift = 2 * kWaiterBits;
+  static const uint64_t kSignalMask = ((1ull << kWaiterBits) - 1) << kSignalShift;
+  static const uint64_t kSignalInc = 1ull << kSignalShift;
+  static const uint64_t kEpochShift = 3 * kWaiterBits;
+  static const uint64_t kEpochBits = 64 - kEpochShift;
+  static const uint64_t kEpochMask = ((1ull << kEpochBits) - 1) << kEpochShift;
+  static const uint64_t kEpochInc = 1ull << kEpochShift;
+  
+  static_assert(kEpochBits >= 20, "not enough bits to prevent ABA problem");
 
   public:
   
   struct Waiter {
-    alignas (2*TF_CACHELINE_SIZE) std::atomic<uint64_t> next;
-    uint64_t epoch;
+    alignas (2*TF_CACHELINE_SIZE) std::atomic<uint64_t> next{kStackMask};
+    uint64_t epoch{0};
     enum : unsigned {
       kNotSignaled = 0,
       kWaiting,
@@ -322,11 +345,11 @@ class NonblockingNotifierV2 {
     };
 
 #if __cplusplus >= TF_CPP20
-    std::atomic<unsigned> state {0};
+    std::atomic<unsigned> state {kNotSignaled};
 #else
     std::mutex mu;
     std::condition_variable cv;
-    unsigned state;
+    unsigned state {kNotSignaled};
 #endif
   };
 
@@ -342,14 +365,19 @@ class NonblockingNotifierV2 {
   // prepare_wait prepares for waiting.
   // After calling prepare_wait, the thread must re-check the wait predicate
   // and then call either cancel_wait or commit_wait.
+  //void prepare_wait(Waiter*) {
+  //  uint64_t state = _state.load(std::memory_order_relaxed);
+  //  for (;;) {
+  //    //_check_state(state);
+  //    uint64_t newstate = state + kWaiterInc;
+  //    //_check_state(newstate);
+  //    if (_state.compare_exchange_weak(state, newstate, std::memory_order_seq_cst)) return;
+  //  }
+  //}
+  
   void prepare_wait(Waiter*) {
-    uint64_t state = _state.load(std::memory_order_relaxed);
-    for (;;) {
-      //_check_state(state);
-      uint64_t newstate = state + kWaiterInc;
-      //_check_state(newstate);
-      if (_state.compare_exchange_weak(state, newstate, std::memory_order_seq_cst)) return;
-    }
+    _state.fetch_add(kWaiterInc, std::memory_order_relaxed);
+    std::atomic_thread_fence(std::memory_order_seq_cst);
   }
 
   // commit_wait commits waiting after prepare_wait.
@@ -424,28 +452,7 @@ class NonblockingNotifierV2 {
   }
 
   private:
-  // State_ layout:
-  // - low kWaiterBits is a stack of waiters committed wait
-  //   (indexes in _waiters array are used as stack elements,
-  //   kStackMask means empty stack).
-  // - next kWaiterBits is count of waiters in prewait state.
-  // - next kWaiterBits is count of pending signals.
-  // - remaining bits are ABA counter for the stack.
-  //   (stored in Waiter node and incremented on push).
-  static const uint64_t kWaiterBits = 14;
-  static const uint64_t kStackMask = (1ull << kWaiterBits) - 1;
-  static const uint64_t kWaiterShift = kWaiterBits;
-  static const uint64_t kWaiterMask = ((1ull << kWaiterBits) - 1) << kWaiterShift;
-  static const uint64_t kWaiterInc = 1ull << kWaiterShift;
-  static const uint64_t kSignalShift = 2 * kWaiterBits;
-  static const uint64_t kSignalMask = ((1ull << kWaiterBits) - 1) << kSignalShift;
-  static const uint64_t kSignalInc = 1ull << kSignalShift;
-  static const uint64_t kEpochShift = 3 * kWaiterBits;
-  static const uint64_t kEpochBits = 64 - kEpochShift;
-  static const uint64_t kEpochMask = ((1ull << kEpochBits) - 1) << kEpochShift;
-  static const uint64_t kEpochInc = 1ull << kEpochShift;
-  
-  static_assert(kEpochBits >= 20, "not enough bits to prevent ABA problem");
+
 
   std::atomic<uint64_t> _state;
   std::vector<Waiter> _waiters;
