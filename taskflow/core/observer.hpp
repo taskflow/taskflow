@@ -537,27 +537,27 @@ inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
 
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    count_w = std::max(count_w, std::to_string(i.count).size());
+	count_w = (std::max)(count_w, std::to_string(i.count).size());
   });
   
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    time_w = std::max(time_w, std::to_string(i.total_span).size());
+    time_w = (std::max)(time_w, std::to_string(i.total_span).size());
   });
   
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    avg_w = std::max(time_w, std::to_string(i.avg_span()).size());
+    avg_w = (std::max)(time_w, std::to_string(i.avg_span()).size());
   });
   
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    min_w = std::max(min_w, std::to_string(i.min_span).size());
+    min_w = (std::max)(min_w, std::to_string(i.min_span).size());
   });
   
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    max_w = std::max(max_w, std::to_string(i.max_span).size());
+    max_w = (std::max)(max_w, std::to_string(i.max_span).size());
   });
 
   os << std::setw(type_w) << "-Task-" 
@@ -590,32 +590,32 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
 
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    l_w = std::max(l_w, std::to_string(i.level).size());
+    l_w = (std::max)(l_w, std::to_string(i.level).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    c_w = std::max(c_w, std::to_string(i.count).size());
+    c_w = (std::max)(c_w, std::to_string(i.count).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    d_w = std::max(d_w, std::to_string(i.total_span).size());
+    d_w = (std::max)(d_w, std::to_string(i.total_span).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    avg_w = std::max(avg_w, std::to_string(i.avg_span()).size());
+    avg_w = (std::max)(avg_w, std::to_string(i.avg_span()).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    min_w = std::max(min_w, std::to_string(i.min_span).size());
+    min_w = (std::max)(min_w, std::to_string(i.min_span).size());
   });
   
   std::for_each(wsum.begin(), wsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-    max_w = std::max(max_w, std::to_string(i.max_span).size());
+    max_w = (std::max)(max_w, std::to_string(i.max_span).size());
   });
   
   os << std::setw(w_w) << "-Worker-" 
@@ -840,8 +840,8 @@ inline void TFProfObserver::summary(std::ostream& os) const {
         
         // update the entire span
         auto& s = _timeline.segments[w][l][i];
-        view_beg = view_beg ? std::min(*view_beg, s.beg) : s.beg;
-        view_end = view_end ? std::max(*view_end, s.end) : s.end;
+        view_beg = view_beg ? (std::min)(*view_beg, s.beg) : s.beg;
+        view_end = view_end ? (std::max)(*view_end, s.end) : s.end;
         
         // update the task summary
         size_t t = duration_cast<microseconds>(s.end - s.beg).count();
@@ -849,19 +849,19 @@ inline void TFProfObserver::summary(std::ostream& os) const {
         auto& x = summary.tsum[static_cast<int>(s.type)];
         x.count += 1;
         x.total_span += t;
-        x.min_span = (x.count == 1) ? t : std::min(t, x.min_span);
-        x.max_span = (x.count == 1) ? t : std::max(t, x.max_span);
+        x.min_span = (x.count == 1) ? t : (std::min)(t, x.min_span);
+        x.max_span = (x.count == 1) ? t : (std::max)(t, x.max_span);
 
         // update the worker summary
         ws.total_span += t;
-        ws.min_span = (i == 0) ? t : std::min(t, ws.min_span);
-        ws.max_span = (i == 0) ? t : std::max(t, ws.max_span);
+        ws.min_span = (i == 0) ? t : (std::min)(t, ws.min_span);
+        ws.max_span = (i == 0) ? t : (std::max)(t, ws.max_span);
 
         auto&y = ws.tsum[static_cast<int>(s.type)];
         y.count += 1;
         y.total_span += t;
-        y.min_span = (y.count == 1) ? t : std::min(t, y.min_span);
-        y.max_span = (y.count == 1) ? t : std::max(t, y.max_span);
+        y.min_span = (y.count == 1) ? t : (std::min)(t, y.min_span);
+        y.max_span = (y.count == 1) ? t : (std::max)(t, y.max_span);
         
         // update the delay
         //if(i) {
