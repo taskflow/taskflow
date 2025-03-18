@@ -314,7 +314,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
           if(curr_b >= N) {
             return;
           }
-          func(curr_b, std::min(curr_b + chunk_size, N));
+          func(curr_b, (std::min)(curr_b + chunk_size, N));
         }
         break;
       }
@@ -325,7 +325,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
           q = chunk_size;
         }
         //size_t curr_e = (q <= r) ? curr_b + q : N;
-        size_t curr_e = std::min(curr_b + q, N);
+        size_t curr_e = (std::min)(curr_b + q, N);
         if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
                                                         std::memory_order_relaxed)) {
           func(curr_b, curr_e);
@@ -362,7 +362,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
           if(curr_b >= N) {
             return;
           }
-          if(func(curr_b, std::min(curr_b + chunk_size, N))) {
+          if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
             return;
           }
         }
@@ -375,7 +375,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
           q = chunk_size;
         }
         //size_t curr_e = (q <= r) ? curr_b + q : N;
-        size_t curr_e = std::min(curr_b + q, N);
+        size_t curr_e = (std::min)(curr_b + q, N);
         if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
                                                         std::memory_order_relaxed)) {
           if(func(curr_b, curr_e)) {
@@ -477,7 +477,7 @@ class DynamicPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      func(curr_b, std::min(curr_b + chunk_size, N));
+      func(curr_b, (std::min)(curr_b + chunk_size, N));
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }
   }
@@ -496,7 +496,7 @@ class DynamicPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      if(func(curr_b, std::min(curr_b + chunk_size, N))) {
+      if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
         return;
       }
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
@@ -609,7 +609,7 @@ class StaticPartitioner : public PartitionerBase<C> {
   ) {
     size_t stride = W * chunk_size;
     while(curr_b < N) {
-      size_t curr_e = std::min(curr_b + chunk_size, N);
+      size_t curr_e = (std::min)(curr_b + chunk_size, N);
       func(curr_b, curr_e);
       curr_b += stride;
     }
@@ -626,7 +626,7 @@ class StaticPartitioner : public PartitionerBase<C> {
   ) {
     size_t stride = W * chunk_size;
     while(curr_b < N) {
-      size_t curr_e = std::min(curr_b + chunk_size, N);
+      size_t curr_e = (std::min)(curr_b + chunk_size, N);
       if(func(curr_b, curr_e)) {
         return;
       }
@@ -743,8 +743,8 @@ class RandomPartitioner : public PartitionerBase<C> {
       std::swap(b1, b2);
     }
 
-    b1 = std::max(b1, size_t{1});
-    b2 = std::max(b2, b1 + 1);
+    b1 = (std::max)(b1, size_t{1});
+    b2 = (std::max)(b2, b1 + 1);
 
     return {b1, b2};
   }
@@ -772,7 +772,7 @@ class RandomPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      func(curr_b, std::min(curr_b + chunk_size, N));
+      func(curr_b, (std::min)(curr_b + chunk_size, N));
       chunk_size = dist(engine);
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }
@@ -797,7 +797,7 @@ class RandomPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      if(func(curr_b, std::min(curr_b + chunk_size, N))){
+      if(func(curr_b, (std::min)(curr_b + chunk_size, N))){
         return;
       }
       chunk_size = dist(engine);
