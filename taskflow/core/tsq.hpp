@@ -315,13 +315,21 @@ template <typename T>
 typename UnboundedTaskQueue<T>::Array*
 UnboundedTaskQueue<T>::resize_array(Array* a, int64_t b, int64_t t) {
 
+  //Array* tmp = a->resize(b, t);
+  //_garbage.push_back(a);
+  //std::swap(a, tmp);
+  //_array.store(a, std::memory_order_release);
+  //// Note: the original paper using relaxed causes t-san to complain
+  ////_array.store(a, std::memory_order_relaxed);
+  //return a;
+  
+
   Array* tmp = a->resize(b, t);
   _garbage.push_back(a);
-  std::swap(a, tmp);
-  _array.store(a, std::memory_order_release);
+  _array.store(tmp, std::memory_order_release);
   // Note: the original paper using relaxed causes t-san to complain
   //_array.store(a, std::memory_order_relaxed);
-  return a;
+  return tmp;
 }
 
 // ----------------------------------------------------------------------------
