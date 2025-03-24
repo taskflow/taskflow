@@ -436,7 +436,7 @@ class FlowBuilder {
   tf::IndexRange<int> range(0, 17, 2);
   
   // parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]
-  taskflow.for_each_index(range, [](tf::IndexRange<int> range) {
+  taskflow.for_each_by_index(range, [](tf::IndexRange<int> range) {
     // iterate each index in the subrange
     for(int i=range.begin(); i<range.end(); i+=range.step_size()) {
       printf("iterate %d\n", i);
@@ -451,7 +451,7 @@ class FlowBuilder {
   Please refer to @ref ParallelIterations for details.
   */
   template <typename R, typename C, typename P = DefaultPartitioner>
-  Task for_each_index(R range, C callable, P part = P());
+  Task for_each_by_index(R range, C callable, P part = P());
 
   // ------------------------------------------------------------------------
   // transform

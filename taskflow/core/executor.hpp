@@ -1397,7 +1397,15 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   // Condition #2: worker queues should be empty
   // Note: We need to use index-based looping to avoid data race with _spawan
   // which initializes other worker data structure at the same time
-  for(size_t vtm=0; vtm<_workers.size(); vtm++) {
+  for(size_t vtm=0; vtm<w._id; ++vtm) {
+    if(!_workers[vtm]._wsq.empty()) {
+      w._vtm = vtm;
+      _notifier.cancel_wait(w._waiter);
+      goto explore_task;
+    }
+  }
+
+  for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       w._vtm = vtm;
       _notifier.cancel_wait(w._waiter);

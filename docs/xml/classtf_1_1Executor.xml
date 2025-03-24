@@ -175,11 +175,11 @@
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1066" column="13" bodyfile="taskflow/core/executor.hpp" bodystart="1066" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Executor_1a0f74eb32b801b30164e36936204c4b66" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1Executor_1a193faa77f840c8ab653cf063fba6a6f9" prot="private" static="no" mutable="no">
         <type>Freelist&lt; Node * &gt;</type>
-        <definition>Freelist&lt;Node*&gt; tf::Executor::_freelist</definition>
+        <definition>Freelist&lt;Node*&gt; tf::Executor::_buffers</definition>
         <argsstring></argsstring>
-        <name>_freelist</name>
+        <name>_buffers</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -2370,9 +2370,9 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1076" column="8"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::Executor::_explore_task</definition>
+      <memberdef kind="function" id="classtf_1_1Executor_1ac5827e67b2b60c16259b45e14c6e97e0" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::Executor::_explore_task</definition>
         <argsstring>(Worker &amp;, Node *&amp;)</argsstring>
         <name>_explore_task</name>
         <param>
@@ -3180,12 +3180,12 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
     <location file="taskflow/core/executor.hpp" line="53" column="1" bodyfile="taskflow/core/executor.hpp" bodystart="53" bodyend="1130"/>
     <listofallmembers>
       <member refid="classtf_1_1Executor_1ac568bd686aba3bedabe63b42c43d94a8" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_async</name></member>
+      <member refid="classtf_1_1Executor_1a193faa77f840c8ab653cf063fba6a6f9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_buffers</name></member>
       <member refid="classtf_1_1Executor_1aec313f2f099ee2fd6cb85a164457f019" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_graph</name></member>
       <member refid="classtf_1_1Executor_1a43cdd198427b7be2827450f6ce8343af" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_until</name></member>
       <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_decrement_topology</name></member>
       <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_exploit_task</name></member>
-      <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_explore_task</name></member>
-      <member refid="classtf_1_1Executor_1a0f74eb32b801b30164e36936204c4b66" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_freelist</name></member>
+      <member refid="classtf_1_1Executor_1ac5827e67b2b60c16259b45e14c6e97e0" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_explore_task</name></member>
       <member refid="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_increment_topology</name></member>
       <member refid="classtf_1_1Executor_1ad16165142908aca9444ea88e65040219" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_invoke</name></member>
       <member refid="classtf_1_1Executor_1a1d1b9bf8ed24dffff65d860ef1627ef3" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_invoke_async_task</name></member>

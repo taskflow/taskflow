@@ -635,7 +635,7 @@ void range_based_for_each_index(unsigned w) {
           tf::IndexRange range(beg, end, -s);
           REQUIRE(range.size() == n);
 
-          taskflow.for_each_index(range, [&] (tf::IndexRange<int> lrange) {
+          taskflow.for_each_by_index(range, [&] (tf::IndexRange<int> lrange) {
             size_t l = 0;
             for(auto j=lrange.begin(); j>lrange.end(); j+=lrange.step_size()) {
               l++;
@@ -729,7 +729,7 @@ void stateful_range_based_for_each_index(unsigned w) {
             REQUIRE(range.size() == n);
           });
 
-          auto loop_range = taskflow.for_each_index(std::ref(range), [&] (tf::IndexRange<int> lrange) {
+          auto loop_range = taskflow.for_each_by_index(std::ref(range), [&] (tf::IndexRange<int> lrange) {
             size_t l = 0;
             for(auto j=lrange.begin(); j>lrange.end(); j+=lrange.step_size()) {
               l++;

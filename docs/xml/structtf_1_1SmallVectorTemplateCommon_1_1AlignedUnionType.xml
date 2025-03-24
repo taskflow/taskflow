@@ -7,11 +7,27 @@
         <type>typename X</type>
       </param>
     </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a9a0cc87ce9dddb50a069894039b11b40" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr <ref refid="cpp/types/size_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
+        <definition>constexpr std::size_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::AlignedUnionType&lt; X &gt;::max_size</definition>
+        <argsstring></argsstring>
+        <name>max_size</name>
+        <initializer>= (sizeof(std::byte) &gt; sizeof(X)) ? sizeof(std::byte) : sizeof(X)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/small_vector.hpp" line="124" column="34" bodyfile="taskflow/utility/small_vector.hpp" bodystart="124" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
       <sectiondef kind="public-attrib">
-      <memberdef kind="variable" id="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a156936c74cd597a4d4f6c9343f2bdc78" prot="public" static="no" mutable="no">
+      <memberdef kind="variable" id="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1abde3bae69eb61511b27006a99d7417f3" prot="public" static="no" mutable="no">
         <type>std::byte</type>
-        <definition>std::byte tf::SmallVectorTemplateCommon&lt; T, typename &gt;::AlignedUnionType&lt; X &gt;::buff[std::max(sizeof(std::byte), sizeof(X))]</definition>
-        <argsstring>[std::max(sizeof(std::byte), sizeof(X))]</argsstring>
+        <definition>std::byte tf::SmallVectorTemplateCommon&lt; T, typename &gt;::AlignedUnionType&lt; X &gt;::buff[max_size]</definition>
+        <argsstring>[max_size]</argsstring>
         <name>buff</name>
         <briefdescription>
         </briefdescription>
@@ -19,16 +35,28 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="119" column="23" bodyfile="taskflow/utility/small_vector.hpp" bodystart="119" bodyend="-1"/>
+        <location file="taskflow/utility/small_vector.hpp" line="125" column="23" bodyfile="taskflow/utility/small_vector.hpp" bodystart="125" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/utility/small_vector.hpp" line="118" column="3" bodyfile="taskflow/utility/small_vector.hpp" bodystart="118" bodyend="120"/>
+    <collaborationgraph>
+      <node id="1">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;::AlignedUnionType&lt; X &gt;</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>max_size</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::size_t</label>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/utility/small_vector.hpp" line="123" column="3" bodyfile="taskflow/utility/small_vector.hpp" bodystart="123" bodyend="126"/>
     <listofallmembers>
-      <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a156936c74cd597a4d4f6c9343f2bdc78" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateCommon::AlignedUnionType</scope><name>buff</name></member>
+      <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1abde3bae69eb61511b27006a99d7417f3" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateCommon::AlignedUnionType</scope><name>buff</name></member>
+      <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a9a0cc87ce9dddb50a069894039b11b40" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateCommon::AlignedUnionType</scope><name>max_size</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

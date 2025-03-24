@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
   <compound refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType" kind="struct"><name>tf::SmallVectorTemplateCommon::AlignedUnionType</name>
-    <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a156936c74cd597a4d4f6c9343f2bdc78" kind="variable"><name>buff</name></member>
+    <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a9a0cc87ce9dddb50a069894039b11b40" kind="variable"><name>max_size</name></member>
+    <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1abde3bae69eb61511b27006a99d7417f3" kind="variable"><name>buff</name></member>
   </compound>
   <compound refid="classtf_1_1AnchorGuard" kind="class"><name>tf::AnchorGuard</name>
     <member refid="classtf_1_1AnchorGuard_1a2e223f00fbfb70d36b084a87e54739a4" kind="variable"><name>_node</name></member>
@@ -492,7 +493,7 @@
     <member refid="classtf_1_1Executor_1a8be5571fa0df99784aacb26b01d0f4b4" kind="variable"><name>_topology_mutex</name></member>
     <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" kind="variable"><name>_num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
-    <member refid="classtf_1_1Executor_1a0f74eb32b801b30164e36936204c4b66" kind="variable"><name>_freelist</name></member>
+    <member refid="classtf_1_1Executor_1a193faa77f840c8ab653cf063fba6a6f9" kind="variable"><name>_buffers</name></member>
     <member refid="classtf_1_1Executor_1a9b123d06eb807bf275ba761938624afc" kind="variable"><name>_worker_interface</name></member>
     <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
     <member refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kind="function"><name>Executor</name></member>
@@ -536,7 +537,7 @@
     <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" kind="function"><name>_observer_epilogue</name></member>
     <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" kind="function"><name>_spawn</name></member>
     <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" kind="function"><name>_exploit_task</name></member>
-    <member refid="classtf_1_1Executor_1aab7cc2e53d75fcc87fcc919f29bf9ca9" kind="function"><name>_explore_task</name></member>
+    <member refid="classtf_1_1Executor_1ac5827e67b2b60c16259b45e14c6e97e0" kind="function"><name>_explore_task</name></member>
     <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" kind="function"><name>_set_up_topology</name></member>
@@ -592,7 +593,7 @@
     <member refid="classtf_1_1FlowBuilder_1a4ec89b554d15ad5fb96f4fdb10dbbb16" kind="function"><name>linearize</name></member>
     <member refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" kind="function"><name>for_each</name></member>
     <member refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kind="function"><name>for_each_index</name></member>
-    <member refid="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" kind="function"><name>for_each_index</name></member>
+    <member refid="classtf_1_1FlowBuilder_1a2582a216d54dacca2b7022ea7e89452a" kind="function"><name>for_each_by_index</name></member>
     <member refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1FlowBuilder_1afb24798ebf46e253a40b01bffb1da6a7" kind="function"><name>reduce</name></member>

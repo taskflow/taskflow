@@ -872,7 +872,7 @@ The task spawns asynchronous tasks that applies the callable object to each inde
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="416" column="8"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1FlowBuilder_1a2582a216d54dacca2b7022ea7e89452a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename R</type>
@@ -886,9 +886,9 @@ The task spawns asynchronous tasks that applies the callable object to each inde
           </param>
         </templateparamlist>
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
-        <definition>Task tf::FlowBuilder::for_each_index</definition>
+        <definition>Task tf::FlowBuilder::for_each_by_index</definition>
         <argsstring>(R range, C callable, P part=P())</argsstring>
-        <name>for_each_index</name>
+        <name>for_each_by_index</name>
         <param>
           <type>R</type>
           <declname>range</declname>
@@ -963,7 +963,7 @@ The task spawns asynchronous tasks that applies the callable object to in the ra
 <codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>17,<sp/>2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>parallelize<sp/>the<sp/>sequence<sp/>[0,<sp/>2,<sp/>4,<sp/>6,<sp/>8,<sp/>10,<sp/>12,<sp/>14,<sp/>16]</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.for_each_index(range,<sp/>[](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each_by_index(range,<sp/>[](<ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>iterate<sp/>each<sp/>index<sp/>in<sp/>the<sp/>subrange</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=range.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;range.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=range.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;iterate<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>i);</highlight></codeline>
@@ -3732,8 +3732,8 @@ The task spawns asynchronous tasks to parallel sort elements in the range <compu
       <member refid="classtf_1_1FlowBuilder_1a95fa2719fa7bbe7d171cf474ddb06726" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>find_if_not</name></member>
       <member refid="classtf_1_1FlowBuilder_1a67d023d5493da1594a1d2eaea89da179" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>for_each</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a2582a216d54dacca2b7022ea7e89452a" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>for_each_by_index</name></member>
       <member refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>for_each_index</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1FlowBuilder_1a0b589a5bbf9b18e6484fa9e554d39a39" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>inclusive_scan</name></member>
       <member refid="classtf_1_1FlowBuilder_1a90f3d9b9d6fcf4df8e7d7878dfdd130d" prot="public" virt="non-virtual"><scope>tf::FlowBuilder</scope><name>linearize</name></member>

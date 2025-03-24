@@ -56,7 +56,7 @@ taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
 
 // Approach 2: initialize data2 using tf::IndexRange
 tf::IndexRange<int> range(0, 100, 1);
-taskflow.for_each_index(range, [&](tf::IndexRange<int>& subrange){
+taskflow.for_each_by_index(range, [&](tf::IndexRange<int>& subrange){
   for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
     data2[i] = 10;
   }

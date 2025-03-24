@@ -21,8 +21,8 @@ void for_each(int N) {
   executor.run(taskflow).get();
 }
 
-// Procedure: for_each_index
-void for_each_index(int N) {
+// Procedure: for_each_by_index
+void for_each_by_index(int N) {
 
   tf::Executor executor;
   tf::Taskflow taskflow;
@@ -37,9 +37,9 @@ void for_each_index(int N) {
   // [0, N) with a step size of 2 using tf::IndexRange
   tf::IndexRange<int> range(0, N, 2);
   
-  taskflow.for_each_index(range, [](tf::IndexRange<int> subrange) {
+  taskflow.for_each_by_index(range, [](tf::IndexRange<int> subrange) {
     for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
-      printf("for_each_index on index (subrange): %d\n", i);
+      printf("for_each_by_index on index (subrange): %d\n", i);
     }
   });
   
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
   }
 
   for_each(std::atoi(argv[1]));
-  for_each_index(std::atoi(argv[1]));
+  for_each_by_index(std::atoi(argv[1]));
 
   return 0;
 }
