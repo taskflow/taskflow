@@ -204,14 +204,14 @@ inline void AtomicNotifierV2::prepare_wait(Waiter* waiter) noexcept {
 }
 
 inline void AtomicNotifierV2::cancel_wait(Waiter*) noexcept {
-  _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
+  _state.fetch_sub(WAITER_INC, std::memory_order_seq_cst);
 }
 
 inline void AtomicNotifierV2::commit_wait(Waiter* waiter) noexcept {
-  uint64_t prev = _state.load(std::memory_order_seq_cst);
+  uint64_t prev = _state.load(std::memory_order_acquire);
   while((prev >> EPOCH_SHIFT) == waiter->epoch) {
-    _state.wait(prev, std::memory_order_seq_cst); 
-    prev = _state.load(std::memory_order_seq_cst);
+    _state.wait(prev, std::memory_order_acquire); 
+    prev = _state.load(std::memory_order_acquire);
   }
   // memory_order_relaxed would suffice for correctness, but the faster
   // #waiters gets to 0, the less likely it is that we'll do spurious wakeups
