@@ -109,19 +109,6 @@
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1054" column="19" bodyfile="taskflow/core/executor.hpp" bodystart="1054" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Executor_1a321f9b72162b9f5d4ba46d829af985cc" prot="private" static="no" mutable="no">
-        <type>Latch</type>
-        <definition>Latch tf::Executor::_latch</definition>
-        <argsstring></argsstring>
-        <name>_latch</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1060" column="9" bodyfile="taskflow/core/executor.hpp" bodystart="1060" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="variable" id="classtf_1_1Executor_1a94357ea08db1859178f855b0b926b3de" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/thread/condition_variable" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::condition_variable</ref></type>
         <definition>std::condition_variable tf::Executor::_topology_cv</definition>
@@ -3199,7 +3186,6 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1aa7ccdd2724a8782e04d8a19567912e67" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_invoke_runtime_task_impl</name></member>
       <member refid="classtf_1_1Executor_1ac243d2a08b5a4a75dd440dc063b886ce" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_invoke_static_task</name></member>
       <member refid="classtf_1_1Executor_1a726a11d174f98f4200e0022a17ece959" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_invoke_subflow_task</name></member>
-      <member refid="classtf_1_1Executor_1a321f9b72162b9f5d4ba46d829af985cc" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_latch</name></member>
       <member refid="classtf_1_1Executor_1ab36f7f886f9a6a9ad67ce919ca39d688" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_notifier</name></member>
       <member refid="classtf_1_1Executor_1a9e38edfbc967dd3f5ca6f7a115f95ed7" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_num_topologies</name></member>
       <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_observer_epilogue</name></member>

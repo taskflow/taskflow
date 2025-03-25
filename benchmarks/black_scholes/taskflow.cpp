@@ -4,7 +4,7 @@
 
 void bs_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   auto init = taskflow.placeholder();

@@ -51,7 +51,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_1_pipe(
   unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -74,7 +74,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_2_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -101,7 +101,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_3_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -129,7 +129,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_4_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -158,7 +158,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_5_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -188,7 +188,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_6_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -219,7 +219,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_7_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -251,7 +251,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_8_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -284,7 +284,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_9_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -318,7 +318,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_10_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -354,7 +354,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_11_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -390,7 +390,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_12_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -427,7 +427,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_13_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -465,7 +465,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_14_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -504,7 +504,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_15_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,
@@ -544,7 +544,7 @@ std::chrono::microseconds parallel_pipeline_taskflow_16_pipes(
   std::string pipes, unsigned num_lines, unsigned num_threads, size_t size) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   auto beg = std::chrono::high_resolution_clock::now();
   tf::DataPipeline pl(num_lines,

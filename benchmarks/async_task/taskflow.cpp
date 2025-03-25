@@ -4,7 +4,7 @@
 // async_task computing
 void async_task_taskflow(unsigned num_threads, size_t num_tasks) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   for(size_t i=0; i<num_tasks; i++) {
     executor.silent_async(func);

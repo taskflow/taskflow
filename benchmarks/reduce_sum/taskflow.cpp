@@ -4,7 +4,7 @@
 
 void reduce_sum_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   double result = 0.0;

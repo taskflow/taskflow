@@ -4,7 +4,7 @@
 
 void for_each_taskflow(size_t num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   tf::IndexRange<size_t> range(0, vec.size(), 1);

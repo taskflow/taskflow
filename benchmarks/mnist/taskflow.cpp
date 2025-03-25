@@ -3,7 +3,7 @@
 
 void run_taskflow(MNIST& D, unsigned num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   std::vector<tf::Task> forward_tasks;

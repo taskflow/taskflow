@@ -81,6 +81,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_summary">
 <title>Release Summary</title>
+<para>This release improves the scheduling performance via a better work-stealing threshold tuning and a constrained decentralized buffer.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_new_features">
 <title>New Features</title>
@@ -89,7 +90,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>improved work-stealing loop with an adaptive breaking strategy</para>
 </listitem><listitem><para>improved shut-down signal detection using decentralized variables</para>
-</listitem><listitem><para>fixed MSVC compilation warnings due to signed conversion on sort</para>
 </listitem><listitem><para>added debug mode for the windows CI to GitHub actions</para>
 </listitem><listitem><para>added index range-based parallel-for algorithm (<ulink url="https://github.com/taskflow/taskflow/issues/551">#551</ulink>)</para>
 </listitem></itemizedlist>
@@ -133,6 +133,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;double&gt;</ref>()</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
+<para><itemizedlist>
+<listitem><para>added <computeroutput>static</computeroutput> keyword to the executor creation in taskflow benchmarks</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 <sect2 id="release-3-10-0_1release-3-10-0_utilities">
 <title>Utilities</title>
@@ -147,10 +151,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-10-0_1release-3-10-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed the compilation error of template deduction on packaged_task (<ulink url="https://github.com/taskflow/taskflow/issues/657">#657</ulink>)</para>
+<listitem><para>fixed the compilation error of CLI11 due to version incompatibility (<ulink url="https://github.com/taskflow/taskflow/issues/672">#672</ulink>)</para>
+</listitem><listitem><para>fixed the compilation error of template deduction on packaged_task (<ulink url="https://github.com/taskflow/taskflow/issues/657">#657</ulink>)</para>
+</listitem><listitem><para>fixed the MSVC compilation error due to macro clash with std::min and std::max (<ulink url="https://github.com/taskflow/taskflow/issues/670">#670</ulink>)</para>
+</listitem><listitem><para>fixed the runtime error due to the use of latch in <ref refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kindref="member">tf::Executor::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/667">#667</ulink>)</para>
 </listitem></itemizedlist>
 </para>
-<para>Currently, there are no bug fixes.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_breaking_changes">
 <title>Breaking Changes</title>

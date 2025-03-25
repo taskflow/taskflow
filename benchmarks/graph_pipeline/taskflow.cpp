@@ -74,7 +74,7 @@ std::chrono::microseconds graph_pipeline_taskflow_1_pipe(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -95,7 +95,7 @@ std::chrono::microseconds graph_pipeline_taskflow_2_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -116,7 +116,7 @@ std::chrono::microseconds graph_pipeline_taskflow_3_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -138,7 +138,7 @@ std::chrono::microseconds graph_pipeline_taskflow_4_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -161,7 +161,7 @@ std::chrono::microseconds graph_pipeline_taskflow_5_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -185,7 +185,7 @@ std::chrono::microseconds graph_pipeline_taskflow_6_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -210,7 +210,7 @@ std::chrono::microseconds graph_pipeline_taskflow_7_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -238,7 +238,7 @@ std::chrono::microseconds graph_pipeline_taskflow_8_pipes(
   //outputfile.open("./tf_result.txt", std::ofstream::app);
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -268,7 +268,7 @@ std::chrono::microseconds graph_pipeline_taskflow_9_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -296,7 +296,7 @@ std::chrono::microseconds graph_pipeline_taskflow_10_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -326,7 +326,7 @@ std::chrono::microseconds graph_pipeline_taskflow_11_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -356,7 +356,7 @@ std::chrono::microseconds graph_pipeline_taskflow_12_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -387,7 +387,7 @@ std::chrono::microseconds graph_pipeline_taskflow_13_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -419,7 +419,7 @@ std::chrono::microseconds graph_pipeline_taskflow_14_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -452,7 +452,7 @@ std::chrono::microseconds graph_pipeline_taskflow_15_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -486,7 +486,7 @@ std::chrono::microseconds graph_pipeline_taskflow_16_pipes(
   LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 

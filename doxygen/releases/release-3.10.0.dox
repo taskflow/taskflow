@@ -36,6 +36,8 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-10-0_summary Release Summary
 
+This release improves the scheduling performance via a better work-stealing threshold tuning and
+a constrained decentralized buffer.
 
 @section release-3-10-0_new_features New Features
 
@@ -43,7 +45,6 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 + improved work-stealing loop with an adaptive breaking strategy
 + improved shut-down signal detection using decentralized variables
-+ fixed MSVC compilation warnings due to signed conversion on sort
 + added debug mode for the windows CI to GitHub actions
 + added index range-based parallel-for algorithm ([#551](https://github.com/taskflow/taskflow/issues/551))
 
@@ -88,6 +89,8 @@ taskflow.reduce_by_index(
 );
 @endcode
 
++ added `static` keyword to the executor creation in taskflow benchmarks
+
 @subsection release-3-10-0_utilities Utilities
 
 + added tf::IndexRange for index range-based parallel-for algorithm
@@ -96,9 +99,10 @@ taskflow.reduce_by_index(
 
 @section release-3-10-0_bug_fixes Bug Fixes 
 
++ fixed the compilation error of CLI11 due to version incompatibility ([#672](https://github.com/taskflow/taskflow/issues/672))
 + fixed the compilation error of template deduction on packaged_task ([#657](https://github.com/taskflow/taskflow/issues/657))
-
-Currently, there are no bug fixes.
++ fixed the MSVC compilation error due to macro clash with std::min and std::max ([#670](https://github.com/taskflow/taskflow/issues/670)) 
++ fixed the runtime error due to the use of latch in tf::Executor::Executor ([#667](https://github.com/taskflow/taskflow/issues/667))
 
 @section release-3-10-0_breaking_changes Breaking Changes
 

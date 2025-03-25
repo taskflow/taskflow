@@ -5,7 +5,8 @@
 // matrix_multiplication_taskflow
 void matrix_multiplication_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
+
   tf::Taskflow taskflow;
 
   auto init_a = taskflow.for_each_index(0, N, 1, [&] (int i) {

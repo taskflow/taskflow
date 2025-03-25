@@ -69,6 +69,7 @@ void matrix_multiplication_omp(unsigned nthreads) {
 
       // Task 4: Matrix multiplication (depends on a, b, and c)
       #pragma omp task depend(in: a, b, c)
+      #pragma omp parallel for
       for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
           for (int k = 0; k < N; ++k) {
