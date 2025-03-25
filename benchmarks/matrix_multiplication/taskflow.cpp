@@ -35,7 +35,7 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
   });
 
 
-  comp_c.succeed(init_c, init_b, init_a);
+  comp_c.succeed(init_a, init_b, init_c);
 
   executor.run(taskflow).get();
 

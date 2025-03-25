@@ -1054,10 +1054,10 @@ class Executor {
   DefaultNotifier _notifier;
 
 #if __cplusplus >= TF_CPP20
-  std::latch _latch;
+  //std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
 #else
-  Latch _latch;
+  //Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
@@ -1135,7 +1135,7 @@ class Executor {
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _workers         (N),
   _notifier        (N),
-  _latch           (N+1),
+  //_latch           (N+1),
   _buffers        (N),
   _worker_interface(std::move(wix)) {
 
@@ -1226,7 +1226,7 @@ inline void Executor::_spawn(size_t N) {
       pt::this_worker = &w;
 
       // synchronize with the main thread to ensure all worker data has been set
-      _latch.arrive_and_wait(); 
+      //_latch.arrive_and_wait(); 
       
       // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
@@ -1272,7 +1272,7 @@ inline void Executor::_spawn(size_t N) {
     });
   } 
 
-  _latch.arrive_and_wait();
+  //_latch.arrive_and_wait();
 }
 
 // Function: _corun_until
