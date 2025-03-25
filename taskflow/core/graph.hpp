@@ -333,9 +333,6 @@ class Node {
   
   std::exception_ptr _exception_ptr {nullptr};
 
-  // free list
-  //Node* _freelist_next{nullptr};
-
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _is_preempted() const;

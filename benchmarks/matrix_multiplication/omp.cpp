@@ -7,75 +7,78 @@ void matrix_multiplication_omp(unsigned nthreads) {
 
   omp_set_num_threads(nthreads);
 
-  int i, j, k;
+  //int i, j, k;
 
-  #pragma omp parallel for private(i, j)
-  for(i=0; i<N; ++i) {
-    for(j=0; j<N; j++) {
-      a[i][j] = i + j;
-    }
-  }
-
-  #pragma omp parallel for private(i, j)
-  for(i=0; i<N; ++i) {
-    for(j=0; j<N; j++) {
-      b[i][j] = i * j;
-    }
-  }
-
-  #pragma omp parallel for private(i, j)
-  for(i=0; i<N; ++i) {
-    for(j=0; j<N; j++) {
-      c[i][j] = 0;
-    }
-  }
-
-  #pragma omp parallel for private(i, j, k)
-  for(i=0; i<N; ++i) {
-    for(j=0; j<N; j++) {
-      for (k=0; k<N; k++) {
-        c[i][j] += a[i][k] * b[k][j];
-      }
-    }
-  }
-
-  //int edge;
-
-  //#pragma omp parallel shared(a, b, c, nthreads) private(i, j, k)
-  //{
-  //  #pragma omp single private(i, j)
-  //  for(i = 0; i<N; i++) {
-  //    #pragma omp task private(j) firstprivate(i) depend(out: edge)
-  //    for (j=0; j<N; j++)
-  //      a[i][j]= i+j;
+  //#pragma omp parallel for private(i, j)
+  //for(i=0; i<N; ++i) {
+  //  for(j=0; j<N; j++) {
+  //    a[i][j] = i + j;
   //  }
+  //}
 
-  //  #pragma omp single private(i, j)
-  //  for(i = 0; i<N; i++) {
-  //    #pragma omp task private(j) firstprivate(i) depend(out: edge)
-  //    for (j=0; j<N; j++)
-  //      b[i][j]= i*j;
+  //#pragma omp parallel for private(i, j)
+  //for(i=0; i<N; ++i) {
+  //  for(j=0; j<N; j++) {
+  //    b[i][j] = i * j;
   //  }
+  //}
 
-  //  #pragma omp single private(i, j)
-  //  for(i = 0; i<N; i++) {
-  //    #pragma omp task private(j) firstprivate(i) depend(out: edge)
-  //    for (j=0; j<N; j++)
-  //      c[i][j]= 0;
+  //#pragma omp parallel for private(i, j)
+  //for(i=0; i<N; ++i) {
+  //  for(j=0; j<N; j++) {
+  //    c[i][j] = 0;
   //  }
+  //}
 
-  //  #pragma omp single private(i, j)
-  //  for(i = 0; i<N; i++) {
-  //    #pragma omp task private(j, k) firstprivate(i) depend(in: edge)
-  //    for(j=0; j<N; j++) {
-  //      for (k=0; k<N; k++) {
-  //        c[i][j] += a[i][k] * b[k][j];
-  //      }
+  //#pragma omp parallel for private(i, j, k)
+  //for(i=0; i<N; ++i) {
+  //  for(j=0; j<N; j++) {
+  //    for (k=0; k<N; k++) {
+  //      c[i][j] += a[i][k] * b[k][j];
   //    }
   //  }
   //}
 
-  //std::cout << reduce_sum() << std::endl;
+  #pragma omp parallel
+  {
+    #pragma omp single
+    {
+      // Task 1: Initialize a[][]
+      #pragma omp task depend(out: a)
+      for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+          a[i][j] = i + j;
+        }
+      }
+
+      // Task 2: Initialize b[][]
+      #pragma omp task depend(out: b)
+      for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+          b[i][j] = i * j;
+        }
+      }
+
+      // Task 3: Initialize c[][]
+      #pragma omp task depend(out: c)
+      for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+          c[i][j] = 0;
+        }
+      }
+
+      // Task 4: Matrix multiplication (depends on a, b, and c)
+      #pragma omp task depend(in: a, b, c)
+      for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+          for (int k = 0; k < N; ++k) {
+            c[i][j] += a[i][k] * b[k][j];
+          }
+        }
+      }
+    } // single
+  } // parallel
+
 }
 
 std::chrono::microseconds measure_time_omp(unsigned num_threads) {

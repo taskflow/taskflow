@@ -8,8 +8,6 @@ namespace tf {
 template <typename B, typename E, typename C, typename P = DefaultPartitioner>
 auto make_for_each_task(B b, E e, C c, P part = P()) {
   
-  using namespace std::string_literals;
-
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
@@ -79,8 +77,6 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
 template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
 auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
   
-  using namespace std::string_literals;
-
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
   using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
