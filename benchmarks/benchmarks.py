@@ -20,8 +20,8 @@ def analyze(Y):
 ###########################################################
 def run(target, method, thread, round):
 
-  exe = ../build/benchmarks/bench_{target}
-  print(exe, '-m', method, '-t', thread, '-r', round)
+  exe = "../build/benchmarks/bench_" + target;
+  print(exe, '-m', method, '-t', thread, '-r', round);
 
   with open(tmp_file, "w") as ofs:
     subprocess.call(
@@ -64,7 +64,10 @@ def main():
              'binary_tree', 
              'linear_chain', 
              'matrix_multiplication',
-             'mnist'],
+             'black_scholes',
+             'mandelbrot',
+             'reduce_sum',
+             'for_each'],
     required=True
   )
 
