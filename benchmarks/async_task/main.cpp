@@ -25,6 +25,9 @@ void bench_async_task(
       else if(model == "omp") {
         runtime += measure_time_omp(num_threads, S).count();
       }
+      else if(model == "tbb") {
+        runtime += measure_time_tbb(num_threads, S).count();
+      }
       else assert(false);
     }
 
@@ -45,10 +48,10 @@ int main(int argc, char* argv[]) {
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
-  app.add_option("-m,--model", model, "model name std|omp|tf (default=tf)")
+  app.add_option("-m,--model", model, "model name std|omp|tf|tbb (default=tf)")
      ->check([] (const std::string& m) {
-        if(m != "std" && m != "omp" && m != "tf") {
-          return "model name should be \"std\", \"omp\", or \"tf\"";
+        if(m != "std" && m != "omp" && m != "tf" && m != "tbb") {
+          return "model name should be \"std\", \"omp\", \"tbb\", or \"tf\"";
         }
         return "";
      });

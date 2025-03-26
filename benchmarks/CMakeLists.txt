@@ -355,6 +355,7 @@ add_executable(
   bench_async_task
   ${TF_BENCHMARK_DIR}/async_task/main.cpp
   ${TF_BENCHMARK_DIR}/async_task/omp.cpp
+  ${TF_BENCHMARK_DIR}/async_task/tbb.cpp
   ${TF_BENCHMARK_DIR}/async_task/std.cpp
   ${TF_BENCHMARK_DIR}/async_task/taskflow.cpp
 )
@@ -376,7 +377,7 @@ if(TF_BUILD_CUDA)
 
   ## cuda benchmark 1: heterogeneous traversal
   add_executable(
-    hetero_traversal 
+    bench_hetero_traversal 
     ${TF_BENCHMARK_DIR}/hetero_traversal/main.cu
     ${TF_BENCHMARK_DIR}/hetero_traversal/taskflow.cu
     ${TF_BENCHMARK_DIR}/hetero_traversal/tbb.cu
@@ -384,11 +385,11 @@ if(TF_BUILD_CUDA)
   )
   
   target_include_directories(
-    hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11
+    bench_hetero_traversal PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11
   )
   
   target_link_libraries(
-    hetero_traversal 
+    bench_hetero_traversal 
     ${PROJECT_NAME} 
     Threads::Threads 
     ${TBB_IMPORTED_TARGETS} 
@@ -397,13 +398,13 @@ if(TF_BUILD_CUDA)
   )
   
   set_target_properties(
-    hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}"
+    bench_hetero_traversal PROPERTIES COMPILE_FLAGS "-Xcompiler ${OpenMP_CXX_FLAGS}"
   )
   
   # avoid cmake 3.18+ warning
   # we let nvcc to decide the flag if the architecture is not given
   if(NOT CUDA_ARCHITECTURES)
-    set_property(TARGET hetero_traversal PROPERTY CUDA_ARCHITECTURES OFF)
+    set_property(TARGET bench_hetero_traversal PROPERTY CUDA_ARCHITECTURES OFF)
   endif()
 
 

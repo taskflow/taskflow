@@ -64,7 +64,7 @@ constexpr bool is_pow2(const T& x) {
 /**
  * @brief computes the floor of the base-2 logarithm of a number using count-leading-zeros (CTL).
  *
- * This function efficiently calculates `log2(n)` for both 32-bit and 64-bit integers.
+ * This function efficiently calculates the floor of `log2(n)` for both 32-bit and 64-bit integers.
  *
  * @tparam T integer type (uint32_t or uint64_t).
  * @param n input number.
@@ -97,6 +97,19 @@ constexpr size_t floor_log2(T n) {
   }
   return log;
 #endif
+}
+
+/**
+@brief returns the floor of `log2(N)` at compile time 
+*/
+template<size_t N>
+constexpr size_t static_floor_log2() {
+  return (N < 2) ? 0 : 1 + static_floor_log2<N / 2>();
+  //auto log = 0;
+  //while (N >>= 1) {
+  //  ++log;
+  //}
+  //return log;
 }
 
 /**

@@ -17,9 +17,9 @@ namespace tf::detail {
 template<unsigned nt, typename T>
 struct cudaBlockReduce {
 
-  static const unsigned group_size = std::min(nt, CUDA_WARP_SIZE);
-  static const unsigned num_passes = log2(group_size);
-  static const unsigned num_items = nt / group_size;
+  static constexpr unsigned group_size = (std::min)(nt, CUDA_WARP_SIZE);
+  static constexpr unsigned num_passes = static_floor_log2<group_size>();
+  static constexpr unsigned num_items = nt / group_size;
 
   static_assert(
     nt && (0 == nt % CUDA_WARP_SIZE),
