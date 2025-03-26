@@ -5,6 +5,7 @@
 void async_task_omp(unsigned num_threads, size_t num_tasks) {
 
   omp_set_num_threads(num_threads);
+  std::atomic<size_t> counter(0);
 
   #pragma omp parallel
   {
@@ -12,9 +13,13 @@ void async_task_omp(unsigned num_threads, size_t num_tasks) {
     {
       for (size_t i=0; i<num_tasks; i++) {
         #pragma omp task
-        func();
+        func(counter);
       }  
     }  
+  }
+  
+  if(counter.load(std::memory_order_relaxed) != num_tasks) {
+    throw std::runtime_error("incorrect result");
   }
 }
 

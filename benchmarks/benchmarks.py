@@ -33,6 +33,7 @@ def run(target, method, thread, round):
   Y = []
   
   with open(tmp_file, "r") as ifs:
+    # first two lines are header
     ifs.readline()
     ifs.readline()
     for line in ifs:
@@ -67,7 +68,11 @@ def main():
              'black_scholes',
              'mandelbrot',
              'reduce_sum',
-             'for_each'],
+             'scan',
+             'sort',
+             'for_each',
+             'async_task',
+             'hetero_traversal'],
     required=True
   )
 
