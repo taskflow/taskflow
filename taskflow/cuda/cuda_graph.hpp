@@ -253,10 +253,6 @@ constexpr const char* to_string(cudaGraphNodeType type) {
   }
 }
 
-
-
-
-
 // ----------------------------------------------------------------------------
 // cudaGraph
 // ----------------------------------------------------------------------------
@@ -285,6 +281,13 @@ struct cudaGraphCreator {
     TF_CHECK_CUDA(cudaGraphCreate(&g, 0), "failed to create a CUDA native graph");
     return g;
   }
+  
+  /**
+  @brief return the given CUDA graph
+  */
+  cudaGraph_t operator () (cudaGraph_t graph) const {
+    return graph;
+  }
 };
 
 /**
@@ -305,9 +308,7 @@ struct cudaGraphDeleter {
    * @param g the CUDA graph to be destroyed
    */
   void operator () (cudaGraph_t g) const {
-    if(g) {
-      cudaGraphDestroy(g);
-    }
+    cudaGraphDestroy(g);
   }
 };
   
@@ -317,31 +318,36 @@ struct cudaGraphDeleter {
 
 @brief class to create a CUDA graph managed by C++ smart pointer
 
+@tparam Creator functor to create the stream (used in constructor)
+@tparam Deleter functor to delete the stream (used in destructor)
+
 This class wraps a `cudaGraph_t` handle with std::unique_ptr to ensure proper 
 resource management and automatic cleanup.
 */
-class cudaGraph :
-
-  public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, cudaGraphDeleter> {
+template <typename Creator, typename Deleter>
+class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, cudaGraphDeleter> {
+  
+  static_assert(std::is_pointer_v<cudaGraph_t>, "cudaGraph_t is not a pointer type");
 
   public:
   
   /**
   @brief base std::unique_ptr type
   */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, cudaGraphDeleter>;
+  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, Deleter>;
 
   /**
-  @brief constructs an RAII-styled object from the given CUDA exec
+  @brief constructs a `cudaGraph` object by passing the given arguments to the executable CUDA graph creator
 
-  Constructs a cudaGraph object from the given CUDA graph @c native.
+  Constructs a `cudaGraph` object by passing the given arguments to the executable CUDA graph creator
+
+  @param args arguments to pass to the executable CUDA graph creator
   */
-  explicit cudaGraph(cudaGraph_t exec) : base_type(exec, cudaGraphDeleter()) {}  
-  
-  /**
-  @brief constructs a cudaGraph object with a new CUDA graph
-  */
-  cudaGraph() : base_type(cudaGraphCreator()(), cudaGraphDeleter()) {}
+  template <typename... ArgsT>
+  explicit cudaGraphBase(ArgsT&& ... args) : base_type(
+    Creator{}(std::forward<ArgsT>(args)...), Deleter()
+  ) {
+  }  
 
   /**
   @brief queries the number of nodes in a native CUDA graph
@@ -365,29 +371,28 @@ class cudaGraph :
   */
   void dump(std::ostream& os);
     
-  /**
-  @brief instantiates an executable graph from this cudaflow
-  */
-  cudaGraphExec instantiate();
 };
 
 // query the number of nodes
-inline size_t cudaGraph::num_nodes() const {
-  size_t num_nodes;
+template <typename Creator, typename Deleter>
+size_t cudaGraphBase<Creator, Deleter>::num_nodes() const {
+  size_t n;
   TF_CHECK_CUDA(
-    cudaGraphGetNodes(this->get(), nullptr, &num_nodes),
+    cudaGraphGetNodes(this->get(), nullptr, &n),
     "failed to get native graph nodes"
   );
-  return num_nodes;
+  return n;
 }
 
 // query the emptiness
-inline bool cudaGraph::empty() const {
+template <typename Creator, typename Deleter>
+bool cudaGraphBase<Creator, Deleter>::empty() const {
   return num_nodes() == 0;
 }
 
 // query the number of edges
-inline size_t cudaGraph::num_edges() const {
+template <typename Creator, typename Deleter>
+size_t cudaGraphBase<Creator, Deleter>::num_edges() const {
   size_t num_edges;
   TF_CHECK_CUDA(
     cudaGraphGetEdges(this->get(), nullptr, nullptr, &num_edges),
@@ -472,7 +477,8 @@ inline size_t cudaGraph::num_edges() const {
 //}
 
 // dump the graph
-inline void cudaGraph::dump(std::ostream& os) {
+template <typename Creator, typename Deleter>
+void cudaGraphBase<Creator, Deleter>::dump(std::ostream& os) {
 
   // Generate a unique temporary filename in the system's temp directory using filesystem
   auto temp_path = std::filesystem::temp_directory_path() / "graph_";
@@ -494,15 +500,10 @@ inline void cudaGraph::dump(std::ostream& os) {
   }
 }
 
-// instantiate an executable cuda graph
-inline cudaGraphExec cudaGraph::instantiate() {
-  cudaGraphExec_t exec;
-  TF_CHECK_CUDA(
-    cudaGraphInstantiate(&exec, get(), nullptr, nullptr, 0),
-    "failed to create an executable graph"
-  );
-  return cudaGraphExec(exec);
-}
+/**
+@brief default smart pointer type to manage a `cudaGraph_t` object with unique ownership
+*/
+using cudaGraph = cudaGraphBase<cudaGraphCreator, cudaGraphDeleter>;
 
 // ----------------------------------------------------------------------------
 // cudaGraphExec
@@ -515,12 +516,19 @@ inline cudaGraphExec cudaGraph::instantiate() {
 This structure provides an overloaded function call operator to create a
 new executable CUDA graph using `cudaGraphCreate`. 
 */
-struct cudaGraphExecDeleter {
+struct cudaGraphExecCreator {
   /**
   @brief returns a null executable CUDA graph
   */
   cudaGraphExec_t operator () () const { 
     return nullptr;
+  }
+  
+  /**
+  @brief returns the given executable graph
+  */
+  cudaGraphExec_t operator () (cudaGraphExec_t exec) const {
+    return exec;
   }
 };
   
@@ -540,56 +548,70 @@ struct cudaGraphExecDeleter {
    * @param executable the executable CUDA graph to be destroyed
    */
   void operator () (cudaGraphExec_t executable) const {
-    if(executable) {
-      cudaGraphExecDestroy(executable);
-    }
+    cudaGraphExecDestroy(executable);
   }
 };
 
 /**
-@class cudaGraphExec
+@class cudaGraphExecBase
 
 @brief class to create an executable CUDA graph managed by C++ smart pointer
+
+@tparam Creator functor to create the stream (used in constructor)
+@tparam Deleter functor to delete the stream (used in destructor)
 
 This class wraps a `cudaGraphExec_t` handle with `std::unique_ptr` to ensure proper 
 resource management and automatic cleanup.
 */
-class cudaGraphExec : 
-
-  public std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, cudaGraphExecDeleter> {
+template <typename Creator, typename Deleter>
+class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, Deleter> {
+  
+  static_assert(std::is_pointer_v<cudaGraphExec_t>, "cudaGraphExec_t is not a pointer type");
 
   public:
   
   /**
   @brief base std::unique_ptr type
   */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, cudaGraphExecDeleter>;
+  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, Deleter>;
 
   /**
-  @brief constructs an RAII-styled object from the given CUDA exec
+  @brief constructs a `cudaGraphExec` object by passing the given arguments to the executable CUDA graph creator
 
-  Constructs a cudaGraphExec object which owns @c exec.
-  */
-  explicit cudaGraphExec(cudaGraphExec_t exec) : base_type(exec, cudaGraphExecDeleter()) {}  
+  Constructs a `cudaGraphExec` object by passing the given arguments to the executable CUDA graph creator
 
-  /**
-  @brief default constructor
-  
-  creates an empty `cudaGraphExec` instance.
+  @param args arguments to pass to the executable CUDA graph creator
   */
-  cudaGraphExec() = default;
+  template <typename... ArgsT>
+  explicit cudaGraphExecBase(ArgsT&& ... args) : base_type(
+    Creator{}(std::forward<ArgsT>(args)...), Deleter()
+  ) {
+  }  
 
   /** 
   @brief runs the executable graph via the given CUDA stream
   */
-  void run(cudaStream_t stream) {
-    TF_CHECK_CUDA(
-      cudaGraphLaunch(this->get(), stream), "failed to launch a CUDA executable graph"
-    );  
+  template <typename Stream>
+  void run(Stream& stream) {
+    // native cudaStream_t object
+    if constexpr (std::is_same_v<Stream, cudaStream_t>) {
+      TF_CHECK_CUDA(
+        cudaGraphLaunch(this->get(), stream), "failed to launch a CUDA executable graph"
+      );  
+    }
+    // cudaStreamBase object
+    else {
+      TF_CHECK_CUDA(
+        cudaGraphLaunch(this->get(), stream.get()), "failed to launch a CUDA executable graph"
+      );  
+    }
   }
 };
 
-
+/**
+@brief default smart pointer type to manage a `cudaGraphExec_t` object with unique ownership
+*/
+using cudaGraphExec = cudaGraphExecBase<cudaGraphExecCreator, cudaGraphExecDeleter>;
 
 }  // end of namespace tf -----------------------------------------------------
 

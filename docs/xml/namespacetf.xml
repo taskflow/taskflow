@@ -73,12 +73,12 @@
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
-    <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
+    <innerclass refid="structtf_1_1cudaEventCreator" prot="public">tf::cudaEventCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaEventDeleter" prot="public">tf::cudaEventDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaEventBase" prot="public">tf::cudaEventBase</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamCreator" prot="public">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="public">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaStreamBase" prot="public">tf::cudaStreamBase</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
     <innerclass refid="classtf_1_1cudaFlowOptimizerBase" prot="private">tf::cudaFlowOptimizerBase</innerclass>
@@ -302,6 +302,34 @@
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="820" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="820" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1a19f35245e6334fae46dccb73f27417bf" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaEventBase" kindref="compound">cudaEventBase</ref>&lt; <ref refid="structtf_1_1cudaEventCreator" kindref="compound">cudaEventCreator</ref>, <ref refid="structtf_1_1cudaEventDeleter" kindref="compound">cudaEventDeleter</ref> &gt;</type>
+        <definition>using tf::cudaEvent = typedef cudaEventBase&lt;cudaEventCreator, cudaEventDeleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>cudaEvent</name>
+        <briefdescription>
+<para>default smart pointer type to manage a <computeroutput>cudaEvent_t</computeroutput> object with unique ownership </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="104" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1a45b31698cd7ee9a4dcd55465d1e8942a" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaStreamBase" kindref="compound">cudaStreamBase</ref>&lt; <ref refid="structtf_1_1cudaStreamCreator" kindref="compound">cudaStreamCreator</ref>, <ref refid="structtf_1_1cudaStreamDeleter" kindref="compound">cudaStreamDeleter</ref> &gt;</type>
+        <definition>using tf::cudaStream = typedef cudaStreamBase&lt;cudaStreamCreator, cudaStreamDeleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>cudaStream</name>
+        <briefdescription>
+<para>default smart pointer type to manage a <computeroutput>cudaStream_t</computeroutput> object with unique ownership </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="281" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="281" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>

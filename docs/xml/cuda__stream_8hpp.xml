@@ -2,10 +2,10 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__stream_8hpp" kind="file" language="C++">
     <compoundname>cuda_stream.hpp</compoundname>
-    <includes local="yes">cuda_object.hpp</includes>
+    <includes local="yes">cuda_error.hpp</includes>
     <incdepgraph>
       <node id="2">
-        <label>cuda_object.hpp</label>
+        <label>cuda_error.hpp</label>
       </node>
       <node id="1">
         <label>taskflow/cuda/cuda_stream.hpp</label>
@@ -14,12 +14,12 @@
         </childnode>
       </node>
     </incdepgraph>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
-    <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
+    <innerclass refid="structtf_1_1cudaEventCreator" prot="public">tf::cudaEventCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaEventDeleter" prot="public">tf::cudaEventDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaEventBase" prot="public">tf::cudaEventBase</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamCreator" prot="public">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="public">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaStreamBase" prot="public">tf::cudaStreamBase</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <briefdescription>
 <para>CUDA stream utilities include file. </para>

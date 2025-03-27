@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="structtf_1_1cudaEventDeleter" kind="struct" language="C++" prot="private">
+  <compounddef id="structtf_1_1cudaEventDeleter" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaEventDeleter</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaEventDeleter_1afe6ff663a2e030397316c12e690d2b82" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -13,19 +14,21 @@
           <declname>event</declname>
         </param>
         <briefdescription>
+<para>deletes the given <computeroutput>cudaEvent_t</computeroutput> object using <computeroutput>cudaEventDestroy</computeroutput> </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="187" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="187" bodyend="191"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="56" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="56" bodyend="58"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
+<para>functor to delete a <computeroutput>cudaEvent_t</computeroutput> object </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="186" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="186" bodyend="192"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="51" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="51" bodyend="59"/>
     <listofallmembers>
       <member refid="structtf_1_1cudaEventDeleter_1afe6ff663a2e030397316c12e690d2b82" prot="public" virt="non-virtual"><scope>tf::cudaEventDeleter</scope><name>operator()</name></member>
     </listofallmembers>

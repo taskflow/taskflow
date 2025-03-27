@@ -80,14 +80,14 @@
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a1db9e88c4cdbeab9b8b9973d86aff603">
-              <span class="m-doc-wrap-bumper"><a href="#a1db9e88c4cdbeab9b8b9973d86aff603" class="m-doc-self">cudaFlow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a1db9e88c4cdbeab9b8b9973d86aff603" class="m-doc">cudaFlow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>constructs a cudaFlow</dd>
             <dt id="a828c3ab275521672e4ec6c78d3a9ee62">
               <span class="m-doc-wrap-bumper"><a href="#a828c3ab275521672e4ec6c78d3a9ee62" class="m-doc-self">~cudaFlow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>destroys the cudaFlow and its associated native CUDA graph and executable graph</dd>
+            <dd>destroys the cudaFlow</dd>
           </dl>
         </section>
         <section id="pub-methods">
@@ -99,8 +99,8 @@
             <dd>creates a no-operation task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#adbf30475e6d96ffeca029c8ed7f728c1" class="m-doc">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              void*) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a01b74e38274b136c8fdcb42d1faa8a15" class="m-doc">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              void* user_data) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>creates a host task that runs a callable on the host</dd>
             <dt>
@@ -197,14 +197,10 @@
               size_t num)</span>
             </dt>
             <dd>updates parameters of a memcpy task to a copy task</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#ae6810f7de27e5a347331aacfce67bea1" class="m-doc">run</a>(</span><span class="m-doc-wrap">cudaStream_t stream)</span>
+            <dt id="aac90cf4e1ffc8ae4b4cc16ce6e67e405">
+              <span class="m-doc-wrap-bumper">auto <a href="#aac90cf4e1ffc8ae4b4cc16ce6e67e405" class="m-doc-self">instantiate</a>(</span><span class="m-doc-wrap">) -&gt; cudaGraphExec</span>
             </dt>
-            <dd>offloads the cudaFlow onto a GPU asynchronously via a stream</dd>
-            <dt id="acfbee67cff7dc7c6297c20c64f2e015c">
-              <span class="m-doc-wrap-bumper">auto <a href="#acfbee67cff7dc7c6297c20c64f2e015c" class="m-doc-self">native_graph</a>(</span><span class="m-doc-wrap">) -&gt; cudaGraph_t</span>
-            </dt>
-            <dd>acquires a pointer to the underlying CUDA graph</dd>
+            <dd>instantiates an executable graph from this cudaflow</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ac2906cb0002fc411a983d100a3d58d62" class="m-doc">single_task</a>(</span><span class="m-doc-wrap">C c) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
@@ -299,6 +295,13 @@
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a1db9e88c4cdbeab9b8b9973d86aff603"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1db9e88c4cdbeab9b8b9973d86aff603" class="m-doc-self">cudaFlow</a>(</span><span class="m-doc-wrap">) <span class="m-label m-info">defaulted</span></span></span>
+            </h3>
+            <p>constructs a cudaFlow</p>
+<p>A <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> is associated with a tf::cudaGraph that manages a native CUDA graph.</p>
+          </div></section>
           <section class="m-doc-details" id="a30b2e107cb2c90a37f467b28d1b42a74"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a30b2e107cb2c90a37f467b28d1b42a74" class="m-doc-self">noop</a>(</span><span class="m-doc-wrap">)</span></span>
@@ -314,13 +317,13 @@
             </table>
 <p>An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of <code>n</code> nodes with a barrier between them can be represented using an empty node and <code>2*n</code> dependency edges, rather than no empty node and <code>n^2</code> dependency edges.</p>
           </div></section>
-          <section class="m-doc-details" id="adbf30475e6d96ffeca029c8ed7f728c1"><div>
+          <section class="m-doc-details" id="a01b74e38274b136c8fdcb42d1faa8a15"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename C&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adbf30475e6d96ffeca029c8ed7f728c1" class="m-doc-self">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
-              void*)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a01b74e38274b136c8fdcb42d1faa8a15" class="m-doc-self">host</a>(</span><span class="m-doc-wrap">C&amp;&amp; callable,
+              void* user_data)</span></span>
             </h3>
             <p>creates a host task that runs a callable on the host</p>
             <table class="m-table m-fullwidth m-flat">
@@ -341,6 +344,10 @@
                   <td>callable</td>
                   <td>a callable object with neither arguments nor return (i.e., constructible from <code>std::function&lt;void()&gt;</code>)</td>
                 </tr>
+                <tr>
+                  <td>user_data</td>
+                  <td>a pointer to the user data</td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr>
@@ -360,7 +367,7 @@
               C&amp;&amp; callable)</span></span>
             </h3>
             <p>updates parameters of a host task</p>
-<p>The method is similar to <a href="#adbf30475e6d96ffeca029c8ed7f728c1" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a> but operates on a task of type tf::cudaTaskType::HOST.</p>
+<p>The method is similar to <a href="#a01b74e38274b136c8fdcb42d1faa8a15" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a> but operates on a task of type tf::cudaTaskType::HOST.</p>
           </div></section>
           <section class="m-doc-details" id="a68f666503d13a7b80fb7399fb2f0c153"><div>
             <h3>
@@ -694,24 +701,6 @@
             </h3>
             <p>updates parameters of a memcpy task to a copy task</p>
 <p>The method is similar to <a href="#af03e04771b655f9e629eb4c22e19b19f" class="m-doc">tf::<wbr />cudaFlow::<wbr />copy</a> but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
-          </div></section>
-          <section class="m-doc-details" id="ae6810f7de27e5a347331aacfce67bea1"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae6810f7de27e5a347331aacfce67bea1" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">cudaStream_t stream)</span></span>
-            </h3>
-            <p>offloads the cudaFlow onto a GPU asynchronously via a stream</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">stream</td>
-                  <td>stream for performing this operation</td>
-                </tr>
-              </tbody>
-            </table>
-<p>Offloads the present cudaFlow onto a GPU asynchronously via the given stream.</p><p>An offloaded cudaFlow forces the underlying graph to be instantiated. After the instantiation, you should not modify the graph topology but update node parameters.</p>
           </div></section>
           <section class="m-doc-details" id="ac2906cb0002fc411a983d100a3d58d62"><div>
             <h3>

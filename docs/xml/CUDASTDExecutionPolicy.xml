@@ -42,7 +42,7 @@
 </programlisting></para>
 <para>By default, the execution policy object is associated with the CUDA <emphasis>default stream</emphasis> (i.e., 0). Default stream can incur significant overhead due to the global synchronization. You can associate an execution policy with another stream as shown below:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>a<sp/>RAII-styled<sp/>stream<sp/>object</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream1,<sp/>stream2;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream1,<sp/>stream2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assign<sp/>a<sp/>stream<sp/>to<sp/>a<sp/>policy<sp/>at<sp/>construction<sp/>time</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy&lt;512, 11&gt;</ref><sp/>policy(stream1);</highlight></codeline>

@@ -26,7 +26,7 @@
 <sect1 id="CUDASTDSingleTask_1CUDASTDSingleTaskRunATaskWithASingleThread">
 <title>Run a Task with a Single Thread</title>
 <para>You can launch a kernel with only one GPU thread running it, which is handy when you want to set up a single or a few variables that do not need multiple threads. The following example creates a single-task kernel that sets a device variable to <computeroutput>1</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStream" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>single-task<sp/>kernel<sp/>asynchronously<sp/>through<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
@@ -35,7 +35,7 @@
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>kernel<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 <para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. </para>
 </sect1>

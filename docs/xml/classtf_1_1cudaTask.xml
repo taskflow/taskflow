@@ -260,11 +260,11 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_task.hpp" line="75" column="12" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="143" bodyend="147"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaTask_1a8fe3a77426f3fdc186fef1c838cf5f35" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaTask_1a4dd9aacbd1ab16cf31e680938bd6d196" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::cudaTask::num_dependencies</definition>
+        <definition>size_t tf::cudaTask::num_predecessors</definition>
         <argsstring>() const</argsstring>
-        <name>num_dependencies</name>
+        <name>num_predecessors</name>
         <briefdescription>
 <para>queries the number of dependents </para>
         </briefdescription>
@@ -356,7 +356,7 @@
       <member refid="classtf_1_1cudaTask_1a367cf46c1ea828de4502a2ddc805c094" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
       <member refid="classtf_1_1cudaTask_1a2e0fab31a5862dddacfdfc281d8f479b" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>cudaTask</name></member>
       <member refid="classtf_1_1cudaTask_1ad1198268d00b50c3c705a2c9826d5a64" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>dump</name></member>
-      <member refid="classtf_1_1cudaTask_1a8fe3a77426f3fdc186fef1c838cf5f35" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>num_dependencies</name></member>
+      <member refid="classtf_1_1cudaTask_1a4dd9aacbd1ab16cf31e680938bd6d196" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>num_predecessors</name></member>
       <member refid="classtf_1_1cudaTask_1a581673ad83a48a2d3b4f06f125043c32" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>num_successors</name></member>
       <member refid="classtf_1_1cudaTask_1aa48fa98a827ff71f8c3845a29f5e4d10" prot="private" virt="non-virtual"><scope>tf::cudaTask</scope><name>operator&lt;&lt;</name></member>
       <member refid="classtf_1_1cudaTask_1af17c570ca9a43ad71c4b626635ea9cbb" prot="public" virt="non-virtual"><scope>tf::cudaTask</scope><name>operator=</name></member>

@@ -60,7 +60,9 @@
                   <li>struct <a href="structtf_1_1cudaDeviceAllocator_1_1rebind.html" class="m-doc">rebind</a> <span class="m-doc">its member type <code>U</code> is the equivalent allocator type to allocate elements of type U</span></li>
                 </ul>
               </li>
-              <li>class <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> <span class="m-doc">class to create an RAII-styled wrapper over a native CUDA event</span></li>
+              <li>class <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing <code>cudaEvent_t</code></span></li>
+              <li>struct <a href="structtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a> <span class="m-doc">functor to create a <code>cudaEvent_t</code> object</span></li>
+              <li>struct <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a> <span class="m-doc">functor to delete a <code>cudaEvent_t</code> object</span></li>
               <li>class <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a> <span class="m-doc">class to define execution policy for CUDA standard algorithms</span></li>
               <li>class <a href="classtf_1_1cudaFlow.html" class="m-doc">cudaFlow</a> <span class="m-doc">class to create a cudaFlow task dependency graph</span></li>
               <li>class <a href="classtf_1_1cudaFlowCapturer.html" class="m-doc">cudaFlowCapturer</a> <span class="m-doc">class to create a cudaFlow graph using stream capture</span></li>
@@ -69,7 +71,9 @@
               <li>class <a href="classtf_1_1cudaFlowRoundRobinOptimizer.html" class="m-doc">cudaFlowRoundRobinOptimizer</a> <span class="m-doc">class to capture a CUDA graph using a round-robin algorithm</span></li>
               <li>class <a href="classtf_1_1cudaFlowSequentialOptimizer.html" class="m-doc">cudaFlowSequentialOptimizer</a> <span class="m-doc">class to capture a CUDA graph using a sequential stream</span></li>
               <li>class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a> <span class="m-doc">class to create an RAII-styled context switch</span></li>
-              <li>class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a> <span class="m-doc">class to create an RAII-styled wrapper over a native CUDA stream</span></li>
+              <li>class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing <code>cudaStream_t</code></span></li>
+              <li>struct <a href="structtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a> <span class="m-doc">functor to create a <code>cudaStream_t</code> object</span></li>
+              <li>struct <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a> <span class="m-doc">functor to delete a <code>cudaStream_t</code> object</span></li>
               <li>class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> <span class="m-doc">class to create a task handle over an internal node of a cudaFlow graph</span></li>
               <li class="m-doc-collapsible collapsed">
                 <a href="#" onclick="return toggle(this)">class</a> <a href="classtf_1_1cudaUSMAllocator.html" class="m-doc">cudaUSMAllocator</a> <span class="m-doc">class to create a unified shared memory (USM) allocator</span>

@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="structtf_1_1cudaEventCreator" kind="struct" language="C++" prot="private">
+  <compounddef id="structtf_1_1cudaEventCreator" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaEventCreator</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaEvent_t</type>
@@ -9,12 +10,13 @@
         <argsstring>() const</argsstring>
         <name>operator()</name>
         <briefdescription>
+<para>creates a new <computeroutput>cudaEvent_t</computeroutput> object using <computeroutput>cudaEventCreate</computeroutput> </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="167" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="167" bodyend="171"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="27" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="27" bodyend="31"/>
       </memberdef>
       <memberdef kind="function" id="structtf_1_1cudaEventCreator_1a94c304977d6ac96bd550bad52341b1fa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaEvent_t</type>
@@ -26,19 +28,21 @@
           <declname>flag</declname>
         </param>
         <briefdescription>
+<para>creates a new <computeroutput>cudaEvent_t</computeroutput> object using <computeroutput>cudaEventCreate</computeroutput> with the given <computeroutput>flag</computeroutput> </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="173" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="173" bodyend="180"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="36" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="36" bodyend="43"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
+<para>functor to create a <computeroutput>cudaEvent_t</computeroutput> object </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="165" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="165" bodyend="181"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="22" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="22" bodyend="44"/>
     <listofallmembers>
       <member refid="structtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
       <member refid="structtf_1_1cudaEventCreator_1a94c304977d6ac96bd550bad52341b1fa" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>

@@ -242,13 +242,31 @@
             </dt>
             <dd>class to create a unified shared memory (USM) allocator</dd>
             <dt>
-              class <a href="classtf_1_1cudaStream.html" class="m-doc">cudaStream</a>
+              struct <a href="structtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA stream</dd>
+            <dd>functor to create a <code>cudaEvent_t</code> object</dd>
             <dt>
-              class <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a>
+              struct <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA event</dd>
+            <dd>functor to delete a <code>cudaEvent_t</code> object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
+              class <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>
+            </dt>
+            <dd>class to create a smart pointer wrapper for managing <code>cudaEvent_t</code></dd>
+            <dt>
+              struct <a href="structtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a>
+            </dt>
+            <dd>functor to create a <code>cudaStream_t</code> object</dd>
+            <dt>
+              struct <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a>
+            </dt>
+            <dd>functor to delete a <code>cudaStream_t</code> object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
+              class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>
+            </dt>
+            <dd>class to create a smart pointer wrapper for managing <code>cudaStream_t</code></dd>
             <dt>
               class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>
             </dt>
@@ -323,6 +341,14 @@
               using <a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;
             </dt>
             <dd>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></dd>
+            <dt>
+              using <a href="#a19f35245e6334fae46dccb73f27417bf" class="m-doc">cudaEvent</a> = <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>&lt;<a href="structtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a>, <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a>&gt;
+            </dt>
+            <dd>default smart pointer type to manage a <code>cudaEvent_t</code> object with unique ownership</dd>
+            <dt>
+              using <a href="#a45b31698cd7ee9a4dcd55465d1e8942a" class="m-doc">cudaStream</a> = <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&lt;<a href="structtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a>, <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a>&gt;
+            </dt>
+            <dd>default smart pointer type to manage a <code>cudaStream_t</code> object with unique ownership</dd>
             <dt>
               using <a href="#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a> = <a href="classtf_1_1cudaExecutionPolicy.html" class="m-doc">cudaExecutionPolicy</a>&lt;512, 7&gt;
             </dt>
@@ -1013,6 +1039,20 @@
             </h3>
             <p>default partitioner set to <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">tf::<wbr />GuidedPartitioner</a></p>
 <p>Guided partitioning algorithm can achieve stable and decent performance for most parallel algorithms.</p>
+          </div></section>
+          <section class="m-doc-details" id="a19f35245e6334fae46dccb73f27417bf"><div>
+            <h3>
+              using tf::<wbr /><a href="#a19f35245e6334fae46dccb73f27417bf" class="m-doc-self">cudaEvent</a> = <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>&lt;<a href="structtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a>, <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a>&gt;
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__stream_8hpp.html">&lt;taskflow/cuda/cuda_stream.hpp&gt;</a></div>
+            </h3>
+            <p>default smart pointer type to manage a <code>cudaEvent_t</code> object with unique ownership</p>
+          </div></section>
+          <section class="m-doc-details" id="a45b31698cd7ee9a4dcd55465d1e8942a"><div>
+            <h3>
+              using tf::<wbr /><a href="#a45b31698cd7ee9a4dcd55465d1e8942a" class="m-doc-self">cudaStream</a> = <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&lt;<a href="structtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a>, <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a>&gt;
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__stream_8hpp.html">&lt;taskflow/cuda/cuda_stream.hpp&gt;</a></div>
+            </h3>
+            <p>default smart pointer type to manage a <code>cudaStream_t</code> object with unique ownership</p>
           </div></section>
           <section class="m-doc-details" id="a0e267ab3e1baeb1962f3b3a374de9553"><div>
             <h3>

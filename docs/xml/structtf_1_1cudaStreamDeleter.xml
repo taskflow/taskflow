@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="structtf_1_1cudaStreamDeleter" kind="struct" language="C++" prot="private">
+  <compounddef id="structtf_1_1cudaStreamDeleter" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaStreamDeleter</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaStreamDeleter_1a626619c00a871c7be86071fe262ce63e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -13,19 +14,21 @@
           <declname>stream</declname>
         </param>
         <briefdescription>
+<para>deletes the given <computeroutput>cudaStream_t</computeroutput> object </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="33" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="33" bodyend="37"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="144" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="144" bodyend="146"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
+<para>functor to delete a <computeroutput>cudaStream_t</computeroutput> object </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="32" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="32" bodyend="38"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="139" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="139" bodyend="147"/>
     <listofallmembers>
       <member refid="structtf_1_1cudaStreamDeleter_1a626619c00a871c7be86071fe262ce63e" prot="public" virt="non-virtual"><scope>tf::cudaStreamDeleter</scope><name>operator()</name></member>
     </listofallmembers>

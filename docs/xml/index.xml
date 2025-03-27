@@ -134,10 +134,9 @@
     <member refid="classtf_1_1cudaDeviceVector_1a20cc8bd1758927a4cc116d0ecd7b8fb5" kind="function"><name>cudaDeviceVector</name></member>
     <member refid="classtf_1_1cudaDeviceVector_1aa00033a24c55fe15527b073b9e43c1bf" kind="function"><name>operator=</name></member>
   </compound>
-  <compound refid="classtf_1_1cudaEvent" kind="class"><name>tf::cudaEvent</name>
-    <member refid="classtf_1_1cudaEvent_1ad0b23cb864f0c7acee306f7fe49a3c23" kind="function"><name>cudaEvent</name></member>
-    <member refid="classtf_1_1cudaEvent_1aef986b15a45d9992a31caa6e42e4e945" kind="function"><name>cudaEvent</name></member>
-    <member refid="classtf_1_1cudaEvent_1af6d6a9c4f98ae85927985a1f89cdeee1" kind="function"><name>cudaEvent</name></member>
+  <compound refid="classtf_1_1cudaEventBase" kind="class"><name>tf::cudaEventBase</name>
+    <member refid="classtf_1_1cudaEventBase_1a1f5a2987a83289bce0c40196a7dcebfd" kind="typedef"><name>base_type</name></member>
+    <member refid="classtf_1_1cudaEventBase_1a9e3a31b34936c0bb0d798c1316f02696" kind="function"><name>cudaEventBase</name></member>
   </compound>
   <compound refid="structtf_1_1cudaEventCreator" kind="struct"><name>tf::cudaEventCreator</name>
     <member refid="structtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" kind="function"><name>operator()</name></member>
@@ -171,7 +170,7 @@
     <member refid="classtf_1_1cudaFlow_1a1db9e88c4cdbeab9b8b9973d86aff603" kind="function"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a828c3ab275521672e4ec6c78d3a9ee62" kind="function"><name>~cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a30b2e107cb2c90a37f467b28d1b42a74" kind="function"><name>noop</name></member>
-    <member refid="classtf_1_1cudaFlow_1adbf30475e6d96ffeca029c8ed7f728c1" kind="function"><name>host</name></member>
+    <member refid="classtf_1_1cudaFlow_1a01b74e38274b136c8fdcb42d1faa8a15" kind="function"><name>host</name></member>
     <member refid="classtf_1_1cudaFlow_1a02e4e5cf7d03b9d087d6fbf54eb86bbf" kind="function"><name>host</name></member>
     <member refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kind="function"><name>kernel</name></member>
     <member refid="classtf_1_1cudaFlow_1a821117dd640807bb7ec114b46888dfb1" kind="function"><name>kernel</name></member>
@@ -185,8 +184,7 @@
     <member refid="classtf_1_1cudaFlow_1a39ed97c9142959c73d4c25c34d71bd5e" kind="function"><name>fill</name></member>
     <member refid="classtf_1_1cudaFlow_1af03e04771b655f9e629eb4c22e19b19f" kind="function"><name>copy</name></member>
     <member refid="classtf_1_1cudaFlow_1a6cf6ec1e85172fa99c16bf0beffc0562" kind="function"><name>copy</name></member>
-    <member refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kind="function"><name>run</name></member>
-    <member refid="classtf_1_1cudaFlow_1acfbee67cff7dc7c6297c20c64f2e015c" kind="function"><name>native_graph</name></member>
+    <member refid="classtf_1_1cudaFlow_1aac90cf4e1ffc8ae4b4cc16ce6e67e405" kind="function"><name>instantiate</name></member>
     <member refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1cudaFlow_1add2d364f38c72322d8e36bc0da0b98e4" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kind="function"><name>for_each</name></member>
@@ -340,16 +338,17 @@
   <compound refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4" kind="struct"><name>tf::cudaSharedMemory&lt; unsigned short &gt;</name>
     <member refid="structtf_1_1cudaSharedMemory_3_01unsigned_01short_01_4_1ab0d92965dd5347008f751cae4149cd58" kind="function"><name>get</name></member>
   </compound>
-  <compound refid="classtf_1_1cudaStream" kind="class"><name>tf::cudaStream</name>
-    <member refid="classtf_1_1cudaStream_1ab29390d447e334d4945caf78b24d6ca6" kind="function"><name>cudaStream</name></member>
-    <member refid="classtf_1_1cudaStream_1a922ed633cf0670b22aca1430e7a810b1" kind="function"><name>cudaStream</name></member>
-    <member refid="classtf_1_1cudaStream_1a1a81d6005e8d60ad082dba2303a8aa30" kind="function"><name>synchronize</name></member>
-    <member refid="classtf_1_1cudaStream_1ad98a025ff4306aa799e664a1e2aefd2e" kind="function"><name>begin_capture</name></member>
-    <member refid="classtf_1_1cudaStream_1a9c48388031655cc691b267de96516a66" kind="function"><name>end_capture</name></member>
-    <member refid="classtf_1_1cudaStream_1a8343c234b4a3040b59626dc70e81d767" kind="function"><name>record</name></member>
-    <member refid="classtf_1_1cudaStream_1a6bb195945f7a580bec6105691c53c699" kind="function"><name>wait</name></member>
+  <compound refid="classtf_1_1cudaStreamBase" kind="class"><name>tf::cudaStreamBase</name>
+    <member refid="classtf_1_1cudaStreamBase_1ac613c15c23d0dd05331532c6256533d1" kind="typedef"><name>base_type</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a53917d60c2fc050ecf15a30433a87f08" kind="function"><name>cudaStreamBase</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kind="function"><name>synchronize</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a4ad9778fb045ebc9e9d87ca72c2cc772" kind="function"><name>begin_capture</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a4c23849c994f6e797bb547f6229a55e3" kind="function"><name>end_capture</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a54df1c74423c0476c0ca1f1798584def" kind="function"><name>record</name></member>
+    <member refid="classtf_1_1cudaStreamBase_1a9c877b1346e66dcb18a898e649c254b3" kind="function"><name>wait</name></member>
   </compound>
   <compound refid="structtf_1_1cudaStreamCreator" kind="struct"><name>tf::cudaStreamCreator</name>
+    <member refid="structtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" kind="function"><name>operator()</name></member>
     <member refid="structtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" kind="function"><name>operator()</name></member>
   </compound>
   <compound refid="structtf_1_1cudaStreamDeleter" kind="struct"><name>tf::cudaStreamDeleter</name>
@@ -368,7 +367,7 @@
     <member refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kind="function"><name>precede</name></member>
     <member refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kind="function"><name>succeed</name></member>
     <member refid="classtf_1_1cudaTask_1a581673ad83a48a2d3b4f06f125043c32" kind="function"><name>num_successors</name></member>
-    <member refid="classtf_1_1cudaTask_1a8fe3a77426f3fdc186fef1c838cf5f35" kind="function"><name>num_dependencies</name></member>
+    <member refid="classtf_1_1cudaTask_1a4dd9aacbd1ab16cf31e680938bd6d196" kind="function"><name>num_predecessors</name></member>
     <member refid="classtf_1_1cudaTask_1a78b6a856c844a08d4d9cfa992dc6cfef" kind="function"><name>type</name></member>
     <member refid="classtf_1_1cudaTask_1ad1198268d00b50c3c705a2c9826d5a64" kind="function"><name>dump</name></member>
     <member refid="classtf_1_1cudaTask_1a2e0fab31a5862dddacfdfc281d8f479b" kind="function"><name>cudaTask</name></member>
@@ -1889,6 +1888,8 @@
     <member refid="namespacetf_1a24e111672ff15b86ab128b5ec1cf64ab" kind="typedef"><name>DefaultNotifier</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
     <member refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kind="typedef"><name>DefaultPartitioner</name></member>
+    <member refid="namespacetf_1a19f35245e6334fae46dccb73f27417bf" kind="typedef"><name>cudaEvent</name></member>
+    <member refid="namespacetf_1a45b31698cd7ee9a4dcd55465d1e8942a" kind="typedef"><name>cudaStream</name></member>
     <member refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kind="typedef"><name>cudaDefaultExecutionPolicy</name></member>
     <member refid="namespacetf_1ad3a41adc2499a9519da3e77dc3e9849c" kind="variable"><name>is_task_params_v</name></member>
     <member refid="namespacetf_1aea3945d9b15c96a72540ea4fe61947e7" kind="variable"><name>has_graph_v</name></member>

@@ -77,7 +77,7 @@ class cudaTask {
     /**
     @brief queries the number of dependents
     */
-    size_t num_dependencies() const;
+    size_t num_predecessors() const;
 
     /**
     @brief queries the type of this task
@@ -107,16 +107,11 @@ inline cudaTask::cudaTask(cudaGraph_t native_graph, cudaGraphNode_t native_node)
 // Function: precede
 template <typename... Ts>
 cudaTask& cudaTask::precede(Ts&&... tasks) {
-    
   (
-    //TF_CHECK_CUDA(
-      cudaGraphAddDependencies(
-        _native_graph, &_native_node, &(tasks._native_node), 1
-      )
-      //"failed to add a preceding link ", _native_node, "->", tasks._native_node
-    , ...
+    cudaGraphAddDependencies(
+      _native_graph, &_native_node, &(tasks._native_node), 1
+    ), ...
   );
-
   return *this;
 }
 
@@ -132,11 +127,11 @@ cudaTask& cudaTask::succeed(Ts&&... tasks) {
 //  return _node->_successors.size();
 //}
 
-// Function: num_dependencies
-inline size_t cudaTask::num_dependencies() const {
-  size_t num_dependencies {0};
-  cudaGraphNodeGetDependencies(_native_node, nullptr, &num_dependencies);
-  return num_dependencies;
+// Function: num_predecessors
+inline size_t cudaTask::num_predecessors() const {
+  size_t num_predecessors {0};
+  cudaGraphNodeGetDependencies(_native_node, nullptr, &num_predecessors);
+  return num_predecessors;
 }
 
 // Function: num_successors
