@@ -35,7 +35,8 @@ int main() {
   // execute the cudaflow capturer
   std::cout << "running cudaflow capturer ...\n";
   tf::cudaStream stream;
-  cf.run(stream);
+  auto exec = cf.instantiate();
+  exec.run(stream);
   stream.synchronize();
 
   // inspect the result

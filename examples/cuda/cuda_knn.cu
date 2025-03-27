@@ -277,29 +277,32 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
 
     tf::cudaFlow cf;
 
-    auto zero_c = cf.zero(d_c, K).name("zero_c");
-    auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
-    auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+    auto zero_c = cf.zero(d_c, K);
+    auto zero_sx = cf.zero(d_sx, K);
+    auto zero_sy = cf.zero(d_sy, K);
     
     auto cluster = cf.kernel(
       (N+512-1) / 512, 512, 0, 
       assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
-    ).name("cluster"); 
+    ); 
     
     auto new_centroid = cf.kernel(
       1, K, 0, 
       compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
-    ).name("new_centroid");
+    );
 
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
     
     // Repeat the execution for M times
     tf::cudaStream stream;
+    auto exec = cf.instantiate();
     for(int i=0; i<M; i++) {
-      cf.run(stream);
+      exec.run(stream);
     }
     stream.synchronize();
+
+    cf.dump(std::cout);
   }).name("update_means");
 
   auto stop = taskflow.emplace([&](){

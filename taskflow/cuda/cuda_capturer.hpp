@@ -474,7 +474,7 @@ class cudaFlowCapturer {
     a native CUDA graph.
     */
     template <typename OPT, typename... ArgsT>
-    OPT& make_optimizer(ArgsT&&... args);
+    void make_optimizer(ArgsT&&... args);
     
     /**
     @brief captures the cudaFlow and turns it into a CUDA Graph
@@ -505,17 +505,15 @@ class cudaFlowCapturer {
     cudaGraph_t native_graph();
 
     /**
-    @brief acquires a reference to the underlying CUDA graph executable
+    @brief instantiates an executable graph from this cudaflow capturer
     */
-    cudaGraphExec_t native_executable();
+    cudaGraphExec instantiate();
 
   private:
 
     cudaFlowGraph _cfg;
 
     Optimizer _optimizer;
-
-    cudaGraphExec _exe {nullptr};
 };
 
 // Function: empty
@@ -530,7 +528,6 @@ inline size_t cudaFlowCapturer::num_tasks() const {
 
 // Procedure: clear
 inline void cudaFlowCapturer::clear() {
-  _exe.clear();
   _cfg.clear();
 }
 
@@ -560,10 +557,6 @@ inline cudaTask cudaFlowCapturer::noop() {
   return on([](cudaStream_t){});
 }
 
-// Function: noop
-inline void cudaFlowCapturer::noop(cudaTask task) {
-  on(task, [](cudaStream_t){});
-}
 
 // Function: memcpy
 inline cudaTask cudaFlowCapturer::memcpy(
@@ -607,6 +600,12 @@ cudaTask cudaFlowCapturer::kernel(
   });
 }
 
+// Function: make_optimizer
+template <typename OPT, typename ...ArgsT>
+void cudaFlowCapturer::make_optimizer(ArgsT&&... args) {
+  return _optimizer.emplace<OPT>(std::forward<ArgsT>(args)...);
+}
+
 // Function: capture
 inline cudaGraph_t cudaFlowCapturer::capture() {
   return std::visit(
@@ -614,111 +613,121 @@ inline cudaGraph_t cudaFlowCapturer::capture() {
   );
 }
 
-// Procedure: run
-inline void cudaFlowCapturer::run(cudaStream_t stream) {
+// Function: instantiate
+inline cudaGraphExec cudaFlowCapturer::instantiate() {
 
-  // If the topology got changed, we need to destroy the executable
-  // and create a new one
-  if(_cfg._state & cudaFlowGraph::CHANGED) {
-    _cfg._native_handle.reset(capture());
-    _exe.instantiate(_cfg._native_handle);
-  }
-  // if the graph is just updated (i.e., topology does not change),
-  // we can skip part of the optimization and just update the executable
-  // with the new captured graph
-  else if(_cfg._state & cudaFlowGraph::UPDATED) {
-    // TODO: skip part of the optimization (e.g., levelization)
-    _cfg._native_handle.reset(capture());
-    if(_exe.update(_cfg._native_handle) != cudaGraphExecUpdateSuccess) {
-      _exe.instantiate(_cfg._native_handle);
-    }
-  }
+  _cfg._native_handle.reset(capture());
 
-  // run the executable (should exist)
-  _exe.launch(stream);
+  cudaGraphExec_t exec;
+  TF_CHECK_CUDA(
+    cudaGraphInstantiate(&exec, _cfg._native_handle, nullptr, nullptr, 0),
+    "failed to create an executable graph"
+  );
 
-  _cfg._state = cudaFlowGraph::OFFLOADED;
+  return cudaGraphExec(exec);
 }
+
+//// Procedure: run
+//inline void cudaFlowCapturer::run(cudaStream_t stream) {
+//
+//  // If the topology got changed, we need to destroy the executable
+//  // and create a new one
+//  if(_cfg._state & cudaFlowGraph::CHANGED) {
+//    _cfg._native_handle.reset(capture());
+//    _exe.instantiate(_cfg._native_handle);
+//  }
+//  // if the graph is just updated (i.e., topology does not change),
+//  // we can skip part of the optimization and just update the executable
+//  // with the new captured graph
+//  else if(_cfg._state & cudaFlowGraph::UPDATED) {
+//    // TODO: skip part of the optimization (e.g., levelization)
+//    _cfg._native_handle.reset(capture());
+//    if(_exe.update(_cfg._native_handle) != cudaGraphExecUpdateSuccess) {
+//      _exe.instantiate(_cfg._native_handle);
+//    }
+//  }
+//
+//  // run the executable (should exist)
+//  _exe.run(stream);
+//
+//  _cfg._state = cudaFlowGraph::OFFLOADED;
+//}
 
 // Function: native_graph
 inline cudaGraph_t cudaFlowCapturer::native_graph() {
   return _cfg._native_handle;
 }
 
-// Function: native_executable
-inline cudaGraphExec_t cudaFlowCapturer::native_executable() {
-  return _exe;
-}
+//// Function: on
+//template <typename C, std::enable_if_t<
+//  std::is_invocable_r_v<void, C, cudaStream_t>, void>*
+//>
+//void cudaFlowCapturer::on(cudaTask task, C&& callable) {
+//
+//  if(task.type() != cudaTaskType::CAPTURE) {
+//    TF_THROW("invalid cudaTask type (must be CAPTURE)");
+//  }
+//
+//  _cfg._state |= cudaFlowGraph::UPDATED;
+//
+//  std::get_if<cudaFlowNode::Capture>(&task._node->_handle)->work =
+//    std::forward<C>(callable);
+//}
+//
+//// Function: noop
+//inline void cudaFlowCapturer::noop(cudaTask task) {
+//  on(task, [](cudaStream_t){});
+//}
+////
+//// Function: memcpy
+//inline void cudaFlowCapturer::memcpy(
+//  cudaTask task, void* dst, const void* src, size_t count
+//) {
+//  on(task, [dst, src, count](cudaStream_t stream) mutable {
+//    TF_CHECK_CUDA(
+//      cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
+//      "failed to capture memcpy"
+//    );
+//  });
+//}
+//
+//// Function: copy
+//template <typename T,
+//  std::enable_if_t<!std::is_same_v<T, void>, void>*
+//>
+//void cudaFlowCapturer::copy(
+//  cudaTask task, T* tgt, const T* src, size_t num
+//) {
+//  on(task, [tgt, src, num] (cudaStream_t stream) mutable {
+//    TF_CHECK_CUDA(
+//      cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
+//      "failed to capture copy"
+//    );
+//  });
+//}
+//
+//// Function: memset
+//inline void cudaFlowCapturer::memset(
+//  cudaTask task, void* ptr, int v, size_t n
+//) {
+//  on(task, [ptr, v, n] (cudaStream_t stream) mutable {
+//    TF_CHECK_CUDA(
+//      cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
+//    );
+//  });
+//}
+//
+//// Function: kernel
+//template <typename F, typename... ArgsT>
+//void cudaFlowCapturer::kernel(
+//  cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
+//) {
+//  on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
+//    f<<<g, b, s, stream>>>(args...);
+//  });
+//}
+//
 
-// Function: on
-template <typename C, std::enable_if_t<
-  std::is_invocable_r_v<void, C, cudaStream_t>, void>*
->
-void cudaFlowCapturer::on(cudaTask task, C&& callable) {
-
-  if(task.type() != cudaTaskType::CAPTURE) {
-    TF_THROW("invalid cudaTask type (must be CAPTURE)");
-  }
-
-  _cfg._state |= cudaFlowGraph::UPDATED;
-
-  std::get_if<cudaFlowNode::Capture>(&task._node->_handle)->work =
-    std::forward<C>(callable);
-}
-
-// Function: memcpy
-inline void cudaFlowCapturer::memcpy(
-  cudaTask task, void* dst, const void* src, size_t count
-) {
-  on(task, [dst, src, count](cudaStream_t stream) mutable {
-    TF_CHECK_CUDA(
-      cudaMemcpyAsync(dst, src, count, cudaMemcpyDefault, stream),
-      "failed to capture memcpy"
-    );
-  });
-}
-
-// Function: copy
-template <typename T,
-  std::enable_if_t<!std::is_same_v<T, void>, void>*
->
-void cudaFlowCapturer::copy(
-  cudaTask task, T* tgt, const T* src, size_t num
-) {
-  on(task, [tgt, src, num] (cudaStream_t stream) mutable {
-    TF_CHECK_CUDA(
-      cudaMemcpyAsync(tgt, src, sizeof(T)*num, cudaMemcpyDefault, stream),
-      "failed to capture copy"
-    );
-  });
-}
-
-// Function: memset
-inline void cudaFlowCapturer::memset(
-  cudaTask task, void* ptr, int v, size_t n
-) {
-  on(task, [ptr, v, n] (cudaStream_t stream) mutable {
-    TF_CHECK_CUDA(
-      cudaMemsetAsync(ptr, v, n, stream), "failed to capture memset"
-    );
-  });
-}
-
-// Function: kernel
-template <typename F, typename... ArgsT>
-void cudaFlowCapturer::kernel(
-  cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT&&... args
-) {
-  on(task, [g, b, s, f, args...] (cudaStream_t stream) mutable {
-    f<<<g, b, s, stream>>>(args...);
-  });
-}
-
-// Function: make_optimizer
-template <typename OPT, typename ...ArgsT>
-OPT& cudaFlowCapturer::make_optimizer(ArgsT&&... args) {
-  return _optimizer.emplace<OPT>(std::forward<ArgsT>(args)...);
-}
 
 }  // end of namespace tf -----------------------------------------------------
 
