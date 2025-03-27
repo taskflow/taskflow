@@ -14,9 +14,9 @@
       </param>
     </templateparamlist>
       <sectiondef kind="public-static-attrib">
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1ade947dae7ff7d1a8d33cb937f0c9d93a" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_warps</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1a64a40d4728c65b4019c8fffa8fc8605a" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_warps</definition>
         <argsstring></argsstring>
         <name>num_warps</name>
         <initializer>= nt / CUDA_WARP_SIZE</initializer>
@@ -26,25 +26,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="45" column="25" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="45" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/scan.hpp" line="45" column="29" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="45" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1a341cac68448f65a06e10c1327bfe06a5" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_passes</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1a358ff68745420d9e8aa027907c1aba64" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::num_passes</definition>
         <argsstring></argsstring>
         <name>num_passes</name>
-        <initializer>= log2(nt)</initializer>
+        <initializer>= <ref refid="namespacetf_1a908e0f3faf873e897b3e1bafbd4bb876" kindref="member">static_floor_log2</ref>&lt;nt&gt;()</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="46" column="25" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="46" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/scan.hpp" line="46" column="29" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="46" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1a232b3e951d2a0b68b98e3ced6964b223" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::capacity</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockScan_1a11126c1cbf8d463287478b8a5c04a036" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockScan&lt; nt, T &gt;::capacity</definition>
         <argsstring></argsstring>
         <name>capacity</name>
         <initializer>= nt + num_warps</initializer>
@@ -54,7 +54,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="47" column="25" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="47" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/scan.hpp" line="47" column="29" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="47" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -180,9 +180,9 @@
     </detaileddescription>
     <location file="taskflow/cuda/algorithm/scan.hpp" line="43" column="1" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="43" bodyend="81"/>
     <listofallmembers>
-      <member refid="structtf_1_1detail_1_1cudaBlockScan_1a232b3e951d2a0b68b98e3ced6964b223" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>capacity</name></member>
-      <member refid="structtf_1_1detail_1_1cudaBlockScan_1a341cac68448f65a06e10c1327bfe06a5" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>num_passes</name></member>
-      <member refid="structtf_1_1detail_1_1cudaBlockScan_1ade947dae7ff7d1a8d33cb937f0c9d93a" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>num_warps</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockScan_1a11126c1cbf8d463287478b8a5c04a036" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>capacity</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockScan_1a358ff68745420d9e8aa027907c1aba64" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>num_passes</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockScan_1a64a40d4728c65b4019c8fffa8fc8605a" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>num_warps</name></member>
       <member refid="structtf_1_1detail_1_1cudaBlockScan_1a5ac5687ea52d5b6378bd22f4e0bf3b2d" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>operator()</name></member>
       <member refid="structtf_1_1detail_1_1cudaBlockScan_1aeab231ca5acb3afa6be1f82c95397aad" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockScan</scope><name>operator()</name></member>
     </listofallmembers>

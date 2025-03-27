@@ -160,6 +160,16 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_breaking_changes">
 <title>Breaking Changes</title>
+<para><itemizedlist>
+<listitem><para>corrected the terminology by replacing &apos;dependents&apos; with &apos;predecessors&apos;<itemizedlist>
+<listitem><para><ref refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" kindref="member">tf::Task::num_predecessors</ref> (previously tf::Task::num_dependents)</para>
+</listitem><listitem><para>tf::Task::for_each_dependent (previously tf::Task::for_each_dependent)</para>
+</listitem><listitem><para><ref refid="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" kindref="member">tf::Task::num_strong_dependencies</ref> (previously tf::Task::num_strong_dependents)</para>
+</listitem><listitem><para><ref refid="classtf_1_1Task_1ad5e874b7cc77df1e7dc875d436ff7b72" kindref="member">tf::Task::num_weak_dependencies</ref> (previously tf::Task::num_weak_dependents)</para>
+</listitem></itemizedlist>
+</para>
+</listitem></itemizedlist>
+</para>
 <para>Currently, there are no breaking changes.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_documentation">

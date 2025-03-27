@@ -140,34 +140,34 @@ A strong dependency is a preceding link from a non-condition task to
 another task.
 A weak dependency is a preceding link from a condition task to
 another task. 
-The number of dependents of a task is the sum of strong dependency 
+The number of dependencies of a task is the sum of strong dependency 
 and weak dependency.
 The table below lists the strong dependency and
 weak dependency numbers of each task in the previous example.
 
 <div align="center">
-| task   | strong dependency | weak dependency | dependents |
-| :-:    | :-:               | :-:             |            |
-| A      | 0                 | 0               | 0          |
-| B      | 1                 | 1               | 2          |
-| C      | 1                 | 0               | 1          |
-| D      | 1                 | 0               | 1          |
-| E      | 0                 | 1               | 1          |
-| F      | 1                 | 0               | 1          |
-| G      | 0                 | 1               | 1          |
-| H      | 0                 | 1               | 1          |
-| I      | 1                 | 0               | 1          |
-| K      | 1                 | 0               | 1          |
-| L      | 0                 | 1               | 1          | 
-| M      | 1                 | 0               | 1          |
-| cond_1 | 1                 | 0               | 1          |
-| cond_2 | 1                 | 0               | 1          |
-| cond_3 | 1                 | 1               | 2          |
+| task   | strong dependency | weak dependency | dependencies |
+| :-:    | :-:               | :-:             |              |
+| A      | 0                 | 0               | 0            |
+| B      | 1                 | 1               | 2            |
+| C      | 1                 | 0               | 1            |
+| D      | 1                 | 0               | 1            |
+| E      | 0                 | 1               | 1            |
+| F      | 1                 | 0               | 1            |
+| G      | 0                 | 1               | 1            |
+| H      | 0                 | 1               | 1            |
+| I      | 1                 | 0               | 1            |
+| K      | 1                 | 0               | 1            |
+| L      | 0                 | 1               | 1            | 
+| M      | 1                 | 0               | 1            |
+| cond_1 | 1                 | 0               | 1            |
+| cond_2 | 1                 | 0               | 1            |
+| cond_3 | 1                 | 1               | 2            |
 </div>
 
-You can query the number of strong dependents,
-the number of weak dependents,
-and the number of dependents of a task.
+You can query the number of strong dependencies,
+the number of weak dependencies,
+and the number of dependencies of a task.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -176,13 +176,13 @@ and the number of dependents of a task.
  4: 
  5: // ... add more tasks and preceding links
  6:
- 7: std::cout << task.num_dependents() << '\n';
- 8: std::cout << task.num_strong_dependents() << '\n'; 
- 9: std::cout << task.num_weak_dependents() << '\n';
+ 7: std::cout << task.num_predecessors() << '\n';
+ 8: std::cout << task.num_strong_dependencies() << '\n'; 
+ 9: std::cout << task.num_weak_dependencies() << '\n';
 @endcode
 
 When you submit a task to an executor,
-the scheduler starts with tasks of <em>zero dependents</em>
+the scheduler starts with tasks of <em>zero dependencies</em>
 (both zero strong and weak dependencies)
 and continues to execute successive tasks whenever 
 their <em>strong dependencies</em> are met.
@@ -192,7 +192,7 @@ and jumps directly to its successors indexed by the return value.
 <!-- @image html images/conditional-tasking-rules.svg width=100% -->
 @dotfile images/task_level_scheduling.dot
 
-Each task has an @em atomic join counter to keep track of strong dependents
+Each task has an @em atomic join counter to keep track of strong dependencies
 that are met at runtime.
 When a task completes,
 the join counter is restored to the task's strong dependency number 
@@ -228,7 +228,7 @@ The figure below shows common pitfalls and their remedies.
 
 In the @c error1 scenario,
 there is no source task for the scheduler to start with,
-and the simplest fix is to add a task @c S that has no dependents.
+and the simplest fix is to add a task @c S that has no dependencies.
 In the @c error2 scenario,
 @c D might be scheduled twice by @c E through the strong dependency 
 and @c C through the weak dependency (on returning @c 1).

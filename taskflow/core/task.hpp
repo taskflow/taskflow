@@ -200,17 +200,17 @@ class Task {
     /**
     @brief queries the number of predecessors of the task
     */
-    size_t num_dependents() const;
+    size_t num_predecessors() const;
 
     /**
     @brief queries the number of strong dependents of the task
     */
-    size_t num_strong_dependents() const;
+    size_t num_strong_dependencies() const;
 
     /**
     @brief queries the number of weak dependents of the task
     */
-    size_t num_weak_dependents() const;
+    size_t num_weak_dependencies() const;
 
     /**
     @brief assigns a name to the task
@@ -351,7 +351,7 @@ class Task {
     @brief applies an visitor callable to each dependents of the task
     */
     template <typename V>
-    void for_each_dependent(V&& visitor) const;
+    void for_each_predecessor(V&& visitor) const;
 
     /**
     @brief obtains a hash value of the underlying node
@@ -503,19 +503,19 @@ inline const std::string& Task::name() const {
   return _node->_name;
 }
 
-// Function: num_dependents
-inline size_t Task::num_dependents() const {
-  return _node->num_dependents();
+// Function: num_predecessors
+inline size_t Task::num_predecessors() const {
+  return _node->num_predecessors();
 }
 
-// Function: num_strong_dependents
-inline size_t Task::num_strong_dependents() const {
-  return _node->num_strong_dependents();
+// Function: num_strong_dependencies
+inline size_t Task::num_strong_dependencies() const {
+  return _node->num_strong_dependencies();
 }
 
-// Function: num_weak_dependents
-inline size_t Task::num_weak_dependents() const {
-  return _node->num_weak_dependents();
+// Function: num_weak_dependencies
+inline size_t Task::num_weak_dependencies() const {
+  return _node->num_weak_dependencies();
 }
 
 // Function: num_successors
@@ -557,11 +557,11 @@ void Task::for_each_successor(V&& visitor) const {
   }
 }
 
-// Function: for_each_dependent
+// Function: for_each_predecessor
 template <typename V>
-void Task::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node->_dependents.size(); ++i) {
-    visitor(Task(_node->_dependents[i]));
+void Task::for_each_predecessor(V&& visitor) const {
+  for(size_t i=0; i<_node->_predecessors.size(); ++i) {
+    visitor(Task(_node->_predecessors[i]));
   }
 }
 
@@ -654,17 +654,17 @@ class TaskView {
     /**
     @brief queries the number of predecessors of the task
     */
-    size_t num_dependents() const;
+    size_t num_predecessors() const;
 
     /**
     @brief queries the number of strong dependents of the task
     */
-    size_t num_strong_dependents() const;
+    size_t num_strong_dependencies() const;
 
     /**
     @brief queries the number of weak dependents of the task
     */
-    size_t num_weak_dependents() const;
+    size_t num_weak_dependencies() const;
 
     /**
     @brief applies an visitor callable to each successor of the task
@@ -676,7 +676,7 @@ class TaskView {
     @brief applies an visitor callable to each dependents of the task
     */
     template <typename V>
-    void for_each_dependent(V&& visitor) const;
+    void for_each_predecessor(V&& visitor) const;
 
     /**
     @brief queries the task type
@@ -705,19 +705,19 @@ inline const std::string& TaskView::name() const {
   return _node._name;
 }
 
-// Function: num_dependents
-inline size_t TaskView::num_dependents() const {
-  return _node.num_dependents();
+// Function: num_predecessors
+inline size_t TaskView::num_predecessors() const {
+  return _node.num_predecessors();
 }
 
-// Function: num_strong_dependents
-inline size_t TaskView::num_strong_dependents() const {
-  return _node.num_strong_dependents();
+// Function: num_strong_dependencies
+inline size_t TaskView::num_strong_dependencies() const {
+  return _node.num_strong_dependencies();
 }
 
-// Function: num_weak_dependents
-inline size_t TaskView::num_weak_dependents() const {
-  return _node.num_weak_dependents();
+// Function: num_weak_dependencies
+inline size_t TaskView::num_weak_dependencies() const {
+  return _node.num_weak_dependencies();
 }
 
 // Function: num_successors
@@ -754,11 +754,11 @@ void TaskView::for_each_successor(V&& visitor) const {
   }
 }
 
-// Function: for_each_dependent
+// Function: for_each_predecessor
 template <typename V>
-void TaskView::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node._dependents.size(); ++i) {
-    visitor(TaskView(*_node._dependents[i]));
+void TaskView::for_each_predecessor(V&& visitor) const {
+  for(size_t i=0; i<_node._predecessors.size(); ++i) {
+    visitor(TaskView(*_node._predecessors[i]));
   }
 }
 

@@ -244,21 +244,21 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a0e2d792f28136b8227b413d0c27d5c7f" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
             </dt>
-            <dd>runs the given function asynchronously when the given dependents finish</dd>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#abbf277ddbe4974e928361f232149341e" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
               F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
             </dt>
-            <dd>runs the given function asynchronously when the given dependents finish</dd>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aa9b08e47e68ae1e568f18aa7104cb9b1" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               I first,
               I last) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
             </dt>
-            <dd>runs the given function asynchronously when the given range of dependents finish</dd>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#afdfb0ef6f995288299f7fe7e53c0cf3b" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
@@ -266,27 +266,27 @@
               I first,
               I last) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
             </dt>
-            <dd>runs the given function asynchronously when the given range of dependents finish</dd>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename F, typename... Tasks, std::enable_if_t&lt;all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks) -&gt; auto</span>
             </dt>
-            <dd>runs the given function asynchronously when the given dependents finish</dd>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a4428cc5d1102ecb0eb51e0b977e08857" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
               F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks) -&gt; auto</span>
             </dt>
-            <dd>runs the given function asynchronously when the given dependents finish</dd>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a01e51e564f5def845506bcf6b4bb1664" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               I first,
               I last) -&gt; auto</span>
             </dt>
-            <dd>runs the given function asynchronously when the given range of dependents finish</dd>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a962d7fb7213a804ee4a2e7b79455efdc" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
@@ -294,7 +294,7 @@
               I first,
               I last) -&gt; auto</span>
             </dt>
-            <dd>runs the given function asynchronously when the given range of dependents finish</dd>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
           </dl>
         </section>
         <section>
@@ -1100,7 +1100,7 @@
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0e2d792f28136b8227b413d0c27d5c7f" class="m-doc-self">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given dependents finish</p>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1149,7 +1149,7 @@
               F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given dependents finish</p>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1204,7 +1204,7 @@
               I first,
               I last)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given range of dependents finish</p>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1262,7 +1262,7 @@
               I first,
               I last)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given range of dependents finish</p>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1322,7 +1322,7 @@
               <span class="m-doc-wrap-bumper">auto tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc-self">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given dependents finish</p>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1377,7 +1377,7 @@
               F&amp;&amp; func,
               Tasks &amp;&amp; ... tasks)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given dependents finish</p>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1441,7 +1441,7 @@
               I first,
               I last)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given range of dependents finish</p>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1503,7 +1503,7 @@
               I first,
               I last)</span></span>
             </h3>
-            <p>runs the given function asynchronously when the given range of dependents finish</p>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>

@@ -442,11 +442,11 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="324" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="324" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1Node_1ab7fcc78e371460bb8726f3801311731d" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
-        <definition>SmallVector&lt;Node*&gt; tf::Node::_dependents</definition>
+        <definition>SmallVector&lt;Node*&gt; tf::Node::_predecessors</definition>
         <argsstring></argsstring>
-        <name>_dependents</name>
+        <name>_predecessors</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -771,11 +771,11 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="305" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="605" bodyend="607"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Node_1abbb6a85cc8f62682ce8c78ad9851c0e5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Node_1af771d849ce6a940a421f56507568f3d6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Node::num_dependents</definition>
+        <definition>size_t tf::Node::num_predecessors</definition>
         <argsstring>() const</argsstring>
-        <name>num_dependents</name>
+        <name>num_predecessors</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -784,11 +784,11 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="306" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="610" bodyend="612"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Node_1ad5eb7ac6418e89fccc300986b216510c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Node_1aecd850cfdacc0c0934f96654de86084f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Node::num_strong_dependents</definition>
+        <definition>size_t tf::Node::num_strong_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_strong_dependents</name>
+        <name>num_strong_dependencies</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -797,11 +797,11 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="307" column="10" bodyfile="taskflow/core/graph.hpp" bodystart="626" bodyend="634"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Node_1a7dbe963f0173062f3a6164f1ff581c5a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Node_1a4a66af2426c38bc23f2dd77db0dd2e9b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Node::num_weak_dependents</definition>
+        <definition>size_t tf::Node::num_weak_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_weak_dependents</name>
+        <name>num_weak_dependencies</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -1212,7 +1212,6 @@
     <listofallmembers>
       <member refid="classtf_1_1Node_1ac5778a60afb44cd54eb0247a04b38a91" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_acquire_all</name></member>
       <member refid="classtf_1_1Node_1a5458c5905ee4b28b70f368a522c198f2" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_data</name></member>
-      <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_dependents</name></member>
       <member refid="classtf_1_1Node_1ae83317ed89ab7ad04edd776657de5654" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_estate</name></member>
       <member refid="classtf_1_1Node_1a3579ebdad0ee32537fe593811c14096e" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_exception_ptr</name></member>
       <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_handle</name></member>
@@ -1224,6 +1223,7 @@
       <member refid="classtf_1_1Node_1afab50d4471d7a6d7c51b65d6e2c87c4a" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_nstate</name></member>
       <member refid="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_parent</name></member>
       <member refid="classtf_1_1Node_1a7e6ccc13774475f9ee23af8d37a5311c" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_precede</name></member>
+      <member refid="classtf_1_1Node_1ab7fcc78e371460bb8726f3801311731d" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_predecessors</name></member>
       <member refid="classtf_1_1Node_1a13650c237625a05df57f248ab2e47349" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_release_all</name></member>
       <member refid="classtf_1_1Node_1a51d76bfe6ccba95580948cbfc7aca7d6" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_rethrow_exception</name></member>
       <member refid="classtf_1_1Node_1a26a8c9bfbbd1c62dbd49545d9d49a8f4" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>_semaphores</name></member>
@@ -1255,10 +1255,10 @@
       <member refid="classtf_1_1Node_1a0605cc565bd447bf88d86404803290eb" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1a66a64a20e1cf38de06c44912c263a99b" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
       <member refid="classtf_1_1Node_1aa077ed7ef5c8aff205ecef4873202c97" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>Node</name></member>
-      <member refid="classtf_1_1Node_1abbb6a85cc8f62682ce8c78ad9851c0e5" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_dependents</name></member>
-      <member refid="classtf_1_1Node_1ad5eb7ac6418e89fccc300986b216510c" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_strong_dependents</name></member>
+      <member refid="classtf_1_1Node_1af771d849ce6a940a421f56507568f3d6" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_predecessors</name></member>
+      <member refid="classtf_1_1Node_1aecd850cfdacc0c0934f96654de86084f" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_strong_dependencies</name></member>
       <member refid="classtf_1_1Node_1a7133911e093d82e5f5edd73124b60c6a" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_successors</name></member>
-      <member refid="classtf_1_1Node_1a7dbe963f0173062f3a6164f1ff581c5a" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_weak_dependents</name></member>
+      <member refid="classtf_1_1Node_1a4a66af2426c38bc23f2dd77db0dd2e9b" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>num_weak_dependencies</name></member>
       <member refid="classtf_1_1Node_1a8c001eed6bd8ac9bd348c2f710f9e0b1" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>Placeholder</name></member>
       <member refid="classtf_1_1Node_1a421d0da10e52e8bd1036676efc63579e" prot="public" virt="non-virtual"><scope>tf::Node</scope><name>PLACEHOLDER</name></member>
       <member refid="classtf_1_1Node_1adb56fdbfd3879bf32dbc9b766e797b55" prot="private" virt="non-virtual"><scope>tf::Node</scope><name>PreemptionGuard</name></member>

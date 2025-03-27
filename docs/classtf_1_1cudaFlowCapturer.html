@@ -280,7 +280,7 @@
             <dd>updates a capture task to a transform kernel task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename OPT, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aa1d016b56c06cb28eabfebfdd7dbb24d" class="m-doc">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; OPT&amp;</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a218391ee8f5f13a602e6c3606e4e0c10" class="m-doc">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span>
             </dt>
             <dd>selects a different optimization algorithm</dd>
             <dt id="a31f29772f4713848c1b0ff1a66a3dcc3">
@@ -295,10 +295,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a34be2e2d69ff66add60f5517e01bea83" class="m-doc-self">native_graph</a>(</span><span class="m-doc-wrap">) -&gt; cudaGraph_t</span>
             </dt>
             <dd>acquires a reference to the underlying CUDA graph</dd>
-            <dt id="a3c03a7d269268a2a63e864fedb2fb8a6">
-              <span class="m-doc-wrap-bumper">auto <a href="#a3c03a7d269268a2a63e864fedb2fb8a6" class="m-doc-self">native_executable</a>(</span><span class="m-doc-wrap">) -&gt; cudaGraphExec_t</span>
+            <dt id="abacdc4f183477580e24452a2a27437cd">
+              <span class="m-doc-wrap-bumper">auto <a href="#abacdc4f183477580e24452a2a27437cd" class="m-doc-self">instantiate</a>(</span><span class="m-doc-wrap">) -&gt; cudaGraphExec</span>
             </dt>
-            <dd>acquires a reference to the underlying CUDA graph executable</dd>
+            <dd>instantiates an executable graph from this cudaflow capturer</dd>
           </dl>
         </section>
         <section>
@@ -924,12 +924,12 @@
             <p>updates a capture task to a transform kernel task</p>
 <p>This method is similar to <a href="#a99d9a86a7240ebf0767441e4ec2e14c4" class="m-doc">cudaFlowCapturer::<wbr />transform</a> but operates on an existing task.</p>
           </div></section>
-          <section class="m-doc-details" id="aa1d016b56c06cb28eabfebfdd7dbb24d"><div>
+          <section class="m-doc-details" id="a218391ee8f5f13a602e6c3606e4e0c10"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename OPT, typename... ArgsT&gt;
               </div>
-              <span class="m-doc-wrap-bumper">OPT&amp; tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa1d016b56c06cb28eabfebfdd7dbb24d" class="m-doc-self">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaFlowCapturer::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a218391ee8f5f13a602e6c3606e4e0c10" class="m-doc-self">make_optimizer</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
             </h3>
             <p>selects a different optimization algorithm</p>
             <table class="m-table m-fullwidth m-flat">
