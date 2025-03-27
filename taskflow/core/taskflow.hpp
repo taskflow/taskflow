@@ -264,13 +264,13 @@ class Taskflow : public FlowBuilder {
 
     a.precede(b, c, d);
     assert(a.num_successors() == 3);
-    assert(b.num_dependents() == 1);
-    assert(c.num_dependents() == 1);
-    assert(d.num_dependents() == 1);
+    assert(b.num_predecessors() == 1);
+    assert(c.num_predecessors() == 1);
+    assert(d.num_predecessors() == 1);
   
     taskflow.remove_dependency(a, b);
     assert(a.num_successors() == 2);
-    assert(b.num_dependents() == 0);
+    assert(b.num_predecessors() == 0);
     @endcode
     */
     inline void remove_dependency(Task from, Task to);
@@ -382,11 +382,11 @@ inline void Taskflow::remove_dependency(Task from, Task to) {
     }
   ), from._node->_successors.end());
   
-  to._node->_dependents.erase(std::remove_if(
-    to._node->_dependents.begin(), to._node->_dependents.end(), [&](Node* i){
+  to._node->_predecessors.erase(std::remove_if(
+    to._node->_predecessors.begin(), to._node->_predecessors.end(), [&](Node* i){
       return i == from._node;
     }
-  ), to._node->_dependents.end());
+  ), to._node->_predecessors.end());
 }
 
 // Procedure: dump

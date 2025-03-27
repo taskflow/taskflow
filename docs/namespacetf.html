@@ -310,17 +310,6 @@
               <a href="#abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" class="m-doc">SERIAL</a> = 2 }</span>
             </dt>
             <dd>enumeration of all pipe types</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">enum class <a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a>: int { </span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc">EMPTY</a> = 0,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc">HOST</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc">MEMSET</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc">MEMCPY</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" class="m-doc">KERNEL</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" class="m-doc">SUBFLOW</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" class="m-doc">CAPTURE</a>,
-              <a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc">UNDEFINED</a> }</span>
-            </dt>
-            <dd>enumeration of all cudaTask types</dd>
           </dl>
         </section>
         <section id="typedef-members">
@@ -358,6 +347,11 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a8845f13b039ef9820087c9f467f6c734" class="m-doc">floor_log2</a>(</span><span class="m-doc-wrap">T n) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>computes the floor of the base-2 logarithm of a number using count-leading-zeros (CTL).</dd>
+            <dt id="a908e0f3faf873e897b3e1bafbd4bb876">
+              <div class="m-doc-template">template&lt;size_t N&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a908e0f3faf873e897b3e1bafbd4bb876" class="m-doc-self">static_floor_log2</a>(</span><span class="m-doc-wrap">) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
+            </dt>
+            <dd>returns the floor of <code>log2(N)</code> at compile time</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename RandItr, typename C&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a0b2dc0c0c931b9b627fc0a148085fa5e" class="m-doc">median_of_three</a>(</span><span class="m-doc-wrap">RandItr l,
@@ -619,10 +613,6 @@
               size_t count)</span>
             </dt>
             <dd>initializes or sets GPU memory to the given value byte by byte</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) -&gt; const char* <span class="m-label m-flat m-primary">constexpr</span></span>
-            </dt>
-            <dd>convert a cuda_task type to a human-readable string</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a9cca69f61d792afb3ad501b703d795c1" class="m-doc">operator&lt;&lt;</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; os,
               const <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a>&amp; ct) -&gt; <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp;</span>
@@ -1006,66 +996,6 @@
               </tbody>
             </table>
           </div></section>
-          <section class="m-doc-details" id="afebc56ae6d5765010d0dd13a5f04132e"><div>
-            <h3>
-              enum class tf::<wbr /><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc-self">cudaTaskType</a>: int
-              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__task_8hpp.html">&lt;taskflow/cuda/cuda_task.hpp&gt;</a></div>
-            </h3>
-            <p>enumeration of all cudaTask types</p>
-            <table class="m-table m-fullwidth m-flat m-doc">
-              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb">EMPTY</a></td>
-                  <td>
-                  <p>empty task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5">HOST</a></td>
-                  <td>
-                  <p>host task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921">MEMSET</a></td>
-                  <td>
-                  <p>memory set task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4">MEMCPY</a></td>
-                  <td>
-                  <p>memory copy task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c">KERNEL</a></td>
-                  <td>
-                  <p>memory copy task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad">SUBFLOW</a></td>
-                  <td>
-                  <p>subflow (child graph) task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9">CAPTURE</a></td>
-                  <td>
-                  <p>capture task type</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a href="#afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" class="m-doc-self" id="afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3">UNDEFINED</a></td>
-                  <td>
-                  <p>undefined task type</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div></section>
         </section>
         <section>
           <h2>Typedef documentation</h2>
@@ -1174,7 +1104,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>This function efficiently calculates <code>log2(n)</code> for both 32-bit and 64-bit integers.</p>
+<p>This function efficiently calculates the floor of <code>log2(n)</code> for both 32-bit and 64-bit integers.</p>
           </div></section>
           <section class="m-doc-details" id="a0b2dc0c0c931b9b627fc0a148085fa5e"><div>
             <h3>
@@ -2265,13 +2195,6 @@
               </tbody>
             </table>
 <p>The method calls <code>cudaMemsetAsync</code> with the given <code>stream</code> to fill the first <code>count</code> bytes of the memory area pointed to by <code>devPtr</code> with the constant byte value <code>value</code>.</p>
-          </div></section>
-          <section class="m-doc-details" id="af21fe1eaf680dbddc0503ef5d1a9a664"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">const char* tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af21fe1eaf680dbddc0503ef5d1a9a664" class="m-doc-self">to_string</a>(</span><span class="m-doc-wrap"><a href="#afebc56ae6d5765010d0dd13a5f04132e" class="m-doc">cudaTaskType</a> type) <span class="m-label m-primary">constexpr</span></span></span>
-              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__task_8hpp.html">&lt;taskflow/cuda/cuda_task.hpp&gt;</a></div>
-            </h3>
-            <p>convert a cuda_task type to a human-readable string</p>
           </div></section>
           <section class="m-doc-details" id="a9cca69f61d792afb3ad501b703d795c1"><div>
             <h3>

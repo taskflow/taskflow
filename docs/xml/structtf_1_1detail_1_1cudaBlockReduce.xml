@@ -14,37 +14,37 @@
       </param>
     </templateparamlist>
       <sectiondef kind="public-static-attrib">
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1a090793ae40eaea9ae4cfec2960777c7e" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::group_size</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1ab1581711f69e1c00b235f7197b143ffa" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::group_size</definition>
         <argsstring></argsstring>
         <name>group_size</name>
-        <initializer>= std::min(nt, CUDA_WARP_SIZE)</initializer>
+        <initializer>= (std::min)(nt, CUDA_WARP_SIZE)</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="20" column="25" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="20" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/reduce.hpp" line="20" column="29" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="20" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1a83b5862bde412c439b25d17e6b85f176" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::num_passes</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1a337de22d35b9937fc2fb21a366afa636" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::num_passes</definition>
         <argsstring></argsstring>
         <name>num_passes</name>
-        <initializer>= log2(group_size)</initializer>
+        <initializer>= <ref refid="namespacetf_1a908e0f3faf873e897b3e1bafbd4bb876" kindref="member">static_floor_log2</ref>&lt;group_size&gt;()</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="21" column="25" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="21" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/reduce.hpp" line="21" column="29" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="21" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1af4f00b1e05f942cf0eaf448ca37baf83" prot="public" static="yes" mutable="no">
-        <type>const unsigned</type>
-        <definition>const unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::num_items</definition>
+      <memberdef kind="variable" id="structtf_1_1detail_1_1cudaBlockReduce_1a8eafb9d735ad46238ef9e7a508712889" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr unsigned</type>
+        <definition>constexpr unsigned tf::detail::cudaBlockReduce&lt; nt, T &gt;::num_items</definition>
         <argsstring></argsstring>
         <name>num_items</name>
         <initializer>= nt / group_size</initializer>
@@ -54,7 +54,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="22" column="25" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="22" bodyend="-1"/>
+        <location file="taskflow/cuda/algorithm/reduce.hpp" line="22" column="29" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="22" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -108,9 +108,9 @@
     </detaileddescription>
     <location file="taskflow/cuda/algorithm/reduce.hpp" line="18" column="1" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="18" bodyend="36"/>
     <listofallmembers>
-      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a090793ae40eaea9ae4cfec2960777c7e" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>group_size</name></member>
-      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1af4f00b1e05f942cf0eaf448ca37baf83" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>num_items</name></member>
-      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a83b5862bde412c439b25d17e6b85f176" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>num_passes</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1ab1581711f69e1c00b235f7197b143ffa" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>group_size</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a8eafb9d735ad46238ef9e7a508712889" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>num_items</name></member>
+      <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a337de22d35b9937fc2fb21a366afa636" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>num_passes</name></member>
       <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a6487595da01b3fb5666f41c52b93f5a0" prot="public" virt="non-virtual"><scope>tf::detail::cudaBlockReduce</scope><name>operator()</name></member>
     </listofallmembers>
   </compounddef>

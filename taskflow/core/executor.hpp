@@ -718,7 +718,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
 
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -750,7 +750,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -786,7 +786,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -823,7 +823,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -866,7 +866,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -908,7 +908,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam P task parameters type
   @tparam F callable type
@@ -954,7 +954,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -999,7 +999,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam P task parameters type
   @tparam F callable type
@@ -1670,12 +1670,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // Reset the join counter with strong dependencies to support cycles.
   // + We must do this before scheduling the successors to avoid race
-  //   condition on _dependents.
+  //   condition on _predecessors.
   // + We must use fetch_add instead of direct assigning
   //   because the user-space call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
   node->_join_counter.fetch_add(
-    node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
+    node->num_predecessors() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
   );
 
   // acquire the parent flow counter
@@ -2181,7 +2181,7 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t
     node->_exception_ptr = nullptr;
 
     // move source to the first partition
-    if(node->num_dependents() == 0) {
+    if(node->num_predecessors() == 0) {
       std::iter_swap(send++, first);
     }
 

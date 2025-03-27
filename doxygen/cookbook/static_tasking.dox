@@ -52,10 +52,10 @@ such as adding dependencies, naming, and assigning a new work.
  8:
  9: std::cout << A.name() << std::endl;            // TaskA
 10: std::cout << A.num_successors() << std::endl;  // 1
-11: std::cout << A.num_dependents() << std::endl;  // 0
+11: std::cout << A.num_predecessors() << std::endl;  // 0
 12: 
 13: std::cout << B.num_successors() << std::endl;  // 0
-14: std::cout << B.num_dependents() << std::endl;  // 1
+14: std::cout << B.num_predecessors() << std::endl;  // 1
 @endcode
 
 Debrief:
@@ -138,7 +138,7 @@ the task handler.
 15:
 16:   for(auto task : tasks) {          // print out each task's attributes
 17:     std::cout << task.name() << ": "
-18:               << "num_dependents=" << task.num_dependents() << ", "
+18:               << "num_predecessors=" << task.num_predecessors() << ", "
 19:               << "num_successors=" << task.num_successors() << '\n';
 20:   }
 21:
@@ -154,8 +154,8 @@ the task handler.
 The output of this program looks like the following:
 
 @code{.sh}
-This is Task 0: num_dependents=0, num_successors=1
-This is Task 1: num_dependents=1, num_successors=0
+This is Task 0: num_predecessors=0, num_successors=1
+This is Task 1: num_predecessors=1, num_successors=0
 digraph Taskflow {
 "This is Task 1";
 "This is Task 0";
@@ -168,7 +168,7 @@ Debrief:
 @li Lines 7-10 create two placeholder tasks with no works and stores the corresponding task handles in a vector
 @li Lines 12-13 name the two tasks with human-readable strings 
 @li Line 14 adds a dependency link from the first task to the second task
-@li Lines 16-20 print out the name of each task, the number of dependents, and the number of successors
+@li Lines 16-20 print out the name of each task, the number of predecessors, and the number of successors
 @li Line 22 dumps the task dependency graph to a @GraphVizOnline format (dot)
 @li Lines 24-25 assign a new target to each task
 
@@ -177,9 +177,9 @@ The later assignment overwrites the previous values.
 
 @section TraverseAdjacentTasks Traverse Adjacent Tasks
 
-You can iterate the successor list and the dependent list of a task by using tf::Task::for_each_successor
-and tf::Task::for_each_dependent, respectively.
-Each method takes a lambda and applies it to a successor or a dependent being traversed.
+You can iterate the successor list and the predecessor list of a task by using tf::Task::for_each_successor
+and tf::Task::for_each_predecessor, respectively.
+Each method takes a lambda and applies it to a successor or a predecessor being traversed.
 
 @code{.cpp}
 // traverse all successors of my_task
@@ -187,9 +187,9 @@ my_task.for_each_successor([s=0] (tf::Task successor) mutable {
   std::cout << "successor " << s++ << '\n';
 });
 
-// traverse all dependents of my_task
-my_task.for_each_dependent([d=0] (tf::Task dependent) mutable {
-  std::cout << "dependent " << d++ << '\n';
+// traverse all predecessors of my_task
+my_task.for_each_predecessor([d=0] (tf::Task predecessor) mutable {
+  std::cout << "predecessor " << d++ << '\n';
 });
 @endcode
 

@@ -443,13 +443,13 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">a.precede(b,<sp/>c,<sp/>d);</highlight></codeline>
 <codeline><highlight class="normal">assert(a.num_successors()<sp/>==<sp/>3);</highlight></codeline>
-<codeline><highlight class="normal">assert(b.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
-<codeline><highlight class="normal">assert(c.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
-<codeline><highlight class="normal">assert(d.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(b.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(c.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(d.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" kindref="member">remove_dependency</ref>(a,<sp/>b);</highlight></codeline>
 <codeline><highlight class="normal">assert(a.num_successors()<sp/>==<sp/>2);</highlight></codeline>
-<codeline><highlight class="normal">assert(b.num_dependents()<sp/>==<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal">assert(b.num_predecessors()<sp/>==<sp/>0);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>

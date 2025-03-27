@@ -59,7 +59,7 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
 
     for(size_t i=0; i<num_tasks; ++i) {
       REQUIRE(silent_tasks[i].name() == std::to_string(i));
-      REQUIRE(silent_tasks[i].num_dependents() == 0);
+      REQUIRE(silent_tasks[i].num_predecessors() == 0);
       REQUIRE(silent_tasks[i].num_successors() == 0);
     }
 
@@ -112,12 +112,12 @@ TEST_CASE("Builder" * doctest::timeout(300)) {
       }
 
       if(i==0) {
-        //REQUIRE(tasks[i].first.num_dependents() == 0);
-        REQUIRE(tasks[i].num_dependents() == 0);
+        //REQUIRE(tasks[i].first.num_predecessors() == 0);
+        REQUIRE(tasks[i].num_predecessors() == 0);
       }
       else {
-        //REQUIRE(tasks[i].first.num_dependents() == 1);
-        REQUIRE(tasks[i].num_dependents() == 1);
+        //REQUIRE(tasks[i].first.num_predecessors() == 1);
+        REQUIRE(tasks[i].num_predecessors() == 1);
       }
     }
     executor.run(taskflow).get();
@@ -281,43 +281,43 @@ TEST_CASE("Removal" * doctest::timeout(300)) {
   auto d = taskflow.placeholder().name("d");
 
   REQUIRE(a.num_successors() == 0);
-  REQUIRE(a.num_dependents() == 0);
+  REQUIRE(a.num_predecessors() == 0);
   REQUIRE(a.num_successors() == 0);
-  REQUIRE(a.num_dependents() == 0);
+  REQUIRE(a.num_predecessors() == 0);
 
   a.precede(b, c, d);
   REQUIRE(a.num_successors() == 3);
-  REQUIRE(b.num_dependents() == 1);
-  REQUIRE(c.num_dependents() == 1);
-  REQUIRE(d.num_dependents() == 1);
+  REQUIRE(b.num_predecessors() == 1);
+  REQUIRE(c.num_predecessors() == 1);
+  REQUIRE(d.num_predecessors() == 1);
 
   taskflow.remove_dependency(a, b);
   REQUIRE(a.num_successors() == 2);
-  REQUIRE(b.num_dependents() == 0);
+  REQUIRE(b.num_predecessors() == 0);
 
   taskflow.remove_dependency(a, c);
   REQUIRE(a.num_successors() == 1);
-  REQUIRE(c.num_dependents() == 0);
+  REQUIRE(c.num_predecessors() == 0);
   
   taskflow.remove_dependency(a, d);
   REQUIRE(a.num_successors() == 0);
-  REQUIRE(d.num_dependents() == 0);
+  REQUIRE(d.num_predecessors() == 0);
 
   a.precede(b, b, c, c, d, d);
   REQUIRE(a.num_successors() == 6);
-  REQUIRE(b.num_dependents() == 2);
+  REQUIRE(b.num_predecessors() == 2);
 
   taskflow.remove_dependency(a, b);
   REQUIRE(a.num_successors() == 4);
-  REQUIRE(b.num_dependents() == 0);
+  REQUIRE(b.num_predecessors() == 0);
 
   taskflow.remove_dependency(a, c);
   REQUIRE(a.num_successors() == 2);
-  REQUIRE(b.num_dependents() == 0);
+  REQUIRE(b.num_predecessors() == 0);
   
   taskflow.remove_dependency(a, d);
   REQUIRE(a.num_successors() == 0);
-  REQUIRE(d.num_dependents() == 0);
+  REQUIRE(d.num_predecessors() == 0);
 }
 
 
@@ -403,7 +403,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
       }
     });
 
-    E.for_each_dependent([&, i=0](tf::Task s) mutable {
+    E.for_each_predecessor([&, i=0](tf::Task s) mutable {
       switch(i++) {
         case 0:
           REQUIRE(s == A);
@@ -441,7 +441,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     A.precede(B);
 
     A.for_each_successor([B](tf::Task s){ REQUIRE(s==B); });
-    B.for_each_dependent([A](tf::Task s){ REQUIRE(s==A); });
+    B.for_each_predecessor([A](tf::Task s){ REQUIRE(s==A); });
 
     A.precede(C);
     A.precede(D);
@@ -467,7 +467,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(e==1);
 
     counter = a = b = c = d = e = 0;
-    B.for_each_dependent([&](tf::Task s) {
+    B.for_each_predecessor([&](tf::Task s) {
       counter++;
       if(s == A) ++a;
       if(s == B) ++b;
@@ -476,7 +476,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
       if(s == E) ++e;
     });
 
-    REQUIRE(counter == B.num_dependents());
+    REQUIRE(counter == B.num_predecessors());
     REQUIRE(a == 1);
     REQUIRE(b == 0);
     REQUIRE(c == 1);
@@ -493,7 +493,7 @@ TEST_CASE("Iterators" * doctest::timeout(300)) {
     REQUIRE(D.name() == "A");
     REQUIRE(E.name() == "A");
 
-    B.for_each_dependent([](tf::Task s){
+    B.for_each_predecessor([](tf::Task s){
       s.name("B");
     });
 

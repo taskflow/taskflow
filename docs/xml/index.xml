@@ -80,15 +80,15 @@
     <member refid="structtf_1_1Node_1_1Condition_1a781e9c6374654fd12a35b6c9b4346884" kind="function"><name>Condition</name></member>
   </compound>
   <compound refid="structtf_1_1detail_1_1cudaBlockReduce" kind="struct"><name>tf::detail::cudaBlockReduce</name>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a090793ae40eaea9ae4cfec2960777c7e" kind="variable"><name>group_size</name></member>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a83b5862bde412c439b25d17e6b85f176" kind="variable"><name>num_passes</name></member>
-    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1af4f00b1e05f942cf0eaf448ca37baf83" kind="variable"><name>num_items</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1ab1581711f69e1c00b235f7197b143ffa" kind="variable"><name>group_size</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a337de22d35b9937fc2fb21a366afa636" kind="variable"><name>num_passes</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a8eafb9d735ad46238ef9e7a508712889" kind="variable"><name>num_items</name></member>
     <member refid="structtf_1_1detail_1_1cudaBlockReduce_1a6487595da01b3fb5666f41c52b93f5a0" kind="function"><name>operator()</name></member>
   </compound>
   <compound refid="structtf_1_1detail_1_1cudaBlockScan" kind="struct"><name>tf::detail::cudaBlockScan</name>
-    <member refid="structtf_1_1detail_1_1cudaBlockScan_1ade947dae7ff7d1a8d33cb937f0c9d93a" kind="variable"><name>num_warps</name></member>
-    <member refid="structtf_1_1detail_1_1cudaBlockScan_1a341cac68448f65a06e10c1327bfe06a5" kind="variable"><name>num_passes</name></member>
-    <member refid="structtf_1_1detail_1_1cudaBlockScan_1a232b3e951d2a0b68b98e3ced6964b223" kind="variable"><name>capacity</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockScan_1a64a40d4728c65b4019c8fffa8fc8605a" kind="variable"><name>num_warps</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockScan_1a358ff68745420d9e8aa027907c1aba64" kind="variable"><name>num_passes</name></member>
+    <member refid="structtf_1_1detail_1_1cudaBlockScan_1a11126c1cbf8d463287478b8a5c04a036" kind="variable"><name>capacity</name></member>
     <member refid="structtf_1_1detail_1_1cudaBlockScan_1a5ac5687ea52d5b6378bd22f4e0bf3b2d" kind="function"><name>operator()</name></member>
     <member refid="structtf_1_1detail_1_1cudaBlockScan_1aeab231ca5acb3afa6be1f82c95397aad" kind="function"><name>operator()</name></member>
   </compound>
@@ -168,19 +168,10 @@
     <member refid="structtf_1_1detail_1_1cudaFindPair_1a2fb94039a5cb8280591044a35626ad8d" kind="function"><name>operator unsigned</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlow" kind="class"><name>tf::cudaFlow</name>
-    <member refid="classtf_1_1cudaFlow_1a31c7ba8b8053d6ad95c7da5e5a9494f2" kind="variable"><name>_cfg</name></member>
-    <member refid="classtf_1_1cudaFlow_1a8e3255897f01f87dcd9ca506c314a125" kind="variable"><name>_exe</name></member>
-    <member refid="classtf_1_1cudaFlow_1ad4c3e001db151486c8479151a2108d37" kind="function"><name>cudaFlow</name></member>
+    <member refid="classtf_1_1cudaFlow_1a1db9e88c4cdbeab9b8b9973d86aff603" kind="function"><name>cudaFlow</name></member>
     <member refid="classtf_1_1cudaFlow_1a828c3ab275521672e4ec6c78d3a9ee62" kind="function"><name>~cudaFlow</name></member>
-    <member refid="classtf_1_1cudaFlow_1a677a4b510abee2ac665193389b20f725" kind="function"><name>cudaFlow</name></member>
-    <member refid="classtf_1_1cudaFlow_1a74beef874538193ac0df81a180faa742" kind="function"><name>operator=</name></member>
-    <member refid="classtf_1_1cudaFlow_1a1926f45a038d8faa9c1b1ee43fd29a93" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1cudaFlow_1ae6560c27d249af7e4b8b921388f5e1e2" kind="function"><name>num_tasks</name></member>
-    <member refid="classtf_1_1cudaFlow_1aad726dfe21e9719d96c65530a56d9951" kind="function"><name>clear</name></member>
-    <member refid="classtf_1_1cudaFlow_1a7f97b68fa7c889db49b26aa71a46a7cf" kind="function"><name>dump</name></member>
-    <member refid="classtf_1_1cudaFlow_1a43507f21eb9cb77667ffe0ac7e6ae635" kind="function"><name>dump_native_graph</name></member>
     <member refid="classtf_1_1cudaFlow_1a30b2e107cb2c90a37f467b28d1b42a74" kind="function"><name>noop</name></member>
-    <member refid="classtf_1_1cudaFlow_1a060e1c96111c2134ce0f896420a42cd0" kind="function"><name>host</name></member>
+    <member refid="classtf_1_1cudaFlow_1adbf30475e6d96ffeca029c8ed7f728c1" kind="function"><name>host</name></member>
     <member refid="classtf_1_1cudaFlow_1a02e4e5cf7d03b9d087d6fbf54eb86bbf" kind="function"><name>host</name></member>
     <member refid="classtf_1_1cudaFlow_1a68f666503d13a7b80fb7399fb2f0c153" kind="function"><name>kernel</name></member>
     <member refid="classtf_1_1cudaFlow_1a821117dd640807bb7ec114b46888dfb1" kind="function"><name>kernel</name></member>
@@ -196,7 +187,6 @@
     <member refid="classtf_1_1cudaFlow_1a6cf6ec1e85172fa99c16bf0beffc0562" kind="function"><name>copy</name></member>
     <member refid="classtf_1_1cudaFlow_1ae6810f7de27e5a347331aacfce67bea1" kind="function"><name>run</name></member>
     <member refid="classtf_1_1cudaFlow_1acfbee67cff7dc7c6297c20c64f2e015c" kind="function"><name>native_graph</name></member>
-    <member refid="classtf_1_1cudaFlow_1a5bfdaf621ab617ab5f0ca63466570256" kind="function"><name>native_executable</name></member>
     <member refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1cudaFlow_1add2d364f38c72322d8e36bc0da0b98e4" kind="function"><name>single_task</name></member>
     <member refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kind="function"><name>for_each</name></member>
@@ -217,7 +207,6 @@
     <member refid="classtf_1_1cudaFlowCapturer_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1aaaebe71b8297f4e14ba132a664401628" kind="variable"><name>_cfg</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1acdc0ba0a1d25ca9f3c0780a62b68508a" kind="variable"><name>_optimizer</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1aadd53d42f612da940755d5ebc6fb00de" kind="variable"><name>_exe</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a0ddccd6faa338047921269bfe964b774" kind="function"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a8492d77263ab2a15cce21d4bfae5b331" kind="function"><name>~cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1abeca6931972344a97c862c1f8d3ab9bb" kind="function"><name>cudaFlowCapturer</name></member>
@@ -249,11 +238,11 @@
     <member refid="classtf_1_1cudaFlowCapturer_1afa62195f91702a6f5cbdad6fefb97e4c" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1ac2f527e57e8fe447b9f13ba51e9b9c48" kind="function"><name>transform</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a568dcdd226d7e466e2ee106fcdde5db9" kind="function"><name>transform</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1aa1d016b56c06cb28eabfebfdd7dbb24d" kind="function"><name>make_optimizer</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1a218391ee8f5f13a602e6c3606e4e0c10" kind="function"><name>make_optimizer</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a31f29772f4713848c1b0ff1a66a3dcc3" kind="function"><name>capture</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a952596fd7c46acee4c2459d8fe39da28" kind="function"><name>run</name></member>
     <member refid="classtf_1_1cudaFlowCapturer_1a34be2e2d69ff66add60f5517e01bea83" kind="function"><name>native_graph</name></member>
-    <member refid="classtf_1_1cudaFlowCapturer_1a3c03a7d269268a2a63e864fedb2fb8a6" kind="function"><name>native_executable</name></member>
+    <member refid="classtf_1_1cudaFlowCapturer_1abacdc4f183477580e24452a2a27437cd" kind="function"><name>instantiate</name></member>
   </compound>
   <compound refid="classtf_1_1cudaFlowLinearOptimizer" kind="class"><name>tf::cudaFlowLinearOptimizer</name>
     <member refid="classtf_1_1cudaFlowLinearOptimizer_1a672b45d300c57d726c203c62f950efbd" kind="friend"><name>cudaFlowCapturer</name></member>
@@ -371,22 +360,18 @@
     <member refid="classtf_1_1cudaTask_1a672b45d300c57d726c203c62f950efbd" kind="friend"><name>cudaFlowCapturer</name></member>
     <member refid="classtf_1_1cudaTask_1a8a72366cffc8beb57fb68b1591df56e4" kind="friend"><name>cudaFlowCapturerBase</name></member>
     <member refid="classtf_1_1cudaTask_1aa48fa98a827ff71f8c3845a29f5e4d10" kind="friend"><name>operator&lt;&lt;</name></member>
-    <member refid="classtf_1_1cudaTask_1ac34d9bd5a869051ee5c7bc7b0faf9e33" kind="variable"><name>_node</name></member>
+    <member refid="classtf_1_1cudaTask_1ae334b42a45262d9488217817a1445db4" kind="variable"><name>_native_graph</name></member>
+    <member refid="classtf_1_1cudaTask_1af14ef67a7f6ad635b32107829084f87a" kind="variable"><name>_native_node</name></member>
     <member refid="classtf_1_1cudaTask_1a68942b759c0420da99b639a8de3cc3d1" kind="function"><name>cudaTask</name></member>
     <member refid="classtf_1_1cudaTask_1a367cf46c1ea828de4502a2ddc805c094" kind="function"><name>cudaTask</name></member>
     <member refid="classtf_1_1cudaTask_1af17c570ca9a43ad71c4b626635ea9cbb" kind="function"><name>operator=</name></member>
     <member refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kind="function"><name>precede</name></member>
     <member refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kind="function"><name>succeed</name></member>
-    <member refid="classtf_1_1cudaTask_1ab81b4f71a44af8d61758524f0c274962" kind="function"><name>name</name></member>
-    <member refid="classtf_1_1cudaTask_1aa80fb7a06b2828bd95c43fb465e10abe" kind="function"><name>name</name></member>
     <member refid="classtf_1_1cudaTask_1a581673ad83a48a2d3b4f06f125043c32" kind="function"><name>num_successors</name></member>
-    <member refid="classtf_1_1cudaTask_1afe21933815619b8f51f0efa2706aa16e" kind="function"><name>num_dependents</name></member>
-    <member refid="classtf_1_1cudaTask_1a1b0da9e643b80008063406fe1bf207b9" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1cudaTask_1a7eab02ec6633a5cf17cc15898db2d648" kind="function"><name>type</name></member>
-    <member refid="classtf_1_1cudaTask_1af2ce580b0bfb771e463e66af64c2c571" kind="function"><name>dump</name></member>
-    <member refid="classtf_1_1cudaTask_1aebdbc276e0b3b72b5c9e574e801e76dc" kind="function"><name>for_each_successor</name></member>
-    <member refid="classtf_1_1cudaTask_1afd23fdf190317e790e7fc35049b53fcf" kind="function"><name>for_each_dependent</name></member>
-    <member refid="classtf_1_1cudaTask_1a3087f0396df700ada2d56a81a2b18fcb" kind="function"><name>cudaTask</name></member>
+    <member refid="classtf_1_1cudaTask_1a8fe3a77426f3fdc186fef1c838cf5f35" kind="function"><name>num_dependencies</name></member>
+    <member refid="classtf_1_1cudaTask_1a78b6a856c844a08d4d9cfa992dc6cfef" kind="function"><name>type</name></member>
+    <member refid="classtf_1_1cudaTask_1ad1198268d00b50c3c705a2c9826d5a64" kind="function"><name>dump</name></member>
+    <member refid="classtf_1_1cudaTask_1a2e0fab31a5862dddacfdfc281d8f479b" kind="function"><name>cudaTask</name></member>
   </compound>
   <compound refid="classtf_1_1cudaUSMAllocator" kind="class"><name>tf::cudaUSMAllocator</name>
     <member refid="classtf_1_1cudaUSMAllocator_1a4ab981d38c36112b589a3b67c510fc50" kind="typedef"><name>value_type</name></member>
@@ -721,7 +706,7 @@
     <member refid="classtf_1_1Node_1ae771748b9bb4f9a01116ddbc31f7bc2d" kind="variable"><name>_topology</name></member>
     <member refid="classtf_1_1Node_1a20e0970afa16e43872a9a2f8839e9540" kind="variable"><name>_parent</name></member>
     <member refid="classtf_1_1Node_1a45a3783b67e19091d8e02e5ab56c6b63" kind="variable"><name>_successors</name></member>
-    <member refid="classtf_1_1Node_1a4f549abd6361156430572e57a1f89aec" kind="variable"><name>_dependents</name></member>
+    <member refid="classtf_1_1Node_1ab7fcc78e371460bb8726f3801311731d" kind="variable"><name>_predecessors</name></member>
     <member refid="classtf_1_1Node_1a58f07ec0fb20050fe1d9845ac1d897f6" kind="variable"><name>_join_counter</name></member>
     <member refid="classtf_1_1Node_1a83b494fd50500454e9fb1b8afe8fc65c" kind="variable"><name>_handle</name></member>
     <member refid="classtf_1_1Node_1a26a8c9bfbbd1c62dbd49545d9d49a8f4" kind="variable"><name>_semaphores</name></member>
@@ -734,9 +719,9 @@
     <member refid="classtf_1_1Node_1a1aacff0f33b84bded0a710bd041eacc6" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1aa04ef4278e9f1807b2c094204a9e1e48" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1a7133911e093d82e5f5edd73124b60c6a" kind="function"><name>num_successors</name></member>
-    <member refid="classtf_1_1Node_1abbb6a85cc8f62682ce8c78ad9851c0e5" kind="function"><name>num_dependents</name></member>
-    <member refid="classtf_1_1Node_1ad5eb7ac6418e89fccc300986b216510c" kind="function"><name>num_strong_dependents</name></member>
-    <member refid="classtf_1_1Node_1a7dbe963f0173062f3a6164f1ff581c5a" kind="function"><name>num_weak_dependents</name></member>
+    <member refid="classtf_1_1Node_1af771d849ce6a940a421f56507568f3d6" kind="function"><name>num_predecessors</name></member>
+    <member refid="classtf_1_1Node_1aecd850cfdacc0c0934f96654de86084f" kind="function"><name>num_strong_dependencies</name></member>
+    <member refid="classtf_1_1Node_1a4a66af2426c38bc23f2dd77db0dd2e9b" kind="function"><name>num_weak_dependencies</name></member>
     <member refid="classtf_1_1Node_1a0214bc98366d4c24a1cae941cdffe119" kind="function"><name>name</name></member>
     <member refid="classtf_1_1Node_1a803cea9b57cbb262284ab2324bec7580" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1ad3aafecacb2f3b8f3a482860fad53949" kind="function"><name>Node</name></member>
@@ -1168,9 +1153,9 @@
     <member refid="classtf_1_1Task_1af4e13636e3a494297b30c2b2e483f095" kind="function"><name>operator!=</name></member>
     <member refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kind="function"><name>name</name></member>
     <member refid="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" kind="function"><name>num_successors</name></member>
-    <member refid="classtf_1_1Task_1a974dc1d738b62b829ad261beeafbd67c" kind="function"><name>num_dependents</name></member>
-    <member refid="classtf_1_1Task_1ad49a92e8858c3c298bed0215e341b66b" kind="function"><name>num_strong_dependents</name></member>
-    <member refid="classtf_1_1Task_1af3bf886291af7f39957d43d17083fe07" kind="function"><name>num_weak_dependents</name></member>
+    <member refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" kind="function"><name>num_predecessors</name></member>
+    <member refid="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" kind="function"><name>num_strong_dependencies</name></member>
+    <member refid="classtf_1_1Task_1ad5e874b7cc77df1e7dc875d436ff7b72" kind="function"><name>num_weak_dependencies</name></member>
     <member refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" kind="function"><name>name</name></member>
     <member refid="classtf_1_1Task_1a2f6f4cec42d016e5eb89390f362ffe99" kind="function"><name>work</name></member>
     <member refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kind="function"><name>composed_of</name></member>
@@ -1186,7 +1171,7 @@
     <member refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" kind="function"><name>empty</name></member>
     <member refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" kind="function"><name>has_work</name></member>
     <member refid="classtf_1_1Task_1aff13a503d4a3c994eb08cb6f22e1b427" kind="function"><name>for_each_successor</name></member>
-    <member refid="classtf_1_1Task_1a3bf68937662bf291637e4a763476b2e4" kind="function"><name>for_each_dependent</name></member>
+    <member refid="classtf_1_1Task_1a31d8069d4c0b10b55e68d260c4d28c1f" kind="function"><name>for_each_predecessor</name></member>
     <member refid="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" kind="function"><name>hash_value</name></member>
     <member refid="classtf_1_1Task_1af2df95e6c8c5870c033d692e88af0bc2" kind="function"><name>type</name></member>
     <member refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kind="function"><name>dump</name></member>
@@ -1238,11 +1223,11 @@
     <member refid="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" kind="variable"><name>_node</name></member>
     <member refid="classtf_1_1TaskView_1ac8cd58171de8ab4865e3c3f142db2db1" kind="function"><name>name</name></member>
     <member refid="classtf_1_1TaskView_1aff16d269ac75cffa55a312593f20d30d" kind="function"><name>num_successors</name></member>
-    <member refid="classtf_1_1TaskView_1acc4e2bef464e8fbb5706cefdf482a24f" kind="function"><name>num_dependents</name></member>
-    <member refid="classtf_1_1TaskView_1ac7bcb9cb1ee8f020de56fdbf8e651388" kind="function"><name>num_strong_dependents</name></member>
-    <member refid="classtf_1_1TaskView_1ad1ddd9a7e68a81feee1785ece99e58f5" kind="function"><name>num_weak_dependents</name></member>
+    <member refid="classtf_1_1TaskView_1a050f76e486dea993a2b9d930539aad85" kind="function"><name>num_predecessors</name></member>
+    <member refid="classtf_1_1TaskView_1adb798808f6ef9b46399fae1c2dbed19b" kind="function"><name>num_strong_dependencies</name></member>
+    <member refid="classtf_1_1TaskView_1aaefc8ab88f17ac27e6537f6d6ecb37cf" kind="function"><name>num_weak_dependencies</name></member>
     <member refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" kind="function"><name>for_each_successor</name></member>
-    <member refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" kind="function"><name>for_each_dependent</name></member>
+    <member refid="classtf_1_1TaskView_1a1db6f5c5e325ea0e0d41a16aee2e3ad6" kind="function"><name>for_each_predecessor</name></member>
     <member refid="classtf_1_1TaskView_1aa20d7b5796064c3ab194e6d7ebe2adb1" kind="function"><name>type</name></member>
     <member refid="classtf_1_1TaskView_1abe95eb9e866cd7b8137d5e8ca5deace6" kind="function"><name>hash_value</name></member>
     <member refid="classtf_1_1TaskView_1ad19afa391850d49513c4280439fc50ee" kind="function"><name>TaskView</name></member>
@@ -1901,15 +1886,6 @@
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kind="enum"><name>PipeType</name></member>
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kind="enumvalue"><name>PARALLEL</name></member>
     <member refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kind="enumvalue"><name>SERIAL</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" kind="enum"><name>cudaTaskType</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" kind="enumvalue"><name>EMPTY</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" kind="enumvalue"><name>HOST</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" kind="enumvalue"><name>MEMSET</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" kind="enumvalue"><name>MEMCPY</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" kind="enumvalue"><name>KERNEL</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" kind="enumvalue"><name>SUBFLOW</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" kind="enumvalue"><name>CAPTURE</name></member>
-    <member refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" kind="enumvalue"><name>UNDEFINED</name></member>
     <member refid="namespacetf_1a24e111672ff15b86ab128b5ec1cf64ab" kind="typedef"><name>DefaultNotifier</name></member>
     <member refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kind="typedef"><name>observer_stamp_t</name></member>
     <member refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kind="typedef"><name>DefaultPartitioner</name></member>
@@ -1927,6 +1903,7 @@
     <member refid="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" kind="function"><name>next_pow2</name></member>
     <member refid="namespacetf_1a8d48a5014f34a9f97aae5269c2367e38" kind="function"><name>is_pow2</name></member>
     <member refid="namespacetf_1a8845f13b039ef9820087c9f467f6c734" kind="function"><name>floor_log2</name></member>
+    <member refid="namespacetf_1a908e0f3faf873e897b3e1bafbd4bb876" kind="function"><name>static_floor_log2</name></member>
     <member refid="namespacetf_1a0b2dc0c0c931b9b627fc0a148085fa5e" kind="function"><name>median_of_three</name></member>
     <member refid="namespacetf_1a5f9a989c8de663d3ee010cbc6de13c91" kind="function"><name>pseudo_median_of_nine</name></member>
     <member refid="namespacetf_1a8d3fa9252b0da87bff1df912d0a591fe" kind="function"><name>sort2</name></member>
@@ -1982,7 +1959,6 @@
     <member refid="namespacetf_1ae174a3a49b91ef21554dac16806f0d72" kind="function"><name>cuda_free</name></member>
     <member refid="namespacetf_1aa4266474b921f8ed7d9ec8071fded2a4" kind="function"><name>cuda_memcpy_async</name></member>
     <member refid="namespacetf_1a6615554d2954e895755411ee444d9760" kind="function"><name>cuda_memset_async</name></member>
-    <member refid="namespacetf_1af21fe1eaf680dbddc0503ef5d1a9a664" kind="function"><name>to_string</name></member>
     <member refid="namespacetf_1a9cca69f61d792afb3ad501b703d795c1" kind="function"><name>operator&lt;&lt;</name></member>
     <member refid="namespacetf_1a2ff1cf81426c856fc6db1f6ead47878f" kind="function"><name>cuda_single_task</name></member>
     <member refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kind="function"><name>cuda_for_each</name></member>

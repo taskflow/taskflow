@@ -234,11 +234,11 @@
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="198" column="12" bodyfile="taskflow/core/task.hpp" bodystart="522" bodyend="524"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Task_1a974dc1d738b62b829ad261beeafbd67c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Task::num_dependents</definition>
+        <definition>size_t tf::Task::num_predecessors</definition>
         <argsstring>() const</argsstring>
-        <name>num_dependents</name>
+        <name>num_predecessors</name>
         <briefdescription>
 <para>queries the number of predecessors of the task </para>
         </briefdescription>
@@ -248,11 +248,11 @@
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="203" column="12" bodyfile="taskflow/core/task.hpp" bodystart="507" bodyend="509"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Task_1ad49a92e8858c3c298bed0215e341b66b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Task::num_strong_dependents</definition>
+        <definition>size_t tf::Task::num_strong_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_strong_dependents</name>
+        <name>num_strong_dependencies</name>
         <briefdescription>
 <para>queries the number of strong dependents of the task </para>
         </briefdescription>
@@ -262,11 +262,11 @@
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="208" column="12" bodyfile="taskflow/core/task.hpp" bodystart="512" bodyend="514"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Task_1af3bf886291af7f39957d43d17083fe07" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Task_1ad5e874b7cc77df1e7dc875d436ff7b72" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::Task::num_weak_dependents</definition>
+        <definition>size_t tf::Task::num_weak_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_weak_dependents</name>
+        <name>num_weak_dependencies</name>
         <briefdescription>
 <para>queries the number of weak dependents of the task </para>
         </briefdescription>
@@ -703,16 +703,16 @@ The following example shows how to attach user data to a task and run the task i
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="348" column="10" bodyfile="taskflow/core/task.hpp" bodystart="554" bodyend="558"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Task_1a3bf68937662bf291637e4a763476b2e4" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Task_1a31d8069d4c0b10b55e68d260c4d28c1f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename V</type>
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::Task::for_each_dependent</definition>
+        <definition>void tf::Task::for_each_predecessor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
-        <name>for_each_dependent</name>
+        <name>for_each_predecessor</name>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -824,16 +824,16 @@ The following example shows how to attach user data to a task and run the task i
       <member refid="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>empty</name></member>
       <member refid="classtf_1_1Task_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Task</scope><name>Executor</name></member>
       <member refid="classtf_1_1Task_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Task</scope><name>FlowBuilder</name></member>
-      <member refid="classtf_1_1Task_1a3bf68937662bf291637e4a763476b2e4" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>for_each_dependent</name></member>
+      <member refid="classtf_1_1Task_1a31d8069d4c0b10b55e68d260c4d28c1f" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>for_each_predecessor</name></member>
       <member refid="classtf_1_1Task_1aff13a503d4a3c994eb08cb6f22e1b427" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>for_each_successor</name></member>
       <member refid="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>has_work</name></member>
       <member refid="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>hash_value</name></member>
       <member refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>name</name></member>
       <member refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>name</name></member>
-      <member refid="classtf_1_1Task_1a974dc1d738b62b829ad261beeafbd67c" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_dependents</name></member>
-      <member refid="classtf_1_1Task_1ad49a92e8858c3c298bed0215e341b66b" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_strong_dependents</name></member>
+      <member refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_predecessors</name></member>
+      <member refid="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_strong_dependencies</name></member>
       <member refid="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_successors</name></member>
-      <member refid="classtf_1_1Task_1af3bf886291af7f39957d43d17083fe07" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_weak_dependents</name></member>
+      <member refid="classtf_1_1Task_1ad5e874b7cc77df1e7dc875d436ff7b72" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_weak_dependencies</name></member>
       <member refid="classtf_1_1Task_1af4e13636e3a494297b30c2b2e483f095" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>operator!=</name></member>
       <member refid="classtf_1_1Task_1aebdcc47e47a119f261daab673a971458" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>operator=</name></member>
       <member refid="classtf_1_1Task_1a4b0e3d6a1985a353626c15970c51c820" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>operator=</name></member>

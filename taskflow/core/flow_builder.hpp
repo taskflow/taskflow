@@ -1309,15 +1309,15 @@ inline void FlowBuilder::erase(Task task) {
     return;
   }
 
-  task.for_each_dependent([&] (Task dependent) {
+  task.for_each_predecessor([&] (Task dependent) {
     auto& S = dependent._node->_successors;
     if(auto I = std::find(S.begin(), S.end(), task._node); I != S.end()) {
       S.erase(I);
     }
   });
 
-  task.for_each_successor([&] (Task dependent) {
-    auto& D = dependent._node->_dependents;
+  task.for_each_successor([&] (Task successor) {
+    auto& D = successor._node->_predecessors;
     if(auto I = std::find(D.begin(), D.end(), task._node); I != D.end()) {
       D.erase(I);
     }

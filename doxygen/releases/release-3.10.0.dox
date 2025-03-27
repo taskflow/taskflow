@@ -106,6 +106,13 @@ taskflow.reduce_by_index(
 
 @section release-3-10-0_breaking_changes Breaking Changes
 
++ corrected the terminology by replacing 'dependents' with 'predecessors'
+  + tf::Task::num_predecessors (previously tf::Task::num_dependents)
+  + tf::Task::for_each_dependent (previously tf::Task::for_each_dependent)
+  + tf::Task::num_strong_dependencies (previously tf::Task::num_strong_dependents)
+  + tf::Task::num_weak_dependencies (previously tf::Task::num_weak_dependents)
+
+
 Currently, there are no breaking changes.
 
 @section release-3-10-0_documentation Documentation

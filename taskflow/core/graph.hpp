@@ -303,9 +303,9 @@ class Node {
   //~Node();
 
   size_t num_successors() const;
-  size_t num_dependents() const;
-  size_t num_strong_dependents() const;
-  size_t num_weak_dependents() const;
+  size_t num_predecessors() const;
+  size_t num_strong_dependencies() const;
+  size_t num_weak_dependencies() const;
 
   const std::string& name() const;
 
@@ -322,7 +322,7 @@ class Node {
   Node* _parent {nullptr};
 
   SmallVector<Node*> _successors;
-  SmallVector<Node*> _dependents;
+  SmallVector<Node*> _predecessors;
 
   std::atomic<size_t> _join_counter {0};
   
@@ -598,7 +598,7 @@ Node::Node(
 // Procedure: _precede
 inline void Node::_precede(Node* v) {
   _successors.push_back(v);
-  v->_dependents.push_back(this);
+  v->_predecessors.push_back(this);
 }
 
 // Function: num_successors
@@ -606,27 +606,27 @@ inline size_t Node::num_successors() const {
   return _successors.size();
 }
 
-// Function: dependents
-inline size_t Node::num_dependents() const {
-  return _dependents.size();
+// Function: predecessors
+inline size_t Node::num_predecessors() const {
+  return _predecessors.size();
 }
 
-// Function: num_weak_dependents
-inline size_t Node::num_weak_dependents() const {
+// Function: num_weak_dependencies
+inline size_t Node::num_weak_dependencies() const {
   size_t n = 0;
-  for(size_t i=0; i<_dependents.size(); i++) {
-    if(_dependents[i]->_is_conditioner()) {
+  for(size_t i=0; i<_predecessors.size(); i++) {
+    if(_predecessors[i]->_is_conditioner()) {
       n++;
     }
   }
   return n;
 }
 
-// Function: num_strong_dependents
-inline size_t Node::num_strong_dependents() const {
+// Function: num_strong_dependencies
+inline size_t Node::num_strong_dependencies() const {
   size_t n = 0;
-  for(size_t i=0; i<_dependents.size(); i++) {
-    if(!_dependents[i]->_is_conditioner()) {
+  for(size_t i=0; i<_predecessors.size(); i++) {
+    if(!_predecessors[i]->_is_conditioner()) {
       n++;
     }
   }
@@ -660,7 +660,7 @@ inline bool Node::_is_cancelled() const {
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
   size_t c = 0;
-  for(auto p : _dependents) {
+  for(auto p : _predecessors) {
     if(p->_is_conditioner()) {
       //_nstate |= NSTATE::CONDITIONED;
       _nstate = (_nstate + 1) | NSTATE::CONDITIONED;
