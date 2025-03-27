@@ -50,22 +50,24 @@ auto gpu(int M, int N, int K) {
     tf::cudaFlow cf;
 
     // copy data to da, db, and dc
-    auto copy_da = cf.copy(da, ha.data(), M*N).name("H2D_a");
-    auto copy_db = cf.copy(db, hb.data(), N*K).name("H2D_b");
-    auto copy_hc = cf.copy(hc.data(), dc, M*K).name("D2H_c"); 
-    
+    auto copy_da = cf.copy(da, ha.data(), M*N);
+    auto copy_db = cf.copy(db, hb.data(), N*K);
+    auto copy_hc = cf.copy(hc.data(), dc, M*K); 
+
     dim3 grid  ((K+16-1)/16, (M+16-1)/16);
     dim3 block (16, 16);
 
-    auto kmatmul = cf.kernel(grid, block, 0, matmul, da, db, dc, M, N, K)
-                     .name("matmul");
+    auto kmatmul = cf.kernel(grid, block, 0, matmul, da, db, dc, M, N, K);
 
     kmatmul.succeed(copy_da, copy_db)
            .precede(copy_hc);
     
     tf::cudaStream stream;
-    cf.run(stream);
+    auto exec = cf.instantiate();
+    exec.run(stream);
     stream.synchronize(); 
+
+    cf.dump(std::cout);
 
   }).name("cudaFlow");
 

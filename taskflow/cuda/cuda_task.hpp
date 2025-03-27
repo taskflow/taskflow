@@ -9,49 +9,7 @@
 
 namespace tf {
 
-// ----------------------------------------------------------------------------
-// cudaTask Types
-// ----------------------------------------------------------------------------
 
-/**
-@enum cudaTaskType
-
-@brief enumeration of all %cudaTask types
-*/
-enum class cudaTaskType : int {
-  /** @brief empty task type */
-  EMPTY = 0,
-  /** @brief host task type */
-  HOST,
-  /** @brief memory set task type */
-  MEMSET,
-  /** @brief memory copy task type */
-  MEMCPY,
-  /** @brief memory copy task type */
-  KERNEL,
-  /** @brief subflow (child graph) task type */
-  SUBFLOW,
-  /** @brief capture task type */
-  CAPTURE,
-  /** @brief undefined task type */
-  UNDEFINED
-};
-
-/**
-@brief convert a cuda_task type to a human-readable string
-*/
-constexpr const char* to_string(cudaTaskType type) {
-  switch(type) {
-    case cudaTaskType::EMPTY:   return "empty";
-    case cudaTaskType::HOST:    return "host";
-    case cudaTaskType::MEMSET:  return "memset";
-    case cudaTaskType::MEMCPY:  return "memcpy";
-    case cudaTaskType::KERNEL:  return "kernel";
-    case cudaTaskType::SUBFLOW: return "subflow";
-    case cudaTaskType::CAPTURE: return "capture";
-    default:                    return "undefined";
-  }
-}
 
 // ----------------------------------------------------------------------------
 // cudaTask
@@ -112,20 +70,6 @@ class cudaTask {
     cudaTask& succeed(Ts&&... tasks);
 
     /**
-    @brief assigns a name to the task
-
-    @param name a @std_string acceptable string
-
-    @return @c *this
-    */
-    cudaTask& name(const std::string& name);
-
-    /**
-    @brief queries the name of the task
-    */
-    const std::string& name() const;
-
-    /**
     @brief queries the number of successors
     */
     size_t num_successors() const;
@@ -133,128 +77,102 @@ class cudaTask {
     /**
     @brief queries the number of dependents
     */
-    size_t num_dependents() const;
+    size_t num_dependencies() const;
 
     /**
-    @brief queries if the task is associated with a cudaFlowNode
+    @brief queries the type of this task
     */
-    bool empty() const;
-
-    /**
-    @brief queries the task type
-    */
-    cudaTaskType type() const;
+    auto type() const;
 
     /**
     @brief dumps the task through an output stream
 
-    @tparam T output stream type with insertion operator (<<) defined
-    @param ostream an output stream target
+    @param os an output stream target
     */
-    template <typename T>
-    void dump(T& ostream) const;
-
-    /**
-    @brief applies an visitor callable to each successor of the task
-    */
-    template <typename V>
-    void for_each_successor(V&& visitor) const;
-
-    /**
-    @brief applies an visitor callable to each dependents of the task
-    */
-    template <typename V>
-    void for_each_dependent(V&& visitor) const;
+    void dump(std::ostream& os) const;
 
   private:
 
-    cudaTask(cudaFlowNode*);
-
-    cudaFlowNode* _node {nullptr};
+    cudaTask(cudaGraph_t, cudaGraphNode_t);
+    
+    cudaGraph_t _native_graph {nullptr};
+    cudaGraphNode_t _native_node {nullptr};
 };
 
 // Constructor
-inline cudaTask::cudaTask(cudaFlowNode* node) : _node {node} {
+inline cudaTask::cudaTask(cudaGraph_t native_graph, cudaGraphNode_t native_node) : 
+  _native_graph {native_graph}, _native_node  {native_node} {
 }
-
+  
 // Function: precede
 template <typename... Ts>
 cudaTask& cudaTask::precede(Ts&&... tasks) {
-  (_node->_precede(tasks._node), ...);
+    
+  (
+    //TF_CHECK_CUDA(
+      cudaGraphAddDependencies(
+        _native_graph, &_native_node, &(tasks._native_node), 1
+      )
+      //"failed to add a preceding link ", _native_node, "->", tasks._native_node
+    , ...
+  );
+
   return *this;
 }
 
 // Function: succeed
 template <typename... Ts>
 cudaTask& cudaTask::succeed(Ts&&... tasks) {
-  (tasks._node->_precede(_node), ...);
+  (tasks.precede(*this), ...);
   return *this;
 }
 
-// Function: empty
-inline bool cudaTask::empty() const {
-  return _node == nullptr;
-}
+//// Function: num_successors
+//inline size_t cudaTask::num_successors() const {
+//  return _node->_successors.size();
+//}
 
-// Function: name
-inline cudaTask& cudaTask::name(const std::string& name) {
-  _node->_name = name;
-  return *this;
-}
-
-// Function: name
-inline const std::string& cudaTask::name() const {
-  return _node->_name;
+// Function: num_dependencies
+inline size_t cudaTask::num_dependencies() const {
+  size_t num_dependencies {0};
+  cudaGraphNodeGetDependencies(_native_node, nullptr, &num_dependencies);
+  return num_dependencies;
 }
 
 // Function: num_successors
 inline size_t cudaTask::num_successors() const {
-  return _node->_successors.size();
-}
-
-// Function: num_dependents
-inline size_t cudaTask::num_dependents() const {
-  return _node->_dependents.size();
+  size_t num_successors {0};
+  cudaGraphNodeGetDependentNodes(_native_node, nullptr, &num_successors);
+  return num_successors;
 }
 
 // Function: type
-inline cudaTaskType cudaTask::type() const {
-  switch(_node->_handle.index()) {
-    case cudaFlowNode::EMPTY:   return cudaTaskType::EMPTY;
-    case cudaFlowNode::HOST:    return cudaTaskType::HOST;
-    case cudaFlowNode::MEMSET:  return cudaTaskType::MEMSET;
-    case cudaFlowNode::MEMCPY:  return cudaTaskType::MEMCPY;
-    case cudaFlowNode::KERNEL:  return cudaTaskType::KERNEL;
-    case cudaFlowNode::SUBFLOW: return cudaTaskType::SUBFLOW;
-    case cudaFlowNode::CAPTURE: return cudaTaskType::CAPTURE;
-    default:                return cudaTaskType::UNDEFINED;
-  }
+inline auto cudaTask::type() const {
+  cudaGraphNodeType type;
+  cudaGraphNodeGetType(_native_node, &type);
+  return type;
 }
 
-// Procedure: dump
-template <typename T>
-void cudaTask::dump(T& os) const {
-  os << "cudaTask ";
-  if(_node->_name.empty()) os << _node;
-  else os << _node->_name;
-  os << " [type=" << to_string(type()) << ']';
+// Function: dump
+inline void cudaTask::dump(std::ostream& os) const {
+  os << "cudaTask [type=" << to_string(type()) << ']';
 }
 
-// Function: for_each_successor
-template <typename V>
-void cudaTask::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_successors.size(); ++i) {
-    visitor(cudaTask(_node->_successors[i]));
-  }
-}
-
-// Function: for_each_dependent
-template <typename V>
-void cudaTask::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node->_dependents.size(); ++i) {
-    visitor(cudaTask(_node->_dependents[i]));
-  }
-}
+//// Function: for_each_successor
+//template <typename V>
+//void cudaTask::for_each_successor(V&& visitor) const {
+//  for(size_t i=0; i<_node->_successors.size(); ++i) {
+//    visitor(cudaTask(_node->_successors[i]));
+//  }
+//}
+//
+//// Function: for_each_dependent
+//template <typename V>
+//void cudaTask::for_each_dependent(V&& visitor) const {
+//  for(size_t i=0; i<_node->_dependents.size(); ++i) {
+//    visitor(cudaTask(_node->_dependents[i]));
+//  }
+//}
 
 // ----------------------------------------------------------------------------
 // global ostream
