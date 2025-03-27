@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>tf::cudaEvent class | Taskflow QuickStart</title>
+  <title>tf::cudaStreamDeleter struct | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,37 +46,28 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          tf::cudaEvent <span class="m-thin">class</span>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaStreamDeleter <span class="m-thin">struct</span>
           <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="cuda__stream_8hpp.html">&lt;taskflow/cuda/cuda_stream.hpp&gt;</a></div>
         </h1>
-        <p>class to create an RAII-styled wrapper over a native CUDA event</p>
+        <p>functor to delete a <code>cudaStream_t</code> object</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
         </nav>
-<p>A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is an RAII-styled wrapper over a native CUDA event (<code>cudaEvent_t</code>). A <a href="classtf_1_1cudaEvent.html" class="m-doc">cudaEvent</a> object is move-only.</p>
-        <section id="typeless-methods">
-          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="ad0b23cb864f0c7acee306f7fe49a3c23">
-              <span class="m-doc-wrap-bumper"><a href="#ad0b23cb864f0c7acee306f7fe49a3c23" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">cudaEvent_t event) <span class="m-label m-flat m-info">explicit</span> </span>
+            <dt id="a626619c00a871c7be86071fe262ce63e">
+              <span class="m-doc-wrap-bumper">void <a href="#a626619c00a871c7be86071fe262ce63e" class="m-doc-self">operator()</a>(</span><span class="m-doc-wrap">cudaStream_t stream) const</span>
             </dt>
-            <dd>constructs an RAII-styled CUDA event object from the given CUDA event</dd>
-            <dt id="aef986b15a45d9992a31caa6e42e4e945">
-              <span class="m-doc-wrap-bumper"><a href="#aef986b15a45d9992a31caa6e42e4e945" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
-            </dt>
-            <dd>constructs an RAII-styled CUDA event object</dd>
-            <dt id="af6d6a9c4f98ae85927985a1f89cdeee1">
-              <span class="m-doc-wrap-bumper"><a href="#af6d6a9c4f98ae85927985a1f89cdeee1" class="m-doc-self">cudaEvent</a>(</span><span class="m-doc-wrap">unsigned int flag) <span class="m-label m-flat m-info">explicit</span> </span>
-            </dt>
-            <dd>constructs an RAII-styled CUDA event object with the given flag</dd>
+            <dd>deletes the given <code>cudaStream_t</code> object</dd>
           </dl>
         </section>
       </div>
