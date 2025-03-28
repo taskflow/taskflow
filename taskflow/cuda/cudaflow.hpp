@@ -102,11 +102,10 @@ class cudaFlow : public cudaGraph {
   /**
   @brief updates parameters of a host task
 
-  The method is similar to tf::cudaFlow::host but operates on a task
-  of type tf::cudaTaskType::HOST.
+  This method updates the parameter of the given host task (similar to tf::cudaFlow::host).
   */
   template <typename C>
-  void host(cudaTask task, C&& callable);
+  void host(cudaTask task, C&& callable, void* user_data);
 
   /**
   @brief creates a kernel task
@@ -542,10 +541,10 @@ inline cudaTask cudaFlow::noop() {
 
 // Function: host
 template <typename C>
-cudaTask cudaFlow::host(C&& func, void* user_data) {
+cudaTask cudaFlow::host(C&& callable, void* user_data) {
 
   cudaGraphNode_t node;
-  cudaHostNodeParams p {func, user_data};
+  cudaHostNodeParams p {callable, user_data};
 
   TF_CHECK_CUDA(
     cudaGraphAddHostNode(&node, this->get(), nullptr, 0, &p),
@@ -660,7 +659,6 @@ inline cudaTask cudaFlow::memcpy(void* tgt, const void* src, size_t bytes) {
   return cudaTask(this->get(), node);
 }
 
-
 // instantiate an executable cuda graph
 inline cudaGraphExec cudaFlow::instantiate() {
   cudaGraphExec_t exec;
@@ -675,18 +673,18 @@ inline cudaGraphExec cudaFlow::instantiate() {
 // update methods
 // ------------------------------------------------------------------------
 
-//// Function: host
-//template <typename C>
-//void cudaFlow::host(cudaTask task, C&& c) {
-//
-//  if(task.type() != cudaTaskType::HOST) {
-//    TF_THROW(task, " is not a host task");
-//  }
-//
-//  auto h = std::get_if<cudaFlowNode::Host>(&task._node->_handle);
-//
-//  h->func = std::forward<C>(c);
-//}
+// Function: host
+template <typename C>
+void cudaFlow::host(cudaTask task, C&& c, void* user_data) {
+
+  //if(task.type() != cudaGraphNodeTypeHost) {
+  //  TF_THROW(task, " is not a host task");
+  //}
+
+  //cudaHostNodeParams p {func, user_data};
+  //cudaGraphExecHostNodeSetParams(exec, node, p)
+
+}
 
 //// Function: update kernel parameters
 //template <typename F, typename... ArgsT>

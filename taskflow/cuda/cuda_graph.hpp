@@ -593,18 +593,21 @@ class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph
   */
   template <typename Stream>
   void run(Stream& stream) {
+
+    cudaStream_t s;
+
     // native cudaStream_t object
     if constexpr (std::is_same_v<Stream, cudaStream_t>) {
-      TF_CHECK_CUDA(
-        cudaGraphLaunch(this->get(), stream), "failed to launch a CUDA executable graph"
-      );  
+      s = stream;
     }
     // cudaStreamBase object
     else {
-      TF_CHECK_CUDA(
-        cudaGraphLaunch(this->get(), stream.get()), "failed to launch a CUDA executable graph"
-      );  
+      s = stream.get();
     }
+      
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(this->get(), s), "failed to launch a CUDA executable graph"
+    );  
   }
 };
 
