@@ -96,6 +96,15 @@ class cudaEventBase : public std::unique_ptr<std::remove_pointer_t<cudaEvent_t>,
     Creator{}(std::forward<ArgsT>(args)...), Deleter()
   ) {
   }  
+  
+  /**
+  @brief implicit conversion to the underlying `cudaEvent_t` object
+ 
+  Returns the underlying `cudaEvent_t` object, equivalently calling base_type::get().
+  */
+  operator cudaEvent_t () const noexcept {
+    return this->get();
+  }
 };
 
 /**
@@ -184,6 +193,15 @@ class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t
     Creator{}(std::forward<ArgsT>(args)...), Deleter()
   ) {
   }  
+  
+  /**
+  @brief implicit conversion to the underlying `cudaStream_t` object
+ 
+  Returns the underlying `cudaStream_t` object, equivalently calling base_type::get().
+  */
+  operator cudaStream_t () const noexcept {
+    return this->get();
+  }
 
   /**
   @brief synchronizes the associated stream

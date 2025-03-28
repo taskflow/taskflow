@@ -56,7 +56,7 @@ int main() {
     std::cout << "launching cudaflow ...\n";
 
     tf::cudaStream stream;
-    auto exec = cf.instantiate();
+    tf::cudaGraphExec exec(cf);
     exec.run(stream);
     stream.synchronize();
     
