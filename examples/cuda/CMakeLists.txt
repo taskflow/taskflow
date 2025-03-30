@@ -13,7 +13,7 @@ list(APPEND TF_CUDA_EXAMPLES
   cuda_merge
   cuda_sort
   cuda_transform
-  cuda_rebind
+  cuda_saxpy_update
   cuda_find
 )
 

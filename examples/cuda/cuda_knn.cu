@@ -296,7 +296,7 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
     
     // Repeat the execution for M times
     tf::cudaStream stream;
-    auto exec = cf.instantiate();
+    tf::cudaGraphExec exec(cf);
     for(int i=0; i<M; i++) {
       exec.run(stream);
     }
