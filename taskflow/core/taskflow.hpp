@@ -376,26 +376,11 @@ void Taskflow::for_each_task(V&& visitor) const {
 
 // Procedure: remove_dependency
 inline void Taskflow::remove_dependency(Task from, Task to) {
-  // TODO
-  
-  auto sit = std::remove(from._node->_edges.begin(), from._node->_edges.end(), to._node);
-  from._node->_num_successors -= std::distance(sit, from._node->_edges.end());
-  from._node->_edges.erase(sit, from._node->_edges.end());
-  
-  auto pit = std::remove(to._node->_edges.begin(), to._node->_edges.end(), from._node);
-  to._node->_edges.erase(pit, to._node->_edges.end());
+  // remove "to" from the succcessor list of "from"
+  from._node->_remove_successors(to._node);
 
-  //from._node->_successors.erase(std::remove_if(
-  //  from._node->_successors.begin(), from._node->_successors.end(), [&](Node* i){
-  //    return i == to._node;
-  //  }
-  //), from._node->_successors.end());
-  //
-  //to._node->_predecessors.erase(std::remove_if(
-  //  to._node->_predecessors.begin(), to._node->_predecessors.end(), [&](Node* i){
-  //    return i == from._node;
-  //  }
-  //), to._node->_predecessors.end());
+  // remove "from" from the predecessor list of "to"
+  to._node->_remove_predecessors(from._node);
 }
 
 // Procedure: dump

@@ -344,6 +344,8 @@ class Node {
   void _precede(Node*);
   void _set_up_join_counter();
   void _rethrow_exception();
+  void _remove_successors(Node*);
+  void _remove_predecessors(Node*);
 };
 
 // ----------------------------------------------------------------------------
@@ -619,6 +621,22 @@ inline void Node::_precede(Node* v) {
 
   //_successors.push_back(v);
   //v->_predecessors.push_back(this);
+}
+
+// Function: _remove_successors
+inline void Node::_remove_successors(Node* node) {
+  auto sit = std::remove(_edges.begin(), _edges.begin() + _num_successors, node);
+  size_t new_num_successors = std::distance(_edges.begin(), sit);
+  std::move(_edges.begin() + _num_successors, _edges.end(), sit);
+  _edges.resize(_edges.size() - (_num_successors - new_num_successors));
+  _num_successors = new_num_successors;
+}
+
+// Function: _remove_predecessors
+inline void Node::_remove_predecessors(Node* node) {
+  _edges.erase( 
+    std::remove(_edges.begin() + _num_successors, _edges.end(), node), _edges.end()
+  );
 }
 
 // Function: num_successors
