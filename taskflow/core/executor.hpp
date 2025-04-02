@@ -1689,8 +1689,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::CONDITION:
     case Node::MULTI_CONDITION: {
       for(auto cond : conds) {
-        if(cond >= 0 && static_cast<size_t>(cond) < node->_successors.size()) {
-          auto s = node->_successors[cond];
+        if(cond >= 0 && static_cast<size_t>(cond) < node->_num_successors) {
+          auto s = node->_edges[cond]; 
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           join_counter.fetch_add(1, std::memory_order_relaxed);
@@ -1702,9 +1702,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // non-condition task
     default: {
-      for(size_t i=0; i<node->_successors.size(); ++i) {
+      for(size_t i=0; i<node->_num_successors; ++i) {
         //if(auto s = node->_successors[i]; --(s->_join_counter) == 0) {
-        if(auto s = node->_successors[i]; 
+        if(auto s = node->_edges[i]; 
           s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);

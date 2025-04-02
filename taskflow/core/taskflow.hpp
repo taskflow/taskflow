@@ -376,17 +376,26 @@ void Taskflow::for_each_task(V&& visitor) const {
 
 // Procedure: remove_dependency
 inline void Taskflow::remove_dependency(Task from, Task to) {
-  from._node->_successors.erase(std::remove_if(
-    from._node->_successors.begin(), from._node->_successors.end(), [&](Node* i){
-      return i == to._node;
-    }
-  ), from._node->_successors.end());
+  // TODO
   
-  to._node->_predecessors.erase(std::remove_if(
-    to._node->_predecessors.begin(), to._node->_predecessors.end(), [&](Node* i){
-      return i == from._node;
-    }
-  ), to._node->_predecessors.end());
+  auto sit = std::remove(from._node->_edges.begin(), from._node->_edges.end(), to._node);
+  from._node->_num_successors -= std::distance(sit, from._node->_edges.end());
+  from._node->_edges.erase(sit, from._node->_edges.end());
+  
+  auto pit = std::remove(to._node->_edges.begin(), to._node->_edges.end(), from._node);
+  to._node->_edges.erase(pit, to._node->_edges.end());
+
+  //from._node->_successors.erase(std::remove_if(
+  //  from._node->_successors.begin(), from._node->_successors.end(), [&](Node* i){
+  //    return i == to._node;
+  //  }
+  //), from._node->_successors.end());
+  //
+  //to._node->_predecessors.erase(std::remove_if(
+  //  to._node->_predecessors.begin(), to._node->_predecessors.end(), [&](Node* i){
+  //    return i == from._node;
+  //  }
+  //), to._node->_predecessors.end());
 }
 
 // Procedure: dump
@@ -462,19 +471,19 @@ inline void Taskflow::_dump(
 
   os << "];\n";
 
-  for(size_t s=0; s<node->_successors.size(); ++s) {
+  for(size_t s=0; s<node->_num_successors; ++s) {
     if(node->_is_conditioner()) {
       // case edge is dashed
-      os << 'p' << node << " -> p" << node->_successors[s]
+      os << 'p' << node << " -> p" << node->_edges[s]
          << " [style=dashed label=\"" << s << "\"];\n";
     } else {
-      os << 'p' << node << " -> p" << node->_successors[s] << ";\n";
+      os << 'p' << node << " -> p" << node->_edges[s] << ";\n";
     }
   }
 
   // subflow join node
   if(node->_parent && node->_parent->_handle.index() == Node::SUBFLOW &&
-     node->_successors.size() == 0
+     node->_num_successors == 0
     ) {
     os << 'p' << node << " -> p" << node->_parent << " [style=dashed color=blue];\n";
   }
@@ -530,8 +539,9 @@ inline void Taskflow::_dump(
 
       os << " [m" << dumper.visited[module] << "]\"];\n";
 
-      for(const auto s : n->_successors) {
-        os << 'p' << n << "->" << 'p' << s << ";\n";
+      //for(const auto s : n->_successors) {
+      for(size_t i=0; i<n->_num_successors; ++i) {
+        os << 'p' << n << "->" << 'p' << n->_edges[i] << ";\n";
       }
     }
   }

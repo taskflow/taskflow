@@ -552,17 +552,24 @@ inline TaskType Task::type() const {
 // Function: for_each_successor
 template <typename V>
 void Task::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_successors.size(); ++i) {
-    visitor(Task(_node->_successors[i]));
+  for(size_t i=0; i<_node->_num_successors; ++i) {
+    visitor(Task(_node->_edges[i]));
   }
+
+  //for(size_t i=0; i<_node->_successors.size(); ++i) {
+  //  visitor(Task(_node->_successors[i]));
+  //}
 }
 
 // Function: for_each_predecessor
 template <typename V>
 void Task::for_each_predecessor(V&& visitor) const {
-  for(size_t i=0; i<_node->_predecessors.size(); ++i) {
-    visitor(Task(_node->_predecessors[i]));
+  for(size_t i=_node->_num_successors; i<_node->_edges.size(); ++i) {
+    visitor(Task(_node->_edges[i]));
   }
+  //for(size_t i=0; i<_node->_predecessors.size(); ++i) {
+  //  visitor(Task(_node->_predecessors[i]));
+  //}
 }
 
 // Function: hash_value
@@ -749,17 +756,23 @@ inline size_t TaskView::hash_value() const {
 // Function: for_each_successor
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node._successors.size(); ++i) {
-    visitor(TaskView(*_node._successors[i]));
+  for(size_t i=0; i<_node._num_successors; ++i) {
+    visitor(TaskView(*_node._edges[i]));
   }
+  //for(size_t i=0; i<_node._successors.size(); ++i) {
+  //  visitor(TaskView(*_node._successors[i]));
+  //}
 }
 
 // Function: for_each_predecessor
 template <typename V>
 void TaskView::for_each_predecessor(V&& visitor) const {
-  for(size_t i=0; i<_node._predecessors.size(); ++i) {
-    visitor(TaskView(*_node._predecessors[i]));
+  for(size_t i=_node._num_successors; i<_node._edges.size(); ++i) {
+    visitor(TaskView(*_node._edges[i]));
   }
+  //for(size_t i=0; i<_node._predecessors.size(); ++i) {
+  //  visitor(TaskView(*_node._predecessors[i]));
+  //}
 }
 
 }  // end of namespace tf. ----------------------------------------------------

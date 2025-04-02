@@ -1309,19 +1309,20 @@ inline void FlowBuilder::erase(Task task) {
     return;
   }
 
-  task.for_each_predecessor([&] (Task dependent) {
-    auto& S = dependent._node->_successors;
-    if(auto I = std::find(S.begin(), S.end(), task._node); I != S.end()) {
-      S.erase(I);
-    }
-  });
+  // TODO
+  //task.for_each_predecessor([&] (Task predecessor) {
+  //  auto& S = predecessor._node->_successors;
+  //  if(auto I = std::find(S.begin(), S.end(), task._node); I != S.end()) {
+  //    S.erase(I);
+  //  }
+  //});
 
-  task.for_each_successor([&] (Task successor) {
-    auto& D = successor._node->_predecessors;
-    if(auto I = std::find(D.begin(), D.end(), task._node); I != D.end()) {
-      D.erase(I);
-    }
-  });
+  //task.for_each_successor([&] (Task successor) {
+  //  auto& D = successor._node->_predecessors;
+  //  if(auto I = std::find(D.begin(), D.end(), task._node); I != D.end()) {
+  //    D.erase(I);
+  //  }
+  //});
 
   _graph._erase(task._node);
 }

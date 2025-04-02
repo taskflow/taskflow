@@ -254,7 +254,7 @@ inline void Executor::_process_async_dependent(
   if(state.compare_exchange_weak(target, ASTATE::LOCKED,
                                  std::memory_order_acq_rel,
                                  std::memory_order_acquire)) {
-    task._node->_successors.push_back(node);
+    task._node->_edges.push_back(node);
     state.store(ASTATE::UNFINISHED, std::memory_order_release);
   }
   // dep's state is FINISHED, which means dep finished its callable already
@@ -283,8 +283,8 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   }
   
   // spawn successors whenever their dependencies are resolved
-  for(size_t i=0; i<node->_successors.size(); ++i) {
-    if(auto s = node->_successors[i]; 
+  for(size_t i=0; i<node->_edges.size(); ++i) {
+    if(auto s = node->_edges[i]; 
       s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1
     ) {
       _update_cache(worker, cache, s);
