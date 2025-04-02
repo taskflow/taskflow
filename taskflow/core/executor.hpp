@@ -1881,10 +1881,10 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
     _schedule_graph_with_parent(w, graph.begin(), graph.end(), node, NSTATE::NONE);
     return true;
   }
+
   // second entry - already spawned
-  else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
-  }
+  node->_nstate &= ~NSTATE::PREEMPTED;
+
   return false;
 }
 

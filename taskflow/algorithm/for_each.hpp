@@ -22,7 +22,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
 
     // the workload is sequentially doable
     if(W <= 1 || N <= part.chunk_size()) {
-      part([=](){ std::for_each(beg, end, c); })();
+      part([=]() mutable { std::for_each(beg, end, c); })();
       return;
     }
     
@@ -98,7 +98,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){
+      part([=]() mutable {
         for(size_t x=0; x<N; x++, beg+=inc) {
           c(beg);
         }
@@ -132,7 +132,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
         auto task = part([=] () mutable {
-          part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) {
+          part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) mutable {
             auto idx = static_cast<B_t>(part_b) * inc + beg;
             for(size_t x=part_b; x<part_e; x++, idx += inc) {
               c(idx);
@@ -166,7 +166,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ c(r); })();
+      part([=]() mutable { c(r); })();
       return;
     }
 
