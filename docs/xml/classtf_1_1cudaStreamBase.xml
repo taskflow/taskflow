@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaStreamBase" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaStreamBase</compoundname>
     <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</basecompoundref>
@@ -12,24 +12,25 @@
         <type>typename Deleter</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1cudaStreamBase_1ac613c15c23d0dd05331532c6256533d1" prot="public" static="no">
-        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</type>
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</type>
         <definition>using tf::cudaStreamBase&lt; Creator, Deleter &gt;::base_type =  std::unique_ptr&lt;std::remove_pointer_t&lt;cudaStream_t&gt;, Deleter&gt;</definition>
         <argsstring></argsstring>
         <name>base_type</name>
+        <qualifiedname>tf::cudaStreamBase::base_type</qualifiedname>
         <briefdescription>
 <para>base type for the underlying unique pointer </para>
         </briefdescription>
         <detaileddescription>
-<para>This alias provides a shorthand for the underlying <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput> type that manages CUDA stream resources with an associated deleter. </para>
+<para>This alias provides a shorthand for the underlying <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput> type that manages CUDA stream resources with an associated deleter. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="173" column="3" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="173" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="182" column="3" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="182" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a53917d60c2fc050ecf15a30433a87f08" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -42,6 +43,7 @@
         <definition>tf::cudaStreamBase&lt; Creator, Deleter &gt;::cudaStreamBase</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>cudaStreamBase</name>
+        <qualifiedname>tf::cudaStreamBase::cudaStreamBase</qualifiedname>
         <param>
           <type>ArgsT &amp;&amp;...</type>
           <declname>args</declname>
@@ -64,13 +66,30 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="183" column="12" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="183" bodyend="186"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="192" column="12" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="192" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaStreamBase_1af91431fdc0b42ebb02b9d6a0ce3e01b6" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaStreamBase&lt; Creator, Deleter &gt;::operator cudaStream_t</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator cudaStream_t</name>
+        <qualifiedname>tf::cudaStreamBase::operator cudaStream_t</qualifiedname>
+        <briefdescription>
+<para>implicit conversion to the underlying <computeroutput>cudaStream_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the underlying <computeroutput>cudaStream_t</computeroutput> object, equivalently calling base_type::get(). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="202" column="3" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="202" bodyend="204"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStreamBase&lt; Creator, Deleter &gt;::synchronize</definition>
         <argsstring>() const</argsstring>
         <name>synchronize</name>
+        <qualifiedname>tf::cudaStreamBase::synchronize</qualifiedname>
         <briefdescription>
 <para>synchronizes the associated stream </para>
         </briefdescription>
@@ -79,13 +98,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="194" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="194" bodyend="198"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="212" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="212" bodyend="216"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a4ad9778fb045ebc9e9d87ca72c2cc772" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStreamBase&lt; Creator, Deleter &gt;::begin_capture</definition>
         <argsstring>(cudaStreamCaptureMode m=cudaStreamCaptureModeGlobal) const</argsstring>
         <name>begin_capture</name>
+        <qualifiedname>tf::cudaStreamBase::begin_capture</qualifiedname>
         <param>
           <type>cudaStreamCaptureMode</type>
           <declname>m</declname>
@@ -105,13 +125,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="226" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="226" bodyend="231"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="244" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="244" bodyend="249"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a4c23849c994f6e797bb547f6229a55e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
         <definition>cudaGraph_t tf::cudaStreamBase&lt; Creator, Deleter &gt;::end_capture</definition>
         <argsstring>() const</argsstring>
         <name>end_capture</name>
+        <qualifiedname>tf::cudaStreamBase::end_capture</qualifiedname>
         <briefdescription>
 <para>ends graph capturing on the stream </para>
         </briefdescription>
@@ -120,13 +141,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="242" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="242" bodyend="249"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="260" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="260" bodyend="267"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a54df1c74423c0476c0ca1f1798584def" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStreamBase&lt; Creator, Deleter &gt;::record</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>record</name>
+        <qualifiedname>tf::cudaStreamBase::record</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -139,13 +161,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="257" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="257" bodyend="262"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="275" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="275" bodyend="280"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaStreamBase_1a9c877b1346e66dcb18a898e649c254b3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaStreamBase&lt; Creator, Deleter &gt;::wait</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>wait</name>
+        <qualifiedname>tf::cudaStreamBase::wait</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -158,9 +181,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="270" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="270" bodyend="275"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="288" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="288" bodyend="293"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a smart pointer wrapper for managing <computeroutput>cudaStream_t</computeroutput> </para>
     </briefdescription>
@@ -182,36 +205,37 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The <computeroutput>cudaStream</computeroutput> class encapsulates a <computeroutput>cudaStream_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
+The <computeroutput>cudaStream</computeroutput> class encapsulates a <computeroutput>cudaStream_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
     </detaileddescription>
     <inheritancegraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</label>
+      </node>
       <node id="1">
         <label>tf::cudaStreamBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaStreamBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</label>
+      </node>
       <node id="1">
         <label>tf::cudaStreamBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaStreamBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</label>
-      </node>
     </collaborationgraph>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="161" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="161" bodyend="276"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="170" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="170" bodyend="294"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaStreamBase_1ac613c15c23d0dd05331532c6256533d1" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>base_type</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a4ad9778fb045ebc9e9d87ca72c2cc772" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>begin_capture</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a53917d60c2fc050ecf15a30433a87f08" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>cudaStreamBase</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a4c23849c994f6e797bb547f6229a55e3" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>end_capture</name></member>
+      <member refid="classtf_1_1cudaStreamBase_1af91431fdc0b42ebb02b9d6a0ce3e01b6" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>operator cudaStream_t</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a54df1c74423c0476c0ca1f1798584def" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>record</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>synchronize</name></member>
       <member refid="classtf_1_1cudaStreamBase_1a9c877b1346e66dcb18a898e649c254b3" prot="public" virt="non-virtual"><scope>tf::cudaStreamBase</scope><name>wait</name></member>

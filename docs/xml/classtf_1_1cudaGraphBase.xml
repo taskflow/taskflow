@@ -1,0 +1,710 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaGraphBase" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaGraphBase</compoundname>
+    <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</basecompoundref>
+    <derivedcompoundref refid="classtf_1_1cudaFlow" prot="public" virt="non-virtual">tf::cudaFlow</derivedcompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename Creator</type>
+      </param>
+      <param>
+        <type>typename Deleter</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtf_1_1cudaGraphBase_1aa90cf577e0404d311c0f1b391a0fba31" prot="public" static="no">
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, Deleter &gt;</type>
+        <definition>using tf::cudaGraphBase&lt; Creator, Deleter &gt;::base_type =  std::unique_ptr&lt;std::remove_pointer_t&lt;cudaGraph_t&gt;, Deleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>base_type</name>
+        <qualifiedname>tf::cudaGraphBase::base_type</qualifiedname>
+        <briefdescription>
+<para>base <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> type </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="488" column="3" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="488" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a7ac97676bc2fbba66aa7c2f8853b387c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::cudaGraphBase&lt; Creator, Deleter &gt;::cudaGraphBase</definition>
+        <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
+        <name>cudaGraphBase</name>
+        <qualifiedname>tf::cudaGraphBase::cudaGraphBase</qualifiedname>
+        <param>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>constructs a <computeroutput><ref refid="classcudaGraph" kindref="compound">cudaGraph</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructs a <computeroutput><ref refid="classcudaGraph" kindref="compound">cudaGraph</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>arguments to pass to the executable CUDA graph creator </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="498" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="498" bodyend="501"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ad53731e3a0415df2ae86f7121969851a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cudaGraphBase&lt; Creator, Deleter &gt;::num_nodes</definition>
+        <argsstring>() const</argsstring>
+        <name>num_nodes</name>
+        <qualifiedname>tf::cudaGraphBase::num_nodes</qualifiedname>
+        <briefdescription>
+<para>queries the number of nodes in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="506" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="673" bodyend="680"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a05b48f98e182ed0eb88e313ad41d1bf2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cudaGraphBase&lt; Creator, Deleter &gt;::num_edges</definition>
+        <argsstring>() const</argsstring>
+        <name>num_edges</name>
+        <qualifiedname>tf::cudaGraphBase::num_edges</qualifiedname>
+        <briefdescription>
+<para>queries the number of edges in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="511" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="690" bodyend="697"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a585b00b8f12e75cbea6405fa32bc2819" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::cudaGraphBase&lt; Creator, Deleter &gt;::empty</definition>
+        <argsstring>() const</argsstring>
+        <name>empty</name>
+        <qualifiedname>tf::cudaGraphBase::empty</qualifiedname>
+        <briefdescription>
+<para>queries if the graph is empty </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="516" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="684" bodyend="686"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1abd73a9268b80e74803f241ee10a842b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::cudaGraphBase&lt; Creator, Deleter &gt;::dump</definition>
+        <argsstring>(std::ostream &amp;os)</argsstring>
+        <name>dump</name>
+        <qualifiedname>tf::cudaGraphBase::dump</qualifiedname>
+        <param>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <declname>os</declname>
+        </param>
+        <briefdescription>
+<para>dumps the CUDA graph to a DOT format through the given output stream </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>os</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>target output stream </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="523" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="776" bodyend="796"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1aa3d0f028bf9c47dc266c345028fe6312" prot="public" static="no" const="yes" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaGraphBase&lt; Creator, Deleter &gt;::operator cudaGraph_t</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>operator cudaGraph_t</name>
+        <qualifiedname>tf::cudaGraphBase::operator cudaGraph_t</qualifiedname>
+        <briefdescription>
+<para>implicit conversion to the underlying <computeroutput>cudaGraph_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the underlying <computeroutput>cudaGraph_t</computeroutput> object, equivalently calling <ref refid="cpp/memory/unique_ptr/get" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">base_type::get()</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="530" column="3" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="530" bodyend="532"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1aefa705b9b705be5791e99587d69d8b09" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::noop</definition>
+        <argsstring>()</argsstring>
+        <name>noop</name>
+        <qualifiedname>tf::cudaGraphBase::noop</qualifiedname>
+        <briefdescription>
+<para>creates a no-operation task </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+An empty node performs no operation during execution, but can be used for transitive ordering. For example, a phased execution graph with 2 groups of <computeroutput>n</computeroutput> nodes with a barrier between them can be represented using an empty node and <computeroutput>2*n</computeroutput> dependency edges, rather than no empty node and <computeroutput>n^2</computeroutput> dependency edges. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="550" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="800" bodyend="810"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a4b730405596091d534af5737752b4682" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::host</definition>
+        <argsstring>(C &amp;&amp;callable, void *user_data)</argsstring>
+        <name>host</name>
+        <qualifiedname>tf::cudaGraphBase::host</qualifiedname>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>user_data</declname>
+        </param>
+        <briefdescription>
+<para>creates a host task that runs a callable on the host </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>C</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>callable type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>callable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a callable object with neither arguments nor return (i.e., constructible from <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;void()&gt;</ref></computeroutput>) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>user_data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a pointer to the user data</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A host task can only execute CPU-specific functions and cannot do any CUDA calls (e.g., <computeroutput>cudaMalloc</computeroutput>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="567" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="815" bodyend="826"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename F</type>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::kernel</definition>
+        <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT... args)</argsstring>
+        <name>kernel</name>
+        <qualifiedname>tf::cudaGraphBase::kernel</qualifiedname>
+        <param>
+          <type>dim3</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>dim3</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>s</declname>
+        </param>
+        <param>
+          <type>F</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>ArgsT...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>creates a kernel task </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>F</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>kernel function type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ArgsT</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>kernel function parameters type</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>g</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>configured grid </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>b</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>configured block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>s</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>configured shared memory size in bytes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>f</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>kernel function </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>arguments to forward to the kernel function by copy</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="584" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="831" bodyend="853"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a10196f49de261a4042de328aab2452c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::memset</definition>
+        <argsstring>(void *dst, int v, size_t count)</argsstring>
+        <name>memset</name>
+        <qualifiedname>tf::cudaGraphBase::memset</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>creates a memset task that fills untyped data with a byte value </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the destination device memory area </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>v</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value to set for each byte of specified memory </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>size in bytes to set</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A memset task fills the first <computeroutput>count</computeroutput> bytes of device memory area pointed by <computeroutput>dst</computeroutput> with the byte value <computeroutput>v</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="598" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="911" bodyend="922"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a5e704c7bb669a82f4fe140ecb4576eb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::memcpy</definition>
+        <argsstring>(void *tgt, const void *src, size_t bytes)</argsstring>
+        <name>memcpy</name>
+        <qualifiedname>tf::cudaGraphBase::memcpy</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>bytes</declname>
+        </param>
+        <briefdescription>
+<para>creates a memcpy task that copies untyped data in bytes </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tgt</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the target memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the source memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bytes</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>bytes to copy</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="612" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="926" bodyend="937"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::zero</definition>
+        <argsstring>(T *dst, size_t count)</argsstring>
+        <name>zero</name>
+        <qualifiedname>tf::cudaGraphBase::zero</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>creates a memset task that sets a typed memory block to zero </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>element type (size of <computeroutput>T</computeroutput> must be either 1, 2, or 4) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the destination device memory area </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A zero task zeroes the first <computeroutput>count</computeroutput> elements of type <computeroutput>T</computeroutput> in a device memory area pointed by <computeroutput>dst</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="629" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="860" bodyend="871"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a32634c5645c14b99ceeaafe77ea5ea62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::fill</definition>
+        <argsstring>(T *dst, T value, size_t count)</argsstring>
+        <name>fill</name>
+        <qualifiedname>tf::cudaGraphBase::fill</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>creates a memset task that fills a typed memory block with a value </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>element type (size of <computeroutput>T</computeroutput> must be either 1, 2, or 4)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the destination device memory area </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>value to fill for each element of type <computeroutput>T</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A fill task fills the first <computeroutput>count</computeroutput> elements of type <computeroutput>T</computeroutput> with <computeroutput>value</computeroutput> in a device memory area pointed by <computeroutput>dst</computeroutput>. The value to fill is interpreted in type <computeroutput>T</computeroutput> rather than byte. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="649" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="878" bodyend="888"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+        <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::copy</definition>
+        <argsstring>(T *tgt, const T *src, size_t num)</argsstring>
+        <name>copy</name>
+        <qualifiedname>tf::cudaGraphBase::copy</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>num</declname>
+        </param>
+        <briefdescription>
+<para>creates a memcopy task that copies typed data </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>element type (non-void)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tgt</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the target memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>pointer to the source memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>num</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of elements to copy</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a <ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref> handle</para>
+</simplesect>
+A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of data from a source location to a target location. Direction can be arbitrary among CPUs and GPUs. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="668" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="896" bodyend="907"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
+      </node>
+      <node id="3">
+        <label>tf::cudaFlow&lt; cudaGraphCreator, cudaGraphDeleter &gt;</label>
+        <link refid="classtf_1_1cudaFlow"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>tf::cudaGraphBase&lt; Creator, Deleter &gt;</label>
+        <link refid="classtf_1_1cudaGraphBase"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
+      </node>
+      <node id="1">
+        <label>tf::cudaGraphBase&lt; Creator, Deleter &gt;</label>
+        <link refid="classtf_1_1cudaGraphBase"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/cuda/cuda_graph.hpp" line="479" column="1" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="479" bodyend="669"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaGraphBase_1aa90cf577e0404d311c0f1b391a0fba31" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>base_type</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>copy</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a7ac97676bc2fbba66aa7c2f8853b387c" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>cudaGraphBase</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1abd73a9268b80e74803f241ee10a842b6" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>dump</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a585b00b8f12e75cbea6405fa32bc2819" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>empty</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a32634c5645c14b99ceeaafe77ea5ea62" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>fill</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a4b730405596091d534af5737752b4682" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>host</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a5e704c7bb669a82f4fe140ecb4576eb0" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>memcpy</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a10196f49de261a4042de328aab2452c8" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>memset</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1aefa705b9b705be5791e99587d69d8b09" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>noop</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1a05b48f98e182ed0eb88e313ad41d1bf2" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>num_edges</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1ad53731e3a0415df2ae86f7121969851a" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>num_nodes</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1aa3d0f028bf9c47dc266c345028fe6312" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>operator cudaGraph_t</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

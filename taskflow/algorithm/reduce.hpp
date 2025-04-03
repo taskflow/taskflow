@@ -13,7 +13,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &r=init] (Runtime& rt) mutable {
+  return [=, &init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -24,7 +24,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ for(; beg!=end; r = bop(r, *beg++)); })();
+      part([=, &init] () mutable { for(; beg!=end; init = bop(init, *beg++)); })();
       return;
     }
     
@@ -45,13 +45,13 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
         // variable sum need to avoid copy at the first step
         auto chunk_size = std::max(size_t{2}, part.adjusted_chunk_size(N, W, w));
         
-        auto task = part([=, &r] () mutable {
+        auto task = part([=, &init] () mutable {
 
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
             std::lock_guard<std::mutex> lock(*mutex);
-            r = bop(r, *beg);
+            init = bop(init, *beg);
             return;
           }
 
@@ -79,7 +79,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
           
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
-          r = bop(r, sum);
+          init = bop(init, sum);
         });
 
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
@@ -91,7 +91,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       
       for(size_t w=0; w<W;) {
 
-        auto task = part([=, &r] () mutable {
+        auto task = part([=, &init] () mutable {
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
 
@@ -103,7 +103,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
           if(N - s0 == 1) {
             std::lock_guard<std::mutex> lock(*mutex);
-            r = bop(r, *beg);
+            init = bop(init, *beg);
             return;
           }
 
@@ -125,7 +125,7 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
           
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
-          r = bop(r, sum);
+          init = bop(init, sum);
         });
         (++w == W) ? task() : rt.silent_async(task);
       }
@@ -144,7 +144,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
 
-  return [=, &r=init] (Runtime& rt) mutable {
+  return [=, &init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     B_t beg = b;
@@ -155,7 +155,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ for(; beg!=end; r = bop(std::move(r), uop(*beg++))); })();
+      part([=, &init] () mutable { for(; beg!=end; init = bop(std::move(init), uop(*beg++))); })();
       return;
     }
     
@@ -174,13 +174,13 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
 
-        auto task = part([=, &r] () mutable {
+        auto task = part([=, &init] () mutable {
 
           std::advance(beg, curr_b);
 
           if(N - curr_b == 1) {
             std::lock_guard<std::mutex> lock(*mutex);
-            r = bop(std::move(r), uop(*beg));
+            init = bop(std::move(init), uop(*beg));
             return;
           }
 
@@ -209,7 +209,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
           
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
-          r = bop(std::move(r), std::move(sum));
+          init = bop(std::move(init), std::move(sum));
         });
 
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
@@ -219,7 +219,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
-        auto task = part([=, &r] () mutable {
+        auto task = part([=, &init] () mutable {
 
           // pre-reduce
           size_t s0 = next->fetch_add(2, std::memory_order_relaxed);
@@ -232,7 +232,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 
           if(N - s0 == 1) {
             std::lock_guard<std::mutex> lock(*mutex);
-            r = bop(std::move(r), uop(*beg));
+            init = bop(std::move(init), uop(*beg));
             return;
           }
 
@@ -254,7 +254,7 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
           
           // final reduce
           std::lock_guard<std::mutex> lock(*mutex);
-          r = bop(std::move(r), std::move(sum));
+          init = bop(std::move(init), std::move(sum));
         });
         (++w == W) ? task() : rt.silent_async(task);
       }
@@ -290,7 +290,7 @@ auto make_transform_reduce_task(
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++))); })();
+      part([=, &r] () mutable { for(; beg1!=end1; r = bop_r(std::move(r), bop_t(*beg1++, *beg2++))); })();
       return;
     }   
     
@@ -424,7 +424,7 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ init = lop(r, std::move(init)); })();
+      part([=, &init] () mutable { init = lop(r, std::move(init)); })();
       return;
     }
     

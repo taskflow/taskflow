@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>tf::cudaGraphExecBase class | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaGraphExecBase <span class="m-thin">class</span>
+        </h1>
+        <p>class to create an executable CUDA graph managed by C++ smart pointer</p>
+        <table class="m-table m-fullwidth m-flat">
+          <thead>
+            <tr><th colspan="2">Template parameters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 1%">Creator</td>
+              <td>functor to create the stream (used in constructor)</td>
+            </tr>
+            <tr>
+              <td>Deleter</td>
+              <td>functor to delete the stream (used in destructor)</td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#pub-types">Public types</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+<p>This class wraps a <code>cudaGraphExec_t</code> handle with <code><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a></code> to ensure proper resource management and automatic cleanup.</p>
+        <section id="pub-types">
+          <h2><a href="#pub-types">Public types</a></h2>
+          <dl class="m-doc">
+            <dt id="ac7c11b5dd4d0ce5bdeb64f89b14eb173">
+              using <a href="#ac7c11b5dd4d0ce5bdeb64f89b14eb173" class="m-doc-self">base_type</a> = <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;std::remove_pointer_t&lt;cudaGraphExec_t&gt;, Deleter&gt;
+            </dt>
+            <dd>base <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a> type</dd>
+          </dl>
+        </section>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper"><a href="#a3dc4936c19687b4af7e57c4745cac73d" class="m-doc">cudaGraphExecBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>constructs a <code>cudaGraphExec</code> object by passing the given arguments to the executable CUDA graph creator</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a619731d4217feb169edb97031ab15bdb" class="m-doc">operator cudaGraphExec_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>implicit conversion to the underlying <code>cudaGraphExec_t</code> object</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a6d44311d0bb62c31a160682bd4af9d28">
+              <span class="m-doc-wrap-bumper">void <a href="#a6d44311d0bb62c31a160682bd4af9d28" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">cudaStream_t stream)</span>
+            </dt>
+            <dd>runs the executable graph via the given CUDA stream</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ad3da5e8cdae7555a08735fabefdf131d" class="m-doc">host</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable,
+              void* user_data)</span>
+            </dt>
+            <dd>updates parameters of a host task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... ArgsT&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a9d9842feec938f6dad9d21f66a202bb6" class="m-doc">kernel</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              dim3 g,
+              dim3 b,
+              size_t shm,
+              F f,
+              ArgsT... args)</span>
+            </dt>
+            <dd>updates parameters of a kernel task</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#ae1a9cea343a306e114daeeab9418dd5b" class="m-doc">memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* dst,
+              int ch,
+              size_t count)</span>
+            </dt>
+            <dd>updates parameters of a memset task</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#aea367c6ac5b55854b9b695d4e249b17e" class="m-doc">memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* tgt,
+              const void* src,
+              size_t bytes)</span>
+            </dt>
+            <dd>updates parameters of a memcpy task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a195d1630c74657d095225ec0cb5343f1" class="m-doc">zero</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              size_t count)</span>
+            </dt>
+            <dd>updates parameters of a memset task to a zero task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#afa67dc39ef8f142284b799dd0c93aed2" class="m-doc">fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              T value,
+              size_t count)</span>
+            </dt>
+            <dd>updates parameters of a memset task to a fill task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aed30ccc98bb2187e9141c4f7b63ff66e" class="m-doc">copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* tgt,
+              const T* src,
+              size_t num)</span>
+            </dt>
+            <dd>updates parameters of a memcpy task to a copy task</dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a3dc4936c19687b4af7e57c4745cac73d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3dc4936c19687b4af7e57c4745cac73d" class="m-doc-self">cudaGraphExecBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-info">explicit</span> </span></span>
+            </h3>
+            <p>constructs a <code>cudaGraphExec</code> object by passing the given arguments to the executable CUDA graph creator</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">args</td>
+                  <td>arguments to pass to the executable CUDA graph creator</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Constructs a <code>cudaGraphExec</code> object by passing the given arguments to the executable CUDA graph creator</p>
+          </div></section>
+          <section class="m-doc-details" id="a619731d4217feb169edb97031ab15bdb"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a619731d4217feb169edb97031ab15bdb" class="m-doc-self">operator cudaGraphExec_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>implicit conversion to the underlying <code>cudaGraphExec_t</code> object</p>
+<p>Returns the underlying <code>cudaGraphExec_t</code> object, equivalently calling base_type::get().</p>
+          </div></section>
+          <section class="m-doc-details" id="ad3da5e8cdae7555a08735fabefdf131d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad3da5e8cdae7555a08735fabefdf131d" class="m-doc-self">host</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C&amp;&amp; callable,
+              void* user_data)</span></span>
+            </h3>
+            <p>updates parameters of a host task</p>
+<p>This method updates the parameter of the given host task (similar to <a href="classtf_1_1cudaGraphBase.html#a4b730405596091d534af5737752b4682" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a>).</p>
+          </div></section>
+          <section class="m-doc-details" id="a9d9842feec938f6dad9d21f66a202bb6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename F, typename... ArgsT&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9d9842feec938f6dad9d21f66a202bb6" class="m-doc-self">kernel</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              dim3 g,
+              dim3 b,
+              size_t shm,
+              F f,
+              ArgsT... args)</span></span>
+            </h3>
+            <p>updates parameters of a kernel task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a1473a15a6023fbc25e1f029f2ff84aec" class="m-doc">tf::<wbr />cudaFlow::<wbr />kernel</a> but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change.</p>
+          </div></section>
+          <section class="m-doc-details" id="ae1a9cea343a306e114daeeab9418dd5b"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae1a9cea343a306e114daeeab9418dd5b" class="m-doc-self">memset</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* dst,
+              int ch,
+              size_t count)</span></span>
+            </h3>
+            <p>updates parameters of a memset task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a10196f49de261a4042de328aab2452c8" class="m-doc">tf::<wbr />cudaFlow::<wbr />memset</a> but operates on a task of type tf::cudaTaskType::MEMSET. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="aea367c6ac5b55854b9b695d4e249b17e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aea367c6ac5b55854b9b695d4e249b17e" class="m-doc-self">memcpy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              void* tgt,
+              const void* src,
+              size_t bytes)</span></span>
+            </h3>
+            <p>updates parameters of a memcpy task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a5e704c7bb669a82f4fe140ecb4576eb0" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a> but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="a195d1630c74657d095225ec0cb5343f1"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a195d1630c74657d095225ec0cb5343f1" class="m-doc-self">zero</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              size_t count)</span></span>
+            </h3>
+            <p>updates parameters of a memset task to a zero task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#ab45bc592a33380adf74d6f1e7690bd4c" class="m-doc">tf::<wbr />cudaFlow::<wbr />zero</a> but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="afa67dc39ef8f142284b799dd0c93aed2"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename T, std::enable_if_t&lt;is_pod_v&lt;T&gt; &amp;&amp; (sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afa67dc39ef8f142284b799dd0c93aed2" class="m-doc-self">fill</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* dst,
+              T value,
+              size_t count)</span></span>
+            </h3>
+            <p>updates parameters of a memset task to a fill task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a32634c5645c14b99ceeaafe77ea5ea62" class="m-doc">tf::<wbr />cudaFlow::<wbr />fill</a> but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="aed30ccc98bb2187e9141c4f7b63ff66e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename T, std::enable_if_t&lt;!std::is_same_v&lt;T, void&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aed30ccc98bb2187e9141c4f7b63ff66e" class="m-doc-self">copy</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              T* tgt,
+              const T* src,
+              size_t num)</span></span>
+            </h3>
+            <p>updates parameters of a memcpy task to a copy task</p>
+<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a02a041d5dd9e1e8958eb43e09331051e" class="m-doc">tf::<wbr />cudaFlow::<wbr />copy</a> but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

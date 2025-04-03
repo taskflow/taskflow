@@ -1,0 +1,26 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffcc549dd00 {
+label="Taskflow: K-Means";
+p0x112f740[label="allocate_px" ];
+p0x112f740 -> p0x112fa10;
+p0x112f650[label="allocate_py" ];
+p0x112f650 -> p0x112fa10;
+p0x112f560[label="allocate_mx" ];
+p0x112f560 -> p0x112fa10;
+p0x112f470[label="allocate_my" ];
+p0x112f470 -> p0x112fa10;
+p0x112f380[label="allocate_sx" ];
+p0x112f380 -> p0x112fb00;
+p0x112f830[label="allocate_sy" ];
+p0x112f830 -> p0x112fb00;
+p0x112f920[label="allocate_c" ];
+p0x112f920 -> p0x112fb00;
+p0x112fa10[label="h2d" ];
+p0x112fa10 -> p0x112fb00;
+p0x112fb00[label="update_means" ];
+p0x112fb00 -> p0x112fbf0;
+p0x112fbf0[label="d2h" ];
+p0x112fbf0 -> p0x112fce0;
+p0x112fce0[label="free" ];
+}
+}
