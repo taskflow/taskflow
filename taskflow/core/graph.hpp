@@ -284,19 +284,10 @@ class Node {
   Node() = default;
   
   template <typename... Args>
-  Node(const std::string&, Topology*, Node*, size_t, Args&&...);
-  
-  template <typename... Args>
   Node(nstate_t, estate_t, const std::string&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
-  Node(const TaskParams&, Topology*, Node*, size_t, Args&&...);
-  
-  template <typename... Args>
   Node(nstate_t, estate_t, const TaskParams&, Topology*, Node*, size_t, Args&&...);
-  
-  template <typename... Args>
-  Node(const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
   Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
@@ -461,22 +452,6 @@ Node::DependentAsync::DependentAsync(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename... Args>
 Node::Node(
-  const std::string& name,
-  Topology* topology, 
-  Node* parent, 
-  size_t join_counter,
-  Args&&... args
-) :
-  _name         {name},
-  _topology     {topology},
-  _parent       {parent},
-  _join_counter {join_counter},
-  _handle       {std::forward<Args>(args)...} {
-}
-
-// Constructor
-template <typename... Args>
-Node::Node(
   nstate_t nstate,
   estate_t estate,
   const std::string& name,
@@ -488,23 +463,6 @@ Node::Node(
   _nstate       {nstate},
   _estate       {estate},
   _name         {name},
-  _topology     {topology},
-  _parent       {parent},
-  _join_counter {join_counter},
-  _handle       {std::forward<Args>(args)...} {
-}
-
-// Constructor
-template <typename... Args>
-Node::Node(
-  const TaskParams& params,
-  Topology* topology, 
-  Node* parent, 
-  size_t join_counter,
-  Args&&... args
-) :
-  _name         {params.name},
-  _data         {params.data},
   _topology     {topology},
   _parent       {parent},
   _join_counter {join_counter},
@@ -526,21 +484,6 @@ Node::Node(
   _estate       {estate},
   _name         {params.name},
   _data         {params.data},
-  _topology     {topology},
-  _parent       {parent},
-  _join_counter {join_counter},
-  _handle       {std::forward<Args>(args)...} {
-}
-
-// Constructor
-template <typename... Args>
-Node::Node(
-  const DefaultTaskParams&,
-  Topology* topology, 
-  Node* parent, 
-  size_t join_counter,
-  Args&&... args
-) :
   _topology     {topology},
   _parent       {parent},
   _join_counter {join_counter},

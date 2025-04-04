@@ -2180,6 +2180,7 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t
     node->_exception_ptr = nullptr;
 
     // move source to the first partition
+    // root, root, root, v1, v2, v3, v4, ...
     if(node->num_predecessors() == 0) {
       std::iter_swap(send++, first);
     }

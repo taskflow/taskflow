@@ -50,8 +50,9 @@ void Executor::silent_async(F&& f) {
 inline void Executor::_schedule_async_task(Node* node) {  
   // Here we don't use _this_worker since _schedule will check if the
   // given worker belongs to this executor.
-  (pt::this_worker && pt::this_worker->_executor == this) ? _schedule(*pt::this_worker, node) : 
-                                                            _schedule(node);
+  //(pt::this_worker && pt::this_worker->_executor == this) ? _schedule(*pt::this_worker, node) : 
+  //                                                          _schedule(node);
+  (pt::this_worker) ? _schedule(*pt::this_worker, node) : _schedule(node);
 }
 
 // Procedure: _tear_down_async
@@ -121,7 +122,7 @@ tf::AsyncTask Executor::silent_dependent_async(
   size_t num_dependents = std::distance(first, last);
   
   AsyncTask task(animate(
-    std::forward<P>(params), nullptr, nullptr, num_dependents,
+    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_dependents,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
   
@@ -215,7 +216,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      std::forward<P>(params), nullptr, nullptr, num_dependents,
+      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_dependents,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=make_moc(std::move(p))] () mutable { p.object(); }
     ));
