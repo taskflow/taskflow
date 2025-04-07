@@ -1376,8 +1376,7 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 
 tf::Subflow is spawned from the execution of a task to dynamically manage a 
 child graph that may depend on runtime variables.
-You can explicitly join or detach a subflow by calling tf::Subflow::join
-or tf::Subflow::detach, respectively.
+You can explicitly join a subflow by calling tf::Subflow::join, respectively.
 By default, the %Taskflow runtime will implicitly join a subflow it is is joinable.
 
 The following example creates a taskflow graph that spawns a subflow from
@@ -1431,27 +1430,10 @@ class Subflow : public FlowBuilder {
     void join();
 
     /**
-    @brief enables the subflow to detach from its parent task
-
-    Performs an immediate action to detach the subflow. Once the subflow is detached,
-    it is considered finished and you may not modify the subflow anymore.
-
-    @code{.cpp}
-    taskflow.emplace([](tf::Subflow& sf){
-      sf.emplace([](){});
-      sf.detach();
-    });
-    @endcode
-
-    Only the worker that spawns this subflow can detach it.
-    */
-    void detach();
-
-    /**
     @brief queries if the subflow is joinable
 
     This member function queries if the subflow is joinable.
-    When a subflow is joined or detached, it becomes not joinable.
+    When a subflow is joined, it becomes not joinable.
 
     @code{.cpp}
     taskflow.emplace([](tf::Subflow& sf){
@@ -1473,11 +1455,20 @@ class Subflow : public FlowBuilder {
     @brief acquires the associated graph
     */
     Graph& graph() { return _graph; }
+    
+    /**
+    @brief specifies whether to keep the subflow when it is joined
+
+    @param flag `true` for retaining the subflow when it's joined or `false`
+    */
+    void retain_on_join(bool flag) noexcept;
+
+    /**
+    @brief queries if the subflow will be retained when it is joined
+    */
+    bool retain_on_join() const;
 
   private:
-    
-    // with only the most significant bit set: 1000...000
-    constexpr static size_t JOINED_BIT = (~size_t(0)) ^ ((~size_t(0)) >> 1);
     
     Subflow(Executor&, Worker&, Node*, Graph&);
     
@@ -1488,8 +1479,6 @@ class Subflow : public FlowBuilder {
     Executor& _executor;
     Worker& _worker;
     Node* _parent;
-
-    size_t _tag;
 };
 
 // Constructor
@@ -1497,30 +1486,42 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
   FlowBuilder {graph}, 
   _executor   {executor}, 
   _worker     {worker}, 
-  _parent     {parent}, 
-  _tag        {graph.size()} {
+  _parent     {parent} {
+  
+  // need to reset since there could have iterative control flow
+  _parent->_nstate &= ~(NSTATE::JOINED | NSTATE::RETAIN_ON_JOIN);
 
-  // assert(_parent != nullptr);
-  // clear undetached nodes in reversed order
-  for(auto i = graph.rbegin(); i != graph.rend(); ++i) {
-    if((i->get()->_nstate & NSTATE::DETACHED) == 0) {
-      --_tag;
-    }
-    else {
-      break;
-    }
-  }
-  graph.resize(_tag);
+  // clear the graph
+  graph.clear();
 }
 
 // Function: joinable
 inline bool Subflow::joinable() const noexcept {
-  return (_tag & JOINED_BIT) == 0;
+  return !(_parent->_nstate & NSTATE::JOINED);
 }
 
 // Function: executor
 inline Executor& Subflow::executor() noexcept {
   return _executor;
+}
+
+// Function: retain_on_join
+inline void Subflow::retain_on_join(bool flag) noexcept {
+  // default value is not to retain 
+  if TF_LIKELY(flag == true) {
+    _parent->_nstate |= NSTATE::RETAIN_ON_JOIN;
+  }
+  else {
+    _parent->_nstate &= ~NSTATE::RETAIN_ON_JOIN;
+  }
+
+  //_parent->_nstate = (_parent->_nstate & ~NSTATE::RETAIN_ON_JOIN) | 
+  //                   (-static_cast<int>(flag) & NSTATE::RETAIN_ON_JOIN);
+}
+
+// Function: retain_on_join
+inline bool Subflow::retain_on_join() const {
+  return _parent->_nstate & NSTATE::RETAIN_ON_JOIN;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

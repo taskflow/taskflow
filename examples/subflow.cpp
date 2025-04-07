@@ -10,38 +10,22 @@
 // finished graphs. After the graph finished, we dump the topology
 // for inspection.
 //
-// Usage: ./subflow detach|join
+// Usage: ./subflow
 //
 
 #include <taskflow/taskflow.hpp>
 
-const auto usage = "usage: ./subflow detach|join";
-
-int main(int argc, char* argv[]) {
-
-  if(argc != 2) {
-    std::cerr << usage << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-
-  std::string opt(argv[1]);
-
-  if(opt != "detach" && opt != "join") {
-    std::cerr << usage << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-
-  auto detached = (opt == "detach") ? true : false;
+int main() {
 
   // Create a taskflow graph with three regular tasks and one subflow task.
   tf::Executor executor(4);
-  tf::Taskflow taskflow("Dynamic Tasking Demo");
+  tf::Taskflow taskflow("Subflow Demo");
 
   // Task A
   auto A = taskflow.emplace([] () { std::cout << "TaskA\n"; });
   auto B = taskflow.emplace(
     // Task B
-    [cap=std::vector<int>{1,2,3,4,5,6,7,8}, detached] (tf::Subflow& subflow) {
+    [cap=std::vector<int>{1,2,3,4,5,6,7,8}] (tf::Subflow& subflow) {
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 
       auto B1 = subflow.emplace([&]() {
@@ -61,9 +45,9 @@ int main(int argc, char* argv[]) {
 
       B1.precede(B3);
       B2.precede(B3);
-
-      // detach or join the subflow (by default the subflow join at B)
-      if(detached) subflow.detach();
+      
+      // retain the subflow for visualization purpose
+      subflow.retain_on_join(true);
     }
   );
 

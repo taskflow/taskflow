@@ -13,10 +13,11 @@ struct NSTATE {
 
   using underlying_type = int;
 
-  constexpr static underlying_type NONE        = 0x00000000;  
-  constexpr static underlying_type CONDITIONED = 0x10000000;  
-  constexpr static underlying_type DETACHED    = 0x20000000;  
-  constexpr static underlying_type PREEMPTED   = 0x40000000;  
+  constexpr static underlying_type NONE           = 0x00000000;  
+  constexpr static underlying_type CONDITIONED    = 0x10000000;  
+  constexpr static underlying_type PREEMPTED      = 0x20000000;  
+  constexpr static underlying_type RETAIN_ON_JOIN = 0x40000000;
+  constexpr static underlying_type JOINED         = 0x80000000;
 
   // mask to isolate state bits - non-state bits store # weak dependents
   constexpr static underlying_type MASK        = 0xF0000000;

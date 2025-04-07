@@ -152,12 +152,12 @@ TEST_CASE("CancelSubflow" * doctest::timeout(300)) {
           counter.fetch_add(1, std::memory_order_relaxed);
         });
       }
+
+      // test explicit join
       if(i % 2) {
         sf.join();
       }
-      else {
-        sf.detach();
-      }
+      // else test implicit join
     });
   }
 

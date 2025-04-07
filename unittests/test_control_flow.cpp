@@ -667,7 +667,6 @@ void condition_subflow(unsigned W) {
       REQUIRE(i<I);
       data[i] = i*(i+1)/2*123;;
     }).name(std::to_string(i));
-    sf.detach();
   }).name("subflow");
 
   auto cond = taskflow.emplace([&](){

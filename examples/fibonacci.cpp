@@ -81,10 +81,6 @@ int main(int argc, char* argv[]) {
 
   size_t N = std::atoi(argv[1]);
 
-  if(N < 0) {
-    throw std::runtime_error("N must be non-negative");
-  }
-
   auto tbeg = std::chrono::steady_clock::now();
   if(std::strcmp(argv[2], "subflow") == 0) {
     printf("fib[%zu] (with subflow) = %zu\n", N, fibonacci_subflow(N));

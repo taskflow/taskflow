@@ -1729,7 +1729,7 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache
     }
   }
   else {  
-    // needs to fetch every data before join-counter becomes zero at which
+    // needs to fetch every data before join counter becomes zero at which
     // the node may be deleted
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
@@ -1803,12 +1803,12 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
 
 // Procedure: _invoke_subflow_task
 inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
+    
+  auto& h = *std::get_if<Node::Subflow>(&node->_handle);
+  auto& g = h.subgraph;
 
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     
-    auto& h = *std::get_if<Node::Subflow>(&node->_handle);
-    auto& g = h.subgraph;
-
     // set up the subflow
     Subflow sf(*this, worker, node, g);
 
@@ -1821,18 +1821,23 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     
     // spawn the subflow if it is joinable and its graph is non-empty
     // implicit join is faster than Subflow::join as it does not involve corun
-    if(sf.joinable() && g.size() > sf._tag) {
+    if(sf.joinable() && g.size()) {
 
       // signal the executor to preempt this node
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      _schedule_graph_with_parent(worker, g.begin() + sf._tag, g.end(), node, NSTATE::NONE);
+      _schedule_graph_with_parent(worker, g.begin(), g.end(), node, NSTATE::NONE);
       return true;
     }
   }
   else {
     node->_nstate &= ~NSTATE::PREEMPTED;
+  }
+
+  // the subflow has finished or joined
+  if((node->_nstate & NSTATE::RETAIN_ON_JOIN) == 0) {
+    g.clear();
   }
 
   return false;
@@ -2156,7 +2161,6 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
   // ---- under taskflow lock ----
   auto& g = tpg->_taskflow._graph;
-  //g._clear_detached();
   
   auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr, NSTATE::NONE);
   tpg->_join_counter.store(send - g.begin(), std::memory_order_relaxed);
@@ -2183,18 +2187,6 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t
     // root, root, root, v1, v2, v3, v4, ...
     if(node->num_predecessors() == 0) {
       std::iter_swap(send++, first);
-    }
-
-    // handle-specific clear
-    switch(node->_handle.index()) {
-
-      // clear detached nodes
-      case Node::SUBFLOW: {
-        std::get_if<Node::Subflow>(&node->_handle)->subgraph.clear();
-      } break;
-
-      default:
-      break;
     }
   }
   return send;
@@ -2273,34 +2265,13 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 inline void Subflow::join() {
 
   if(!joinable()) {
-    TF_THROW("subflow already joined or detached");
+    TF_THROW("subflow already joined");
   }
     
-  // iterator to the begining of the subflow
-  auto gbeg = _graph.begin() + _tag;
-
   // join here since corun graph may throw exception
-  _tag |= JOINED_BIT;
+  _parent->_nstate |= NSTATE::JOINED;
 
-  _executor._corun_graph(_worker, _parent, gbeg, _graph.end());
-}
-
-inline void Subflow::detach() {
-
-  if(!joinable()) {
-    TF_THROW("subflow already joined or detached");
-  }
-
-  if(_graph.size() > _tag) {
-    auto sbeg = _graph.begin() + _tag;
-    auto send = _executor._set_up_graph(
-      sbeg, _graph.end(), _parent->_topology, nullptr, NSTATE::DETACHED
-    );
-    _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
-    _executor._schedule(_worker, sbeg, send);
-  }
-  
-  _tag |= JOINED_BIT;
+  _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
 }
 
 #endif
