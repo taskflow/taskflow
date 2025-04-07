@@ -109,12 +109,15 @@ taskflow.reduce_by_index(
 
 + corrected the terminology by replacing 'dependents' with 'predecessors'
   + tf::Task::num_predecessors (previously tf::Task::num_dependents)
-  + tf::Task::for_each_dependent (previously tf::Task::for_each_dependent)
+  + tf::Task::for_each_predecessors (previously tf::Task::for_each_dependent)
   + tf::Task::num_strong_dependencies (previously tf::Task::num_strong_dependents)
   + tf::Task::num_weak_dependencies (previously tf::Task::num_weak_dependents)
-
-
-Currently, there are no breaking changes.
++ disabled the support for tf::Subflow::detach due to multiple intricate and unresolved issues:
+  + detached subflows are inherently difficult to reason about their execution logic
+  + detached subflows can incur excessive memory consumption, especially in recursive workloads
+  + detached subflows lack a manner to safe lifecycle control and graph cleanup
+  + detached subflows have limited practical benefits for most use cases
+  + detached subflows can be re-implemented using taskflow composition
 
 @section release-3-10-0_documentation Documentation
 

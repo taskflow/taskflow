@@ -11,7 +11,7 @@ namespace tf {
 
 A runtime object allows users to interact with the
 scheduling runtime inside a task, such as scheduling an active task,
-spawning a subflow, and so on.
+spawning an asynchronous task, corunning a graph target, and so on.
 
 @code{.cpp}
 tf::Task A, B, C, D;

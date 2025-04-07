@@ -1,12 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="cuda__capturer_8hpp" kind="file" language="C++">
     <compoundname>cuda_capturer.hpp</compoundname>
     <includes local="yes">cuda_task.hpp</includes>
     <includes refid="cuda__optimizer_8hpp" local="yes">cuda_optimizer.hpp</includes>
     <incdepgraph>
-      <node id="11">
-        <label>../utility/traits.hpp</label>
+      <node id="5">
+        <label>filesystem</label>
+      </node>
+      <node id="8">
+        <label>cuda_error.hpp</label>
       </node>
       <node id="1">
         <label>taskflow/cuda/cuda_capturer.hpp</label>
@@ -16,10 +19,10 @@
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="7">
-        <label>cuda_device.hpp</label>
-        <link refid="cuda__device_8hpp"/>
-        <childnode refid="8" relation="include">
+      <node id="6">
+        <label>cuda_memory.hpp</label>
+        <link refid="cuda__memory_8hpp"/>
+        <childnode refid="7" relation="include">
         </childnode>
       </node>
       <node id="4">
@@ -36,11 +39,23 @@
         <childnode refid="11" relation="include">
         </childnode>
       </node>
-      <node id="6">
-        <label>cuda_memory.hpp</label>
-        <link refid="cuda__memory_8hpp"/>
-        <childnode refid="7" relation="include">
+      <node id="9">
+        <label>cuda_stream.hpp</label>
+        <link refid="cuda__stream_8hpp"/>
+        <childnode refid="8" relation="include">
         </childnode>
+      </node>
+      <node id="11">
+        <label>../utility/traits.hpp</label>
+      </node>
+      <node id="7">
+        <label>cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>cuda_meta.hpp</label>
       </node>
       <node id="3">
         <label>cuda_optimizer.hpp</label>
@@ -48,23 +63,8 @@
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="9">
-        <label>cuda_stream.hpp</label>
-        <link refid="cuda__stream_8hpp"/>
-        <childnode refid="8" relation="include">
-        </childnode>
-      </node>
-      <node id="8">
-        <label>cuda_error.hpp</label>
-      </node>
-      <node id="10">
-        <label>cuda_meta.hpp</label>
-      </node>
       <node id="2">
         <label>cuda_task.hpp</label>
-      </node>
-      <node id="5">
-        <label>filesystem</label>
       </node>
     </incdepgraph>
     <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>

@@ -1457,14 +1457,19 @@ class Subflow : public FlowBuilder {
     Graph& graph() { return _graph; }
     
     /**
-    @brief specifies whether to keep the subflow when it is joined
+    @brief specifies whether to keep the subflow after it is joined
 
-    @param flag `true` for retaining the subflow when it's joined or `false`
+    @param flag `true` to retain the subflow after it is joined; `false` to discard it
+
+    By default, the runtime automatically clears a spawned subflow once it is joined.
+    Setting this flag to `true` allows the application to retain the subflow's structure 
+    for post-execution analysis like visualization.
     */
     void retain_on_join(bool flag) noexcept;
 
     /**
-    @brief queries if the subflow will be retained when it is joined
+    @brief queries if the subflow will be retained after it is joined
+    @return `true` if the subflow will be retained after it is joined; `false` otherwise
     */
     bool retain_on_join() const;
 
