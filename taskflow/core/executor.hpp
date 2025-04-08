@@ -1391,6 +1391,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t vtm=0; vtm<_buffers.size(); ++vtm) {
     if(!_buffers._buckets[vtm].queue.empty()) {
       w._vtm = vtm + _workers.size();
+      _notifier.cancel_wait(w._waiter);
       goto explore_task;
     }
   }
