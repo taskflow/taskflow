@@ -1388,10 +1388,11 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   _notifier.prepare_wait(w._waiter);
   
   // Condition #1: buffers should be empty
-  if(!_buffers.empty(w._vtm)) {
-    w._vtm += _workers.size();
-    _notifier.cancel_wait(w._waiter);
-    goto explore_task;
+  for(size_t vtm=0; vtm<_buffers.size(); ++vtm) {
+    if(!_buffers._buckets[vtm].queue.empty()) {
+      w._vtm = vtm + _workers.size();
+      goto explore_task;
+    }
   }
   
   // Condition #2: worker queues should be empty
@@ -1404,7 +1405,9 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
       goto explore_task;
     }
   }
-
+  
+  // due to the property of the work-stealing queue, we don't need to check
+  // the queue of this worker
   for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       w._vtm = vtm;
@@ -1425,9 +1428,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   
   // Now I really need to relinquish my self to others.
   _notifier.commit_wait(w._waiter);
-  w._vtm = w._id;
   goto explore_task;
-
 }
 
 // Function: make_observer

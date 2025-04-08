@@ -36,8 +36,8 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-10-0_summary Release Summary
 
-This release improves the scheduling performance via a better work-stealing threshold tuning and
-a constrained decentralized buffer.
+This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. 
+It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.
 
 @section release-3-10-0_new_features New Features
 
@@ -109,7 +109,7 @@ taskflow.reduce_by_index(
 
 + corrected the terminology by replacing 'dependents' with 'predecessors'
   + tf::Task::num_predecessors (previously tf::Task::num_dependents)
-  + tf::Task::for_each_predecessors (previously tf::Task::for_each_dependent)
+  + tf::Task::for_each_predecessor (previously tf::Task::for_each_dependent)
   + tf::Task::num_strong_dependencies (previously tf::Task::num_strong_dependents)
   + tf::Task::num_weak_dependencies (previously tf::Task::num_weak_dependents)
 + disabled the support for tf::Subflow::detach due to multiple intricate and unresolved issues:
@@ -118,9 +118,32 @@ taskflow.reduce_by_index(
   + detached subflows lack a manner to safe lifecycle control and graph cleanup
   + detached subflows have limited practical benefits for most use cases
   + detached subflows can be re-implemented using taskflow composition
++ changed the default behavior of tf::Subflow to no longer retain its task graph after join
+  + default retention can incur significant memory consumption problem ([#674](https://github.com/taskflow/taskflow/issues/674))
+  + users must explicitly call tf::Subflow::retain_on_join to retain a subflow after join 
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+taskflow.emplace([&](tf::Subflow& sf){
+  sf.retain_on_join(true);  // retain the subflow after join for visualization
+  auto A = sf.emplace([](){ std::cout << "A\n"; });
+  auto B = sf.emplace([](){ std::cout << "B\n"; });
+  auto C = sf.emplace([](){ std::cout << "C\n"; });
+  A.precede(B, C);  // A runs before B and C
+});  // subflow implicitly joins here
+
+executor.run(taskflow).wait();
+
+// The subflow graph is now retained and can be visualized using taskflow.dump(...)
+taskflow.dump(std::cout);
+@endcode
+
 
 @section release-3-10-0_documentation Documentation
 
++ revised @ref SubflowTasking
 + revised @ref ParallelIterations
 + revised @ref ParallelReduction
 + revised @ref ParallelFind

@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1cudaStreamCreator" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaStreamCreator</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
-      <sectiondef kind="public-func">
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaStream_t</type>
         <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
         <argsstring>(cudaStream_t stream) const</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::cudaStreamCreator::operator()</qualifiedname>
         <param>
           <type>cudaStream_t</type>
           <declname>stream</declname>
@@ -27,6 +28,7 @@
         <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
         <argsstring>() const</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::cudaStreamCreator::operator()</qualifiedname>
         <briefdescription>
 <para>constructs a new <computeroutput>cudaStream_t</computeroutput> object using <computeroutput>cudaStreamCreate</computeroutput> </para>
         </briefdescription>
@@ -36,7 +38,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="136" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="136" bodyend="140"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>functor to create a <computeroutput>cudaStream_t</computeroutput> object </para>
     </briefdescription>

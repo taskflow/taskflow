@@ -45,15 +45,6 @@ class Freelist {
     return _buckets.size();
   }
 
-  TF_FORCE_INLINE bool empty(size_t& which) const {
-    for(which=0; which<_buckets.size(); ++which) {
-      if(!_buckets[which].queue.empty()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   private:
   
   std::vector<Bucket> _buckets;

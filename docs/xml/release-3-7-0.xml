@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-7-0" kind="page">
     <compoundname>release-3-7-0</compoundname>
     <title>Release 3.7.0 (2024/05/07)</title>
@@ -7,57 +7,55 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-7-0_1release-3-7-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-7-0_1release-3-7-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-7-0_1release-3-7-0_summary</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-7-0_1release-3-7-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-7-0_1release-3-7-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-7-0_1release-3-7-0_utilities</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-7-0_1release-3-7-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-7-0_1release-3-7-0_utilities</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-7-0_1release-3-7-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-7-0_1release-3-7-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-7-0_1release-3-7-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-7-0_1release-3-7-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.7.0 is the 8th release in the 3.x line! This release includes several new changes, such as exception support, improved scheduling algorithms, documentation, examples, and unit tests.</para>
 <sect1 id="release-3-7-0_1release-3-7-0_download">
-<title>Download</title>
-<para>Taskflow 3.7.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.7.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.7.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.7.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.7.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.7.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -77,14 +75,11 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_summary">
-<title>Release Summary</title>
-<para>This release introduces a new exception interface to help identify C++ errors in taskflow programs.</para>
+<title>Release Summary</title><para>This release introduces a new exception interface to help identify C++ errors in taskflow programs.</para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-7-0_1release-3-7-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
+<title>New Features</title><sect2 id="release-3-7-0_1release-3-7-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>Improved scheduling performance of dependent asynchronous tasks</para>
 </listitem><listitem><para>Improved scheduling performance of module task by removing busy looping</para>
 </listitem><listitem><para>Improved <ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">tf::Executor::wait_for_all</ref> using C++20 atomic wait</para>
@@ -98,12 +93,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
@@ -111,11 +106,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>Modified the <ref refid="classtf_1_1PartitionerBase" kindref="compound">tf::PartitionerBase</ref> to allow defining custom closure wrappers</para>
 </listitem></itemizedlist>
 </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>count<sp/>=<sp/>0;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -128,32 +123,28 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect2>
 <sect2 id="release-3-7-0_1release-3-7-0_utilities">
-<title>Utilities</title>
-</sect2>
+<title>Utilities</title></sect2>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>Fixed compilation error of CUDA examples caused by not including <computeroutput><ref refid="for__each_8hpp" kindref="compound">for_each.hpp</ref></computeroutput></para>
 </listitem><listitem><para>Fixed the runtime error of <ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">tf::Taskflow::for_each_index</ref> when the range invalid</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_breaking_changes">
-<title>Breaking Changes</title>
-<para><itemizedlist>
+<title>Breaking Changes</title><para><itemizedlist>
 <listitem><para>Renamed tf::Runtime::join to <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref></para>
 </listitem><listitem><para>Removed <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> due to the support of exception</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>Revised <ref refid="DependentAsyncTasking" kindref="compound">Asynchronous Tasking with Dependencies</ref><itemizedlist>
 <listitem><para>Added <ref refid="DependentAsyncTasking_1QueryTheComppletionStatusOfDependentAsyncTasks" kindref="member">Query the Completion Status of Dependent Async Tasks</ref></para>
 </listitem></itemizedlist>
@@ -168,8 +159,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-7-0_1release-3-7-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para>We have published Taskflow in the following venues:</para>
+<title>Miscellaneous Items</title><para>We have published Taskflow in the following venues:</para>
 <para><itemizedlist>
 <listitem><para>Cheng-Hsiang Chiu, Zhicheng Xiong, Zizheng Guo, Tsung-Wei Huang, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/hpcasia-24.pdf">An Efficient Task-parallel Pipeline Programming Framework</ulink>," <emphasis>ACM International Conference on High-performance Computing in Asia-Pacific Region (HPC Asia)</emphasis>, Nagoya, Japan, 2024</para>
 </listitem><listitem><para>Cheng-Hsiang Chiu, Dian-Lun Lin, and Tsung-Wei Huang,, "<ulink url="https://tsung-wei-huang.github.io/papers/iccad23-asynctask.pdf">Programming Dynamic Task Parallelism for Heterogeneous EDA Algorithms</ulink>," <emphasis>IEEE/ACM International Conference on Computer-aided Design (ICCAD)</emphasis>, San Francisco, CA, 2023</para>

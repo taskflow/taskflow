@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1IndexRange" kind="class" language="C++" prot="public">
     <compoundname>tf::IndexRange</compoundname>
     <includes refid="iterator_8hpp" local="no">taskflow/utility/iterator.hpp</includes>
@@ -8,12 +8,13 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1IndexRange_1a3cd586acdb38ba869833496c6d87e8df" prot="public" static="no">
         <type>T</type>
         <definition>using tf::IndexRange&lt; T &gt;::index_type =  T</definition>
         <argsstring></argsstring>
         <name>index_type</name>
+        <qualifiedname>tf::IndexRange::index_type</qualifiedname>
         <briefdescription>
 <para>alias for the index type used in the range </para>
         </briefdescription>
@@ -23,13 +24,14 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="107" column="3" bodyfile="taskflow/utility/iterator.hpp" bodystart="107" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1IndexRange_1ad07bb2a3f83ea55a9da2b79bfec80860" prot="private" static="no" mutable="no">
         <type>T</type>
         <definition>T tf::IndexRange&lt; T &gt;::_beg</definition>
         <argsstring></argsstring>
         <name>_beg</name>
+        <qualifiedname>tf::IndexRange::_beg</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -43,6 +45,7 @@
         <definition>T tf::IndexRange&lt; T &gt;::_end</definition>
         <argsstring></argsstring>
         <name>_end</name>
+        <qualifiedname>tf::IndexRange::_end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -56,6 +59,7 @@
         <definition>T tf::IndexRange&lt; T &gt;::_step_size</definition>
         <argsstring></argsstring>
         <name>_step_size</name>
+        <qualifiedname>tf::IndexRange::_step_size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -64,13 +68,14 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="202" column="5" bodyfile="taskflow/utility/iterator.hpp" bodystart="202" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1IndexRange_1ab67d261986b699206aa8af8d1dc3e2b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::IndexRange&lt; T &gt;::IndexRange</definition>
         <argsstring>()=default</argsstring>
         <name>IndexRange</name>
+        <qualifiedname>tf::IndexRange::IndexRange</qualifiedname>
         <briefdescription>
 <para>constructs an index range object without any initialization </para>
         </briefdescription>
@@ -85,6 +90,7 @@
         <definition>tf::IndexRange&lt; T &gt;::IndexRange</definition>
         <argsstring>(T beg, T end, T step_size)</argsstring>
         <name>IndexRange</name>
+        <qualifiedname>tf::IndexRange::IndexRange</qualifiedname>
         <param>
           <type>T</type>
           <declname>beg</declname>
@@ -137,6 +143,7 @@
         <definition>T tf::IndexRange&lt; T &gt;::begin</definition>
         <argsstring>() const</argsstring>
         <name>begin</name>
+        <qualifiedname>tf::IndexRange::begin</qualifiedname>
         <briefdescription>
 <para>queries the starting index of the range </para>
         </briefdescription>
@@ -151,6 +158,7 @@
         <definition>T tf::IndexRange&lt; T &gt;::end</definition>
         <argsstring>() const</argsstring>
         <name>end</name>
+        <qualifiedname>tf::IndexRange::end</qualifiedname>
         <briefdescription>
 <para>queries the ending index of the range </para>
         </briefdescription>
@@ -165,6 +173,7 @@
         <definition>T tf::IndexRange&lt; T &gt;::step_size</definition>
         <argsstring>() const</argsstring>
         <name>step_size</name>
+        <qualifiedname>tf::IndexRange::step_size</qualifiedname>
         <briefdescription>
 <para>queries the step size of the range </para>
         </briefdescription>
@@ -174,11 +183,12 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="136" column="5" bodyfile="taskflow/utility/iterator.hpp" bodystart="136" bodyend="136"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1IndexRange_1aecb0f458126857de583273c4d3a3e6fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1IndexRange_1a9cf7948f33d491f1bffe03a8d990bf13" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1IndexRange" kindref="compound">IndexRange</ref>&lt; T &gt; &amp;</type>
-        <definition>IndexRange&lt;T&gt;&amp; tf::IndexRange&lt; T &gt;::reset</definition>
+        <definition>IndexRange&lt; T &gt; &amp; tf::IndexRange&lt; T &gt;::reset</definition>
         <argsstring>(T begin, T end, T step_size)</argsstring>
         <name>reset</name>
+        <qualifiedname>tf::IndexRange::reset</qualifiedname>
         <param>
           <type>T</type>
           <declname>begin</declname>
@@ -200,11 +210,12 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="141" column="14" bodyfile="taskflow/utility/iterator.hpp" bodystart="141" bodyend="146"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1IndexRange_1adc41a1e13a4fcb2fc4232fac9470650d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1IndexRange_1addb769bccbcd30a680c59567876a24b7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1IndexRange" kindref="compound">IndexRange</ref>&lt; T &gt; &amp;</type>
-        <definition>IndexRange&lt;T&gt;&amp; tf::IndexRange&lt; T &gt;::begin</definition>
+        <definition>IndexRange&lt; T &gt; &amp; tf::IndexRange&lt; T &gt;::begin</definition>
         <argsstring>(T new_begin)</argsstring>
         <name>begin</name>
+        <qualifiedname>tf::IndexRange::begin</qualifiedname>
         <param>
           <type>T</type>
           <declname>new_begin</declname>
@@ -218,11 +229,12 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="151" column="14" bodyfile="taskflow/utility/iterator.hpp" bodystart="151" bodyend="151"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1IndexRange_1a53237cabb7d3d346b51605914d283c9a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1IndexRange_1a96da4e7d6c1e975f08a44d52534c82b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1IndexRange" kindref="compound">IndexRange</ref>&lt; T &gt; &amp;</type>
-        <definition>IndexRange&lt;T&gt;&amp; tf::IndexRange&lt; T &gt;::end</definition>
+        <definition>IndexRange&lt; T &gt; &amp; tf::IndexRange&lt; T &gt;::end</definition>
         <argsstring>(T new_end)</argsstring>
         <name>end</name>
+        <qualifiedname>tf::IndexRange::end</qualifiedname>
         <param>
           <type>T</type>
           <declname>new_end</declname>
@@ -236,11 +248,12 @@
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="156" column="14" bodyfile="taskflow/utility/iterator.hpp" bodystart="156" bodyend="156"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1IndexRange_1aa9b7ebf8b0f5c9ac29a24fe13a4f5ade" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1IndexRange_1aa63f63345d773c9dd98e368579882f29" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1IndexRange" kindref="compound">IndexRange</ref>&lt; T &gt; &amp;</type>
-        <definition>IndexRange&lt;T&gt;&amp; tf::IndexRange&lt; T &gt;::step_size</definition>
+        <definition>IndexRange&lt; T &gt; &amp; tf::IndexRange&lt; T &gt;::step_size</definition>
         <argsstring>(T new_step_size)</argsstring>
         <name>step_size</name>
+        <qualifiedname>tf::IndexRange::step_size</qualifiedname>
         <param>
           <type>T</type>
           <declname>new_step_size</declname>
@@ -259,6 +272,7 @@
         <definition>size_t tf::IndexRange&lt; T &gt;::size</definition>
         <argsstring>() const</argsstring>
         <name>size</name>
+        <qualifiedname>tf::IndexRange::size</qualifiedname>
         <briefdescription>
 <para>queries the number of elements in the range </para>
         </briefdescription>
@@ -274,6 +288,7 @@
         <definition>IndexRange tf::IndexRange&lt; T &gt;::discrete_domain</definition>
         <argsstring>(size_t part_beg, size_t part_end) const</argsstring>
         <name>discrete_domain</name>
+        <qualifiedname>tf::IndexRange::discrete_domain</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>part_beg</declname>
@@ -315,7 +330,7 @@ The discrete domain of a range refers to a counter-based sequence indexed from 0
         </inbodydescription>
         <location file="taskflow/utility/iterator.hpp" line="190" column="14" bodyfile="taskflow/utility/iterator.hpp" bodystart="190" bodyend="196"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create an index range of integral indices with a step size </para>
     </briefdescription>
@@ -340,17 +355,17 @@ The discrete domain of a range refers to a counter-based sequence indexed from 0
       <member refid="classtf_1_1IndexRange_1a25ec20719388b32ffc20f46f6c6865f0" prot="private" virt="non-virtual"><scope>tf::IndexRange</scope><name>_end</name></member>
       <member refid="classtf_1_1IndexRange_1a6347193ad9681b2c4517d17dd2523014" prot="private" virt="non-virtual"><scope>tf::IndexRange</scope><name>_step_size</name></member>
       <member refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>begin</name></member>
-      <member refid="classtf_1_1IndexRange_1adc41a1e13a4fcb2fc4232fac9470650d" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>begin</name></member>
+      <member refid="classtf_1_1IndexRange_1addb769bccbcd30a680c59567876a24b7" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>begin</name></member>
       <member refid="classtf_1_1IndexRange_1abe3a1bf7a912d73ead27e3375cc660d7" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>discrete_domain</name></member>
       <member refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>end</name></member>
-      <member refid="classtf_1_1IndexRange_1a53237cabb7d3d346b51605914d283c9a" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>end</name></member>
+      <member refid="classtf_1_1IndexRange_1a96da4e7d6c1e975f08a44d52534c82b0" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>end</name></member>
       <member refid="classtf_1_1IndexRange_1a3cd586acdb38ba869833496c6d87e8df" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>index_type</name></member>
       <member refid="classtf_1_1IndexRange_1ab67d261986b699206aa8af8d1dc3e2b7" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>IndexRange</name></member>
       <member refid="classtf_1_1IndexRange_1ab9e48fe80add350412be71fa0a219e4d" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>IndexRange</name></member>
-      <member refid="classtf_1_1IndexRange_1aecb0f458126857de583273c4d3a3e6fa" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>reset</name></member>
+      <member refid="classtf_1_1IndexRange_1a9cf7948f33d491f1bffe03a8d990bf13" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>reset</name></member>
       <member refid="classtf_1_1IndexRange_1a2146e73c53a5f3dde2cda3c659b8b064" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>size</name></member>
       <member refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>step_size</name></member>
-      <member refid="classtf_1_1IndexRange_1aa9b7ebf8b0f5c9ac29a24fe13a4f5ade" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>step_size</name></member>
+      <member refid="classtf_1_1IndexRange_1aa63f63345d773c9dd98e368579882f29" prot="public" virt="non-virtual"><scope>tf::IndexRange</scope><name>step_size</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

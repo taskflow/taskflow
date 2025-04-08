@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1SmallVector" kind="class" language="C++" prot="public">
     <compoundname>tf::SmallVector</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorImpl&lt; T &gt;</basecompoundref>
@@ -15,12 +15,13 @@
         <defval>2</defval>
       </param>
     </templateparamlist>
-      <sectiondef kind="private-attrib">
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1SmallVector_1a752752b1856c279b5ccb7c71106ddae0" prot="private" static="no" mutable="no">
         <type>SmallVectorStorage&lt; T, N &gt;</type>
         <definition>SmallVectorStorage&lt;T, N&gt; tf::SmallVector&lt; T, N &gt;::Storage</definition>
         <argsstring></argsstring>
         <name>Storage</name>
+        <qualifiedname>tf::SmallVector::Storage</qualifiedname>
         <briefdescription>
 <para>Inline space for elements which aren&apos;t stored in the base class. </para>
         </briefdescription>
@@ -30,13 +31,14 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="929" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="929" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVector_1a7948bf82d89a97740fc6ae7eb484a14d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>()</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <briefdescription>
 <para>constructs an empty vector </para>
         </briefdescription>
@@ -51,6 +53,7 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(size_t Size, const T &amp;Value=T())</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -79,6 +82,7 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(ItTy S, ItTy E)</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
           <type>ItTy</type>
           <declname>S</declname>
@@ -101,8 +105,9 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(std::initializer_list&lt; T &gt; IL)</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; T &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; T &gt;</type>
           <declname>IL</declname>
         </param>
         <briefdescription>
@@ -119,6 +124,7 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(const SmallVector &amp;RHS)</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
           <declname>RHS</declname>
@@ -137,6 +143,7 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(SmallVector &amp;&amp;RHS)</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;&amp;</type>
           <declname>RHS</declname>
@@ -150,11 +157,12 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="980" column="3" bodyfile="taskflow/utility/small_vector.hpp" bodystart="980" bodyend="983"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVector_1aa2a3549a42d052ecb9f9c348f547406e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVector_1a4f36cebb203af87ab42377c99e0deb47" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
-        <definition>const SmallVector&amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
+        <definition>const SmallVector &amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
         <argsstring>(const SmallVector &amp;RHS)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::SmallVector::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
           <declname>RHS</declname>
@@ -168,11 +176,12 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="988" column="21" bodyfile="taskflow/utility/small_vector.hpp" bodystart="988" bodyend="991"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVector_1a66c2613642723060c21f0539d4a86b2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVector_1a62e2dbb28791ea514016645b60bc8cc8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
-        <definition>const SmallVector&amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
+        <definition>const SmallVector &amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
         <argsstring>(SmallVector &amp;&amp;RHS)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::SmallVector::operator=</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;&amp;</type>
           <declname>RHS</declname>
@@ -191,6 +200,7 @@
         <definition>tf::SmallVector&lt; T, N &gt;::SmallVector</definition>
         <argsstring>(SmallVectorImpl&lt; T &gt; &amp;&amp;RHS)</argsstring>
         <name>SmallVector</name>
+        <qualifiedname>tf::SmallVector::SmallVector</qualifiedname>
         <param>
           <type>SmallVectorImpl&lt; T &gt; &amp;&amp;</type>
           <declname>RHS</declname>
@@ -204,11 +214,12 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="1004" column="3" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1004" bodyend="1007"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVector_1a06e0c4f610e6ede440b8f2ec38392781" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVector_1ae0666e6d5a88e8dc243b414099201e06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
-        <definition>const SmallVector&amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
+        <definition>const SmallVector &amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
         <argsstring>(SmallVectorImpl&lt; T &gt; &amp;&amp;RHS)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::SmallVector::operator=</qualifiedname>
         <param>
           <type>SmallVectorImpl&lt; T &gt; &amp;&amp;</type>
           <declname>RHS</declname>
@@ -222,13 +233,14 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="1012" column="21" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1012" bodyend="1015"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVector_1a18276baf5b8c09d8452d198b5f568576" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVector_1a0b075efbc7a920e9c93464f217b060b8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref> &amp;</type>
-        <definition>const SmallVector&amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
+        <definition>const SmallVector &amp; tf::SmallVector&lt; T, N &gt;::operator=</definition>
         <argsstring>(std::initializer_list&lt; T &gt; IL)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::SmallVector::operator=</qualifiedname>
         <param>
-          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; T &gt;</type>
+          <type><ref refid="cpp/utility/initializer_list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::initializer_list</ref>&lt; T &gt;</type>
           <declname>IL</declname>
         </param>
         <briefdescription>
@@ -240,7 +252,7 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="1020" column="21" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1020" bodyend="1023"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to define a vector optimized for small array </para>
     </briefdescription>
@@ -266,54 +278,54 @@ The class defines a C++ STL-styled vector (a variable-sized array) optimized for
 <para>The class is stripped from the LLVM codebase. </para>
     </detaileddescription>
     <inheritancegraph>
-      <node id="4">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="5" relation="public-inheritance">
+      <node id="1">
+        <label>tf::SmallVector&lt; T, N &gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="5">
+        <label>tf::SmallVectorBase</label>
       </node>
       <node id="2">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
         <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="5">
-        <label>tf::SmallVectorBase</label>
-      </node>
       <node id="3">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
         <childnode refid="4" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="1">
-        <label>tf::SmallVector&lt; T, N &gt;</label>
-        <link refid="classtf_1_1SmallVector"/>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="4">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="5" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="4">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="5" relation="public-inheritance">
+      <node id="1">
+        <label>tf::SmallVector&lt; T, N &gt;</label>
+        <link refid="classtf_1_1SmallVector"/>
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="5">
+        <label>tf::SmallVectorBase</label>
       </node>
       <node id="2">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
         <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="5">
-        <label>tf::SmallVectorBase</label>
-      </node>
       <node id="3">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
         <childnode refid="4" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="1">
-        <label>tf::SmallVector&lt; T, N &gt;</label>
-        <link refid="classtf_1_1SmallVector"/>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="4">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="5" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
@@ -335,14 +347,14 @@ The class defines a C++ STL-styled vector (a variable-sized array) optimized for
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a6785a26fc28425df3fab4e06ccf436e3" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>capacity_ptr</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a13c5c546448248a63e004725258f1ea3" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>CapacityX</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a0c4d7c6d68cdab50dd2e263dcb9338a5" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>clear</name></member>
-      <member refid="classtf_1_1SmallVectorImpl_1a0214b0ea02db158851fdc27c726eb5c6" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_iterator</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1ab2ca1203dec28f3d9c626c85b4f36448" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_pointer</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1ac60fb9e83232f170a2f1af419054b30d" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_reference</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1ae8618ae79998e522734cf4b15fa7956e" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_reverse_iterator</name></member>
+      <member refid="classtf_1_1SmallVectorImpl_1acfcf4f38933a9d8e7414d203173bb097" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_iterator</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a7056ab5d97e1cfaa75aba6d859756a3c" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_pointer</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a32bdbb2a82b5b182efd7289271679dd7" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_reference</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a872bd4bd9612fa0f04c997a07638b1cf" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>const_reverse_iterator</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a65c0541a7bf64e1ac4ae2a326d103cee" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>data</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a6d3b04be0f7fef50e88269934c4f95cd" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>data</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1a00ebcf9e81eed0b433be97131fd3d1d1" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>destroy_range</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1adbfcf9d6ec0b239d48567a420a43b6f6" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>difference_type</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a90bc08dc3a60d5416ef7010d10f2fc48" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>difference_type</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a917970b8ad88f2782c0fdf610422229e" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>emplace_back</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>empty</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a59e18797630dc06cef6c2ae5acf591a0" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>end</name></member>
@@ -361,38 +373,38 @@ The class defines a C++ STL-styled vector (a variable-sized array) optimized for
       <member refid="classtf_1_1SmallVectorImpl_1a2f1549f06d7d5899e5e5636c2b5836d2" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>insert</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a183b0273245a9e08281ecf3fcdd6c326" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>insert</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ad541b208571c7244efc8fbe42b90d608" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>isSmall</name></member>
-      <member refid="classtf_1_1SmallVectorImpl_1a56906d9b3af4322205884dccccda4557" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>iterator</name></member>
+      <member refid="classtf_1_1SmallVectorImpl_1ace0d53df3e9c44ec5989367953febbca" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>iterator</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ab79607f378fcf2fa8772f02c95a73073" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>max_size</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a0d3239c335aaa933165c3da83e6544da" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator!=</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1af696392bdb0d114a8ead523260045e29" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator&lt;</name></member>
-      <member refid="classtf_1_1SmallVector_1aa2a3549a42d052ecb9f9c348f547406e" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
-      <member refid="classtf_1_1SmallVector_1a66c2613642723060c21f0539d4a86b2d" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
-      <member refid="classtf_1_1SmallVector_1a06e0c4f610e6ede440b8f2ec38392781" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
-      <member refid="classtf_1_1SmallVector_1a18276baf5b8c09d8452d198b5f568576" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1SmallVector_1a4f36cebb203af87ab42377c99e0deb47" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1SmallVector_1a62e2dbb28791ea514016645b60bc8cc8" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1SmallVector_1ae0666e6d5a88e8dc243b414099201e06" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1SmallVector_1a0b075efbc7a920e9c93464f217b060b8" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator=</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1aaec66ca9e10e70d11c194eecec877a1e" prot="public" virt="non-virtual" ambiguityscope="tf::SmallVectorImpl::"><scope>tf::SmallVector</scope><name>operator=</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a9d7b77ff6197e5c30cd0c267196f1ff6" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator==</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a42143086f104cda6e3d2ed2a4f7f9a29" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator[]</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1af77ae362f96acd803ed7577fb48b5efd" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>operator[]</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1a4762cde1bfad65cb37752b4df255ddab" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>pointer</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a53808ca0785a16b77515ead34c15e05d" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>pointer</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1aaa3d3554c2ae0be47eed43c324e5e73b" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>pop_back</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a787679e464d7605da42cfa51c932b357" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>pop_back_val</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1a6b7c01c4c054379358315a1aac0d49a7" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>push_back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1a6509b362398934d6ceed4a74ad0e6547" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>push_back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a83f50a1376ad1b3c828e89b9fa34b56d" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>rbegin</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a96c2d2979402cc76f84a76ff08720933" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>rbegin</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1a4b9db31beb2fe6aef612cd8ce248eb4a" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>reference</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a4758fab325e09e77b5d5513e19019752" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>reference</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ae26b374c3ca4f75054eb17ec85b26cf0" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>rend</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a411820e49d8ab402ac29c7537cd22049" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>rend</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a50e86216100abce0a02f758ec48dec26" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>reserve</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1aed80eb722677292606f4c4e3b14d9639" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>resetToSmall</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a3fd39cea3aa24104f31f051cc858ae31" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>resize</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1ab4b71ea99487d0561849b4ed9c32f493" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>resize</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1a20b7a8544e963fe20fd8a139bddce658" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>reverse_iterator</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1a1a3249305d8bb55f77cd57cb8840c1fc" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>reverse_iterator</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1aa67a4c5e467bb19b1f16960854a0b010" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>set_size</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ae5fa1f3af9c829c120fd6ee9be5cf562" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>setEnd</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a4416437b41cf9d57a6ed6b061e1cc1e8" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>size</name></member>
       <member refid="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>size_in_bytes</name></member>
-      <member refid="classtf_1_1SmallVectorImpl_1ad777bf745a771240340b41ef95b23f94" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>size_type</name></member>
+      <member refid="classtf_1_1SmallVectorImpl_1a9dd5aedba6918bac43ef7dfee1fe46e8" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>size_type</name></member>
       <member refid="classtf_1_1SmallVector_1a7948bf82d89a97740fc6ae7eb484a14d" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>SmallVector</name></member>
       <member refid="classtf_1_1SmallVector_1a092160eaf54d09827daaa8875c089226" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>SmallVector</name></member>
       <member refid="classtf_1_1SmallVector_1a0e0c9ea3b175d1e48e640434f9839380" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>SmallVector</name></member>
@@ -408,7 +420,7 @@ The class defines a C++ STL-styled vector (a variable-sized array) optimized for
       <member refid="classtf_1_1SmallVectorImpl_1ac79ba4c3607daede2f497cb7f14cc3cb" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>swap</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1ab8738fe3287f4ef437fe7363e8ae2d60" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>uninitialized_copy</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_1adf1b336ce5b5f404de1bb43c354fe1dd" prot="protected" virt="non-virtual"><scope>tf::SmallVector</scope><name>uninitialized_move</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateCommon_1ad92ebf3b12a1cd9a7a80d5161cc4449b" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>value_type</name></member>
+      <member refid="classtf_1_1SmallVectorTemplateCommon_1aa081301a45bdd27c805fc13c9ca94946" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>value_type</name></member>
       <member refid="classtf_1_1SmallVectorImpl_1a4ac1132c5abed54299b9c05f5a6c3a5e" prot="public" virt="non-virtual"><scope>tf::SmallVector</scope><name>~SmallVectorImpl</name></member>
     </listofallmembers>
   </compounddef>

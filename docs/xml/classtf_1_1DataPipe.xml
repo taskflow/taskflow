@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1DataPipe" kind="class" language="C++" prot="public">
     <compoundname>tf::DataPipe</compoundname>
     <includes refid="data__pipeline_8hpp" local="no">taskflow/algorithm/data_pipeline.hpp</includes>
@@ -14,12 +14,13 @@
         <type>typename C</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1DataPipe_1a5cc3b76f16379f4cb2ecdef66dee1ba3" prot="public" static="no">
         <type>C</type>
         <definition>using tf::DataPipe&lt; Input, Output, C &gt;::callable_t =  C</definition>
         <argsstring></argsstring>
         <name>callable_t</name>
+        <qualifiedname>tf::DataPipe::callable_t</qualifiedname>
         <briefdescription>
 <para>callable type of the data pipe </para>
         </briefdescription>
@@ -34,6 +35,7 @@
         <definition>using tf::DataPipe&lt; Input, Output, C &gt;::input_t =  Input</definition>
         <argsstring></argsstring>
         <name>input_t</name>
+        <qualifiedname>tf::DataPipe::input_t</qualifiedname>
         <briefdescription>
 <para>input type of the data pipe </para>
         </briefdescription>
@@ -48,6 +50,7 @@
         <definition>using tf::DataPipe&lt; Input, Output, C &gt;::output_t =  Output</definition>
         <argsstring></argsstring>
         <name>output_t</name>
+        <qualifiedname>tf::DataPipe::output_t</qualifiedname>
         <briefdescription>
 <para>output type of the data pipe </para>
         </briefdescription>
@@ -57,8 +60,8 @@
         </inbodydescription>
         <location file="taskflow/algorithm/data_pipeline.hpp" line="72" column="3" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="72" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="friend">
+    </sectiondef>
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1DataPipe_1a576c05629fadf8120eb4db27cf28e659" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -71,6 +74,7 @@
         <definition>friend class DataPipeline</definition>
         <argsstring></argsstring>
         <name>DataPipeline</name>
+        <qualifiedname>tf::DataPipe::DataPipeline</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1DataPipeline" kindref="compound">DataPipeline</ref></type>
         </param>
@@ -80,15 +84,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/data_pipeline.hpp" line="55" column="3" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="55" bodyend="-1"/>
+        <location file="taskflow/algorithm/data_pipeline.hpp" line="55" column="16" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="55" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1DataPipe_1af7e6b232e5d82bd0443b4e4606a3fbea" prot="private" static="no" mutable="no">
         <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
         <definition>PipeType tf::DataPipe&lt; Input, Output, C &gt;::_type</definition>
         <argsstring></argsstring>
         <name>_type</name>
+        <qualifiedname>tf::DataPipe::_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -102,6 +107,7 @@
         <definition>callable_t tf::DataPipe&lt; Input, Output, C &gt;::_callable</definition>
         <argsstring></argsstring>
         <name>_callable</name>
+        <qualifiedname>tf::DataPipe::_callable</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -110,13 +116,14 @@
         </inbodydescription>
         <location file="taskflow/algorithm/data_pipeline.hpp" line="125" column="14" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="125" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1DataPipe_1a8b7e8194874901eacfb5d3d2b72a2b85" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::DataPipe&lt; Input, Output, C &gt;::DataPipe</definition>
         <argsstring>()=default</argsstring>
         <name>DataPipe</name>
+        <qualifiedname>tf::DataPipe::DataPipe</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -131,6 +138,7 @@
         <definition>tf::DataPipe&lt; Input, Output, C &gt;::DataPipe</definition>
         <argsstring>(PipeType d, callable_t &amp;&amp;callable)</argsstring>
         <name>DataPipe</name>
+        <qualifiedname>tf::DataPipe::DataPipe</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
           <declname>d</declname>
@@ -154,6 +162,7 @@
         <definition>PipeType tf::DataPipe&lt; Input, Output, C &gt;::type</definition>
         <argsstring>() const</argsstring>
         <name>type</name>
+        <qualifiedname>tf::DataPipe::type</qualifiedname>
         <briefdescription>
 <para>queries the type of the data pipe </para>
         </briefdescription>
@@ -169,6 +178,7 @@
         <definition>void tf::DataPipe&lt; Input, Output, C &gt;::type</definition>
         <argsstring>(PipeType type)</argsstring>
         <name>type</name>
+        <qualifiedname>tf::DataPipe::type</qualifiedname>
         <param>
           <type><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">PipeType</ref></type>
           <declname>type</declname>
@@ -192,6 +202,7 @@
         <definition>void tf::DataPipe&lt; Input, Output, C &gt;::callable</definition>
         <argsstring>(U &amp;&amp;callable)</argsstring>
         <name>callable</name>
+        <qualifiedname>tf::DataPipe::callable</qualifiedname>
         <param>
           <type>U &amp;&amp;</type>
           <declname>callable</declname>
@@ -224,24 +235,24 @@ Assigns a new callable to the pipe using universal forwarding. </para>
         </inbodydescription>
         <location file="taskflow/algorithm/data_pipeline.hpp" line="117" column="8" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="117" bodyend="119"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a stage in a data-parallel pipeline </para>
     </briefdescription>
     <detaileddescription>
 <para>A data pipe represents a stage of a data-parallel pipeline. A data pipe can be either <emphasis>parallel</emphasis> direction or <emphasis>serial</emphasis> direction (specified by <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) and is associated with a callable to invoke by the pipeline scheduler.</para>
-<para>You need to use the template function, <ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref>, to create a data pipe. The input and output types of a <ref refid="classtf_1_1DataPipe" kindref="compound">tf::DataPipe</ref> should be decayed types (though the library will always decay them for you using <computeroutput><ref refid="cpp/types/decay" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::decay</ref></computeroutput>) to allow internal storage to work. The data will be passed by reference to your callable, at which you can take it by copy or reference.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<para>You need to use the template function, <ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe</ref>, to create a data pipe. The input and output types of a <ref refid="classtf_1_1DataPipe" kindref="compound">tf::DataPipe</ref> should be decayed types (though the library will always decay them for you using <computeroutput><ref refid="cpp/types/decay" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::decay</ref></computeroutput>) to allow internal storage to work. The data will be passed by reference to your callable, at which you can take it by copy or reference.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe&lt;int, std::string&gt;</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{</highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input)<sp/>{</highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
 <para>In addition to the data, you callable can take an additional reference of <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> in the second argument to probe the runtime information for a stage task, such as its line number and token number:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::make_data_pipe&lt;int,<sp/>std::string&gt;(</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="namespacetf_1a8975fa5762088789adb0b60f38208309" kindref="member">tf::make_data_pipe&lt;int, std::string&gt;</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>input,<sp/><ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;token=%lu,<sp/>line=%lu\n&quot;</highlight><highlight class="normal">,<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>(),<sp/>pf.<ref refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kindref="member">line</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string/to_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::to_string</ref>(input<sp/>+<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
