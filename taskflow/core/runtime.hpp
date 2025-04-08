@@ -40,7 +40,7 @@ class Runtime {
   friend class Algorithm;
   
   #define TF_RUNTIME_CHECK_CALLER(msg)                                          \
-  if(pt::this_worker == nullptr || pt::this_worker->_executor != &_executor) {  \
+  if(pt::this_worker != &_worker) {                                             \
     TF_THROW(msg);                                                              \
   }
 
@@ -102,6 +102,9 @@ class Runtime {
   going through the normal taskflow graph scheduling process.
   At this moment, task @c C is active because its parent taskflow is running.
   When the taskflow finishes, we will see both @c B and @c C in the output.
+
+  @attention
+  This method can only be called by the parent worker of this runtime.
   */
   void schedule(Task task);
   
@@ -130,7 +133,7 @@ class Runtime {
     
     // spawn 100 asynchronous tasks from the worker of the runtime
     for(int i=0; i<100; i++) {
-      rt.async([&](){ counter++; });
+      rt.silent_async([&](){ counter++; });
     }
     
     // wait for the 100 asynchronous tasks to finish
@@ -254,7 +257,7 @@ class Runtime {
   and returns when all tasks in the target completes.
   
   @attention
-  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
+  This method can only be called by the parent worker of this runtime.
   */
   template <typename T>
   void corun(T&& target);
@@ -286,7 +289,7 @@ class Runtime {
   @endcode
 
   @attention
-  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
+  This method can only be called by the parent worker of this runtime.
   */
   inline void corun_all();
 
@@ -338,8 +341,6 @@ inline Worker& Runtime::worker() {
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
   
-  TF_RUNTIME_CHECK_CALLER("schedule must be called by a worker of runtime's executor");
-  
   auto node = task._node;
   // need to keep the invariant: when scheduling a task, the task must have
   // zero dependency (join counter is 0)
@@ -355,16 +356,12 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
-
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
-
-  TF_RUNTIME_CHECK_CALLER("corun must be called by a worker of runtime's executor");
   _executor._corun_graph(*pt::this_worker, _parent, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_all
 inline void Runtime::corun_all() {
-  TF_RUNTIME_CHECK_CALLER("corun_all must be called by a worker of runtime's executor");
   {
     AnchorGuard anchor(_parent);
     _executor._corun_until(_worker, [this] () -> bool {
@@ -522,75 +519,7 @@ inline bool Executor::_invoke_runtime_task_impl(
 }
 
 
-// ----------------------------------------------------------------------------
-// Executor Members that Depend on Runtime
-// ----------------------------------------------------------------------------
 
-template <typename P, typename F>
-auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
-  
-  // async task with runtime: [] (tf::Runtime&) { ... }
-  if constexpr (is_runtime_task_v<F>) {
-
-    std::promise<void> p;
-    auto fu{p.get_future()};
-    
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
-        if(!reentered) {
-          f(rt);
-        }
-        else {
-          auto& eptr = rt._parent->_exception_ptr;
-          eptr ? p.object.set_exception(eptr) : p.object.set_value();
-        }
-      }
-    ));
-    return fu;
-  }
-  // async task with closure: [] () { ... }
-  else if constexpr (std::is_invocable_v<F>){
-    using R = std::invoke_result_t<F>;
-    std::packaged_task<R()> p(std::forward<F>(f));
-    auto fu{p.get_future()};
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=make_moc(std::move(p))]() mutable { p.object(); }
-    ));
-    return fu;
-  }
-  else {
-    static_assert(dependent_false_v<F>, 
-      "invalid async target - must be one of the following types:\n\
-      (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n"
-    );
-  }
-
-}
-
-// Function: _silent_async
-template <typename P, typename F>
-void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
-  // silent task 
-  if constexpr (is_runtime_task_v<F> || std::is_invocable_v<F>) {
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0,
-      std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-    ));
-  }
-  // invalid silent async target
-  else {
-    static_assert(dependent_false_v<F>, 
-      "invalid silent_async target - must be one of the following types:\n\
-      (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n"
-    );
-  }
-}
 
 
 }  // end of namespace tf -----------------------------------------------------

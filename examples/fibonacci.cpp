@@ -48,28 +48,27 @@ size_t fibonacci_subflow(size_t N) {
 // implementation using async
 // ------------------------------------------------------------------------------------------------
 
-size_t spawn_async(size_t N) {
+size_t spawn_async(size_t N, tf::Runtime& rt) {
 
   if (N < 2) {
     return N; 
   }
+  
+  size_t res1, res2;
 
-  auto& executor = get_executor();
-
-  auto fu1 = executor.async([=](){ return spawn_async(N-1); });
-  auto fu2 = executor.async([=](){ return spawn_async(N-2); });
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = spawn_async(N-1, rt1); });
+  rt.silent_async([N, &res2](tf::Runtime& rt2){ res2 = spawn_async(N-2, rt2); });
 
   // use corun to avoid blocking the worker from waiting the two children tasks to finish
-  executor.corun_until([&](){ 
-    return fu1.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready && 
-           fu2.wait_for(std::chrono::nanoseconds(0)) == std::future_status::ready; 
-  });
+  rt.corun_all();
 
-  return fu1.get() + fu2.get();
+  return res1 + res2;
 }
 
 size_t fibonacci_async(size_t N) {
-  return get_executor().async([=](){ return spawn_async(N); }).get();
+  size_t res;
+  get_executor().async([N, &res](tf::Runtime& rt){ res = spawn_async(N, rt); }).get();
+  return res;
 }
 
 int main(int argc, char* argv[]) {

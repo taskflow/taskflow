@@ -2270,10 +2270,10 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined");
   }
     
+  _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
+  
   // join here since corun graph may throw exception
   _parent->_nstate |= NSTATE::JOINED;
-
-  _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
 }
 
 #endif
