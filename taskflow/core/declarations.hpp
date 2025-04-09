@@ -15,6 +15,7 @@ class Semaphore;
 class Subflow;
 class Runtime;
 class Task;
+class TaskArena;
 class TaskView;
 class Taskflow;
 class Topology;
