@@ -12,6 +12,7 @@
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
 #include "../utility/serializer.hpp"
+#include "../utility/lazy_string.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"
@@ -19,12 +20,16 @@
 #include "topology.hpp"
 #include "tsq.hpp"
 
+
 /**
 @file graph.hpp
 @brief graph include file
 */
 
 namespace tf {
+
+
+
 
 
 // ----------------------------------------------------------------------------
@@ -313,9 +318,6 @@ class Node {
   Topology* _topology {nullptr};
   Node* _parent {nullptr};
 
-  //SmallVector<Node*> _successors;
-  //SmallVector<Node*> _predecessors;
-
   size_t _num_successors {0};
   SmallVector<Node*, 4> _edges;
 
@@ -561,9 +563,6 @@ inline void Node::_precede(Node* v) {
   _edges.push_back(v);
   std::swap(_edges[_num_successors++], _edges[_edges.size() - 1]);
   v->_edges.push_back(this);
-
-  //_successors.push_back(v);
-  //v->_predecessors.push_back(this);
 }
 
 // Function: _remove_successors
@@ -592,7 +591,6 @@ inline size_t Node::num_successors() const {
 // Function: predecessors
 inline size_t Node::num_predecessors() const {
   return _edges.size() - _num_successors;
-  //return _predecessors.size();
 }
 
 // Function: num_weak_dependencies
@@ -602,14 +600,6 @@ inline size_t Node::num_weak_dependencies() const {
     n += _edges[i]->_is_conditioner();
   }
   return n;
-
-  //size_t n = 0;
-  //for(size_t i=0; i<_predecessors.size(); i++) {
-  //  if(_predecessors[i]->_is_conditioner()) {
-  //    n++;
-  //  }
-  //}
-  //return n;
 }
 
 // Function: num_strong_dependencies
@@ -619,14 +609,6 @@ inline size_t Node::num_strong_dependencies() const {
     n += !_edges[i]->_is_conditioner();
   }
   return n;
-
-  //size_t n = 0;
-  //for(size_t i=0; i<_predecessors.size(); i++) {
-  //  if(!_predecessors[i]->_is_conditioner()) {
-  //    n++;
-  //  }
-  //}
-  //return n;
 }
 
 // Function: name
@@ -661,15 +643,6 @@ inline void Node::_set_up_join_counter() {
     bool is_cond = _edges[i]->_is_conditioner();
     _nstate = (_nstate + is_cond) | (is_cond * NSTATE::CONDITIONED);  // weak dependency
     c += !is_cond;  // strong dependency
-
-    //// weak dependency
-    //if(_edges[i]->_is_conditioner()) {
-    //  _nstate = (_nstate + 1) | NSTATE::CONDITIONED;
-    //}
-    //// strong dependency
-    //else {
-    //  c++;
-    //}
   }
   _join_counter.store(c, std::memory_order_relaxed);
 }

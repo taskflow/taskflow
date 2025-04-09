@@ -515,6 +515,9 @@ inline bool Executor::_invoke_runtime_task_impl(
     _observer_epilogue(worker, node);
     
     // here, we cannot check the state from node->_nstate due to data race
+    // Ex: if preempted, another task may finish real quck and insert this parent task
+    // again into the scheduling queue. When running this parent task, it will jump to
+    // else branch below and modify tne nstate, thus incuring data race.
     if(rt._preempted) {
       return true;
     }
