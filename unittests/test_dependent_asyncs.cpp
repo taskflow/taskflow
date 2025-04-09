@@ -279,19 +279,19 @@ void simple_graph_2(unsigned W) {
     results.resize(count);
 
     auto t0 = executor.silent_dependent_async(
-      "t0", [&](){
+      [&](){
         results[0].data = 100 + id;
       }
     );
 
     auto t1 = executor.silent_dependent_async(
-      "t1", [&](){
+      [&](){
         results[1].data = 6 * id;
       }
     );
     
     auto t2 = executor.silent_dependent_async(
-      "t2", [&](){
+      [&](){
         results[2].data = results[0].data + results[1].data + id;
       }, t0, t1
     );
@@ -299,27 +299,27 @@ void simple_graph_2(unsigned W) {
     tasks1.push_back(t2);
 
     auto [t3, fu3] = executor.dependent_async(
-      "t3", [&](){
+      [&](){
         results[3].data = results[2].data + id;
         return results[3].data;
       }, tasks1.begin(), tasks1.end()
     );
 
     auto t4 = executor.silent_dependent_async(
-      "t4", [&](){
+      [&](){
         results[4].data = results[2].data + id;
       }, tasks1.begin(), tasks1.end()
     );
 
     auto [t5, fu5] = executor.dependent_async(
-      "t5", [&](){
+      [&](){
         results[5].data = results[2].data + id;
         return results[5].data;
       }, tasks1.begin(), tasks1.end()
     );
 
     auto t6 = executor.silent_dependent_async(
-      "t6", [&](){
+      [&](){
         results[6].data = results[2].data + id;
       }, tasks1.begin(), tasks1.end()
     );
@@ -330,14 +330,14 @@ void simple_graph_2(unsigned W) {
     tasks3.push_back(t6);
 
     auto [t7, fu7] = executor.dependent_async(
-      "t7", [&](){
+      [&](){
         results[7].data = results[3].data + results[4].data + id;
         return results[7].data;
       }, tasks2.begin(), tasks2.end()
     );
 
     auto t8 = executor.silent_dependent_async(
-      "t8", [&](){
+      [&](){
         results[8].data = results[5].data + results[6].data + id;
       }, tasks3.begin(), tasks3.end()
     );
@@ -349,7 +349,7 @@ void simple_graph_2(unsigned W) {
     tasks4.push_back(t8);
 
     auto [t9, fu9] = executor.dependent_async(
-      "t9", [&](){
+      [&](){
         results[9].data = results[0].data + results[1].data +  
           results[2].data + results[7].data + results[8].data + id;
         return results[9].data;
@@ -479,7 +479,7 @@ auto make_complex_graph(tf::Executor& executor, int r) {
     
   // define task 0
   auto task0 = executor.silent_dependent_async(
-    "0", [&results, r](){
+    [&results, r](){
       results[0].data = 100 + r;
     }
   );
@@ -533,7 +533,7 @@ auto make_complex_graph(tf::Executor& executor, int r) {
 
   // define task 10201
   executor.dependent_async(
-    "10201", [&results, r](){
+    [&results, r](){
       int value = 0;
       for (int i = 10101; i <= 10200; ++i) {
         value += results[i].data;

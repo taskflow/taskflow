@@ -17,13 +17,8 @@ size_t spawn_subflow(size_t n, tf::Subflow& sbf) {
 
   size_t res1, res2;
 
-  // compute f(n-1)
-  sbf.emplace([&res1, n] (tf::Subflow& sbf_n_1) { res1 = spawn_subflow(n - 1, sbf_n_1); } )
-     .name(std::to_string(n-1));
-
-  // compute f(n-2)
-  sbf.emplace([&res2, n] (tf::Subflow& sbf_n_2) { res2 = spawn_subflow(n - 2, sbf_n_2); } )
-     .name(std::to_string(n-2));
+  sbf.emplace([&res1, n] (tf::Subflow& sbf_n_1) { res1 = spawn_subflow(n - 1, sbf_n_1); } );
+  sbf.emplace([&res2, n] (tf::Subflow& sbf_n_2) { res2 = spawn_subflow(n - 2, sbf_n_2); } );
 
   sbf.join();
   return res1 + res2;

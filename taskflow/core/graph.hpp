@@ -28,10 +28,6 @@
 
 namespace tf {
 
-
-
-
-
 // ----------------------------------------------------------------------------
 // Class: Graph
 // ----------------------------------------------------------------------------
@@ -289,15 +285,11 @@ class Node {
   Node() = default;
   
   template <typename... Args>
-  Node(nstate_t, estate_t, const std::string&, Topology*, Node*, size_t, Args&&...);
-  
-  template <typename... Args>
   Node(nstate_t, estate_t, const TaskParams&, Topology*, Node*, size_t, Args&&...);
   
   template <typename... Args>
   Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
 
-  //~Node();
 
   size_t num_successors() const;
   size_t num_predecessors() const;
@@ -456,26 +448,6 @@ template <typename... Args>
 Node::Node(
   nstate_t nstate,
   estate_t estate,
-  const std::string& name,
-  Topology* topology, 
-  Node* parent, 
-  size_t join_counter,
-  Args&&... args
-) :
-  _nstate       {nstate},
-  _estate       {estate},
-  _name         {name},
-  _topology     {topology},
-  _parent       {parent},
-  _join_counter {join_counter},
-  _handle       {std::forward<Args>(args)...} {
-}
-
-// Constructor
-template <typename... Args>
-Node::Node(
-  nstate_t nstate,
-  estate_t estate,
   const TaskParams& params,
   Topology* topology, 
   Node* parent, 
@@ -510,42 +482,6 @@ Node::Node(
   _join_counter {join_counter},
   _handle       {std::forward<Args>(args)...} {
 }
-
-// Destructor
-//inline Node::~Node() {
-//  // this is to avoid stack overflow
-//  if(_handle.index() == SUBFLOW) {
-//    auto& subgraph = std::get_if<Subflow>(&_handle)->subgraph;
-//    std::vector<Node*> nodes;
-//    nodes.reserve(subgraph.size());
-//
-//    std::move(
-//      subgraph._nodes.begin(), subgraph._nodes.end(), std::back_inserter(nodes)
-//    );
-//    subgraph._nodes.clear();
-//
-//    size_t i = 0;
-//
-//    while(i < nodes.size()) {
-//
-//      if(nodes[i]->_handle.index() == SUBFLOW) {
-//        auto& sbg = std::get_if<Subflow>(&(nodes[i]->_handle))->subgraph;
-//        std::move(
-//          sbg._nodes.begin(), sbg._nodes.end(), std::back_inserter(nodes)
-//        );
-//        sbg._nodes.clear();
-//      }
-//
-//      ++i;
-//    }
-//
-//    //auto& np = Graph::_node_pool();
-//    for(i=0; i<nodes.size(); ++i) {
-//      recycle(nodes[i]);
-//    }
-//  }
-//}
-
 
 // Procedure: _precede
 /*
@@ -584,8 +520,6 @@ inline void Node::_remove_predecessors(Node* node) {
 // Function: num_successors
 inline size_t Node::num_successors() const {
   return _num_successors;
-
-  //return _successors.size();
 }
 
 // Function: predecessors

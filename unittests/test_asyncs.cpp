@@ -19,7 +19,7 @@ void async(unsigned W) {
 
   for(int i=0; i<N; ++i) {
     if(auto r = i%3; r==0) {
-      fus.emplace_back(executor.async(std::to_string(i), [&](){
+      fus.emplace_back(executor.async([&](){
         counter.fetch_add(1, std::memory_order_relaxed);
         return -2;
       }));
