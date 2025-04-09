@@ -1197,12 +1197,6 @@ inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
 
-// Function: _this_worker
-//inline Worker* Executor::_this_worker() const {
-//  auto w = pt::this_worker;
-//  return (w && w->_executor == this) ? w : nullptr;
-//}
-
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   auto w = pt::this_worker;
@@ -1940,14 +1934,14 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
       _observer_epilogue(worker, node);
     break;
     
-    // void(Runtime&)
+    // void(Runtime&) - silent async
     case 1:
       if(_invoke_runtime_task_impl(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
 
-    // void(Runtime&, bool)
+    // void(Runtime&, bool) - async
     case 2:
       if(_invoke_runtime_task_impl(worker, node, *std::get_if<2>(&work))) {
         return true;
@@ -2205,9 +2199,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
-    //auto& g = tpg->_taskflow._graph;
-    //tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
-    //_schedule(worker, g.begin(), g.begin() + tpg->_num_sources);
     _set_up_topology(&worker, tpg);
   }
   // case 2: the final run of this topology

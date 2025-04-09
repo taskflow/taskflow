@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaEventBase" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaEventBase</compoundname>
     <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</basecompoundref>
@@ -12,25 +12,24 @@
         <type>typename Deleter</type>
       </param>
     </templateparamlist>
-    <sectiondef kind="public-type">
+      <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1cudaEventBase_1a1f5a2987a83289bce0c40196a7dcebfd" prot="public" static="no">
-        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</type>
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</type>
         <definition>using tf::cudaEventBase&lt; Creator, Deleter &gt;::base_type =  std::unique_ptr&lt;std::remove_pointer_t&lt;cudaEvent_t&gt;, Deleter&gt;</definition>
         <argsstring></argsstring>
         <name>base_type</name>
-        <qualifiedname>tf::cudaEventBase::base_type</qualifiedname>
         <briefdescription>
 <para>base type for the underlying unique pointer </para>
         </briefdescription>
         <detaileddescription>
-<para>This alias provides a shorthand for the underlying <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput> type that manages CUDA event resources with an associated deleter. </para>
+<para>This alias provides a shorthand for the underlying <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput> type that manages CUDA event resources with an associated deleter. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="85" column="3" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="85" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaEventBase_1a9e3a31b34936c0bb0d798c1316f02696" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -43,7 +42,6 @@
         <definition>tf::cudaEventBase&lt; Creator, Deleter &gt;::cudaEventBase</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>cudaEventBase</name>
-        <qualifiedname>tf::cudaEventBase::cudaEventBase</qualifiedname>
         <param>
           <type>ArgsT &amp;&amp;...</type>
           <declname>args</declname>
@@ -73,7 +71,6 @@
         <definition>tf::cudaEventBase&lt; Creator, Deleter &gt;::operator cudaEvent_t</definition>
         <argsstring>() const noexcept</argsstring>
         <name>operator cudaEvent_t</name>
-        <qualifiedname>tf::cudaEventBase::operator cudaEvent_t</qualifiedname>
         <briefdescription>
 <para>implicit conversion to the underlying <computeroutput>cudaEvent_t</computeroutput> object </para>
         </briefdescription>
@@ -84,7 +81,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="105" column="3" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="105" bodyend="107"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a smart pointer wrapper for managing <computeroutput>cudaEvent_t</computeroutput> </para>
     </briefdescription>
@@ -106,28 +103,28 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The <computeroutput><ref refid="classtf_1_1cudaEventBase" kindref="compound">cudaEventBase</ref></computeroutput> class encapsulates a <computeroutput>cudaEvent_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
+The <computeroutput><ref refid="classtf_1_1cudaEventBase" kindref="compound">cudaEventBase</ref></computeroutput> class encapsulates a <computeroutput>cudaEvent_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
     </detaileddescription>
     <inheritancegraph>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</label>
-      </node>
       <node id="1">
         <label>tf::cudaEventBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaEventBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</label>
-      </node>
       <node id="1">
         <label>tf::cudaEventBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaEventBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaEvent_t &gt;, Deleter &gt;</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/cuda/cuda_stream.hpp" line="73" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="73" bodyend="108"/>

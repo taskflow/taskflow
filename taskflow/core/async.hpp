@@ -55,25 +55,6 @@ auto Executor::async(F&& f) {
   return async(DefaultTaskParams{}, std::forward<F>(f));
 }
 
-// ----------------------------------------------------------------------------
-// Silent Async
-// ----------------------------------------------------------------------------
-
-// Function: silent_async
-template <typename P, typename F>
-void Executor::silent_async(P&& params, F&& f) {
-  _increment_topology();
-  _silent_async(
-    std::forward<P>(params), std::forward<F>(f), nullptr, nullptr
-  );
-}
-
-// Function: silent_async
-template <typename F>
-void Executor::silent_async(F&& f) {
-  silent_async(DefaultTaskParams{}, std::forward<F>(f));
-}
-
 // Function: _async
 template <typename P, typename F>
 auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
@@ -118,7 +99,26 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
       (2) [] () -> auto { ... return ... }\n"
     );
   }
+}
 
+
+// ----------------------------------------------------------------------------
+// Silent Async
+// ----------------------------------------------------------------------------
+
+// Function: silent_async
+template <typename P, typename F>
+void Executor::silent_async(P&& params, F&& f) {
+  _increment_topology();
+  _silent_async(
+    std::forward<P>(params), std::forward<F>(f), nullptr, nullptr
+  );
+}
+
+// Function: silent_async
+template <typename F>
+void Executor::silent_async(F&& f) {
+  silent_async(DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: _silent_async
@@ -313,27 +313,6 @@ inline void Executor::_process_async_dependent(
 ) {
 
   auto& state = std::get_if<Node::DependentAsync>(&(task._node->_handle))->state;
-
-  //add_successor:
-
-  //auto target = ASTATE::UNFINISHED;
-  //
-  //// acquires the lock
-  //if(state.compare_exchange_weak(target, ASTATE::LOCKED,
-  //                               std::memory_order_acq_rel,
-  //                               std::memory_order_acquire)) {
-  //  task._node->_edges.push_back(node);
-  //  state.store(ASTATE::UNFINISHED, std::memory_order_release);
-  //}
-  //// dep's state is FINISHED, which means dep finished its callable already
-  //// thus decrement the node's join counter by 1
-  //else if (target == ASTATE::FINISHED) {
-  //  num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
-  //}
-  //// another worker adding its async task to the same successors of this node
-  //else {
-  //  goto add_successor;
-  //}
 
   while (true) {
 

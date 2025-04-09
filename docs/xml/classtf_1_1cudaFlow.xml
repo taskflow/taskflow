@@ -1,21 +1,20 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaFlow" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaFlow</compoundname>
     <basecompoundref refid="classtf_1_1cudaGraphBase" prot="public" virt="non-virtual">tf::cudaGraphBase&lt; cudaGraphCreator, cudaGraphDeleter &gt;</basecompoundref>
     <includes refid="cudaflow_8hpp" local="no">taskflow/cuda/cudaflow.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaFlow_1a1db9e88c4cdbeab9b8b9973d86aff603" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaFlow::cudaFlow</definition>
         <argsstring>()=default</argsstring>
         <name>cudaFlow</name>
-        <qualifiedname>tf::cudaFlow::cudaFlow</qualifiedname>
         <briefdescription>
 <para>constructs a cudaFlow </para>
         </briefdescription>
         <detaileddescription>
-<para>A <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> is associated with a <ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> that manages a native CUDA graph. </para>
+<para>A <ref refid="classtf_1_1cudaFlow" kindref="compound">cudaFlow</ref> is associated with a <ref refid="namespacetf_1ac76b07f7b7055967f6a2f1dc78b0978a" kindref="member">tf::cudaGraph</ref> that manages a native CUDA graph. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
@@ -26,7 +25,6 @@
         <definition>tf::cudaFlow::~cudaFlow</definition>
         <argsstring>()=default</argsstring>
         <name>~cudaFlow</name>
-        <qualifiedname>tf::cudaFlow::~cudaFlow</qualifiedname>
         <briefdescription>
 <para>destroys the cudaFlow </para>
         </briefdescription>
@@ -46,7 +44,6 @@
         <definition>cudaTask tf::cudaFlow::single_task</definition>
         <argsstring>(C c)</argsstring>
         <name>single_task</name>
-        <qualifiedname>tf::cudaFlow::single_task</qualifiedname>
         <param>
           <type>C</type>
           <declname>c</declname>
@@ -91,7 +88,6 @@
         <definition>void tf::cudaFlow::single_task</definition>
         <argsstring>(cudaTask task, C c)</argsstring>
         <name>single_task</name>
-        <qualifiedname>tf::cudaFlow::single_task</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -123,7 +119,6 @@
         <definition>cudaTask tf::cudaFlow::for_each</definition>
         <argsstring>(I first, I last, C callable)</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::cudaFlow::for_each</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -207,7 +202,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlow::for_each</definition>
         <argsstring>(cudaTask task, I first, I last, C callable)</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::cudaFlow::for_each</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -247,7 +241,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlow::for_each_index</definition>
         <argsstring>(I first, I last, I step, C callable)</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::cudaFlow::for_each_index</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -349,7 +342,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlow::for_each_index</definition>
         <argsstring>(cudaTask task, I first, I last, I step, C callable)</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::cudaFlow::for_each_index</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -396,7 +388,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlow::transform</definition>
         <argsstring>(I first, I last, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlow::transform</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -503,7 +494,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlow::transform</definition>
         <argsstring>(cudaTask task, I first, I last, O output, C c)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlow::transform</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -553,7 +543,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlow::transform</definition>
         <argsstring>(I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlow::transform</qualifiedname>
         <param>
           <type>I1</type>
           <declname>first1</declname>
@@ -683,7 +672,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>void tf::cudaFlow::transform</definition>
         <argsstring>(cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaFlow::transform</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -728,7 +716,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaFlow::capture</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>capture</name>
-        <qualifiedname>tf::cudaFlow::capture</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -788,7 +775,6 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
         <definition>void tf::cudaFlow::capture</definition>
         <argsstring>(cudaTask task, C callable)</argsstring>
         <name>capture</name>
-        <qualifiedname>tf::cudaFlow::capture</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
           <declname>task</declname>
@@ -807,7 +793,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
         </inbodydescription>
         <location file="taskflow/cuda/cudaflow.hpp" line="290" column="8"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a cudaFlow task dependency graph </para>
     </briefdescription>
@@ -824,7 +810,7 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <codeline><highlight class="normal">task1.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executable<sp/>graph<sp/>from<sp/>the<sp/>cudaflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">cudaGraphExec</ref><sp/>exec<sp/>=<sp/>cf.instantiate();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a21efbebd2a9b305f43dde90b7b837dc7" kindref="member">cudaGraphExec</ref><sp/>exec<sp/>=<sp/>cf.instantiate();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>executable<sp/>graph<sp/>through<sp/>the<sp/>given<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">exec.run(stream);</highlight></codeline>
@@ -832,36 +818,36 @@ A captured subflow forms a sub-graph to the cudaFlow and can be used to capture 
 <para>Please refer to <ref refid="GPUTaskingcudaFlow" kindref="compound">GPU Tasking (cudaFlow)</ref> for details. </para>
     </detaileddescription>
     <inheritancegraph>
-      <node id="2">
-        <label>cudaGraph</label>
-        <link refid="classtf_1_1cudaGraphBase"/>
-        <childnode refid="3" relation="public-inheritance">
+      <node id="1">
+        <label>tf::cudaFlow</label>
+        <link refid="classtf_1_1cudaFlow"/>
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
       <node id="3">
         <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
       </node>
-      <node id="1">
-        <label>tf::cudaFlow</label>
-        <link refid="classtf_1_1cudaFlow"/>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="2">
+        <label>cudaGraph</label>
+        <link refid="classtf_1_1cudaGraphBase"/>
+        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
-        <label>cudaGraph</label>
-        <link refid="classtf_1_1cudaGraphBase"/>
-        <childnode refid="3" relation="public-inheritance">
+      <node id="1">
+        <label>tf::cudaFlow</label>
+        <link refid="classtf_1_1cudaFlow"/>
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
       <node id="3">
         <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
       </node>
-      <node id="1">
-        <label>tf::cudaFlow</label>
-        <link refid="classtf_1_1cudaFlow"/>
-        <childnode refid="2" relation="public-inheritance">
+      <node id="2">
+        <label>cudaGraph</label>
+        <link refid="classtf_1_1cudaGraphBase"/>
+        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

@@ -75,7 +75,7 @@ executor.silent_async("silent async task", [](){});
 You can launch asynchronous tasks from tf::Runtime using
 tf::Runtime::async or tf::Runtime::silent_async.
 The following code creates 100 asynchronous tasks from a runtime
-and joins their executions explicitly using tf::Runtime::corun_all.
+and joins their executions explicitly using tf::Runtime::corun.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -87,13 +87,13 @@ taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 100);
 });
 executor.run(taskflow).wait();
 @endcode
 
-Unlike tf::Subflow::join, you can call tf::Runtime::corun_all multiple times
+Unlike tf::Subflow::join, you can call tf::Runtime::corun multiple times
 to synchronize the execution of asynchronous tasks between different runs.
 For example, the following code spawn 100 asynchronous tasks twice
 and join each execution to assure the spawned 100 asynchronous tasks have
@@ -110,14 +110,14 @@ taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 100);
   
   // spawn another 100 asynchronous tasks and join
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.corun_all();  // all of the 100 asynchronous tasks will finish by this join
+  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
   assert(counter == 200);
 });
 executor.run(taskflow).wait();
@@ -127,7 +127,7 @@ By default, tf::Runtime does not join like tf::Subflow.
 All pending asynchronous tasks spawned by tf::Runtime 
 are no longer controllable when their parent runtime disappears.
 It is your responsibility to properly synchronize spawned
-asynchronous tasks using tf::Runtime::corun_all.
+asynchronous tasks using tf::Runtime::corun.
 
 @attention
 Creating asynchronous tasks from a runtime allows users to efficiently implement

@@ -25,6 +25,17 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::CONDITION);
   REQUIRE(t6.type() == tf::TaskType::RUNTIME);
+
+  // static assert
+  auto task1 = [](){};
+  auto task2 = [](){ return 1; };
+  auto task3 = [](tf::Subflow&) {};
+  //auto task4 = [](tf::Subflow& sf) { return 1; };
+
+  static_assert(tf::is_static_task_v<decltype(task1)> == true, "");
+  static_assert(tf::is_static_task_v<decltype(task2)> == false, "");
+  static_assert(tf::is_subflow_task_v<decltype(task3)> == true, "");
+  //static_assert(is_subflow_task_v<decltype(task4)> == false, "");
 }
 
 // --------------------------------------------------------

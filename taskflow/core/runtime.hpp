@@ -39,9 +39,9 @@ class Runtime {
   friend class PreemptionGuard;
   friend class Algorithm;
   
-  #define TF_RUNTIME_CHECK_CALLER(msg)                                          \
-  if(pt::this_worker != &_worker) {                                             \
-    TF_THROW(msg);                                                              \
+  #define TF_RUNTIME_CHECK_CALLER(msg) \
+  if(pt::this_worker != &_worker) {    \
+    TF_THROW(msg);                     \
   }
 
   public:
@@ -104,7 +104,8 @@ class Runtime {
   When the taskflow finishes, we will see both @c B and @c C in the output.
 
   @attention
-  This method can only be called by the parent worker of this runtime.
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
   void schedule(Task task);
   
@@ -118,7 +119,7 @@ class Runtime {
   function on the given arguments.
   The difference to tf::Executor::async is that the created asynchronous task
   pertains to the runtime object.
-  Applications can explicitly issue tf::Runtime::corun_all
+  Applications can explicitly issue tf::Runtime::corun
   to wait for all spawned asynchronous tasks to finish.
   For example:
 
@@ -137,7 +138,7 @@ class Runtime {
     }
     
     // wait for the 100 asynchronous tasks to finish
-    rt.corun_all();
+    rt.corun();
     assert(counter == 102);
   });
   @endcode
@@ -161,7 +162,7 @@ class Runtime {
     }
     
     // wait for the 200 asynchronous tasks to finish
-    rt.corun_all();
+    rt.corun();
     assert(counter == 200);
   });
   @endcode
@@ -206,7 +207,7 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 100);
   });
   @endcode
@@ -228,7 +229,7 @@ class Runtime {
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async("my task", [](){});
-    rt.corun_all();
+    rt.corun();
   });
   @endcode
   */
@@ -257,17 +258,16 @@ class Runtime {
   and returns when all tasks in the target completes.
   
   @attention
-  This method can only be called by the parent worker of this runtime.
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
   template <typename T>
   void corun(T&& target);
 
   /**
-  @brief corun all asynchronous tasks spawned by this runtime with other workers
+  @brief corun all tasks spawned by this runtime with other workers
 
-  Coruns all asynchronous tasks (tf::Runtime::async,
-  tf::Runtime::silent_async) with other workers until all those 
-  asynchronous tasks finish.
+  Coruns all tasks spawned by this runtime with other workers until all these tasks finish.
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
@@ -276,22 +276,28 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 100);
     
     // spawn another 100 async tasks and wait
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 200);
   });
   @endcode
 
   @attention
-  This method can only be called by the parent worker of this runtime.
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
-  inline void corun_all();
+  void corun();
+
+  /**
+  @brief equivalent to tf::Runtime::corun - just an alias for legacy purpose
+  */
+  void corun_all();
 
   protected:
   
@@ -360,8 +366,8 @@ void Runtime::corun(T&& target) {
   _executor._corun_graph(*pt::this_worker, _parent, target.graph().begin(), target.graph().end());
 }
 
-// Function: corun_all
-inline void Runtime::corun_all() {
+// Function: corun
+inline void Runtime::corun() {
   {
     AnchorGuard anchor(_parent);
     _executor._corun_until(_worker, [this] () -> bool {
@@ -369,6 +375,11 @@ inline void Runtime::corun_all() {
     });
   }
   _parent->_rethrow_exception();
+}
+
+// Function: corun_all
+inline void Runtime::corun_all() {
+  corun();
 }
 
 // ------------------------------------
@@ -430,6 +441,7 @@ class PreemptionGuard {
   }
 
   ~PreemptionGuard() {
+    // If I am the last to join, then there is not need to preempt the runtime
     if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       _runtime._preempted = false;
       _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;

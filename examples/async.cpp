@@ -38,7 +38,7 @@ int main() {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
     }
-    rt.corun_all();
+    rt.corun();
 
     // when subflow joins, all spawned tasks from the subflow will finish
     if(counter == 100) {

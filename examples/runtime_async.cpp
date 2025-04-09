@@ -20,7 +20,7 @@ int main() {
         counter.fetch_add(1, std::memory_order_relaxed);
       });
     }
-    rt.corun_all();
+    rt.corun();
     std::cout << counter << " = 10\n";
   });
 
