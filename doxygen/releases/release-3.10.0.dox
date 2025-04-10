@@ -122,14 +122,14 @@ taskflow.reduce_by_index(
   + detached subflows can be re-implemented using taskflow composition
 + changed the default behavior of tf::Subflow to no longer retain its task graph after join
   + default retention can incur significant memory consumption problem ([#674](https://github.com/taskflow/taskflow/issues/674))
-  + users must explicitly call tf::Subflow::retain_on_join to retain a subflow after join 
+  + users must explicitly call tf::Subflow::retain to retain a subflow after join 
 
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
 
 taskflow.emplace([&](tf::Subflow& sf){
-  sf.retain_on_join(true);  // retain the subflow after join for visualization
+  sf.retain(true);  // retain the subflow after join for visualization
   auto A = sf.emplace([](){ std::cout << "A\n"; });
   auto B = sf.emplace([](){ std::cout << "B\n"; });
   auto C = sf.emplace([](){ std::cout << "C\n"; });

@@ -733,9 +733,9 @@ void bit_state(unsigned W) {
   auto task = taskflow.emplace([](tf::Subflow& sf){
     // each newly spawned subflow should have clean status
     REQUIRE(sf.joinable());
-    REQUIRE(sf.retain_on_join() == false);
+    REQUIRE(sf.retain() == false);
     sf.join();
-    sf.retain_on_join(true);
+    sf.retain(true);
   });
 
   auto cond = taskflow.emplace([i=0]() mutable {

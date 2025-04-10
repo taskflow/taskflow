@@ -10,9 +10,18 @@ class LazyString {
   public:
 
   LazyString() = default;
-  LazyString(const std::string& str) : _str(std::make_unique<std::string>(str)) {}
-  LazyString(std::string&& str) : _str(std::make_unique<std::string>(std::move(str))) {}
-  LazyString(const char* str) : _str(str ? std::make_unique<std::string>(str) : nullptr) {}
+  
+  LazyString(const std::string& str) : 
+    _str(str.empty() ? nullptr : std::make_unique<std::string>(str)) {
+  }
+
+  LazyString(std::string&& str) : 
+    _str(str.empty() ? nullptr : std::make_unique<std::string>(std::move(str))) {
+  }
+
+  LazyString(const char* str) : 
+    _str((!str || str[0] == '\0') ? nullptr : std::make_unique<std::string>(str)) {
+  }
 
   // Modify the operator to return a const reference
   operator const std::string& () const noexcept {

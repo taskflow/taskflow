@@ -1466,13 +1466,13 @@ class Subflow : public FlowBuilder {
     Setting this flag to `true` allows the application to retain the subflow's structure 
     for post-execution analysis like visualization.
     */
-    void retain_on_join(bool flag) noexcept;
+    void retain(bool flag) noexcept;
 
     /**
     @brief queries if the subflow will be retained after it is joined
     @return `true` if the subflow will be retained after it is joined; `false` otherwise
     */
-    bool retain_on_join() const;
+    bool retain() const;
 
   private:
     
@@ -1495,7 +1495,7 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
   _parent     {parent} {
   
   // need to reset since there could have iterative control flow
-  _parent->_nstate &= ~(NSTATE::JOINED | NSTATE::RETAIN_ON_JOIN);
+  _parent->_nstate &= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);
 
   // clear the graph
   graph.clear();
@@ -1503,7 +1503,7 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
 
 // Function: joinable
 inline bool Subflow::joinable() const noexcept {
-  return !(_parent->_nstate & NSTATE::JOINED);
+  return !(_parent->_nstate & NSTATE::JOINED_SUBFLOW);
 }
 
 // Function: executor
@@ -1511,23 +1511,23 @@ inline Executor& Subflow::executor() noexcept {
   return _executor;
 }
 
-// Function: retain_on_join
-inline void Subflow::retain_on_join(bool flag) noexcept {
+// Function: retain
+inline void Subflow::retain(bool flag) noexcept {
   // default value is not to retain 
   if TF_LIKELY(flag == true) {
-    _parent->_nstate |= NSTATE::RETAIN_ON_JOIN;
+    _parent->_nstate |= NSTATE::RETAIN_SUBFLOW;
   }
   else {
-    _parent->_nstate &= ~NSTATE::RETAIN_ON_JOIN;
+    _parent->_nstate &= ~NSTATE::RETAIN_SUBFLOW;
   }
 
-  //_parent->_nstate = (_parent->_nstate & ~NSTATE::RETAIN_ON_JOIN) | 
-  //                   (-static_cast<int>(flag) & NSTATE::RETAIN_ON_JOIN);
+  //_parent->_nstate = (_parent->_nstate & ~NSTATE::RETAIN_SUBFLOW) | 
+  //                   (-static_cast<int>(flag) & NSTATE::RETAIN_SUBFLOW);
 }
 
-// Function: retain_on_join
-inline bool Subflow::retain_on_join() const {
-  return _parent->_nstate & NSTATE::RETAIN_ON_JOIN;
+// Function: retain
+inline bool Subflow::retain() const {
+  return _parent->_nstate & NSTATE::RETAIN_SUBFLOW;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

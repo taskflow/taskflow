@@ -2888,9 +2888,9 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1104" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="502" bodyend="531"/>
+        <location file="taskflow/core/executor.hpp" line="1104" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="502" bodyend="534"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1a816c1e16ad3979e9f6420f1f87f9dd5a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1aeaa72f55f54c0f13202c3b5c0900ba6e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename I</type>
@@ -2898,7 +2898,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </templateparamlist>
         <type>I</type>
         <definition>I tf::Executor::_set_up_graph</definition>
-        <argsstring>(I, I, Topology *, Node *, nstate_t)</argsstring>
+        <argsstring>(I, I, Topology *, Node *)</argsstring>
         <name>_set_up_graph</name>
         <param>
           <type>I</type>
@@ -2911,9 +2911,6 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </param>
         <param>
           <type>Node *</type>
-        </param>
-        <param>
-          <type>nstate_t</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -3028,7 +3025,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1119" column="8"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1a2e7af0af956e72278140dff1d3eaf150" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1ae3d3436d6e39c5e84d32eb0b7dbeb9ca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename I</type>
@@ -3036,7 +3033,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </templateparamlist>
         <type>void</type>
         <definition>void tf::Executor::_schedule_graph_with_parent</definition>
-        <argsstring>(Worker &amp;, I, I, Node *, nstate_t)</argsstring>
+        <argsstring>(Worker &amp;, I, I, Node *)</argsstring>
         <name>_schedule_graph_with_parent</name>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
@@ -3049,9 +3046,6 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </param>
         <param>
           <type>Node *</type>
-        </param>
-        <param>
-          <type>nstate_t</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -3190,8 +3184,8 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1add98fb65f206923eb43a8768e0c717c1" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule</name></member>
       <member refid="classtf_1_1Executor_1a604b3442bfedada0f5713c6b174a1c90" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule</name></member>
       <member refid="classtf_1_1Executor_1af5acda8c6e9a1564c9d665336ea091d0" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_async_task</name></member>
-      <member refid="classtf_1_1Executor_1a2e7af0af956e72278140dff1d3eaf150" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_graph_with_parent</name></member>
-      <member refid="classtf_1_1Executor_1a816c1e16ad3979e9f6420f1f87f9dd5a" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_graph</name></member>
+      <member refid="classtf_1_1Executor_1ae3d3436d6e39c5e84d32eb0b7dbeb9ca" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_graph_with_parent</name></member>
+      <member refid="classtf_1_1Executor_1aeaa72f55f54c0f13202c3b5c0900ba6e" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_graph</name></member>
       <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_topology</name></member>
       <member refid="classtf_1_1Executor_1aa3b32388be14b03249de29bae34b7b52" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_silent_async</name></member>
       <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_spawn</name></member>

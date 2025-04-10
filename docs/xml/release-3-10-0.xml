@@ -88,8 +88,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-10-0_1release-3-10-0_taskflow_core">
 <title>Taskflow Core</title>
 <para><itemizedlist>
-<listitem><para>improved work-stealing loop with an adaptive breaking strategy</para>
-</listitem><listitem><para>improved shut-down signal detection using decentralized variables</para>
+<listitem><para>optimized work-stealing loop with an adaptive breaking strategy</para>
+</listitem><listitem><para>optimized shut-down signal detection using decentralized variables</para>
+</listitem><listitem><para>optimized memory layout of node by combining successors and predecessors together</para>
 </listitem><listitem><para>added debug mode for the windows CI to GitHub actions</para>
 </listitem><listitem><para>added index range-based parallel-for algorithm (<ulink url="https://github.com/taskflow/taskflow/issues/551">#551</ulink>)</para>
 </listitem></itemizedlist>
@@ -173,14 +174,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>disabled the support for tf::Subflow::detach due to multiple intricate and unresolved issues:<itemizedlist>
 <listitem><para>detached subflows are inherently difficult to reason about their execution logic</para>
 </listitem><listitem><para>detached subflows can incur excessive memory consumption, especially in recursive workloads</para>
-</listitem><listitem><para>detached subflows lack a manner to safe lifecycle control and graph cleanup</para>
+</listitem><listitem><para>detached subflows lack a manner to safe life cycle control and graph cleanup</para>
 </listitem><listitem><para>detached subflows have limited practical benefits for most use cases</para>
 </listitem><listitem><para>detached subflows can be re-implemented using taskflow composition</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>changed the default behavior of <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to no longer retain its task graph after join<itemizedlist>
 <listitem><para>default retention can incur significant memory consumption problem (<ulink url="https://github.com/taskflow/taskflow/issues/674">#674</ulink>)</para>
-</listitem><listitem><para>users must explicitly call <ref refid="classtf_1_1Subflow_1ae1cd9e8d200cd31b6555a52206c518ff" kindref="member">tf::Subflow::retain_on_join</ref> to retain a subflow after join</para>
+</listitem><listitem><para>users must explicitly call <ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">tf::Subflow::retain</ref> to retain a subflow after join</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -189,7 +190,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1ae1cd9e8d200cd31b6555a52206c518ff" kindref="member">retain_on_join</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/><sp/></highlight><highlight class="comment">//<sp/>retain<sp/>the<sp/>subflow<sp/>after<sp/>join<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">retain</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/><sp/></highlight><highlight class="comment">//<sp/>retain<sp/>the<sp/>subflow<sp/>after<sp/>join<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>

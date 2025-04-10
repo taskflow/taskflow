@@ -1299,7 +1299,6 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
         if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
-        // skip worker-id
         w._vtm = w._rdvtm();
         goto explore;
       }
@@ -1495,12 +1494,11 @@ void Executor::_schedule(Worker& worker, I first, I last) {
     return;
   }
   
-  // NOTE: We cannot use first/last as the for-loop condition 
-  // (e.g., for(; first != last; ++first)) since when a node is inserted
-  // into the queue the node can run and finish immediately.
-  // If this is the last node in the graph, it will tear down the parent
-  // container which cause the last ++first to fail.
-  // This problem is specific to MSVC which has strict iterator arithmetics.
+  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
+  // This is because when a node v is inserted into the queue, v can run and finish 
+  // immediately. If v is the last node in the graph, it will tear down the parent task vector
+  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
+  // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; i++) {
       auto node = detail::get_node_ptr(first[i]);
@@ -1526,6 +1524,11 @@ inline void Executor::_schedule(I first, I last) {
     return;
   }
 
+  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
+  // This is because when a node v is inserted into the queue, v can run and finish 
+  // immediately. If v is the last node in the graph, it will tear down the parent task vector
+  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
+  // iterator implementation in std::vector than GCC/Clang.
   for(size_t i=0; i<num_nodes; i++) {
     _buffers.push(detail::get_node_ptr(first[i]));
   }
@@ -1830,7 +1833,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
   }
 
   // the subflow has finished or joined
-  if((node->_nstate & NSTATE::RETAIN_ON_JOIN) == 0) {
+  if((node->_nstate & NSTATE::RETAIN_SUBFLOW) == 0) {
     g.clear();
   }
 
@@ -2262,7 +2265,7 @@ inline void Subflow::join() {
   _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
   
   // join here since corun graph may throw exception
-  _parent->_nstate |= NSTATE::JOINED;
+  _parent->_nstate |= NSTATE::JOINED_SUBFLOW;
 }
 
 #endif

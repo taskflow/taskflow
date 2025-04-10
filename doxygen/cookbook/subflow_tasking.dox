@@ -65,7 +65,7 @@ This new subflow graph will be added to the topology of its parent task B.
 
 By default, a tf::Subflow automatically clears its internal task graph once it is joined. After a subflow joins, its structure and associated resources are no longer accessible. This behavior is designed to reduce memory usage, particularly in applications that recursively spawn many subflows.
 For applications that require post-processing, such as visualizing the subflow through tf::Taskflow::dump, 
-users can disable this default cleanup behavior by calling tf::Subflow::retain_on_join on `true`.
+users can disable this default cleanup behavior by calling tf::Subflow::retain on `true`.
 This instructs the runtime to retain the subflow's task graph even after it has joined, enabling further inspection or visualization.
 
 @code{.cpp}
@@ -73,7 +73,7 @@ tf::Taskflow taskflow;
 tf::Executor executor;
 
 taskflow.emplace([&](tf::Subflow& sf){
-  sf.retain_on_join(true);  // retain the subflow after join for visualization
+  sf.retain(true);  // retain the subflow after join for visualization
   auto A = sf.emplace([](){ std::cout << "A\n"; });
   auto B = sf.emplace([](){ std::cout << "B\n"; });
   auto C = sf.emplace([](){ std::cout << "C\n"; });
@@ -161,7 +161,7 @@ Debrief:
 @li Lines 23 runs the defined taskflow graph 
 
 @note
-In order to properly visualize subflows, you need to call tf::Subflow::retain_on_join and run
+In order to properly visualize subflows, you need to call tf::Subflow::retain and run
 the taskflow once to spawn its associated subflows.
 
 */

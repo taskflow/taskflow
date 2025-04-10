@@ -47,7 +47,7 @@ int main() {
       B2.precede(B3);
       
       // retain the subflow for visualization purpose
-      subflow.retain_on_join(true);
+      subflow.retain(true);
     }
   );
 

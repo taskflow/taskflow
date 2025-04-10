@@ -109,11 +109,11 @@
             </dt>
             <dd>acquires the associated graph</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#ae1cd9e8d200cd31b6555a52206c518ff" class="m-doc">retain_on_join</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-flat m-success">noexcept</span></span>
+              <span class="m-doc-wrap-bumper">void <a href="#ac585638d8ca8fb2f34c4826cb0d4f39f" class="m-doc">retain</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>specifies whether to keep the subflow after it is joined</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a84a432d0c4fcfb5f164f7a6e30e3d879" class="m-doc">retain_on_join</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#af34dc5c5d4da78f9140c33bbaa94fe07" class="m-doc">retain</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries if the subflow will be retained after it is joined</dd>
           </dl>
@@ -142,9 +142,9 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// false</span>
 <span class="p">});</span></pre>
           </div></section>
-          <section class="m-doc-details" id="ae1cd9e8d200cd31b6555a52206c518ff"><div>
+          <section class="m-doc-details" id="ac585638d8ca8fb2f34c4826cb0d4f39f"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae1cd9e8d200cd31b6555a52206c518ff" class="m-doc-self">retain_on_join</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-success">noexcept</span></span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac585638d8ca8fb2f34c4826cb0d4f39f" class="m-doc-self">retain</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-success">noexcept</span></span></span>
             </h3>
             <p>specifies whether to keep the subflow after it is joined</p>
             <table class="m-table m-fullwidth m-flat">
@@ -160,9 +160,9 @@
             </table>
 <p>By default, the runtime automatically clears a spawned subflow once it is joined. Setting this flag to <code>true</code> allows the application to retain the subflow&#x27;s structure for post-execution analysis like visualization.</p>
           </div></section>
-          <section class="m-doc-details" id="a84a432d0c4fcfb5f164f7a6e30e3d879"><div>
+          <section class="m-doc-details" id="af34dc5c5d4da78f9140c33bbaa94fe07"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">bool tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a84a432d0c4fcfb5f164f7a6e30e3d879" class="m-doc-self">retain_on_join</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af34dc5c5d4da78f9140c33bbaa94fe07" class="m-doc-self">retain</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>queries if the subflow will be retained after it is joined</p>
             <table class="m-table m-fullwidth m-flat">
