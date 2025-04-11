@@ -30,6 +30,7 @@ list(APPEND TF_UNITTESTS
   test_data_pipelines
   test_runtimes
   test_workers
+  test_task_arena
   #test_exceptions
 )
 

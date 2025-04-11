@@ -56,6 +56,7 @@ class Worker {
   friend class Executor;
   friend class Runtime;
   friend class WorkerView;
+  friend class TaskAreaApplierRAII;
 
   public:
 
@@ -107,6 +108,7 @@ class Worker {
     std::uniform_int_distribution<size_t> _udist;
 
     BoundedTaskQueue<Node*> _wsq;
+    std::shared_ptr<TaskArena> _task_arena_ptr;
 
     TF_FORCE_INLINE size_t _rdvtm() {
       auto r = _udist(_rdgen);
