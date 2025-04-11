@@ -1226,8 +1226,6 @@ inline void Executor::_spawn(size_t N) {
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
       );
-      //w._udist = std::uniform_int_distribution<size_t>(0, _workers.size() - 1);
-      w._udist = std::uniform_int_distribution<size_t>(0, _workers.size() + _buffers.size() - 2);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_interface) {
@@ -1272,8 +1270,10 @@ inline void Executor::_spawn(size_t N) {
 // Function: _corun_until
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
-  
+
   const size_t MAX_STEALS = ((num_queues() + 1) << 1);
+    
+  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
   
   exploit:
 
@@ -1299,7 +1299,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
         if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
-        w._vtm = w._rdvtm();
+        w._vtm = udist(w._rdgen);
         goto explore;
       }
       else {
@@ -1315,6 +1315,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   //assert(!t);
   
   const size_t MAX_STEALS = ((num_queues() + 1) << 1);
+  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
 
   size_t num_steals = 0;
   size_t num_empty_steals = 0;
@@ -1349,7 +1350,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     } 
     
     // Randomely generate a next victim.
-    w._vtm = w._rdvtm();
+    w._vtm = udist(w._rdgen); //w._rdvtm();
   } 
 
   return true;
