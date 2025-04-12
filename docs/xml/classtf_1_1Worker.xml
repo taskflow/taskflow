@@ -147,19 +147,6 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="106" column="32" bodyfile="taskflow/core/worker.hpp" bodystart="106" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Worker_1a4e227fc985367f5cbc0ae94273b21b0e" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/numeric/random/uniform_int_distribution" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::uniform_int_distribution</ref>&lt; size_t &gt;</type>
-        <definition>std::uniform_int_distribution&lt;size_t&gt; tf::Worker::_udist</definition>
-        <argsstring></argsstring>
-        <name>_udist</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="107" column="35" bodyfile="taskflow/core/worker.hpp" bodystart="107" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1a582ddc7de274ecd0988af3dfb5d0f5bf" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1BoundedTaskQueue" kindref="compound">BoundedTaskQueue</ref>&lt; Node * &gt;</type>
         <definition>BoundedTaskQueue&lt;Node*&gt; tf::Worker::_wsq</definition>
@@ -247,21 +234,6 @@
         <location file="taskflow/core/worker.hpp" line="90" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="90" bodyend="90"/>
       </memberdef>
       </sectiondef>
-      <sectiondef kind="private-func">
-      <memberdef kind="function" id="classtf_1_1Worker_1a069f9b5fbdfa57484fe7a9131514a186" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>TF_FORCE_INLINE size_t</type>
-        <definition>TF_FORCE_INLINE size_t tf::Worker::_rdvtm</definition>
-        <argsstring>()</argsstring>
-        <name>_rdvtm</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="111" column="28" bodyfile="taskflow/core/worker.hpp" bodystart="111" bodyend="114"/>
-      </memberdef>
-      </sectiondef>
     <briefdescription>
 <para>class to create a worker in an executor </para>
     </briefdescription>
@@ -274,14 +246,12 @@
       <member refid="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_executor</name></member>
       <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_id</name></member>
       <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_rdgen</name></member>
-      <member refid="classtf_1_1Worker_1a069f9b5fbdfa57484fe7a9131514a186" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_rdvtm</name></member>
       <member refid="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_thread</name></member>
-      <member refid="classtf_1_1Worker_1a4e227fc985367f5cbc0ae94273b21b0e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_udist</name></member>
       <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_vtm</name></member>
       <member refid="classtf_1_1Worker_1a559e98c3b61a201903d70952e39ab14f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_waiter</name></member>
       <member refid="classtf_1_1Worker_1a582ddc7de274ecd0988af3dfb5d0f5bf" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_wsq</name></member>
-      <member refid="classtf_1_1Worker_1a0fcc11826d72537655bf9bb50b68a3f5" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>executor</name></member>
       <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>Executor</name></member>
+      <member refid="classtf_1_1Worker_1a0fcc11826d72537655bf9bb50b68a3f5" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>executor</name></member>
       <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>id</name></member>
       <member refid="classtf_1_1Worker_1a0c0505b0ce5b464d4458b5278265429a" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_capacity</name></member>
       <member refid="classtf_1_1Worker_1a5e1ec48fd2295d260e8f335ff22b95ae" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_size</name></member>

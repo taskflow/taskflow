@@ -1287,7 +1287,6 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
 
-      //t = (w._id == w._vtm) ? _wsq.steal() : _workers[w._vtm]._wsq.steal();
       t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
                                        _buffers.steal(w._vtm - _workers.size());
 
@@ -1421,7 +1420,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
     return false;
   }
   
-  // Now I really need to relinquish my self to others.
+  // Now I really need to relinquish myself to others.
   _notifier.commit_wait(w._waiter);
   goto explore_task;
 }

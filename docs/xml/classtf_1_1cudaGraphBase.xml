@@ -4,6 +4,7 @@
     <compoundname>tf::cudaGraphBase</compoundname>
     <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</basecompoundref>
     <derivedcompoundref refid="classtf_1_1cudaFlow" prot="public" virt="non-virtual">tf::cudaFlow</derivedcompoundref>
+    <includes refid="cuda__graph_8hpp" local="no">taskflow/cuda/cuda_graph.hpp</includes>
     <templateparamlist>
       <param>
         <type>typename Creator</type>
@@ -46,10 +47,10 @@
           <declname>args</declname>
         </param>
         <briefdescription>
-<para>constructs a <computeroutput><ref refid="classcudaGraph" kindref="compound">cudaGraph</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator </para>
+<para>constructs a <computeroutput>cudaGraph</computeroutput> object by passing the given arguments to the executable CUDA graph creator </para>
         </briefdescription>
         <detaileddescription>
-<para>Constructs a <computeroutput><ref refid="classcudaGraph" kindref="compound">cudaGraph</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator</para>
+<para>Constructs a <computeroutput>cudaGraph</computeroutput> object by passing the given arguments to the executable CUDA graph creator</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>args</parametername>
@@ -642,8 +643,27 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
       </memberdef>
       </sectiondef>
     <briefdescription>
+<para>class to create a CUDA graph managed by C++ smart pointer </para>
     </briefdescription>
     <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Creator</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>functor to create the stream (used in constructor) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Deleter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>functor to delete the stream (used in destructor)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This class wraps a <computeroutput>cudaGraph_t</computeroutput> handle with <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> to ensure proper resource management and automatic cleanup. </para>
     </detaileddescription>
     <inheritancegraph>
       <node id="1">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>tf::cudaGraphDeleter struct | Taskflow QuickStart</title>
+  <title>tf::cudaGraphExecDeleter struct | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,9 +46,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaGraphDeleter <span class="m-thin">struct</span>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>cudaGraphExecDeleter <span class="m-thin">struct</span>
         </h1>
-        <p>a functor for deleting a CUDA graph</p>
+        <p>a functor for deleting an executable CUDA graph</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -65,26 +65,26 @@
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a058b64fdc54fedcd666c24ff3b813129" class="m-doc">operator()</a>(</span><span class="m-doc-wrap">cudaGraph_t g) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#ae5c3d634ee147c89ae75ac4e271023bd" class="m-doc">operator()</a>(</span><span class="m-doc-wrap">cudaGraphExec_t executable) const</span>
             </dt>
-            <dd>deletes a CUDA graph</dd>
+            <dd>deletes an executable CUDA graph</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a058b64fdc54fedcd666c24ff3b813129"><div>
+          <section class="m-doc-details" id="ae5c3d634ee147c89ae75ac4e271023bd"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphDeleter::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a058b64fdc54fedcd666c24ff3b813129" class="m-doc-self">operator()</a>(</span><span class="m-doc-wrap">cudaGraph_t g) const</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecDeleter::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae5c3d634ee147c89ae75ac4e271023bd" class="m-doc-self">operator()</a>(</span><span class="m-doc-wrap">cudaGraphExec_t executable) const</span></span>
             </h3>
-            <p>deletes a CUDA graph</p>
+            <p>deletes an executable CUDA graph</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="width: 1%">g</td>
-                  <td>the CUDA graph to be destroyed</td>
+                  <td style="width: 1%">executable</td>
+                  <td>the executable CUDA graph to be destroyed</td>
                 </tr>
               </tbody>
             </table>
