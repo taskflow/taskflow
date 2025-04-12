@@ -140,9 +140,14 @@ void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
 // ----------------------------------------------------------------------------
 
 // Function: silent_dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename F, typename... Tasks>
+requires all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
 template <typename F, typename... Tasks,
   std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
+#endif
 tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
   return silent_dependent_async(
     DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...
@@ -150,9 +155,14 @@ tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename P, typename F, typename... Tasks>
+requires is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
 template <typename P, typename F, typename... Tasks,
   std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
+#endif
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
@@ -163,17 +173,27 @@ tf::AsyncTask Executor::silent_dependent_async(
 }
 
 // Function: silent_dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename F, typename I>
+requires (!std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
 template <typename F, typename I,
   std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
+#endif
 tf::AsyncTask Executor::silent_dependent_async(F&& func, I first, I last) {
   return silent_dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: silent_dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename P, typename F, typename I>
+requires (is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
 template <typename P, typename F, typename I,
   std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
+#endif
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
@@ -203,17 +223,27 @@ tf::AsyncTask Executor::silent_dependent_async(
 // ----------------------------------------------------------------------------
 
 // Function: dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename F, typename... Tasks>
+requires all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
 template <typename F, typename... Tasks,
   std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
+#endif
 auto Executor::dependent_async(F&& func, Tasks&&... tasks) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...);
 }
 
 // Function: dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename P, typename F, typename... Tasks>
+requires is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
 template <typename P, typename F, typename... Tasks,
   std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
 >
+#endif
 auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
   return dependent_async(
@@ -222,17 +252,27 @@ auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename F, typename I>
+requires (!std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
 template <typename F, typename I,
   std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
+#endif
 auto Executor::dependent_async(F&& func, I first, I last) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: dependent_async
+#if __cplusplus >= TF_CPP20
+template <typename P, typename F, typename I>
+requires (is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
 template <typename P, typename F, typename I,
   std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
+#endif
 auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   
   _increment_topology();
