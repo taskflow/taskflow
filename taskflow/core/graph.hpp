@@ -290,7 +290,6 @@ class Node {
   template <typename... Args>
   Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, Node*, size_t, Args&&...);
 
-
   size_t num_successors() const;
   size_t num_predecessors() const;
   size_t num_strong_dependencies() const;

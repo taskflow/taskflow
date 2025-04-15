@@ -465,7 +465,7 @@ struct cudaGraphDeleter {
   
 
 /**
-@class cudaGraph
+@class cudaGraphBase
 
 @brief class to create a CUDA graph managed by C++ smart pointer
 

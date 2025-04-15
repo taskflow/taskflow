@@ -45,7 +45,7 @@ struct cudaGraphExecCreator {
 };
   
 /**
-@struct cudaGraphDeleter
+@struct cudaGraphExecDeleter
 @brief a functor for deleting an executable CUDA graph
 
 This structure provides an overloaded function call operator to safely

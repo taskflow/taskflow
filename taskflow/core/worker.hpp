@@ -98,20 +98,19 @@ class Worker {
   #endif
 
     size_t _id;
-    size_t _vtm;
     Executor* _executor {nullptr};
     DefaultNotifier::Waiter* _waiter;
     std::thread _thread;
     
     std::default_random_engine _rdgen;
-    std::uniform_int_distribution<size_t> _udist;
+    //std::uniform_int_distribution<size_t> _udist;
 
     BoundedTaskQueue<Node*> _wsq;
 
-    TF_FORCE_INLINE size_t _rdvtm() {
-      auto r = _udist(_rdgen);
-      return r + (r >= _id);
-    }
+    //TF_FORCE_INLINE size_t _rdvtm() {
+    //  auto r = _udist(_rdgen);
+    //  return r + (r >= _id);
+    //}
 
 };
 

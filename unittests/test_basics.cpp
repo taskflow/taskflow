@@ -30,12 +30,17 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto task1 = [](){};
   auto task2 = [](){ return 1; };
   auto task3 = [](tf::Subflow&) {};
-  //auto task4 = [](tf::Subflow& sf) { return 1; };
+  auto task4 = [](tf::Subflow&) { return 1; };
+  auto task5 = [](tf::Runtime&) {};
+  auto task6 = [](tf::Runtime&) { return 1; };
 
   static_assert(tf::is_static_task_v<decltype(task1)> == true, "");
   static_assert(tf::is_static_task_v<decltype(task2)> == false, "");
+  static_assert(tf::is_condition_task_v<decltype(task2)> == true, "");
   static_assert(tf::is_subflow_task_v<decltype(task3)> == true, "");
-  //static_assert(is_subflow_task_v<decltype(task4)> == false, "");
+  static_assert(tf::is_subflow_task_v<decltype(task4)> == false, "");
+  static_assert(tf::is_runtime_task_v<decltype(task5)> == true, "");
+  static_assert(tf::is_runtime_task_v<decltype(task6)> == false, "");
 }
 
 // --------------------------------------------------------

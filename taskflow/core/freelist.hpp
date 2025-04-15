@@ -18,13 +18,11 @@ class Freelist {
     std::mutex mutex;
     UnboundedTaskQueue<T> queue;
   };
-
+  
+  // Here, we don't create just N task queues in the freelist as it will cause
+  // the work-stealing loop to spand a lot of time on stealing tasks.
+  // Experimentally speaking, we found floor_log2(N) is the best.
   TF_FORCE_INLINE Freelist(size_t N) : _buckets(N < 4 ? 1 : floor_log2(N)) {}
-
-  //TF_FORCE_INLINE void push(size_t w, T item) {
-  //  std::scoped_lock lock(_buckets[w].mutex);
-  //  _buckets[w].queue.push(item);  
-  //}
 
   TF_FORCE_INLINE void push(T item) {
     auto b = reinterpret_cast<uintptr_t>(item) % _buckets.size();
