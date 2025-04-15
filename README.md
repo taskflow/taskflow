@@ -69,7 +69,7 @@ in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github
 
 See a quick [presentation](https://taskflow.github.io/) and
 visit the [documentation][documentation] to learn more about Taskflow.
-Technical details can be referred to our [IEEE TPDS paper][TPDS21].
+Technical details can be referred to our [IEEE TPDS paper][TPDS22].
 
 # Start Your First Taskflow Program
 
