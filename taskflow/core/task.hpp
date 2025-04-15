@@ -85,16 +85,84 @@ inline const char* to_string(TaskType type) {
 }
 
 // ----------------------------------------------------------------------------
-// Task Traits
+// Static Task Trait
 // ----------------------------------------------------------------------------
 
 /**
-@brief determines if a callable is a dynamic task
+@private
+*/
+template <typename C, typename = void>
+struct is_static_task : std::false_type {};
 
-A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
+/**
+@private
 */
 template <typename C>
-constexpr bool is_subflow_task_v = std::is_invocable_r_v<void, C, Subflow&>;
+struct is_static_task<C, std::enable_if_t<std::is_invocable_v<C>>>
+  : std::is_same<std::invoke_result_t<C>, void> {};
+
+/**
+@brief determines if a callable is a static task
+
+A static task is a callable object constructible from std::function<void()>.
+*/
+template <typename C>
+constexpr bool is_static_task_v = is_static_task<C>::value;
+
+// ----------------------------------------------------------------------------
+// Subflow Task Trait
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <typename C, typename = void>
+struct is_subflow_task : std::false_type {};
+
+/**
+@private
+*/
+template <typename C>
+struct is_subflow_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Subflow&>>>
+  : std::is_same<std::invoke_result_t<C, tf::Subflow&>, void> {};
+
+/**
+@brief determines if a callable is a subflow task
+
+A subflow task is a callable object constructible from std::function<void(Subflow&)>.
+*/
+template <typename C>
+constexpr bool is_subflow_task_v = is_subflow_task<C>::value;
+
+// ----------------------------------------------------------------------------
+// Runtime Task Trait
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <typename C, typename = void>
+struct is_runtime_task : std::false_type {};
+
+/**
+@private
+*/
+template <typename C>
+struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Runtime&>>>
+  : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
+
+/**
+@brief determines if a callable is a runtime task
+
+A runtime task is a callable object constructible from std::function<void(Runtime&)>.
+*/
+template <typename C>
+constexpr bool is_runtime_task_v = is_runtime_task<C>::value;
+
+
+// ----------------------------------------------------------------------------
+// Condition Task Trait
+// ----------------------------------------------------------------------------
 
 /**
 @brief determines if a callable is a condition task
@@ -113,23 +181,6 @@ std::function<tf::SmallVector<int>()>.
 template <typename C>
 constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int>, C>;
 
-/**
-@brief determines if a callable is a static task
-
-A static task is a callable object constructible from std::function<void()>.
-*/
-template <typename C>
-constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
-                                  !is_condition_task_v<C>        &&
-                                  !is_multi_condition_task_v<C>;
-
-/**
-@brief determines if a callable is a runtime task
-
-A runtime task is a callable object constructible from std::function<void(tf::Runtime&)>.
-*/
-template <typename C>
-constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&>;
 
 // ----------------------------------------------------------------------------
 // Task

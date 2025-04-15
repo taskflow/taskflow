@@ -83,3 +83,112 @@ TEST_CASE("Runtime.ExternalGraph.Simple" * doctest::timeout(300)) {
 
 }
 
+
+// --------------------------------------------------------------------------------------
+// Fibonacci
+// --------------------------------------------------------------------------------------
+
+size_t fibonacci(size_t N, tf::Runtime& rt) {
+
+  if (N < 2) {
+    return N; 
+  }
+  
+  size_t res1, res2;
+
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
+  
+  // tail optimization
+  res2 = fibonacci(N-2, rt);
+
+  // use corun to avoid blocking the worker from waiting the two children tasks to finish
+  rt.corun();
+
+  return res1 + res2;
+}
+
+size_t fibonacci(size_t T, size_t N) {
+  tf::Executor executor(T);
+  size_t res;
+  executor.async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); }).get();
+  return res;
+}
+
+TEST_CASE("Runtime.Fibonacci.1thread" * doctest::timeout(250)) {
+  REQUIRE(fibonacci(1, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.2threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci(2, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.3threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci(3, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.4threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci(4, 25) == 75025);
+}
+
+// --------------------------------------------------------------------------------------
+// Fibonacci
+// --------------------------------------------------------------------------------------
+
+size_t fibonacci_swapped(size_t N, tf::Runtime& rt) {
+
+  if (N < 2) {
+    return N; 
+  }
+  
+  size_t res1, res2;
+  
+  // tail optimization
+  res1 = fibonacci_swapped(N-1, rt);
+
+  rt.silent_async([N, &res2](tf::Runtime& rt2){ res2 = fibonacci_swapped(N-2, rt2); });
+
+  // use corun to avoid blocking the worker from waiting the two children tasks to finish
+  rt.corun();
+
+  return res1 + res2;
+}
+
+size_t fibonacci_swapped(size_t T, size_t N) {
+  tf::Executor executor(T);
+  size_t res;
+  executor.async([N, &res](tf::Runtime& rt){ res = fibonacci_swapped(N, rt); }).get();
+  return res;
+}
+
+TEST_CASE("Runtime.Fibonacci.1thread" * doctest::timeout(250)) {
+  REQUIRE(fibonacci_swapped(1, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.2threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci_swapped(2, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.3threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci_swapped(3, 25) == 75025);
+}
+
+TEST_CASE("Runtime.Fibonacci.4threads" * doctest::timeout(250)) {
+  REQUIRE(fibonacci_swapped(4, 25) == 75025);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

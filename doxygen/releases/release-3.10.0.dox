@@ -106,6 +106,7 @@ taskflow.reduce_by_index(
 + fixed the runtime error due to the use of latch in tf::Executor::Executor ([#667](https://github.com/taskflow/taskflow/issues/667))
 + fixed the compilation error due to incorrect const qualifier used in algorithms ([#673](https://github.com/taskflow/taskflow/issues/673))
 + fixed the tsan error when using find-if algorithm tasks with closure wrapper ([#675](https://github.com/taskflow/taskflow/issues/675))
++ fixed the task trait bug in incorrect detection for subflow and runtime tasks ([#679](https://github.com/taskflow/taskflow/issues/679))
 
 @section release-3-10-0_breaking_changes Breaking Changes
 

@@ -194,16 +194,16 @@ UnboundedTaskQueue<T>::~UnboundedTaskQueue() {
 // Function: empty
 template <typename T>
 bool UnboundedTaskQueue<T>::empty() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t b = _bottom.load(std::memory_order_relaxed);
   return (b <= t);
 }
 
 // Function: size
 template <typename T>
 size_t UnboundedTaskQueue<T>::size() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t b = _bottom.load(std::memory_order_relaxed);
   return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
@@ -451,16 +451,16 @@ class BoundedTaskQueue {
 // Function: empty
 template <typename T, size_t LogSize>
 bool BoundedTaskQueue<T, LogSize>::empty() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t b = _bottom.load(std::memory_order_relaxed);
   return b <= t;
 }
 
 // Function: size
 template <typename T, size_t LogSize>
 size_t BoundedTaskQueue<T, LogSize>::size() const noexcept {
-  int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_relaxed);
+  int64_t b = _bottom.load(std::memory_order_relaxed);
   return static_cast<size_t>(b >= t ? b - t : 0);
 }
 

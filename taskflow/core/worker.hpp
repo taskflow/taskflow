@@ -98,7 +98,6 @@ class Worker {
   #endif
 
     size_t _id;
-    size_t _vtm;
     Executor* _executor {nullptr};
     DefaultNotifier::Waiter* _waiter;
     std::thread _thread;

@@ -55,7 +55,7 @@ auto Executor::async(F&& f) {
 template <typename P, typename F>
 auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
   
-  // async task with runtime: [] (tf::Runtime&) -> void { ... }
+  // async task with runtime: [] (tf::Runtime&) -> void {}
   if constexpr (is_runtime_task_v<F>) {
 
     std::promise<void> p;
