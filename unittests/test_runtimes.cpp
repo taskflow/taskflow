@@ -176,19 +176,31 @@ TEST_CASE("Runtime.Fibonacci.4threads" * doctest::timeout(250)) {
   REQUIRE(fibonacci_swapped(4, 25) == 75025);
 }
 
+// --------------------------------------------------------
+// Testcase: Runtime.Cancel.Simple
+// --------------------------------------------------------
 
+TEST_CASE("Runtime.Cancel.Simple" * doctest::timeout(300)) {
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+  tf::Task scan = taskflow
+                      .emplace([](tf::Runtime &rt) {
+                        while (true) {
+                          std::this_thread::sleep_for(std::chrono::seconds(1));
+                          if (rt.is_cancelled()) {
+                            break;
+                          }
+                        }
+                      })
+                      .name("scan");
+  tf::Task analyze = taskflow
+                         .emplace([]() {
+                           std::this_thread::sleep_for(std::chrono::seconds(1));
+                         })
+                         .name("analyze");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  scan.precede(analyze);
+  tf::Future<void> future = executor.run(std::move(taskflow));
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+  future.cancel();
+}
