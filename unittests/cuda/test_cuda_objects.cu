@@ -4,6 +4,7 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cuda/cudaflow.hpp>
 
+
 TEST_CASE("cuda.version" * doctest::timeout(300) ) {
   REQUIRE(tf::cuda_get_driver_version() > 0);
   REQUIRE(tf::cuda_get_runtime_version() > 0);
@@ -54,21 +55,33 @@ TEST_CASE("cudaStream" * doctest::timeout(300)) {
   cudaStreamCreate(&s2_source);
   tf::cudaStream s2(s2_source);
   
-  REQUIRE(s2 == s2_source);
+  REQUIRE(s2.get() == s2_source);
 
-  cudaStream_t s1_source = s1;
-  REQUIRE(s1 == s1_source);
+  cudaStream_t s1_source = s1.get();
+  REQUIRE(s1.get() == s1_source);
 
   // query status
-  REQUIRE(cudaStreamQuery(s1) == cudaSuccess);
-  REQUIRE(cudaStreamQuery(s2) == cudaSuccess);
+  REQUIRE(cudaStreamQuery(s1.get()) == cudaSuccess);
+  REQUIRE(cudaStreamQuery(s2.get()) == cudaSuccess);
 
   s1 = std::move(s2);
 
   REQUIRE(s2 == nullptr);
-  REQUIRE(s1 == s2_source);
-  REQUIRE(cudaStreamQuery(s1) == cudaSuccess);
+  REQUIRE(s1.get() == s2_source);
+  REQUIRE(cudaStreamQuery(s1.get()) == cudaSuccess);
 
+  // create a nullstream
+  tf::cudaStream s3(std::move(s1));
+
+  REQUIRE(s1 == nullptr);
+  REQUIRE(s3.get() == s2_source);
+
+  // create an empty stream
+  tf::cudaStream s4(nullptr);
+  REQUIRE(s4 == nullptr);
+
+  s3 = std::move(s4);
+  REQUIRE(s3.get() == nullptr);
 }
 
 // ----------------------------------------------------------------------------
@@ -79,27 +92,30 @@ TEST_CASE("cudaEvent" * doctest::timeout(300)) {
   
   // create a new event e1 inside
   tf::cudaEvent e1;
+
+  REQUIRE(e1 != nullptr);
+  REQUIRE(e1.get() != nullptr);
   
   // create another event e2 from the outside
   cudaEvent_t e2_source;
   cudaEventCreate(&e2_source);
   tf::cudaEvent e2(e2_source);
   
-  REQUIRE(e2 == e2_source);
+  REQUIRE(e2.get() == e2_source);
 
-  cudaEvent_t e1_source = e1;
-  REQUIRE(e1 == e1_source);
+  cudaEvent_t e1_source = e1.get();
+  REQUIRE(e1.get() == e1_source);
 
   // query status
-  REQUIRE(cudaEventQuery(e1) == cudaSuccess);
-  REQUIRE(cudaEventQuery(e2) == cudaSuccess);
+  REQUIRE(cudaEventQuery(e1.get()) == cudaSuccess);
+  REQUIRE(cudaEventQuery(e2.get()) == cudaSuccess);
 
   e1 = std::move(e2);
 
   REQUIRE(e2 == nullptr);
-  REQUIRE(e1 == e2_source);
-  REQUIRE(cudaEventQuery(e1) == cudaSuccess);
-  REQUIRE(cudaEventQuery(e2) != cudaSuccess);
+  REQUIRE(e1.get() == e2_source);
+  REQUIRE(cudaEventQuery(e1.get()) == cudaSuccess);
+  REQUIRE(cudaEventQuery(e2.get()) != cudaSuccess);
 }
 
 // ----------------------------------------------------------------------------
@@ -111,32 +127,69 @@ TEST_CASE("cudaGraph" * doctest::timeout(300)) {
   // create a new graph g1 inside
   tf::cudaGraph g1;
   
-  cudaGraph_t g1_source = g1;
-  REQUIRE(g1 == g1_source);
+  cudaGraph_t g1_source = g1.get();
+  REQUIRE(g1.get() == g1_source);
   
   // create another graph g2 from the outside
   cudaGraph_t g2_source;
   cudaGraphCreate(&g2_source, 0);
   tf::cudaGraph g2(g2_source);
   
-  REQUIRE(g2 == g2_source);
+  REQUIRE(g2.get() == g2_source);
 
   g1 = std::move(g2);
 
   REQUIRE(g2 == nullptr);
-  REQUIRE(g1 == g2_source);
+  REQUIRE(g1.get() == g2_source);
 
   // reassign g1 (now holding g2_source) to g2
   g2.reset(g1.release());
   REQUIRE(g1 == nullptr);
-  REQUIRE(g2 == g2_source);
+  REQUIRE(g2.get() == g2_source);
 
-  // clear
-  g2.clear();
-  g1.clear();
+  g1.reset();
+  g2.reset();
 
   REQUIRE(g1 == nullptr);
   REQUIRE(g2 == nullptr);
 }
+
+// ----------------------------------------------------------------------------
+// CUDA Graph Exec
+// ----------------------------------------------------------------------------
+
+TEST_CASE("cudaGraphExec" * doctest::timeout(300)) {
+  
+  // create a new graph g1 inside
+  tf::cudaGraph g1, g2, g3;
+  tf::cudaGraphExec e1(g1), e2(g2), e3(g3);
+  
+  // create another graph g2 from the outside
+  REQUIRE(g1 != nullptr);
+  REQUIRE(g2 != nullptr);
+  REQUIRE(g3 != nullptr);
+  REQUIRE(e1 != nullptr);
+  REQUIRE(e2 != nullptr);
+  REQUIRE(e3 != nullptr);
+  
+  auto re1 = e1.get();
+  auto re2 = e2.get();
+  auto re3 = e3.get();
+
+  REQUIRE(re1 != nullptr);
+  REQUIRE(re2 != nullptr);
+  REQUIRE(re3 != nullptr);
+
+  e1 = std::move(e2);
+  REQUIRE(e1.get() == re2);
+  REQUIRE(e2.get() == nullptr);
+
+  e2 = std::move(e3);
+  REQUIRE(e2.get() == re3);
+  REQUIRE(e3.get() == nullptr);
+}
+
+
+
 
 

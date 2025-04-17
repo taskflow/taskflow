@@ -1,5 +1,5 @@
 // This program performs a simple single-precision Ax+Y operation
-// using cudaFlow and verifies its result.
+// using cudaGraph and verifies its result.
 
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cuda/cudaflow.hpp>
@@ -30,23 +30,24 @@ int main() {
   hy.resize(N, 2.0f);
   cudaMalloc(&dy, N*sizeof(float));
   
-  // saxpy cudaFlow
-  tf::cudaFlow cf;
-  auto h2d_x = cf.copy(dx, hx.data(), N);
-  auto h2d_y = cf.copy(dy, hy.data(), N);
-  auto d2h_x = cf.copy(hx.data(), dx, N);
-  auto d2h_y = cf.copy(hy.data(), dy, N);
-  auto kernel = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+  // saxpy cudaGraph
+  tf::cudaGraph cg;
+  auto h2d_x = cg.copy(dx, hx.data(), N);
+  auto h2d_y = cg.copy(dy, hy.data(), N);
+  auto d2h_x = cg.copy(hx.data(), dx, N);
+  auto d2h_y = cg.copy(hy.data(), dy, N);
+  auto kernel = cg.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
   kernel.succeed(h2d_x, h2d_y)
         .precede(d2h_x, d2h_y);
   
   tf::cudaStream stream;
-  tf::cudaGraphExec exec(cf);
-  exec.run(stream);
-  stream.synchronize();
+  tf::cudaGraphExec exec(cg);
+  
+  stream.run(exec)
+        .synchronize();
   
   // visualize this cudaflow
-  cf.dump(std::cout);
+  cg.dump(std::cout);
 
   // Add a verification task
   float max_error = 0.0f;
@@ -59,6 +60,9 @@ int main() {
   // free memory
   cudaFree(dx);
   cudaFree(dy);
+
+  tf::cudaGraph cg2(std::move(cg));
+  tf::cudaGraphExec exec2(std::move(exec));
 
   return 0;
 }

@@ -41,6 +41,13 @@ struct cudaEventCreator {
     );
     return event;
   }
+  
+  /**
+  @brief returns the given `cudaEvent_t` object
+  */
+  cudaEvent_t operator () (cudaEvent_t event) const {
+    return event;
+  }
 };
 
 /**
@@ -98,13 +105,19 @@ class cudaEventBase : public std::unique_ptr<std::remove_pointer_t<cudaEvent_t>,
   }  
   
   /**
-  @brief implicit conversion to the underlying `cudaEvent_t` object
- 
-  Returns the underlying `cudaEvent_t` object, equivalently calling base_type::get().
+  @brief constructs a `cudaEvent` from the given rhs using move semantics
   */
-  operator cudaEvent_t () const noexcept {
-    return this->get();
-  }
+  cudaEventBase(cudaEventBase&&) = default;
+
+  /**
+  @brief assign the rhs to `*this` using move semantics
+  */
+  cudaEventBase& operator = (cudaEventBase&&) = default;
+  
+  private:
+
+  cudaEventBase(const cudaEventBase&) = delete;
+  cudaEventBase& operator = (const cudaEventBase&) = delete;
 };
 
 /**
@@ -124,18 +137,18 @@ using cudaEvent = cudaEventBase<cudaEventCreator, cudaEventDeleter>;
 struct cudaStreamCreator {
   
   /**
-  @brief returns the given `cudaStream_t` object
-  */
-  cudaStream_t operator () (cudaStream_t stream) const {
-    return stream;
-  }
-  
-  /**
   @brief constructs a new `cudaStream_t` object using `cudaStreamCreate`
   */
   cudaStream_t operator () () const {
     cudaStream_t stream;
     TF_CHECK_CUDA(cudaStreamCreate(&stream), "failed to create a CUDA stream");
+    return stream;
+  }
+  
+  /**
+  @brief returns the given `cudaStream_t` object
+  */
+  cudaStream_t operator () (cudaStream_t stream) const {
     return stream;
   }
 };
@@ -195,24 +208,26 @@ class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t
   }  
   
   /**
-  @brief implicit conversion to the underlying `cudaStream_t` object
- 
-  Returns the underlying `cudaStream_t` object, equivalently calling base_type::get().
+  @brief constructs a `cudaStream` from the given rhs using move semantics
   */
-  operator cudaStream_t () const noexcept {
-    return this->get();
-  }
+  cudaStreamBase(cudaStreamBase&&) = default;
 
+  /**
+  @brief assign the rhs to `*this` using move semantics
+  */
+  cudaStreamBase& operator = (cudaStreamBase&&) = default;
+  
   /**
   @brief synchronizes the associated stream
 
   Equivalently calling @c cudaStreamSynchronize to block 
   until this stream has completed all operations.
   */
-  void synchronize() const {
+  cudaStreamBase& synchronize() {
     TF_CHECK_CUDA(
       cudaStreamSynchronize(this->get()), "failed to synchronize a CUDA stream"
     );
+    return *this;
   }
   
   /**
@@ -278,7 +293,7 @@ class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t
       "failed to record event ", event, " on stream ", this->get()
     );
   }
-  
+
   /**
   @brief waits on an event
 
@@ -291,6 +306,26 @@ class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t
       "failed to wait for event ", event, " on stream ", this->get()
     );
   }
+
+  /**
+  @brief runs the given executable CUDA graph
+
+  @param exec the given `cudaGraphExec`
+  */
+  template <typename C, typename D>
+  cudaStreamBase& run(const cudaGraphExecBase<C, D>& exec);
+
+  /**
+  @brief runs the given executable CUDA graph
+  
+  @param exec the given `cudaGraphExec_t`
+  */
+  cudaStreamBase& run(cudaGraphExec_t exec);
+
+  private:
+
+  cudaStreamBase(const cudaStreamBase&) = delete;
+  cudaStreamBase& operator = (const cudaStreamBase&) = delete;
 };
 
 /**

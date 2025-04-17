@@ -2,7 +2,7 @@
 
 #include "../taskflow.hpp"
 #include "cuda_graph_exec.hpp"
-//#include "cuda_capturer.hpp"
+#include "algorithm/single_task.hpp"
 
 /**
 @file taskflow/cuda/cudaflow.hpp
@@ -64,30 +64,9 @@ class cudaFlow : public cudaGraph {
    */
   ~cudaFlow() = default;
 
-  // ------------------------------------------------------------------------
-  // generic algorithms
-  // ------------------------------------------------------------------------
 
-  /**
-  @brief runs a callable with only a single kernel thread
 
-  @tparam C callable type
 
-  @param c callable to run by a single kernel thread
-
-  @return a tf::cudaTask handle
-  */
-  template <typename C>
-  cudaTask single_task(C c);
-
-  /**
-  @brief updates a single-threaded kernel task
-
-  This method is similar to cudaFlow::single_task but operates
-  on an existing task.
-  */
-  template <typename C>
-  void single_task(cudaTask task, C c);
 
   /**
   @brief applies a callable to each dereferenced element of the data array
@@ -239,135 +218,7 @@ class cudaFlow : public cudaGraph {
     cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
   );
 
-  // ------------------------------------------------------------------------
-  // subflow
-  // ------------------------------------------------------------------------
-
-  /**
-  @brief constructs a subflow graph through tf::cudaFlowCapturer
-
-  @tparam C callable type constructible from
-            @c std::function<void(tf::cudaFlowCapturer&)>
-
-  @param callable the callable to construct a capture flow
-
-  @return a tf::cudaTask handle
-
-  A captured subflow forms a sub-graph to the %cudaFlow and can be used to
-  capture custom (or third-party) kernels that cannot be directly constructed
-  from the %cudaFlow.
-
-  Example usage:
-
-  @code{.cpp}
-  taskflow.emplace([&](tf::cudaFlow& cf){
-
-    tf::cudaTask my_kernel = cf.kernel(my_arguments);
-
-    // create a flow capturer to capture custom kernels
-    tf::cudaTask my_subflow = cf.capture([&](tf::cudaFlowCapturer& capturer){
-      capturer.on([&](cudaStream_t stream){
-        invoke_custom_kernel_with_stream(stream, custom_arguments);
-      });
-    });
-
-    my_kernel.precede(my_subflow);
-  });
-  @endcode
-  */
-  template <typename C>
-  cudaTask capture(C&& callable);
-
-  /**
-  @brief updates the captured child graph
-
-  The method is similar to tf::cudaFlow::capture but operates on a task
-  of type tf::cudaTaskType::SUBFLOW.
-  The new captured graph must be topologically identical to the original
-  captured graph.
-  */
-  template <typename C>
-  void capture(cudaTask task, C callable);
-    
 };
-
-// ------------------------------------------------------------------------
-// update methods
-// ------------------------------------------------------------------------
-
-
-//
-//// Function: capture
-//template <typename C>
-//void cudaFlow::capture(cudaTask task, C c) {
-//
-//  if(task.type() != cudaTaskType::SUBFLOW) {
-//    TF_THROW(task, " is not a subflow task");
-//  }
-//
-//  // insert a subflow node
-//  // construct a captured flow from the callable
-//  auto node_handle = std::get_if<cudaFlowNode::Subflow>(&task._node->_handle);
-//  //node_handle->graph.clear();
-//
-//  cudaFlowCapturer capturer;
-//  c(capturer);
-//
-//  // obtain the optimized captured graph
-//  capturer._cfg._native_handle.reset(capturer.capture());
-//  node_handle->cfg = std::move(capturer._cfg);
-//
-//  TF_CHECK_CUDA(
-//    cudaGraphExecChildGraphNodeSetParams(
-//      _exe, 
-//      task._node->_native_handle, 
-//      node_handle->cfg._native_handle
-//    ),
-//    "failed to update a captured child graph"
-//  );
-//}
-
-// ----------------------------------------------------------------------------
-// captured flow
-// ----------------------------------------------------------------------------
-
-//// Function: capture
-//template <typename C>
-//cudaTask cudaFlow::capture(C&& c) {
-//
-//  // insert a subflow node
-//  auto node = _cfg.emplace_back(
-//    _cfg, std::in_place_type_t<cudaFlowNode::Subflow>{}
-//  );
-//
-//  // construct a captured flow from the callable
-//  auto node_handle = std::get_if<cudaFlowNode::Subflow>(&node->_handle);
-//
-//  // perform capturing
-//  cudaFlowCapturer capturer;
-//  c(capturer);
-//
-//  // obtain the optimized captured graph
-//  capturer._cfg._native_handle.reset(capturer.capture());
-//
-//  // move capturer's cudaFlow graph into node
-//  node_handle->cfg = std::move(capturer._cfg);
-//
-//  TF_CHECK_CUDA(
-//    cudaGraphAddChildGraphNode(
-//      &node->_native_handle, 
-//      _cfg._native_handle, 
-//      nullptr, 
-//      0, 
-//      node_handle->cfg._native_handle
-//    ), 
-//    "failed to add a cudaFlow capturer task"
-//  );
-//
-//  return cudaTask(node);
-//}
-
-// 
 
 }  // end of namespace tf -----------------------------------------------------
 

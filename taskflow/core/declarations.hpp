@@ -45,6 +45,9 @@ class cudaFlowLinearOptimizer;
 class cudaFlowSequentialOptimizer;
 class cudaFlowRoundRobinOptimizer;
 
+template <typename C, typename D>
+class cudaGraphExecBase;
+
 // ----------------------------------------------------------------------------
 // struct 
 // ----------------------------------------------------------------------------

@@ -439,6 +439,7 @@ struct cudaGraphCreator {
   cudaGraph_t operator () (cudaGraph_t graph) const {
     return graph;
   }
+
 };
 
 /**
@@ -499,6 +500,16 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
     Creator{}(std::forward<ArgsT>(args)...), Deleter()
   ) {
   }  
+  
+  /**
+  @brief constructs a `cudaGraph` from the given rhs using move semantics
+  */
+  cudaGraphBase(cudaGraphBase&&) = default;
+
+  /**
+  @brief assign the rhs to `*this` using move semantics
+  */
+  cudaGraphBase& operator = (cudaGraphBase&&) = default;
 
   /**
   @brief queries the number of nodes in a native CUDA graph
@@ -522,15 +533,6 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   */
   void dump(std::ostream& os);
 
-  /**
-  @brief implicit conversion to the underlying `cudaGraph_t` object
- 
-  Returns the underlying `cudaGraph_t` object, equivalently calling base_type::get().
-  */
-  operator cudaGraph_t () const noexcept {
-    return this->get();
-  }
-  
   // ------------------------------------------------------------------------
   // Graph building routines
   // ------------------------------------------------------------------------
@@ -666,6 +668,27 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
     std::enable_if_t<!std::is_same_v<T, void>, void>* = nullptr
   >
   cudaTask copy(T* tgt, const T* src, size_t num);
+  
+  // ------------------------------------------------------------------------
+  // generic algorithms
+  // ------------------------------------------------------------------------
+
+  /**
+  @brief runs a callable with only a single kernel thread
+
+  @tparam C callable type
+
+  @param c callable to run by a single kernel thread
+
+  @return a tf::cudaTask handle
+  */
+  template <typename C>
+  cudaTask single_task(C c);
+
+  private:
+
+  cudaGraphBase(const cudaGraphBase&) = delete;
+  cudaGraphBase& operator = (const cudaGraphBase&) = delete;
 };
 
 // query the number of nodes
