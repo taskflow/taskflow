@@ -684,6 +684,116 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   */
   template <typename C>
   cudaTask single_task(C c);
+  
+  /**
+  @brief applies a callable to each dereferenced element of the data array
+
+  @tparam I iterator type
+  @tparam C callable type
+  @tparam E execution poligy (default tf::cudaDefaultExecutionPolicy)
+
+  @param first iterator to the beginning (inclusive)
+  @param last iterator to the end (exclusive)
+  @param callable a callable object to apply to the dereferenced iterator
+
+  @return a tf::cudaTask handle
+
+  This method is equivalent to the parallel execution of the following loop on a GPU:
+
+  @code{.cpp}
+  for(auto itr = first; itr != last; itr++) {
+    callable(*itr);
+  }
+  @endcode
+  */
+  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  cudaTask for_each(I first, I last, C callable);
+  
+  /**
+  @brief applies a callable to each index in the range with the step size
+
+  @tparam I index type
+  @tparam C callable type
+  @tparam E execution poligy (default tf::cudaDefaultExecutionPolicy)
+
+  @param first beginning index
+  @param last last index
+  @param step step size
+  @param callable the callable to apply to each element in the data array
+
+  @return a tf::cudaTask handle
+
+  This method is equivalent to the parallel execution of the following loop on a GPU:
+
+  @code{.cpp}
+  // step is positive [first, last)
+  for(auto i=first; i<last; i+=step) {
+    callable(i);
+  }
+
+  // step is negative [first, last)
+  for(auto i=first; i>last; i+=step) {
+    callable(i);
+  }
+  @endcode
+  */
+  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  cudaTask for_each_index(I first, I last, I step, C callable);
+  
+  /**
+  @brief applies a callable to a source range and stores the result in a target range
+
+  @tparam I input iterator type
+  @tparam O output iterator type
+  @tparam C unary operator type
+  @tparam E execution poligy (default tf::cudaDefaultExecutionPolicy)
+
+  @param first iterator to the beginning of the input range
+  @param last iterator to the end of the input range
+  @param output iterator to the beginning of the output range
+  @param op the operator to apply to transform each element in the range
+
+  @return a tf::cudaTask handle
+
+  This method is equivalent to the parallel execution of the following loop on a GPU:
+
+  @code{.cpp}
+  while (first != last) {
+    *output++ = callable(*first++);
+  }
+  @endcode
+  */
+  template <typename I, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  cudaTask transform(I first, I last, O output, C op);
+  
+  /**
+  @brief creates a task to perform parallel transforms over two ranges of items
+
+  @tparam I1 first input iterator type
+  @tparam I2 second input iterator type
+  @tparam O output iterator type
+  @tparam C unary operator type
+  @tparam E execution poligy (default tf::cudaDefaultExecutionPolicy)
+
+  @param first1 iterator to the beginning of the input range
+  @param last1 iterator to the end of the input range
+  @param first2 iterato
+  @param output iterator to the beginning of the output range
+  @param op binary operator to apply to transform each pair of items in the
+            two input ranges
+
+  @return cudaTask handle
+
+  This method is equivalent to the parallel execution of the following loop on a GPU:
+
+  @code{.cpp}
+  while (first1 != last1) {
+    *output++ = op(*first1++, *first2++);
+  }
+  @endcode
+  */
+  template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
 
   private:
 
@@ -959,10 +1069,7 @@ cudaTask cudaGraphBase<Creator, Deleter>::memcpy(void* tgt, const void* src, siz
   return cudaTask(this->get(), node);
 }
 
-/**
-@brief default smart pointer type to manage a `cudaGraph_t` object with unique ownership
-*/
-using cudaGraph = cudaGraphBase<cudaGraphCreator, cudaGraphDeleter>;
+
 
 
 

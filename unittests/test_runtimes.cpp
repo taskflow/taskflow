@@ -177,30 +177,34 @@ TEST_CASE("Runtime.Fibonacci.4threads" * doctest::timeout(250)) {
 }
 
 // --------------------------------------------------------
-// Testcase: Runtime.Cancel.Simple
+// Testcase: Runtime.Cancel
 // --------------------------------------------------------
 
-TEST_CASE("Runtime.Cancel.Simple" * doctest::timeout(300)) {
+TEST_CASE("Runtime.Cancel" * doctest::timeout(300)) {
+
+  std::atomic<bool> reached(false);
+  std::atomic<bool> cancelled(false);
+
   tf::Executor executor;
   tf::Taskflow taskflow;
-  tf::Task scan = taskflow
-                      .emplace([](tf::Runtime &rt) {
-                        while (true) {
-                          std::this_thread::sleep_for(std::chrono::seconds(1));
-                          if (rt.is_cancelled()) {
-                            break;
-                          }
-                        }
-                      })
-                      .name("scan");
-  tf::Task analyze = taskflow
-                         .emplace([]() {
-                           std::this_thread::sleep_for(std::chrono::seconds(1));
-                         })
-                         .name("analyze");
+  taskflow.emplace([&](tf::Runtime &rt) {
+    reached = true;
+    while (!cancelled) {
+      std::this_thread::yield();
+      if (rt.is_cancelled()) {
+        cancelled = true;
+        break;
+      }
+    }
+  });
 
-  scan.precede(analyze);
-  tf::Future<void> future = executor.run(std::move(taskflow));
-  std::this_thread::sleep_for(std::chrono::seconds(2));
+  auto future = executor.run(std::move(taskflow));
+  
+  // Need to wait until we run the runtime task or the cancel may immediately
+  // cancel the entire taskflow before the runtime task starts.
+  while(!reached);
   future.cancel();
+  future.get();
+
+  REQUIRE(cancelled == true);
 }

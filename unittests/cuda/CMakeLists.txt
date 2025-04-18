@@ -5,9 +5,8 @@ list(APPEND TF_CUDA_UNITTESTS
   test_cuda_updates
   test_cuda_matrix 
   test_cuda_kmeans 
-  #test_cuda_for_each
-  #test_cuda_for_each_index
-  #test_cuda_transform
+  test_cuda_for_each
+  test_cuda_transform
   #test_cuda_reduce
   #test_cuda_scan
   #test_cuda_find
