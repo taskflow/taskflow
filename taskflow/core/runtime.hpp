@@ -299,8 +299,12 @@ class Runtime {
   */
   void corun_all();
 
-  protected:
-  
+  /**
+  @brief This method verifies if the task has been cancelled.
+  */
+  bool is_cancelled();
+
+protected:
   /**
   @private
   */
@@ -381,6 +385,8 @@ inline void Runtime::corun() {
 inline void Runtime::corun_all() {
   corun();
 }
+
+inline bool Runtime::is_cancelled() { return _parent->_is_cancelled(); }
 
 // ------------------------------------
 // Runtime::silent_async series
