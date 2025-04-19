@@ -74,6 +74,7 @@
               <ul>
                 <li><a href="#pub-types">Public types</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
               </ul>
             </li>
           </ul>
@@ -96,10 +97,19 @@
               <span class="m-doc-wrap-bumper"><a href="#a9e3a31b34936c0bb0d798c1316f02696" class="m-doc">cudaEventBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs a <code>cudaEvent</code> object by passing the given arguments to the event creator</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a962a7d9b0470636f5f5354d1fb401568" class="m-doc">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="a415c32b4da01f1d6f521f1a66f37ad54">
+              <span class="m-doc-wrap-bumper"><a href="#a415c32b4da01f1d6f521f1a66f37ad54" class="m-doc-self">cudaEventBase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>implicit conversion to the underlying <code>cudaEvent_t</code> object</dd>
+            <dd>constructs a <code>cudaEvent</code> from the given rhs using move semantics</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a1b3c359ba08130ad8e499a4bbb066448">
+              <span class="m-doc-wrap-bumper">auto <a href="#a1b3c359ba08130ad8e499a4bbb066448" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>assign the rhs to <code>*this</code> using move semantics</dd>
           </dl>
         </section>
         <section>
@@ -138,16 +148,6 @@
               </tbody>
             </table>
 <p>Constructs a <code>cudaEvent</code> object by passing the given arguments to the event creator</p>
-          </div></section>
-          <section class="m-doc-details" id="a962a7d9b0470636f5f5354d1fb401568"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename Creator, typename Deleter&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaEventBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a962a7d9b0470636f5f5354d1fb401568" class="m-doc-self">operator cudaEvent_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
-            </h3>
-            <p>implicit conversion to the underlying <code>cudaEvent_t</code> object</p>
-<p>Returns the underlying <code>cudaEvent_t</code> object, equivalently calling base_type::get().</p>
           </div></section>
         </section>
       </div>

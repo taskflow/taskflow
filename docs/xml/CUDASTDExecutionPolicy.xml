@@ -48,10 +48,10 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaExecutionPolicy&lt;512, 11&gt;</ref><sp/>policy(stream1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assign<sp/>another<sp/>stream<sp/>to<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>(stream2);</highlight></codeline>
+<codeline><highlight class="normal">policy.stream(stream2);</highlight></codeline>
 </programlisting></para>
 <para>All the CUDA standard algorithms in Taskflow are asynchronous with respect to the stream assigned to the execution policy. This enables high execution efficiency for large GPU workloads that call for many different algorithms. You can synchronize the stream the block until all tasks in the stream finish:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">cudaStreamSynchronize(policy.<ref refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" kindref="member">stream</ref>());<sp/></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">cudaStreamSynchronize(policy.stream());<sp/></highlight></codeline>
 </programlisting></para>
 <para>The best-performing configurations for each algorithm, each GPU architecture, and each data type can vary significantly. You should experiment different configurations and find the optimal tuning parameters for your applications. A default policy is given in <ref refid="namespacetf_1a0e267ab3e1baeb1962f3b3a374de9553" kindref="member">tf::cudaDefaultExecutionPolicy</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>default_policy;</highlight></codeline>

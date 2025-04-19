@@ -62,22 +62,6 @@
         <location file="taskflow/cuda/cuda_execution_policy.hpp" line="42" column="25" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="42" bodyend="-1"/>
       </memberdef>
       </sectiondef>
-      <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1cudaExecutionPolicy_1a1eaf3d45afdf53b4bf9927dd1bd7a02b" prot="private" static="no" mutable="no">
-        <type>cudaStream_t</type>
-        <definition>cudaStream_t tf::cudaExecutionPolicy&lt; NT, VT &gt;::_stream</definition>
-        <argsstring></argsstring>
-        <name>_stream</name>
-        <initializer>{0}</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="144" column="16" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="144" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
       <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1aea3b671f778bfb9eca5d7113636f63bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -85,63 +69,13 @@
         <argsstring>()=default</argsstring>
         <name>cudaExecutionPolicy</name>
         <briefdescription>
-<para>constructs an execution policy object with default stream </para>
+<para>constructs an execution policy object </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/cuda/cuda_execution_policy.hpp" line="47" column="3"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1ac1c7784472394d4abcb6f6a2a80cc019" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::cudaExecutionPolicy&lt; NT, VT &gt;::cudaExecutionPolicy</definition>
-        <argsstring>(cudaStream_t s)</argsstring>
-        <name>cudaExecutionPolicy</name>
-        <param>
-          <type>cudaStream_t</type>
-          <declname>s</declname>
-        </param>
-        <briefdescription>
-<para>constructs an execution policy object with the given stream </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="52" column="12" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="52" bodyend="52"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
-        <type>cudaStream_t</type>
-        <definition>cudaStream_t tf::cudaExecutionPolicy&lt; NT, VT &gt;::stream</definition>
-        <argsstring>() noexcept</argsstring>
-        <name>stream</name>
-        <briefdescription>
-<para>queries the associated stream </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="57" column="16" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="57" bodyend="57"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::cudaExecutionPolicy&lt; NT, VT &gt;::stream</definition>
-        <argsstring>(cudaStream_t stream) noexcept</argsstring>
-        <name>stream</name>
-        <param>
-          <type>cudaStream_t</type>
-          <declname>stream</declname>
-        </param>
-        <briefdescription>
-<para>assigns a stream </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="62" column="8" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="62" bodyend="62"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-static-func">
@@ -161,7 +95,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="67" column="19" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="67" bodyend="67"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="52" column="19" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="52" bodyend="52"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -203,7 +137,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="85" column="19" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="215" bodyend="223"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="70" column="19" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="215" bodyend="223"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -245,7 +179,7 @@ The function is used to decide the buffer size in bytes for calling <ref refid="
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="98" column="19" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="194" bodyend="196"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="83" column="19" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="194" bodyend="196"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -287,7 +221,7 @@ The function is used to decide the buffer size in bytes for calling <ref refid="
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="111" column="19" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="246" bodyend="248"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="96" column="19" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="246" bodyend="248"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -329,7 +263,7 @@ The function is used to allocate a buffer for calling <ref refid="namespacetf_1a
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="125" column="19" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="330" bodyend="337"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="110" column="19" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="330" bodyend="337"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>unsigned</type>
@@ -370,7 +304,7 @@ The buffer size of merge algorithm does not depend on the data type. The buffer 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="140" column="26" bodyfile="taskflow/cuda/algorithm/merge.hpp" bodystart="452" bodyend="454"/>
+        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="125" column="26" bodyfile="taskflow/cuda/algorithm/merge.hpp" bodystart="452" bodyend="454"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -397,11 +331,9 @@ The buffer size of merge algorithm does not depend on the data type. The buffer 
 Execution policy configures the kernel execution parameters in CUDA algorithms. The first template argument, <computeroutput>NT</computeroutput>, the number of threads per block should always be a power-of-two number. The second template argument, <computeroutput>VT</computeroutput>, the number of work units per thread is recommended to be an odd number to avoid bank conflict.</para>
 <para>Details can be referred to <ref refid="CUDASTDExecutionPolicy" kindref="compound">Execution Policy</ref>. </para>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="145"/>
+    <location file="taskflow/cuda/cuda_execution_policy.hpp" line="29" column="1" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="29" bodyend="126"/>
     <listofallmembers>
-      <member refid="classtf_1_1cudaExecutionPolicy_1a1eaf3d45afdf53b4bf9927dd1bd7a02b" prot="private" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>_stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1aea3b671f778bfb9eca5d7113636f63bf" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>cudaExecutionPolicy</name></member>
-      <member refid="classtf_1_1cudaExecutionPolicy_1ac1c7784472394d4abcb6f6a2a80cc019" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>cudaExecutionPolicy</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>max_element_bufsz</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>merge_bufsz</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>min_element_bufsz</name></member>
@@ -410,8 +342,6 @@ Execution policy configures the kernel execution parameters in CUDA algorithms. 
       <member refid="classtf_1_1cudaExecutionPolicy_1a92ac5a32147584738f32a720ea08e3f4" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>nv</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>reduce_bufsz</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>scan_bufsz</name></member>
-      <member refid="classtf_1_1cudaExecutionPolicy_1a5be1b273985800ab886665d28663c29b" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>stream</name></member>
-      <member refid="classtf_1_1cudaExecutionPolicy_1a5f2a4d6b35af49403756ee2291264758" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>stream</name></member>
       <member refid="classtf_1_1cudaExecutionPolicy_1a9410f1b3a5cb9a3cc5e8d640bc7d3990" prot="public" virt="non-virtual"><scope>tf::cudaExecutionPolicy</scope><name>vt</name></member>
     </listofallmembers>
   </compounddef>

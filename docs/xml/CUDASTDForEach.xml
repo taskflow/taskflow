@@ -29,7 +29,7 @@
 </sect1>
 <sect1 id="CUDASTDForEach_1CUDASTDIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref> represents a kernel of parallel execution for the following loop:</para>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by tf::cuda_for_each_index represents a kernel of parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step:<sp/>first,<sp/>first+step,<sp/>first+2*step,<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
@@ -44,7 +44,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(100);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" kindref="member">tf::cuda_for_each_index</ref>(</highlight></codeline>
+<codeline><highlight class="normal">tf::cuda_for_each_index(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>0,<sp/>100,<sp/>1,<sp/>[data]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>idx)<sp/>{<sp/>data[idx]<sp/>=<sp/>1;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -55,7 +55,7 @@
 </sect1>
 <sect1 id="CUDASTDForEach_1CUDASTDIteratorBasedParallelFor">
 <title>Iterator-based Parallel Iterations</title>
-<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref> represents a parallel execution of the following loop:</para>
+<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::cuda_for_each represents a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -65,7 +65,7 @@
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1000);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>1000)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" kindref="member">tf::cuda_for_each</ref>(</highlight></codeline>
+<codeline><highlight class="normal">tf::cuda_for_each(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>data,<sp/>data<sp/>+<sp/>1000,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&amp;<sp/>item)<sp/>{<sp/>item<sp/>=<sp/>1;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

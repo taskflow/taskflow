@@ -36,16 +36,35 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="36" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="36" bodyend="43"/>
       </memberdef>
+      <memberdef kind="function" id="structtf_1_1cudaEventCreator_1a77d564f66017d0ad700fdca98e57e24a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaEvent_t</type>
+        <definition>cudaEvent_t tf::cudaEventCreator::operator()</definition>
+        <argsstring>(cudaEvent_t event) const</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>cudaEvent_t</type>
+          <declname>event</declname>
+        </param>
+        <briefdescription>
+<para>returns the given <computeroutput>cudaEvent_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="48" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="48" bodyend="50"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
 <para>functor to create a <computeroutput>cudaEvent_t</computeroutput> object </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="22" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="22" bodyend="44"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="22" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="22" bodyend="51"/>
     <listofallmembers>
       <member refid="structtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
       <member refid="structtf_1_1cudaEventCreator_1a94c304977d6ac96bd550bad52341b1fa" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
+      <member refid="structtf_1_1cudaEventCreator_1a77d564f66017d0ad700fdca98e57e24a" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

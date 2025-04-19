@@ -158,6 +158,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>fixed the runtime error due to the use of latch in <ref refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kindref="member">tf::Executor::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/667">#667</ulink>)</para>
 </listitem><listitem><para>fixed the compilation error due to incorrect const qualifier used in algorithms (<ulink url="https://github.com/taskflow/taskflow/issues/673">#673</ulink>)</para>
 </listitem><listitem><para>fixed the tsan error when using find-if algorithm tasks with closure wrapper (<ulink url="https://github.com/taskflow/taskflow/issues/675">#675</ulink>)</para>
+</listitem><listitem><para>fixed the task trait bug in incorrect detection for subflow and runtime tasks (<ulink url="https://github.com/taskflow/taskflow/issues/679">#679</ulink>)</para>
+</listitem><listitem><para>fixed the infinite steal caused by incorrect <computeroutput>num_empty_steals</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/681">#681</ulink>)</para>
 </listitem></itemizedlist>
 </para>
 </sect1>

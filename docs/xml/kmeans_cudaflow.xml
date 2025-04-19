@@ -20,7 +20,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Following up on <ref refid="kmeans" kindref="compound">k-means Clustering</ref>, this page studies how to accelerate a k-means workload on a GPU using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
+<para>Following up on <ref refid="kmeans" kindref="compound">k-means Clustering</ref>, this page studies how to accelerate a k-means workload on a GPU using tf::cudaFlow.</para>
 <sect1 id="kmeans_cudaflow_1DefineTheKMeansKernels">
 <title>Define the k-means Kernels</title>
 <para>Recall that the k-means algorithm has the following steps:</para>
@@ -154,31 +154,31 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>kmeans<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::cudaFlow<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_c<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" kindref="member">zero</ref>(d_c,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sx<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" kindref="member">zero</ref>(d_sx,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sy<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" kindref="member">zero</ref>(d_sy,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_c<sp/>=<sp/>cf.zero(d_c,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_c&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sx<sp/>=<sp/>cf.zero(d_sx,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sx&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sy<sp/>=<sp/>cf.zero(d_sy,<sp/>K).name(</highlight><highlight class="stringliteral">&quot;zero_sy&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cluster<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" kindref="member">kernel</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>cluster<sp/>=<sp/>cf.kernel(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>(N+512-1)<sp/>/<sp/>512,<sp/>512,<sp/>0,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assign_clusters,<sp/>d_px,<sp/>d_py,<sp/>N,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>K,<sp/>d_c</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;cluster&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>new_centroid<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" kindref="member">kernel</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>new_centroid<sp/>=<sp/>cf.kernel(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>1,<sp/>K,<sp/>0,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>compute_new_means,<sp/>d_mx,<sp/>d_my,<sp/>d_sx,<sp/>d_sy,<sp/>d_c</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>).name(</highlight><highlight class="stringliteral">&quot;new_centroid&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cluster.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(new_centroid)</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(zero_c,<sp/>zero_sx,<sp/>zero_sy);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cluster.precede(new_centroid)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.succeed(zero_c,<sp/>zero_sx,<sp/>zero_sy);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Repeat<sp/>the<sp/>execution<sp/>for<sp/>M<sp/>times</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;M;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cf.run(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;update_means&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>stop<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>

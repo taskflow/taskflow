@@ -97,17 +97,21 @@
               <span class="m-doc-wrap-bumper"><a href="#a53917d60c2fc050ecf15a30433a87f08" class="m-doc">cudaStreamBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs a <code>cudaStream</code> object by passing the given arguments to the stream creator</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#af91431fdc0b42ebb02b9d6a0ce3e01b6" class="m-doc">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="a065ca0411b2e5adfc580bea6fc56d90d">
+              <span class="m-doc-wrap-bumper"><a href="#a065ca0411b2e5adfc580bea6fc56d90d" class="m-doc-self">cudaStreamBase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>implicit conversion to the underlying <code>cudaStream_t</code> object</dd>
+            <dd>constructs a <code>cudaStream</code> from the given rhs using move semantics</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
+            <dt id="a0414bc0e15a5b1f85ee9c9abf39b2bd7">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0414bc0e15a5b1f85ee9c9abf39b2bd7" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            </dt>
+            <dd>assign the rhs to <code>*this</code> using move semantics</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#a08857ff2874cd5378e578822e2e96dd0" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) const</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a685019ae199f86668257f802bd77b2cd" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
             </dt>
             <dd>synchronizes the associated stream</dd>
             <dt>
@@ -126,6 +130,15 @@
               <span class="m-doc-wrap-bumper">void <a href="#a9c877b1346e66dcb18a898e649c254b3" class="m-doc">wait</a>(</span><span class="m-doc-wrap">cudaEvent_t event) const</span>
             </dt>
             <dd>waits on an event</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C, typename D&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#aadd2d02a691b40305aa3965475dc98d7" class="m-doc">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
+            </dt>
+            <dd>runs the given executable CUDA graph</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#ab2bc215af714edceb86514de43074f29" class="m-doc">run</a>(</span><span class="m-doc-wrap">cudaGraphExec_t exec) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
+            </dt>
+            <dd>runs the given executable CUDA graph</dd>
           </dl>
         </section>
         <section>
@@ -165,22 +178,12 @@
             </table>
 <p>Constructs a <code>cudaStream</code> object by passing the given arguments to the stream creator</p>
           </div></section>
-          <section class="m-doc-details" id="af91431fdc0b42ebb02b9d6a0ce3e01b6"><div>
+          <section class="m-doc-details" id="a685019ae199f86668257f802bd77b2cd"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
               </div>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af91431fdc0b42ebb02b9d6a0ce3e01b6" class="m-doc-self">operator cudaStream_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
-            </h3>
-            <p>implicit conversion to the underlying <code>cudaStream_t</code> object</p>
-<p>Returns the underlying <code>cudaStream_t</code> object, equivalently calling base_type::get().</p>
-          </div></section>
-          <section class="m-doc-details" id="a08857ff2874cd5378e578822e2e96dd0"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename Creator, typename Deleter&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a08857ff2874cd5378e578822e2e96dd0" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">) const</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a685019ae199f86668257f802bd77b2cd" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>synchronizes the associated stream</p>
 <p>Equivalently calling <code>cudaStreamSynchronize</code> to block until this stream has completed all operations.</p>
@@ -224,6 +227,47 @@
             </h3>
             <p>waits on an event</p>
 <p>Equivalently calling <code>cudaStreamWaitEvent</code> to make all future work submitted to stream wait for all work captured in event.</p>
+          </div></section>
+          <section class="m-doc-details" id="aadd2d02a691b40305aa3965475dc98d7"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename C, typename D&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aadd2d02a691b40305aa3965475dc98d7" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec)</span></span>
+            </h3>
+            <p>runs the given executable CUDA graph</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">exec</td>
+                  <td>the given <code>cudaGraphExec</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-doc-details" id="ab2bc215af714edceb86514de43074f29"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab2bc215af714edceb86514de43074f29" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">cudaGraphExec_t exec)</span></span>
+            </h3>
+            <p>runs the given executable CUDA graph</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">exec</td>
+                  <td>the given <code>cudaGraphExec_t</code></td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
         </section>
       </div>

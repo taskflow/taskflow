@@ -24,7 +24,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides two template methods, <ref refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kindref="member">tf::cudaFlow::for_each</ref> and <ref refid="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" kindref="member">tf::cudaFlow::for_each_index</ref>, for creating tasks to perform parallel iterations over a range of items.</para>
+<para>tf::cudaFlow provides two template methods, tf::cudaFlow::for_each and tf::cudaFlow::for_each_index, for creating tasks to perform parallel iterations over a range of items.</para>
 <sect1 id="ForEachCUDA_1CUDAForEachIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a parallel-iteration task.</para>
@@ -33,7 +33,7 @@
 </sect1>
 <sect1 id="ForEachCUDA_1ForEachCUDAIndexBasedParallelFor">
 <title>Index-based Parallel Iterations</title>
-<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by <ref refid="classtf_1_1cudaFlow_1a34f1ea89e5651faa6e8af522a42556ac" kindref="member">tf::cudaFlow::for_each_index(I first, I last, I step, C callable)</ref> represents a kernel of parallel execution for the following loop:</para>
+<para>Index-based parallel-for performs parallel iterations over a range <computeroutput>[first, last)</computeroutput> with the given <computeroutput>step</computeroutput> size. The task created by tf::cudaFlow::for_each_index(I first, I last, I step, C callable) represents a kernel of parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>positive<sp/>step:<sp/>first,<sp/>first+step,<sp/>first+2*step,<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(i);</highlight></codeline>
@@ -52,7 +52,7 @@
 </sect1>
 <sect1 id="ForEachCUDA_1ForEachCUDAIteratorBasedParallelIterations">
 <title>Iterator-based Parallel Iterations</title>
-<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1a1a681f6223853b6445dcfdad07e4d0fd" kindref="member">tf::cudaFlow::for_each(I first, I last, C callable)</ref> represents a parallel execution of the following loop:</para>
+<para>Iterator-based parallel-for performs parallel iterations over a range specified by two STL-styled iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::cudaFlow::for_each(I first, I last, C callable) represents a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>callable(*i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

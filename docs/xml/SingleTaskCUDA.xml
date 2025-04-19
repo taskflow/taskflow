@@ -20,7 +20,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides a template method, <ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">tf::cudaFlow::single_task</ref>, for creating a task to run the given callable using a single kernel thread.</para>
+<para>tf::cudaFlow provides a template method, tf::cudaFlow::single_task, for creating a task to run the given callable using a single kernel thread.</para>
 <sect1 id="SingleTaskCUDA_1CUDASingleTaskIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/for_each.hpp</computeroutput>, for creating a single-threaded task.</para>
@@ -33,14 +33,14 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal">*<sp/>gpu_variable;</highlight></codeline>
 <codeline><highlight class="normal">cudaMalloc(&amp;gpu_variable,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">));</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
-<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaFlow_1ac2906cb0002fc411a983d100a3d58d62" kindref="member">single_task</ref>([gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">tf::cudaFlow<sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal">cf.single_task([gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*gpu_Variable<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal">cf.run(stream);</highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">cf.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 <para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier.</para>
 </sect1>

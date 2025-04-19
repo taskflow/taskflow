@@ -4,6 +4,20 @@
     <compoundname>tf::cudaStreamCreator</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
       <sectiondef kind="public-func">
+      <memberdef kind="function" id="structtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaStream_t</type>
+        <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
+        <argsstring>() const</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+<para>constructs a new <computeroutput>cudaStream_t</computeroutput> object using <computeroutput>cudaStreamCreate</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="142" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="142" bodyend="146"/>
+      </memberdef>
       <memberdef kind="function" id="structtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaStream_t</type>
         <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
@@ -20,21 +34,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="129" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="129" bodyend="131"/>
-      </memberdef>
-      <memberdef kind="function" id="structtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>cudaStream_t</type>
-        <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
-        <argsstring>() const</argsstring>
-        <name>operator()</name>
-        <briefdescription>
-<para>constructs a new <computeroutput>cudaStream_t</computeroutput> object using <computeroutput>cudaStreamCreate</computeroutput> </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_stream.hpp" line="136" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="136" bodyend="140"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="151" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="151" bodyend="153"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -42,10 +42,10 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/cuda/cuda_stream.hpp" line="124" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="124" bodyend="141"/>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="137" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="137" bodyend="154"/>
     <listofallmembers>
-      <member refid="structtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" virt="non-virtual"><scope>tf::cudaStreamCreator</scope><name>operator()</name></member>
       <member refid="structtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" prot="public" virt="non-virtual"><scope>tf::cudaStreamCreator</scope><name>operator()</name></member>
+      <member refid="structtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" virt="non-virtual"><scope>tf::cudaStreamCreator</scope><name>operator()</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

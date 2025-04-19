@@ -29,7 +29,7 @@
 </sect1>
 <sect1 id="CUDASTDTransform_1CUDASTDTransformARangeOfItems">
 <title>Transform a Range of Items</title>
-<para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para>Parallel-transform algorithm applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::cuda_transform(P&amp;&amp; p, I first, I last, O output, C op) represents a parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -38,7 +38,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input[i]*10</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(</highlight></codeline>
+<codeline><highlight class="normal">tf::cuda_transform(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>policy,<sp/>input,<sp/>input<sp/>+<sp/>N,<sp/>output,<sp/>[]<sp/>__device__<sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>x*10;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -49,7 +49,7 @@
 </sect1>
 <sect1 id="CUDASTDTransform_1CUDASTDTransformTwoRangesOfItems">
 <title>Transform Two Ranges of Items</title>
-<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" kindref="member">tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para>You can transform two ranges of items to an output range through a binary operator. The task created by tf::cuda_transform(P&amp;&amp; p, I1 first1, I1 last1, I2 first2, O output, C op) represents a parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -58,7 +58,7 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>output[i]<sp/>=<sp/>input1[i]<sp/>+<sp/>inpu2[i]</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" kindref="member">tf::cuda_transform</ref>(policy,</highlight></codeline>
+<codeline><highlight class="normal">tf::cuda_transform(policy,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>input1,<sp/>input1+N,<sp/>input2,<sp/>output,<sp/>[]__device__(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b)<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>a+b;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

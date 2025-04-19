@@ -24,7 +24,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> provides template methods for transforming ranges of items to different outputs.</para>
+<para>tf::cudaFlow provides template methods for transforming ranges of items to different outputs.</para>
 <sect1 id="ParallelTransformsCUDA_1CUDAParallelTransformsIncludeTheHeader">
 <title>Include the Header</title>
 <para>You need to include the header file, <computeroutput>taskflow/cuda/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para>
@@ -33,7 +33,7 @@
 </sect1>
 <sect1 id="ParallelTransformsCUDA_1cudaFlowTransformARangeOfItems">
 <title>Transform a Range of Items</title>
-<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by <ref refid="classtf_1_1cudaFlow_1af89a9bda182272462a0eda2581536cd8" kindref="member">tf::cudaFlow::transform(I first, I last, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para>Iterator-based parallel-transform applies the given transform function to a range of items and store the result in another range specified by two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>. The task created by tf::cudaFlow::transform(I first, I last, O output, C op) represents a parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -48,7 +48,7 @@
 </sect1>
 <sect1 id="ParallelTransformsCUDA_1cudaFlowTransformTwoRangesOfItems">
 <title>Transform Two Ranges of Items</title>
-<para>You can transform two ranges of items to an output range through a binary operator. The task created by <ref refid="classtf_1_1cudaFlow_1abab2bfdfc86ef3a764ece4743fdede76" kindref="member">tf::cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C op)</ref> represents a parallel execution for the following loop:</para>
+<para>You can transform two ranges of items to an output range through a binary operator. The task created by tf::cudaFlow::transform(I1 first1, I1 last1, I2 first2, O output, C op) represents a parallel execution for the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>

@@ -8,6 +8,7 @@
     <includes local="yes">cuda_meta.hpp</includes>
     <includes local="yes">../utility/traits.hpp</includes>
     <includedby refid="cuda__graph__exec_8hpp" local="yes">taskflow/cuda/cuda_graph_exec.hpp</includedby>
+    <includedby refid="cudaflow_8hpp" local="yes">taskflow/cuda/cudaflow.hpp</includedby>
     <includedby refid="cuda__optimizer_8hpp" local="yes">taskflow/cuda/cuda_optimizer.hpp</includedby>
     <incdepgraph>
       <node id="2">
@@ -72,6 +73,8 @@
         <label>taskflow/cuda/cuda_graph.hpp</label>
         <link refid="cuda__graph_8hpp"/>
         <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
         </childnode>
         <childnode refid="11" relation="include">
         </childnode>

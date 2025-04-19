@@ -150,9 +150,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-6-0_1release-3-6-0_cudaflow">
 <title>cudaFlow</title>
 <para><itemizedlist>
-<listitem><para>removed algorithms that require buffer from <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> due to update limitation</para>
+<listitem><para>removed algorithms that require buffer from tf::cudaFlow due to update limitation</para>
 </listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
-<listitem><para>all usage of <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para>
+<listitem><para>all usage of tf::cudaFlow and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -203,24 +203,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>fu.get();</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref> from a dedicated task</para>
+<listitem><para>Dropped in-place support for running tf::cudaFlow from a dedicated task</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>no<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](tf::cudaFlow&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>user<sp/>to<sp/>fully<sp/>control<sp/>tf::cudaFlow<sp/>for<sp/>maximum<sp/>flexibility</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.emplace([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::cudaFlow<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.run(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
@@ -241,7 +241,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a952596fd7c46acee4c2459d8fe39da28" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>

@@ -96,19 +96,19 @@
               <span class="m-doc-wrap-bumper"><a href="#a3dc4936c19687b4af7e57c4745cac73d" class="m-doc">cudaGraphExecBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs a <code>cudaGraphExec</code> object by passing the given arguments to the executable CUDA graph creator</dd>
-            <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a619731d4217feb169edb97031ab15bdb" class="m-doc">operator cudaGraphExec_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt id="a9850f144ed008b41b95ac092a19b9658">
+              <span class="m-doc-wrap-bumper"><a href="#a9850f144ed008b41b95ac092a19b9658" class="m-doc-self">cudaGraphExecBase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>implicit conversion to the underlying <code>cudaGraphExec_t</code> object</dd>
+            <dd>constructs a <code>cudaGraphExec</code> from the given rhs using move semantics</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a6d44311d0bb62c31a160682bd4af9d28">
-              <span class="m-doc-wrap-bumper">void <a href="#a6d44311d0bb62c31a160682bd4af9d28" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">cudaStream_t stream)</span>
+            <dt id="ac00fccaf186d40d911a08860b45f55a0">
+              <span class="m-doc-wrap-bumper">auto <a href="#ac00fccaf186d40d911a08860b45f55a0" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>runs the executable graph via the given CUDA stream</dd>
+            <dd>assign the rhs to <code>*this</code> using move semantics</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#ad3da5e8cdae7555a08735fabefdf131d" class="m-doc">host</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
@@ -163,6 +163,48 @@
               size_t num)</span>
             </dt>
             <dd>updates parameters of a memcpy task to a copy task</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename C&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ae3b9553ae626613941aa7c50515cd42b" class="m-doc">single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C c)</span>
+            </dt>
+            <dd>updates a single-threaded kernel task</dd>
+            <dt id="af5c546cfeb8d42f4b6aa52dd3eb2af3f">
+              <div class="m-doc-template">template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#af5c546cfeb8d42f4b6aa52dd3eb2af3f" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              C callable)</span>
+            </dt>
+            <dd>updates parameters of a <code>for_each</code> kernel task created from the CUDA graph of <code>*this</code></dd>
+            <dt id="aaf933c0b9ed7bdff936db1f48967cffb">
+              <div class="m-doc-template">template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#aaf933c0b9ed7bdff936db1f48967cffb" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              I step,
+              C callable)</span>
+            </dt>
+            <dd>updates parameters of a <code>for_each_index</code> kernel task created from the CUDA graph of <code>*this</code></dd>
+            <dt id="ad8d934fd6f0caf65cb53afd0dc7880aa">
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#ad8d934fd6f0caf65cb53afd0dc7880aa" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I first,
+              I last,
+              O output,
+              C c)</span>
+            </dt>
+            <dd>updates parameters of a <code>transform</code> kernel task created from the CUDA graph of <code>*this</code></dd>
+            <dt id="a516dead6bca70b45b6322db171609604">
+              <div class="m-doc-template">template&lt;typename I1, typename I2, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <span class="m-doc-wrap-bumper">void <a href="#a516dead6bca70b45b6322db171609604" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              I1 first1,
+              I1 last1,
+              I2 first2,
+              O output,
+              C c)</span>
+            </dt>
+            <dd>updates parameters of a <code>transform</code> kernel task created from the CUDA graph of <code>*this</code></dd>
           </dl>
         </section>
         <section>
@@ -189,16 +231,6 @@
             </table>
 <p>Constructs a <code>cudaGraphExec</code> object by passing the given arguments to the executable CUDA graph creator</p>
           </div></section>
-          <section class="m-doc-details" id="a619731d4217feb169edb97031ab15bdb"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename Creator, typename Deleter&gt;
-              </div>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a619731d4217feb169edb97031ab15bdb" class="m-doc-self">operator cudaGraphExec_t</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
-            </h3>
-            <p>implicit conversion to the underlying <code>cudaGraphExec_t</code> object</p>
-<p>Returns the underlying <code>cudaGraphExec_t</code> object, equivalently calling base_type::get().</p>
-          </div></section>
           <section class="m-doc-details" id="ad3da5e8cdae7555a08735fabefdf131d"><div>
             <h3>
               <div class="m-doc-template">
@@ -210,7 +242,7 @@
               void* user_data)</span></span>
             </h3>
             <p>updates parameters of a host task</p>
-<p>This method updates the parameter of the given host task (similar to <a href="classtf_1_1cudaGraphBase.html#a4b730405596091d534af5737752b4682" class="m-doc">tf::<wbr />cudaFlow::<wbr />host</a>).</p>
+<p>This method updates the parameter of the given host task (similar to tf::cudaFlow::host).</p>
           </div></section>
           <section class="m-doc-details" id="a9d9842feec938f6dad9d21f66a202bb6"><div>
             <h3>
@@ -226,7 +258,7 @@
               ArgsT... args)</span></span>
             </h3>
             <p>updates parameters of a kernel task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a1473a15a6023fbc25e1f029f2ff84aec" class="m-doc">tf::<wbr />cudaFlow::<wbr />kernel</a> but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change.</p>
+<p>The method is similar to tf::cudaFlow::kernel but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change.</p>
           </div></section>
           <section class="m-doc-details" id="ae1a9cea343a306e114daeeab9418dd5b"><div>
             <h3>
@@ -239,7 +271,7 @@
               size_t count)</span></span>
             </h3>
             <p>updates parameters of a memset task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a10196f49de261a4042de328aab2452c8" class="m-doc">tf::<wbr />cudaFlow::<wbr />memset</a> but operates on a task of type tf::cudaTaskType::MEMSET. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to tf::cudaFlow::memset but operates on a task of type tf::cudaTaskType::MEMSET. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="aea367c6ac5b55854b9b695d4e249b17e"><div>
             <h3>
@@ -252,7 +284,7 @@
               size_t bytes)</span></span>
             </h3>
             <p>updates parameters of a memcpy task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a5e704c7bb669a82f4fe140ecb4576eb0" class="m-doc">tf::<wbr />cudaFlow::<wbr />memcpy</a> but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to tf::cudaFlow::memcpy but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="a195d1630c74657d095225ec0cb5343f1"><div>
             <h3>
@@ -265,7 +297,7 @@
               size_t count)</span></span>
             </h3>
             <p>updates parameters of a memset task to a zero task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#ab45bc592a33380adf74d6f1e7690bd4c" class="m-doc">tf::<wbr />cudaFlow::<wbr />zero</a> but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to tf::cudaFlow::zero but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="afa67dc39ef8f142284b799dd0c93aed2"><div>
             <h3>
@@ -279,7 +311,7 @@
               size_t count)</span></span>
             </h3>
             <p>updates parameters of a memset task to a fill task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a32634c5645c14b99ceeaafe77ea5ea62" class="m-doc">tf::<wbr />cudaFlow::<wbr />fill</a> but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to tf::cudaFlow::fill but operates on a task of type tf::cudaTaskType::MEMSET.</p><p>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
           </div></section>
           <section class="m-doc-details" id="aed30ccc98bb2187e9141c4f7b63ff66e"><div>
             <h3>
@@ -293,7 +325,19 @@
               size_t num)</span></span>
             </h3>
             <p>updates parameters of a memcpy task to a copy task</p>
-<p>The method is similar to <a href="classtf_1_1cudaGraphBase.html#a02a041d5dd9e1e8958eb43e09331051e" class="m-doc">tf::<wbr />cudaFlow::<wbr />copy</a> but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+<p>The method is similar to tf::cudaFlow::copy but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory.</p>
+          </div></section>
+          <section class="m-doc-details" id="ae3b9553ae626613941aa7c50515cd42b"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename Creator, typename Deleter&gt;
+                template&lt;typename C&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />cudaGraphExecBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ae3b9553ae626613941aa7c50515cd42b" class="m-doc-self">single_task</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> task,
+              C c)</span></span>
+            </h3>
+            <p>updates a single-threaded kernel task</p>
+<p>This method is similar to cudaFlow::single_task but operates on an existing task.</p>
           </div></section>
         </section>
       </div>

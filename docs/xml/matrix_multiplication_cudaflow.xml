@@ -20,7 +20,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Following up on <ref refid="matrix_multiplication" kindref="compound">Matrix Multiplication</ref>, this page studies how to accelerate a matrix multiplication workload on a GPU using <ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref>.</para>
+<para>Following up on <ref refid="matrix_multiplication" kindref="compound">Matrix Multiplication</ref>, this page studies how to accelerate a matrix multiplication workload on a GPU using tf::cudaFlow.</para>
 <sect1 id="matrix_multiplication_cudaflow_1GPUAcceleratedMatrixMultiplication">
 <title>Define a Matrix Multiplication Kernel</title>
 <para>GPU can perform a lot of parallel computations more than CPUs. It is especially useful for data-intensive computing such as matrix multiplication. With GPU, we express the parallel patterns at a fine-grained level. The kernel, written in CUDA, is described as follows:</para>
@@ -67,17 +67,17 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>cudaFlow<sp/>task<sp/>to<sp/>run<sp/>the<sp/>matrix<sp/>multiplication</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>cudaFlow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaFlow" kindref="compound">tf::cudaFlow</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tf::cudaFlow<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>copy<sp/>data<sp/>to<sp/>da,<sp/>db,<sp/>and<sp/>dc</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_da<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" kindref="member">copy</ref>(da,<sp/>A,<sp/>M*K).name(</highlight><highlight class="stringliteral">&quot;H2D_A&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_db<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" kindref="member">copy</ref>(db,<sp/>B,<sp/>K*N).name(</highlight><highlight class="stringliteral">&quot;H2D_B&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_hc<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" kindref="member">copy</ref>(C,<sp/>dc,<sp/>M*N).name(</highlight><highlight class="stringliteral">&quot;D2H_C&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_da<sp/>=<sp/>cf.copy(da,<sp/>A,<sp/>M*K).name(</highlight><highlight class="stringliteral">&quot;H2D_A&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_db<sp/>=<sp/>cf.copy(db,<sp/>B,<sp/>K*N).name(</highlight><highlight class="stringliteral">&quot;H2D_B&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>copy_hc<sp/>=<sp/>cf.copy(C,<sp/>dc,<sp/>M*N).name(</highlight><highlight class="stringliteral">&quot;D2H_C&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>grid<sp/><sp/>((K+16-1)/16,<sp/>(M+16-1)/16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>dim3<sp/>block<sp/>(16,<sp/>16);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.<ref refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" kindref="member">kernel</ref>(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaTask" kindref="compound">tf::cudaTask</ref><sp/>kmatmul<sp/>=<sp/>cf.kernel(grid,<sp/>block,<sp/>0,<sp/>matmul,<sp/>da,<sp/>db,<sp/>dc,<sp/>M,<sp/>K,<sp/>N)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;matmul&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>kmatmul.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(copy_da,<sp/>copy_db)</highlight></codeline>
@@ -85,8 +85,8 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>cudaFlow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.run(stream);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;cudaFlow&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>

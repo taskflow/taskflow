@@ -30,12 +30,12 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>single-task<sp/>kernel<sp/>asynchronously<sp/>through<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="namespacetf_1a2ff1cf81426c856fc6db1f6ead47878f" kindref="member">tf::cuda_single_task</ref>(policy,<sp/>[gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">tf::cuda_single_task(policy,<sp/>[gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*gpu_Variable<sp/>=<sp/>1;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>kernel<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a08857ff2874cd5378e578822e2e96dd0" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 <para>Since the callable runs on GPU, it must be declared with a <computeroutput>__device__</computeroutput> specifier. </para>
 </sect1>
