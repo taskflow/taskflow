@@ -1212,6 +1212,7 @@ inline void Executor::_spawn(size_t N) {
   for(size_t id=0; id<N; ++id) {
 
     _workers[id]._id = id;
+    _workers[id]._vtm = id;
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
@@ -1286,10 +1287,10 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
       
-      auto vtm = udist(w._rdgen);
+      //auto vtm = udist(w._rdgen);
 
-      t = (vtm < _workers.size()) ? _workers[vtm]._wsq.steal() : 
-                                    _buffers.steal(vtm - _workers.size());
+      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
+                                    _buffers.steal(w._vtm - _workers.size());
 
       if(t) {
         _invoke(w, t);
@@ -1299,6 +1300,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
         if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
+        w._vtm = udist(w._rdgen);
         goto explore;
       }
       else {
@@ -1317,13 +1319,13 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
 
   size_t num_steals = 0;
-  //empty_steals = 0;
+  size_t vtm = w._vtm;
 
   // Make the worker steal immediately from the assigned victim.
   while(true) {
     
     // Randomely generate a next victim.
-    auto vtm = udist(w._rdgen); //w._rdvtm();
+    //vtm = udist(w._rdgen); //w._rdvtm();
 
     // If the worker's victim thread is within the worker pool, steal from the worker's queue.
     // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
@@ -1332,6 +1334,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
       : _buffers.steal(vtm - _workers.size());
 
     if(t) {
+      w._vtm = vtm;
       break;
     }
 
@@ -1351,6 +1354,8 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   #endif
       return false;
     } 
+
+    vtm = udist(w._rdgen); //w._rdvtm();
   } 
   return true;
 }
@@ -1384,9 +1389,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t vtm=0; vtm<_buffers.size(); ++vtm) {
     if(!_buffers._buckets[vtm].queue.empty()) {
       _notifier.cancel_wait(w._waiter);
-      if(t = _buffers._buckets[vtm].queue.steal(); t) {
-        return true;
-      }
+      w._vtm = vtm + _workers.size();
       goto explore_task;
     }
   }
@@ -1397,9 +1400,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t vtm=0; vtm<w._id; ++vtm) {
     if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(w._waiter);
-      if(t = _workers[vtm]._wsq.steal(); t) {
-        return true;
-      }
+      w._vtm = vtm;
       goto explore_task;
     }
   }
@@ -1409,9 +1410,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(w._waiter);
-      if(t = _workers[vtm]._wsq.steal(); t) {
-        return true;
-      }
+      w._vtm = vtm;
       goto explore_task;
     }
   }
