@@ -1317,7 +1317,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
 
   size_t num_steals = 0;
-  size_t num_empty_steals = 0;
+  //empty_steals = 0;
 
   // Make the worker steal immediately from the assigned victim.
   while(true) {
@@ -1328,8 +1328,8 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     // If the worker's victim thread is within the worker pool, steal from the worker's queue.
     // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
     t = (vtm < _workers.size())
-      ? _workers[vtm]._wsq.steal_with_hint(num_empty_steals)
-      : _buffers.steal_with_hint(vtm - _workers.size(), num_empty_steals);
+      ? _workers[vtm]._wsq.steal()
+      : _buffers.steal(vtm - _workers.size());
 
     if(t) {
       break;
@@ -1338,10 +1338,10 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     // Increment the steal count, and if it exceeds MAX_STEALS, yield the thread.
     // If the number of *consecutive* empty steals reaches MAX_STEALS, exit the loop.
     if (++num_steals > MAX_STEALS) {
-      if(num_empty_steals > MAX_STEALS) {
+      std::this_thread::yield();
+      if(num_steals > 100 + MAX_STEALS) {
         break;
       }
-      std::this_thread::yield();
     }
 
   #if __cplusplus >= TF_CPP20
