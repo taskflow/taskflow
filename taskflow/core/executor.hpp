@@ -1054,10 +1054,8 @@ class Executor {
   DefaultNotifier _notifier;
 
 #if __cplusplus >= TF_CPP20
-  //std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
 #else
-  //Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
@@ -1133,10 +1131,9 @@ class Executor {
 
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
-  _workers         (N),
-  _notifier        (N),
-  //_latch           (N+1),
-  _buffers        (N),
+  _workers  (N),
+  _notifier (N),
+  _buffers  (N),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {
@@ -1206,9 +1203,6 @@ inline int Executor::this_worker_id() const {
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
 
-  // Note: We cannot declare latch as a local variable here because the main thread
-  // may exit earlier than other threads, causing the latch to be destroyed
-  // while other threads are still accessing it, leading to undefined behavior.
   for(size_t id=0; id<N; ++id) {
 
     _workers[id]._id = id;
@@ -1219,9 +1213,6 @@ inline void Executor::_spawn(size_t N) {
 
       pt::this_worker = &w;
 
-      // synchronize with the main thread to ensure all worker data has been set
-      //_latch.arrive_and_wait(); 
-      
       // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
@@ -1263,8 +1254,6 @@ inline void Executor::_spawn(size_t N) {
 
     });
   } 
-
-  //_latch.arrive_and_wait();
 }
 
 // Function: _corun_until
@@ -1284,23 +1273,25 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
     }
     else {
       size_t num_steals = 0;
+      size_t vtm = w._vtm;
 
       explore:
       
       //auto vtm = udist(w._rdgen);
 
-      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-                                    _buffers.steal(w._vtm - _workers.size());
+      t = (vtm < _workers.size()) ? _workers[vtm]._wsq.steal() : 
+                                    _buffers.steal(vtm - _workers.size());
 
       if(t) {
         _invoke(w, t);
+        w._vtm = vtm;
         goto exploit;
       }
       else if(!stop_predicate()) {
         if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
-        w._vtm = udist(w._rdgen);
+        vtm = udist(w._rdgen);
         goto explore;
       }
       else {
