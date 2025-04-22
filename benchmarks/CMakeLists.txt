@@ -375,7 +375,6 @@ add_executable(
   ${TF_BENCHMARK_DIR}/fibonacci/main.cpp
   ${TF_BENCHMARK_DIR}/fibonacci/omp.cpp
   ${TF_BENCHMARK_DIR}/fibonacci/tbb.cpp
-  ${TF_BENCHMARK_DIR}/fibonacci/std.cpp
   ${TF_BENCHMARK_DIR}/fibonacci/taskflow.cpp
 )
 target_include_directories(bench_fibonacci PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
