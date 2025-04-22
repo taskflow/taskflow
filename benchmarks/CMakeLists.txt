@@ -369,6 +369,25 @@ target_link_libraries(
 )
 set_target_properties(bench_async_task PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+# benchmark 19: fibonacci
+add_executable(
+  bench_fibonacci
+  ${TF_BENCHMARK_DIR}/fibonacci/main.cpp
+  ${TF_BENCHMARK_DIR}/fibonacci/omp.cpp
+  ${TF_BENCHMARK_DIR}/fibonacci/tbb.cpp
+  ${TF_BENCHMARK_DIR}/fibonacci/std.cpp
+  ${TF_BENCHMARK_DIR}/fibonacci/taskflow.cpp
+)
+target_include_directories(bench_fibonacci PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_fibonacci
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_fibonacci PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 ###############################################################################
 # CUDA benchmarks
 ###############################################################################
