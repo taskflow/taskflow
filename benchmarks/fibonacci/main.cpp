@@ -20,9 +20,6 @@ void bench_fibonacci(
       if(model == "tf") {
         runtime += measure_time_taskflow(num_threads, f).count();
       }
-      else if(model == "std") {
-        runtime += measure_time_std(num_threads, f).count();
-      }
       else if(model == "omp") {
         runtime += measure_time_omp(num_threads, f).count();
       }
@@ -55,8 +52,8 @@ int main(int argc, char* argv[]) {
   std::string model = "tf";
   app.add_option("-m,--model", model, "model name std|omp|tf|tbb (default=tf)")
      ->check([] (const std::string& m) {
-        if(m != "std" && m != "omp" && m != "tf" && m != "tbb") {
-          return "model name should be \"std\", \"omp\", \"tbb\", or \"tf\"";
+        if(m != "omp" && m != "tf" && m != "tbb") {
+          return "model name should be \"omp\", \"tbb\", or \"tf\"";
         }
         return "";
      });
