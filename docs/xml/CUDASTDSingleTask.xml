@@ -27,7 +27,7 @@
 <title>Run a Task with a Single Thread</title>
 <para>You can launch a kernel with only one GPU thread running it, which is handy when you want to set up a single or a few variables that do not need multiple threads. The following example creates a single-task kernel that sets a device variable to <computeroutput>1</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal">tf::cudaDefaultExecutionPolicy<sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>single-task<sp/>kernel<sp/>asynchronously<sp/>through<sp/>the<sp/>policy</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::cuda_single_task(policy,<sp/>[gpu_variable]<sp/>__device__<sp/>()<sp/>{</highlight></codeline>

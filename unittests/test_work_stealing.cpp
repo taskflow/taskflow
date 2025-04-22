@@ -913,13 +913,81 @@ TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
   oversubscription(8);
 }
 
-//TEST_CASE("WorkStealing.Oversubscription.16threads" * doctest::timeout(300)) {
-//  oversubscription(16);
-//}
-//
-//TEST_CASE("WorkStealing.Oversubscription.32threads" * doctest::timeout(300)) {
-//  oversubscription(32);
-//}
+// ----------------------------------------------------------------------------
+// Waiter Test
+// ----------------------------------------------------------------------------
+
+// nonblocking_notifier does not support num_waiters
+
+#if __cplusplus >= TF_CPP20
+void waiter(size_t W) {
+
+  tf::Executor executor(W);
+  
+  // waits until all workers stop stealing
+  while(executor.num_waiters() != W);
+  
+  // now we should have no workers stealing
+  REQUIRE(executor.num_waiters() == W);
+
+  auto fu = executor.async([&](){
+    // I should be able to wait until other W-1 workers sleep
+    while(executor.num_waiters() != W-1);
+
+    return 1;
+  });
+
+  REQUIRE(fu.get() == 1);
+
+  tf::Taskflow taskflow;
+
+  for(size_t i=0; i<2048; i++) {
+    taskflow.emplace([&](){
+      // At least, I am not the waiter
+      REQUIRE(executor.num_waiters() < W);
+    });
+  }
+  
+  taskflow.emplace([&](){
+    // I should be able to wait until other W-1 workers sleep
+    while(executor.num_waiters() != W-1); 
+  });
+
+  executor.run(taskflow).wait();
+}
+
+TEST_CASE("WorkStealing.Waiter.1thread") {
+  waiter(1);
+}
+
+TEST_CASE("WorkStealing.Waiter.2threads") {
+  waiter(2);
+}
+
+TEST_CASE("WorkStealing.Waiter.3threads") {
+  waiter(3);
+}
+
+TEST_CASE("WorkStealing.Waiter.4threads") {
+  waiter(4);
+}
+
+TEST_CASE("WorkStealing.Waiter.5threads") {
+  waiter(5);
+}
+
+TEST_CASE("WorkStealing.Waiter.6threads") {
+  waiter(6);
+}
+
+TEST_CASE("WorkStealing.Waiter.7threads") {
+  waiter(7);
+}
+
+TEST_CASE("WorkStealing.Waiter.8threads") {
+  waiter(8);
+}
+#endif
 
 // ----------------------------------------------------------------------------
 // Continuation

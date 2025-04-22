@@ -374,7 +374,7 @@ class NonblockingNotifierV2 {
   //    if (_state.compare_exchange_weak(state, newstate, std::memory_order_seq_cst)) return;
   //  }
   //}
-  
+
   void prepare_wait(Waiter*) {
     _state.fetch_add(kWaiterInc, std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_seq_cst);

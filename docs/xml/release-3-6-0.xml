@@ -152,7 +152,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>removed algorithms that require buffer from tf::cudaFlow due to update limitation</para>
 </listitem><listitem><para>removed support for a dedicated cudaFlow task in Taskflow<itemizedlist>
-<listitem><para>all usage of tf::cudaFlow and <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> are standalone now</para>
+<listitem><para>all usage of tf::cudaFlow and tf::cudaFlowCapturer are standalone now</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -224,21 +224,21 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
-<listitem><para>Dropped in-place support for running <ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref> from a dedicated task</para>
+<listitem><para>Dropped in-place support for running tf::cudaFlowCapturer from a dedicated task</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previous<sp/>-<sp/>now<sp/>longer<sp/>supported</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref>&amp;<sp/>cf){</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([](tf::cudaFlowCapturer&amp;<sp/>cf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.offload();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>user<sp/>to<sp/>fully<sp/>control<sp/>tf::cudaFlowCapturer<sp/>for<sp/>maximum<sp/>flexibility</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.emplace([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaFlowCapturer" kindref="compound">tf::cudaFlowCapturer</ref><sp/>cf;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::cudaFlowCapturer<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaFlowCapturer_1a952596fd7c46acee4c2459d8fe39da28" kindref="member">run</ref>(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
@@ -250,11 +250,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>Move all buffer query methods of CUDA standard algorithms inside execution policy<itemizedlist>
-<listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a446cee95bb839ee180052059e2ad7fd6" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1af25648b3269902b333cfcd58665005e8" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a1febbe549d9cbe4502a5b66167ab9553" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1abcafb001cd68c1135392f4bcda5a2a05" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1cudaExecutionPolicy_1a31fe75c4b0765df3035e12be49af88aa" kindref="member">tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</ref></para>
+<listitem><para>tf::cudaExecutionPolicy&lt;NT, VT&gt;::reduce_bufsz</para>
+</listitem><listitem><para>tf::cudaExecutionPolicy&lt;NT, VT&gt;::scan_bufsz</para>
+</listitem><listitem><para>tf::cudaExecutionPolicy&lt;NT, VT&gt;::merge_bufsz</para>
+</listitem><listitem><para>tf::cudaExecutionPolicy&lt;NT, VT&gt;::min_element_bufsz</para>
+</listitem><listitem><para>tf::cudaExecutionPolicy&lt;NT, VT&gt;::max_element_bufsz</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -263,7 +263,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">tf::cuda_reduce_buffer_size&lt;tf::cudaDefaultExecutionPolicy,<sp/>int&gt;(N);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>(and<sp/>similarly<sp/>for<sp/>other<sp/>parallel<sp/>algorithms)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy(stream);</highlight></codeline>
+<codeline><highlight class="normal">tf::cudaDefaultExecutionPolicy<sp/>policy(stream);</highlight></codeline>
 <codeline><highlight class="normal">policy.reduce_bufsz&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">&gt;(N);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>

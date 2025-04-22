@@ -16,17 +16,9 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="8">
+      <node id="7">
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
-      </node>
-      <node id="14">
-        <label>taskflow/cuda/cuda_capturer.hpp</label>
-        <link refid="cuda__capturer_8hpp"/>
-      </node>
-      <node id="12">
-        <label>taskflow/cuda/algorithm/sort.hpp</label>
-        <link refid="sort_8hpp"/>
       </node>
       <node id="2">
         <label>taskflow/cuda/cuda_memory.hpp</label>
@@ -41,14 +33,10 @@
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
       </node>
       <node id="6">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
-        <childnode refid="7" relation="include">
-        </childnode>
       </node>
       <node id="4">
         <label>taskflow/cuda/cuda_graph_exec.hpp</label>
@@ -61,11 +49,7 @@
         <link refid="cudaflow_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
-        <childnode refid="8" relation="include">
-        </childnode>
-        <childnode refid="9" relation="include">
-        </childnode>
-        <childnode refid="11" relation="include">
+        <childnode refid="7" relation="include">
         </childnode>
       </node>
       <node id="1">
@@ -73,34 +57,6 @@
         <link refid="cuda__device_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-      </node>
-      <node id="10">
-        <label>taskflow/cuda/algorithm/scan.hpp</label>
-        <link refid="scan_8hpp"/>
-      </node>
-      <node id="11">
-        <label>taskflow/cuda/algorithm/merge.hpp</label>
-        <link refid="merge_8hpp"/>
-        <childnode refid="12" relation="include">
-        </childnode>
-      </node>
-      <node id="9">
-        <label>taskflow/cuda/algorithm/reduce.hpp</label>
-        <link refid="reduce_8hpp"/>
-        <childnode refid="10" relation="include">
-        </childnode>
-        <childnode refid="7" relation="include">
-        </childnode>
-      </node>
-      <node id="13">
-        <label>taskflow/cuda/cuda_optimizer.hpp</label>
-        <link refid="cuda__optimizer_8hpp"/>
-        <childnode refid="14" relation="include">
-        </childnode>
-      </node>
-      <node id="7">
-        <label>taskflow/cuda/algorithm/find.hpp</label>
-        <link refid="find_8hpp"/>
       </node>
     </invincdepgraph>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>

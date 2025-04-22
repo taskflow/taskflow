@@ -91,6 +91,7 @@ taskflow.reduce_by_index(
 @endcode
 
 + added `static` keyword to the executor creation in taskflow benchmarks
++ added waiter test for detecting oversubscription problems
 
 @subsection release-3-10-0_utilities Utilities
 
@@ -151,10 +152,11 @@ taskflow.dump(std::cout);
 + revised @ref ParallelIterations
 + revised @ref ParallelReduction
 + revised @ref ParallelFind
++ revised @ref fibonacci
 
 @section release-3-10-0_miscellaneous_items Miscellaneous Items
 
-Please do not hesitate to contact @twhuang if you intend to collaborate with us 
+Please do not hesitate to contact @twhuang if you have any ideas to collaborate with us 
 on using %Taskflow in your scientific computing projects.
 
 */

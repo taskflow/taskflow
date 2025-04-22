@@ -3,7 +3,6 @@
   <compounddef id="for__each_8hpp" kind="file" language="C++">
     <compoundname>for_each.hpp</compoundname>
     <includes refid="cudaflow_8hpp" local="yes">../cudaflow.hpp</includes>
-    <includedby refid="find_8hpp" local="yes">taskflow/cuda/algorithm/find.hpp</includedby>
     <incdepgraph>
       <node id="5">
         <label>observer.hpp</label>
@@ -341,18 +340,6 @@
         </childnode>
       </node>
     </incdepgraph>
-    <invincdepgraph>
-      <node id="1">
-        <label>taskflow/cuda/algorithm/for_each.hpp</label>
-        <link refid="for__each_8hpp"/>
-        <childnode refid="2" relation="include">
-        </childnode>
-      </node>
-      <node id="2">
-        <label>taskflow/cuda/algorithm/find.hpp</label>
-        <link refid="find_8hpp"/>
-      </node>
-    </invincdepgraph>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
     <briefdescription>

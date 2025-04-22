@@ -54,233 +54,251 @@
           <ul>
             <li><a href="#FibonacciNumberProblem">Problem Formulation</a></li>
             <li><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></li>
+            <li><a href="#TailRecursionOptimization">Tail Recursion Optimization</a></li>
           </ul>
         </nav>
 <p>We study the classic problem, <em>Fibonacci Number</em>, to demonstrate the use of recursive task parallelism.</p><section id="FibonacciNumberProblem"><h2><a href="#FibonacciNumberProblem">Problem Formulation</a></h2><p>In mathematics, the Fibonacci numbers, commonly denoted <code>F(n)</code>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</p><p><code>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</code></p><p>A common solution for computing fibonacci numbers is <em>recursion</em>.</p><pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">fib</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">);</span>
-<span class="p">}</span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> to recursively compute fibonacci numbers in parallel.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span>
+<span class="p">}</span></pre></section><section id="RecursiveFibonacciParallelism"><h2><a href="#RecursiveFibonacciParallelism">Recursive Fibonacci Parallelism</a></h2><p>We use <a href="RuntimeTasking.html" class="m-doc">Interact with the Runtime</a> and <a href="AsyncTasking.html" class="m-doc">Asynchronous Tasking</a> to recursively compute Fibonacci numbers in parallel. A runtime task tasks a reference to <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> as its argument, allowing users to interact with the executor and spawn tasks dynamically. The example below demonstrates a parallel recursive implementation of Fibonacci numbers using <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a>:</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span>
-<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-1</span><span class="p">));</span><span class="w">  </span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">)</span>
-<span class="w">     </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">n</span><span class="mi">-2</span><span class="p">));</span>
-<span class="w">  </span><span class="n">sbf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span>
+
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res1</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt1</span><span class="p">){</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacii</span><span class="p">(</span><span class="n">N</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">rt1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res2</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt2</span><span class="p">){</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span><span class="n">rt2</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="c1">// use corun to avoid blocking the worker from waiting the two children tasks to finish</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;fibonacci&quot;</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">rt</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span>
 
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sbf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spawn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">sbf</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
-<span class="w">          </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">N</span><span class="p">));</span>
-
-<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-
-<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Fib[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;-th Fibonacci number is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:</p><div class="m-graph"><svg style="width: 67.000rem; height: 52.500rem;" viewBox="0.00 0.00 670.00 525.00">
-<g transform="scale(1 1) rotate(0) translate(4 521)">
-<title>Taskflow</title>
-<g class="m-cluster">
-<title>cluster_p0x7ffd972c0cd0</title>
-<polygon points="8,-8 8,-509 654,-509 654,-8 8,-8"/>
-<text text-anchor="middle" x="331" y="-497" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: fibonacci</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0xa445c0</title>
-<polygon points="16,-16 16,-482 646,-482 646,-16 16,-16"/>
-<text text-anchor="middle" x="331" y="-470" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 5</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe918000b90</title>
-<polygon points="252,-88 252,-455 638,-455 638,-88 252,-88"/>
-<text text-anchor="middle" x="445" y="-443" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 4</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe910000b90</title>
-<polygon points="410,-160 410,-428 630,-428 630,-160 410,-160"/>
-<text text-anchor="middle" x="520" y="-416" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe918000fe0</title>
-<polygon points="480,-232 480,-401 622,-401 622,-232 480,-232"/>
-<text text-anchor="middle" x="551" y="-389" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe910000c48</title>
-<polygon points="260,-160 260,-303 402,-303 402,-160 260,-160"/>
-<text text-anchor="middle" x="331" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe918000c48</title>
-<polygon points="24,-88 24,-330 244,-330 244,-88 24,-88"/>
-<text text-anchor="middle" x="134" y="-318" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 3</text>
-</g>
-<g class="m-cluster">
-<title>cluster_p0x7fe918000d00</title>
-<polygon points="94,-160 94,-303 236,-303 236,-160 94,-160"/>
-<text text-anchor="middle" x="165" y="-291" font-family="Helvetica,sans-Serif" font-size="10.00">Subflow: 2</text>
+<span class="p">}</span></pre><p>The <code>fibonacci</code> function recursively spawns two asynchronous tasks to compute <code>fibonacci(N-1)</code> and <code>fibonacci(N-2)</code> in parallel using <code><a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a></code>. After spawning the two tasks, the function invokes <a href="classtf_1_1Runtime.html#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">tf::<wbr />Runtime::<wbr />corun()</a> to wait until all tasks spawned by <code>rt</code> complete, without blocking the caller worker. In the main function, the executor creates an async task from the top Fibonacci number and waits for completion using <a href="classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">tf::<wbr />Executor::<wbr />wait_for_all</a>. Once finished, the result is printed. The figure below shows the execution diagram, where the suffixes *_1 and *_2 represent the left and right children spawned by their parent runtime:</p><div class="m-graph"><svg style="width: 40.400rem; height: 26.000rem;" viewBox="0.00 0.00 404.00 260.00">
+<g transform="scale(1 1) rotate(0) translate(4 256)">
+<title>Fibonacci</title>
+<g class="m-node m-flat">
+<title>F4</title>
+<polygon points="258,-252 184,-252 184,-216 258,-216 258,-252"/>
+<text text-anchor="middle" x="221" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
+<text text-anchor="middle" x="221" y="-226" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-node m-flat">
-<title>p0xa445c0</title>
-<ellipse cx="248" cy="-42" rx="27" ry="18"/>
-<text text-anchor="middle" x="248" y="-39.5" font-family="Helvetica,sans-Serif" font-size="10.00">5</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000b90</title>
-<ellipse cx="331" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">4</text>
+<title>F3_1</title>
+<polygon points="212,-180 138,-180 138,-144 212,-144 212,-180"/>
+<text text-anchor="middle" x="175" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
+<text text-anchor="middle" x="175" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe918000b90&#45;&gt;p0xa445c0</title>
-<path d="M314.6,-99.17C302.36,-88.85 285.45,-74.58 271.73,-63.01"/>
-<polygon points="273.98,-60.33 264.08,-56.56 269.47,-65.69 273.98,-60.33"/>
+<title>F4&#45;&gt;F3_1</title>
+<path d="M209.63,-215.7C204.28,-207.56 197.8,-197.69 191.89,-188.7"/>
+<polygon points="194.66,-186.54 186.24,-180.1 188.81,-190.38 194.66,-186.54"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe910000b90</title>
-<ellipse cx="445" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
+<title>F2_2</title>
+<polygon points="304,-180 230,-180 230,-144 304,-144 304,-180"/>
+<text text-anchor="middle" x="267" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="267" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe910000b90&#45;&gt;p0x7fe918000b90</title>
-<path d="M426.42,-172.93C419.98,-168.79 412.7,-164.15 406,-160 390.65,-150.48 373.37,-140.09 359.28,-131.7"/>
-<polygon points="360.91,-128.59 350.52,-126.5 357.33,-134.61 360.91,-128.59"/>
+<title>F4&#45;&gt;F2_2</title>
+<path d="M232.37,-215.7C237.72,-207.56 244.2,-197.69 250.11,-188.7"/>
+<polygon points="253.19,-190.38 255.76,-180.1 247.34,-186.54 253.19,-190.38"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe918000fe0</title>
-<ellipse cx="517" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="517" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<title>F2_1</title>
+<polygon points="120,-108 46,-108 46,-72 120,-72 120,-108"/>
+<text text-anchor="middle" x="83" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="83" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe918000fe0&#45;&gt;p0x7fe910000b90</title>
-<path d="M502.43,-242.83C492.25,-232.94 478.48,-219.55 466.97,-208.36"/>
-<polygon points="469.41,-205.85 459.8,-201.38 464.53,-210.87 469.41,-205.85"/>
+<title>F3_1&#45;&gt;F2_1</title>
+<path d="M152.26,-143.7C140.56,-134.8 126.14,-123.82 113.49,-114.2"/>
+<polygon points="115.56,-111.37 105.48,-108.1 111.32,-116.94 115.56,-111.37"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe918001150</title>
-<ellipse cx="587" cy="-356" rx="27" ry="18"/>
-<text text-anchor="middle" x="587" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<title>F1_2</title>
+<polygon points="212,-108 138,-108 138,-72 212,-72 212,-108"/>
+<text text-anchor="middle" x="175" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="175" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_2]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe918001150&#45;&gt;p0x7fe918000fe0</title>
-<path d="M575.75,-339.58C564.53,-324.18 547.13,-300.32 534.17,-282.55"/>
-<polygon points="536.94,-280.4 528.22,-274.39 531.28,-284.53 536.94,-280.4"/>
+<title>F3_1&#45;&gt;F1_2</title>
+<path d="M175,-143.7C175,-135.98 175,-126.71 175,-118.11"/>
+<polygon points="178.5,-118.1 175,-108.1 171.5,-118.1 178.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe918001208</title>
-<ellipse cx="515" cy="-356" rx="27" ry="18"/>
-<text text-anchor="middle" x="515" y="-353.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<title>F1_1</title>
+<polygon points="74,-36 0,-36 0,0 74,0 74,-36"/>
+<text text-anchor="middle" x="37" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="37" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe918001208&#45;&gt;p0x7fe918000fe0</title>
-<path d="M515.36,-337.84C515.66,-323.5 516.09,-302.81 516.43,-286.22"/>
-<polygon points="519.94,-286.09 516.65,-276.01 512.94,-285.94 519.94,-286.09"/>
+<title>F2_1&#45;&gt;F1_1</title>
+<path d="M71.63,-71.7C66.28,-63.56 59.8,-53.69 53.89,-44.7"/>
+<polygon points="56.66,-42.54 48.24,-36.1 50.81,-46.38 56.66,-42.54"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe918001098</title>
-<ellipse cx="445" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="445" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<title>F0_1</title>
+<polygon points="166,-36 92,-36 92,0 166,0 166,-36"/>
+<text text-anchor="middle" x="129" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="129" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_2]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe918001098&#45;&gt;p0x7fe910000b90</title>
-<path d="M445,-239.7C445,-231.98 445,-222.71 445,-214.11"/>
-<polygon points="448.5,-214.1 445,-204.1 441.5,-214.1 448.5,-214.1"/>
+<title>F2_1&#45;&gt;F0_1</title>
+<path d="M94.37,-71.7C99.72,-63.56 106.2,-53.69 112.11,-44.7"/>
+<polygon points="115.19,-46.38 117.76,-36.1 109.34,-42.54 115.19,-46.38"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe910000c48</title>
-<ellipse cx="331" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="331" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
+<title>F1_3</title>
+<polygon points="304,-108 230,-108 230,-72 304,-72 304,-108"/>
+<text text-anchor="middle" x="267" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="267" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_1]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe910000c48&#45;&gt;p0x7fe918000b90</title>
-<path d="M331,-167.7C331,-159.98 331,-150.71 331,-142.11"/>
-<polygon points="334.5,-142.1 331,-132.1 327.5,-142.1 334.5,-142.1"/>
+<title>F2_2&#45;&gt;F1_3</title>
+<path d="M267,-143.7C267,-135.98 267,-126.71 267,-118.11"/>
+<polygon points="270.5,-118.1 267,-108.1 263.5,-118.1 270.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
-<title>p0x7fe910000d00</title>
-<ellipse cx="367" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="367" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<title>F0_2</title>
+<polygon points="396,-108 322,-108 322,-72 396,-72 396,-108"/>
+<text text-anchor="middle" x="359" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="359" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_2]</text>
 </g>
 <g class="m-edge">
-<title>p0x7fe910000d00&#45;&gt;p0x7fe910000c48</title>
-<path d="M358.65,-240.76C354.29,-232.28 348.85,-221.71 343.96,-212.2"/>
-<polygon points="346.99,-210.44 339.3,-203.15 340.77,-213.64 346.99,-210.44"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe910000db8</title>
-<ellipse cx="295" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="295" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe910000db8&#45;&gt;p0x7fe910000c48</title>
-<path d="M303.35,-240.76C307.71,-232.28 313.15,-221.71 318.04,-212.2"/>
-<polygon points="321.23,-213.64 322.7,-203.15 315.01,-210.44 321.23,-213.64"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000c48</title>
-<ellipse cx="166" cy="-114" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-111.5" font-family="Helvetica,sans-Serif" font-size="10.00">3</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe918000c48&#45;&gt;p0xa445c0</title>
-<path d="M182.2,-99.17C194.18,-88.94 210.69,-74.85 224.18,-63.34"/>
-<polygon points="226.78,-65.72 232.11,-56.56 222.23,-60.39 226.78,-65.72"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000d00</title>
-<ellipse cx="166" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="166" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe918000d00&#45;&gt;p0x7fe918000c48</title>
-<path d="M166,-167.7C166,-159.98 166,-150.71 166,-142.11"/>
-<polygon points="169.5,-142.1 166,-132.1 162.5,-142.1 169.5,-142.1"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000e70</title>
-<ellipse cx="201" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="201" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe918000e70&#45;&gt;p0x7fe918000d00</title>
-<path d="M192.88,-240.76C188.7,-232.4 183.51,-222.02 178.8,-212.61"/>
-<polygon points="181.92,-211.01 174.32,-203.63 175.66,-214.14 181.92,-211.01"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000f28</title>
-<ellipse cx="129" cy="-258" rx="27" ry="18"/>
-<text text-anchor="middle" x="129" y="-255.5" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe918000f28&#45;&gt;p0x7fe918000d00</title>
-<path d="M137.58,-240.76C142.06,-232.28 147.65,-221.71 152.68,-212.2"/>
-<polygon points="155.89,-213.62 157.46,-203.15 149.7,-210.35 155.89,-213.62"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7fe918000db8</title>
-<ellipse cx="59" cy="-186" rx="27" ry="18"/>
-<text text-anchor="middle" x="59" y="-183.5" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7fe918000db8&#45;&gt;p0x7fe918000c48</title>
-<path d="M75.07,-171.31C79.78,-167.51 85,-163.47 90,-160 104.88,-149.67 122.21,-139.3 136.56,-131.11"/>
-<polygon points="138.51,-134.03 145.5,-126.07 135.07,-127.93 138.51,-134.03"/>
+<title>F2_2&#45;&gt;F0_2</title>
+<path d="M289.74,-143.7C301.44,-134.8 315.86,-123.82 328.51,-114.2"/>
+<polygon points="330.68,-116.94 336.52,-108.1 326.44,-111.37 330.68,-116.94"/>
 </g>
 </g>
 </svg>
-</div><p>Even if recursive dynamic tasking or subflows are possible, the recursion depth may not be too deep or it can cause stack overflow.</p></section>
+</div></section><section id="TailRecursionOptimization"><h2><a href="#TailRecursionOptimization">Tail Recursion Optimization</a></h2><p>In recursive parallelism, especially for problems like Fibonacci computation, spawning both recursive branches as asynchronous tasks can lead to excessive task creation and stack growth, which may degrade performance and overwhelm the runtime scheduler. Additionally, when both child tasks are launched asynchronously, the parent task must wait for both to finish, potentially blocking a worker thread and reducing parallel throughput. To address these issues, we apply tail recursion optimization to one branch of the Fibonacci call. This allows one of the recursive calls to proceed immediately in the current execution context, reducing both scheduling overhead and stack usage.</p><pre class="m-code"><span class="kt">size_t</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">N</span><span class="p">;</span><span class="w"> </span>
+
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res1</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt1</span><span class="p">){</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacii</span><span class="p">(</span><span class="n">N</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">rt1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// tail optimization for the right child</span>
+<span class="w">  </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span><span class="n">rt</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// use corun to avoid blocking the worker from waiting the two children tasks to finish</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="p">}</span></pre><p>The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime. As we can see, the right child is optimized out through tail recursion optimization.</p><div class="m-graph"><svg style="width: 40.400rem; height: 26.000rem;" viewBox="0.00 0.00 404.00 260.00">
+<g transform="scale(1 1) rotate(0) translate(4 256)">
+<title>Fibonacci</title>
+<g class="m-node m-flat">
+<title>F4</title>
+<polygon points="258,-252 184,-252 184,-216 258,-216 258,-252"/>
+<text text-anchor="middle" x="221" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
+<text text-anchor="middle" x="221" y="-226" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+</g>
+<g class="m-node m-flat">
+<title>F3_1</title>
+<polygon points="212,-180 138,-180 138,-144 212,-144 212,-180"/>
+<text text-anchor="middle" x="175" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
+<text text-anchor="middle" x="175" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+</g>
+<g class="m-edge">
+<title>F4&#45;&gt;F3_1</title>
+<path d="M209.63,-215.7C204.28,-207.56 197.8,-197.69 191.89,-188.7"/>
+<polygon points="194.66,-186.54 186.24,-180.1 188.81,-190.38 194.66,-186.54"/>
+</g>
+<g class="m-node m-flat">
+<title>F2_2</title>
+<polygon points="304,-180 230,-180 230,-144 304,-144 304,-180"/>
+<text text-anchor="middle" x="267" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="267" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+</g>
+<g class="m-edge">
+<title>F4&#45;&gt;F2_2</title>
+<path d="M232.37,-215.7C237.72,-207.56 244.2,-197.69 250.11,-188.7"/>
+<polygon points="253.19,-190.38 255.76,-180.1 247.34,-186.54 253.19,-190.38"/>
+</g>
+<g class="m-node m-flat">
+<title>F2_1</title>
+<polygon points="120,-108 46,-108 46,-72 120,-72 120,-108"/>
+<text text-anchor="middle" x="83" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="83" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+</g>
+<g class="m-edge">
+<title>F3_1&#45;&gt;F2_1</title>
+<path d="M152.26,-143.7C140.56,-134.8 126.14,-123.82 113.49,-114.2"/>
+<polygon points="115.56,-111.37 105.48,-108.1 111.32,-116.94 115.56,-111.37"/>
+</g>
+<g class="m-node m-flat">
+<title>F1_2</title>
+<polygon points="212,-108 138,-108 138,-72 212,-72 212,-108"/>
+<text text-anchor="middle" x="175" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="175" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+</g>
+<g class="m-edge">
+<title>F3_1&#45;&gt;F1_2</title>
+<path d="M175,-143.7C175,-135.98 175,-126.71 175,-118.11"/>
+<polygon points="178.5,-118.1 175,-108.1 171.5,-118.1 178.5,-118.1"/>
+</g>
+<g class="m-node m-flat">
+<title>F1_1</title>
+<polygon points="74,-36 0,-36 0,0 74,0 74,-36"/>
+<text text-anchor="middle" x="37" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="37" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
+</g>
+<g class="m-edge">
+<title>F2_1&#45;&gt;F1_1</title>
+<path d="M71.63,-71.7C66.28,-63.56 59.8,-53.69 53.89,-44.7"/>
+<polygon points="56.66,-42.54 48.24,-36.1 50.81,-46.38 56.66,-42.54"/>
+</g>
+<g class="m-node m-flat">
+<title>F0_1</title>
+<polygon points="166,-36 92,-36 92,0 166,0 166,-36"/>
+<text text-anchor="middle" x="129" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="129" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+</g>
+<g class="m-edge">
+<title>F2_1&#45;&gt;F0_1</title>
+<path d="M94.37,-71.7C99.72,-63.56 106.2,-53.69 112.11,-44.7"/>
+<polygon points="115.19,-46.38 117.76,-36.1 109.34,-42.54 115.19,-46.38"/>
+</g>
+<g class="m-node m-flat">
+<title>F1_3</title>
+<polygon points="304,-108 230,-108 230,-72 304,-72 304,-108"/>
+<text text-anchor="middle" x="267" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="267" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+</g>
+<g class="m-edge">
+<title>F2_2&#45;&gt;F1_3</title>
+<path d="M267,-143.7C267,-135.98 267,-126.71 267,-118.11"/>
+<polygon points="270.5,-118.1 267,-108.1 263.5,-118.1 270.5,-118.1"/>
+</g>
+<g class="m-node m-flat">
+<title>F0_2</title>
+<polygon points="396,-108 322,-108 322,-72 396,-72 396,-108"/>
+<text text-anchor="middle" x="359" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="359" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+</g>
+<g class="m-edge">
+<title>F2_2&#45;&gt;F0_2</title>
+<path d="M289.74,-143.7C301.44,-134.8 315.86,-123.82 328.51,-114.2"/>
+<polygon points="330.68,-116.94 336.52,-108.1 326.44,-111.37 330.68,-116.94"/>
+</g>
+</g>
+</svg>
+</div></section>
       </div>
     </div>
   </div>

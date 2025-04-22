@@ -301,7 +301,9 @@ T UnboundedTaskQueue<T>::steal_with_hint(size_t& num_empty_steals) {
       return nullptr;
     }
   }
-  ++num_empty_steals;
+  else {
+    ++num_empty_steals;
+  }
   return item;
 }
 
@@ -578,7 +580,9 @@ T BoundedTaskQueue<T, LogSize>::steal_with_hint(size_t& num_empty_steals) {
       return nullptr;
     }
   }
-  ++num_empty_steals;
+  else {
+    ++num_empty_steals;
+  }
   return item;
 }
 

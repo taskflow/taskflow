@@ -518,6 +518,11 @@ class Executor {
   size_t num_workers() const noexcept;
   
   /**
+  @brief queries the number of workers that are currently not making any stealing attempts
+  */
+  size_t num_waiters() const noexcept;
+  
+  /**
   @brief queries the number of queues used in the work-stealing loop
   */
   size_t num_queues() const noexcept;
@@ -1173,6 +1178,11 @@ inline Executor::~Executor() {
 // Function: num_workers
 inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
+}
+
+// Function: num_waiters
+inline size_t Executor::num_waiters() const noexcept {
+  return _notifier.num_waiters();
 }
 
 // Function: num_queues

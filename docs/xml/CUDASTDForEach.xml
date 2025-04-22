@@ -40,7 +40,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Each iteration <computeroutput>i</computeroutput> is independent of each other and is assigned one kernel thread to run the callable. The following example creates a kernel that assigns each entry of <computeroutput>data</computeroutput> to 1 over the range <computeroutput></computeroutput>[0, 100) with step size 1.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::cudaDefaultExecutionPolicy<sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(100);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>100)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>
@@ -61,7 +61,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The two iterators, <computeroutput>first</computeroutput> and <computeroutput>last</computeroutput>, are typically two raw pointers to the first element and the next to the last element in the range in GPU memory space. The following example creates a <computeroutput>for_each</computeroutput> kernel that assigns each element in <computeroutput>gpu_data</computeroutput> to 1 over the range <computeroutput>[data, data + 1000)</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">tf::cudaDefaultExecutionPolicy</ref><sp/>policy;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::cudaDefaultExecutionPolicy<sp/>policy;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>data<sp/>=<sp/>tf::cuda_malloc_shared&lt;int&gt;(1000);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>assigns<sp/>each<sp/>element<sp/>in<sp/>data<sp/>to<sp/>1<sp/>over<sp/>the<sp/>range<sp/>[0,<sp/>1000)<sp/>with<sp/>step<sp/>size<sp/>1</highlight><highlight class="normal"></highlight></codeline>

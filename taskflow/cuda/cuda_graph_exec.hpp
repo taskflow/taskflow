@@ -353,6 +353,9 @@ void cudaGraphExecBase<Creator, Deleter>::zero(cudaTask task, T* dst, size_t cou
 // forward declaration
 //-------------------------------------------------------------------------------------------------
 
+/**
+@private
+*/
 template <typename SC, typename SD>
 cudaStreamBase<SC, SD>& cudaStreamBase<SC, SD>::run(cudaGraphExec_t exec) {
   TF_CHECK_CUDA(
@@ -361,6 +364,9 @@ cudaStreamBase<SC, SD>& cudaStreamBase<SC, SD>::run(cudaGraphExec_t exec) {
   return *this;
 }
 
+/**
+@private
+*/
 template <typename SC, typename SD>
 template <typename EC, typename ED>
 cudaStreamBase<SC, SD>& cudaStreamBase<SC, SD>::run(const cudaGraphExecBase<EC, ED>& exec) {

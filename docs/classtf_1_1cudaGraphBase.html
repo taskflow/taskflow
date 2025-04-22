@@ -182,14 +182,14 @@
             </dt>
             <dd>runs a callable with only a single kernel thread</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename I, typename C, typename E = cudaDefaultExecutionPolicy&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a09aea268c4a0e94e750ae57088674d34" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">I first,
               I last,
               C callable) -&gt; <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a></span>
             </dt>
             <dd>applies a callable to each dereferenced element of the data array</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename I, typename C, typename E = cudaDefaultExecutionPolicy&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#acc2126d8237fe3ef59a1a6943cbf1aa0" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">I first,
               I last,
               I step,
@@ -197,7 +197,7 @@
             </dt>
             <dd>applies a callable to each index in the range with the step size</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename I, typename O, typename C, typename E = cudaDefaultExecutionPolicy&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ab2603e952d8e5bc53cc1fc76df2b843f" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
               O output,
@@ -205,7 +205,7 @@
             </dt>
             <dd>applies a callable to a source range and stores the result in a target range</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename I1, typename I2, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#ac4f81fa07cf1d55597154f125b66314a" class="m-doc">transform</a>(</span><span class="m-doc-wrap">I1 first1,
               I1 last1,
               I2 first2,
@@ -629,7 +629,7 @@
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
-                template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;
+                template&lt;typename I, typename C, typename E = cudaDefaultExecutionPolicy&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaGraphBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a09aea268c4a0e94e750ae57088674d34" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -651,7 +651,7 @@
                 </tr>
                 <tr>
                   <td>E</td>
-                  <td>execution poligy (default <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">tf::<wbr />cudaDefaultExecutionPolicy</a>)</td>
+                  <td>execution poligy (default tf::cudaDefaultExecutionPolicy)</td>
                 </tr>
               </tbody>
               <thead>
@@ -686,7 +686,7 @@
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
-                template&lt;typename I, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;
+                template&lt;typename I, typename C, typename E = cudaDefaultExecutionPolicy&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaGraphBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acc2126d8237fe3ef59a1a6943cbf1aa0" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -709,7 +709,7 @@
                 </tr>
                 <tr>
                   <td>E</td>
-                  <td>execution poligy (default <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">tf::<wbr />cudaDefaultExecutionPolicy</a>)</td>
+                  <td>execution poligy (default tf::cudaDefaultExecutionPolicy)</td>
                 </tr>
               </tbody>
               <thead>
@@ -754,7 +754,7 @@
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
-                template&lt;typename I, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;
+                template&lt;typename I, typename O, typename C, typename E = cudaDefaultExecutionPolicy&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaGraphBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ab2603e952d8e5bc53cc1fc76df2b843f" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I first,
               I last,
@@ -781,7 +781,7 @@
                 </tr>
                 <tr>
                   <td>E</td>
-                  <td>execution poligy (default <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">tf::<wbr />cudaDefaultExecutionPolicy</a>)</td>
+                  <td>execution poligy (default tf::cudaDefaultExecutionPolicy)</td>
                 </tr>
               </tbody>
               <thead>
@@ -820,7 +820,7 @@
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
-                template&lt;typename I1, typename I2, typename O, typename C, typename E = <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">cudaDefaultExecutionPolicy</a>&gt;
+                template&lt;typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> tf::<wbr />cudaGraphBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac4f81fa07cf1d55597154f125b66314a" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">I1 first1,
               I1 last1,
@@ -852,7 +852,7 @@
                 </tr>
                 <tr>
                   <td>E</td>
-                  <td>execution poligy (default <a href="namespacetf.html#a0e267ab3e1baeb1962f3b3a374de9553" class="m-doc">tf::<wbr />cudaDefaultExecutionPolicy</a>)</td>
+                  <td>execution poligy (default tf::cudaDefaultExecutionPolicy)</td>
                 </tr>
               </tbody>
               <thead>
