@@ -25,10 +25,10 @@ size_t spawn_async1(size_t num_fibonacci) {
     res1 = spawn_async1(num_fibonacci-1); 
   });
 
-  executor.silent_async([num_fibonacci, &res2](){
-    res2 = spawn_async1(num_fibonacci-2); 
-  });
-  //res2 = fibonacci_taskflow(num_fibonacci-2);
+  //executor.silent_async([num_fibonacci, &res2](){
+  //  res2 = spawn_async1(num_fibonacci-2); 
+  //});
+  res2 = spawn_async1(num_fibonacci-2);
 
   executor.wait_for_all();
 
