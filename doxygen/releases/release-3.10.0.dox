@@ -46,6 +46,7 @@ It also introduces index-range-based parallel-for and parallel-reduction algorit
 + optimized work-stealing loop with an adaptive breaking strategy
 + optimized shut-down signal detection using decentralized variables
 + optimized memory layout of node by combining successors and predecessors together
++ changed the default notifier to use the atomic notification algorithm under C++20
 + added debug mode for the windows CI to GitHub actions
 + added index range-based parallel-for algorithm ([#551](https://github.com/taskflow/taskflow/issues/551))
 
@@ -92,6 +93,7 @@ taskflow.reduce_by_index(
 
 + added `static` keyword to the executor creation in taskflow benchmarks
 + added waiter test for detecting oversubscription problems
++ added tf::Executor::num_waiters (C++20 only) for querying the number of non-stealing workers
 
 @subsection release-3-10-0_utilities Utilities
 
@@ -145,6 +147,23 @@ executor.run(taskflow).wait();
 taskflow.dump(std::cout);
 @endcode
 
++ disabled the support for tf::cudaFlow and tf::cudaFlowCapturer
+  + introduced a cleaner interface tf::cudaGraph directly atop @cudaGraph (see @ref GPUTasking)
+  + tf::cudaGraph has similar interface to tf::cudaFlow and tf::cudaFlowCapturer
+
+
+@code{.cpp}
+// programming tf::cudaGraph is consistent with Nvidia CUDA Graph but offers a simpler 
+// and more intuitive interface by abstracting away low-level CUDA Graph boilerplate.
+tf::cudaGraph cg;
+cg.kernel(...);   // same as cudaFlow/cudaFlowCapturer
+
+// unlike cudaFlow/cudaFlowCapturer, you need to explicitly instantiate an executable 
+// CUDA graph now and submit it to a stream for execution
+tf::cudaGraphExec exec(cg);
+tf::cudaStream stream;
+stream.run(exec).synchronize();
+@endcode
 
 @section release-3-10-0_documentation Documentation
 

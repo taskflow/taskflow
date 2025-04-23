@@ -1182,7 +1182,13 @@ inline size_t Executor::num_workers() const noexcept {
 
 // Function: num_waiters
 inline size_t Executor::num_waiters() const noexcept {
+#if __cplusplus >= TF_CPP20
   return _notifier.num_waiters();
+#else
+  // Unfortunately, nonblocking notifier does not have an easy way to return
+  // the number of workers that are not making stealing attempts.
+  return 0;
+#endif
 }
 
 // Function: num_queues

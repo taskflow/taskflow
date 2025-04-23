@@ -1,0 +1,25 @@
+digraph R {
+  node [shape=rectangle];
+  
+  {rank=same f1_A f1_B f1_C}
+  {rank=same f2_A f2_B f2_C}
+  {rank=same f3_A f3_B f3_C}
+  
+  f1_A [label="f1(A)"];
+  f2_A [label="f2(A)"];
+  f3_A [label="f3(A)"];
+  f1_B [label="f1(B)"];
+  f2_B [label="f2(B)"];
+  f3_B [label="f3(B)"];
+  f1_C [label="f1(C)"];
+  f2_C [label="f2(C)"];
+  f3_C [label="f3(C)"];
+  
+ 
+  f1_A->f2_A->f3_A;
+  f1_B->f2_B->f3_B;
+  f1_C->f2_C->f3_C;
+  f1_A->f1_B->f1_C;
+  f2_A->f2_B->f2_C;
+  f3_A->f3_B->f3_C;
+}

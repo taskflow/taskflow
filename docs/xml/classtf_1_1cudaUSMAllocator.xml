@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaUSMAllocator" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaUSMAllocator</compoundname>
     <includes refid="cuda__memory_8hpp" local="no">taskflow/cuda/cuda_memory.hpp</includes>
@@ -9,12 +9,13 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1cudaUSMAllocator_1a4ab981d38c36112b589a3b67c510fc50" prot="public" static="no">
         <type>T</type>
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::value_type =  T</definition>
         <argsstring></argsstring>
         <name>value_type</name>
+        <qualifiedname>tf::cudaUSMAllocator::value_type</qualifiedname>
         <briefdescription>
 <para>element type </para>
         </briefdescription>
@@ -29,6 +30,7 @@
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::pointer =  T*</definition>
         <argsstring></argsstring>
         <name>pointer</name>
+        <qualifiedname>tf::cudaUSMAllocator::pointer</qualifiedname>
         <briefdescription>
 <para>element pointer type </para>
         </briefdescription>
@@ -43,6 +45,7 @@
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::reference =  T&amp;</definition>
         <argsstring></argsstring>
         <name>reference</name>
+        <qualifiedname>tf::cudaUSMAllocator::reference</qualifiedname>
         <briefdescription>
 <para>element reference type </para>
         </briefdescription>
@@ -57,6 +60,7 @@
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::const_pointer =  const T*</definition>
         <argsstring></argsstring>
         <name>const_pointer</name>
+        <qualifiedname>tf::cudaUSMAllocator::const_pointer</qualifiedname>
         <briefdescription>
 <para>const element pointer type </para>
         </briefdescription>
@@ -71,6 +75,7 @@
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::const_reference =  const T&amp;</definition>
         <argsstring></argsstring>
         <name>const_reference</name>
+        <qualifiedname>tf::cudaUSMAllocator::const_reference</qualifiedname>
         <briefdescription>
 <para>constant element reference type </para>
         </briefdescription>
@@ -81,10 +86,11 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="616" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="616" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaUSMAllocator_1a2d145987f7535219dcfe47ee6765b2ad" prot="public" static="no">
-        <type><ref refid="cpp/types/size_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
+        <type><ref refid="cpp/types/size_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::size_type =  std::size_t</definition>
         <argsstring></argsstring>
         <name>size_type</name>
+        <qualifiedname>tf::cudaUSMAllocator::size_type</qualifiedname>
         <briefdescription>
 <para>size type </para>
         </briefdescription>
@@ -95,10 +101,11 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="621" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="621" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaUSMAllocator_1aae5fff6eb8fd2e61f686d6e3ccb9ba9d" prot="public" static="no">
-        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
+        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
         <definition>using tf::cudaUSMAllocator&lt; T &gt;::difference_type =  std::ptrdiff_t</definition>
         <argsstring></argsstring>
         <name>difference_type</name>
+        <qualifiedname>tf::cudaUSMAllocator::difference_type</qualifiedname>
         <briefdescription>
 <para>pointer difference type </para>
         </briefdescription>
@@ -108,13 +115,14 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="626" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="626" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaUSMAllocator_1a10c30e951b3dab81261c26e91b0ec62b" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaUSMAllocator&lt; T &gt;::cudaUSMAllocator</definition>
         <argsstring>() noexcept</argsstring>
         <name>cudaUSMAllocator</name>
+        <qualifiedname>tf::cudaUSMAllocator::cudaUSMAllocator</qualifiedname>
         <briefdescription>
 <para>Constructs a device allocator object. </para>
         </briefdescription>
@@ -129,6 +137,7 @@
         <definition>tf::cudaUSMAllocator&lt; T &gt;::cudaUSMAllocator</definition>
         <argsstring>(const cudaUSMAllocator &amp;) noexcept</argsstring>
         <name>cudaUSMAllocator</name>
+        <qualifiedname>tf::cudaUSMAllocator::cudaUSMAllocator</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaUSMAllocator" kindref="compound">cudaUSMAllocator</ref> &amp;</type>
         </param>
@@ -151,6 +160,7 @@
         <definition>tf::cudaUSMAllocator&lt; T &gt;::cudaUSMAllocator</definition>
         <argsstring>(const cudaUSMAllocator&lt; U &gt; &amp;) noexcept</argsstring>
         <name>cudaUSMAllocator</name>
+        <qualifiedname>tf::cudaUSMAllocator::cudaUSMAllocator</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaUSMAllocator" kindref="compound">cudaUSMAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -168,6 +178,7 @@
         <definition>tf::cudaUSMAllocator&lt; T &gt;::~cudaUSMAllocator</definition>
         <argsstring>() noexcept</argsstring>
         <name>~cudaUSMAllocator</name>
+        <qualifiedname>tf::cudaUSMAllocator::~cudaUSMAllocator</qualifiedname>
         <briefdescription>
 <para>Destructs the device allocator object. </para>
         </briefdescription>
@@ -182,6 +193,7 @@
         <definition>pointer tf::cudaUSMAllocator&lt; T &gt;::address</definition>
         <argsstring>(reference x)</argsstring>
         <name>address</name>
+        <qualifiedname>tf::cudaUSMAllocator::address</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1ae700ece72b4eeb0f13f612455878f0a9" kindref="member">reference</ref></type>
           <declname>x</declname>
@@ -213,6 +225,7 @@
         <definition>const_pointer tf::cudaUSMAllocator&lt; T &gt;::address</definition>
         <argsstring>(const_reference x) const</argsstring>
         <name>address</name>
+        <qualifiedname>tf::cudaUSMAllocator::address</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1af5b1bd492a8de28eb75c136ee391b006" kindref="member">const_reference</ref></type>
           <declname>x</declname>
@@ -244,6 +257,7 @@
         <definition>pointer tf::cudaUSMAllocator&lt; T &gt;::allocate</definition>
         <argsstring>(size_type n, const void *=0)</argsstring>
         <name>allocate</name>
+        <qualifiedname>tf::cudaUSMAllocator::allocate</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1a2d145987f7535219dcfe47ee6765b2ad" kindref="member">size_type</ref></type>
           <declname>n</declname>
@@ -256,9 +270,9 @@
 <para>allocates block of storage. </para>
         </briefdescription>
         <detaileddescription>
-<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput>value_type</computeroutput>, and returns a pointer to the first element.</para>
-<para>The storage is aligned appropriately for object of type <computeroutput>value_type</computeroutput>, but they are not constructed.</para>
-<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
+<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput><ref refid="classtf_1_1cudaUSMAllocator_1a4ab981d38c36112b589a3b67c510fc50" kindref="member">value_type</ref></computeroutput>, and returns a pointer to the first element.</para>
+<para>The storage is aligned appropriately for object of type <computeroutput><ref refid="classtf_1_1cudaUSMAllocator_1a4ab981d38c36112b589a3b67c510fc50" kindref="member">value_type</ref></computeroutput>, but they are not constructed.</para>
+<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
@@ -281,6 +295,7 @@
         <definition>void tf::cudaUSMAllocator&lt; T &gt;::deallocate</definition>
         <argsstring>(pointer ptr, size_type)</argsstring>
         <name>deallocate</name>
+        <qualifiedname>tf::cudaUSMAllocator::deallocate</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1a580e704508e250311f4dce9c6413d900" kindref="member">pointer</ref></type>
           <declname>ptr</declname>
@@ -313,6 +328,7 @@
         <definition>size_type tf::cudaUSMAllocator&lt; T &gt;::max_size</definition>
         <argsstring>() const noexcept</argsstring>
         <name>max_size</name>
+        <qualifiedname>tf::cudaUSMAllocator::max_size</qualifiedname>
         <briefdescription>
 <para>returns the maximum number of elements that could potentially be allocated by this allocator </para>
         </briefdescription>
@@ -331,6 +347,7 @@
         <definition>void tf::cudaUSMAllocator&lt; T &gt;::construct</definition>
         <argsstring>(pointer ptr, const_reference val)</argsstring>
         <name>construct</name>
+        <qualifiedname>tf::cudaUSMAllocator::construct</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1a580e704508e250311f4dce9c6413d900" kindref="member">pointer</ref></type>
           <declname>ptr</declname>
@@ -348,7 +365,7 @@
 <parametername>ptr</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>pointer to a location with enough storage soace to contain an element of type <computeroutput>value_type</computeroutput> </para>
+<para>pointer to a location with enough storage soace to contain an element of type <computeroutput><ref refid="classtf_1_1cudaUSMAllocator_1a4ab981d38c36112b589a3b67c510fc50" kindref="member">value_type</ref></computeroutput> </para>
 </parameterdescription>
 </parameteritem>
 <parameteritem>
@@ -371,6 +388,7 @@
         <definition>void tf::cudaUSMAllocator&lt; T &gt;::destroy</definition>
         <argsstring>(pointer ptr)</argsstring>
         <name>destroy</name>
+        <qualifiedname>tf::cudaUSMAllocator::destroy</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaUSMAllocator_1a580e704508e250311f4dce9c6413d900" kindref="member">pointer</ref></type>
           <declname>ptr</declname>
@@ -405,6 +423,7 @@
         <definition>bool tf::cudaUSMAllocator&lt; T &gt;::operator==</definition>
         <argsstring>(const cudaUSMAllocator&lt; U &gt; &amp;) const noexcept</argsstring>
         <name>operator==</name>
+        <qualifiedname>tf::cudaUSMAllocator::operator==</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaUSMAllocator" kindref="compound">cudaUSMAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -428,6 +447,7 @@
         <definition>bool tf::cudaUSMAllocator&lt; T &gt;::operator!=</definition>
         <argsstring>(const cudaUSMAllocator&lt; U &gt; &amp;) const noexcept</argsstring>
         <name>operator!=</name>
+        <qualifiedname>tf::cudaUSMAllocator::operator!=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaUSMAllocator" kindref="compound">cudaUSMAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -441,7 +461,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="776" column="8" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="776" bodyend="778"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a unified shared memory (USM) allocator </para>
     </briefdescription>
@@ -455,7 +475,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-A cudaUSMAllocator enables using unified shared memory (USM) allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
+A cudaUSMAllocator enables using unified shared memory (USM) allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
     </detaileddescription>
     <location file="taskflow/cuda/cuda_memory.hpp" line="589" column="1" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="589" bodyend="780"/>
     <listofallmembers>

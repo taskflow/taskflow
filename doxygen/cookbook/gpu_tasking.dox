@@ -152,8 +152,7 @@ The code below creates a CUDA graph and runs it on GPU @c 2.
   // create a stream under GPU 2 and offload the capturer to that GPU
   tf::cudaStream stream;
   tf::cudaGraphExec exec(graph);
-  stream.run(exec)
-        .synchronize();
+  stream.run(exec).synchronize();
 }
 @endcode
 

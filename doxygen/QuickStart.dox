@@ -120,31 +120,6 @@ cond.precede(cond, stop);  // moves on to 'cond' on returning 0, or 'stop' on 1
 
 @dotfile images/conditional-tasking-1.dot
 
-@section QuickStartOffloadTasksToGPU Offload Tasks to a GPU
-
-%Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
-
-@code{.cpp}
-__global__ void saxpy(int n, float a, float *x, float *y) {
-  int i = blockIdx.x*blockDim.x + threadIdx.x;
-  if (i < n) {
-    y[i] = a*x[i] + y[i];
-  }
-}
-tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
-  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
-  tf::cudaTask saxpy = cf.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy)
-                         .name("saxpy");  // parameters to the saxpy kernel
-  saxpy.succeed(h2d_x, h2d_y)
-       .precede(d2h_x, d2h_y);
-}).name("cudaFlow");
-@endcode
-
-@dotfile images/saxpy_1_cudaflow.dot
-
 @section QuickStartComposeTaskGraphs Compose Task Graphs
 
 %Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.
@@ -194,30 +169,6 @@ executor.wait_for_all();
 
 
 
-@section QuickStartRunATaskflowThroughAnExecution Run a Taskflow through an Executor
-
-The executor provides several @em thread-safe methods to run a taskflow. 
-You can run a taskflow once, multiple times, or until a stopping criteria is met. 
-These methods are non-blocking with a @c tf::Future<void> return 
-to let you query the execution status. 
-
-@code{.cpp}
-// runs the taskflow once
-tf::Future<void> run_once = executor.run(taskflow); 
-
-// wait on this run to finish
-run_once.get();
-
-// run the taskflow four times
-executor.run_n(taskflow, 4);
-
-// runs the taskflow five times
-executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
-
-// blocks the executor until all submitted taskflows complete
-executor.wait_for_all();
-@endcode
-
 @section QuickStartLeverageStandardParallelAlgorithms Leverage Standard Parallel Algorithms
 
 %Taskflow defines algorithms for you to quickly express common parallel patterns
@@ -259,6 +210,62 @@ taskflow.composed_of(pl)
 executor.run(taskflow).wait();
 @endcode
 
+@section QuickStartRunATaskflowThroughAnExecution Run a Taskflow through an Executor
+
+The executor provides several @em thread-safe methods to run a taskflow. 
+You can run a taskflow once, multiple times, or until a stopping criteria is met. 
+These methods are non-blocking with a @c tf::Future<void> return 
+to let you query the execution status. 
+
+@code{.cpp}
+// runs the taskflow once
+tf::Future<void> run_once = executor.run(taskflow); 
+
+// wait on this run to finish
+run_once.get();
+
+// run the taskflow four times
+executor.run_n(taskflow, 4);
+
+// runs the taskflow five times
+executor.run_until(taskflow, [counter=5](){ return --counter == 0; });
+
+// blocks the executor until all submitted taskflows complete
+executor.wait_for_all();
+@endcode
+
+@section QuickStartOffloadTasksToGPU Offload Tasks to a GPU
+
+%Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using Nvidia CUDA Graph.
+
+@code{.cpp}
+__global__ void saxpy(int n, float a, float *x, float *y) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
+
+// create a CUDA %Gaph task
+tf::Task cudaflow = taskflow.emplace([&]() {
+  tf::cudaGraph cg;
+  tf::cudaTask h2d_x = cg.copy(dx, hx.data(), N);
+  tf::cudaTask h2d_y = cg.copy(dy, hy.data(), N);
+  tf::cudaTask d2h_x = cg.copy(hx.data(), dx, N);
+  tf::cudaTask d2h_y = cg.copy(hy.data(), dy, N);
+  tf::cudaTask saxpy = cg.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
+  saxpy.succeed(h2d_x, h2d_y)
+       .precede(d2h_x, d2h_y);
+  
+  // instantiate an executable CUDA graph and run it through a stream
+  tf::cudaGraphExec exec(cg);
+  tf::cudaStream stream;
+  stream.run(exec).synchronize();
+}).name("CUDA Graph Task");
+@endcode
+
+@dotfile images/saxpy_1_cudaflow.dot
+
 @section QuickStartVisualizeATaskflow Visualize Taskflow Graphs
 
 You can dump a taskflow graph to a DOT format and visualize it
@@ -268,11 +275,11 @@ using a number of free GraphViz tools such as @GraphVizOnline.
 @code{.cpp}
 tf::Taskflow taskflow;
 
-tf::Task A = taskflow.emplace([] () {}).name("A");
-tf::Task B = taskflow.emplace([] () {}).name("B");
-tf::Task C = taskflow.emplace([] () {}).name("C");
-tf::Task D = taskflow.emplace([] () {}).name("D");
-tf::Task E = taskflow.emplace([] () {}).name("E");
+tf::Task A = taskflow.emplace([](){}).name("A");
+tf::Task B = taskflow.emplace([](){}).name("B");
+tf::Task C = taskflow.emplace([](){}).name("C");
+tf::Task D = taskflow.emplace([](){}).name("D");
+tf::Task E = taskflow.emplace([](){}).name("E");
 A.precede(B, C, E);
 C.precede(D);
 B.precede(D, E);

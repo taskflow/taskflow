@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1DynamicPartitioner" kind="class" language="C++" prot="public">
     <compoundname>tf::DynamicPartitioner</compoundname>
     <basecompoundref refid="classtf_1_1PartitionerBase" prot="public" virt="non-virtual">tf::PartitionerBase&lt; DefaultClosureWrapper &gt;</basecompoundref>
@@ -10,12 +10,13 @@
         <defval><ref refid="structtf_1_1DefaultClosureWrapper" kindref="compound">DefaultClosureWrapper</ref></defval>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-static-func">
+    <sectiondef kind="public-static-func">
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1ab16dcd2758ad0059aa5ac7822f31f8a7" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>constexpr <ref refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" kindref="member">PartitionerType</ref></type>
+        <type><ref refid="namespacetf_1a32d51425fa23cd0dc3518c16cf3bb6c0" kindref="member">PartitionerType</ref></type>
         <definition>static constexpr PartitionerType tf::DynamicPartitioner&lt; C &gt;::type</definition>
         <argsstring>()</argsstring>
         <name>type</name>
+        <qualifiedname>tf::DynamicPartitioner::type</qualifiedname>
         <briefdescription>
 <para>queries the partition type (dynamic) </para>
         </briefdescription>
@@ -25,13 +26,14 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="443" column="36" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="443" bodyend="443"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1a2ff37845f4489df50f199f06a96590c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::DynamicPartitioner&lt; C &gt;::DynamicPartitioner</definition>
         <argsstring>()=default</argsstring>
         <name>DynamicPartitioner</name>
+        <qualifiedname>tf::DynamicPartitioner::DynamicPartitioner</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -46,6 +48,7 @@
         <definition>tf::DynamicPartitioner&lt; C &gt;::DynamicPartitioner</definition>
         <argsstring>(size_t sz)</argsstring>
         <name>DynamicPartitioner</name>
+        <qualifiedname>tf::DynamicPartitioner::DynamicPartitioner</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>sz</declname>
@@ -64,6 +67,7 @@
         <definition>tf::DynamicPartitioner&lt; C &gt;::DynamicPartitioner</definition>
         <argsstring>(size_t sz, C &amp;&amp;closure)</argsstring>
         <name>DynamicPartitioner</name>
+        <qualifiedname>tf::DynamicPartitioner::DynamicPartitioner</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>sz</declname>
@@ -81,8 +85,8 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="458" column="12" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="458" bodyend="460"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
+    </sectiondef>
+    <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1DynamicPartitioner_1afcb528d9e66380375fce8a7ae99b467f" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -97,6 +101,7 @@
         <definition>void tf::DynamicPartitioner&lt; C &gt;::loop</definition>
         <argsstring>(size_t N, size_t, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop</name>
+        <qualifiedname>tf::DynamicPartitioner::loop</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -105,7 +110,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -134,6 +139,7 @@
         <definition>void tf::DynamicPartitioner&lt; C &gt;::loop_until</definition>
         <argsstring>(size_t N, size_t, std::atomic&lt; size_t &gt; &amp;next, F &amp;&amp;func) const</argsstring>
         <name>loop_until</name>
+        <qualifiedname>tf::DynamicPartitioner::loop_until</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -142,7 +148,7 @@
           <type>size_t</type>
         </param>
         <param>
-          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
+          <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt; &amp;</type>
           <declname>next</declname>
         </param>
         <param>
@@ -157,7 +163,7 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="491" column="8" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="491" bodyend="504"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to construct a dynamic partitioner for scheduling parallel algorithms </para>
     </briefdescription>
@@ -173,13 +179,13 @@
 </parameterlist>
 The partitioner splits iterations into many partitions each of size equal to the given chunk size. Different partitions are distributed dynamically to workers without any specific order.</para>
 <para>In addition to partition size, the application can specify a closure wrapper for a dynamic partitioner. A closure wrapper allows the application to wrapper a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::atomic&lt;int&gt;<sp/><ref refid="cpp/algorithm/count" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" kindref="member">for_each_index</ref>(0,<sp/>100,<sp/>1,<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](){<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d\n&quot;</highlight><highlight class="normal">,<sp/>i);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1DynamicPartitioner" kindref="compound">tf::DynamicPartitioner</ref>(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::DynamicPartitioner(0,<sp/>[](</highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;&amp;<sp/>closure){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>something<sp/>before<sp/>invoking<sp/>the<sp/>partitioned<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
@@ -211,6 +217,10 @@ The partitioner splits iterations into many partitions each of size equal to the
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="4">
+        <label>tf::DefaultClosureWrapper</label>
+        <link refid="structtf_1_1DefaultClosureWrapper"/>
+      </node>
       <node id="1">
         <label>tf::DynamicPartitioner&lt; C &gt;</label>
         <link refid="classtf_1_1DynamicPartitioner"/>
@@ -225,6 +235,9 @@ The partitioner splits iterations into many partitions each of size equal to the
         <link refid="classtf_1_1PartitionerBase"/>
         <childnode refid="3" relation="public-inheritance">
         </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>_closure_wrapper</edgelabel>
+        </childnode>
       </node>
     </collaborationgraph>
     <location file="taskflow/algorithm/partitioner.hpp" line="436" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="436" bodyend="506"/>
@@ -233,17 +246,17 @@ The partitioner splits iterations into many partitions each of size equal to the
       <member refid="classtf_1_1PartitionerBase_1a9c5a8d350a913bea4c63d350e2bc9d1b" prot="protected" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>_closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1afa34299dea355738efa5684024d08215" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>chunk_size</name></member>
       <member refid="classtf_1_1PartitionerBase_1a481097aeb7ec62dcc23584eaa48cbce4" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>chunk_size</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a929714296243b2c63e4f2baa2025d380" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a55a519288850c6cca366d1020bb22efe" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a56cd2cc038e67d21e6676ab81fa3a8ad" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
+      <member refid="classtf_1_1PartitionerBase_1ab6397b18772820fafe6a613f906976ce" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a99e23ce7c0faf3a932ab2b7ac51e58f4" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper</name></member>
       <member refid="classtf_1_1PartitionerBase_1a2b6152f24c2a3d6e750349d02ecb4595" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>closure_wrapper_type</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1a2ff37845f4489df50f199f06a96590c8" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1ac1922e2796cba43d81e4567c9e2c0c76" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1a82c2ee7829e54b474e9b11e0944bc2cd" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>DynamicPartitioner</name></member>
-      <member refid="classtf_1_1PartitionerBase_1ae70ae77c8d774ffd661924f425bcd6bf" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>is_default_wrapper_v</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a196131eb17e7163f5fa8d9271d7aa701" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>is_default_wrapper_v</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1afcb528d9e66380375fce8a7ae99b467f" prot="private" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>loop</name></member>
       <member refid="classtf_1_1DynamicPartitioner_1abae632f23aeefe2cd91ca51b6b409d19" prot="private" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>loop_until</name></member>
-      <member refid="classtf_1_1PartitionerBase_1a3edb7ab5e21326d2ba78680aeb965a83" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>operator()</name></member>
+      <member refid="classtf_1_1PartitionerBase_1a27c56bac76df639c7bf30e6213c47776" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>operator()</name></member>
       <member refid="classtf_1_1PartitionerBase_1ad0037e70726a054527a923821ec2d95a" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a099464a339e09d9f6e4a59bec425c53a" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>PartitionerBase</name></member>
       <member refid="classtf_1_1PartitionerBase_1a9cf9f5400992c6d9bd4131b5af2b9e8e" prot="public" virt="non-virtual"><scope>tf::DynamicPartitioner</scope><name>PartitionerBase</name></member>

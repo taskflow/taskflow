@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaDeviceAllocator" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaDeviceAllocator</compoundname>
     <includes refid="cuda__memory_8hpp" local="no">taskflow/cuda/cuda_memory.hpp</includes>
@@ -9,12 +9,13 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1cudaDeviceAllocator_1a37039db4f27e849c44b361c6d107903c" prot="public" static="no">
         <type>T</type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::value_type =  T</definition>
         <argsstring></argsstring>
         <name>value_type</name>
+        <qualifiedname>tf::cudaDeviceAllocator::value_type</qualifiedname>
         <briefdescription>
 <para>element type </para>
         </briefdescription>
@@ -29,6 +30,7 @@
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::pointer =  T*</definition>
         <argsstring></argsstring>
         <name>pointer</name>
+        <qualifiedname>tf::cudaDeviceAllocator::pointer</qualifiedname>
         <briefdescription>
 <para>element pointer type </para>
         </briefdescription>
@@ -43,6 +45,7 @@
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::reference =  T&amp;</definition>
         <argsstring></argsstring>
         <name>reference</name>
+        <qualifiedname>tf::cudaDeviceAllocator::reference</qualifiedname>
         <briefdescription>
 <para>element reference type </para>
         </briefdescription>
@@ -57,6 +60,7 @@
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::const_pointer =  const T*</definition>
         <argsstring></argsstring>
         <name>const_pointer</name>
+        <qualifiedname>tf::cudaDeviceAllocator::const_pointer</qualifiedname>
         <briefdescription>
 <para>const element pointer type </para>
         </briefdescription>
@@ -71,6 +75,7 @@
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::const_reference =  const T&amp;</definition>
         <argsstring></argsstring>
         <name>const_reference</name>
+        <qualifiedname>tf::cudaDeviceAllocator::const_reference</qualifiedname>
         <briefdescription>
 <para>constant element reference type </para>
         </briefdescription>
@@ -81,10 +86,11 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="420" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="420" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaDeviceAllocator_1ac4b1781c2f116866927701d931bf8852" prot="public" static="no">
-        <type><ref refid="cpp/types/size_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
+        <type><ref refid="cpp/types/size_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::size_t</ref></type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::size_type =  std::size_t</definition>
         <argsstring></argsstring>
         <name>size_type</name>
+        <qualifiedname>tf::cudaDeviceAllocator::size_type</qualifiedname>
         <briefdescription>
 <para>size type </para>
         </briefdescription>
@@ -95,10 +101,11 @@
         <location file="taskflow/cuda/cuda_memory.hpp" line="425" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="425" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1cudaDeviceAllocator_1aaacd3b516ceaa9468e40dcf1a048a453" prot="public" static="no">
-        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
+        <type><ref refid="cpp/types/ptrdiff_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ptrdiff_t</ref></type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::difference_type =  std::ptrdiff_t</definition>
         <argsstring></argsstring>
         <name>difference_type</name>
+        <qualifiedname>tf::cudaDeviceAllocator::difference_type</qualifiedname>
         <briefdescription>
 <para>pointer difference type </para>
         </briefdescription>
@@ -108,13 +115,14 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="430" column="3" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="430" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaDeviceAllocator_1a5db2fe60c59fe95ceee94392508f9f82" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaDeviceAllocator&lt; T &gt;::cudaDeviceAllocator</definition>
         <argsstring>() noexcept</argsstring>
         <name>cudaDeviceAllocator</name>
+        <qualifiedname>tf::cudaDeviceAllocator::cudaDeviceAllocator</qualifiedname>
         <briefdescription>
 <para>Constructs a device allocator object. </para>
         </briefdescription>
@@ -129,6 +137,7 @@
         <definition>tf::cudaDeviceAllocator&lt; T &gt;::cudaDeviceAllocator</definition>
         <argsstring>(const cudaDeviceAllocator &amp;) noexcept</argsstring>
         <name>cudaDeviceAllocator</name>
+        <qualifiedname>tf::cudaDeviceAllocator::cudaDeviceAllocator</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaDeviceAllocator" kindref="compound">cudaDeviceAllocator</ref> &amp;</type>
         </param>
@@ -151,6 +160,7 @@
         <definition>tf::cudaDeviceAllocator&lt; T &gt;::cudaDeviceAllocator</definition>
         <argsstring>(const cudaDeviceAllocator&lt; U &gt; &amp;) noexcept</argsstring>
         <name>cudaDeviceAllocator</name>
+        <qualifiedname>tf::cudaDeviceAllocator::cudaDeviceAllocator</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaDeviceAllocator" kindref="compound">cudaDeviceAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -168,6 +178,7 @@
         <definition>tf::cudaDeviceAllocator&lt; T &gt;::~cudaDeviceAllocator</definition>
         <argsstring>() noexcept</argsstring>
         <name>~cudaDeviceAllocator</name>
+        <qualifiedname>tf::cudaDeviceAllocator::~cudaDeviceAllocator</qualifiedname>
         <briefdescription>
 <para>Destructs the device allocator object. </para>
         </briefdescription>
@@ -182,6 +193,7 @@
         <definition>pointer tf::cudaDeviceAllocator&lt; T &gt;::address</definition>
         <argsstring>(reference x)</argsstring>
         <name>address</name>
+        <qualifiedname>tf::cudaDeviceAllocator::address</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1aef9d9622074af9b3ce50b5a63346998b" kindref="member">reference</ref></type>
           <declname>x</declname>
@@ -213,6 +225,7 @@
         <definition>const_pointer tf::cudaDeviceAllocator&lt; T &gt;::address</definition>
         <argsstring>(const_reference x) const</argsstring>
         <name>address</name>
+        <qualifiedname>tf::cudaDeviceAllocator::address</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1a449d07320a94b00d4b09fa0f4e1ce399" kindref="member">const_reference</ref></type>
           <declname>x</declname>
@@ -244,6 +257,7 @@
         <definition>pointer tf::cudaDeviceAllocator&lt; T &gt;::allocate</definition>
         <argsstring>(size_type n, const void *=0)</argsstring>
         <name>allocate</name>
+        <qualifiedname>tf::cudaDeviceAllocator::allocate</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1ac4b1781c2f116866927701d931bf8852" kindref="member">size_type</ref></type>
           <declname>n</declname>
@@ -256,9 +270,9 @@
 <para>allocates block of storage. </para>
         </briefdescription>
         <detaileddescription>
-<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput>value_type</computeroutput>, and returns a pointer to the first element.</para>
-<para>The storage is aligned appropriately for object of type <computeroutput>value_type</computeroutput>, but they are not constructed.</para>
-<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
+<para>Attempts to allocate a block of storage with a size large enough to contain <computeroutput>n</computeroutput> elements of member type, <computeroutput><ref refid="classtf_1_1cudaDeviceAllocator_1a37039db4f27e849c44b361c6d107903c" kindref="member">value_type</ref></computeroutput>, and returns a pointer to the first element.</para>
+<para>The storage is aligned appropriately for object of type <computeroutput><ref refid="classtf_1_1cudaDeviceAllocator_1a37039db4f27e849c44b361c6d107903c" kindref="member">value_type</ref></computeroutput>, but they are not constructed.</para>
+<para>The block of storage is allocated using cudaMalloc and throws <ref refid="cpp/memory/new/bad_alloc" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::bad_alloc</ref> if it cannot allocate the total amount of storage requested.</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>n</parametername>
@@ -281,6 +295,7 @@
         <definition>void tf::cudaDeviceAllocator&lt; T &gt;::deallocate</definition>
         <argsstring>(pointer ptr, size_type)</argsstring>
         <name>deallocate</name>
+        <qualifiedname>tf::cudaDeviceAllocator::deallocate</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1a68c29bda337094fcb9fc6f3e9445ca9c" kindref="member">pointer</ref></type>
           <declname>ptr</declname>
@@ -313,6 +328,7 @@
         <definition>size_type tf::cudaDeviceAllocator&lt; T &gt;::max_size</definition>
         <argsstring>() const noexcept</argsstring>
         <name>max_size</name>
+        <qualifiedname>tf::cudaDeviceAllocator::max_size</qualifiedname>
         <briefdescription>
 <para>returns the maximum number of elements that could potentially be allocated by this allocator </para>
         </briefdescription>
@@ -331,6 +347,7 @@
         <definition>void tf::cudaDeviceAllocator&lt; T &gt;::construct</definition>
         <argsstring>(pointer, const_reference)</argsstring>
         <name>construct</name>
+        <qualifiedname>tf::cudaDeviceAllocator::construct</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1a68c29bda337094fcb9fc6f3e9445ca9c" kindref="member">pointer</ref></type>
         </param>
@@ -351,6 +368,7 @@
         <definition>void tf::cudaDeviceAllocator&lt; T &gt;::destroy</definition>
         <argsstring>(pointer)</argsstring>
         <name>destroy</name>
+        <qualifiedname>tf::cudaDeviceAllocator::destroy</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaDeviceAllocator_1a68c29bda337094fcb9fc6f3e9445ca9c" kindref="member">pointer</ref></type>
         </param>
@@ -373,6 +391,7 @@
         <definition>bool tf::cudaDeviceAllocator&lt; T &gt;::operator==</definition>
         <argsstring>(const cudaDeviceAllocator&lt; U &gt; &amp;) const noexcept</argsstring>
         <name>operator==</name>
+        <qualifiedname>tf::cudaDeviceAllocator::operator==</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaDeviceAllocator" kindref="compound">cudaDeviceAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -396,6 +415,7 @@
         <definition>bool tf::cudaDeviceAllocator&lt; T &gt;::operator!=</definition>
         <argsstring>(const cudaDeviceAllocator&lt; U &gt; &amp;) const noexcept</argsstring>
         <name>operator!=</name>
+        <qualifiedname>tf::cudaDeviceAllocator::operator!=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaDeviceAllocator" kindref="compound">cudaDeviceAllocator</ref>&lt; U &gt; &amp;</type>
         </param>
@@ -409,7 +429,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="567" column="8" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="567" bodyend="569"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a CUDA device allocator </para>
     </briefdescription>
@@ -423,7 +443,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-A cudaDeviceAllocator enables device-specific allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
+A cudaDeviceAllocator enables device-specific allocation for standard library containers. It is typically passed as template parameter when declaring standard library containers (e.g. <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>). </para>
     </detaileddescription>
     <location file="taskflow/cuda/cuda_memory.hpp" line="393" column="1" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="393" bodyend="571"/>
     <listofallmembers>

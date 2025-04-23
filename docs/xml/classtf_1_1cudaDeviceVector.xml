@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaDeviceVector" kind="class" language="C++" prot="private">
     <compoundname>tf::cudaDeviceVector</compoundname>
     <templateparamlist>
@@ -7,12 +7,13 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="private-attrib">
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1cudaDeviceVector_1a52da84c77829a1ea261fc187ef2e474e" prot="private" static="no" mutable="no">
         <type>T *</type>
         <definition>T* tf::cudaDeviceVector&lt; T &gt;::_data</definition>
         <argsstring></argsstring>
         <name>_data</name>
+        <qualifiedname>tf::cudaDeviceVector::_data</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -20,13 +21,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_memory.hpp" line="844" column="7" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="844" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_memory.hpp" line="844" column="7" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="844" bodyend="844"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1cudaDeviceVector_1a4637a4ea042aa8e3c2b7be1e5ed3ce84" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::cudaDeviceVector&lt; T &gt;::_N</definition>
         <argsstring></argsstring>
         <name>_N</name>
+        <qualifiedname>tf::cudaDeviceVector::_N</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
@@ -34,15 +36,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_memory.hpp" line="845" column="12" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="845" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_memory.hpp" line="845" column="12" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="845" bodyend="845"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a7783ef6aed9b7872d22f5f9127887206" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaDeviceVector&lt; T &gt;::cudaDeviceVector</definition>
         <argsstring>()=default</argsstring>
         <name>cudaDeviceVector</name>
+        <qualifiedname>tf::cudaDeviceVector::cudaDeviceVector</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -56,6 +59,7 @@
         <definition>tf::cudaDeviceVector&lt; T &gt;::cudaDeviceVector</definition>
         <argsstring>(size_t N)</argsstring>
         <name>cudaDeviceVector</name>
+        <qualifiedname>tf::cudaDeviceVector::cudaDeviceVector</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>N</declname>
@@ -73,6 +77,7 @@
         <definition>tf::cudaDeviceVector&lt; T &gt;::cudaDeviceVector</definition>
         <argsstring>(cudaDeviceVector &amp;&amp;rhs)</argsstring>
         <name>cudaDeviceVector</name>
+        <qualifiedname>tf::cudaDeviceVector::cudaDeviceVector</qualifiedname>
         <param>
           <type>cudaDeviceVector &amp;&amp;</type>
           <declname>rhs</declname>
@@ -90,6 +95,7 @@
         <definition>tf::cudaDeviceVector&lt; T &gt;::~cudaDeviceVector</definition>
         <argsstring>()</argsstring>
         <name>~cudaDeviceVector</name>
+        <qualifiedname>tf::cudaDeviceVector::~cudaDeviceVector</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -98,11 +104,12 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="817" column="5" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="817" bodyend="821"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a17cde55e1a5c2e1c9ca8cdbb39e03e09" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a68d45dfab0229735a136ea693bcb29f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaDeviceVector &amp;</type>
-        <definition>cudaDeviceVector&amp; tf::cudaDeviceVector&lt; T &gt;::operator=</definition>
+        <definition>cudaDeviceVector &amp; tf::cudaDeviceVector&lt; T &gt;::operator=</definition>
         <argsstring>(cudaDeviceVector &amp;&amp;rhs)</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::cudaDeviceVector::operator=</qualifiedname>
         <param>
           <type>cudaDeviceVector &amp;&amp;</type>
           <declname>rhs</declname>
@@ -120,6 +127,7 @@
         <definition>size_t tf::cudaDeviceVector&lt; T &gt;::size</definition>
         <argsstring>() const</argsstring>
         <name>size</name>
+        <qualifiedname>tf::cudaDeviceVector::size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -128,11 +136,12 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="834" column="12" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="834" bodyend="834"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a6749e3c50f6e1b0a2a76bd65f8408a06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a0dd4d9925aeee01744eb7db3791290c0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>T *</type>
-        <definition>T* tf::cudaDeviceVector&lt; T &gt;::data</definition>
+        <definition>T * tf::cudaDeviceVector&lt; T &gt;::data</definition>
         <argsstring>()</argsstring>
         <name>data</name>
+        <qualifiedname>tf::cudaDeviceVector::data</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -141,11 +150,12 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="836" column="7" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="836" bodyend="836"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1aa7044232a8a103673645081a5393791b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1abc73ffe0ba3a5786663c641add2c0bc4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const T *</type>
-        <definition>const T* tf::cudaDeviceVector&lt; T &gt;::data</definition>
+        <definition>const T * tf::cudaDeviceVector&lt; T &gt;::data</definition>
         <argsstring>() const</argsstring>
         <name>data</name>
+        <qualifiedname>tf::cudaDeviceVector::data</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -159,6 +169,7 @@
         <definition>tf::cudaDeviceVector&lt; T &gt;::cudaDeviceVector</definition>
         <argsstring>(const cudaDeviceVector &amp;)=delete</argsstring>
         <name>cudaDeviceVector</name>
+        <qualifiedname>tf::cudaDeviceVector::cudaDeviceVector</qualifiedname>
         <param>
           <type>const cudaDeviceVector &amp;</type>
         </param>
@@ -170,11 +181,12 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="839" column="5"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1aa00033a24c55fe15527b073b9e43c1bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaDeviceVector_1a59272d16acf20d11adbee5efb5d663df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>cudaDeviceVector &amp;</type>
-        <definition>cudaDeviceVector&amp; tf::cudaDeviceVector&lt; T &gt;::operator=</definition>
+        <definition>cudaDeviceVector &amp; tf::cudaDeviceVector&lt; T &gt;::operator=</definition>
         <argsstring>(const cudaDeviceVector &amp;)=delete</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::cudaDeviceVector::operator=</qualifiedname>
         <param>
           <type>const cudaDeviceVector &amp;</type>
         </param>
@@ -186,7 +198,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="840" column="22"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -199,10 +211,10 @@
       <member refid="classtf_1_1cudaDeviceVector_1a6d0daf9a0d45cb4827c0dd8e0d434ce3" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>cudaDeviceVector</name></member>
       <member refid="classtf_1_1cudaDeviceVector_1adf971821fec0d2817ca510ec8509612f" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>cudaDeviceVector</name></member>
       <member refid="classtf_1_1cudaDeviceVector_1a20cc8bd1758927a4cc116d0ecd7b8fb5" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>cudaDeviceVector</name></member>
-      <member refid="classtf_1_1cudaDeviceVector_1a6749e3c50f6e1b0a2a76bd65f8408a06" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>data</name></member>
-      <member refid="classtf_1_1cudaDeviceVector_1aa7044232a8a103673645081a5393791b" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>data</name></member>
-      <member refid="classtf_1_1cudaDeviceVector_1a17cde55e1a5c2e1c9ca8cdbb39e03e09" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>operator=</name></member>
-      <member refid="classtf_1_1cudaDeviceVector_1aa00033a24c55fe15527b073b9e43c1bf" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaDeviceVector_1a0dd4d9925aeee01744eb7db3791290c0" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>data</name></member>
+      <member refid="classtf_1_1cudaDeviceVector_1abc73ffe0ba3a5786663c641add2c0bc4" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>data</name></member>
+      <member refid="classtf_1_1cudaDeviceVector_1a68d45dfab0229735a136ea693bcb29f4" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaDeviceVector_1a59272d16acf20d11adbee5efb5d663df" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>operator=</name></member>
       <member refid="classtf_1_1cudaDeviceVector_1ab235c0e585e4b87ab9a2678fb4d79c3e" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>size</name></member>
       <member refid="classtf_1_1cudaDeviceVector_1a84682a01838130c1eb70d9da95f1d71f" prot="public" virt="non-virtual"><scope>tf::cudaDeviceVector</scope><name>~cudaDeviceVector</name></member>
     </listofallmembers>

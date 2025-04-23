@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="structtf_1_1cudaDeviceAllocator_1_1rebind" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaDeviceAllocator::rebind</compoundname>
     <includes refid="cuda__memory_8hpp" local="no">taskflow/cuda/cuda_memory.hpp</includes>
@@ -8,12 +8,13 @@
         <type>typename U</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="public-type">
+    <sectiondef kind="public-type">
       <memberdef kind="typedef" id="structtf_1_1cudaDeviceAllocator_1_1rebind_1a6d0799b927ce743f4fa174c6a9806282" prot="public" static="no">
         <type><ref refid="classtf_1_1cudaDeviceAllocator" kindref="compound">cudaDeviceAllocator</ref>&lt; U &gt;</type>
         <definition>using tf::cudaDeviceAllocator&lt; T &gt;::rebind&lt; U &gt;::other =  cudaDeviceAllocator&lt;U&gt;</definition>
         <argsstring></argsstring>
         <name>other</name>
+        <qualifiedname>tf::cudaDeviceAllocator::rebind::other</qualifiedname>
         <briefdescription>
 <para>allocator of a different data type </para>
         </briefdescription>
@@ -23,7 +24,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="440" column="5" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="440" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>its member type <computeroutput>U</computeroutput> is the equivalent allocator type to allocate elements of type U </para>
     </briefdescription>
