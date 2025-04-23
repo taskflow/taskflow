@@ -120,6 +120,12 @@ The taskflow graph is shown below:
 <!-- @image html images/fibonacci_10.svg width=100% -->
 @dotfile images/fibonacci_7.dot
 
+@attention
+Using tf::Subflow to implement recursive parallelism like finding Fibonacci numbers may not be 
+as efficient as tf::Runtime due to additional task graph overhead. 
+For more details, readers can refer to @ref fibonacci.
+
+
 @section CreateANestedSubflow Create a Nested Subflow
 
 A subflow can be nested or recursive.
@@ -160,9 +166,8 @@ Debrief:
 @li Lines 9-18 spawn another subflow of two tasks A2_1 and A2_2 out of its parent task A2
 @li Lines 23 runs the defined taskflow graph 
 
-@note
-In order to properly visualize subflows, you need to call tf::Subflow::retain and run
-the taskflow once to spawn its associated subflows.
+@attention
+To properly visualize subflows, you must call tf::Subflow::retain on each subflow and execute the taskflow once to ensure all associated subflows are spawned.
 
 */
 

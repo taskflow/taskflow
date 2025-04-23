@@ -52,7 +52,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Parallel workloads often require making control-flow decisions across dependent tasks. Taskflow supports a very efficient interface of conditional tasking for users to implement general control flow such as dynamic flow, cycles and conditionals that are otherwise difficult to do with existing frameworks.</para>
+<para>One of the most powerful features that distinguishes Taskflow from other systems is its <emphasis>conditional tasking interface</emphasis>, also known as the <emphasis>control taskflow programming model</emphasis> (CTFG). CTFG enables you to embed control flow directly into a taskflow graph, allowing tasks to make decisions dynamically during execution. This powerful mechanism supports advanced in-graph control-flow patterns, such as dynamic branching, loops, and conditionals that are typically difficult or impossible to express in traditional existing task graph models.</para>
 <sect1 id="ConditionalTasking_1CreateAConditionTask">
 <title>Create a Condition Task</title><para>A condition task evaluates a set of instructions and returns an integer index of the next successor task to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>

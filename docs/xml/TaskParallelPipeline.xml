@@ -138,7 +138,7 @@
 <listitem><para>Line 48 executes the taskflow</para>
 </listitem>
 </itemizedlist>
-Taskflow leverages <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref> and <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows, where 1) one condition task is used to decide which runtime task to run and 2) four runtime tasks are used to schedule tokens at four parallel lines, respectively.</para>
+Taskflow leverages <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref> and <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref> to implement the pipeline scheduling framework. The taskflow graph of this pipeline example is shown as follows, where 1) one condition task is used to decide which runtime task to run and 2) four runtime tasks are used to schedule tokens at four parallel lines, respectively.</para>
 <para><dotfile name="pipeline_basic_dependency_graph.dot"></dotfile>
 </para>
 <para>In this example, we customize the data storage, <computeroutput>buffer</computeroutput>, as an one-dimensional array of 4 integers, since the pipeline structure defines only four parallel lines. Each entry of <computeroutput>buffer</computeroutput> stores stores the data being processed in the corresponding line. For example, <computeroutput>buffer[1]</computeroutput> stores the processed data at line <computeroutput>1</computeroutput>. The following figure shows the data layout of <computeroutput>buffer</computeroutput>.</para>

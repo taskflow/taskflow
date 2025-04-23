@@ -329,7 +329,6 @@ patterns using standard C++ syntaxes,
 such as parallel iterations, parallel reductions, and parallel sort.
 
 ```cpp
-// standard parallel CPU algorithms
 tf::Task task1 = taskflow.for_each( // assign each element to 100 in parallel
   first, last, [] (auto& i) { i = 100; }    
 );
@@ -338,17 +337,6 @@ tf::Task task2 = taskflow.reduce(   // reduce a range of items in parallel
 );
 tf::Task task3 = taskflow.sort(     // sort a range of items in parallel
   first, last, [] (auto a, auto b) { return a < b; }
-);
-
-// standard parallel GPU algorithms
-tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
-  dfirst, dlast, [] __device__ (auto i) { i = 100; }
-);
-tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
-  dfirst, dlast, init, [] __device__ (auto a, auto b) { return a + b; }
-);
-tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
-  dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
 );
 ```
 
@@ -420,7 +408,7 @@ the following organizations for sponsoring the Taskflow project!
 | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="doxygen/images/utah-ece-logo.png">|<img src="doxygen/images/nsf.png"> | <img src="doxygen/images/darpa.png"> | <img src="doxygen/images/NumFocus.png">|
-|<img src="doxygen/images/nvidia-logo.png"> | | | |
+|<img src="doxygen/images/nvidia-logo.png"> | <img src="doxygen/images/uw-madison-ece-logo.png"> | | |
 
 # License
 

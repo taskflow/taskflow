@@ -134,6 +134,9 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added <computeroutput>static</computeroutput> keyword to the executor creation in taskflow benchmarks</para>
 </listitem><listitem><para>added waiter test for detecting oversubscription problems</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Executor_1a5205c78ec06ef01de0c7d6a71adad07a" kindref="member">tf::Executor::num_waiters</ref> (C++20 only) for querying the number of non-stealing workers</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref> to the algorithm collection (see <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref>)</para>
+</listitem><listitem><para>added <ref refid="classtf_1_1Runtime_1a20d9756a7aa6b58d0d04437818c10066" kindref="member">tf::Runtime::is_cancelled</ref> to query if the parent taskflow is cancelled</para>
+</listitem><listitem><para>added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to async tasking to simplify designs of recursive parallelism (see <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref>)</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -202,7 +205,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><itemizedlist>
 <listitem><para>disabled the support for tf::cudaFlow and tf::cudaFlowCapturer<itemizedlist>
 <listitem><para>introduced a cleaner interface <ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> directly atop <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink> (see <ref refid="GPUTasking" kindref="compound">GPU Tasking</ref>)</para>
-</listitem><listitem><para><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> has similar interface to tf::cudaFlow and tf::cudaFlowCapturer</para>
+</listitem><listitem><para><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> has similar interface to tf::cudaFlow and can be changed as follows:</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -221,7 +224,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_documentation">
 <title>Documentation</title><para><itemizedlist>
-<listitem><para>revised <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref></para>
+<listitem><para>added <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref></para>
+</listitem><listitem><para>revised <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref></para>
+</listitem><listitem><para>revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref></para>
+</listitem><listitem><para>revised <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref></para>
+</listitem><listitem><para>revised <ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></para>
 </listitem><listitem><para>revised <ref refid="ParallelIterations" kindref="compound">Parallel Iterations</ref></para>
 </listitem><listitem><para>revised <ref refid="ParallelReduction" kindref="compound">Parallel Reduction</ref></para>
 </listitem><listitem><para>revised <ref refid="ParallelFind" kindref="compound">Parallel Find</ref></para>
@@ -230,7 +237,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>Please do not hesitate to contact <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> if you have any ideas to collaborate with us on using Taskflow in your scientific computing projects. </para>
+<title>Miscellaneous Items</title><para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-3.10.0.dox"/>

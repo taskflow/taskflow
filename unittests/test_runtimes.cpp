@@ -208,3 +208,4 @@ TEST_CASE("Runtime.Cancel" * doctest::timeout(300)) {
 
   REQUIRE(cancelled == true);
 }
+

@@ -94,6 +94,9 @@ taskflow.reduce_by_index(
 + added `static` keyword to the executor creation in taskflow benchmarks
 + added waiter test for detecting oversubscription problems
 + added tf::Executor::num_waiters (C++20 only) for querying the number of non-stealing workers
++ added tf::make_module_task to the algorithm collection (see @ref ModuleAlgorithm)
++ added tf::Runtime::is_cancelled to query if the parent taskflow is cancelled
++ added tf::Runtime to async tasking to simplify designs of recursive parallelism (see @ref RuntimeTasking)
 
 @subsection release-3-10-0_utilities Utilities
 
@@ -149,7 +152,7 @@ taskflow.dump(std::cout);
 
 + disabled the support for tf::cudaFlow and tf::cudaFlowCapturer
   + introduced a cleaner interface tf::cudaGraph directly atop @cudaGraph (see @ref GPUTasking)
-  + tf::cudaGraph has similar interface to tf::cudaFlow and tf::cudaFlowCapturer
+  + tf::cudaGraph has similar interface to tf::cudaFlow and can be changed as follows:
 
 
 @code{.cpp}
@@ -167,16 +170,20 @@ stream.run(exec).synchronize();
 
 @section release-3-10-0_documentation Documentation
 
++ added @ref ModuleAlgorithm 
 + revised @ref SubflowTasking
++ revised @ref AsyncTasking
++ revised @ref RuntimeTasking
++ revised @ref Executor
 + revised @ref ParallelIterations
 + revised @ref ParallelReduction
 + revised @ref ParallelFind
 + revised @ref fibonacci
 
+
 @section release-3-10-0_miscellaneous_items Miscellaneous Items
 
-Please do not hesitate to contact @twhuang if you have any ideas to collaborate with us 
-on using %Taskflow in your scientific computing projects.
+If you are interested in collaborating with us on applying %Taskflow to your projects, please feel free to reach out to @twhuang!
 
 */
 

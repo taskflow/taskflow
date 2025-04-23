@@ -9,11 +9,9 @@ so that you can incorporate independent, dynamic parallelism in your taskflows.
 
 @section LaunchAsynchronousTasksFromAnExecutor Launch Asynchronous Tasks from an Executor
 
-%Taskflow executor provides an STL-styled method, 
-tf::Executor::async,
-for you to run a callable object asynchronously.
-The method returns a @std_future that will eventually hold the result
-of that function call.
+%Taskflow's executor provides an STL-style method, tf::Executor::async,
+that allows you to run a callable object asynchronously.
+This method returns a std::future which will eventually hold the result of the function call.
 
 @code{.cpp}
 std::future<int> future = executor.async([](){ return 1; });
@@ -24,9 +22,10 @@ assert(future.get() == 1);
 Unlike std::async, the future object returned from tf::Executor::async does not block on destruction
 until completing the function.
 
-If you do not need the return value or use a future to synchronize the execution,
-you are encouraged to use tf::Executor::silent_async which returns nothing and thus
-has less overhead (i.e., no shared state management) compared to tf::Executor::async.
+If you do not need the return value or do not require a std::future for synchronization,
+you should use tf::Executor::silent_async.
+This method returns nothing and incurs less overhead than tf::Executor::async,
+as it avoids the cost of managing a shared state for std::future.
 
 @code{.cpp}
 executor.silent_async([](){
@@ -34,12 +33,9 @@ executor.silent_async([](){
 });
 @endcode
 
-Launching asynchronous tasks from an executor is 
-@em thread-safe and can be called by multiple threads both inside (i.e., worker) 
-and outside the executor.
-Our scheduler autonomously detects whether an asynchronous task is submitted 
-from an external thread or a worker thread and schedules its execution
-using work stealing.
+
+Launching asynchronous tasks from an executor is @em thread-safe and can be invoked from multiple threads, including both worker threads inside the executor and external threads outside of it.
+The scheduler automatically detects the source of the submission and employs work-stealing to schedule the task efficiently, ensuring balanced workload distribution across workers.
 
 @code{.cpp}
 tf::Task my_task = taskflow.emplace([&](){
@@ -54,20 +50,8 @@ executor.wait_for_all();   // wait for all tasks to finish
 @endcode
 
 @attention
-Asynchronous tasks created from an executor does not belong to any taskflows.
-The lifetime of an asynchronous task is managed automatically by the
-executor that creates the task.
-
-You can name an asynchronous task using the overloads, 
-tf::Executor::async(const std::string& name, F&& f) and
-tf::Executor::silent_async(const std::string& name, F&& f),
-that take a string in the first argument.
-Assigned names will appear in the observers of the executor.
-
-@code{.cpp}
-std::future<void> fu = executor.async("async task", [](){});
-executor.silent_async("silent async task", [](){});
-@endcode
+Asynchronous tasks created from an executor do not belong to any taskflow.
+Their lifetime is automatically managed by the executor that created them.
 
 
 @section LaunchAsynchronousTasksFromARuntime Launch Asynchronous Tasks from a Runtime
@@ -124,15 +108,57 @@ executor.run(taskflow).wait();
 @endcode
 
 By default, tf::Runtime does not join like tf::Subflow.
-All pending asynchronous tasks spawned by tf::Runtime 
-are no longer controllable when their parent runtime disappears.
-It is your responsibility to properly synchronize spawned
-asynchronous tasks using tf::Runtime::corun.
+All pending asynchronous tasks spawned from a tf::Runtime become uncontrollable once their 
+parent runtime goes out of scope.
+It is user's responsibility to explicitly synchronize these tasks using tf::Runtime::corun.
 
 @attention
-Creating asynchronous tasks from a runtime allows users to efficiently implement
-parallel algorithms using recursion, such as parallel sort (tf::Taskflow::sort),
-that demands dynamic parallelism at runtime.
+Creating asynchronous tasks from a runtime enables efficient implementation of recursive 
+parallel algorithms, such as tf::Taskflow::sort, that require dynamic task creation at runtime.
+
+@section LaunchAsynchronousTasksRecursivelyFromARuntime Launch Asynchronous Tasks Recursively from a Runtime
+
+Asynchronous tasks can take a reference to tf::Runtime, allowing them to recursively launch additional asynchronous tasks.
+Combined with tf::Runtime::corun, this enables the implementation of various recursive parallelism patterns, including parallel sort, divide-and-conquer algorithms, and the [fork-join model](https://en.wikipedia.org/wiki/Fork%E2%80%93join_model).
+For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from tf::Runtime:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+size_t fibonacci(size_t N, tf::Runtime& rt) {
+
+  if(N < 2) return N; 
+
+  size_t res1, res2;
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
+  
+  // tail optimization for the right child
+  res2 = fibonacci(N-2, rt);
+
+  // use corun to avoid blocking the worker from waiting the two children tasks 
+  // to finish
+  rt.corun();
+
+  return res1 + res2;
+}
+
+int main() {
+
+  tf::Executor executor;
+  
+  size_t N = 5, res;
+  executor.silent_async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); });
+  executor.wait_for_all();
+
+  std::cout << N << "-th Fibonacci number is " << res << '\n';
+
+  return 0;
+}
+@endcode
+
+The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.
+
+@dotfile images/fibonacci_4_tail_optimized.dot
 
 */
 

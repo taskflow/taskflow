@@ -245,8 +245,7 @@ __global__ void saxpy(int n, float a, float *x, float *y) {
     y[i] = a*x[i] + y[i];
   }
 }
-
-// create a CUDA %Gaph task
+// create a CUDA Gaph task
 tf::Task cudaflow = taskflow.emplace([&]() {
   tf::cudaGraph cg;
   tf::cudaTask h2d_x = cg.copy(dx, hx.data(), N);
@@ -332,7 +331,7 @@ the following organizations for sponsoring the %Taskflow project!
 | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 |:-- -----:|:--------:|:--------:|:--------:|
 |@image html "images/utah-ece-logo.png" |@image html "images/nsf.png"|@image html "images/darpa.png"|@image html "images/NumFocus.png"|
-|@image html "images/nvidia-logo.png" | | | |
+|@image html "images/nvidia-logo.png" | @image html "images/uw-madison-ece-logo.png" | | |
 
 
 

@@ -36,7 +36,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="fibonacci_1RecursiveFibonacciParallelism">
-<title>Recursive Fibonacci Parallelism</title><para>We use <ref refid="RuntimeTasking" kindref="compound">Interact with the Runtime</ref> and <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to recursively compute Fibonacci numbers in parallel. A runtime task tasks a reference to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> as its argument, allowing users to interact with the executor and spawn tasks dynamically. The example below demonstrates a parallel recursive implementation of Fibonacci numbers using <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>:</para>
+<title>Recursive Fibonacci Parallelism</title><para>We use <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref> and <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to recursively compute Fibonacci numbers in parallel. A runtime task tasks a reference to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> as its argument, allowing users to interact with the executor and spawn tasks dynamically. The example below demonstrates a parallel recursive implementation of Fibonacci numbers using <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{</highlight></codeline>
@@ -44,7 +44,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>N;<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt1){<sp/>res1<sp/>=<sp/>fibonacii(N-1,<sp/>rt1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt1){<sp/>res1<sp/>=<sp/>fibonacci(N-1,<sp/>rt1);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res2](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt2){<sp/>res2<sp/>=<sp/>fibonacci(N-2,<sp/>rt2);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>corun<sp/>to<sp/>avoid<sp/>blocking<sp/>the<sp/>worker<sp/>from<sp/>waiting<sp/>the<sp/>two<sp/>children<sp/>tasks<sp/></highlight><highlight class="normal"></highlight></codeline>
@@ -78,7 +78,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>N;<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt1){<sp/>res1<sp/>=<sp/>fibonacii(N-1,<sp/>rt1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt1){<sp/>res1<sp/>=<sp/>fibonacci(N-1,<sp/>rt1);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>tail<sp/>optimization<sp/>for<sp/>the<sp/>right<sp/>child</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>res2<sp/>=<sp/>fibonacci(N-2,<sp/>rt);</highlight></codeline>
@@ -95,11 +95,11 @@
 </para>
 </sect1>
 <sect1 id="fibonacci_1FibonacciNumberBenchmarking">
-<title>Benchmarking</title><para>Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism (1) with tail recursion optimization (TCR) and (2) without it, across different Fibonacci numbers.</para>
+<title>Benchmarking</title><para>Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism (1) with tail recursion optimization and (2) without it, across different Fibonacci numbers.</para>
 <para> <table rows="6" cols="3"><row>
 <entry thead="yes" align='center'><para>N   </para>
-</entry><entry thead="yes" align='center'><para>w/ TCR   </para>
-</entry><entry thead="yes" align='center'><para>w/o TCR    </para>
+</entry><entry thead="yes" align='center'><para>w/ tail recursion optimization   </para>
+</entry><entry thead="yes" align='center'><para>w/o tail recursion optimization    </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>20   </para>
@@ -128,7 +128,7 @@
 </entry></row>
 </table>
 </para>
-<para>As <computeroutput>N</computeroutput> increases, the performance gap between the two versions widens significantly. With TCR, the program avoids spawning another async task, thereby reducing scheduling overhead and stack pressure. This leads to better CPU utilization and lower task management cost. For example, at <computeroutput>N = 40</computeroutput>, TCR reduces the runtime by over 40%. </para>
+<para>As <computeroutput>N</computeroutput> increases, the performance gap between the two versions widens significantly. With tail recursion optimization, the program avoids spawning another async task, thereby reducing scheduling overhead and stack pressure. This leads to better CPU utilization and lower task management cost. For example, at <computeroutput>N = 40</computeroutput>, tail recursion optimization reduces the runtime by over 40%. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/examples/fibonacci.dox"/>

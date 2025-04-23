@@ -2,10 +2,11 @@ namespace tf {
 
 /** @page ConditionalTasking Conditional Tasking
 
-Parallel workloads often require making control-flow decisions across dependent tasks.
-%Taskflow supports a very efficient interface of conditional tasking
-for users to implement general control flow such as dynamic flow, cycles and conditionals 
-that are otherwise difficult to do with existing frameworks.
+One of the most powerful features that distinguishes %Taskflow from other systems is its 
+<i>conditional tasking interface</i>, also known as the <i>control taskflow programming model</i> (CTFG).
+CTFG enables you to embed control flow directly into a taskflow graph, allowing tasks to make decisions dynamically during execution.
+This powerful mechanism supports advanced in-graph control-flow patterns, such as dynamic branching, loops, and conditionals that are typically difficult or impossible to express in traditional existing task graph models.
+
 
 @tableofcontents
 

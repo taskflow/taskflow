@@ -28,6 +28,23 @@ An executor can be reused to execute multiple taskflows.
 In most workloads, you may need only one executor to run multiple taskflows
 where each taskflow represents a part of a parallel decomposition.
 
+@section UnderstandWorkStealingInExecutor Understand Work-stealing in Executor
+
+%Taskflow designs a highly efficient @em work-stealing algorithm to schedule and run tasks in an executor.
+Work-stealing is a dynamic scheduling algorithm widely used in parallel computing to distribute and balance workload 
+among multiple threads or cores. 
+Specifically, within an executor, each worker maintains its own local queue of tasks. 
+When a worker finishes its own tasks, instead of becoming idle or going sleep, it (thief) tries to @em steal a task 
+from the queue another worker (victim).
+The figure below illustrates the idea of work-stealing:
+
+@image html images/work-stealing.png
+
+The key advantage of work-stealing lies in its *decentralized* nature and efficiency. 
+Most of the time, worker threads work on their local queues without contention. 
+Stealing only occurs when a worker becomes idle, minimizing overhead associated with synchronization and task distribution. 
+This decentralized strategy effectively balances the workload, ensuring that idle workers are put to work and that the overall computation progresses efficiently.
+
 @section ExecuteATaskflow Execute a Taskflow
 
 tf::Executor provides a set of @c run\_* methods,
@@ -201,11 +218,9 @@ tf::Executor executor(2);
 tf::Taskflow taskflow;
 std::array<tf::Taskflow, 1000> others;
 
-std::atomic<size_t> counter{0};
-
 for(size_t n=0; n<1000; n++) {
   for(size_t i=0; i<500; i++) {
-    others[n].emplace([&](){ counter++; });
+    others[n].emplace([&](){});
   }
   taskflow.emplace([&executor, &tf=others[n]](){
     // blocking the worker can introduce deadlock where
@@ -263,33 +278,30 @@ taskflow.emplace([&](){
 You must call tf::Executor::corun_until and tf::Executor::corun
 from a worker of the calling executor or an exception will be thrown.
 
-@section ThreadSafety Touch an Executor from Multiple Threads
+@section ThreadSafetyOfExecution Thread Safety of Executor
 
-All @c run\_* methods are @em thread-safe.
-You can have multiple threads call these methods from an executor to run different taskflows.
-However, the order which taskflow runs first is non-deterministic and is up to the 
-runtime.
+All `run_*` methods of tf::Executor are @em thread-safe.
+You can safely invoke these methods from multiple threads to run different taskflows concurrently.
+However, the execution order of the submitted taskflows is non-deterministic and determined by the runtime scheduler.
 
 @code{.cpp}
- 1: tf::Executor executor;
- 2:
- 3: for(int i=0; i<10; ++i) {
- 4:   std::thread([i, &](){
- 5:     // ... modify my taskflow at i
- 6:     executor.run(taskflows[i]);  // run my taskflow at i
- 7:   }).detach();
- 8: }
- 9:
-10: executor.wait_for_all();
+tf::Executor executor;
+for(int i=0; i<10; ++i) {
+  std::thread([i, &](){
+    // ... modify my taskflow at i
+    executor.run(taskflows[i]);  // run my taskflow at i
+  }).detach();
+}
+executor.wait_for_all();
 @endcode
 
 @section QueryTheWorkerID Query the Worker ID
 
-Each worker in an executor has an unique integer identifier in the range 
-<tt>[0, N)</tt> that can be queried by the caller thread using tf::Executor::this_worker_id.
-If the caller thread is not a worker in the executor, @c -1 is returned.
-This method is convenient for users to maintain a one-to-one mapping between
-a worker and its application data structure.
+Each worker thread in a tf::Executor is assigned a *unique* integer identifier in the range <tt>[0, N)</tt>, 
+where `N` is the number of worker threads in the executor.
+You can query the identifier of the calling thread using tf::Executor::this_worker_id.
+If the calling thread is not a worker of the executor, the method returns -1.
+This functionality is particularly useful for establishing a one-to-one mapping between worker threads and application-specific data structures.
 
 @code{.cpp}
 std::vector<int> worker_vectors[8];       // one vector per worker
@@ -538,8 +550,9 @@ for(size_t n=0; n<num_workers; n++) {
 @endcode
 
 @attention
-tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_eiplogue 
+tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epilogue
 are invoked by each worker simultaneously.
+It is your responsibility to ensure no data race can occur during their invokation.
 
 */
 

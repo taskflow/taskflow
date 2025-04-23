@@ -236,8 +236,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>y[i]<sp/>=<sp/>a*x[i]<sp/>+<sp/>y[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>CUDA<sp/>%Gaph<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>CUDA<sp/>Gaph<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::Task<sp/>cudaflow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>h2d_x<sp/>=<sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N);</highlight></codeline>
@@ -334,7 +333,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <row>
 <entry thead="no" align='center'><para><image type="html" name="nvidia-logo.png"></image>
   </para>
-</entry><entry thead="no" align='center'><para></para>
+</entry><entry thead="no" align='center'><para><image type="html" name="uw-madison-ece-logo.png"></image>
+  </para>
 </entry><entry thead="no" align='center'><para></para>
 </entry><entry thead="no" align='center'><para></para>
 </entry></row>
