@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="TaskParallelPipelineWithTokenDependencies" kind="page">
     <compoundname>TaskParallelPipelineWithTokenDependencies</compoundname>
     <title>Task-parallel Pipeline with Token Dependencies</title>
@@ -135,17 +135,17 @@
 <codeline><highlight class="normal">52:<sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">53:<sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">54:</highlight></codeline>
-<codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/>tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">55:<sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">56:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token(),<sp/>pf.num_deferrals());</highlight></codeline>
 <codeline><highlight class="normal">57:<sp/><sp/><sp/><sp/>}},</highlight></codeline>
 <codeline><highlight class="normal">58:</highlight></codeline>
-<codeline><highlight class="normal">59:<sp/><sp/><sp/><sp/>tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](tf::Pipeflow&amp;<sp/>pf)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal">59:<sp/><sp/><sp/><sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal">60:<sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">61:<sp/><sp/><sp/><sp/>}}</highlight></codeline>
 <codeline><highlight class="normal">62:<sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">63:<sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal">64:<sp/><sp/>tf::Task<sp/>task<sp/>=<sp/>taskflow.composed_of(pl);</highlight></codeline>
+<codeline><highlight class="normal">64:<sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">65:</highlight></codeline>
 <codeline><highlight class="normal">66:<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">67:<sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
@@ -276,13 +276,13 @@ The following is one of the possible outcomes of the example.</para>
 <codeline><highlight class="normal">49:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">50:</highlight></codeline>
 <codeline><highlight class="normal">51:<sp/></highlight><highlight class="comment">//<sp/>second_pipe_callable<sp/>is<sp/>same<sp/>as<sp/>lines<sp/>55-57<sp/>in<sp/>the<sp/>above<sp/>code<sp/>snippet</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">52:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>second_pipe_callable<sp/>=<sp/>[](tf::Pipeflow&amp;<sp/>pf){</highlight></codeline>
+<codeline><highlight class="normal">52:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>second_pipe_callable<sp/>=<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
 <codeline><highlight class="normal">53:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>2:<sp/>input<sp/>token<sp/>%zu<sp/>(deferrals=%zu)\n&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.token(),<sp/>pf.num_deferrals());</highlight></codeline>
 <codeline><highlight class="normal">54:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">55:</highlight></codeline>
 <codeline><highlight class="normal">56:<sp/></highlight><highlight class="comment">//<sp/>third_pipe_callable<sp/>is<sp/>same<sp/>as<sp/>lines<sp/>59-61<sp/>in<sp/>the<sp/>above<sp/>code<sp/>snippet</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">57:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>third_pipe_callable<sp/>=<sp/>[](tf::Pipeflow&amp;<sp/>pf){</highlight></codeline>
+<codeline><highlight class="normal">57:<sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>third_pipe_callable<sp/>=<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
 <codeline><highlight class="normal">58:<sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>3:<sp/>input<sp/>token<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal">59:<sp/>};</highlight></codeline>
 <codeline><highlight class="normal">60:</highlight></codeline>
@@ -290,9 +290,9 @@ The following is one of the possible outcomes of the example.</para>
 <codeline><highlight class="normal">62:<sp/>pipes.emplace_back(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>second_pipe_callable);<sp/></highlight></codeline>
 <codeline><highlight class="normal">63:</highlight></codeline>
 <codeline><highlight class="normal">64:<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>pipeline<sp/>of<sp/>four<sp/>parallel<sp/>lines<sp/>based<sp/>on<sp/>the<sp/>given<sp/>vector<sp/>of<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">65:<sp/>tf::ScalablePipeline<sp/>pl(4,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
+<codeline><highlight class="normal">65:<sp/><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>pl(4,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal">66:</highlight></codeline>
-<codeline><highlight class="normal">67:<sp/>tf::Task<sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
+<codeline><highlight class="normal">67:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl);</highlight></codeline>
 <codeline><highlight class="normal">68:<sp/></highlight></codeline>
 <codeline><highlight class="normal">69:<sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">70:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>

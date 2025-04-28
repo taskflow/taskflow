@@ -472,14 +472,14 @@
             <dd>spins until the given predicate becomes true</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aa4db761760106ce6f6d2e7c1ac4d8520" class="m-doc">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
+              <span class="m-doc-wrap-bumper">auto <a href="#a84959c9a3780bbb98451c5b8a52dcedd" class="m-doc">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
               E end,
               S step) -&gt; std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, bool&gt; <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>checks if the given index range is invalid</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#af00f6babb0818202960cbbf0a83bd8e7" class="m-doc">distance</a>(</span><span class="m-doc-wrap">B beg,
+              <span class="m-doc-wrap-bumper">auto <a href="#a491336a2b20d6999c4d184a3a770d2f0" class="m-doc">distance</a>(</span><span class="m-doc-wrap">B beg,
               E end,
               S step) -&gt; std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, size_t&gt; <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -510,7 +510,7 @@
             <dd>function to construct a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target) -&gt; auto</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad13f8d0b6628d895792570515497139c" class="m-doc">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target) -&gt; auto</span>
             </dt>
             <dd>creates a module task using the given target</dd>
             <dt>
@@ -1509,12 +1509,12 @@
             </table>
 <p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#a3430ee9958ddb3ed09424e30475d9e2d" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-warning"><h4>Attention</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
           </div></section>
-          <section class="m-doc-details" id="aa4db761760106ce6f6d2e7c1ac4d8520"><div>
+          <section class="m-doc-details" id="a84959c9a3780bbb98451c5b8a52dcedd"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename S&gt;
               </div>
-              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, bool&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa4db761760106ce6f6d2e7c1ac4d8520" class="m-doc-self">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
+              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, bool&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a84959c9a3780bbb98451c5b8a52dcedd" class="m-doc-self">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
               E end,
               S step) <span class="m-label m-primary">constexpr</span></span></span>
             </h3>
@@ -1563,12 +1563,12 @@
             </table>
 <p>A range is considered invalid under the following conditions:</p><ul><li>The step is zero and the begin and end values are not equal.</li><li>A positive range (begin &lt; end) with a non-positive step.</li><li>A negative range (begin &gt; end) with a non-negative step.</li></ul>
           </div></section>
-          <section class="m-doc-details" id="af00f6babb0818202960cbbf0a83bd8e7"><div>
+          <section class="m-doc-details" id="a491336a2b20d6999c4d184a3a770d2f0"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename B, typename E, typename S&gt;
               </div>
-              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, size_t&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af00f6babb0818202960cbbf0a83bd8e7" class="m-doc-self">distance</a>(</span><span class="m-doc-wrap">B beg,
+              <span class="m-doc-wrap-bumper">std::enable_if_t&lt;std::is_integral_v&lt;std::decay_t&lt;B&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;E&gt;&gt; &amp;&amp; std::is_integral_v&lt;std::decay_t&lt;S&gt;&gt;, size_t&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a491336a2b20d6999c4d184a3a770d2f0" class="m-doc-self">distance</a>(</span><span class="m-doc-wrap">B beg,
               E end,
               S step) <span class="m-label m-primary">constexpr</span></span></span>
             </h3>
@@ -1724,12 +1724,12 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">);</span></pre>
           </div></section>
-          <section class="m-doc-details" id="aae281ad3b89a5c421a1f4058f425e54c"><div>
+          <section class="m-doc-details" id="ad13f8d0b6628d895792570515497139c"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc-self">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad13f8d0b6628d895792570515497139c" class="m-doc-self">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
             </h3>
             <p>creates a module task using the given target</p>
             <table class="m-table m-fullwidth m-flat">
@@ -1775,7 +1775,7 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">B</span><span class="p">));</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">C</span><span class="p">));</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">D</span><span class="p">));</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">  </span></pre><p>The module task maker, <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, is basically the same as <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">  </span></pre><p>The module task maker, <a href="#ad13f8d0b6628d895792570515497139c" class="m-doc">tf::<wbr />make_module_task</a>, is basically the same as <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">);</span>
 
 <span class="c1">// approach 2: composition using make_module_task</span>
@@ -2285,7 +2285,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

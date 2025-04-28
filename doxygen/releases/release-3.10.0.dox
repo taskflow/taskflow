@@ -23,7 +23,7 @@ To use %Taskflow v3.10.0, you need a compiler that supports C++17:
 @li GNU C++ Compiler at least v8.4 with -std=c++17
 @li Clang C++ Compiler at least v6.0 with -std=c++17
 @li Microsoft Visual Studio at least v19.27 with /std:c++17
-@li AppleClang Xcode Version at least v12.0 with -std=c++17
+@li Apple Clang Xcode Version at least v12.0 with -std=c++17
 @li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 @li Intel C++ Compiler at least v19.0.1 with -std=c++17
 @li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17
@@ -66,7 +66,7 @@ taskflow.for_each_by_index(range, [&](tf::IndexRange<int>& subrange){
 });
 @endcode
 
-+ added index range-based parallel-reduction algorithm ([i#654](https://github.com/taskflow/taskflow/issues/654))
++ added index range-based parallel-reduction algorithm ([#654](https://github.com/taskflow/taskflow/issues/654))
 
 @code{.cpp}
 std::vector<double> data(100000);
@@ -92,7 +92,7 @@ taskflow.reduce_by_index(
 @endcode
 
 + added `static` keyword to the executor creation in taskflow benchmarks
-+ added waiter test for detecting oversubscription problems
++ added waiter test to detect over-subscription issues
 + added tf::Executor::num_waiters (C++20 only) for querying the number of non-stealing workers
 + added tf::make_module_task to the algorithm collection (see @ref ModuleAlgorithm)
 + added tf::Runtime::is_cancelled to query if the parent taskflow is cancelled
@@ -111,7 +111,7 @@ taskflow.reduce_by_index(
 + fixed the MSVC compilation error due to macro clash with std::min and std::max ([#670](https://github.com/taskflow/taskflow/issues/670)) 
 + fixed the runtime error due to the use of latch in tf::Executor::Executor ([#667](https://github.com/taskflow/taskflow/issues/667))
 + fixed the compilation error due to incorrect const qualifier used in algorithms ([#673](https://github.com/taskflow/taskflow/issues/673))
-+ fixed the tsan error when using find-if algorithm tasks with closure wrapper ([#675](https://github.com/taskflow/taskflow/issues/675))
++ fixed the TSAN error when using find-if algorithm tasks with closure wrapper ([#675](https://github.com/taskflow/taskflow/issues/675))
 + fixed the task trait bug in incorrect detection for subflow and runtime tasks ([#679](https://github.com/taskflow/taskflow/issues/679))
 + fixed the infinite steal caused by incorrect `num_empty_steals` ([#681](https://github.com/taskflow/taskflow/issues/681))
 

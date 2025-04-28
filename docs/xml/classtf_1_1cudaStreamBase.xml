@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaStreamBase" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaStreamBase</compoundname>
     <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaStream_t &gt;, Deleter &gt;</basecompoundref>
@@ -49,10 +49,10 @@
           <declname>args</declname>
         </param>
         <briefdescription>
-<para>constructs a <computeroutput><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">cudaStream</ref></computeroutput> object by passing the given arguments to the stream creator </para>
+<para>constructs a <computeroutput>cudaStream</computeroutput> object by passing the given arguments to the stream creator </para>
         </briefdescription>
         <detaileddescription>
-<para>Constructs a <computeroutput><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">cudaStream</ref></computeroutput> object by passing the given arguments to the stream creator</para>
+<para>Constructs a <computeroutput>cudaStream</computeroutput> object by passing the given arguments to the stream creator</para>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
 <parametername>args</parametername>
@@ -78,7 +78,7 @@
           <type><ref refid="classtf_1_1cudaStreamBase" kindref="compound">cudaStreamBase</ref> &amp;&amp;</type>
         </param>
         <briefdescription>
-<para>constructs a <computeroutput><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">cudaStream</ref></computeroutput> from the given rhs using move semantics </para>
+<para>constructs a <computeroutput>cudaStream</computeroutput> from the given rhs using move semantics </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
@@ -230,7 +230,7 @@
 <parametername>exec</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the given <computeroutput><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">cudaGraphExec</ref></computeroutput> </para>
+<para>the given <computeroutput>cudaGraphExec</computeroutput> </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -353,7 +353,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The <computeroutput><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">cudaStream</ref></computeroutput> class encapsulates a <computeroutput>cudaStream_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
+The <computeroutput>cudaStream</computeroutput> class encapsulates a <computeroutput>cudaStream_t</computeroutput> using <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput>, ensuring that CUDA events are properly created and destroyed with a unique ownership. </para>
     </detaileddescription>
     <inheritancegraph>
       <node id="2">

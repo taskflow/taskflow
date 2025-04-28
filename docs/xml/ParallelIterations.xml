@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="ParallelIterations" kind="page">
     <compoundname>ParallelIterations</compoundname>
     <title>Parallel Iterations</title>
@@ -112,7 +112,7 @@
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list&lt;std::string&gt;</ref><sp/>list<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;hi&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;from&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;t&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;a&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;s&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;k&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;f&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="stringliteral">&quot;low&quot;</highlight><highlight class="normal">};</highlight></codeline>
-<codeline><highlight class="normal">taskflow.for_each(list.begin(),<sp/>list.end(),<sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>str){<sp/></highlight></codeline>
+<codeline><highlight class="normal">taskflow.for_each(list.begin(),<sp/>list.end(),<sp/>[](</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>str){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;parallel<sp/>for<sp/>on<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>str<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&apos;\n&apos;</highlight><highlight class="normal">;<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>

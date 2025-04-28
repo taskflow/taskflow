@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="KMeansWithCUDAGPU" kind="page">
     <compoundname>KMeansWithCUDAGPU</compoundname>
     <title>k-means Clustering with CUDA GPU</title>
@@ -152,7 +152,7 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>kmeans<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaGraphBase" kindref="compound">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_c<sp/>=<sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" kindref="member">zero</ref>(d_c,<sp/>K);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>zero_sx<sp/>=<sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" kindref="member">zero</ref>(d_sx,<sp/>K);</highlight></codeline>
@@ -172,13 +172,13 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1a4a9ca1a34bac47e4c9b04eb4fb2f7775" kindref="member">succeed</ref>(zero_c,<sp/>zero_sx,<sp/>zero_sy);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>CUDA<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1abd73a9268b80e74803f241ee10a842b6" kindref="member">dump</ref>(std::cout);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1abd73a9268b80e74803f241ee10a842b6" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>instantiate<sp/>an<sp/>executable<sp/>CUDA<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Repeat<sp/>the<sp/>execution<sp/>for<sp/>M<sp/>times<sp/>and<sp/>then<sp/>synchronize</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;M;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a7dcdfb79385a57c4c59b7c9f21e8beb9" kindref="member">run</ref>(exec);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>

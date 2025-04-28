@@ -19,33 +19,39 @@ for creating a module task over a schedulable graph target.
 
 @section WhatIsAModuleTask What is a Module Task
 
-Similar to @ref ComposableTasking, but in a more generic setting,
-the template function, tf::make_module_task,
-allows you to create a task over a taskflow graph that can be executed by an executor.
-This provides a flexible way to encapsulate and reuse complex task logic within your 
-%Taskflow applications.
-The example below demonstrates how to create and launch multiple taskflows in parallel 
-using asynchronous tasking:
+Similar to @ref ComposableTasking, but in a more general setting, 
+the template function tf::make_module_task 
+allows you to create a task over a Taskflow graph that can be executed by an executor. 
+This provides a flexible mechanism to encapsulate and reuse complex task logic within your %Taskflow applications. 
+The following example demonstrates how to create and launch multiple Taskflow graphs in parallel using asynchronous tasking:
 
 @code{.cpp}
-tf::Executor executor;
+#include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/module.hpp>
 
-tf::Taskflow A;
-tf::Taskflow B;
-tf::Taskflow C;
-tf::Taskflow D;
+int main() {
 
-A.emplace([](){ printf("Taskflow A\n"); }); 
-B.emplace([](){ printf("Taskflow B\n"); }); 
-C.emplace([](){ printf("Taskflow C\n"); }); 
-D.emplace([](){ printf("Taskflow D\n"); }); 
+  tf::Executor executor;
+  
+  tf::Taskflow A;
+  tf::Taskflow B;
+  tf::Taskflow C;
+  tf::Taskflow D;
+  
+  A.emplace([](){ printf("Taskflow A\n"); }); 
+  B.emplace([](){ printf("Taskflow B\n"); }); 
+  C.emplace([](){ printf("Taskflow C\n"); }); 
+  D.emplace([](){ printf("Taskflow D\n"); }); 
+  
+  // launch the four taskflows using asynchronous tasking
+  executor.async(tf::make_module_task(A));
+  executor.async(tf::make_module_task(B));
+  executor.async(tf::make_module_task(C));
+  executor.async(tf::make_module_task(D));
+  executor.wait_for_all();  
 
-// launch the four taskflows using asynchronous tasking
-executor.async(tf::make_module_task(A));
-executor.async(tf::make_module_task(B));
-executor.async(tf::make_module_task(C));
-executor.async(tf::make_module_task(D));
-executor.wait_for_all();  
+  return 0;
+}
 @endcode
 
 @dotfile images/module_task_1.dot
@@ -101,9 +107,10 @@ Taskflow C
 Taskflow D
 @endcode
 
-The module task maker, tf::make_module_task, functions basically similar to tf::Taskflow::composed_of 
-but provides a more generic interface that can be used beyond %Taskflow.
-Specifically, the following two approaches achieve the same functionality.
+The module task maker, tf::make_module_task, operates similarly to tf::Taskflow::composed_of, 
+but provides a more general interface that can be used beyond %Taskflow. 
+Specifically, the following two approaches achieve equivalent functionality:
+
 
 @code{.cpp}
 // approach 1: composition using composed_of
