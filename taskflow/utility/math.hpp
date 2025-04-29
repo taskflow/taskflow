@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 
 namespace tf {
 
@@ -61,24 +62,54 @@ constexpr bool is_pow2(const T& x) {
 }
 
 /**
- * @brief Computes the floor of log2 of the given positive integer.
+ * @brief computes the floor of the base-2 logarithm of a number using count-leading-zeros (CTL).
  *
- * This function calculates the largest integer `log` such that `2^log <= n`.
+ * This function efficiently calculates the floor of `log2(n)` for both 32-bit and 64-bit integers.
  *
- * @tparam T The type of the input. Must be an integral type.
- * @param n The positive integer to compute log2 for. Assumes `n > 0`.
- * @return The floor of log2 of `n`.
- *
- * @attention This function is constexpr and can be evaluated at compile time.
- *
+ * @tparam T integer type (uint32_t or uint64_t).
+ * @param n input number.
+ * @return floor of `log2(n)`
  */
-template<typename T>
-constexpr int log2(T n) {
-  int log = 0;
+template <typename T>
+constexpr size_t floor_log2(T n) {
+
+   static_assert(std::is_unsigned_v<T>, "log2 only supports unsigned integer types");
+
+#if defined(_MSC_VER)
+  unsigned long index;
+  if constexpr (sizeof(T) == 8) {
+    _BitScanReverse64(&index, n);
+  } else {
+    _BitScanReverse(&index, static_cast<unsigned long>(n));
+  }
+  return static_cast<size_t>(index);
+#elif defined(__GNUC__) || defined(__clang__)
+  if constexpr (sizeof(T) == 8) {
+    return 63 - __builtin_clzll(n);
+  } else {
+    return 31 - __builtin_clz(n);
+  }
+#else
+  // Portable fallback: Uses bit shifts to count leading zeros manually
+  size_t log = 0;
   while (n >>= 1) {
     ++log;
   }
   return log;
+#endif
+}
+
+/**
+@brief returns the floor of `log2(N)` at compile time 
+*/
+template<size_t N>
+constexpr size_t static_floor_log2() {
+  return (N < 2) ? 0 : 1 + static_floor_log2<N / 2>();
+  //auto log = 0;
+  //while (N >>= 1) {
+  //  ++log;
+  //}
+  //return log;
 }
 
 /**
@@ -255,6 +286,91 @@ template <typename T>
 inline T seed() noexcept {
   return std::chrono::system_clock::now().time_since_epoch().count();
 }
+
+/**
+ * @brief counts the number of trailing zeros in an integer.
+ *
+ * This function provides a portable implementation for counting the number of 
+ * trailing zeros across different platforms and integer sizes (32-bit and 64-bit).
+ *
+ * @tparam T integer type (32-bit or 64-bit).
+ * @param x non-zero integer to count trailing zeros from
+ * @return the number of trailing zeros in @c x
+ *
+ * @attention
+ * The behavior is undefined when @c x is 0.
+ */
+template <typename T, typename = std::enable_if_t<std::is_unsigned_v<T>>>
+auto ctz(T x) {
+
+  #if defined(_MSC_VER)
+    unsigned long index;
+    if constexpr (sizeof(T) == 8) {
+      _BitScanForward64(&index, x);
+    } else {
+      _BitScanForward(&index, (unsigned long)x);
+    }
+    return index;
+  #elif defined(__GNUC__) || defined(__clang__)
+    if constexpr (sizeof(T) == 8) {
+      return __builtin_ctzll(x);
+    } else {
+      return __builtin_ctz(x);
+    }
+  #else 
+    size_t r = 0;
+    while ((x & 1) == 0) {
+      x >>= 1;
+      r++;
+    }
+    return r;
+  #endif
+}
+
+// ------------------------------------------------------------------------------------------------
+// coprime
+// ------------------------------------------------------------------------------------------------
+
+/**
+ * @brief computes a coprime of a given number
+ *
+ * This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with @c N.
+ * If @c N is less than 3, it returns 1 as a default coprime.
+ *
+ * @param N input number for which a coprime is to be found.
+ * @return the largest number < @c N that is coprime to N
+ */
+constexpr size_t coprime(size_t N) {
+  if(N < 3) {
+    return 1;
+  }
+  for (size_t x = N; --x > 0;) {
+    if (std::gcd(x, N) == 1) {
+      return x;
+    }
+  }
+  return 1;
+}
+
+/**
+ * @brief generates a compile-time array of coprimes for numbers from 0 to N-1
+ *
+ * This function constructs a constexpr array where each element at index `i` contains a coprime of `i`
+ * (the largest number less than `i` that is coprime to it).
+ *
+ * @tparam N the size of the array to generate (should be greater than 0).
+ * @return a constexpr array of size @c N where each index holds a coprime of its value.
+ */
+template <size_t N>
+constexpr std::array<size_t, N> make_coprime_lut() {
+  static_assert(N>0, "N must be greater than 0");
+  std::array<size_t, N> coprimes{};
+  for (size_t n = 0; n < N; ++n) {
+    coprimes[n] = coprime(n);
+  }
+  return coprimes;
+}
+
 
 //class XorShift64 {
 //

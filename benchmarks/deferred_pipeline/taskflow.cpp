@@ -83,7 +83,7 @@ std::chrono::microseconds measure_time_taskflow(
   auto beg = std::chrono::high_resolution_clock::now();
   
   tf::Taskflow taskflow;
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
 
   tf::Pipeline pl(
     num_threads,

@@ -4,7 +4,7 @@
 
 void mandelbrot_taskflow(unsigned num_threads, int d = D) {
 
-  tf::Executor executor {num_threads};
+  static tf::Executor executor {num_threads};
   tf::Taskflow taskflow;
 
   taskflow.for_each_index(0, H, 1, [&](int i){
@@ -14,7 +14,7 @@ void mandelbrot_taskflow(unsigned num_threads, int d = D) {
       auto k = 3 * ( j * W + i );
       std::tie(RGB[k], RGB[k+1], RGB[k+2]) = get_color(value);
     }
-  });
+  }, tf::DynamicPartitioner(1));
 
   executor.run(taskflow).wait();
 }

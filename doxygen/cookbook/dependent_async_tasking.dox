@@ -20,7 +20,7 @@ to create a task graph dynamically.
 This type of parallelism is also known as <i>on-the-fly</i> task graph parallelism,
 which offers great flexibility for expressing dynamic task graph parallelism.
 The example below dynamically creates a task graph of
-four dependent async tasks, @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C
+four dependent-async tasks, @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C
 and @c D runs after @c B and @c C:
 
 @dotfile images/simple.dot
@@ -82,10 +82,10 @@ executor.wait_for_all();
 Both tf::Executor::dependent_async(F&& func, Tasks&&... tasks) and 
 tf::Executor::silent_dependent_async(F&& func, Tasks&&... tasks)
 accept an arbitrary number of tasks in the dependency list.
-If the number of dependent tasks is unknown at programming time,
+If the number of task dependencies (i.e., predecessors) is unknown at programming time,
 such as those relying on runtime variables,
 you can use the following two overloads 
-to specify dependent tasks in an iterable range <tt>[first, last)</tt>:
+to specify predecessor tasks in an iterable range <tt>[first, last)</tt>:
 
   + tf::Executor::dependent_async(F&& func, I first, I last)
   + tf::Executor::silent_dependent_async(F&& func, I first, I last)
@@ -96,18 +96,18 @@ where @c N is a runtime variable:
 
 @code{.cpp}
 tf::Executor executor;
-std::vector<tf::AsyncTask> dependents;
+std::vector<tf::AsyncTask> predecessors;
 for(size_t i=0; i<N; i++) {  // N is a runtime variable
-  dependents.push_back(executor.silent_dependent_async([](){}));
+  predecessors.push_back(executor.silent_dependent_async([](){}));
 }
-executor.silent_dependent_async([](){}, dependents.begin(), dependents.end());
+executor.silent_dependent_async([](){}, predecessors.begin(), predecessors.end());
 executor.wait_for_all();
 @endcode
 
 @section UnderstandTheLifeTimeOfADependentAsyncTask Understand the Lifetime of a Dependent Async Task
 
 A tf::AsyncTask is a lightweight handle that retains @em shared ownership
-of a dependent async task created by an executor.
+of a dependent-async task created by an executor.
 This shared ownership ensures that the async task remains alive when
 adding it to the dependency list of another async task, 
 thus avoiding the classical [ABA problem](https://en.wikipedia.org/wiki/ABA_problem).
@@ -139,7 +139,7 @@ where task @c A runs before task @c B and task @c C:
 @code{.cpp}
 tf::Executor executor;
 
-// main thread creates a dependent async task A
+// main thread creates a dependent-async task A
 tf::AsyncTask A = executor.silent_dependent_async([](){});
 
 // spawn a new thread to create an async task B that runs after A
@@ -163,20 +163,20 @@ either @c ABC or @c ACB.
 
 @section QueryTheComppletionStatusOfDependentAsyncTasks Query the Completion Status of Dependent Async Tasks
 
-When you create a dependent async task, you can query its completion status by tf::AsyncTask::is_done,
+When you create a dependent-async task, you can query its completion status by tf::AsyncTask::is_done,
 which returns @c true upon completion or @c false otherwise.
-A completed dependent async task indicates that a worker has executed its associated callable.
+A completed dependent-async task indicates that a worker has executed its associated callable.
 
 @code{.cpp}
-// create a dependent async task that returns 100
+// create a dependent-async task that returns 100
 auto [task, fu] = executor.dependent_async([](){ return 100; });
 
-// loops until the dependent async task completes
+// loops until the dependent-async task completes
 while(!task.is_done());
 assert(fu.get() == 100);
 @endcode
 
-tf::AsyncTask::is_done is useful when you need to wait on the result of a dependent async task
+tf::AsyncTask::is_done is useful when you need to wait on the result of a dependent-async task
 before moving onto the next program instruction.
 Often, tf::AsyncTask is used together with tf::Executor::corun_until to keep a worker awake
 in its work-stealing loop to avoid deadlock (see @ref ExecuteATaskflowFromAnInternalWorker 

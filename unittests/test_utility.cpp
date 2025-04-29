@@ -620,7 +620,133 @@ TEST_CASE("NextPow2") {
   REQUIRE(tf::is_pow2(64u) == true);
 }
 
+// ----------------------------------------------------------------------------
+// count the number of trailing zeros
+// ----------------------------------------------------------------------------
 
+TEST_CASE("CTZ") {
+  REQUIRE(tf::ctz<uint32_t>(0b00000001) == 0);
+  REQUIRE(tf::ctz<uint32_t>(0b00000010) == 1);
+  REQUIRE(tf::ctz<uint32_t>(0b00000100) == 2);
+  REQUIRE(tf::ctz<uint32_t>(0b10000000) == 7);
+
+  REQUIRE(tf::ctz<uint64_t>(0b00000001ULL) == 0);
+  REQUIRE(tf::ctz<uint64_t>(0b00000010ULL) == 1);
+  REQUIRE(tf::ctz<uint64_t>(0b00000100ULL) == 2);
+  REQUIRE(tf::ctz<uint64_t>(0x8000000000000000ULL) == 63);
+
+  //REQUIRE(tf::ctz<uint32_t>(0) == 32); // Undefined behavior, doesn't work for Windows
+  REQUIRE(tf::ctz<uint32_t>(0xFFFFFFFF) == 0);
+  REQUIRE(tf::ctz<uint32_t>(0x00010000) == 16);
+  REQUIRE(tf::ctz<uint32_t>(0x80000000) == 31);
+
+  //REQUIRE(tf::ctz<uint64_t>(0) == 64); // Undefined behavior, doesn't work for Windows
+  REQUIRE(tf::ctz<uint64_t>(0xFFFFFFFFFFFFFFFFULL) == 0);
+  REQUIRE(tf::ctz<uint64_t>(0x0000000100000000ULL) == 32);
+  REQUIRE(tf::ctz<uint64_t>(0x0000000000008000ULL) == 15);
+  REQUIRE(tf::ctz<uint64_t>(0x4000000000000000ULL) == 62);
+}
+
+// ----------------------------------------------------------------------------
+// test coprimes
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Coprimes") {
+
+  // Compile-time checks for known values
+  static_assert(tf::coprime(1) == 1);
+  static_assert(tf::coprime(2) == 1);
+  static_assert(tf::coprime(3) == 2);
+  static_assert(tf::coprime(4) == 3);
+  static_assert(tf::coprime(5) == 4);
+  static_assert(tf::coprime(6) == 5);
+  static_assert(tf::coprime(7) == 6);
+  static_assert(tf::coprime(8) == 7);
+  static_assert(tf::coprime(9) == 8);
+  static_assert(tf::coprime(10) == 9);
+  static_assert(tf::coprime(11) == 10);
+  static_assert(tf::coprime(12) == 11);
+  static_assert(tf::coprime(13) == 12);
+  static_assert(tf::coprime(14) == 13);
+  static_assert(tf::coprime(15) == 14);
+  static_assert(tf::coprime(16) == 15);
+  static_assert(tf::coprime(17) == 16);
+  static_assert(tf::coprime(18) == 17);
+  static_assert(tf::coprime(19) == 18);
+  static_assert(tf::coprime(20) == 19);
+
+  constexpr auto coprime_table = tf::make_coprime_lut<51>();
+  
+  static_assert(coprime_table[1] == 1);
+  static_assert(coprime_table[2] == 1);
+  static_assert(coprime_table[3] == 2);
+  static_assert(coprime_table[4] == 3);
+  static_assert(coprime_table[5] == 4);
+  static_assert(coprime_table[6] == 5);
+  static_assert(coprime_table[7] == 6);
+  static_assert(coprime_table[8] == 7);
+  static_assert(coprime_table[9] == 8);
+  static_assert(coprime_table[10] == 9);
+  static_assert(coprime_table[11] == 10);
+  static_assert(coprime_table[12] == 11);
+  static_assert(coprime_table[13] == 12);
+  static_assert(coprime_table[14] == 13);
+  static_assert(coprime_table[15] == 14);
+  static_assert(coprime_table[16] == 15);
+  static_assert(coprime_table[17] == 16);
+  static_assert(coprime_table[18] == 17);
+  static_assert(coprime_table[19] == 18);
+  static_assert(coprime_table[20] == 19);
+
+  // Runtime assertions for all values up to 50
+  for (size_t i = 1; i <= 50; ++i) {
+    REQUIRE(std::gcd(i, coprime_table[i]) == 1);
+    REQUIRE(tf::coprime(i) == coprime_table[i]);
+    
+    // randomly generate a coprime
+    auto v = ::rand() % 1048 + 2;
+    auto c = tf::coprime(v);
+    REQUIRE(std::gcd(v, c) == 1);
+    REQUIRE(c < v);
+  }
+  
+}
+
+// ----------------------------------------------------------------------------
+// Log2
+// ----------------------------------------------------------------------------
+
+TEST_CASE("FloorLog2") {
+
+  REQUIRE(tf::floor_log2(1u) == 0);
+  REQUIRE(tf::floor_log2(2u) == 1);
+  REQUIRE(tf::floor_log2(4u) == 2);
+  REQUIRE(tf::floor_log2(8u) == 3);
+  REQUIRE(tf::floor_log2(16u) == 4);
+  REQUIRE(tf::floor_log2(32u) == 5);
+  REQUIRE(tf::floor_log2(64u) == 6);
+  REQUIRE(tf::floor_log2(128u) == 7);
+  REQUIRE(tf::floor_log2(256u) == 8);
+
+  // Test non-powers of 2 (floor log2)
+  REQUIRE(tf::floor_log2(3u) == 1);
+  REQUIRE(tf::floor_log2(5u) == 2);
+  REQUIRE(tf::floor_log2(6u) == 2);
+  REQUIRE(tf::floor_log2(7u) == 2);
+  REQUIRE(tf::floor_log2(9u) == 3);
+  REQUIRE(tf::floor_log2(10u) == 3);
+  REQUIRE(tf::floor_log2(15u) == 3);
+  REQUIRE(tf::floor_log2(17u) == 4);
+  REQUIRE(tf::floor_log2(31u) == 4);
+  REQUIRE(tf::floor_log2(33u) == 5);
+  
+  // Test large values
+  REQUIRE(tf::floor_log2(1023u) == 9);
+  REQUIRE(tf::floor_log2(1024u) == 10);
+  REQUIRE(tf::floor_log2(1025u) == 10);
+  REQUIRE(tf::floor_log2(std::numeric_limits<uint32_t>::max()) == 31);
+  REQUIRE(tf::floor_log2(std::numeric_limits<uint64_t>::max()) == 63);
+}
 
 
 

@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
+#include <taskflow/utility/mpmc.hpp>
 #include <taskflow/taskflow.hpp>
 
 
@@ -14,7 +15,7 @@ void bounded_tsq_owner() {
 
   tf::BoundedTaskQueue<size_t*, LogSize> queue;
 
-  constexpr size_t N = (1 << LogSize) - 1;
+  constexpr size_t N = (1 << LogSize);
 
   std::vector<size_t*> data;
 
@@ -40,6 +41,43 @@ void bounded_tsq_owner() {
       REQUIRE(queue.pop() == nullptr);
     }
   }
+
+  // test steal
+  size_t dummy1, dummy2;
+
+  queue.push(&dummy1, [&](){ REQUIRE(false); });
+  REQUIRE(queue.try_push(&dummy2) == true);
+
+  size_t num_empty_steals = 1234;
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy1);
+  REQUIRE(num_empty_steals == 0);
+  
+  num_empty_steals = 101;
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy2);
+  REQUIRE(num_empty_steals == 0);
+  
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(num_empty_steals == 1);
+  
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(num_empty_steals == 2);
+  
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(num_empty_steals == 4);
+  
+  queue.push(&dummy1, [&](){ REQUIRE(false); });
+  REQUIRE(queue.try_push(&dummy2) == true);
+  REQUIRE(queue.steal() == &dummy1);
+  REQUIRE(num_empty_steals == 4);
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy2);
+  REQUIRE(num_empty_steals == 0);
+  
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(num_empty_steals == 1);
+  
+  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(num_empty_steals == 2);
 }
 
 TEST_CASE("BoundedTaskQueue.Owner.LogSize=2" * doctest::timeout(300)) {
@@ -543,5 +581,88 @@ TEST_CASE("BoundedMPMC.4C4P") {
   mpmc<int, 10>(4, 4);
 }
 
+// ------------------------------------------------------------------------------------------------
+// BoundedMPMC Specialization on Pointer Type
+// ------------------------------------------------------------------------------------------------
+
+template <typename T, size_t LogSize>
+void mpmc_pointer_basics() {
+
+  tf::MPMC<T, LogSize> mpmc;
+  size_t N = (1<<LogSize);
+  std::vector<std::remove_pointer_t<T>> data(N+1);
+
+  REQUIRE(mpmc.capacity() == N);
+
+  REQUIRE(mpmc.empty() == true);
+  REQUIRE(mpmc.try_dequeue() == nullptr);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.try_enqueue(&data[i]) == true);
+  }
+
+  REQUIRE(mpmc.try_enqueue(&data[N]) == false);
+  REQUIRE(mpmc.empty() == false);
+
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.try_dequeue() == &data[i]);
+  }
+
+  REQUIRE(mpmc.empty() == true); 
+  REQUIRE(mpmc.try_dequeue() == nullptr);
+
+  for(size_t i=0; i<N; i++) {
+    mpmc.enqueue(&data[i]);
+  }
+  REQUIRE(mpmc.try_enqueue(&data[N]) == false);
+  
+  for(size_t i=0; i<N; i++) {
+    REQUIRE(mpmc.empty() == false);
+    REQUIRE(mpmc.try_dequeue() == &data[i]);
+  }
+
+  REQUIRE(mpmc.empty() == true); 
+  REQUIRE(mpmc.try_dequeue() == nullptr);
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=1") {
+  mpmc_pointer_basics<int*, 1>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=2") {
+  mpmc_pointer_basics<int*, 2>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=3") {
+  mpmc_pointer_basics<int*, 3>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=4") {
+  mpmc_pointer_basics<int*, 4>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=5") {
+  mpmc_pointer_basics<int*, 5>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=6") {
+  mpmc_pointer_basics<int*, 6>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=7") {
+  mpmc_pointer_basics<int*, 7>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=8") {
+  mpmc_pointer_basics<int*, 8>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=9") {
+  mpmc_pointer_basics<int*, 9>();
+}
+
+TEST_CASE("BoundedMPMC.Pointer.Basics.LogSize=10") {
+  mpmc_pointer_basics<int*, 10>();
+}
 
 

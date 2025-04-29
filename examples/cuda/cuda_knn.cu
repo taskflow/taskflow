@@ -275,31 +275,34 @@ std::pair<std::vector<float>, std::vector<float>> gpu_predicate(
 
   auto kmeans = taskflow.emplace([&](){
 
-    tf::cudaFlow cf;
+    tf::cudaGraph cg;
 
-    auto zero_c = cf.zero(d_c, K).name("zero_c");
-    auto zero_sx = cf.zero(d_sx, K).name("zero_sx");
-    auto zero_sy = cf.zero(d_sy, K).name("zero_sy");
+    auto zero_c = cg.zero(d_c, K);
+    auto zero_sx = cg.zero(d_sx, K);
+    auto zero_sy = cg.zero(d_sy, K);
     
-    auto cluster = cf.kernel(
+    auto cluster = cg.kernel(
       (N+512-1) / 512, 512, 0, 
       assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
-    ).name("cluster"); 
+    ); 
     
-    auto new_centroid = cf.kernel(
+    auto new_centroid = cg.kernel(
       1, K, 0, 
       compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
-    ).name("new_centroid");
+    );
 
     cluster.precede(new_centroid)
            .succeed(zero_c, zero_sx, zero_sy);
     
     // Repeat the execution for M times
     tf::cudaStream stream;
+    tf::cudaGraphExec exec(cg);
     for(int i=0; i<M; i++) {
-      cf.run(stream);
+      stream.run(exec);
     }
     stream.synchronize();
+
+    cg.dump(std::cout);
   }).name("update_means");
 
   auto stop = taskflow.emplace([&](){

@@ -8,7 +8,7 @@ void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
 
   std::vector<tf::Task> tasks(1 << num_layers);
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   for(unsigned i=1; i<tasks.size(); i++) {

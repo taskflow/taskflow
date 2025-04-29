@@ -15,7 +15,7 @@ void taskflow(const Graph& g, unsigned num_cpus, unsigned num_gpus) {
   TF_CHECK_CUDA(cudaMallocManaged(&gz, N*sizeof(int)), "failed at cudaMalloc");
 
   tf::Taskflow taskflow;
-  tf::Executor executor(num_cpus + num_gpus);
+  static tf::Executor executor(num_cpus + num_gpus);
 
   std::vector<tf::Task> tasks(g.num_nodes);
   

@@ -42,9 +42,9 @@ struct cudaScanResult<T, vt, true> {
 template<unsigned nt, typename T>
 struct cudaBlockScan {
 
-  const static unsigned num_warps  = nt / CUDA_WARP_SIZE;
-  const static unsigned num_passes = log2(nt);
-  const static unsigned capacity   = nt + num_warps;
+  static constexpr unsigned num_warps  = nt / CUDA_WARP_SIZE;
+  static constexpr unsigned num_passes = static_floor_log2<nt>();
+  static constexpr unsigned capacity   = nt + num_warps;
 
   /** @private */
   union storage_t {

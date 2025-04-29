@@ -36,12 +36,17 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-10-0_summary Release Summary
 
+This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. 
+It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.
 
 @section release-3-10-0_new_features New Features
 
 @subsection release-3-10-0_taskflow_core Taskflow Core
 
-+ fixed MSVC compilation warnings due to signed conversion on sort
++ optimized work-stealing loop with an adaptive breaking strategy
++ optimized shut-down signal detection using decentralized variables
++ optimized memory layout of node by combining successors and predecessors together
++ changed the default notifier to use the atomic notification algorithm under C++20
 + added debug mode for the windows CI to GitHub actions
 + added index range-based parallel-for algorithm ([#551](https://github.com/taskflow/taskflow/issues/551))
 
@@ -54,7 +59,7 @@ taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
 
 // Approach 2: initialize data2 using tf::IndexRange
 tf::IndexRange<int> range(0, 100, 1);
-taskflow.for_each_index(range, [&](tf::IndexRange<int>& subrange){
+taskflow.for_each_by_index(range, [&](tf::IndexRange<int>& subrange){
   for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
     data2[i] = 10;
   }
@@ -86,6 +91,13 @@ taskflow.reduce_by_index(
 );
 @endcode
 
++ added `static` keyword to the executor creation in taskflow benchmarks
++ added waiter test for detecting oversubscription problems
++ added tf::Executor::num_waiters (C++20 only) for querying the number of non-stealing workers
++ added tf::make_module_task to the algorithm collection (see @ref ModuleAlgorithm)
++ added tf::Runtime::is_cancelled to query if the parent taskflow is cancelled
++ added tf::Runtime to async tasking to simplify designs of recursive parallelism (see @ref RuntimeTasking)
+
 @subsection release-3-10-0_utilities Utilities
 
 + added tf::IndexRange for index range-based parallel-for algorithm
@@ -94,22 +106,84 @@ taskflow.reduce_by_index(
 
 @section release-3-10-0_bug_fixes Bug Fixes 
 
-Currently, there are no bug fixes.
++ fixed the compilation error of CLI11 due to version incompatibility ([#672](https://github.com/taskflow/taskflow/issues/672))
++ fixed the compilation error of template deduction on packaged_task ([#657](https://github.com/taskflow/taskflow/issues/657))
++ fixed the MSVC compilation error due to macro clash with std::min and std::max ([#670](https://github.com/taskflow/taskflow/issues/670)) 
++ fixed the runtime error due to the use of latch in tf::Executor::Executor ([#667](https://github.com/taskflow/taskflow/issues/667))
++ fixed the compilation error due to incorrect const qualifier used in algorithms ([#673](https://github.com/taskflow/taskflow/issues/673))
++ fixed the tsan error when using find-if algorithm tasks with closure wrapper ([#675](https://github.com/taskflow/taskflow/issues/675))
++ fixed the task trait bug in incorrect detection for subflow and runtime tasks ([#679](https://github.com/taskflow/taskflow/issues/679))
++ fixed the infinite steal caused by incorrect `num_empty_steals` ([#681](https://github.com/taskflow/taskflow/issues/681))
 
 @section release-3-10-0_breaking_changes Breaking Changes
 
-Currently, there are no breaking changes.
++ corrected the terminology by replacing 'dependents' with 'predecessors'
+  + tf::Task::num_predecessors (previously tf::Task::num_dependents)
+  + tf::Task::for_each_predecessor (previously tf::Task::for_each_dependent)
+  + tf::Task::num_strong_dependencies (previously tf::Task::num_strong_dependents)
+  + tf::Task::num_weak_dependencies (previously tf::Task::num_weak_dependents)
++ disabled the support for tf::Subflow::detach due to multiple intricate and unresolved issues:
+  + detached subflows are inherently difficult to reason about their execution logic
+  + detached subflows can incur excessive memory consumption, especially in recursive workloads
+  + detached subflows lack a manner to safe life cycle control and graph cleanup
+  + detached subflows have limited practical benefits for most use cases
+  + detached subflows can be re-implemented using taskflow composition
++ changed the default behavior of tf::Subflow to no longer retain its task graph after join
+  + default retention can incur significant memory consumption problem ([#674](https://github.com/taskflow/taskflow/issues/674))
+  + users must explicitly call tf::Subflow::retain to retain a subflow after join 
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+taskflow.emplace([&](tf::Subflow& sf){
+  sf.retain(true);  // retain the subflow after join for visualization
+  auto A = sf.emplace([](){ std::cout << "A\n"; });
+  auto B = sf.emplace([](){ std::cout << "B\n"; });
+  auto C = sf.emplace([](){ std::cout << "C\n"; });
+  A.precede(B, C);  // A runs before B and C
+});  // subflow implicitly joins here
+
+executor.run(taskflow).wait();
+
+// The subflow graph is now retained and can be visualized using taskflow.dump(...)
+taskflow.dump(std::cout);
+@endcode
+
++ disabled the support for tf::cudaFlow and tf::cudaFlowCapturer
+  + introduced a cleaner interface tf::cudaGraph directly atop @cudaGraph (see @ref GPUTasking)
+  + tf::cudaGraph has similar interface to tf::cudaFlow and can be changed as follows:
+
+
+@code{.cpp}
+// programming tf::cudaGraph is consistent with Nvidia CUDA Graph but offers a simpler 
+// and more intuitive interface by abstracting away low-level CUDA Graph boilerplate.
+tf::cudaGraph cg;
+cg.kernel(...);   // same as cudaFlow/cudaFlowCapturer
+
+// unlike cudaFlow/cudaFlowCapturer, you need to explicitly instantiate an executable 
+// CUDA graph now and submit it to a stream for execution
+tf::cudaGraphExec exec(cg);
+tf::cudaStream stream;
+stream.run(exec).synchronize();
+@endcode
 
 @section release-3-10-0_documentation Documentation
 
++ added @ref ModuleAlgorithm 
++ revised @ref SubflowTasking
++ revised @ref AsyncTasking
++ revised @ref RuntimeTasking
++ revised @ref Executor
 + revised @ref ParallelIterations
 + revised @ref ParallelReduction
 + revised @ref ParallelFind
++ revised @ref fibonacci
+
 
 @section release-3-10-0_miscellaneous_items Miscellaneous Items
 
-Please do not hesitate to contact @twhuang if you intend to collaborate with us 
-on using %Taskflow in your scientific computing projects.
+If you are interested in collaborating with us on applying %Taskflow to your projects, please feel free to reach out to @twhuang!
 
 */
 

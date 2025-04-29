@@ -1,0 +1,245 @@
+namespace tf {
+
+/** @page KMeansWithCUDAGPU k-means Clustering with CUDA GPU
+
+Following up on @ref kmeans, this page studies how to accelerate
+a k-means workload on a GPU using tf::cudaGraph.
+
+@tableofcontents
+
+@section DefineTheKMeansKernels Define the k-means Kernels
+
+Recall that the k-means algorithm has the following steps:
+
+<ul>
+  <li>Step 1: initialize k random centroids</li>
+  <li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li>
+  <li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li>
+  <li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached
+</ul>
+
+We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:
+
+<ol>
+  <li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li>
+  <li>for every centroid, move the centroid to the average of the points assigned to that centroid</li>.
+</ol>
+
+At a fine-grained level, we request one GPU thread to work on one point for Step 2 
+and one GPU thread to work on one centroid for Step 3.
+
+@code{.cpp}
+// px/py: 2D points
+// N: number of points
+// mx/my: centroids
+// K: number of clusters
+// sx/sy/c: storage to compute the average
+__global__ void assign_clusters(
+  float* px, float* py, int N, 
+  float* mx, float* my, float* sx, float* sy, int K, int* c
+) {
+  const int index = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (index >= N) {
+    return;
+  }
+
+  // Make global loads once.
+  float x = px[index];
+  float y = py[index];
+
+  float best_dance = FLT_MAX;
+  int best_k = 0;
+  for (int k = 0; k < K; ++k) {
+    float d = L2(x, y, mx[k], my[k]);
+    if (d < best_d) {
+      best_d = d;
+      best_k = k;
+    }   
+  }
+
+  atomicAdd(&sx[best_k], x); 
+  atomicAdd(&sy[best_k], y); 
+  atomicAdd(&c [best_k], 1); 
+}
+
+// mx/my: centroids, sx/sy/c: storage to compute the average
+__global__ void compute_new_means(
+  float* mx, float* my, float* sx, float* sy, int* c
+) {
+  int k = threadIdx.x;
+  int count = max(1, c[k]);  // turn 0/0 to 0/1
+  mx[k] = sx[k] / count;
+  my[k] = sy[k] / count;
+}
+@endcode
+
+When we recompute the cluster centroids to be the mean of all points assigned to a particular centroid,
+multiple GPU threads may access the sum arrays, @c sx and @c sy, and the count array, @c c.
+To avoid data race, we use a simple @c atomicAdd method.
+
+@section DefineTheKMeansCUDAGraph Define the k-means CUDA Graph
+
+Based on the two kernels, we can define a CUDA graph for the k-means workload below:
+
+@code{.cpp}
+// N: number of points
+// K: number of clusters
+// M: number of iterations
+// px/py: 2D point vector 
+void kmeans_gpu(
+  int N, int K, int M, cconst std::vector<float>& px, const std::vector<float>& py
+) {
+  std::vector<float> h_mx, h_my;
+  float *d_px, *d_py, *d_mx, *d_my, *d_sx, *d_sy, *d_c;
+
+  for(int i=0; i<K; ++i) {
+    h_mx.push_back(h_px[i]);
+    h_my.push_back(h_py[i]);
+  }
+
+  // create a taskflow graph
+  tf::Executor executor;
+  tf::Taskflow taskflow("K-Means");
+
+  auto allocate_px = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_px, N*sizeof(float)), "failed to allocate d_px");
+  }).name("allocate_px");
+
+  auto allocate_py = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_py, N*sizeof(float)), "failed to allocate d_py");
+  }).name("allocate_py");
+
+  auto allocate_mx = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_mx, K*sizeof(float)), "failed to allocate d_mx");
+  }).name("allocate_mx");
+
+  auto allocate_my = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_my, K*sizeof(float)), "failed to allocate d_my");
+  }).name("allocate_my");
+
+  auto allocate_sx = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_sx, K*sizeof(float)), "failed to allocate d_sx");
+  }).name("allocate_sx");
+
+  auto allocate_sy = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_sy, K*sizeof(float)), "failed to allocate d_sy");
+  }).name("allocate_sy");
+  auto allocate_c = taskflow.emplace([&](){
+    TF_CHECK_CUDA(cudaMalloc(&d_c, K*sizeof(float)), "failed to allocate dc");
+  }).name("allocate_c");
+
+  auto h2d = taskflow.emplace([&](){
+    cudaMemcpy(d_px, h_px.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_py, h_py.data(), N*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_mx, h_mx.data(), K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(d_my, h_my.data(), K*sizeof(float), cudaMemcpyDefault);
+  }).name("h2d");
+
+  auto kmeans = taskflow.emplace([&](){
+
+    tf::cudaGraph cg;
+
+    auto zero_c = cg.zero(d_c, K);
+    auto zero_sx = cg.zero(d_sx, K);
+    auto zero_sy = cg.zero(d_sy, K);
+
+    auto cluster = cg.kernel(
+      (N+512-1) / 512, 512, 0,
+      assign_clusters, d_px, d_py, N, d_mx, d_my, d_sx, d_sy, K, d_c
+    );
+
+    auto new_centroid = cg.kernel(
+      1, K, 0,
+      compute_new_means, d_mx, d_my, d_sx, d_sy, d_c
+    );
+
+    cluster.precede(new_centroid)
+           .succeed(zero_c, zero_sx, zero_sy);
+
+    // dump the CUDA graph
+    cg.dump(std::cout);
+
+    // instantiate an executable CUDA graph
+    tf::cudaGraphExec exec(cg);
+
+    // Repeat the execution for M times and then synchronize
+    tf::cudaStream stream;
+    for(int i=0; i<M; i++) {
+      stream.run(exec);
+    }
+    stream.synchronize();
+  }).name("update_means");
+
+  auto stop = taskflow.emplace([&](){
+    cudaMemcpy(h_mx.data(), d_mx, K*sizeof(float), cudaMemcpyDefault);
+    cudaMemcpy(h_my.data(), d_my, K*sizeof(float), cudaMemcpyDefault);
+  }).name("d2h");
+
+  auto free = taskflow.emplace([&](){
+    cudaFree(d_px);
+    cudaFree(d_py);
+    cudaFree(d_mx);
+    cudaFree(d_my);
+    cudaFree(d_sx);
+    cudaFree(d_sy);
+    cudaFree(d_c);
+  }).name("free");
+
+  // build up the dependency
+  h2d.succeed(allocate_px, allocate_py, allocate_mx, allocate_my);
+
+  kmeans.succeed(allocate_sx, allocate_sy, allocate_c, h2d)
+        .precede(stop);
+
+  stop.precede(free);
+
+  // run the taskflow
+  executor.run(taskflow).wait();
+
+  return {h_mx, h_my};
+}
+@endcode
+
+The first dump before executing the taskflow produces the following diagram.
+The condition tasks introduces a cycle between itself and @c update_means.
+Each time it goes back to @c update_means, the CUDA graph is reconstructed with captured 
+parameters in the closure and offloaded to the GPU.
+
+<!-- @image html images/kmeans_3.svg width=80% -->
+@dotfile images/kmeans_3.dot
+
+The main CUDA %Graph task, @c update_means, must not run before all required data has settled down.
+It precedes a condition task that circles back to itself until we reach @c M iterations.
+When iteration completes, the condition task directs the execution path to the CUDA graph, @c h2d,
+to copy the results of clusters to @c h_mx and @c h_my and then deallocate all GPU memory.
+
+@section KMeansWithGPUBenchmarking Benchmarking
+
+We run three versions of k-means,
+sequential CPU, parallel CPUs, and one GPU,
+on a machine of 12 Intel i7-8700 CPUs at 3.20 GHz and 
+a Nvidia RTX 2080 GPU using various numbers of 2D point counts and iterations.
+
+<div align="center">
+| N        | K   | M       | CPU Sequential | CPU Parallel | GPU     |
+| :-:      | :-: | :-:     | :-:            | :-:          | :-:     |
+| 10       | 5   | 10      | 0.14 ms        | 77 ms        | 1 ms    |
+| 100      | 10  | 100     | 0.56 ms        | 86 ms        | 7 ms    |
+| 1000     | 10  | 1000    | 10 ms          | 98 ms        | 55 ms   |
+| 10000    | 10  | 10000   | 1006 ms        | 713 ms       | 458 ms  |
+| 100000   | 10  | 100000  | 102483 ms      | 49966 ms     | 7952 ms |
+</div>
+
+When the number of points is larger than 10K, 
+both parallel CPU and GPU implementations start to pick up the speed
+over than the sequential version.
+
+*/
+
+}
+
+
+
+
+

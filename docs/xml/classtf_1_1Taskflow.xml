@@ -290,7 +290,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="184" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="400" bodyend="404"/>
+        <location file="taskflow/core/taskflow.hpp" line="184" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="394" bodyend="398"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a9c4900da1831dce708664a06b3e3a3fb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -306,7 +306,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="192" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="393" bodyend="397"/>
+        <location file="taskflow/core/taskflow.hpp" line="192" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="387" bodyend="391"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -466,18 +466,18 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">a.precede(b,<sp/>c,<sp/>d);</highlight></codeline>
 <codeline><highlight class="normal">assert(a.num_successors()<sp/>==<sp/>3);</highlight></codeline>
-<codeline><highlight class="normal">assert(b.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
-<codeline><highlight class="normal">assert(c.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
-<codeline><highlight class="normal">assert(d.num_dependents()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(b.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(c.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(d.num_predecessors()<sp/>==<sp/>1);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" kindref="member">remove_dependency</ref>(a,<sp/>b);</highlight></codeline>
 <codeline><highlight class="normal">assert(a.num_successors()<sp/>==<sp/>2);</highlight></codeline>
-<codeline><highlight class="normal">assert(b.num_dependents()<sp/>==<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal">assert(b.num_predecessors()<sp/>==<sp/>0);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="276" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="378" bodyend="390"/>
+        <location file="taskflow/core/taskflow.hpp" line="276" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="378" bodyend="384"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a8da984d149b439e88468bf26e02ecf27" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
@@ -517,7 +517,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="298" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="407" bodyend="438"/>
+        <location file="taskflow/core/taskflow.hpp" line="298" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="401" bodyend="432"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a22bd6faed11509c504c4a9cb8cb81fd6" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -543,7 +543,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="299" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="441" bodyend="502"/>
+        <location file="taskflow/core/taskflow.hpp" line="299" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="435" bodyend="496"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1afdfa1f01d5471d3cddc39b3bae11c464" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -569,7 +569,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="300" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="505" bodyend="538"/>
+        <location file="taskflow/core/taskflow.hpp" line="300" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="499" bodyend="533"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -667,8 +667,8 @@
       <member refid="classtf_1_1Taskflow_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1a67d023d5493da1594a1d2eaea89da179" prot="public" virt="non-virtual" ambiguityscope="tf::FlowBuilder::"><scope>tf::Taskflow</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1FlowBuilder_1aae3edfa278baa75b08414e083c14c836" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each</name></member>
+      <member refid="classtf_1_1FlowBuilder_1a2582a216d54dacca2b7022ea7e89452a" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_by_index</name></member>
       <member refid="classtf_1_1FlowBuilder_1a3b132bd902331a11b04b4ad66cf8bf77" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_index</name></member>
-      <member refid="classtf_1_1FlowBuilder_1a5d8c756783e481372f27db6b6e6a5982" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_index</name></member>
       <member refid="classtf_1_1Taskflow_1a6350d0d6653ae9ae7b94c35e42fffe07" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>for_each_task</name></member>
       <member refid="classtf_1_1Taskflow_1a8da984d149b439e88468bf26e02ecf27" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>graph</name></member>
       <member refid="classtf_1_1FlowBuilder_1a1c2ace9290d83c2a006614a4d66ad588" prot="public" virt="non-virtual"><scope>tf::Taskflow</scope><name>inclusive_scan</name></member>

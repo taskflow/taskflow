@@ -1,0 +1,704 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaGraphExecBase" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaGraphExecBase</compoundname>
+    <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraphExec_t &gt;, Deleter &gt;</basecompoundref>
+    <includes refid="cuda__graph__exec_8hpp" local="no">taskflow/cuda/cuda_graph_exec.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename Creator</type>
+      </param>
+      <param>
+        <type>typename Deleter</type>
+      </param>
+    </templateparamlist>
+    <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtf_1_1cudaGraphExecBase_1ac7c11b5dd4d0ce5bdeb64f89b14eb173" prot="public" static="no">
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaGraphExec_t &gt;, Deleter &gt;</type>
+        <definition>using tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::base_type =  std::unique_ptr&lt;std::remove_pointer_t&lt;cudaGraphExec_t&gt;, Deleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>base_type</name>
+        <qualifiedname>tf::cudaGraphExecBase::base_type</qualifiedname>
+        <briefdescription>
+<para>base <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> type </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="96" column="3" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="96" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a3dc4936c19687b4af7e57c4745cac73d" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::cudaGraphExecBase</definition>
+        <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
+        <name>cudaGraphExecBase</name>
+        <qualifiedname>tf::cudaGraphExecBase::cudaGraphExecBase</qualifiedname>
+        <param>
+          <type>ArgsT &amp;&amp;...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>constructs a <computeroutput><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">cudaGraphExec</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Constructs a <computeroutput><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">cudaGraphExec</ref></computeroutput> object by passing the given arguments to the executable CUDA graph creator</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>args</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>arguments to pass to the executable CUDA graph creator </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="106" column="12" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="106" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a9850f144ed008b41b95ac092a19b9658" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::cudaGraphExecBase</definition>
+        <argsstring>(cudaGraphExecBase &amp;&amp;)=default</argsstring>
+        <name>cudaGraphExecBase</name>
+        <qualifiedname>tf::cudaGraphExecBase::cudaGraphExecBase</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>constructs a <computeroutput><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">cudaGraphExec</ref></computeroutput> from the given rhs using move semantics </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="113" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a8b7a950944583d2fd90a5d40275982b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;</type>
+        <definition>cudaGraphExecBase &amp; tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::operator=</definition>
+        <argsstring>(cudaGraphExecBase &amp;&amp;)=default</argsstring>
+        <name>operator=</name>
+        <qualifiedname>tf::cudaGraphExecBase::operator=</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;&amp;</type>
+        </param>
+        <briefdescription>
+<para>assign the rhs to <computeroutput>*this</computeroutput> using move semantics </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="118" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1ad3da5e8cdae7555a08735fabefdf131d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::host</definition>
+        <argsstring>(cudaTask task, C &amp;&amp;callable, void *user_data)</argsstring>
+        <name>host</name>
+        <qualifiedname>tf::cudaGraphExecBase::host</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>callable</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>user_data</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a host task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method updates the parameter of the given host task (similar to tf::cudaFlow::host). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="130" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="262" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a9d9842feec938f6dad9d21f66a202bb6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename F</type>
+          </param>
+          <param>
+            <type>typename...</type>
+            <declname>ArgsT</declname>
+            <defname>ArgsT</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::kernel</definition>
+        <argsstring>(cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT... args)</argsstring>
+        <name>kernel</name>
+        <qualifiedname>tf::cudaGraphExecBase::kernel</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>dim3</type>
+          <declname>g</declname>
+        </param>
+        <param>
+          <type>dim3</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>shm</declname>
+        </param>
+        <param>
+          <type>F</type>
+          <declname>f</declname>
+        </param>
+        <param>
+          <type>ArgsT...</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a kernel task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::kernel but operates on a task of type tf::cudaTaskType::KERNEL. The kernel function name must NOT change. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="140" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="273" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1ae1a9cea343a306e114daeeab9418dd5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::memset</definition>
+        <argsstring>(cudaTask task, void *dst, int ch, size_t count)</argsstring>
+        <name>memset</name>
+        <qualifiedname>tf::cudaGraphExecBase::memset</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ch</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a memset task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::memset but operates on a task of type tf::cudaTaskType::MEMSET. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="153" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="318" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1aea367c6ac5b55854b9b695d4e249b17e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::memcpy</definition>
+        <argsstring>(cudaTask task, void *tgt, const void *src, size_t bytes)</argsstring>
+        <name>memcpy</name>
+        <qualifiedname>tf::cudaGraphExecBase::memcpy</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>bytes</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a memcpy task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::memcpy but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="164" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="305" bodyend="314"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a195d1630c74657d095225ec0cb5343f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::zero</definition>
+        <argsstring>(cudaTask task, T *dst, size_t count)</argsstring>
+        <name>zero</name>
+        <qualifiedname>tf::cudaGraphExecBase::zero</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a memset task to a zero task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::zero but operates on a task of type tf::cudaTaskType::MEMSET.</para>
+<para>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="179" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="344" bodyend="350"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1afa67dc39ef8f142284b799dd0c93aed2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::fill</definition>
+        <argsstring>(cudaTask task, T *dst, T value, size_t count)</argsstring>
+        <name>fill</name>
+        <qualifiedname>tf::cudaGraphExecBase::fill</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a memset task to a fill task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::fill but operates on a task of type tf::cudaTaskType::MEMSET.</para>
+<para>The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="194" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="331" bodyend="337"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1aed30ccc98bb2187e9141c4f7b63ff66e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::copy</definition>
+        <argsstring>(cudaTask task, T *tgt, const T *src, size_t num)</argsstring>
+        <name>copy</name>
+        <qualifiedname>tf::cudaGraphExecBase::copy</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>T *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>num</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a memcpy task to a copy task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The method is similar to tf::cudaFlow::copy but operates on a task of type tf::cudaTaskType::MEMCPY. The source/destination memory may have different address values but must be allocated from the same contexts as the original source/destination memory. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="208" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="295" bodyend="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1ae3b9553ae626613941aa7c50515cd42b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::single_task</definition>
+        <argsstring>(cudaTask task, C c)</argsstring>
+        <name>single_task</name>
+        <qualifiedname>tf::cudaGraphExecBase::single_task</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+<para>updates a single-threaded kernel task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is similar to cudaFlow::single_task but operates on an existing task. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="221" column="8"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1af5c546cfeb8d42f4b6aa52dd3eb2af3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename E</type>
+            <defval>cudaDefaultExecutionPolicy</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::for_each</definition>
+        <argsstring>(cudaTask task, I first, I last, C callable)</argsstring>
+        <name>for_each</name>
+        <qualifiedname>tf::cudaGraphExecBase::for_each</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a <computeroutput>for_each</computeroutput> kernel task created from the CUDA graph of <computeroutput>*this</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="227" column="8" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="66" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1aaf933c0b9ed7bdff936db1f48967cffb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename E</type>
+            <defval>cudaDefaultExecutionPolicy</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::for_each_index</definition>
+        <argsstring>(cudaTask task, I first, I last, I step, C callable)</argsstring>
+        <name>for_each_index</name>
+        <qualifiedname>tf::cudaGraphExecBase::for_each_index</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>step</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>callable</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a <computeroutput>for_each_index</computeroutput> kernel task created from the CUDA graph of <computeroutput>*this</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="233" column="8" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="92" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1ad8d934fd6f0caf65cb53afd0dc7880aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename E</type>
+            <defval>cudaDefaultExecutionPolicy</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::transform</definition>
+        <argsstring>(cudaTask task, I first, I last, O output, C c)</argsstring>
+        <name>transform</name>
+        <qualifiedname>tf::cudaGraphExecBase::transform</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>I</type>
+          <declname>last</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a <computeroutput>transform</computeroutput> kernel task created from the CUDA graph of <computeroutput>*this</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="239" column="8" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="94" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a516dead6bca70b45b6322db171609604" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I1</type>
+          </param>
+          <param>
+            <type>typename I2</type>
+          </param>
+          <param>
+            <type>typename O</type>
+          </param>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename E</type>
+            <defval>cudaDefaultExecutionPolicy</defval>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::transform</definition>
+        <argsstring>(cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c)</argsstring>
+        <name>transform</name>
+        <qualifiedname>tf::cudaGraphExecBase::transform</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
+          <declname>task</declname>
+        </param>
+        <param>
+          <type>I1</type>
+          <declname>first1</declname>
+        </param>
+        <param>
+          <type>I1</type>
+          <declname>last1</declname>
+        </param>
+        <param>
+          <type>I2</type>
+          <declname>first2</declname>
+        </param>
+        <param>
+          <type>O</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>C</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+<para>updates parameters of a <computeroutput>transform</computeroutput> kernel task created from the CUDA graph of <computeroutput>*this</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="245" column="8" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="108" bodyend="118"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1ad55bfecb7b850524fe282e1f23801cf7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::cudaGraphExecBase</definition>
+        <argsstring>(const cudaGraphExecBase &amp;)=delete</argsstring>
+        <name>cudaGraphExecBase</name>
+        <qualifiedname>tf::cudaGraphExecBase::cudaGraphExecBase</qualifiedname>
+        <param>
+          <type>const <ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="250" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecBase_1a139e4dadab8458ad38998662c1d50f7a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;</type>
+        <definition>cudaGraphExecBase &amp; tf::cudaGraphExecBase&lt; Creator, Deleter &gt;::operator=</definition>
+        <argsstring>(const cudaGraphExecBase &amp;)=delete</argsstring>
+        <name>operator=</name>
+        <qualifiedname>tf::cudaGraphExecBase::operator=</qualifiedname>
+        <param>
+          <type>const <ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref> &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="252" column="21"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create an executable CUDA graph managed by C++ smart pointer </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>Creator</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>functor to create the stream (used in constructor) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>Deleter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>functor to delete the stream (used in destructor)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This class wraps a <computeroutput>cudaGraphExec_t</computeroutput> handle with <computeroutput><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref></computeroutput> to ensure proper resource management and automatic cleanup. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraphExec_t &gt;, Deleter &gt;</label>
+      </node>
+      <node id="1">
+        <label>tf::cudaGraphExecBase&lt; Creator, Deleter &gt;</label>
+        <link refid="classtf_1_1cudaGraphExecBase"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraphExec_t &gt;, Deleter &gt;</label>
+      </node>
+      <node id="1">
+        <label>tf::cudaGraphExecBase&lt; Creator, Deleter &gt;</label>
+        <link refid="classtf_1_1cudaGraphExecBase"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/cuda/cuda_graph_exec.hpp" line="87" column="1" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="87" bodyend="253"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaGraphExecBase_1ac7c11b5dd4d0ce5bdeb64f89b14eb173" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>base_type</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1aed30ccc98bb2187e9141c4f7b63ff66e" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>copy</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a3dc4936c19687b4af7e57c4745cac73d" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>cudaGraphExecBase</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a9850f144ed008b41b95ac092a19b9658" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>cudaGraphExecBase</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1ad55bfecb7b850524fe282e1f23801cf7" prot="private" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>cudaGraphExecBase</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1afa67dc39ef8f142284b799dd0c93aed2" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>fill</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1af5c546cfeb8d42f4b6aa52dd3eb2af3f" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>for_each</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1aaf933c0b9ed7bdff936db1f48967cffb" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>for_each_index</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1ad3da5e8cdae7555a08735fabefdf131d" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>host</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a9d9842feec938f6dad9d21f66a202bb6" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>kernel</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1aea367c6ac5b55854b9b695d4e249b17e" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>memcpy</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1ae1a9cea343a306e114daeeab9418dd5b" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>memset</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a8b7a950944583d2fd90a5d40275982b7" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a139e4dadab8458ad38998662c1d50f7a" prot="private" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1ae3b9553ae626613941aa7c50515cd42b" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>single_task</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1ad8d934fd6f0caf65cb53afd0dc7880aa" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>transform</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a516dead6bca70b45b6322db171609604" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>transform</name></member>
+      <member refid="classtf_1_1cudaGraphExecBase_1a195d1630c74657d095225ec0cb5343f1" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecBase</scope><name>zero</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

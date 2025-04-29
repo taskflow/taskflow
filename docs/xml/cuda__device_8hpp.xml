@@ -16,15 +16,47 @@
       </node>
     </incdepgraph>
     <invincdepgraph>
+      <node id="6">
+        <label>taskflow/cuda/algorithm/for_each.hpp</label>
+        <link refid="for__each_8hpp"/>
+      </node>
+      <node id="7">
+        <label>taskflow/cuda/algorithm/transform.hpp</label>
+        <link refid="transform_8hpp"/>
+      </node>
       <node id="1">
         <label>taskflow/cuda/cuda_device.hpp</label>
         <link refid="cuda__device_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
       </node>
+      <node id="3">
+        <label>taskflow/cuda/cuda_graph.hpp</label>
+        <link refid="cuda__graph_8hpp_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>taskflow/cuda/cuda_graph_exec.hpp</label>
+        <link refid="cuda__graph__exec_8hpp_source"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
       <node id="2">
         <label>taskflow/cuda/cuda_memory.hpp</label>
         <link refid="cuda__memory_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>taskflow/cuda/cudaflow.hpp</label>
+        <link refid="cudaflow_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
       </node>
     </invincdepgraph>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>

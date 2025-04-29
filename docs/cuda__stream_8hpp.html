@@ -72,13 +72,31 @@
           <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-doc">
             <dt>
-              class <a href="classtf_1_1cudaStream.html" class="m-doc">tf::cudaStream</a>
+              struct <a href="structtf_1_1cudaEventCreator.html" class="m-doc">tf::cudaEventCreator</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA stream</dd>
+            <dd>functor to create a <code>cudaEvent_t</code> object</dd>
             <dt>
-              class <a href="classtf_1_1cudaEvent.html" class="m-doc">tf::cudaEvent</a>
+              struct <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">tf::cudaEventDeleter</a>
             </dt>
-            <dd>class to create an RAII-styled wrapper over a native CUDA event</dd>
+            <dd>functor to delete a <code>cudaEvent_t</code> object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
+              class <a href="classtf_1_1cudaEventBase.html" class="m-doc">tf::cudaEventBase</a>
+            </dt>
+            <dd>class to create a smart pointer wrapper for managing <code>cudaEvent_t</code></dd>
+            <dt>
+              struct <a href="structtf_1_1cudaStreamCreator.html" class="m-doc">tf::cudaStreamCreator</a>
+            </dt>
+            <dd>functor to create a <code>cudaStream_t</code> object</dd>
+            <dt>
+              struct <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">tf::cudaStreamDeleter</a>
+            </dt>
+            <dd>functor to delete a <code>cudaStream_t</code> object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
+              class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">tf::cudaStreamBase</a>
+            </dt>
+            <dd>class to create a smart pointer wrapper for managing <code>cudaStream_t</code></dd>
           </dl>
         </section>
       </div>

@@ -516,6 +516,16 @@ class Executor {
   @endcode
   */
   size_t num_workers() const noexcept;
+  
+  /**
+  @brief queries the number of workers that are currently not making any stealing attempts
+  */
+  size_t num_waiters() const noexcept;
+  
+  /**
+  @brief queries the number of queues used in the work-stealing loop
+  */
+  size_t num_queues() const noexcept;
 
   /**
   @brief queries the number of running topologies at the time of this call
@@ -713,7 +723,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
 
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -745,7 +755,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -781,7 +791,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -818,7 +828,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -861,7 +871,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
@@ -903,7 +913,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously
-         when the given dependents finish
+         when the given predecessors finish
   
   @tparam P task parameters type
   @tparam F callable type
@@ -949,7 +959,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam F callable type
   @tparam I iterator type 
@@ -994,7 +1004,7 @@ class Executor {
   
   /**
   @brief runs the given function asynchronously 
-         when the given range of dependents finish
+         when the given range of predecessors finish
   
   @tparam P task parameters type
   @tparam F callable type
@@ -1043,29 +1053,22 @@ class Executor {
 
   private:
     
-  const size_t _MAX_STEALS;
-  
   std::mutex _taskflows_mutex;
   
   std::vector<Worker> _workers;
   DefaultNotifier _notifier;
 
 #if __cplusplus >= TF_CPP20
-  std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
-  std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 #else
-  Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
-  std::atomic<bool> _done {0};
 #endif
-
   
   std::list<Taskflow> _taskflows;
 
-  Freelist<Node*> _freelist;
+  Freelist<Node*> _buffers;
 
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -1074,7 +1077,7 @@ class Executor {
   void _observer_epilogue(Worker&, Node*);
   void _spawn(size_t);
   void _exploit_task(Worker&, Node*&);
-  void _explore_task(Worker&, Node*&);
+  bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
   void _set_up_topology(Worker*, Topology*);
@@ -1104,14 +1107,14 @@ class Executor {
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
-  I _set_up_graph(I, I, Topology*, Node*, nstate_t);
+  I _set_up_graph(I, I, Topology*, Node*);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
   
   template <typename I>
   void _corun_graph(Worker&, Node*, I, I);
-  
+
   template <typename I>
   void _schedule(Worker&, I, I);
 
@@ -1119,7 +1122,7 @@ class Executor {
   void _schedule(I, I);
 
   template <typename I>
-  void _schedule_graph_with_parent(Worker&, I, I, Node*, nstate_t);
+  void _schedule_graph_with_parent(Worker&, I, I, Node*);
 
   template <typename P, typename F>
   auto _async(P&&, F&&, Topology*, Node*);
@@ -1133,11 +1136,9 @@ class Executor {
 
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
-  _MAX_STEALS      ((N+1) << 1),
-  _workers         (N),
-  _notifier        (N),
-  _latch           (N+1),
-  _freelist        (N),
+  _workers  (N),
+  _notifier (N),
+  _buffers  (N),
   _worker_interface(std::move(wix)) {
 
   if(N == 0) {
@@ -1159,12 +1160,14 @@ inline Executor::~Executor() {
   wait_for_all();
 
   // shut down the scheduler
+  for(size_t i=0; i<_workers.size(); ++i) {
+  #if __cplusplus >= TF_CPP20
+    _workers[i]._done.test_and_set(std::memory_order_relaxed);
+  #else
+    _workers[i]._done.store(true, std::memory_order_relaxed);
+  #endif
+  }
 
-#if __cplusplus >= TF_CPP20
-  _done.test_and_set(std::memory_order_relaxed);
-#else
-  _done = true;
-#endif
   _notifier.notify_all();
 
   for(auto& w : _workers) {
@@ -1175,6 +1178,22 @@ inline Executor::~Executor() {
 // Function: num_workers
 inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
+}
+
+// Function: num_waiters
+inline size_t Executor::num_waiters() const noexcept {
+#if __cplusplus >= TF_CPP20
+  return _notifier.num_waiters();
+#else
+  // Unfortunately, nonblocking notifier does not have an easy way to return
+  // the number of workers that are not making stealing attempts.
+  return 0;
+#endif
+}
+
+// Function: num_queues
+inline size_t Executor::num_queues() const noexcept {
+  return _workers.size() + _buffers.size();
 }
 
 // Function: num_topologies
@@ -1191,12 +1210,6 @@ inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
 
-// Function: _this_worker
-//inline Worker* Executor::_this_worker() const {
-//  auto w = pt::this_worker;
-//  return (w && w->_executor == this) ? w : nullptr;
-//}
-
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
   auto w = pt::this_worker;
@@ -1206,10 +1219,6 @@ inline int Executor::this_worker_id() const {
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
 
-  // Note: we can't declare latch here as a local variable
-  //       since the main thread may leave quicker than other thread
-  //       and then destroy it, causing the other thread to dangle
-  //       with the latch
   for(size_t id=0; id<N; ++id) {
 
     _workers[id]._id = id;
@@ -1220,15 +1229,10 @@ inline void Executor::_spawn(size_t N) {
 
       pt::this_worker = &w;
 
-      // synchronize with the main thread to ensure all worker data
-      // has been set (e.g., _thread)
-      _latch.arrive_and_wait(); 
-      
-      // initialize the random engine and seed for work-stealing
+      // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
         std::hash<std::thread::id>()(std::this_thread::get_id()))
       );
-      w._rdvtm = std::uniform_int_distribution<size_t>(0, 2*_workers.size()-2);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_interface) {
@@ -1242,12 +1246,14 @@ inline void Executor::_spawn(size_t N) {
       // the previous worker may stop while the following workers
       // are still preparing for entering the scheduling loop
       try {
+
+        // worker loop
         while(1) {
 
-          // execute the tasks.
+          // drain out the local queue
           _exploit_task(w, t);
 
-          // wait for tasks
+          // steal and wait for tasks
           if(_wait_for_task(w, t) == false) {
             break;
           }
@@ -1264,13 +1270,15 @@ inline void Executor::_spawn(size_t N) {
 
     });
   } 
-
-  _latch.arrive_and_wait();
 }
 
 // Function: _corun_until
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
+
+  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
+    
+  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
   
   exploit:
 
@@ -1281,25 +1289,25 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
     }
     else {
       size_t num_steals = 0;
+      size_t vtm = w._vtm;
 
       explore:
+      
+      //auto vtm = udist(w._rdgen);
 
-      //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
-      t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-                                       _freelist.steal(w._vtm - _workers.size());
+      t = (vtm < _workers.size()) ? _workers[vtm]._wsq.steal() : 
+                                    _buffers.steal(vtm - _workers.size());
 
       if(t) {
         _invoke(w, t);
+        w._vtm = vtm;
         goto exploit;
       }
       else if(!stop_predicate()) {
-        if(num_steals++ > _MAX_STEALS) {
+        if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
-        // skip worker-id
-        //auto r = w._rdgen.random_range(0, 2*_workers.size()-2);
-        auto r = w._rdvtm(w._rdgen);
-        w._vtm = r + (r >= w._id);
+        vtm = udist(w._rdgen);
         goto explore;
       }
       else {
@@ -1310,42 +1318,53 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 }
 
 // Function: _explore_task
-inline void Executor::_explore_task(Worker& w, Node*& t) {
+inline bool Executor::_explore_task(Worker& w, Node*& t) {
 
   //assert(!t);
+  
+  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
+  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
 
   size_t num_steals = 0;
+  size_t vtm = w._vtm;
 
-  // Here, we write do-while to make the worker steal at once
-  // from the assigned victim.
-  do {
-    //t = (w._id == w._vtm) ? _freelist.steal(w._id) : _workers[w._vtm]._wsq.steal();
-    t = (w._vtm < _workers.size()) ? _workers[w._vtm]._wsq.steal() : 
-                                     _freelist.steal(w._vtm - _workers.size());
+  // Make the worker steal immediately from the assigned victim.
+  while(true) {
+    
+    // Randomely generate a next victim.
+    //vtm = udist(w._rdgen); //w._rdvtm();
+
+    // If the worker's victim thread is within the worker pool, steal from the worker's queue.
+    // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
+    t = (vtm < _workers.size())
+      ? _workers[vtm]._wsq.steal()
+      : _buffers.steal(vtm - _workers.size());
 
     if(t) {
+      w._vtm = vtm;
       break;
     }
 
-    if (++num_steals > _MAX_STEALS) {
+    // Increment the steal count, and if it exceeds MAX_STEALS, yield the thread.
+    // If the number of *consecutive* empty steals reaches MAX_STEALS, exit the loop.
+    if (++num_steals > MAX_STEALS) {
       std::this_thread::yield();
-      if (num_steals > _MAX_STEALS + 100) {
+      if(num_steals > 100 + MAX_STEALS) {
         break;
       }
     }
 
-    // skip worker-id
-    //auto r = w._rdgen.random_range(0, 2*_workers.size()-2);
-    auto r = w._rdvtm(w._rdgen);
-    w._vtm = r + (r >= w._id);
-  } 
-#if __cplusplus >= TF_CPP20
-  // the _DONE can be checked later in wait_for_task?
-  while(!_done.test(std::memory_order_relaxed));
-#else
-  while(!_done);
-#endif
+  #if __cplusplus >= TF_CPP20
+    if(w._done.test(std::memory_order_relaxed)) {
+  #else
+    if(w._done.load(std::memory_order_relaxed)) {
+  #endif
+      return false;
+    } 
 
+    vtm = udist(w._rdgen); //w._rdvtm();
+  } 
+  return true;
 }
 
 // Procedure: _exploit_task
@@ -1357,56 +1376,65 @@ inline void Executor::_exploit_task(Worker& w, Node*& t) {
 }
 
 // Function: _wait_for_task
-inline bool Executor::_wait_for_task(Worker& worker, Node*& t) {
+inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
 
   explore_task:
 
-  _explore_task(worker, t);
-
-  if(t) {
-    return true;
-  }
-  
-  // The last thief who successfully stole a task will wake up
-  // another thief worker to avoid starvation.
-//  if(t) {
-//    _notifier.notify_one();
-//    return true;
-//  }
-  
-  // ---- 2PC guard ----
-  _notifier.prepare_wait(worker._waiter);
-
-  if(!_freelist.empty()) {
-    _notifier.cancel_wait(worker._waiter);
-    worker._vtm = worker._id;
-    goto explore_task;
-  }
-
-#if __cplusplus >= TF_CPP20
-  if(_done.test(std::memory_order_relaxed)) {
-#else
-  if(_done) {
-#endif
-    _notifier.cancel_wait(worker._waiter);
-    _notifier.notify_all();
+  if(_explore_task(w, t) == false) {
     return false;
   }
   
-  // We need to use index-based scanning to avoid data race
-  // with _spawn which may initialize a worker at the same time.
-  for(size_t vtm=0; vtm<_workers.size(); vtm++) {
-    if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait(worker._waiter);
-      worker._vtm = vtm;
+  // Go exploit the task if we successfully steal one.
+  if(t) {
+    return true;
+  }
+
+  // Entering the 2PC guard as all queues should be empty after many stealing attempts.
+  _notifier.prepare_wait(w._waiter);
+  
+  // Condition #1: buffers should be empty
+  for(size_t vtm=0; vtm<_buffers.size(); ++vtm) {
+    if(!_buffers._buckets[vtm].queue.empty()) {
+      _notifier.cancel_wait(w._waiter);
+      w._vtm = vtm + _workers.size();
       goto explore_task;
     }
   }
   
-  // Now I really need to relinquish my self to others
-  _notifier.commit_wait(worker._waiter);
+  // Condition #2: worker queues should be empty
+  // Note: We need to use index-based looping to avoid data race with _spawan
+  // which initializes other worker data structure at the same time
+  for(size_t vtm=0; vtm<w._id; ++vtm) {
+    if(!_workers[vtm]._wsq.empty()) {
+      _notifier.cancel_wait(w._waiter);
+      w._vtm = vtm;
+      goto explore_task;
+    }
+  }
+  
+  // due to the property of the work-stealing queue, we don't need to check
+  // the queue of this worker
+  for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
+    if(!_workers[vtm]._wsq.empty()) {
+      _notifier.cancel_wait(w._waiter);
+      w._vtm = vtm;
+      goto explore_task;
+    }
+  }
+  
+  // Condition #3: worker should be alive
+#if __cplusplus >= TF_CPP20
+  if(w._done.test(std::memory_order_relaxed)) {
+#else
+  if(w._done.load(std::memory_order_relaxed)) {
+#endif
+    _notifier.cancel_wait(w._waiter);
+    return false;
+  }
+  
+  // Now I really need to relinquish myself to others.
+  _notifier.commit_wait(w._waiter);
   goto explore_task;
-
 }
 
 // Function: make_observer
@@ -1452,18 +1480,19 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
+    worker._wsq.push(node, [&](){ _buffers.push(node); });
     _notifier.notify_one();
     return;
   }
   
-  _freelist.push(node);
+  // go through the centralized queue
+  _buffers.push(node);
   _notifier.notify_one();
 }
 
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
-  _freelist.push(node);
+  _buffers.push(node);
   _notifier.notify_one();
 }
 
@@ -1477,23 +1506,22 @@ void Executor::_schedule(Worker& worker, I first, I last) {
     return;
   }
   
-  // [NOTE]: We cannot use first/last as the for-loop condition 
-  // (e.g., for(; first != last; ++first)) since when a node is inserted
-  // into the queue the node can run and finish immediately.
-  // If this is the last node in the graph, it will tear down the parent
-  // container which cause the last ++first to fail.
-  // This problem is specific to MSVC which has strict iterator arithmetics.
+  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
+  // This is because when a node v is inserted into the queue, v can run and finish 
+  // immediately. If v is the last node in the graph, it will tear down the parent task vector
+  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
+  // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
     for(size_t i=0; i<num_nodes; i++) {
       auto node = detail::get_node_ptr(first[i]);
-      worker._wsq.push(node, [&](){ _freelist.push(worker._id, node); });
+      worker._wsq.push(node, [&](){ _buffers.push(node); });
       _notifier.notify_one();
     }
     return;
   }
-
+  
   for(size_t i=0; i<num_nodes; i++) {
-    _freelist.push(detail::get_node_ptr(first[i]));
+    _buffers.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }
@@ -1508,22 +1536,25 @@ inline void Executor::_schedule(I first, I last) {
     return;
   }
 
+  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
+  // This is because when a node v is inserted into the queue, v can run and finish 
+  // immediately. If v is the last node in the graph, it will tear down the parent task vector
+  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
+  // iterator implementation in std::vector than GCC/Clang.
   for(size_t i=0; i<num_nodes; i++) {
-    _freelist.push(detail::get_node_ptr(first[i]));
+    _buffers.push(detail::get_node_ptr(first[i]));
   }
   _notifier.notify_n(num_nodes);
 }
   
 template <typename I>
-void Executor::_schedule_graph_with_parent(
-  Worker& worker, I beg, I end, Node* parent, nstate_t nstate
-) {
-  auto send = _set_up_graph(beg, end, parent->_topology, parent, nstate);
+void Executor::_schedule_graph_with_parent(Worker& worker, I beg, I end, Node* parent) {
+  auto send = _set_up_graph(beg, end, parent->_topology, parent);
   parent->_join_counter.fetch_add(send - beg, std::memory_order_relaxed);
   _schedule(worker, beg, send);
 }
 
-inline void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
+TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
     _schedule(worker, cache);
   }
@@ -1648,12 +1679,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
   // Reset the join counter with strong dependencies to support cycles.
   // + We must do this before scheduling the successors to avoid race
-  //   condition on _dependents.
+  //   condition on _predecessors.
   // + We must use fetch_add instead of direct assigning
   //   because the user-space call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
   node->_join_counter.fetch_add(
-    node->num_dependents() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
+    node->num_predecessors() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
   );
 
   // acquire the parent flow counter
@@ -1667,8 +1698,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     case Node::CONDITION:
     case Node::MULTI_CONDITION: {
       for(auto cond : conds) {
-        if(cond >= 0 && static_cast<size_t>(cond) < node->_successors.size()) {
-          auto s = node->_successors[cond];
+        if(cond >= 0 && static_cast<size_t>(cond) < node->_num_successors) {
+          auto s = node->_edges[cond]; 
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           join_counter.fetch_add(1, std::memory_order_relaxed);
@@ -1680,10 +1711,9 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
     // non-condition task
     default: {
-      for(size_t i=0; i<node->_successors.size(); ++i) {
+      for(size_t i=0; i<node->_num_successors; ++i) {
         //if(auto s = node->_successors[i]; --(s->_join_counter) == 0) {
-        if(auto s = node->_successors[i]; 
-          s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+        if(auto s = node->_edges[i]; s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
@@ -1708,7 +1738,7 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache
     }
   }
   else {  
-    // needs to fetch every data before join-counter becomes zero at which
+    // needs to fetch every data before join counter becomes zero at which
     // the node may be deleted
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
@@ -1782,12 +1812,12 @@ inline void Executor::_invoke_static_task(Worker& worker, Node* node) {
 
 // Procedure: _invoke_subflow_task
 inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
+    
+  auto& h = *std::get_if<Node::Subflow>(&node->_handle);
+  auto& g = h.subgraph;
 
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     
-    auto& h = *std::get_if<Node::Subflow>(&node->_handle);
-    auto& g = h.subgraph;
-
     // set up the subflow
     Subflow sf(*this, worker, node, g);
 
@@ -1800,18 +1830,23 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     
     // spawn the subflow if it is joinable and its graph is non-empty
     // implicit join is faster than Subflow::join as it does not involve corun
-    if(sf.joinable() && g.size() > sf._tag) {
+    if(sf.joinable() && g.size()) {
 
       // signal the executor to preempt this node
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      _schedule_graph_with_parent(worker, g.begin() + sf._tag, g.end(), node, NSTATE::NONE);
+      _schedule_graph_with_parent(worker, g.begin(), g.end(), node);
       return true;
     }
   }
   else {
     node->_nstate &= ~NSTATE::PREEMPTED;
+  }
+
+  // the subflow has finished or joined
+  if((node->_nstate & NSTATE::RETAIN_SUBFLOW) == 0) {
+    g.clear();
   }
 
   return false;
@@ -1857,13 +1892,13 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node, NSTATE::NONE);
+    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node);
     return true;
   }
+
   // second entry - already spawned
-  else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
-  }
+  node->_nstate &= ~NSTATE::PREEMPTED;
+
   return false;
 }
 
@@ -1912,14 +1947,14 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
       _observer_epilogue(worker, node);
     break;
     
-    // void(Runtime&)
+    // void(Runtime&) - silent async
     case 1:
       if(_invoke_runtime_task_impl(worker, node, *std::get_if<1>(&work))) {
         return true;
       }
     break;
 
-    // void(Runtime&, bool)
+    // void(Runtime&, bool) - async
     case 2:
       if(_invoke_runtime_task_impl(worker, node, *std::get_if<2>(&work))) {
         return true;
@@ -1995,16 +2030,16 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   _increment_topology();
 
-  // Need to check the empty under the lock since subflow task may
-  // define detached blocks that modify the taskflow at the same time
-  bool empty;
-  {
-    std::lock_guard<std::mutex> lock(f._mutex);
-    empty = f.empty();
-  }
+  //// Need to check the empty under the lock since subflow task may
+  //// define detached blocks that modify the taskflow at the same time
+  //bool empty;
+  //{
+  //  std::lock_guard<std::mutex> lock(f._mutex);
+  //  empty = f.empty();
+  //}
 
   // No need to create a real topology but returns an dummy future
-  if(empty || p()) {
+  if(f.empty() || p()) {
     c();
     std::promise<void> promise;
     promise.set_value();
@@ -2082,7 +2117,7 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
   // anchor this parent as the blocking point
   {
     AnchorGuard anchor(p);
-    _schedule_graph_with_parent(w, first, last, p, NSTATE::NONE);
+    _schedule_graph_with_parent(w, first, last, p);
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
     );
@@ -2135,9 +2170,8 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
   // ---- under taskflow lock ----
   auto& g = tpg->_taskflow._graph;
-  //g._clear_detached();
   
-  auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr, NSTATE::NONE);
+  auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr);
   tpg->_join_counter.store(send - g.begin(), std::memory_order_relaxed);
 
   w ? _schedule(*w, g.begin(), send) : _schedule(g.begin(), send);
@@ -2145,7 +2179,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
 // Function: _set_up_graph
 template <typename I>
-I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t state) {
+I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent) {
 
   auto send = first;
   for(; first != last; ++first) {
@@ -2153,26 +2187,15 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent, nstate_t
     auto node = first->get();
     node->_topology = tpg;
     node->_parent = parent;
-    node->_nstate = state;
-    node->_estate.store(0, std::memory_order_relaxed);
+    node->_nstate = NSTATE::NONE;
+    node->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
 
     // move source to the first partition
-    if(node->num_dependents() == 0) {
+    // root, root, root, v1, v2, v3, v4, ...
+    if(node->num_predecessors() == 0) {
       std::iter_swap(send++, first);
-    }
-
-    // handle-specific clear
-    switch(node->_handle.index()) {
-
-      // clear detached nodes
-      case Node::SUBFLOW: {
-        std::get_if<Node::Subflow>(&node->_handle)->subgraph.clear();
-      } break;
-
-      default:
-      break;
     }
   }
   return send;
@@ -2189,9 +2212,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
-    //auto& g = tpg->_taskflow._graph;
-    //tpg->_join_counter.store(tpg->_num_sources, std::memory_order_relaxed);
-    //_schedule(worker, g.begin(), g.begin() + tpg->_num_sources);
     _set_up_topology(&worker, tpg);
   }
   // case 2: the final run of this topology
@@ -2251,34 +2271,13 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 inline void Subflow::join() {
 
   if(!joinable()) {
-    TF_THROW("subflow already joined or detached");
+    TF_THROW("subflow already joined");
   }
     
-  // iterator to the begining of the subflow
-  auto gbeg = _graph.begin() + _tag;
-
-  // join here since corun graph may throw exception
-  _tag |= JOINED_BIT;
-
-  _executor._corun_graph(_worker, _parent, gbeg, _graph.end());
-}
-
-inline void Subflow::detach() {
-
-  if(!joinable()) {
-    TF_THROW("subflow already joined or detached");
-  }
-
-  if(_graph.size() > _tag) {
-    auto sbeg = _graph.begin() + _tag;
-    auto send = _executor._set_up_graph(
-      sbeg, _graph.end(), _parent->_topology, nullptr, NSTATE::DETACHED
-    );
-    _parent->_topology->_join_counter.fetch_add(send - sbeg, std::memory_order_relaxed);
-    _executor._schedule(_worker, sbeg, send);
-  }
+  _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
   
-  _tag |= JOINED_BIT;
+  // join here since corun graph may throw exception
+  _parent->_nstate |= NSTATE::JOINED_SUBFLOW;
 }
 
 #endif

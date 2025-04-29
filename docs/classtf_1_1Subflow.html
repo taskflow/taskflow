@@ -62,7 +62,7 @@
             </li>
           </ul>
         </nav>
-<p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is spawned from the execution of a task to dynamically manage a child graph that may depend on runtime variables. You can explicitly join or detach a subflow by calling <a href="#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a> or <a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">tf::<wbr />Subflow::<wbr />detach</a>, respectively. By default, the Taskflow runtime will implicitly join a subflow it is is joinable.</p><p>The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
+<p><a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a> is spawned from the execution of a task to dynamically manage a child graph that may depend on runtime variables. You can explicitly join a subflow by calling <a href="#a59fcac1323e70d920088dd37bd0be245" class="m-doc">tf::<wbr />Subflow::<wbr />join</a>, respectively. By default, the Taskflow runtime will implicitly join a subflow it is is joinable.</p><p>The following example creates a taskflow graph that spawns a subflow from the execution of task <code>B</code>, and the subflow contains three tasks, <code>B1</code>, <code>B2</code>, and <code>B3</code>, where <code>B3</code> runs after <code>B1</code> and <code>B2</code>.</p><pre class="m-code"><span class="c1">// create three static tasks</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
@@ -97,10 +97,6 @@
             </dt>
             <dd>enables the subflow to join its parent task</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc">detach</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd>enables the subflow to detach from its parent task</dd>
-            <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#ac3805e898b6a55b6e5173c74c5555e57" class="m-doc">joinable</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the subflow is joinable</dd>
@@ -112,6 +108,14 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a587641d0977abc7fca66d144edb19db2" class="m-doc-self">graph</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;</span>
             </dt>
             <dd>acquires the associated graph</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#ac585638d8ca8fb2f34c4826cb0d4f39f" class="m-doc">retain</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>specifies whether to keep the subflow after it is joined</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#af34dc5c5d4da78f9140c33bbaa94fe07" class="m-doc">retain</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            </dt>
+            <dd>queries if the subflow will be retained after it is joined</dd>
           </dl>
         </section>
         <section>
@@ -126,27 +130,49 @@
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w">  </span><span class="c1">// join the subflow of one task</span>
 <span class="p">});</span></pre><p>Only the worker that spawns this subflow can join it.</p>
           </div></section>
-          <section class="m-doc-details" id="acfdedc7e9676126e9a38ecf7b5a37864"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#acfdedc7e9676126e9a38ecf7b5a37864" class="m-doc-self">detach</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-            <p>enables the subflow to detach from its parent task</p>
-<p>Performs an immediate action to detach the subflow. Once the subflow is detached, it is considered finished and you may not modify the subflow anymore.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
-<span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
-<span class="p">});</span></pre><p>Only the worker that spawns this subflow can detach it.</p>
-          </div></section>
           <section class="m-doc-details" id="ac3805e898b6a55b6e5173c74c5555e57"><div>
             <h3>
               <span class="m-doc-wrap-bumper">bool tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac3805e898b6a55b6e5173c74c5555e57" class="m-doc-self">joinable</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
             </h3>
             <p>queries if the subflow is joinable</p>
-<p>This member function queries if the subflow is joinable. When a subflow is joined or detached, it becomes not joinable.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
+<p>This member function queries if the subflow is joinable. When a subflow is joined, it becomes not joinable.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// true</span>
 <span class="w">  </span><span class="n">sf</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">joinable</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">// false</span>
 <span class="p">});</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ac585638d8ca8fb2f34c4826cb0d4f39f"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac585638d8ca8fb2f34c4826cb0d4f39f" class="m-doc-self">retain</a>(</span><span class="m-doc-wrap">bool flag) <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>specifies whether to keep the subflow after it is joined</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">flag</td>
+                  <td><code>true</code> to retain the subflow after it is joined; <code>false</code> to discard it</td>
+                </tr>
+              </tbody>
+            </table>
+<p>By default, the runtime automatically clears a spawned subflow once it is joined. Setting this flag to <code>true</code> allows the application to retain the subflow&#x27;s structure for post-execution analysis like visualization.</p>
+          </div></section>
+          <section class="m-doc-details" id="af34dc5c5d4da78f9140c33bbaa94fe07"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Subflow::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af34dc5c5d4da78f9140c33bbaa94fe07" class="m-doc-self">retain</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries if the subflow will be retained after it is joined</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td><code>true</code> if the subflow will be retained after it is joined; <code>false</code> otherwise</td>
+                </tr>
+              </tfoot>
+            </table>
           </div></section>
         </section>
       </div>

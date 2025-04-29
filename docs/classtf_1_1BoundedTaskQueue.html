@@ -126,6 +126,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#ad2b4f8d262b0093ce08dea92c00fae1b" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
             </dt>
             <dd>steals an item from the queue</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8dfccb6523bc07fe9955ddda5136836a" class="m-doc">steal_with_hint</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals) -&gt; T</span>
+            </dt>
+            <dd>attempts to steal a task with a hint mechanism</dd>
           </dl>
         </section>
         <section>
@@ -201,7 +205,7 @@
                 </tr>
                 <tr>
                   <td>on_full</td>
-                  <td>callable to invoke when the queue is faull (insertion fails)</td>
+                  <td>callable to invoke when the queue is full (insertion fails)</td>
                 </tr>
               </tbody>
             </table>
@@ -215,7 +219,7 @@
               <span class="m-doc-wrap-bumper">T tf::<wbr />BoundedTaskQueue&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2b9e1d2502b489656b89cb505e95e71b" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>pops out an item from the queue</p>
-<p>Only the owner thread can pop out an item from the queue. The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::<wbr />nullopt</a> if this operation failed (empty queue).</p>
+<p>Only the owner thread can pop out an item from the queue. The return can be a <code>nullptr</code> if this operation failed (empty queue).</p>
           </div></section>
           <section class="m-doc-details" id="ad2b4f8d262b0093ce08dea92c00fae1b"><div>
             <h3>
@@ -225,7 +229,28 @@
               <span class="m-doc-wrap-bumper">T tf::<wbr />BoundedTaskQueue&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad2b4f8d262b0093ce08dea92c00fae1b" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>steals an item from the queue</p>
-<p>Any threads can try to steal an item from the queue. The return can be a <a href="https://en.cppreference.com/w/cpp/utility/optional/nullopt">std::<wbr />nullopt</a> if this operation failed (not necessary empty).</p>
+<p>Any threads can try to steal an item from the queue. The return can be a <code>nullptr</code> if this operation failed (not necessary empty).</p>
+          </div></section>
+          <section class="m-doc-details" id="a8dfccb6523bc07fe9955ddda5136836a"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T, size_t LogSize&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />BoundedTaskQueue&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8dfccb6523bc07fe9955ddda5136836a" class="m-doc-self">steal_with_hint</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals)</span></span>
+            </h3>
+            <p>attempts to steal a task with a hint mechanism</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_empty_steals</td>
+                  <td>a reference to a counter tracking consecutive empty steal attempts</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <code>num_empty_steals</code> is incremented; otherwise, <code>num_empty_steals</code> is reset to zero.</p>
           </div></section>
         </section>
       </div>

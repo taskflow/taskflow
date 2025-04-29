@@ -20,8 +20,8 @@ def analyze(Y):
 ###########################################################
 def run(target, method, thread, round):
 
-  exe = ../build/benchmarks/bench_{target}
-  print(exe, '-m', method, '-t', thread, '-r', round)
+  exe = "../build/benchmarks/bench_" + target;
+  print(exe, '-m', method, '-t', thread, '-r', round);
 
   with open(tmp_file, "w") as ofs:
     subprocess.call(
@@ -33,6 +33,7 @@ def run(target, method, thread, round):
   Y = []
   
   with open(tmp_file, "r") as ifs:
+    # first two lines are header
     ifs.readline()
     ifs.readline()
     for line in ifs:
@@ -64,7 +65,14 @@ def main():
              'binary_tree', 
              'linear_chain', 
              'matrix_multiplication',
-             'mnist'],
+             'black_scholes',
+             'mandelbrot',
+             'reduce_sum',
+             'scan',
+             'sort',
+             'for_each',
+             'async_task',
+             'hetero_traversal'],
     required=True
   )
 

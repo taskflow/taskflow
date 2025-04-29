@@ -19,28 +19,19 @@ function to output a message:
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cudaflow.hpp>  
-#include <taskflow/cuda/for_each.hpp>
 
 int main(int argc, const char** argv) {
 
-  tf::Executor executor;
-  tf::Taskflow taskflow;
+  // create a CUDA graph with a single-threaded task
+  tf::cudaGraph cg;
+  cf.single_task([] __device__ () { printf("hello CUDA Graph!\n"); });
+  
+  // instantiate an executable CUDA graph and run it through a stream
+  tf::cudaStream stream;
+  tf::cudaGraphExec exec(cg);
 
-  tf::Task task1 = taskflow.emplace([](){}).name("cpu task");
-  tf::Task task2 = taskflow.emplace([](){
-    // create a cudaFlow of a single-threaded task
-    tf::cudaFlow cf;
-    cf.single_task([] __device__ () { printf("hello cudaFlow!\n"); });
-    
-    // launch the cudaflow through a stream
-    tf::cudaStream stream;
-    cf.run(stream);
-    stream.synchronize();
-  }).name("gpu task");
+  stream.run(cg).synchronize();
 
-  task1.precede(task2);
-
-  executor.run(taskflow).wait();
   return 0;
 }
 @endcode
@@ -94,14 +85,15 @@ int main() {
 
 tf::Task make_cudaflow(tf::Taskflow& taskflow) {
   return taskflow.emplace([](){
-    // create a cudaFlow of a single-threaded task
-    tf::cudaFlow cf;
-    cf.single_task([] __device__ () { printf("cudaflow.cpp!\n"); });
+    // create a CUDA graph with a single-threaded task
+    tf::cudaGraph cg;
+    cf.single_task([] __device__ () { printf("hello CUDA Graph!\n"); });
     
-    // launch the cudaflow through a stream
+    // instantiate an executable CUDA graph and run it through a stream
     tf::cudaStream stream;
-    cf.run(stream);
-    stream.synchronize();
+    tf::cudaGraphExec exec(cg);
+
+    stream.run(cg).synchronize();
   }).name("gpu task");
 }
 @endcode

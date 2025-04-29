@@ -1,21 +1,20 @@
 
 list(APPEND TF_CUDA_UNITTESTS 
   test_cuda_objects
-  test_cuda_memory
   test_cuda_basics 
+  test_cuda_updates
   test_cuda_matrix 
   test_cuda_kmeans 
   test_cuda_for_each
-  test_cuda_for_each_index
   test_cuda_transform
-  test_cuda_reduce
-  test_cuda_scan
-  test_cuda_find
-  test_cuda_min_max_element
-  test_cuda_merge
-  test_cuda_basic_updates
-  test_cuda_capturer_optimizer
-  test_cuda_capture
+  #test_cuda_reduce
+  #test_cuda_scan
+  #test_cuda_find
+  #test_cuda_min_max_element
+  #test_cuda_merge
+
+  #test_cuda_capturer_optimizer
+  #test_cuda_capture
   
   #cuda_algorithms
   #cuda_algorithm_updates

@@ -9,16 +9,15 @@
     <innerclass refid="classtf_1_1ChromeObserver" prot="public">tf::ChromeObserver</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceAllocator" prot="public">tf::cudaDeviceAllocator</innerclass>
     <innerclass refid="classtf_1_1cudaDeviceVector" prot="private">tf::cudaDeviceVector</innerclass>
-    <innerclass refid="classtf_1_1cudaEvent" prot="public">tf::cudaEvent</innerclass>
-    <innerclass refid="structtf_1_1cudaEventCreator" prot="private">tf::cudaEventCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaEventDeleter" prot="private">tf::cudaEventDeleter</innerclass>
-    <innerclass refid="classtf_1_1cudaExecutionPolicy" prot="public">tf::cudaExecutionPolicy</innerclass>
-    <innerclass refid="classtf_1_1cudaFlow" prot="public">tf::cudaFlow</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowCapturer" prot="public">tf::cudaFlowCapturer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowLinearOptimizer" prot="public">tf::cudaFlowLinearOptimizer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowOptimizerBase" prot="private">tf::cudaFlowOptimizerBase</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowRoundRobinOptimizer" prot="public">tf::cudaFlowRoundRobinOptimizer</innerclass>
-    <innerclass refid="classtf_1_1cudaFlowSequentialOptimizer" prot="public">tf::cudaFlowSequentialOptimizer</innerclass>
+    <innerclass refid="classtf_1_1cudaEventBase" prot="public">tf::cudaEventBase</innerclass>
+    <innerclass refid="structtf_1_1cudaEventCreator" prot="public">tf::cudaEventCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaEventDeleter" prot="public">tf::cudaEventDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaGraphBase" prot="public">tf::cudaGraphBase</innerclass>
+    <innerclass refid="structtf_1_1cudaGraphCreator" prot="public">tf::cudaGraphCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaGraphDeleter" prot="public">tf::cudaGraphDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaGraphExecBase" prot="public">tf::cudaGraphExecBase</innerclass>
+    <innerclass refid="structtf_1_1cudaGraphExecCreator" prot="public">tf::cudaGraphExecCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaGraphExecDeleter" prot="public">tf::cudaGraphExecDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaScopedDevice" prot="public">tf::cudaScopedDevice</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; bool &gt;</innerclass>
@@ -32,9 +31,9 @@
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned int &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned long &gt;</innerclass>
     <innerclass refid="structtf_1_1cudaSharedMemory" prot="private">tf::cudaSharedMemory&lt; unsigned short &gt;</innerclass>
-    <innerclass refid="classtf_1_1cudaStream" prot="public">tf::cudaStream</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="private">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="private">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaStreamBase" prot="public">tf::cudaStreamBase</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamCreator" prot="public">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="public">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaTask" prot="public">tf::cudaTask</innerclass>
     <innerclass refid="classtf_1_1cudaUSMAllocator" prot="public">tf::cudaUSMAllocator</innerclass>
     <innerclass refid="classtf_1_1DataPipe" prot="public">tf::DataPipe</innerclass>
@@ -50,6 +49,9 @@
     <innerclass refid="classtf_1_1GuidedPartitioner" prot="public">tf::GuidedPartitioner</innerclass>
     <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
     <innerclass refid="classtf_1_1IndexRange" prot="public">tf::IndexRange</innerclass>
+    <innerclass refid="structtf_1_1is__runtime__task" prot="private">tf::is_runtime_task</innerclass>
+    <innerclass refid="structtf_1_1is__static__task" prot="private">tf::is_static_task</innerclass>
+    <innerclass refid="structtf_1_1is__subflow__task" prot="private">tf::is_subflow_task</innerclass>
     <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
@@ -263,84 +265,6 @@
         </inbodydescription>
         <location file="taskflow/algorithm/pipeline.hpp" line="197" column="1" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="197" bodyend="202"/>
       </memberdef>
-      <memberdef kind="enum" id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" prot="public" static="no" strong="yes">
-        <type>int</type>
-        <name>cudaTaskType</name>
-        <qualifiedname>tf::cudaTaskType</qualifiedname>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eaba2b45bdc11e2a4a6e86aab2ac693cbb" prot="public">
-          <name>EMPTY</name>
-          <initializer>= 0</initializer>
-          <briefdescription>
-<para>empty task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab9361011891280a44d85b967739cc6a5" prot="public">
-          <name>HOST</name>
-          <briefdescription>
-<para>host task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea41d4dbfd78ceea21abb0ecb03c3cc921" prot="public">
-          <name>MEMSET</name>
-          <briefdescription>
-<para>memory set task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eac5d10cc70cce96265c445f14e7f5aba4" prot="public">
-          <name>MEMCPY</name>
-          <briefdescription>
-<para>memory copy task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea35c10219c45ccfb5b07444fd7e17214c" prot="public">
-          <name>KERNEL</name>
-          <briefdescription>
-<para>memory copy task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea46be697979903d784a70aeec45eb14ad" prot="public">
-          <name>SUBFLOW</name>
-          <briefdescription>
-<para>subflow (child graph) task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132eab72f08e0732365cac9599b5c42157bf9" prot="public">
-          <name>CAPTURE</name>
-          <briefdescription>
-<para>capture task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <enumvalue id="namespacetf_1afebc56ae6d5765010d0dd13a5f04132ea0db45d2a4141101bdfe48e3314cfbca3" prot="public">
-          <name>UNDEFINED</name>
-          <briefdescription>
-<para>undefined task type </para>
-          </briefdescription>
-          <detaileddescription>
-          </detaileddescription>
-        </enumvalue>
-        <briefdescription>
-<para>enumeration of all cudaTask types </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/cuda_task.hpp" line="21" column="1" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="21" bodyend="38"/>
-      </memberdef>
     </sectiondef>
     <sectiondef kind="typedef">
       <memberdef kind="typedef" id="namespacetf_1a4d296d21f4a109b13bdb773fe2b54b01" prot="private" static="no">
@@ -355,7 +279,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="27" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="27" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="34" column="5" bodyfile="taskflow/core/worker.hpp" bodystart="34" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" prot="public" static="no">
         <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
@@ -388,20 +312,65 @@
         </inbodydescription>
         <location file="taskflow/algorithm/partitioner.hpp" line="820" column="1" bodyfile="taskflow/algorithm/partitioner.hpp" bodystart="820" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacetf_1a0c8e4b43b5822445e2316659bbd44245" prot="public" static="no">
-        <type><ref refid="classtf_1_1cudaExecutionPolicy" kindref="compound">cudaExecutionPolicy</ref>&lt; 512, 7 &gt;</type>
-        <definition>using tf::cudaDefaultExecutionPolicy =  cudaExecutionPolicy&lt;512, 7&gt;</definition>
+      <memberdef kind="typedef" id="namespacetf_1aa9929bb223bbb98bb7eebc3f3decc5ad" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaEventBase" kindref="compound">cudaEventBase</ref>&lt; <ref refid="structtf_1_1cudaEventCreator" kindref="compound">cudaEventCreator</ref>, <ref refid="structtf_1_1cudaEventDeleter" kindref="compound">cudaEventDeleter</ref> &gt;</type>
+        <definition>using tf::cudaEvent =  cudaEventBase&lt;cudaEventCreator, cudaEventDeleter&gt;</definition>
         <argsstring></argsstring>
-        <name>cudaDefaultExecutionPolicy</name>
-        <qualifiedname>tf::cudaDefaultExecutionPolicy</qualifiedname>
+        <name>cudaEvent</name>
+        <qualifiedname>tf::cudaEvent</qualifiedname>
         <briefdescription>
-<para>default execution policy </para>
+<para>default smart pointer type to manage a <computeroutput>cudaEvent_t</computeroutput> object with unique ownership </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_execution_policy.hpp" line="150" column="1" bodyfile="taskflow/cuda/cuda_execution_policy.hpp" bodystart="150" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="126" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaStreamBase" kindref="compound">cudaStreamBase</ref>&lt; <ref refid="structtf_1_1cudaStreamCreator" kindref="compound">cudaStreamCreator</ref>, <ref refid="structtf_1_1cudaStreamDeleter" kindref="compound">cudaStreamDeleter</ref> &gt;</type>
+        <definition>using tf::cudaStream =  cudaStreamBase&lt;cudaStreamCreator, cudaStreamDeleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>cudaStream</name>
+        <qualifiedname>tf::cudaStream</qualifiedname>
+        <briefdescription>
+<para>default smart pointer type to manage a <computeroutput>cudaStream_t</computeroutput> object with unique ownership </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="334" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="334" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1a713c427e4f9841a90dec67045a3babed" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref>&lt; <ref refid="structtf_1_1cudaGraphCreator" kindref="compound">cudaGraphCreator</ref>, <ref refid="structtf_1_1cudaGraphDeleter" kindref="compound">cudaGraphDeleter</ref> &gt;</type>
+        <definition>using tf::cudaGraph =  cudaGraphBase&lt;cudaGraphCreator, cudaGraphDeleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>cudaGraph</name>
+        <qualifiedname>tf::cudaGraph</qualifiedname>
+        <briefdescription>
+<para>default smart pointer type to manage a <computeroutput>cudaGraph_t</computeroutput> object with unique ownership </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cudaflow.hpp" line="18" column="1" bodyfile="taskflow/cuda/cudaflow.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" prot="public" static="no">
+        <type><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">cudaGraphExecBase</ref>&lt; <ref refid="structtf_1_1cudaGraphExecCreator" kindref="compound">cudaGraphExecCreator</ref>, <ref refid="structtf_1_1cudaGraphExecDeleter" kindref="compound">cudaGraphExecDeleter</ref> &gt;</type>
+        <definition>using tf::cudaGraphExec =  cudaGraphExecBase&lt;cudaGraphExecCreator, cudaGraphExecDeleter&gt;</definition>
+        <argsstring></argsstring>
+        <name>cudaGraphExec</name>
+        <qualifiedname>tf::cudaGraphExec</qualifiedname>
+        <briefdescription>
+<para>default smart pointer type to manage a <computeroutput>cudaGraphExec_t</computeroutput> object with unique ownership </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cudaflow.hpp" line="23" column="1" bodyfile="taskflow/cuda/cudaflow.hpp" bodystart="23" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="var">
@@ -493,7 +462,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="808" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="808" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="711" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="711" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -519,6 +488,28 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </inbodydescription>
         <location file="taskflow/core/task.hpp" line="44" column="29" bodyfile="taskflow/core/task.hpp" bodystart="44" bodyend="52"/>
       </memberdef>
+      <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tf::is_static_task_v</definition>
+        <argsstring></argsstring>
+        <name>is_static_task_v</name>
+        <qualifiedname>tf::is_static_task_v</qualifiedname>
+        <initializer>= is_static_task&lt;C&gt;::value</initializer>
+        <briefdescription>
+<para>determines if a callable is a static task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A static task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;void()&gt;</ref>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/task.hpp" line="110" column="16" bodyfile="taskflow/core/task.hpp" bodystart="110" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="variable" id="namespacetf_1aefeb96086f4a99f0e58a0f321012a52c" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
           <param>
@@ -530,16 +521,38 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         <argsstring></argsstring>
         <name>is_subflow_task_v</name>
         <qualifiedname>tf::is_subflow_task_v</qualifiedname>
-        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref>&amp;&gt;</initializer>
+        <initializer>= is_subflow_task&lt;C&gt;::value</initializer>
         <briefdescription>
-<para>determines if a callable is a dynamic task </para>
+<para>determines if a callable is a subflow task </para>
         </briefdescription>
         <detaileddescription>
-<para>A dynamic task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>
+<para>A subflow task is a callable object constructible from std::function&lt;void(Subflow&amp;)&gt;. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="97" column="16" bodyfile="taskflow/core/task.hpp" bodystart="97" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="135" column="16" bodyfile="taskflow/core/task.hpp" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacetf_1af3d94f0be0f7b49e195c4e92737b1f85" prot="public" static="no" constexpr="yes" mutable="no">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tf::is_runtime_task_v</definition>
+        <argsstring></argsstring>
+        <name>is_runtime_task_v</name>
+        <qualifiedname>tf::is_runtime_task_v</qualifiedname>
+        <initializer>= is_runtime_task&lt;C&gt;::value</initializer>
+        <briefdescription>
+<para>determines if a callable is a runtime task </para>
+        </briefdescription>
+        <detaileddescription>
+<para>A runtime task is a callable object constructible from std::function&lt;void(Runtime&amp;)&gt;. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/task.hpp" line="160" column="16" bodyfile="taskflow/core/task.hpp" bodystart="160" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -561,7 +574,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="105" column="16" bodyfile="taskflow/core/task.hpp" bodystart="105" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="173" column="16" bodyfile="taskflow/core/task.hpp" bodystart="173" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -583,53 +596,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="114" column="16" bodyfile="taskflow/core/task.hpp" bodystart="114" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespacetf_1a11fc9c98eb3a0d3a9aa55598b1f4d614" prot="public" static="no" constexpr="yes" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>bool</type>
-        <definition>bool tf::is_static_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_static_task_v</name>
-        <qualifiedname>tf::is_static_task_v</qualifiedname>
-        <initializer>= std::is_invocable_r_v&lt;void, C&gt; &amp;&amp;
-                                  !<ref refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kindref="member">is_condition_task_v</ref>&lt;C&gt;        &amp;&amp;
-                                  !<ref refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kindref="member">is_multi_condition_task_v</ref>&lt;C&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a static task </para>
-        </briefdescription>
-        <detaileddescription>
-<para>A static task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;void()&gt;</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="122" column="16" bodyfile="taskflow/core/task.hpp" bodystart="122" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="namespacetf_1af3d94f0be0f7b49e195c4e92737b1f85" prot="public" static="no" constexpr="yes" mutable="no">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>bool</type>
-        <definition>bool tf::is_runtime_task_v</definition>
-        <argsstring></argsstring>
-        <name>is_runtime_task_v</name>
-        <qualifiedname>tf::is_runtime_task_v</qualifiedname>
-        <initializer>= std::is_invocable_r_v&lt;void, C, <ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref>&amp;&gt;</initializer>
-        <briefdescription>
-<para>determines if a callable is a runtime task </para>
-        </briefdescription>
-        <detaileddescription>
-<para>A runtime task is a callable object constructible from <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;void(tf::Runtime&amp;)&gt;</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="132" column="16" bodyfile="taskflow/core/task.hpp" bodystart="132" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="182" column="16" bodyfile="taskflow/core/task.hpp" bodystart="182" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a73c20705fc54763f195a00b6e626e301" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -681,7 +648,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="1021" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1021" bodyend="1023"/>
+        <location file="taskflow/utility/small_vector.hpp" line="1027" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1027" bodyend="1029"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -710,7 +677,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="13" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="13" bodyend="24"/>
+        <location file="taskflow/utility/math.hpp" line="14" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="14" bodyend="25"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8d48a5014f34a9f97aae5269c2367e38" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -762,34 +729,34 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="59" column="16" bodyfile="taskflow/utility/math.hpp" bodystart="59" bodyend="61"/>
+        <location file="taskflow/utility/math.hpp" line="60" column="16" bodyfile="taskflow/utility/math.hpp" bodystart="60" bodyend="62"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a2bf015a9ef27c0efd2d3c73234317a06" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a8845f13b039ef9820087c9f467f6c734" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
           </param>
         </templateparamlist>
-        <type>int</type>
-        <definition>int tf::log2</definition>
+        <type>size_t</type>
+        <definition>size_t tf::floor_log2</definition>
         <argsstring>(T n)</argsstring>
-        <name>log2</name>
-        <qualifiedname>tf::log2</qualifiedname>
+        <name>floor_log2</name>
+        <qualifiedname>tf::floor_log2</qualifiedname>
         <param>
           <type>T</type>
           <declname>n</declname>
         </param>
         <briefdescription>
-<para>Computes the floor of log2 of the given positive integer. </para>
+<para>computes the floor of the base-2 logarithm of a number using count-leading-zeros (CTL). </para>
         </briefdescription>
         <detaileddescription>
-<para>This function calculates the largest integer <computeroutput>log</computeroutput> such that <computeroutput>2^log &lt;= n</computeroutput>.</para>
+<para>This function efficiently calculates the floor of <computeroutput>log2(n)</computeroutput> for both 32-bit and 64-bit integers.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>The type of the input. Must be an integral type. </para>
+<para>integer type (uint32_t or uint64_t). </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
@@ -798,19 +765,39 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
 <parametername>n</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>The positive integer to compute log2 for. Assumes <computeroutput>n &gt; 0</computeroutput>. </para>
+<para>input number. </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>The floor of log2 of <computeroutput>n</computeroutput>.</para>
-</simplesect>
-<simplesect kind="attention"><para>This function is constexpr and can be evaluated at compile time. </para>
+<simplesect kind="return"><para>floor of <computeroutput>log2(n)</computeroutput> </para>
 </simplesect>
 </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="76" column="15" bodyfile="taskflow/utility/math.hpp" bodystart="76" bodyend="82"/>
+        <location file="taskflow/utility/math.hpp" line="74" column="18" bodyfile="taskflow/utility/math.hpp" bodystart="74" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a908e0f3faf873e897b3e1bafbd4bb876" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>size_t</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>size_t</type>
+        <definition>size_t tf::static_floor_log2</definition>
+        <argsstring>()</argsstring>
+        <name>static_floor_log2</name>
+        <qualifiedname>tf::static_floor_log2</qualifiedname>
+        <briefdescription>
+<para>returns the floor of <computeroutput>log2(N)</computeroutput> at compile time </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="106" column="18" bodyfile="taskflow/utility/math.hpp" bodystart="106" bodyend="113"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a0b2dc0c0c931b9b627fc0a148085fa5e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -903,7 +890,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="100" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="100" bodyend="103"/>
+        <location file="taskflow/utility/math.hpp" line="131" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="131" bodyend="134"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5f9a989c8de663d3ee010cbc6de13c91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -986,7 +973,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="124" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="124" bodyend="133"/>
+        <location file="taskflow/utility/math.hpp" line="155" column="9" bodyfile="taskflow/utility/math.hpp" bodystart="155" bodyend="164"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a8d3fa9252b0da87bff1df912d0a591fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1065,7 +1052,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="149" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="149" bodyend="151"/>
+        <location file="taskflow/utility/math.hpp" line="180" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="180" bodyend="182"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a86489af717270b8c9b657b347215ef0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1156,7 +1143,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="169" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="169" bodyend="173"/>
+        <location file="taskflow/utility/math.hpp" line="200" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="200" bodyend="204"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a00b75b92482d883f06282d5181e6f6f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1197,7 +1184,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="190" column="3" bodyfile="taskflow/utility/math.hpp" bodystart="190" bodyend="193"/>
+        <location file="taskflow/utility/math.hpp" line="221" column="3" bodyfile="taskflow/utility/math.hpp" bodystart="221" bodyend="224"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5002af34dc323ff28e87ae83203b2c36" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <templateparamlist>
@@ -1255,7 +1242,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="211" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="211" bodyend="217"/>
+        <location file="taskflow/utility/math.hpp" line="242" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="242" bodyend="248"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a512ffa0d24a237b098f5de656b8bdcb0" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <templateparamlist>
@@ -1313,7 +1300,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="235" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="235" bodyend="241"/>
+        <location file="taskflow/utility/math.hpp" line="266" column="13" bodyfile="taskflow/utility/math.hpp" bodystart="266" bodyend="272"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3f8e89aebc29d42259157723c874954d" prot="public" static="no" const="no" explicit="no" inline="yes" noexcept="yes" virt="non-virtual">
         <templateparamlist>
@@ -1346,7 +1333,126 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="255" column="10" bodyfile="taskflow/utility/math.hpp" bodystart="255" bodyend="257"/>
+        <location file="taskflow/utility/math.hpp" line="286" column="10" bodyfile="taskflow/utility/math.hpp" bodystart="286" bodyend="288"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a0b8e46604b2d40f0a7f2cc4796003d49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename</type>
+            <defval>std::enable_if_t&lt;std::is_unsigned_v&lt;T&gt;&gt;</defval>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::ctz</definition>
+        <argsstring>(T x)</argsstring>
+        <name>ctz</name>
+        <qualifiedname>tf::ctz</qualifiedname>
+        <param>
+          <type>T</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+<para>counts the number of trailing zeros in an integer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function provides a portable implementation for counting the number of trailing zeros across different platforms and integer sizes (32-bit and 64-bit).</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>integer type (32-bit or 64-bit). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>non-zero integer to count trailing zeros from </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the number of trailing zeros in <computeroutput>x</computeroutput> </para>
+</simplesect>
+<simplesect kind="attention"><para>The behavior is undefined when <computeroutput>x</computeroutput> is 0. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="304" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="304" bodyend="328"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a15c9131faea47635a65e6caf21b6f868" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::coprime</definition>
+        <argsstring>(size_t N)</argsstring>
+        <name>coprime</name>
+        <qualifiedname>tf::coprime</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+<para>computes a coprime of a given number </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with <computeroutput>N</computeroutput>. If <computeroutput>N</computeroutput> is less than 3, it returns 1 as a default coprime.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>N</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>input number for which a coprime is to be found. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the largest number &lt; <computeroutput>N</computeroutput> that is coprime to N </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="343" column="18" bodyfile="taskflow/utility/math.hpp" bodystart="343" bodyend="353"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a5233c743d9f9f17fd27373aef11fa752" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>size_t</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; size_t, N &gt;</type>
+        <definition>std::array&lt; size_t, N &gt; tf::make_coprime_lut</definition>
+        <argsstring>()</argsstring>
+        <name>make_coprime_lut</name>
+        <qualifiedname>tf::make_coprime_lut</qualifiedname>
+        <briefdescription>
+<para>generates a compile-time array of coprimes for numbers from 0 to N-1 </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function constructs a constexpr array where each element at index <computeroutput>i</computeroutput> contains a coprime of <computeroutput>i</computeroutput> (the largest number less than <computeroutput>i</computeroutput> that is coprime to it).</para>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>N</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the size of the array to generate (should be greater than 0). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>a constexpr array of size <computeroutput>N</computeroutput> where each index holds a coprime of its value. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/math.hpp" line="365" column="22" bodyfile="taskflow/utility/math.hpp" bodystart="365" bodyend="372"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abbef08f01c467fd4f746c3247af892bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -1384,7 +1490,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="161" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="161" bodyend="177"/>
+        <location file="taskflow/utility/os.hpp" line="162" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="162" bodyend="178"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1422,7 +1528,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="192" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="192" bodyend="208"/>
+        <location file="taskflow/utility/os.hpp" line="193" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="193" bodyend="209"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3430ee9958ddb3ed09424e30475d9e2d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1437,7 +1543,26 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="225" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="225" bodyend="248"/>
+        <location file="taskflow/utility/os.hpp" line="226" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="226" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1ae9b372cf6337d0fd563fecc59a1915cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::pause</definition>
+        <argsstring>(size_t count)</argsstring>
+        <name>pause</name>
+        <qualifiedname>tf::pause</qualifiedname>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>pause CPU for a specified number of iterations </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/utility/os.hpp" line="254" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="254" bodyend="256"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1488,7 +1613,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="275" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="275" bodyend="280"/>
+        <location file="taskflow/utility/os.hpp" line="283" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="283" bodyend="288"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa4db761760106ce6f6d2e7c1ac4d8520" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1712,7 +1837,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="365" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="365" bodyend="371"/>
+        <location file="taskflow/core/graph.hpp" line="350" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="350" bodyend="356"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1730,7 +1855,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="376" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="376" bodyend="382"/>
+        <location file="taskflow/core/graph.hpp" line="361" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="361" bodyend="367"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa10195f7d5f2f1dd32bb852a9aa560f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1786,7 +1911,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="262" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="262" bodyend="268"/>
+        <location file="taskflow/core/worker.hpp" line="284" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="284" bodyend="290"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a18c45bc96e6725943e0a4396fa59b524" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1837,7 +1962,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="624" column="8" bodyfile="taskflow/core/task.hpp" bodystart="624" bodyend="627"/>
+        <location file="taskflow/core/task.hpp" line="675" column="8" bodyfile="taskflow/core/task.hpp" bodystart="675" bodyend="678"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ab7ec159c370bc052effcd0cdbc48047e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -2725,14 +2850,316 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </inbodydescription>
         <location file="taskflow/cuda/cuda_memory.hpp" line="153" column="13" bodyfile="taskflow/cuda/cuda_memory.hpp" bodystart="153" bodyend="160"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a693cfec4e770c8d66fbd920ed8a07df0" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1aebe9b7a5647bec130362384b5ef12e6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt;!std::is_same_v&lt; T, void &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>cudaMemcpy3DParms</type>
+        <definition>cudaMemcpy3DParms tf::cuda_get_copy_parms</definition>
+        <argsstring>(T *tgt, const T *src, size_t num)</argsstring>
+        <name>cuda_get_copy_parms</name>
+        <qualifiedname>tf::cuda_get_copy_parms</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const T *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>num</declname>
+        </param>
+        <briefdescription>
+<para>gets the memcpy node parameter of a copy task </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="23" column="19" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="23" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a6d7fe7b199f0264b24a831100083f813" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaMemcpy3DParms</type>
+        <definition>cudaMemcpy3DParms tf::cuda_get_memcpy_parms</definition>
+        <argsstring>(void *tgt, const void *src, size_t bytes)</argsstring>
+        <name>cuda_get_memcpy_parms</name>
+        <qualifiedname>tf::cuda_get_memcpy_parms</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>tgt</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>bytes</declname>
+        </param>
+        <briefdescription>
+<para>gets the memcpy node parameter of a memcpy task (untyped) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="44" column="26" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="44" bodyend="64"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1abdd529e729947d7b3123de89e43eb871" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaMemsetParams</type>
+        <definition>cudaMemsetParams tf::cuda_get_memset_parms</definition>
+        <argsstring>(void *dst, int ch, size_t count)</argsstring>
+        <name>cuda_get_memset_parms</name>
+        <qualifiedname>tf::cuda_get_memset_parms</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>ch</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>gets the memset node parameter of a memcpy task (untyped) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="69" column="25" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="69" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1abf3eeb8a29df53ea51239159ebb08431" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>cudaMemsetParams</type>
+        <definition>cudaMemsetParams tf::cuda_get_fill_parms</definition>
+        <argsstring>(T *dst, T value, size_t count)</argsstring>
+        <name>cuda_get_fill_parms</name>
+        <qualifiedname>tf::cuda_get_fill_parms</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>gets the memset node parameter of a fill task (typed) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="90" column="18" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="90" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a2e7a47a53034abe3218bcc583b0e9a56" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; is_pod_v&lt; T &gt; &amp;&amp;(sizeof(T)==1||sizeof(T)==2||sizeof(T)==4), void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>cudaMemsetParams</type>
+        <definition>cudaMemsetParams tf::cuda_get_zero_parms</definition>
+        <argsstring>(T *dst, size_t count)</argsstring>
+        <name>cuda_get_zero_parms</name>
+        <qualifiedname>tf::cuda_get_zero_parms</qualifiedname>
+        <param>
+          <type>T *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>gets the memset node parameter of a zero task (typed) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="114" column="18" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="114" bodyend="125"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a8c9a4702aab3ce76a55c62ec276cd9fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cuda_graph_get_num_root_nodes</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_num_root_nodes</name>
+        <qualifiedname>tf::cuda_graph_get_num_root_nodes</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>queries the number of root nodes in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="130" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="130" bodyend="137"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a874ee3b3ee52d7cf6b6a7cc13859365f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cuda_graph_get_num_nodes</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_num_nodes</name>
+        <qualifiedname>tf::cuda_graph_get_num_nodes</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>queries the number of nodes in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="142" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="142" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a8fc7af3adc7dd7e646bd5275d8ae3f56" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::cuda_graph_get_num_edges</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_num_edges</name>
+        <qualifiedname>tf::cuda_graph_get_num_edges</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>queries the number of edges in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="154" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="154" bodyend="161"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a66749e6824654eb9b39a5f7015db77b3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaGraphNode_t &gt;</type>
+        <definition>std::vector&lt; cudaGraphNode_t &gt; tf::cuda_graph_get_nodes</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_nodes</name>
+        <qualifiedname>tf::cuda_graph_get_nodes</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>acquires the nodes in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="168" column="20" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="168" bodyend="176"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a318074e828dcfed68ba60bf80d0e23ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; cudaGraphNode_t &gt;</type>
+        <definition>std::vector&lt; cudaGraphNode_t &gt; tf::cuda_graph_get_root_nodes</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_root_nodes</name>
+        <qualifiedname>tf::cuda_graph_get_root_nodes</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>acquires the root nodes in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="181" column="20" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="181" bodyend="189"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1aee737248773db73f03e2df6e3ce1623f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/utility/pair" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::pair</ref>&lt; cudaGraphNode_t, cudaGraphNode_t &gt; &gt;</type>
+        <definition>std::vector&lt; std::pair&lt; cudaGraphNode_t, cudaGraphNode_t &gt; &gt; tf::cuda_graph_get_edges</definition>
+        <argsstring>(cudaGraph_t graph)</argsstring>
+        <name>cuda_graph_get_edges</name>
+        <qualifiedname>tf::cuda_graph_get_edges</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>acquires the edges in a native CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="195" column="1" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="195" bodyend="207"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1afb8f9fd1a826738ea95b4cf224c65cb0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraphNodeType</type>
+        <definition>cudaGraphNodeType tf::cuda_get_graph_node_type</definition>
+        <argsstring>(cudaGraphNode_t node)</argsstring>
+        <name>cuda_get_graph_node_type</name>
+        <qualifiedname>tf::cuda_get_graph_node_type</qualifiedname>
+        <param>
+          <type>cudaGraphNode_t</type>
+          <declname>node</declname>
+        </param>
+        <briefdescription>
+<para>queries the type of a native CUDA graph node </para>
+        </briefdescription>
+        <detaileddescription>
+<para>valid type values are:<itemizedlist>
+<listitem><para>cudaGraphNodeTypeKernel = 0x00</para>
+</listitem><listitem><para>cudaGraphNodeTypeMemcpy = 0x01</para>
+</listitem><listitem><para>cudaGraphNodeTypeMemset = 0x02</para>
+</listitem><listitem><para>cudaGraphNodeTypeHost = 0x03</para>
+</listitem><listitem><para>cudaGraphNodeTypeGraph = 0x04</para>
+</listitem><listitem><para>cudaGraphNodeTypeEmpty = 0x05</para>
+</listitem><listitem><para>cudaGraphNodeTypeWaitEvent = 0x06</para>
+</listitem><listitem><para>cudaGraphNodeTypeEventRecord = 0x07 </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="222" column="26" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="222" bodyend="228"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacetf_1a627b5c90ccd5ce2e11e08c9c06a3fede" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>const char *</type>
         <definition>const char * tf::to_string</definition>
-        <argsstring>(cudaTaskType type)</argsstring>
+        <argsstring>(cudaGraphNodeType type)</argsstring>
         <name>to_string</name>
         <qualifiedname>tf::to_string</qualifiedname>
         <param>
-          <type><ref refid="namespacetf_1afebc56ae6d5765010d0dd13a5f04132e" kindref="member">cudaTaskType</ref></type>
+          <type>cudaGraphNodeType</type>
           <declname>type</declname>
         </param>
         <briefdescription>
@@ -2742,7 +3169,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_task.hpp" line="43" column="22" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="43" bodyend="54"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="237" column="22" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="237" bodyend="254"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a29ae31d817e4080f4030c2b311ddafe9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
@@ -2765,2943 +3192,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_task.hpp" line="266" column="8" bodyfile="taskflow/cuda/cuda_task.hpp" bodystart="266" bodyend="269"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a2ff1cf81426c856fc6db1f6ead47878f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_single_task</definition>
-        <argsstring>(P &amp;&amp;p, C c)</argsstring>
-        <name>cuda_single_task</name>
-        <qualifiedname>tf::cuda_single_task</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>c</declname>
-        </param>
-        <briefdescription>
-<para>runs a callable asynchronously using one kernel thread </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>closure type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>closure to run by one kernel thread</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches a single kernel thread to run the given callable through the stream in the execution policy object. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/for_each.hpp" line="63" column="6" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="63" bodyend="67"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a7c449cec0b93503b8280d05add35e9f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_for_each</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, C c)</argsstring>
-        <name>cuda_for_each</name>
-        <qualifiedname>tf::cuda_for_each</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>c</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel iterations over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to each dereferenced iterator</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This function is equivalent to a parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>itr<sp/>=<sp/>first;<sp/>itr<sp/>!=<sp/>last;<sp/>itr++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>c(*itr);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/for_each.hpp" line="91" column="6" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="91" bodyend="104"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a01ad7ce62fa6f42f2f2fbff3659b7884" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_for_each_index</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, I inc, C c)</argsstring>
-        <name>cuda_for_each_index</name>
-        <qualifiedname>tf::cuda_for_each_index</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>inc</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>c</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel iterations over an index-based range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input index type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>index to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>index to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>inc</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>step size between successive iterations </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to each index</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This function is equivalent to a parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>step<sp/>is<sp/>positive<sp/>[first,<sp/>last)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&lt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>c(i);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>step<sp/>is<sp/>negative<sp/>[first,<sp/>last)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=first;<sp/>i&gt;last;<sp/>i+=step)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>c(i);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/for_each.hpp" line="136" column="6" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="136" bodyend="149"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3075c7a1f4d08fefefb415b0e2ac58fb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>__global__ void</type>
-        <definition>__global__ void tf::cuda_single_task</definition>
-        <argsstring>(C callable)</argsstring>
-        <name>cuda_single_task</name>
-        <qualifiedname>tf::cuda_single_task</qualifiedname>
-        <param>
-          <type>C</type>
-          <declname>callable</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/for_each.hpp" line="157" column="17" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="157" bodyend="159"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3ed764530620a419e3400e1f9ab6c956" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_transform</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op)</argsstring>
-        <name>cuda_transform</name>
-        <qualifiedname>tf::cuda_transform</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel transforms over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to transform each item</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/transform.hpp" line="86" column="6" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="86" bodyend="100"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1abdcb5b755f7ace2aa452541d5bf93b5f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I1</type>
-          </param>
-          <param>
-            <type>typename I2</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_transform</definition>
-        <argsstring>(P &amp;&amp;p, I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
-        <name>cuda_transform</name>
-        <qualifiedname>tf::cuda_transform</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I1</type>
-          <declname>first1</declname>
-        </param>
-        <param>
-          <type>I1</type>
-          <declname>last1</declname>
-        </param>
-        <param>
-          <type>I2</type>
-          <declname>first2</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel transforms over two ranges of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I1</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I2</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first1</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last1</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the first range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first2</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to transform each pair of items</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*output++<sp/>=<sp/>op(*first1++,<sp/>*first2++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/transform.hpp" line="127" column="6" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="127" bodyend="143"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a8a872d2a0ac73a676713cb5be5aa688c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_reduce</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
-        <name>cuda_reduce</name>
-        <qualifiedname>tf::cuda_reduce</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>res</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel reduction over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>res</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>op(*result,<sp/>*first++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="253" column="6" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="253" bodyend="261"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a492e8410db032a0273a99dd905486161" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_uninitialized_reduce</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O op, void *buf)</argsstring>
-        <name>cuda_uninitialized_reduce</name>
-        <qualifiedname>tf::cuda_uninitialized_reduce</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>res</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel reduction over a range of items without an initial value </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>res</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>*first++;<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>partitipcate<sp/>in<sp/>the<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>op(*result,<sp/>*first++);</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="294" column="6" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="294" bodyend="302"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a4463d06240d608bc31d8b3546a851e4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_transform_reduce</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
-        <name>cuda_transform_reduce</name>
-        <qualifiedname>tf::cuda_transform_reduce</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>res</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel reduction over a range of transformed items without an initial value </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>res</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to transform elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="335" column="6" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="335" bodyend="352"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1aa451668b7a0a3abf385cf2abebed8962" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_uninitialized_transform_reduce</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, T *res, O bop, U uop, void *buf)</argsstring>
-        <name>cuda_uninitialized_transform_reduce</name>
-        <qualifiedname>tf::cuda_uninitialized_transform_reduce</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>res</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous parallel reduction over a range of transformed items with an initial value </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>res</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the result </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to reduce elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to transform elements </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to the parallel execution of the following loop on a GPU:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">*result<sp/>=<sp/>uop(*first++);<sp/><sp/></highlight><highlight class="comment">//<sp/>no<sp/>initial<sp/>values<sp/>partitipcate<sp/>in<sp/>the<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first<sp/>!=<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>*result<sp/>=<sp/>bop(*result,<sp/>uop(*first++));</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/reduce.hpp" line="387" column="6" bodyfile="taskflow/cuda/algorithm/reduce.hpp" bodystart="387" bodyend="401"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a2e1b44c84a09e0a8495a611cb9a7ea40" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_inclusive_scan</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
-        <name>cuda_inclusive_scan</name>
-        <qualifiedname>tf::cuda_inclusive_scan</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous inclusive scan over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="357" column="6" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="357" bodyend="371"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1afa4aa760ddb6efbda1b9bab505ad5baf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_transform_inclusive_scan</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
-        <name>cuda_transform_inclusive_scan</name>
-        <qualifiedname>tf::cuda_transform_inclusive_scan</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous inclusive scan over a range of transformed items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to transform each item before scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="392" column="6" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="392" bodyend="410"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1aeb391c40120844318fd715b8c3a716bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_exclusive_scan</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, O output, C op, void *buf)</argsstring>
-        <name>cuda_exclusive_scan</name>
-        <qualifiedname>tf::cuda_exclusive_scan</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous exclusive scan over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="429" column="6" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="429" bodyend="443"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a2e739895c1c73538967af060ca714366" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_transform_exclusive_scan</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, O output, C bop, U uop, void *buf)</argsstring>
-        <name>cuda_transform_exclusive_scan</name>
-        <qualifiedname>tf::cuda_transform_exclusive_scan</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>output</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>bop</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>uop</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous exclusive scan over a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output iterator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the input range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>output</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>bop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary operator to apply to scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>uop</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator to apply to transform each item before scan </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/scan.hpp" line="464" column="6" bodyfile="taskflow/cuda/algorithm/scan.hpp" bodystart="464" bodyend="482"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename a_keys_it</type>
-          </param>
-          <param>
-            <type>typename a_vals_it</type>
-          </param>
-          <param>
-            <type>typename b_keys_it</type>
-          </param>
-          <param>
-            <type>typename b_vals_it</type>
-          </param>
-          <param>
-            <type>typename c_keys_it</type>
-          </param>
-          <param>
-            <type>typename c_vals_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_merge_by_key</definition>
-        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, a_vals_it a_vals_first, b_keys_it b_keys_first, b_keys_it b_keys_last, b_vals_it b_vals_first, c_keys_it c_keys_first, c_vals_it c_vals_first, C comp, void *buf)</argsstring>
-        <name>cuda_merge_by_key</name>
-        <qualifiedname>tf::cuda_merge_by_key</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_first</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_last</declname>
-        </param>
-        <param>
-          <type>a_vals_it</type>
-          <declname>a_vals_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_last</declname>
-        </param>
-        <param>
-          <type>b_vals_it</type>
-          <declname>b_vals_first</declname>
-        </param>
-        <param>
-          <type>c_keys_it</type>
-          <declname>c_keys_first</declname>
-        </param>
-        <param>
-          <type>c_vals_it</type>
-          <declname>c_vals_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous key-value merge over a range of keys and values </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_vals_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_vals_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-Performs a key-value merge that copies elements from <computeroutput>[a_keys_first, a_keys_last)</computeroutput> and <computeroutput>[b_keys_first, b_keys_last)</computeroutput> into a single range, <computeroutput>[c_keys_first, c_keys_last + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending key order.</para>
-<para>At the same time, the merge copies elements from the two associated ranges <computeroutput>[a_vals_first + (a_keys_last - a_keys_first))</computeroutput> and <computeroutput>[b_vals_first + (b_keys_last - b_keys_first))</computeroutput> into a single range, <computeroutput>[c_vals_first, c_vals_first + (a_keys_last - a_keys_first) + (b_keys_last - b_keys_first))</computeroutput> such that the resulting range is in ascending order implied by each input element&apos;s associated key.</para>
-<para>For example, assume:<itemizedlist>
-<listitem><para><computeroutput>a_keys</computeroutput> = {1, 8};</para>
-</listitem><listitem><para><computeroutput>a_vals</computeroutput> = {2, 1};</para>
-</listitem><listitem><para><computeroutput>b_keys</computeroutput> = {3, 7};</para>
-</listitem><listitem><para><computeroutput>b_vals</computeroutput> = {3, 4};</para>
-</listitem></itemizedlist>
-</para>
-<para>After the merge, we have:<itemizedlist>
-<listitem><para><computeroutput>c_keys</computeroutput> = {1, 3, 7, 8}</para>
-</listitem><listitem><para><computeroutput>c_vals</computeroutput> = {2, 3, 4, 1} </para>
-</listitem></itemizedlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/merge.hpp" line="515" column="6" bodyfile="taskflow/cuda/algorithm/merge.hpp" bodystart="515" bodyend="537"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a37ec481149c2f01669353033d75ed72a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename a_keys_it</type>
-          </param>
-          <param>
-            <type>typename b_keys_it</type>
-          </param>
-          <param>
-            <type>typename c_keys_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_merge</definition>
-        <argsstring>(P &amp;&amp;p, a_keys_it a_keys_first, a_keys_it a_keys_last, b_keys_it b_keys_first, b_keys_it b_keys_last, c_keys_it c_keys_first, C comp, void *buf)</argsstring>
-        <name>cuda_merge</name>
-        <qualifiedname>tf::cuda_merge</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_first</declname>
-        </param>
-        <param>
-          <type>a_keys_it</type>
-          <declname>a_keys_last</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_first</declname>
-        </param>
-        <param>
-          <type>b_keys_it</type>
-          <declname>b_keys_last</declname>
-        </param>
-        <param>
-          <type>c_keys_it</type>
-          <declname>c_keys_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous key-only merge over a range of keys </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>first key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>second key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>output key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>a_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the first key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>b_keys_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the second key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>c_keys_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the output key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This function is equivalent to <ref refid="namespacetf_1aa84d4c68d2cbe9f6efc4a1eb1a115458" kindref="member">tf::cuda_merge_by_key</ref> without values. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/merge.hpp" line="567" column="6" bodyfile="taskflow/cuda/algorithm/merge.hpp" bodystart="567" bodyend="582"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a9c69906a4dfd1e2d0cd7ed496d29dafd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename K</type>
-          </param>
-          <param>
-            <type>typename V</type>
-            <defval>cudaEmpty</defval>
-          </param>
-        </templateparamlist>
-        <type>unsigned</type>
-        <definition>unsigned tf::cuda_sort_buffer_size</definition>
-        <argsstring>(unsigned count)</argsstring>
-        <name>cuda_sort_buffer_size</name>
-        <qualifiedname>tf::cuda_sort_buffer_size</qualifiedname>
-        <param>
-          <type>unsigned</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>queries the buffer size in bytes needed to call sort kernels for the given number of elements </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>K</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>key type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>V</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value type (default tf::cudaEmpty)</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>count</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>number of keys/values to sort</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function is used to allocate a buffer for calling <ref refid="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" kindref="member">tf::cuda_sort</ref>. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/sort.hpp" line="417" column="10" bodyfile="taskflow/cuda/algorithm/sort.hpp" bodystart="417" bodyend="428"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename K_it</type>
-          </param>
-          <param>
-            <type>typename V_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_sort_by_key</definition>
-        <argsstring>(P &amp;&amp;p, K_it k_first, K_it k_last, V_it v_first, C comp, void *buf)</argsstring>
-        <name>cuda_sort_by_key</name>
-        <qualifiedname>tf::cuda_sort_by_key</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_first</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_last</declname>
-        </param>
-        <param>
-          <type>V_it</type>
-          <declname>v_first</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous key-value sort on a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>K_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>V_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>value iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>k_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>k_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>v_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the value range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary comparator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-Sorts key-value elements in <computeroutput>[k_first, k_last)</computeroutput> and <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> into ascending key order using the given comparator <computeroutput>comp</computeroutput>. If <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> are any two valid iterators in <computeroutput>[k_first, k_last)</computeroutput> such that <computeroutput>i</computeroutput> precedes <computeroutput>j</computeroutput>, and <computeroutput>p</computeroutput> and <computeroutput>q</computeroutput> are iterators in <computeroutput>[v_first, v_first + (k_last - k_first))</computeroutput> corresponding to <computeroutput>i</computeroutput> and <computeroutput>j</computeroutput> respectively, then <computeroutput>comp(*j, *i)</computeroutput> evaluates to <computeroutput>false</computeroutput>.</para>
-<para>For example, assume:<itemizedlist>
-<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 4, 2, 8, 5, 7}</computeroutput></para>
-</listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;}</computeroutput></para>
-</listitem></itemizedlist>
-</para>
-<para>After sort:<itemizedlist>
-<listitem><para><computeroutput>keys</computeroutput> are <computeroutput>{1, 2, 4, 5, 7, 8}</computeroutput></para>
-</listitem><listitem><para><computeroutput>values</computeroutput> are <computeroutput>{&apos;a&apos;, &apos;c&apos;, &apos;b&apos;, &apos;e&apos;, &apos;f&apos;, &apos;d&apos;}</computeroutput> </para>
-</listitem></itemizedlist>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/sort.hpp" line="467" column="6" bodyfile="taskflow/cuda/algorithm/sort.hpp" bodystart="467" bodyend="478"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a06804cb1598e965febc7bd35fc0fbbb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename K_it</type>
-          </param>
-          <param>
-            <type>typename C</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_sort</definition>
-        <argsstring>(P &amp;&amp;p, K_it k_first, K_it k_last, C comp, void *buf)</argsstring>
-        <name>cuda_sort</name>
-        <qualifiedname>tf::cuda_sort</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_first</declname>
-        </param>
-        <param>
-          <type>K_it</type>
-          <declname>k_last</declname>
-        </param>
-        <param>
-          <type>C</type>
-          <declname>comp</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>performs asynchronous key-only sort on a range of items </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>K_it</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>key iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>C</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>k_first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>k_last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the key range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>comp</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>binary comparator </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the temporary buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This method is equivalent to <ref refid="namespacetf_1a3461b9179221dd7230ce2a0e45156c7f" kindref="member">tf::cuda_sort_by_key</ref> without values. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/sort.hpp" line="501" column="6" bodyfile="taskflow/cuda/algorithm/sort.hpp" bodystart="501" bodyend="503"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a5f9dabd7c5d0fa5166cf76d9fa5a038e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename U</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_find_if</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, U op)</argsstring>
-        <name>cuda_find_if</name>
-        <qualifiedname>tf::cuda_find_if</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>U</type>
-          <declname>op</declname>
-        </param>
-        <briefdescription>
-<para>finds the index of the first element that satisfies the given criteria </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>U</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the index of the found element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>unary operator which returns <computeroutput>true</computeroutput> for the required element</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches kernels asynchronously to find the index <computeroutput>idx</computeroutput> of the first element in the range <computeroutput>[first, last)</computeroutput> such that <computeroutput>op(*(first+idx))</computeroutput> is true. This is equivalent to the parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>idx<sp/>=<sp/>0;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(;<sp/>first<sp/>!=<sp/>last;<sp/>++first,<sp/>++idx)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(p(*first))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>idx;</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/find.hpp" line="181" column="6" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="181" bodyend="185"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a572c13198191c46765264f8afabe2e9f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_min_element</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, O op, void *buf)</argsstring>
-        <name>cuda_min_element</name>
-        <qualifiedname>tf::cuda_min_element</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>finds the index of the minimum element in a range </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>solution index of the minimum element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparison function object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches kernels asynchronously to find the smallest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least tf::cuda_min_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(op(*first,<sp/>*smallest))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>smallest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>smallest);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/find.hpp" line="233" column="6" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="233" bodyend="237"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3fc577fd0a8f127770bcf68bc56c073e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-          <param>
-            <type>typename I</type>
-          </param>
-          <param>
-            <type>typename O</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::cuda_max_element</definition>
-        <argsstring>(P &amp;&amp;p, I first, I last, unsigned *idx, O op, void *buf)</argsstring>
-        <name>cuda_max_element</name>
-        <qualifiedname>tf::cuda_max_element</qualifiedname>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>p</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>first</declname>
-        </param>
-        <param>
-          <type>I</type>
-          <declname>last</declname>
-        </param>
-        <param>
-          <type>unsigned *</type>
-          <declname>idx</declname>
-        </param>
-        <param>
-          <type>O</type>
-          <declname>op</declname>
-        </param>
-        <param>
-          <type>void *</type>
-          <declname>buf</declname>
-        </param>
-        <briefdescription>
-<para>finds the index of the maximum element in a range </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>I</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>input iterator type </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>O</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparator type</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>p</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>execution policy object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>first</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the beginning of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>last</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>iterator to the end of the range </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>idx</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>solution index of the maximum element </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>op</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>comparison function object </para>
-</parameterdescription>
-</parameteritem>
-<parameteritem>
-<parameternamelist>
-<parametername>buf</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>pointer to the buffer</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-The function launches kernels asynchronously to find the largest element in the range <computeroutput>[first, last)</computeroutput> using the given comparator <computeroutput>op</computeroutput>. You need to provide a buffer that holds at least tf::cuda_max_element_bufsz bytes for internal use. The function is equivalent to a parallel execution of the following loop:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">if</highlight><highlight class="normal">(first<sp/>==<sp/>last)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(++first;<sp/>first<sp/>!=<sp/>last;<sp/>++first)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(op(*largest,<sp/>*first))<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>largest<sp/>=<sp/>first;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="cpp/iterator/distance" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::distance</ref>(first,<sp/>largest);</highlight></codeline>
-</programlisting> </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/cuda/algorithm/find.hpp" line="285" column="6" bodyfile="taskflow/cuda/algorithm/find.hpp" bodystart="285" bodyend="289"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="402" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="402" bodyend="405"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a06790e5f6898894392f247309626e1b4" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>const char *</type>

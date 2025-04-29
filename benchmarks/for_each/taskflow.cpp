@@ -4,16 +4,25 @@
 
 void for_each_taskflow(size_t num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
-  taskflow.for_each(
-    vec.begin(), vec.end(), [](double& v){
-      v = std::tan(v);
-    }, tf::StaticPartitioner()
-  );
+  tf::IndexRange<size_t> range(0, vec.size(), 1);
+
+  taskflow.for_each_by_index(range, [&](tf::IndexRange<size_t> sr){ 
+    for(size_t i=sr.begin(); i<sr.end(); i+=sr.step_size()) {
+      vec[i] = std::tan(vec[i]);
+    }
+  });
 
   executor.run(taskflow).get();
+
+
+  //executor.async(tf::make_for_each_by_index_task(range, [&](tf::IndexRange<size_t> sr) {
+  //  for(size_t i=sr.begin(); i<sr.end(); i+=sr.step_size()) {
+  //    vec[i] = std::tan(vec[i]);
+  //  }
+  //})).wait();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads) {

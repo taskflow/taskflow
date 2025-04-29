@@ -286,13 +286,13 @@
 
 <span class="n">a</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">);</span>
 <span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_predecessors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">num_predecessors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">num_predecessors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 
 <span class="n">taskflow</span><span class="p">.</span><span class="n">remove_dependency</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
 <span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_dependents</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></pre>
+<span class="n">assert</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">num_predecessors</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a8da984d149b439e88468bf26e02ecf27"><div>
             <h3>

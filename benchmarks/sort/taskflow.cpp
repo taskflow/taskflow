@@ -4,7 +4,7 @@
 
 void sort_taskflow(size_t num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   taskflow.sort(vec.begin(), vec.end());

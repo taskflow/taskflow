@@ -103,16 +103,16 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a1a0afc89e8a6a416c511e74d82df135d" class="m-doc-self">num_successors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of successors of the task</dd>
-            <dt id="a974dc1d738b62b829ad261beeafbd67c">
-              <span class="m-doc-wrap-bumper">auto <a href="#a974dc1d738b62b829ad261beeafbd67c" class="m-doc-self">num_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="adefb65d68a64bd8a75364a8801cfec44">
+              <span class="m-doc-wrap-bumper">auto <a href="#adefb65d68a64bd8a75364a8801cfec44" class="m-doc-self">num_predecessors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of predecessors of the task</dd>
-            <dt id="ad49a92e8858c3c298bed0215e341b66b">
-              <span class="m-doc-wrap-bumper">auto <a href="#ad49a92e8858c3c298bed0215e341b66b" class="m-doc-self">num_strong_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="a0b7b789c9b8a21927a992f6ccc11de81">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0b7b789c9b8a21927a992f6ccc11de81" class="m-doc-self">num_strong_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of strong dependents of the task</dd>
-            <dt id="af3bf886291af7f39957d43d17083fe07">
-              <span class="m-doc-wrap-bumper">auto <a href="#af3bf886291af7f39957d43d17083fe07" class="m-doc-self">num_weak_dependents</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt id="ad5e874b7cc77df1e7dc875d436ff7b72">
+              <span class="m-doc-wrap-bumper">auto <a href="#ad5e874b7cc77df1e7dc875d436ff7b72" class="m-doc-self">num_weak_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of weak dependents of the task</dd>
             <dt>
@@ -184,9 +184,9 @@
               <span class="m-doc-wrap-bumper">void <a href="#aff13a503d4a3c994eb08cb6f22e1b427" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
             <dd>applies an visitor callable to each successor of the task</dd>
-            <dt id="a3bf68937662bf291637e4a763476b2e4">
+            <dt id="a31d8069d4c0b10b55e68d260c4d28c1f">
               <div class="m-doc-template">template&lt;typename V&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a3bf68937662bf291637e4a763476b2e4" class="m-doc-self">for_each_dependent</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a31d8069d4c0b10b55e68d260c4d28c1f" class="m-doc-self">for_each_predecessor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
             <dd>applies an visitor callable to each dependents of the task</dd>
             <dt id="a1c9301f2a330cc23ee18e8f61688141f">

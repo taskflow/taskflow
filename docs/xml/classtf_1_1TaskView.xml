@@ -19,7 +19,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="640" column="16" bodyfile="taskflow/core/task.hpp" bodystart="640" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="691" column="16" bodyfile="taskflow/core/task.hpp" bodystart="691" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-attrib">
@@ -35,7 +35,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="696" column="16" bodyfile="taskflow/core/task.hpp" bodystart="696" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="747" column="16" bodyfile="taskflow/core/task.hpp" bodystart="747" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -52,7 +52,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="647" column="23" bodyfile="taskflow/core/task.hpp" bodystart="704" bodyend="706"/>
+        <location file="taskflow/core/task.hpp" line="698" column="23" bodyfile="taskflow/core/task.hpp" bodystart="755" bodyend="757"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1aff16d269ac75cffa55a312593f20d30d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -67,14 +67,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="652" column="12" bodyfile="taskflow/core/task.hpp" bodystart="724" bodyend="726"/>
+        <location file="taskflow/core/task.hpp" line="703" column="12" bodyfile="taskflow/core/task.hpp" bodystart="775" bodyend="777"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskView_1acc4e2bef464e8fbb5706cefdf482a24f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskView_1a050f76e486dea993a2b9d930539aad85" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::TaskView::num_dependents</definition>
+        <definition>size_t tf::TaskView::num_predecessors</definition>
         <argsstring>() const</argsstring>
-        <name>num_dependents</name>
-        <qualifiedname>tf::TaskView::num_dependents</qualifiedname>
+        <name>num_predecessors</name>
+        <qualifiedname>tf::TaskView::num_predecessors</qualifiedname>
         <briefdescription>
 <para>queries the number of predecessors of the task </para>
         </briefdescription>
@@ -82,14 +82,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="657" column="12" bodyfile="taskflow/core/task.hpp" bodystart="709" bodyend="711"/>
+        <location file="taskflow/core/task.hpp" line="708" column="12" bodyfile="taskflow/core/task.hpp" bodystart="760" bodyend="762"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskView_1ac7bcb9cb1ee8f020de56fdbf8e651388" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskView_1adb798808f6ef9b46399fae1c2dbed19b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::TaskView::num_strong_dependents</definition>
+        <definition>size_t tf::TaskView::num_strong_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_strong_dependents</name>
-        <qualifiedname>tf::TaskView::num_strong_dependents</qualifiedname>
+        <name>num_strong_dependencies</name>
+        <qualifiedname>tf::TaskView::num_strong_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of strong dependents of the task </para>
         </briefdescription>
@@ -97,14 +97,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="662" column="12" bodyfile="taskflow/core/task.hpp" bodystart="714" bodyend="716"/>
+        <location file="taskflow/core/task.hpp" line="713" column="12" bodyfile="taskflow/core/task.hpp" bodystart="765" bodyend="767"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskView_1ad1ddd9a7e68a81feee1785ece99e58f5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskView_1aaefc8ab88f17ac27e6537f6d6ecb37cf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
-        <definition>size_t tf::TaskView::num_weak_dependents</definition>
+        <definition>size_t tf::TaskView::num_weak_dependencies</definition>
         <argsstring>() const</argsstring>
-        <name>num_weak_dependents</name>
-        <qualifiedname>tf::TaskView::num_weak_dependents</qualifiedname>
+        <name>num_weak_dependencies</name>
+        <qualifiedname>tf::TaskView::num_weak_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of weak dependents of the task </para>
         </briefdescription>
@@ -112,7 +112,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="667" column="12" bodyfile="taskflow/core/task.hpp" bodystart="719" bodyend="721"/>
+        <location file="taskflow/core/task.hpp" line="718" column="12" bodyfile="taskflow/core/task.hpp" bodystart="770" bodyend="772"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -136,19 +136,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="673" column="10" bodyfile="taskflow/core/task.hpp" bodystart="751" bodyend="755"/>
+        <location file="taskflow/core/task.hpp" line="724" column="10" bodyfile="taskflow/core/task.hpp" bodystart="802" bodyend="809"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskView_1a1db6f5c5e325ea0e0d41a16aee2e3ad6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename V</type>
           </param>
         </templateparamlist>
         <type>void</type>
-        <definition>void tf::TaskView::for_each_dependent</definition>
+        <definition>void tf::TaskView::for_each_predecessor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
-        <name>for_each_dependent</name>
-        <qualifiedname>tf::TaskView::for_each_dependent</qualifiedname>
+        <name>for_each_predecessor</name>
+        <qualifiedname>tf::TaskView::for_each_predecessor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -160,7 +160,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="679" column="10" bodyfile="taskflow/core/task.hpp" bodystart="759" bodyend="763"/>
+        <location file="taskflow/core/task.hpp" line="730" column="10" bodyfile="taskflow/core/task.hpp" bodystart="813" bodyend="820"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1aa20d7b5796064c3ab194e6d7ebe2adb1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref></type>
@@ -175,7 +175,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="684" column="14" bodyfile="taskflow/core/task.hpp" bodystart="729" bodyend="742"/>
+        <location file="taskflow/core/task.hpp" line="735" column="14" bodyfile="taskflow/core/task.hpp" bodystart="780" bodyend="793"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1abe95eb9e866cd7b8137d5e8ca5deace6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -190,7 +190,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="689" column="12" bodyfile="taskflow/core/task.hpp" bodystart="745" bodyend="747"/>
+        <location file="taskflow/core/task.hpp" line="740" column="12" bodyfile="taskflow/core/task.hpp" bodystart="796" bodyend="798"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -210,7 +210,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="693" column="5" bodyfile="taskflow/core/task.hpp" bodystart="700" bodyend="701"/>
+        <location file="taskflow/core/task.hpp" line="744" column="5" bodyfile="taskflow/core/task.hpp" bodystart="751" bodyend="752"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1ae85861fa894c206e800a9e5d4ee45cbf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -227,7 +227,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="694" column="5"/>
+        <location file="taskflow/core/task.hpp" line="745" column="5"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -235,18 +235,18 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/task.hpp" line="638" column="1" bodyfile="taskflow/core/task.hpp" bodystart="638" bodyend="697"/>
+    <location file="taskflow/core/task.hpp" line="689" column="1" bodyfile="taskflow/core/task.hpp" bodystart="689" bodyend="748"/>
     <listofallmembers>
       <member refid="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>_node</name></member>
       <member refid="classtf_1_1TaskView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>Executor</name></member>
-      <member refid="classtf_1_1TaskView_1a55651e26436bfc2499cadaca4a24e48d" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>for_each_dependent</name></member>
+      <member refid="classtf_1_1TaskView_1a1db6f5c5e325ea0e0d41a16aee2e3ad6" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>for_each_predecessor</name></member>
       <member refid="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>for_each_successor</name></member>
       <member refid="classtf_1_1TaskView_1abe95eb9e866cd7b8137d5e8ca5deace6" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>hash_value</name></member>
       <member refid="classtf_1_1TaskView_1ac8cd58171de8ab4865e3c3f142db2db1" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>name</name></member>
-      <member refid="classtf_1_1TaskView_1acc4e2bef464e8fbb5706cefdf482a24f" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_dependents</name></member>
-      <member refid="classtf_1_1TaskView_1ac7bcb9cb1ee8f020de56fdbf8e651388" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_strong_dependents</name></member>
+      <member refid="classtf_1_1TaskView_1a050f76e486dea993a2b9d930539aad85" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_predecessors</name></member>
+      <member refid="classtf_1_1TaskView_1adb798808f6ef9b46399fae1c2dbed19b" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_strong_dependencies</name></member>
       <member refid="classtf_1_1TaskView_1aff16d269ac75cffa55a312593f20d30d" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_successors</name></member>
-      <member refid="classtf_1_1TaskView_1ad1ddd9a7e68a81feee1785ece99e58f5" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_weak_dependents</name></member>
+      <member refid="classtf_1_1TaskView_1aaefc8ab88f17ac27e6537f6d6ecb37cf" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>num_weak_dependencies</name></member>
       <member refid="classtf_1_1TaskView_1ad19afa391850d49513c4280439fc50ee" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>TaskView</name></member>
       <member refid="classtf_1_1TaskView_1ae85861fa894c206e800a9e5d4ee45cbf" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>TaskView</name></member>
       <member refid="classtf_1_1TaskView_1aa20d7b5796064c3ab194e6d7ebe2adb1" prot="public" virt="non-virtual"><scope>tf::TaskView</scope><name>type</name></member>

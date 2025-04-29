@@ -80,13 +80,13 @@ void loop_cond(unsigned w) {
   A.precede(B);
   B.precede(B, C);
 
-  REQUIRE(A.num_strong_dependents() == 0);
-  REQUIRE(A.num_weak_dependents() == 0);
-  REQUIRE(A.num_dependents() == 0);
+  REQUIRE(A.num_strong_dependencies() == 0);
+  REQUIRE(A.num_weak_dependencies() == 0);
+  REQUIRE(A.num_predecessors() == 0);
 
-  REQUIRE(B.num_strong_dependents() == 1);
-  REQUIRE(B.num_weak_dependents() == 1);
-  REQUIRE(B.num_dependents() == 2);
+  REQUIRE(B.num_strong_dependencies() == 1);
+  REQUIRE(B.num_weak_dependencies() == 1);
+  REQUIRE(B.num_predecessors() == 2);
 
   executor.run(taskflow).wait();
   REQUIRE(counter == 0);
@@ -667,7 +667,6 @@ void condition_subflow(unsigned W) {
       REQUIRE(i<I);
       data[i] = i*(i+1)/2*123;;
     }).name(std::to_string(i));
-    sf.detach();
   }).name("subflow");
 
   auto cond = taskflow.emplace([&](){

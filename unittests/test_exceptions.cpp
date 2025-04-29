@@ -1121,7 +1121,7 @@ void runtime_async_task(unsigned W) {
   taskflow.clear();
   A = taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async([&](){ throw std::runtime_error("a"); });
-    REQUIRE_THROWS_WITH_AS(rt.corun_all(), "a", std::runtime_error); 
+    REQUIRE_THROWS_WITH_AS(rt.corun(), "a", std::runtime_error); 
     flag = 1;
   });
   B = taskflow.emplace([&](){
@@ -1137,9 +1137,9 @@ void runtime_async_task(unsigned W) {
   A = taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async([&](){ throw std::runtime_error("a"); });
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    rt.corun_all();
+    rt.corun();
     flag = 1;  // can't guarantee since rt.silent_async can finish 
-               // before corun_all finishes
+               // before corun finishes
   });
   B = taskflow.emplace([&](){
     flag = 2;

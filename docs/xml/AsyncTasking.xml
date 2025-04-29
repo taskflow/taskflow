@@ -12,24 +12,28 @@
         <name>Launch Asynchronous Tasks from a Runtime</name>
         <reference>AsyncTasking_1LaunchAsynchronousTasksFromARuntime</reference>
       </tocsect>
+      <tocsect>
+        <name>Launch Asynchronous Tasks Recursively from a Runtime</name>
+        <reference>AsyncTasking_1LaunchAsynchronousTasksRecursivelyFromARuntime</reference>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>This chapters discusses how to launch tasks asynchronously so that you can incorporate independent, dynamic parallelism in your taskflows.</para>
 <sect1 id="AsyncTasking_1LaunchAsynchronousTasksFromAnExecutor">
-<title>Launch Asynchronous Tasks from an Executor</title><para>Taskflow executor provides an STL-styled method, <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, for you to run a callable object asynchronously. The method returns a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that will eventually hold the result of that function call.</para>
+<title>Launch Asynchronous Tasks from an Executor</title><para>Taskflow&apos;s executor provides an STL-style method, <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, that allows you to run a callable object asynchronously. This method returns a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> which will eventually hold the result of the function call.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;int&gt;</ref><sp/>future<sp/>=<sp/>executor.async([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">assert(future.get()<sp/>==<sp/>1);</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="attention"><para>Unlike <ref refid="cpp/thread/async" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::async</ref>, the future object returned from <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> does not block on destruction until completing the function.</para>
 </simplesect>
-If you do not need the return value or use a future to synchronize the execution, you are encouraged to use <ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">tf::Executor::silent_async</ref> which returns nothing and thus has less overhead (i.e., no shared state management) compared to <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>.</para>
+If you do not need the return value or do not require a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> for synchronization, you should use <ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">tf::Executor::silent_async</ref>. This method returns nothing and incurs less overhead than <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, as it avoids the cost of managing a shared state for <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.silent_async([](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>do<sp/>some<sp/>work<sp/>without<sp/>returning<sp/>any<sp/>result</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
-<para>Launching asynchronous tasks from an executor is <emphasis>thread-safe</emphasis> and can be called by multiple threads both inside (i.e., worker) and outside the executor. Our scheduler autonomously detects whether an asynchronous task is submitted from an external thread or a worker thread and schedules its execution using work stealing.</para>
+<para>Launching asynchronous tasks from an executor is <emphasis>thread-safe</emphasis> and can be invoked from multiple threads, including both worker threads inside the executor and external threads outside of it. The scheduler automatically detects the source of the submission and employs work-stealing to schedule the task efficiently, ensuring balanced workload distribution across workers.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>my_task<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>an<sp/>asynchronous<sp/>task<sp/>from<sp/>my_task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.async([&amp;](){</highlight></codeline>
@@ -40,15 +44,12 @@ If you do not need the return value or use a future to synchronize the execution
 <codeline><highlight class="normal">executor.run(taskflow);</highlight></codeline>
 <codeline><highlight class="normal">executor.wait_for_all();<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>all<sp/>tasks<sp/>to<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>Asynchronous tasks created from an executor does not belong to any taskflows. The lifetime of an asynchronous task is managed automatically by the executor that creates the task.</para>
+<para><simplesect kind="attention"><para>Asynchronous tasks created from an executor do not belong to any taskflow. Their lifetime is automatically managed by the executor that created them.</para>
 </simplesect>
-You can name an asynchronous task using the overloads, tf::Executor::async(const std::string&amp; name, F&amp;&amp; f) and tf::Executor::silent_async(const std::string&amp; name, F&amp;&amp; f), that take a string in the first argument. Assigned names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.async(</highlight><highlight class="stringliteral">&quot;async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
-<codeline><highlight class="normal">executor.silent_async(</highlight><highlight class="stringliteral">&quot;silent<sp/>async<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
-</programlisting></para>
+</para>
 </sect1>
 <sect1 id="AsyncTasking_1LaunchAsynchronousTasksFromARuntime">
-<title>Launch Asynchronous Tasks from a Runtime</title><para>You can launch asynchronous tasks from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> using <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref> or <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref>. The following code creates 100 asynchronous tasks from a runtime and joins their executions explicitly using <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref>.</para>
+<title>Launch Asynchronous Tasks from a Runtime</title><para>You can launch asynchronous tasks from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> using <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref> or <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref>. The following code creates 100 asynchronous tasks from a runtime and joins their executions explicitly using <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -58,12 +59,12 @@ You can name an asynchronous task using the overloads, tf::Executor::async(const
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
-<para>Unlike <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref>, you can call <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref> multiple times to synchronize the execution of asynchronous tasks between different runs. For example, the following code spawn 100 asynchronous tasks twice and join each execution to assure the spawned 100 asynchronous tasks have properly completed.</para>
+<para>Unlike <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref>, you can call <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref> multiple times to synchronize the execution of asynchronous tasks between different runs. For example, the following code spawn 100 asynchronous tasks twice and join each execution to assure the spawned 100 asynchronous tasks have properly completed.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -74,22 +75,60 @@ You can name an asynchronous task using the overloads, tf::Executor::async(const
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>another<sp/>100<sp/>asynchronous<sp/>tasks<sp/>and<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>++counter;<sp/>}));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">corun_all</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>();<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>of<sp/>the<sp/>100<sp/>asynchronous<sp/>tasks<sp/>will<sp/>finish<sp/>by<sp/>this<sp/>join</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>200);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
-<para>By default, <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> does not join like <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. All pending asynchronous tasks spawned by <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> are no longer controllable when their parent runtime disappears. It is your responsibility to properly synchronize spawned asynchronous tasks using <ref refid="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" kindref="member">tf::Runtime::corun_all</ref>.</para>
-<para><simplesect kind="attention"><para>Creating asynchronous tasks from a runtime allows users to efficiently implement parallel algorithms using recursion, such as parallel sort (<ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref>), that demands dynamic parallelism at runtime. </para>
+<para>By default, <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> does not join like <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. All pending asynchronous tasks spawned from a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> become uncontrollable once their parent runtime goes out of scope. It is user&apos;s responsibility to explicitly synchronize these tasks using <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref>.</para>
+<para><simplesect kind="attention"><para>Creating asynchronous tasks from a runtime enables efficient implementation of recursive parallel algorithms, such as <ref refid="classtf_1_1FlowBuilder_1a35e180eb63de6c9f28e43185e837a4fa" kindref="member">tf::Taskflow::sort</ref>, that require dynamic task creation at runtime.</para>
 </simplesect>
 </para>
+</sect1>
+<sect1 id="AsyncTasking_1LaunchAsynchronousTasksRecursivelyFromARuntime">
+<title>Launch Asynchronous Tasks Recursively from a Runtime</title><para>Asynchronous tasks can take a reference to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>, allowing them to recursively launch additional asynchronous tasks. Combined with <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref>, this enables the implementation of various recursive parallelism patterns, including parallel sort, divide-and-conquer algorithms, and the <ulink url="https://en.wikipedia.org/wiki/Fork%E2%80%93join_model">fork-join model</ulink>. For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>N;<sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt1){<sp/>res1<sp/>=<sp/>fibonacci(N-1,<sp/>rt1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>tail<sp/>optimization<sp/>for<sp/>the<sp/>right<sp/>child</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res2<sp/>=<sp/>fibonacci(N-2,<sp/>rt);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>use<sp/>corun<sp/>to<sp/>avoid<sp/>blocking<sp/>the<sp/>worker<sp/>from<sp/>waiting<sp/>the<sp/>two<sp/>children<sp/>tasks<sp/></highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">corun</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>res1<sp/>+<sp/>res2;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>5,<sp/>res;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([N,<sp/>&amp;res](tf::Runtime&amp;<sp/>rt){<sp/>res<sp/>=<sp/>fibonacci(N,<sp/>rt);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.</para>
+<para><dotfile name="fibonacci_4_tail_optimized.dot"></dotfile>
+ </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/cookbook/async_tasking.dox"/>

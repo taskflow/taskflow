@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+#include <thread>
 
 #define TF_OS_LINUX 0
 #define TF_OS_DRAGONFLY 0
@@ -245,6 +246,13 @@ inline void pause() {
   // Fallback: Portable yield for unknown architectures
   std::this_thread::yield();
 #endif
+}
+
+/**
+@brief pause CPU for a specified number of iterations
+*/
+inline void pause(size_t count) {
+  while(count-- > 0) pause();
 }
 
 /**

@@ -7,92 +7,17 @@
 
 constexpr float eps = 0.0001f;
 
-template <typename T>
-void run_and_wait(T& cf) {
+void run_and_wait(tf::cudaGraphExec& exec) {
   tf::cudaStream stream;
-  cf.run(stream);
-  stream.synchronize();
+  stream.run(exec).synchronize();
 }
 
 // ----------------------------------------------------------------------------
-// cuda transform
+// cudaflow transform 1
 // ----------------------------------------------------------------------------
 
 template <typename T>
-void cuda_transform() {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor;
-  
-  for(int n=1; n<=1234567; n = (n<=100) ? n+1 : n*2 + 1) {
-
-    taskflow.emplace([n](){
-      
-      tf::cudaStream stream;
-      tf::cudaDefaultExecutionPolicy policy(stream);
-
-      T v1 = ::rand() % 100;
-      T v2 = ::rand() % 100;
-
-      T* dx = tf::cuda_malloc_shared<T>(n);
-      T* dy = tf::cuda_malloc_shared<T>(n);
-
-      for(int i=0; i<n; i++) {
-        dx[i] = v1;
-        dy[i] = v2;
-      }
-      
-      // transform
-      tf::cuda_transform(policy, dx, dx+n, dy, 
-        [] __device__ (T x) { return x + 2;  }
-      );
-      stream.synchronize();
-
-      // verify the result 
-      for (int i = 0; i < n; i++) {
-        REQUIRE(std::fabs(dx[i] - v1) < eps);
-        REQUIRE(std::fabs(dy[i] - (dx[i] + 2)) < eps);
-      }
-
-      // transform again
-      tf::cuda_transform(policy, dy, dy+n, dx,
-        [] __device__ (T y) { return y - 4; }
-      );
-      stream.synchronize();
-      
-      // verify the result 
-      for (int i = 0; i < n; i++) {
-        REQUIRE(std::fabs(dx[i] - (v1 - 2)) < eps);
-        REQUIRE(std::fabs(dy[i] - (v1 + 2)) < eps);
-      }
-
-      // free memory
-      REQUIRE(cudaFree(dx) == cudaSuccess);
-      REQUIRE(cudaFree(dy) == cudaSuccess);
-    });
-  }
-
-  executor.run(taskflow).wait();
-}
-
-TEST_CASE("cuda_transform.int" * doctest::timeout(300)) {
-  cuda_transform<int>();
-}
-
-TEST_CASE("cuda_transform.float" * doctest::timeout(300)) {
-  cuda_transform<float>();
-}
-
-TEST_CASE("cuda_transform.double" * doctest::timeout(300)) {
-  cuda_transform<double>();
-}
-
-// ----------------------------------------------------------------------------
-// cudaflow transform
-// ----------------------------------------------------------------------------
-
-template <typename T, typename F>
-void cudaflow_transform() {
+void transform1() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -118,18 +43,19 @@ void cudaflow_transform() {
       REQUIRE(cudaMalloc(&dy, n*sizeof(T)) == cudaSuccess);
       
       // axpy
-      F cf;
-      auto h2d_x = cf.copy(dx, hx.data(), n).name("h2d_x");
-      auto h2d_y = cf.copy(dy, hy.data(), n).name("h2d_y");
-      auto d2h_x = cf.copy(hx.data(), dx, n).name("d2h_x");
-      auto d2h_y = cf.copy(hy.data(), dy, n).name("d2h_y");
-      auto kernel = cf.transform(dx, dx+n, dy, 
+      tf::cudaGraph cg;
+      auto h2d_x = cg.copy(dx, hx.data(), n);
+      auto h2d_y = cg.copy(dy, hy.data(), n);
+      auto d2h_x = cg.copy(hx.data(), dx, n);
+      auto d2h_y = cg.copy(hy.data(), dy, n);
+      auto kernel = cg.transform(dx, dx+n, dy, 
         [] __device__ (T x) { return x + 2;  }
       );
       kernel.succeed(h2d_x, h2d_y)
             .precede(d2h_x, d2h_y);
 
-      run_and_wait(cf);
+      tf::cudaGraphExec exec(cg);
+      run_and_wait(exec);
 
       // verify the result 
       for (int i = 0; i < n; i++) {
@@ -138,11 +64,11 @@ void cudaflow_transform() {
       }
 
       // update the kernel and run the cf again
-      cf.transform(kernel, dy, dy+n, dx,
+      exec.transform(kernel, dy, dy+n, dx,
         [] __device__ (T y) { return y - 4; }
       );
       
-      run_and_wait(cf); 
+      run_and_wait(exec); 
       
       // verify the result 
       for (int i = 0; i < n; i++) {
@@ -159,101 +85,24 @@ void cudaflow_transform() {
   executor.run(taskflow).wait();
 }
 
-TEST_CASE("cudaFlow.transform.int" * doctest::timeout(300)) {
-  cudaflow_transform<int, tf::cudaFlow>();
+TEST_CASE("cudaGraph.transform1.int" * doctest::timeout(300)) {
+  transform1<int>();
 }
 
-TEST_CASE("cudaFlow.transform.float" * doctest::timeout(300)) {
-  cudaflow_transform<float, tf::cudaFlow>();
+TEST_CASE("cudaGraph.transform1.float" * doctest::timeout(300)) {
+  transform1<float>();
 }
 
-TEST_CASE("cudaFlow.transform.double" * doctest::timeout(300)) {
-  cudaflow_transform<double, tf::cudaFlow>();
-}
-
-TEST_CASE("cudaFlowCapturer.transform.int" * doctest::timeout(300)) {
-  cudaflow_transform<int, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("cudaFlowCapturer.transform.float" * doctest::timeout(300)) {
-  cudaflow_transform<float, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("cudaFlowCapturer.transform.double" * doctest::timeout(300)) {
-  cudaflow_transform<double, tf::cudaFlowCapturer>();
+TEST_CASE("cudaGraph.transform1.double" * doctest::timeout(300)) {
+  transform1<double>();
 }
 
 // ----------------------------------------------------------------------------
-// cuda transform2
+// cudaGraph transform2
 // ----------------------------------------------------------------------------
 
 template <typename T>
-void cuda_transform2() {
-
-  tf::Taskflow taskflow;
-  tf::Executor executor;
-  
-  for(int n=1; n<=1234567; n = (n<=100) ? n+1 : n*2 + 1) {
-
-    taskflow.emplace([n](){
-      
-      tf::cudaStream stream;
-      tf::cudaDefaultExecutionPolicy policy(stream);
-
-      T v1 = ::rand() % 100;
-      T v2 = ::rand() % 100;
-      T v3 = ::rand() % 1000;
-
-      T* dx = tf::cuda_malloc_shared<T>(n);
-      T* dy = tf::cuda_malloc_shared<T>(n);
-      T* dz = tf::cuda_malloc_shared<T>(n);
-
-      for(int i=0; i<n; i++) {
-        dx[i] = v1;
-        dy[i] = v2;
-        dz[i] = v3;
-      }
-      
-      // transform
-      tf::cuda_transform(policy, dx, dx+n, dy, dz,
-        [] __device__ (T x, T y) { return x + y;  }
-      );
-      stream.synchronize();
-
-      // verify the result 
-      for (int i = 0; i < n; i++) {
-        REQUIRE(std::fabs(dx[i] - v1) < eps);
-        REQUIRE(std::fabs(dy[i] - v2) < eps);
-        REQUIRE(std::fabs(dz[i] - dx[i] - dy[i]) < eps);
-      }
-
-      // free memory
-      REQUIRE(cudaFree(dx) == cudaSuccess);
-      REQUIRE(cudaFree(dy) == cudaSuccess);
-    });
-  }
-
-  executor.run(taskflow).wait();
-}
-
-TEST_CASE("cuda_transform2.int" * doctest::timeout(300)) {
-  cuda_transform2<int>();
-}
-
-TEST_CASE("cuda_transform2.float" * doctest::timeout(300)) {
-  cuda_transform2<float>();
-}
-
-TEST_CASE("cuda_transform2.double" * doctest::timeout(300)) {
-  cuda_transform2<double>();
-}
-
-// ----------------------------------------------------------------------------
-// cudaflow transform2
-// ----------------------------------------------------------------------------
-
-template <typename T, typename F>
-void cudaflow_transform2() {
+void transform2() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
@@ -285,20 +134,22 @@ void cudaflow_transform2() {
       REQUIRE(cudaMalloc(&dz, n*sizeof(T)) == cudaSuccess);
       
       // axpy
-      F cf;
-      auto h2d_x = cf.copy(dx, hx.data(), n).name("h2d_x");
-      auto h2d_y = cf.copy(dy, hy.data(), n).name("h2d_y");
-      auto h2d_z = cf.copy(dz, hz.data(), n).name("h2d_z");
-      auto d2h_x = cf.copy(hx.data(), dx, n).name("d2h_x");
-      auto d2h_y = cf.copy(hy.data(), dy, n).name("d2h_y");
-      auto d2h_z = cf.copy(hz.data(), dz, n).name("d2h_z");
-      auto kernel = cf.transform(dx, dx+n, dy, dz,
+      tf::cudaGraph cg;
+      auto h2d_x = cg.copy(dx, hx.data(), n);
+      auto h2d_y = cg.copy(dy, hy.data(), n);
+      auto h2d_z = cg.copy(dz, hz.data(), n);
+      auto d2h_x = cg.copy(hx.data(), dx, n);
+      auto d2h_y = cg.copy(hy.data(), dy, n);
+      auto d2h_z = cg.copy(hz.data(), dz, n);
+      auto kernel = cg.transform(dx, dx+n, dy, dz,
         [] __device__ (T x, T y) { return x + y;  }
       );
       kernel.succeed(h2d_x, h2d_y, h2d_z)
             .precede(d2h_x, d2h_y, d2h_z);
 
-      run_and_wait(cf);
+      tf::cudaGraphExec exec(cg);
+
+      run_and_wait(exec);
 
       // verify the result 
       for (int i = 0; i < n; i++) {
@@ -307,15 +158,15 @@ void cudaflow_transform2() {
         REQUIRE(std::fabs(hz[i] - v1 - v2) < eps);
       }
 
-      // update the kernel and run the cf again
+      // update the kernel and run the exec again
       // dz = v1 + v2
       // dx = v1
       // dy = v2
-      cf.transform(kernel, dz, dz+n, dx, dy,
+      exec.transform(kernel, dz, dz+n, dx, dy,
         [] __device__ (T z, T x) { return z + x + T(10); }
       );
       
-      run_and_wait(cf); 
+      run_and_wait(exec); 
       
       // verify the result 
       for (int i = 0; i < n; i++) {
@@ -332,26 +183,15 @@ void cudaflow_transform2() {
   executor.run(taskflow).wait();
 }
 
-TEST_CASE("cudaFlow.transform2.int" * doctest::timeout(300)) {
-  cudaflow_transform2<int, tf::cudaFlow>();
+TEST_CASE("cudaGraph.transform2.int" * doctest::timeout(300)) {
+  transform2<int>();
 }
 
-TEST_CASE("cudaFlow.transform2.float" * doctest::timeout(300)) {
-  cudaflow_transform2<float, tf::cudaFlow>();
+TEST_CASE("cudaGraph.transform2.float" * doctest::timeout(300)) {
+  transform2<float>();
 }
 
-TEST_CASE("cudaFlow.transform2.double" * doctest::timeout(300)) {
-  cudaflow_transform2<double, tf::cudaFlow>();
+TEST_CASE("cudaGraph.transform2.double" * doctest::timeout(300)) {
+  transform2<double>();
 }
 
-TEST_CASE("cudaFlowCapturer.transform2.int" * doctest::timeout(300)) {
-  cudaflow_transform2<int, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("cudaFlowCapturer.transform2.float" * doctest::timeout(300)) {
-  cudaflow_transform2<float, tf::cudaFlowCapturer>();
-}
-
-TEST_CASE("cudaFlowCapturer.transform2.double" * doctest::timeout(300)) {
-  cudaflow_transform2<double, tf::cudaFlowCapturer>();
-}

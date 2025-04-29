@@ -1,22 +1,20 @@
 namespace tf {
 
-/** @page RuntimeTasking Interact with the Runtime
+/** @page RuntimeTasking Runtime Tasking
 
 %Taskflow allows you to interact with the scheduling runtime
 by taking a *runtime object* as an argument of a task.
-This is mostly useful for designing specialized parallel algorithms
-extended from the existing facility of %Taskflow.
+This is mostly useful for designing recursive parallel algorithms that require dynamic
+tasking on the fly.
 
 @tableofcontents
 
 @section CreateARuntimeTask Create a Runtime Object
 
-%Taskflow allows a static task and a condition task to take a referenced
-tf::Runtime object that provides a set of methods to interact
-with the scheduling runtime.
-The following example creates a static task that leverages tf::Runtime to
-explicitly schedule a conditioned task which would never run under
-the normal scheduling circumstance:
+%Taskflow allows users to define a *runtime task* that takes a referenced tf::Runtime object,
+which provides a set of methods to interact with the underlying scheduling runtime.
+The following example demonstrates a runtime task can explicitly schedule a condition task,
+which would not be executed under normal scheduling circumstances:
 
 @code{.cpp}
 tf::Task A, B, C, D;
@@ -73,16 +71,12 @@ taskflow.emplace([&](tf::Runtime& rt){
 executor.run(taskflow).wait();
 @endcode
 
-@section RuntimeTaskingRunATaskGraphSynchronously Run a Task Graph Synchronously
+@section RuntimeTaskingRunATaskGraphAynchronously Run a Task Graph Asynchronously
 
-A runtime object can spawn and run a task graph synchronously using tf::Runtime::corun.
-This model allows you to leverage dynamic tasking to execute a parallel workload within
-a runtime object.
-You can create a task graph yourself and execute it through a runtime object.
-This organization avoids repetitive creation of a subflow with the same topology,
-such as running a runtime object repetitively.
-The following code performs the same execution logic as the above example
-but using the given task graph to avoid repetitive creations of a subflow:
+A tf::Runtime object spawn a task graph asynchronously using tf::Runtime::corun.
+This model enables dynamic tasking, allowing parallel workloads to execute directly within the runtime context.
+The following example demonstrates how to run a predefined task graph during the execution of a runtime task, 
+without blocking the calling worker using tf::Runtime::corun:
 
 @code{.cpp}
 // create a custom graph
@@ -91,34 +85,30 @@ graph.emplace([](){ std::cout << "independent task 1\n"; });
 graph.emplace([](){ std::cout << "independent task 2\n"; });
 
 taskflow.emplace([&](tf::Runtime& rt){ 
-  // this worker coruns the graph through its work-stealing loop
+  // coruns the graph without blocking the calling worker of this runtime
   rt.corun(graph);
 });
 executor.run_n(taskflow, 10000);
 @endcode
 
-Although tf::Runtime::corun blocks until the operation completes,
-the caller thread (worker) is not preempted (e.g., sleep or holding any lock).
-Instead, the caller thread joins the work-stealing loop of the executor
-and leaves whenever the spawned task graph completes.
-This is different from waiting for a submitted taskflow using tf::Future<T>::wait
-which blocks the caller thread until the submitted taskflow completes.
-When multiple submitted taskflows are being waited,
-their executions can potentially lead to deadlock.
-For example, the code below creates a taskflow of 1000 tasks
-with each task running a taskflow of 500 tasks 
-in a blocking fashion:
+Although tf::Runtime::corun does not return control to the program until the given graph finishes its execution,
+the calling worker (i.e., parent worker) of the runtime indeed joins the executor's work-stealing loop
+and continues executing other tasks together with graph execution.
+This behavior differs from waiting on a submitted taskflow using tf::Future<T>::wait,
+which blocks the calling thread entirely until completion.
+If multiple taskflows are submitted and waited on in this blocking manner,
+it can potentially lead to deadlock, especially in recursive or nested patterns.
+For example, the code below submits a taskflow of 1000 tasks to an executor of two workers,
+where each worker blocks while waiting on another taskflow of 500 tasks, causing deadlock:
 
 @code{.cpp}
 tf::Executor executor(2);
 tf::Taskflow taskflow;
 std::array<tf::Taskflow, 1000> others;
 
-std::atomic<size_t> counter{0};
-
 for(size_t n=0; n<1000; n++) {
   for(size_t i=0; i<500; i++) {
-    others[n].emplace([&](){ counter++; });
+    others[n].emplace([&](){});
   }
   taskflow.emplace([&executor, &tf=others[n]](){
     // blocking the worker can introduce deadlock where
@@ -129,23 +119,20 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-Using tf::Runtime::corun allows each worker to corun these
-taskflows through its work-stealing loop, thus avoiding
-deadlock problem caused by blocking wait.
+Using tf::Runtime::corun allows each worker to co-run these taskflows without blocking on a wait,
+thereby avoiding deadlocks.
 
 @code{.cpp}
 tf::Executor executor(2);
 tf::Taskflow taskflow;
 std::array<tf::Taskflow, 1000> others;
 
-std::atomic<size_t> counter{0};
-
 for(size_t n=0; n<1000; n++) {
   for(size_t i=0; i<500; i++) {
-    others[n].emplace([&](){ counter++; });
+    others[n].emplace([&](){});
   }
   taskflow.emplace([&tf=others[n]](tf::Runtime& rt){
-    // the caller worker will not block but corun these
+    // the caller worker will not block on wait but corun these
     // taskflows through its work-stealing loop
     rt.corun(tf);
   });
@@ -153,11 +140,54 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-@section LearnMoreAboutRuntime Learn More About Runtime
+@section RunATaskAsynchronously Run a Task Asynchronously
 
-Please visit the following pages to learn more about tf::Runtime:
+One of the most powerful features of tf::Runtime is its ability to launch asynchronous tasks on the fly.
+You can dynamically create tasks during execution using tf::Runtime::async or tf::Runtime::silent_async.
+Each asynchronous task can itself be a runtime task, enabling recursive task creation and dynamic parallelism.
+This model is particularly useful for implementing divide-and-conquer algorithms, such as parallel sort, graph traversal, and other runtime-driven parallel patterns.
+For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from tf::Runtime:
 
-+ @ref LaunchAsynchronousTasksFromARuntime 
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+size_t fibonacci(size_t N, tf::Runtime& rt) {
+
+  if(N < 2) return N; 
+
+  size_t res1, res2;
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
+  
+  // tail optimization for the right child
+  res2 = fibonacci(N-2, rt);
+
+  // use corun to avoid blocking the worker from waiting the two children tasks 
+  // to finish
+  rt.corun();
+
+  return res1 + res2;
+}
+
+int main() {
+
+  tf::Executor executor;
+  
+  size_t N = 5, res;
+  executor.silent_async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); });
+  executor.wait_for_all();
+
+  std::cout << N << "-th Fibonacci number is " << res << '\n';
+
+  return 0;
+}
+@endcode
+
+The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.
+
+@dotfile images/fibonacci_4_tail_optimized.dot
+
+For more details, please refer to @ref AsyncTasking and @ref fibonacci.
+
 
 */
 

@@ -25,51 +25,102 @@ int fib(int n) {
 
 @section RecursiveFibonacciParallelism Recursive Fibonacci Parallelism
 
-We use tf::Subflow to recursively compute fibonacci numbers in parallel.
+We use @ref RuntimeTasking and @ref AsyncTasking to recursively compute Fibonacci numbers in parallel. 
+A runtime task tasks a reference to tf::Runtime as its argument, 
+allowing users to interact with the executor and spawn tasks dynamically.
+The example below demonstrates a parallel recursive implementation of Fibonacci numbers using tf::Runtime:
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
 
-int spawn(int n, tf::Subflow& sbf) {
-  if (n < 2) return n;
-  int res1, res2;
-  sbf.emplace([&res1, n] (tf::Subflow& sbf) { res1 = spawn(n - 1, sbf); } )
-     .name(std::to_string(n-1));  
-  sbf.emplace([&res2, n] (tf::Subflow& sbf) { res2 = spawn(n - 2, sbf); } )
-     .name(std::to_string(n-2));
-  sbf.join();
+size_t fibonacci(size_t N, tf::Runtime& rt) {
+
+  if(N < 2) return N; 
+
+  size_t res1, res2;
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
+  rt.silent_async([N, &res2](tf::Runtime& rt2){ res2 = fibonacci(N-2, rt2); });
+
+  // use corun to avoid blocking the worker from waiting the two children tasks 
+  // to finish
+  rt.corun();
+
   return res1 + res2;
 }
 
-int main(int argc, char* argv[]) {
-  
-  int N = 5;
-  int res;
+int main() {
 
   tf::Executor executor;
-  tf::Taskflow taskflow("fibonacci");
+  
+  size_t N = 5, res;
+  executor.silent_async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); });
+  executor.wait_for_all();
 
-  taskflow.emplace([&res, N] (tf::Subflow& sbf) { res = spawn(N, sbf); })
-          .name(std::to_string(N));
-
-  executor.run(taskflow).wait();
-
-  taskflow.dump(std::cout);
-
-  std::cout << "Fib[" << N << "]: " << res << std::endl;
+  std::cout << N << "-th Fibonacci number is " << res << '\n';
 
   return 0;
 }
 @endcode
 
-The spawned taskflow graph for computing up to the fifth fibonacci number is shown below:
+The `fibonacci` function recursively spawns two asynchronous tasks to compute `fibonacci(N-1)` and `fibonacci(N-2)` in parallel using `tf::Runtime::silent_async`. 
+After spawning the two tasks, the function invokes tf::Runtime::corun() to wait until all tasks spawned by `rt` complete,
+without blocking the caller worker.
+In the main function, the executor creates an async task from the top Fibonacci number and waits for completion using tf::Executor::wait_for_all. Once finished, the result is printed.
+The figure below shows the execution diagram, where the suffixes *_1 and *_2 represent the left and right children spawned by their parent runtime:
+
+@dotfile images/fibonacci_4.dot
 
 
-@dotfile images/fibonacci_7.dot
+@section TailRecursionOptimization Tail Recursion Optimization
 
-Even if recursive dynamic tasking or subflows are possible, 
-the recursion depth may not be too deep or it can cause stack overflow.
+In recursive parallelism, especially for problems like Fibonacci computation, 
+spawning both recursive branches as asynchronous tasks can lead to excessive task creation and stack growth, which may degrade performance and overwhelm the runtime scheduler. Additionally, when both child tasks are launched asynchronously, the parent task must wait for both to finish, potentially blocking a worker thread and reducing parallel throughput.
+To address these issues, we apply tail recursion optimization to one branch of the Fibonacci call. 
+This allows one of the recursive calls to proceed immediately in the current execution context, reducing both scheduling overhead and stack usage.
 
+@code{.cpp}
+size_t fibonacci(size_t N, tf::Runtime& rt) {
+
+  if(N < 2) return N; 
+
+  size_t res1, res2;
+  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
+  
+  // tail optimization for the right child
+  res2 = fibonacci(N-2, rt);
+
+  // use corun to avoid blocking the worker from waiting the two children tasks 
+  // to finish
+  rt.corun();
+
+  return res1 + res2;
+}
+@endcode
+
+The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.
+As we can see, the right child is optimized out through tail recursion optimization.
+
+@dotfile images/fibonacci_4_tail_optimized.dot
+
+@section FibonacciNumberBenchmarking Benchmarking
+
+Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism
+(1) with tail recursion optimization and (2) without it, across different Fibonacci numbers.
+
+<div align="center">
+| N   | w/ tail recursion optimization  | w/o tail recursion optimization | 
+| :-: | :-:     | :-:     | 
+| 20  | 0.23 ms | 0.31 ms | 
+| 25  | 2    ms | 4 ms    | 
+| 30  | 23   ms | 42 ms   | 
+| 35  | 269  ms | 483 ms  | 
+| 40  | 3003 ms | 5124 ms |
+</div>
+
+As `N` increases, the performance gap between the two versions widens significantly. 
+With tail recursion optimization, the program avoids spawning another async task, thereby reducing scheduling overhead and stack pressure. 
+This leads to better CPU utilization and lower task management cost. 
+For example, at `N = 40`, tail recursion optimization reduces the runtime by over 40%.
 
 */
 

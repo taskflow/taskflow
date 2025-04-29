@@ -53,7 +53,7 @@ An example of the %Taskflow graph for the positive case under 12 workers is depi
 
 Instead of explicitly specifying the index range and the callable for each index invocation,
 the overload 
-tf::Taskflow::for_each_index(R range, C callable, P part) provides you with a more flexible way to 
+tf::Taskflow::for_each_by_index(R range, C callable, P part) provides you with a more flexible way to 
 iterate over subranges of indices.
 This overload uses tf::IndexRange to partition the range into subranges, 
 allowing finer control over how each subrange is processed.
@@ -67,7 +67,7 @@ taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
 
 // Approach 2: initialize data2 using tf::IndexRange
 tf::IndexRange<int> range(0, 100, 1);
-taskflow.for_each_index(range, [&](tf::IndexRange<int> subrange){
+taskflow.for_each_by_index(range, [&](tf::IndexRange<int> subrange){
   for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
     data2[i] = 10;
   }

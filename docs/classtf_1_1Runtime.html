@@ -60,7 +60,7 @@
             </li>
           </ul>
         </nav>
-<p>A runtime object allows users to interact with the scheduling runtime inside a task, such as scheduling an active task, spawning a subflow, and so on.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
+<p>A runtime object allows users to interact with the scheduling runtime inside a task, such as scheduling an active task, spawning an asynchronous task, corunning a graph target, and so on.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
 <span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="n">C</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// C must be captured by reference</span>
@@ -115,9 +115,17 @@
             </dt>
             <dd>co-runs the given target and waits until it completes</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">corun_all</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">corun</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>corun all asynchronous tasks spawned by this runtime with other workers</dd>
+            <dd>corun all tasks spawned by this runtime with other workers</dd>
+            <dt id="afcc18484a95fd2a834940d878eaf4dfc">
+              <span class="m-doc-wrap-bumper">void <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc-self">corun_all</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>equivalent to <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> - just an alias for legacy purpose</dd>
+            <dt id="a20d9756a7aa6b58d0d04437818c10066">
+              <span class="m-doc-wrap-bumper">auto <a href="#a20d9756a7aa6b58d0d04437818c10066" class="m-doc-self">is_cancelled</a>(</span><span class="m-doc-wrap">) -&gt; bool</span>
+            </dt>
+            <dd>This method verifies if the task has been cancelled.</dd>
           </dl>
         </section>
         <section>
@@ -161,7 +169,7 @@
 <span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">);</span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The executor will first run the condition task <code>A</code> which returns <code>0</code> to inform the scheduler to go to the runtime task <code>B</code>. During the execution of <code>B</code>, it directly schedules task <code>C</code> without going through the normal taskflow graph scheduling process. At this moment, task <code>C</code> is active because its parent taskflow is running. When the taskflow finishes, we will see both <code>B</code> and <code>C</code> in the output.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The executor will first run the condition task <code>A</code> which returns <code>0</code> to inform the scheduler to go to the runtime task <code>B</code>. During the execution of <code>B</code>, it directly schedules task <code>C</code> without going through the normal taskflow graph scheduling process. At this moment, task <code>C</code> is active because its parent taskflow is running. When the taskflow finishes, we will see both <code>B</code> and <code>C</code> in the output.</p><aside class="m-note m-warning"><h4>Attention</h4><p>This method can only be called by the parent worker of this runtime, or the behavior is undefined.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a5688b13034f179c4a8b2b0ebbb215051"><div>
             <h3>
@@ -191,7 +199,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the runtime object. Applications can explicitly issue <a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc">tf::<wbr />Runtime::<wbr />corun_all</a> to wait for all spawned asynchronous tasks to finish. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<p>The method creates an asynchronous task to launch the given function on the given arguments. The difference to <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a> is that the created asynchronous task pertains to the runtime object. Applications can explicitly issue <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> to wait for all spawned asynchronous tasks to finish. For example:</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
@@ -201,11 +209,11 @@
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// spawn 100 asynchronous tasks from the worker of the runtime</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// wait for the 100 asynchronous tasks to finish</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">102</span><span class="p">);</span>
 <span class="p">});</span></pre><p>This method is thread-safe and can be called by multiple workers that hold the reference to the runtime. For example, the code below spawns 100 tasks from the worker of a runtime, and each of the 100 tasks spawns another task that will be run by another worker.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
@@ -219,7 +227,7 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// wait for the 200 asynchronous tasks to finish</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span>
 <span class="p">});</span></pre>
           </div></section>
@@ -298,7 +306,7 @@
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 <span class="p">});</span></pre><p>This member function is thread-safe.</p>
           </div></section>
@@ -337,7 +345,7 @@
             </table>
 <pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">(</span><span class="s">&quot;my task&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){});</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="p">});</span></pre>
           </div></section>
           <section class="m-doc-details" id="a1c772e90614302024cfa52fa86d75cac"><div>
@@ -354,29 +362,29 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;running taskflow2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">taskflow1</span><span class="p">);</span>
 <span class="p">});</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Although <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The method is not thread-safe as it modifies the anchor state of the node for exception handling.</p></aside>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Although <a href="#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> blocks until the operation completes, the caller thread (worker) is not blocked (e.g., sleeping or holding any lock). Instead, the caller thread joins the work-stealing loop of the executor and returns when all tasks in the target completes.</p><aside class="m-note m-warning"><h4>Attention</h4><p>This method can only be called by the parent worker of this runtime, or the behavior is undefined.</p></aside>
           </div></section>
-          <section class="m-doc-details" id="afcc18484a95fd2a834940d878eaf4dfc"><div>
+          <section class="m-doc-details" id="aba54a7cacffb54f5eb133730d256a7c4"><div>
             <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afcc18484a95fd2a834940d878eaf4dfc" class="m-doc-self">corun_all</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc-self">corun</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
-            <p>corun all asynchronous tasks spawned by this runtime with other workers</p>
-<p>Coruns all asynchronous tasks (<a href="#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a>, <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>) with other workers until all those asynchronous tasks finish.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+            <p>corun all tasks spawned by this runtime with other workers</p>
+<p>Coruns all tasks spawned by this runtime with other workers until all these tasks finish.</p><pre class="m-code"><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="c1">// spawn 100 async tasks and wait</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 <span class="w">  </span>
 <span class="w">  </span><span class="c1">// spawn another 100 async tasks and wait</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun_all</span><span class="p">();</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">200</span><span class="p">);</span>
-<span class="p">});</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>The method is not thread-safe as it modifies the anchor state of the node for exception handling.</p></aside>
+<span class="p">});</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>This method can only be called by the parent worker of this runtime, or the behavior is undefined.</p></aside>
           </div></section>
         </section>
       </div>

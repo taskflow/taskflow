@@ -114,9 +114,15 @@ class SmallVectorTemplateCommon : public SmallVectorBase {
   private:
   template <typename, unsigned> friend struct SmallVectorStorage;
 
+  //template <typename X>
+  //struct AlignedUnionType {
+  //  alignas(X) std::byte buff[std::max(sizeof(std::byte), sizeof(X))];
+  //};
+
   template <typename X>
   struct AlignedUnionType {
-    alignas(X) std::byte buff[std::max(sizeof(std::byte), sizeof(X))];
+    static constexpr std::size_t max_size = (sizeof(std::byte) > sizeof(X)) ? sizeof(std::byte) : sizeof(X);
+    alignas(X) std::byte buff[max_size];
   };
 
   // Allocate raw space for N elements of type T.  If T has a ctor or dtor, we

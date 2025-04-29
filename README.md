@@ -69,7 +69,7 @@ in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github
 
 See a quick [presentation](https://taskflow.github.io/) and
 visit the [documentation][documentation] to learn more about Taskflow.
-Technical details can be referred to our [IEEE TPDS paper][TPDS21].
+Technical details can be referred to our [IEEE TPDS paper][TPDS22].
 
 # Start Your First Taskflow Program
 
@@ -212,7 +212,7 @@ cond.precede(cond, stop);
 
 ## Offload a Task to a GPU
 
-Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.
+Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using Nvidia CUDA Graph.
 
 ```cpp
 __global__ void saxpy(size_t N, float alpha, float* dx, float* dy) {
@@ -221,22 +221,23 @@ __global__ void saxpy(size_t N, float alpha, float* dx, float* dy) {
     y[i] = a*x[i] + y[i];
   }
 }
-tf::Task cudaflow = taskflow.emplace([&](tf::cudaFlow& cf) {
-
-  // data copy tasks
-  tf::cudaTask h2d_x = cf.copy(dx, hx.data(), N).name("h2d_x");
-  tf::cudaTask h2d_y = cf.copy(dy, hy.data(), N).name("h2d_y");
-  tf::cudaTask d2h_x = cf.copy(hx.data(), dx, N).name("d2h_x");
-  tf::cudaTask d2h_y = cf.copy(hy.data(), dy, N).name("d2h_y");
   
-  // kernel task with parameters to launch the saxpy kernel
-  tf::cudaTask saxpy = cf.kernel(
-    (N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy
-  ).name("saxpy");
-
+// create a CUDA Graph task
+tf::Task cudaflow = taskflow.emplace([&]() {
+  tf::cudaGraph cg;
+  tf::cudaTask h2d_x = cg.copy(dx, hx.data(), N);
+  tf::cudaTask h2d_y = cg.copy(dy, hy.data(), N);
+  tf::cudaTask d2h_x = cg.copy(hx.data(), dx, N);
+  tf::cudaTask d2h_y = cg.copy(hy.data(), dy, N);
+  tf::cudaTask saxpy = cg.kernel((N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy);
   saxpy.succeed(h2d_x, h2d_y)
        .precede(d2h_x, d2h_y);
-}).name("cudaFlow");
+  
+  // instantiate an executable CUDA graph and run it through a stream
+  tf::cudaGraphExec exec(cg);
+  tf::cudaStream stream;
+  stream.run(exec).synchronize();
+}).name("CUDA Graph Task");
 ```
 
 <p align="center"><img src="doxygen/images/saxpy_1_cudaflow.svg"></p>
@@ -328,7 +329,6 @@ patterns using standard C++ syntaxes,
 such as parallel iterations, parallel reductions, and parallel sort.
 
 ```cpp
-// standard parallel CPU algorithms
 tf::Task task1 = taskflow.for_each( // assign each element to 100 in parallel
   first, last, [] (auto& i) { i = 100; }    
 );
@@ -337,17 +337,6 @@ tf::Task task2 = taskflow.reduce(   // reduce a range of items in parallel
 );
 tf::Task task3 = taskflow.sort(     // sort a range of items in parallel
   first, last, [] (auto a, auto b) { return a < b; }
-);
-
-// standard parallel GPU algorithms
-tf::cudaTask cuda1 = cudaflow.for_each( // assign each element to 100 on GPU
-  dfirst, dlast, [] __device__ (auto i) { i = 100; }
-);
-tf::cudaTask cuda2 = cudaflow.reduce(   // reduce a range of items on GPU
-  dfirst, dlast, init, [] __device__ (auto a, auto b) { return a + b; }
-);
-tf::cudaTask cuda3 = cudaflow.sort(     // sort a range of items on GPU
-  dfirst, dlast, [] __device__ (auto a, auto b) { return a < b; }
 );
 ```
 
@@ -419,7 +408,7 @@ the following organizations for sponsoring the Taskflow project!
 | <!-- --> | <!-- --> | <!-- --> | <!-- --> |
 |:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 |<img src="doxygen/images/utah-ece-logo.png">|<img src="doxygen/images/nsf.png"> | <img src="doxygen/images/darpa.png"> | <img src="doxygen/images/NumFocus.png">|
-|<img src="doxygen/images/nvidia-logo.png"> | | | |
+|<img src="doxygen/images/nvidia-logo.png"> | <img src="doxygen/images/uw-madison-ece-logo.png"> | | |
 
 # License
 

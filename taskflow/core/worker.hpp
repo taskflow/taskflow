@@ -17,14 +17,22 @@ namespace tf {
 // Default Notifier
 // ----------------------------------------------------------------------------
 
+
 /**
 @private
 */
 #ifdef TF_ENABLE_ATOMIC_NOTIFIER
-  using DefaultNotifier = AtomicNotifierV2;
-#else
-  //using DefaultNotifier = AtomicNotifierV2;
+  using DefaultNotifier = AtomicNotifier;
+#elif TF_ENABLE_NONBLOCKING_NOTIFIER_V1
+  using DefaultNotifier = NonblockingNotifierV1;
+#elif TF_ENABLE_NONBLOCKING_NOTIFIER_V2
   using DefaultNotifier = NonblockingNotifierV2;
+#else
+  #if __cplusplus >= TF_CPP20
+    using DefaultNotifier = AtomicNotifier;
+  #else
+    using DefaultNotifier = NonblockingNotifierV2;
+  #endif
 #endif
 
 // ----------------------------------------------------------------------------
@@ -80,15 +88,29 @@ class Worker {
     std::thread& thread() { return _thread; }
 
   private:
+  
+  #if __cplusplus >= TF_CPP20
+    std::atomic_flag _done = ATOMIC_FLAG_INIT; 
+  #else
+    std::atomic<bool> _done {false};
+  #endif
 
     size_t _id;
     size_t _vtm;
     Executor* _executor {nullptr};
     DefaultNotifier::Waiter* _waiter;
-    std::default_random_engine _rdgen;
-    std::uniform_int_distribution<size_t> _rdvtm;
     std::thread _thread;
+    
+    std::default_random_engine _rdgen;
+    //std::uniform_int_distribution<size_t> _udist;
+
     BoundedTaskQueue<Node*> _wsq;
+
+    //TF_FORCE_INLINE size_t _rdvtm() {
+    //  auto r = _udist(_rdgen);
+    //  return r + (r >= _id);
+    //}
+
 };
 
 

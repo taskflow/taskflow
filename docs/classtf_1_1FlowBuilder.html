@@ -160,7 +160,7 @@
             <dd>constructs an index-based parallel-for task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a5d8c756783e481372f27db6b6e6a5982" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">R range,
+              <span class="m-doc-wrap-bumper">auto <a href="#a2582a216d54dacca2b7022ea7e89452a" class="m-doc">for_each_by_index</a>(</span><span class="m-doc-wrap">R range,
               C callable,
               P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
@@ -410,7 +410,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The following example creates a runtime task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){});</span></pre><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Interact with the Runtime</a> for details.</p>
+<p>The following example creates a runtime task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){});</span></pre><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> for details.</p>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
@@ -882,12 +882,12 @@
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
 <span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
           </div></section>
-          <section class="m-doc-details" id="a5d8c756783e481372f27db6b6e6a5982"><div>
+          <section class="m-doc-details" id="a2582a216d54dacca2b7022ea7e89452a"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5d8c756783e481372f27db6b6e6a5982" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">R range,
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2582a216d54dacca2b7022ea7e89452a" class="m-doc-self">for_each_by_index</a>(</span><span class="m-doc-wrap">R range,
               C callable,
               P part = P())</span></span>
             </h3>
@@ -938,7 +938,7 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">IndexRange</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
 
 <span class="c1">// parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]</span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_index</span><span class="p">(</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">IndexRange</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">for_each_by_index</span><span class="p">(</span><span class="n">range</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="n">tf</span><span class="o">::</span><span class="n">IndexRange</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// iterate each index in the subrange</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">range</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">range</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">range</span><span class="p">.</span><span class="n">step_size</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;iterate %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>

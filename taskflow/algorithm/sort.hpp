@@ -620,7 +620,7 @@ auto make_sort_task(B b, E e, C cmp) {
     detail::parallel_pdqsort<B_t, C,
       is_std_compare_v<std::decay_t<C>> &&
       std::is_arithmetic_v<typename std::iterator_traits<B_t>::value_type>
-    >(rt, beg, end, cmp, log2(end - beg));
+    >(rt, beg, end, cmp, log2(size_t(end - beg)));
   };
 }
   

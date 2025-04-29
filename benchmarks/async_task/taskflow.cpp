@@ -1,16 +1,22 @@
-#include "async_task.hpp"
 #include <taskflow/taskflow.hpp>
+#include "async_task.hpp"
 
 // async_task computing
 void async_task_taskflow(unsigned num_threads, size_t num_tasks) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
+
+  std::atomic<size_t> counter(0);
 
   for(size_t i=0; i<num_tasks; i++) {
-    executor.silent_async(func);
+    executor.silent_async([&] { func(counter); });
   }
 
   executor.wait_for_all();
+  
+  if(counter.load(std::memory_order_relaxed) != num_tasks) {
+    throw std::runtime_error("incorrect result");
+  }
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads, size_t num_tasks) {

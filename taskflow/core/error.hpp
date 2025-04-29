@@ -13,10 +13,11 @@ struct NSTATE {
 
   using underlying_type = int;
 
-  constexpr static underlying_type NONE        = 0x00000000;  
-  constexpr static underlying_type CONDITIONED = 0x10000000;  
-  constexpr static underlying_type DETACHED    = 0x20000000;  
-  constexpr static underlying_type PREEMPTED   = 0x40000000;  
+  constexpr static underlying_type NONE           = 0x00000000;  
+  constexpr static underlying_type CONDITIONED    = 0x10000000;  
+  constexpr static underlying_type PREEMPTED      = 0x20000000;  
+  constexpr static underlying_type RETAIN_SUBFLOW = 0x40000000;
+  constexpr static underlying_type JOINED_SUBFLOW = 0x80000000;
 
   // mask to isolate state bits - non-state bits store # weak dependents
   constexpr static underlying_type MASK        = 0xF0000000;
@@ -29,10 +30,10 @@ struct ESTATE {
   
   using underlying_type = int;  
   
-  constexpr static underlying_type NONE      = 0; 
-  constexpr static underlying_type EXCEPTION = 1;
-  constexpr static underlying_type CANCELLED = 2;
-  constexpr static underlying_type ANCHORED  = 4;  
+  constexpr static underlying_type NONE      = 0x00000000; 
+  constexpr static underlying_type EXCEPTION = 0x10000000;
+  constexpr static underlying_type CANCELLED = 0x20000000;
+  constexpr static underlying_type ANCHORED  = 0x40000000;  
 };
 
 using estate_t = ESTATE::underlying_type;

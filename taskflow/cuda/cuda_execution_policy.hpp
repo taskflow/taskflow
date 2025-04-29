@@ -42,25 +42,10 @@ class cudaExecutionPolicy {
   const static unsigned nv = NT*VT;
 
   /**
-  @brief constructs an execution policy object with default stream
+  @brief constructs an execution policy object
    */
   cudaExecutionPolicy() = default;
 
-  /**
-  @brief constructs an execution policy object with the given stream
-   */
-  explicit cudaExecutionPolicy(cudaStream_t s) : _stream{s} {}
-  
-  /**
-  @brief queries the associated stream
-   */
-  cudaStream_t stream() noexcept { return _stream; };
-
-  /**
-  @brief assigns a stream
-   */
-  void stream(cudaStream_t stream) noexcept { _stream = stream; }
-  
   /**
   @brief queries the number of blocks to accommodate N elements
   */
@@ -138,10 +123,6 @@ class cudaExecutionPolicy {
   tf::cuda_merge and tf::cuda_merge_by_key.
   */
   inline static unsigned merge_bufsz(unsigned a_count, unsigned b_count);
-
-  private:
-
-  cudaStream_t _stream {0};
 };
 
 /**

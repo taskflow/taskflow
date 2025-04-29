@@ -115,6 +115,10 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a038400d9c48a421d3e27379cf319e2ff" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; T</span>
             </dt>
             <dd>steals an item from the queue</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1e73bc73447fa1d60b0957348c987d38" class="m-doc">steal_with_hint</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals) -&gt; T</span>
+            </dt>
+            <dd>attempts to steal a task with a hint mechanism</dd>
           </dl>
         </section>
         <section>
@@ -179,6 +183,27 @@
             </h3>
             <p>steals an item from the queue</p>
 <p>Any threads can try to steal an item from the queue. The return can be a <code>nullptr</code> if this operation failed (not necessary empty).</p>
+          </div></section>
+          <section class="m-doc-details" id="a1e73bc73447fa1d60b0957348c987d38"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">T tf::<wbr />UnboundedTaskQueue&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1e73bc73447fa1d60b0957348c987d38" class="m-doc-self">steal_with_hint</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals)</span></span>
+            </h3>
+            <p>attempts to steal a task with a hint mechanism</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">num_empty_steals</td>
+                  <td>a reference to a counter tracking consecutive empty steal attempts</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <code>num_empty_steals</code> is incremented; otherwise, <code>num_empty_steals</code> is reset to zero.</p>
           </div></section>
         </section>
       </div>

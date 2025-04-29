@@ -4,13 +4,6 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/cuda/cudaflow.hpp>
 
-template <typename T>
-void run_and_wait(T& cf) {
-  tf::cudaStream stream;
-  cf.run(stream);
-  stream.synchronize();
-}
-
 // ----------------------------------------------------------------------------
 // Matrix Multiplication Kernel
 // ----------------------------------------------------------------------------
@@ -74,19 +67,22 @@ TEST_CASE("multiply" * doctest::timeout(300)) {
         }).name("hc");
 
         auto cuda = taskflow.emplace([&](){
-          tf::cudaFlow cf;
-          auto pa = cf.copy(da, ha, m*n);
-          auto pb = cf.copy(db, hb, n*k);
+          tf::cudaGraph cg;
+          auto pa = cg.copy(da, ha, m*n);
+          auto pb = cg.copy(db, hb, n*k);
 
-          auto op = cf.kernel(
+          auto op = cg.kernel(
             grid, block, 0, k_multiplication, da, db, dc, m, n, k
-          ).name("op");
+          );
 
-          auto cc = cf.copy(hc, dc, m*k)
-                      .name("cc");
+          auto cc = cg.copy(hc, dc, m*k);
 
           op.precede(cc).succeed(pa, pb);
-          run_and_wait(cf);
+
+          tf::cudaGraphExec exec(cg); 
+          tf::cudaStream stream;
+          stream.run(exec)
+                .synchronize();
         });
 
         cuda.succeed(hosta, hostb, hostc);
@@ -153,12 +149,14 @@ TEST_CASE("transpose" * doctest::timeout(300)) {
       }).name("ha");
 
       auto op = taskflow.emplace([&](){
-        tf::cudaFlow cf;
-        auto copyin = cf.copy(sin, ptr_in, m*n);
-        auto copyout = cf.copy(ptr_out, sout, m*n);
-        auto trans = cf.kernel(grid, block, 0, k_transpose, sin, sout, m, n);
+        tf::cudaGraph cg;
+        auto copyin = cg.copy(sin, ptr_in, m*n);
+        auto copyout = cg.copy(ptr_out, sout, m*n);
+        auto trans = cg.kernel(grid, block, 0, k_transpose, sin, sout, m, n);
         trans.succeed(copyin).precede(copyout);
-        run_and_wait(cf);
+        tf::cudaGraphExec exec(cg);
+        tf::cudaStream stream;
+        stream.run(exec).synchronize();
       });
 
       hin.precede(op);
@@ -225,13 +223,16 @@ TEST_CASE("product" * doctest::timeout(300)) {
     });
 
     auto kernel = taskflow.emplace([&, i](){
-      tf::cudaFlow cf;
-      auto copyA = cf.copy(dA[i], hA[i], N);
-      auto copyB = cf.copy(dB[i], hB[i], N);
-      auto op = cf.kernel(grid, block, 0, k_product, dA[i], dB[i], dC[i], N);
-      auto copyC = cf.copy(hC[i], dC[i], N);
+      tf::cudaGraph cg;
+      auto copyA = cg.copy(dA[i], hA[i], N);
+      auto copyB = cg.copy(dB[i], hB[i], N);
+      auto op = cg.kernel(grid, block, 0, k_product, dA[i], dB[i], dC[i], N);
+      auto copyC = cg.copy(hC[i], dC[i], N);
       op.succeed(copyA, copyB).precede(copyC);
-      run_and_wait(cf);
+      tf::cudaStream stream;
+      tf::cudaGraphExec exec(cg);
+      stream.run(exec)
+            .synchronize();
     });
 
     auto deallocate = taskflow.emplace([&, i, v1, v2](){

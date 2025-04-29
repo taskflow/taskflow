@@ -11,7 +11,7 @@ namespace tf {
 
 A runtime object allows users to interact with the
 scheduling runtime inside a task, such as scheduling an active task,
-spawning a subflow, and so on.
+spawning an asynchronous task, corunning a graph target, and so on.
 
 @code{.cpp}
 tf::Task A, B, C, D;
@@ -39,9 +39,9 @@ class Runtime {
   friend class PreemptionGuard;
   friend class Algorithm;
   
-  #define TF_RUNTIME_CHECK_CALLER(msg)                                          \
-  if(pt::this_worker == nullptr || pt::this_worker->_executor != &_executor) {  \
-    TF_THROW(msg);                                                              \
+  #define TF_RUNTIME_CHECK_CALLER(msg) \
+  if(pt::this_worker != &_worker) {    \
+    TF_THROW(msg);                     \
   }
 
   public:
@@ -102,6 +102,10 @@ class Runtime {
   going through the normal taskflow graph scheduling process.
   At this moment, task @c C is active because its parent taskflow is running.
   When the taskflow finishes, we will see both @c B and @c C in the output.
+
+  @attention
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
   void schedule(Task task);
   
@@ -115,7 +119,7 @@ class Runtime {
   function on the given arguments.
   The difference to tf::Executor::async is that the created asynchronous task
   pertains to the runtime object.
-  Applications can explicitly issue tf::Runtime::corun_all
+  Applications can explicitly issue tf::Runtime::corun
   to wait for all spawned asynchronous tasks to finish.
   For example:
 
@@ -130,11 +134,11 @@ class Runtime {
     
     // spawn 100 asynchronous tasks from the worker of the runtime
     for(int i=0; i<100; i++) {
-      rt.async([&](){ counter++; });
+      rt.silent_async([&](){ counter++; });
     }
     
     // wait for the 100 asynchronous tasks to finish
-    rt.corun_all();
+    rt.corun();
     assert(counter == 102);
   });
   @endcode
@@ -158,7 +162,7 @@ class Runtime {
     }
     
     // wait for the 200 asynchronous tasks to finish
-    rt.corun_all();
+    rt.corun();
     assert(counter == 200);
   });
   @endcode
@@ -203,7 +207,7 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 100);
   });
   @endcode
@@ -225,7 +229,7 @@ class Runtime {
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async("my task", [](){});
-    rt.corun_all();
+    rt.corun();
   });
   @endcode
   */
@@ -254,17 +258,16 @@ class Runtime {
   and returns when all tasks in the target completes.
   
   @attention
-  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
   template <typename T>
   void corun(T&& target);
 
   /**
-  @brief corun all asynchronous tasks spawned by this runtime with other workers
+  @brief corun all tasks spawned by this runtime with other workers
 
-  Coruns all asynchronous tasks (tf::Runtime::async,
-  tf::Runtime::silent_async) with other workers until all those 
-  asynchronous tasks finish.
+  Coruns all tasks spawned by this runtime with other workers until all these tasks finish.
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
@@ -273,25 +276,35 @@ class Runtime {
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 100);
     
     // spawn another 100 async tasks and wait
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    rt.corun_all();
+    rt.corun();
     assert(counter == 200);
   });
   @endcode
 
   @attention
-  The method is not thread-safe as it modifies the anchor state of the node for exception handling.
+  This method can only be called by the parent worker of this runtime,
+  or the behavior is undefined.
   */
-  inline void corun_all();
+  void corun();
 
-  protected:
-  
+  /**
+  @brief equivalent to tf::Runtime::corun - just an alias for legacy purpose
+  */
+  void corun_all();
+
+  /**
+  @brief This method verifies if the task has been cancelled.
+  */
+  bool is_cancelled();
+
+protected:
   /**
   @private
   */
@@ -338,8 +351,6 @@ inline Worker& Runtime::worker() {
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
   
-  TF_RUNTIME_CHECK_CALLER("schedule must be called by a worker of runtime's executor");
-  
   auto node = task._node;
   // need to keep the invariant: when scheduling a task, the task must have
   // zero dependency (join counter is 0)
@@ -355,16 +366,12 @@ inline void Runtime::schedule(Task task) {
 // Procedure: corun
 template <typename T>
 void Runtime::corun(T&& target) {
-
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
-
-  TF_RUNTIME_CHECK_CALLER("corun must be called by a worker of runtime's executor");
   _executor._corun_graph(*pt::this_worker, _parent, target.graph().begin(), target.graph().end());
 }
 
-// Function: corun_all
-inline void Runtime::corun_all() {
-  TF_RUNTIME_CHECK_CALLER("corun_all must be called by a worker of runtime's executor");
+// Function: corun
+inline void Runtime::corun() {
   {
     AnchorGuard anchor(_parent);
     _executor._corun_until(_worker, [this] () -> bool {
@@ -373,6 +380,13 @@ inline void Runtime::corun_all() {
   }
   _parent->_rethrow_exception();
 }
+
+// Function: corun_all
+inline void Runtime::corun_all() {
+  corun();
+}
+
+inline bool Runtime::is_cancelled() { return _parent->_is_cancelled(); }
 
 // ------------------------------------
 // Runtime::silent_async series
@@ -433,6 +447,7 @@ class PreemptionGuard {
   }
 
   ~PreemptionGuard() {
+    // If I am the last to join, then there is not need to preempt the runtime
     if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       _runtime._preempted = false;
       _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;
@@ -506,6 +521,9 @@ inline bool Executor::_invoke_runtime_task_impl(
     _observer_epilogue(worker, node);
     
     // here, we cannot check the state from node->_nstate due to data race
+    // Ex: if preempted, another task may finish real quck and insert this parent task
+    // again into the scheduling queue. When running this parent task, it will jump to
+    // else branch below and modify tne nstate, thus incuring data race.
     if(rt._preempted) {
       return true;
     }
@@ -522,74 +540,7 @@ inline bool Executor::_invoke_runtime_task_impl(
 }
 
 
-// ----------------------------------------------------------------------------
-// Executor Members that Depend on Runtime
-// ----------------------------------------------------------------------------
 
-template <typename P, typename F>
-auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
-  
-  // async task with runtime: [] (tf::Runtime&) { ... }
-  if constexpr (is_runtime_task_v<F>) {
-
-    std::promise<void> p;
-    auto fu{p.get_future()};
-    
-    _schedule_async_task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
-        if(!reentered) {
-          f(rt);
-        }
-        else {
-          auto& eptr = rt._parent->_exception_ptr;
-          eptr ? p.object.set_exception(eptr) : p.object.set_value();
-        }
-      }
-    ));
-    return fu;
-  }
-  // async task with closure: [] () { ... }
-  else if constexpr (std::is_invocable_v<F>){
-    std::packaged_task p(std::forward<F>(f));
-    auto fu{p.get_future()};
-    _schedule_async_task(animate(
-      std::forward<P>(params), tpg, parent, 0, 
-      std::in_place_type_t<Node::Async>{}, 
-      [p=make_moc(std::move(p))]() mutable { p.object(); }
-    ));
-    return fu;
-  }
-  else {
-    static_assert(dependent_false_v<F>, 
-      "invalid async target - must be one of the following types:\n\
-      (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n"
-    );
-  }
-
-}
-
-// Function: _silent_async
-template <typename P, typename F>
-void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
-  // silent task 
-  if constexpr (is_runtime_task_v<F> || std::is_invocable_v<F>) {
-    _schedule_async_task(animate(
-      std::forward<P>(params), tpg, parent, 0,
-      std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-    ));
-  }
-  // invalid silent async target
-  else {
-    static_assert(dependent_false_v<F>, 
-      "invalid silent_async target - must be one of the following types:\n\
-      (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n"
-    );
-  }
-}
 
 
 }  // end of namespace tf -----------------------------------------------------

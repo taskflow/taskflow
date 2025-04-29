@@ -54,11 +54,11 @@
             <li><a href="#ASimpleFirstProgram">Start Your First Taskflow Program</a></li>
             <li><a href="#QuickStartCreateASubflowGraph">Create a Subflow Graph</a></li>
             <li><a href="#QuickStartIntegrateControlFlowIntoATaskGraph">Integrate Control Flow into a Task Graph</a></li>
-            <li><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></li>
             <li><a href="#QuickStartComposeTaskGraphs">Compose Task Graphs</a></li>
             <li><a href="#QuickStartLaunchAsyncTasks">Launch Asynchronous Tasks</a></li>
-            <li><a href="#QuickStartRunATaskflowThroughAnExecution">Run a Taskflow through an Executor</a></li>
             <li><a href="#QuickStartLeverageStandardParallelAlgorithms">Leverage Standard Parallel Algorithms</a></li>
+            <li><a href="#QuickStartRunATaskflowThroughAnExecution">Run a Taskflow through an Executor</a></li>
+            <li><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></li>
             <li><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></li>
             <li><a href="#SupportedCompilers">Supported Compilers</a></li>
             <li><a href="#QuickStartGetInvolved">Get Involved</a></li>
@@ -284,74 +284,6 @@
 </g>
 </g>
 </svg>
-</div></section><section id="QuickStartOffloadTasksToGPU"><h2><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></h2><p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using CUDA.</p><pre class="m-code"><span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">saxpy</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="o">*</span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">cudaflow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">cudaFlow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">hx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_x&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">hy</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;h2d_y&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h_x&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hy</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;d2h_y&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">saxpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">kernel</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">255</span><span class="p">)</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">saxpy</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">)</span>
-<span class="w">                         </span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;saxpy&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// parameters to the saxpy kernel</span>
-<span class="w">  </span><span class="n">saxpy</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span><span class="w"> </span><span class="n">h2d_y</span><span class="p">)</span>
-<span class="w">       </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span><span class="w"> </span><span class="n">d2h_y</span><span class="p">);</span>
-<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;cudaFlow&quot;</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.200rem; height: 9.800rem;" viewBox="0.00 0.00 242.00 98.00">
-<g transform="scale(1 1) rotate(0) translate(4 94)">
-<title>Taskflow</title>
-<g class="m-node m-flat">
-<title>p0x7f2870401a50</title>
-<ellipse cx="27" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_x</text>
-</g>
-<g class="m-node">
-<title>p0x7f2870402bc0</title>
-<polygon points="144,-63 94,-63 90,-59 90,-27 140,-27 144,-31 144,-63"/>
-<polyline points="140,-59 90,-59"/>
-<polyline points="140,-59 140,-27"/>
-<polyline points="140,-59 144,-63"/>
-<text text-anchor="middle" x="117" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">saxpy</text>
-</g>
-<g class="m-edge">
-<title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
-<path d="M52.05,-64.62C60.3,-62.09 69.73,-59.2 78.78,-56.42"/>
-<polygon points="79.53,-59.85 88.06,-53.57 77.47,-53.16 79.53,-59.85"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f2870402310</title>
-<ellipse cx="207" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_x</text>
-</g>
-<g class="m-edge">
-<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
-<path d="M144.4,-53.1C152.8,-55.68 162.23,-58.57 171.13,-61.3"/>
-<polygon points="169.98,-64.61 180.57,-64.2 172.03,-57.92 169.98,-64.61"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f2870402780</title>
-<ellipse cx="207" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_y</text>
-</g>
-<g class="m-edge">
-<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
-<path d="M144.4,-36.9C152.8,-34.32 162.23,-31.43 171.13,-28.7"/>
-<polygon points="172.03,-32.08 180.57,-25.8 169.98,-25.39 172.03,-32.08"/>
-</g>
-<g class="m-node m-flat">
-<title>p0x7f2870401eb0</title>
-<ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_y</text>
-</g>
-<g class="m-edge">
-<title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
-<path d="M52.05,-25.38C60.3,-27.91 69.73,-30.8 78.78,-33.58"/>
-<polygon points="77.47,-36.84 88.06,-36.43 79.53,-30.15 77.47,-36.84"/>
-</g>
-</g>
-</svg>
 </div></section><section id="QuickStartComposeTaskGraphs"><h2><a href="#QuickStartComposeTaskGraphs">Compose Task Graphs</a></h2><p>Taskflow is composable. You can create large parallel graphs through composition of modular and reusable blocks that are easier to optimize at an individual scope.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">f1</span><span class="p">,</span><span class="w"> </span><span class="n">f2</span><span class="p">;</span>
 
 <span class="c1">// create taskflow f1 of two tasks</span>
@@ -443,19 +375,6 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="QuickStartRunATaskflowThroughAnExecution"><h2><a href="#QuickStartRunATaskflowThroughAnExecution">Run a Taskflow through an Executor</a></h2><p>The executor provides several <em>thread-safe</em> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <code>tf::Future&lt;void&gt;</code> return to let you query the execution status.</p><pre class="m-code"><span class="c1">// runs the taskflow once</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run_once</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"> </span>
-
-<span class="c1">// wait on this run to finish</span>
-<span class="n">run_once</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
-
-<span class="c1">// run the taskflow four times</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
-
-<span class="c1">// runs the taskflow five times</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">counter</span><span class="o">=</span><span class="mi">5</span><span class="p">](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">--</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-
-<span class="c1">// blocks the executor until all submitted taskflows complete</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="QuickStartLeverageStandardParallelAlgorithms"><h2><a href="#QuickStartLeverageStandardParallelAlgorithms">Leverage Standard Parallel Algorithms</a></h2><p>Taskflow defines algorithms for you to quickly express common parallel patterns using standard C++ syntaxes, such as parallel iterations, parallel reductions, and parallel sort.</p><pre class="m-code"><span class="c1">// standard parallel CPU algorithms</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">for_each</span><span class="p">(</span><span class="w"> </span><span class="c1">// assign each element to 100 in parallel</span>
 <span class="w">  </span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">last</span><span class="p">,</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">    </span>
@@ -480,13 +399,100 @@
 <span class="w">  </span><span class="p">}}</span>
 <span class="p">);</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="QuickStartVisualizeATaskflow"><h2><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></h2><p>You can dump a taskflow graph to a DOT format and visualize it using a number of free GraphViz tools such as <a href="https://dreampuf.github.io/GraphvizOnline/">GraphViz Online</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="QuickStartRunATaskflowThroughAnExecution"><h2><a href="#QuickStartRunATaskflowThroughAnExecution">Run a Taskflow through an Executor</a></h2><p>The executor provides several <em>thread-safe</em> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <code>tf::Future&lt;void&gt;</code> return to let you query the execution status.</p><pre class="m-code"><span class="c1">// runs the taskflow once</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">run_once</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span><span class="w"> </span>
 
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
+<span class="c1">// wait on this run to finish</span>
+<span class="n">run_once</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+
+<span class="c1">// run the taskflow four times</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+
+<span class="c1">// runs the taskflow five times</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run_until</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">counter</span><span class="o">=</span><span class="mi">5</span><span class="p">](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">--</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+
+<span class="c1">// blocks the executor until all submitted taskflows complete</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre></section><section id="QuickStartOffloadTasksToGPU"><h2><a href="#QuickStartOffloadTasksToGPU">Offload Tasks to a GPU</a></h2><p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using Nvidia CUDA <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>.</p><pre class="m-code"><span class="n">__global__</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">saxpy</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blockIdx</span><span class="p">.</span><span class="n">x</span><span class="o">*</span><span class="n">blockDim</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">threadIdx</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// create a CUDA Gaph task</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">cudaflow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">]()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaGraph</span><span class="w"> </span><span class="n">cg</span><span class="p">;</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cg</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">hx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">h2d_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cg</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">hy</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cg</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hx</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">d2h_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cg</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hy</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">dy</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaTask</span><span class="w"> </span><span class="n">saxpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cg</span><span class="p">.</span><span class="n">kernel</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">255</span><span class="p">)</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">saxpy</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">);</span>
+<span class="w">  </span><span class="n">saxpy</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">h2d_x</span><span class="p">,</span><span class="w"> </span><span class="n">h2d_y</span><span class="p">)</span>
+<span class="w">       </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">d2h_x</span><span class="p">,</span><span class="w"> </span><span class="n">d2h_y</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// instantiate an executable CUDA graph and run it through a stream</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaGraphExec</span><span class="w"> </span><span class="nf">exec</span><span class="p">(</span><span class="n">cg</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">cudaStream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">  </span><span class="n">stream</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">exec</span><span class="p">).</span><span class="n">synchronize</span><span class="p">();</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;CUDA Graph Task&quot;</span><span class="p">);</span></pre><div class="m-graph"><svg style="width: 24.200rem; height: 9.800rem;" viewBox="0.00 0.00 242.00 98.00">
+<g transform="scale(1 1) rotate(0) translate(4 94)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x7f2870401a50</title>
+<ellipse cx="27" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_x</text>
+</g>
+<g class="m-node">
+<title>p0x7f2870402bc0</title>
+<polygon points="144,-63 94,-63 90,-59 90,-27 140,-27 144,-31 144,-63"/>
+<polyline points="140,-59 90,-59"/>
+<polyline points="140,-59 140,-27"/>
+<polyline points="140,-59 144,-63"/>
+<text text-anchor="middle" x="117" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">saxpy</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870401a50&#45;&gt;p0x7f2870402bc0</title>
+<path d="M52.05,-64.62C60.3,-62.09 69.73,-59.2 78.78,-56.42"/>
+<polygon points="79.53,-59.85 88.06,-53.57 77.47,-53.16 79.53,-59.85"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870402310</title>
+<ellipse cx="207" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_x</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402310</title>
+<path d="M144.4,-53.1C152.8,-55.68 162.23,-58.57 171.13,-61.3"/>
+<polygon points="169.98,-64.61 180.57,-64.2 172.03,-57.92 169.98,-64.61"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870402780</title>
+<ellipse cx="207" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="207" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h_y</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870402bc0&#45;&gt;p0x7f2870402780</title>
+<path d="M144.4,-36.9C152.8,-34.32 162.23,-31.43 171.13,-28.7"/>
+<polygon points="172.03,-32.08 180.57,-25.8 169.98,-25.39 172.03,-32.08"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f2870401eb0</title>
+<ellipse cx="27" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d_y</text>
+</g>
+<g class="m-edge">
+<title>p0x7f2870401eb0&#45;&gt;p0x7f2870402bc0</title>
+<path d="M52.05,-25.38C60.3,-27.91 69.73,-30.8 78.78,-33.58"/>
+<polygon points="77.47,-36.84 88.06,-36.43 79.53,-30.15 77.47,-36.84"/>
+</g>
+</g>
+</svg>
+</div></section><section id="QuickStartVisualizeATaskflow"><h2><a href="#QuickStartVisualizeATaskflow">Visualize Taskflow Graphs</a></h2><p>You can dump a taskflow graph to a DOT format and visualize it using a number of free GraphViz tools such as <a href="https://dreampuf.github.io/GraphvizOnline/">GraphViz Online</a>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;E&quot;</span><span class="p">);</span>
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
 <span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
 <span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">);</span>
@@ -552,7 +558,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v8.4 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v19.27 with /std:c++17</li><li>AppleClang Xcode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler at least v19.0.1 with -std=c++17</li><li>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <code>-std=c++20</code> to achieve better performance due to new C++20 features.</p></aside></section><section id="QuickStartGetInvolved"><h2><a href="#QuickStartGetInvolved">Get Involved</a></h2><p>Visit our <a href="https://taskflow.github.io/">Project Website</a> and <a href="https://taskflow.github.io/showcase/index.html">showcase presentation</a> to learn more about Taskflow. To get involved:</p><ul><li>See release notes at <a href="Releases.html" class="m-doc">Release Notes</a></li><li>Read the step-by-step tutorial at <a href="Cookbook.html" class="m-doc">Cookbook</a></li><li>Submit an issue at <a href="https://github.com/taskflow/taskflow/issues">issue tracker</a></li><li>Learn more about our technical details at <a href="References.html" class="m-doc">References</a></li><li>Watch our <a href="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</a> and <a href="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</a></li></ul><p>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. If you are using Taskflow, please cite the following paper we published at 2022 IEEE TPDS:</p><ul><li>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;<a href="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</a>,&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, vol. 33, no. 6, pp. 1303-1320, June 2022</li></ul><p>More importantly, we appreciate all Taskflow <a href="contributors.html" class="m-doc">Contributors</a> and the following organizations for sponsoring the Taskflow project!</p><table class="m-table"><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody><tr><td><img class="m-image" src="utah-ece-logo.png" alt="Image" /></td><td><img class="m-image" src="nsf.png" alt="Image" /></td><td><img class="m-image" src="darpa.png" alt="Image" /></td><td><img class="m-image" src="NumFocus.png" alt="Image" /></td></tr><tr><td><img class="m-image" src="nvidia-logo.png" alt="Image" /></td><td></td><td></td><td></td></tr></tbody></table></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license. You are completely free to use, modify, and redistribute any work on top of Taskflow. The source code is available in <a href="https://github.com/taskflow/">Project GitHub</a> and is actively maintained by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a> and his research group at the University of Wisconsin at Madison.</p></section>
+</div></section><section id="SupportedCompilers"><h2><a href="#SupportedCompilers">Supported Compilers</a></h2><p>To use Taskflow, you only need a compiler that supports C++17:</p><ul><li>GNU C++ Compiler at least v8.4 with -std=c++17</li><li>Clang C++ Compiler at least v6.0 with -std=c++17</li><li>Microsoft Visual Studio at least v19.27 with /std:c++17</li><li>AppleClang Xcode Version at least v12.0 with -std=c++17</li><li>Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17</li><li>Intel C++ Compiler at least v19.0.1 with -std=c++17</li><li>Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20</li></ul><p>Taskflow works on Linux, Windows, and Mac OS X.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <code>-std=c++20</code> to achieve better performance due to new C++20 features.</p></aside></section><section id="QuickStartGetInvolved"><h2><a href="#QuickStartGetInvolved">Get Involved</a></h2><p>Visit our <a href="https://taskflow.github.io/">Project Website</a> and <a href="https://taskflow.github.io/showcase/index.html">showcase presentation</a> to learn more about Taskflow. To get involved:</p><ul><li>See release notes at <a href="Releases.html" class="m-doc">Release Notes</a></li><li>Read the step-by-step tutorial at <a href="Cookbook.html" class="m-doc">Cookbook</a></li><li>Submit an issue at <a href="https://github.com/taskflow/taskflow/issues">issue tracker</a></li><li>Learn more about our technical details at <a href="References.html" class="m-doc">References</a></li><li>Watch our <a href="https://www.youtube.com/watch?v=MX15huP5DsM">2020 CppCon Taskflow Talk</a> and <a href="https://www.youtube.com/watch?v=u8Mc_WgGwVY">2020 MUC++ Taskflow Talk</a></li></ul><p>We are committed to support trustworthy developments for both academic and industrial research projects in parallel and heterogeneous computing. If you are using Taskflow, please cite the following paper we published at 2022 IEEE TPDS:</p><ul><li>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;<a href="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</a>,&quot; <em>IEEE Transactions on Parallel and Distributed Systems (TPDS)</em>, vol. 33, no. 6, pp. 1303-1320, June 2022</li></ul><p>More importantly, we appreciate all Taskflow <a href="contributors.html" class="m-doc">Contributors</a> and the following organizations for sponsoring the Taskflow project!</p><table class="m-table"><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody><tr><td><img class="m-image" src="utah-ece-logo.png" alt="Image" /></td><td><img class="m-image" src="nsf.png" alt="Image" /></td><td><img class="m-image" src="darpa.png" alt="Image" /></td><td><img class="m-image" src="NumFocus.png" alt="Image" /></td></tr><tr><td><img class="m-image" src="nvidia-logo.png" alt="Image" /></td><td><img class="m-image" src="uw-madison-ece-logo.png" alt="Image" /></td><td></td><td></td></tr></tbody></table></section><section id="License"><h2><a href="#License">License</a></h2><p>Taskflow is open-source under permissive MIT license. You are completely free to use, modify, and redistribute any work on top of Taskflow. The source code is available in <a href="https://github.com/taskflow/">Project GitHub</a> and is actively maintained by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a> and his research group at the University of Wisconsin at Madison.</p></section>
       </div>
     </div>
   </div>

@@ -436,7 +436,7 @@ class FlowBuilder {
   tf::IndexRange<int> range(0, 17, 2);
   
   // parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]
-  taskflow.for_each_index(range, [](tf::IndexRange<int> range) {
+  taskflow.for_each_by_index(range, [](tf::IndexRange<int> range) {
     // iterate each index in the subrange
     for(int i=range.begin(); i<range.end(); i+=range.step_size()) {
       printf("iterate %d\n", i);
@@ -451,7 +451,7 @@ class FlowBuilder {
   Please refer to @ref ParallelIterations for details.
   */
   template <typename R, typename C, typename P = DefaultPartitioner>
-  Task for_each_index(R range, C callable, P part = P());
+  Task for_each_by_index(R range, C callable, P part = P());
 
   // ------------------------------------------------------------------------
   // transform
@@ -1259,7 +1259,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 // Function: emplace
 template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
   ));
 }
@@ -1267,7 +1267,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_runtime_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Runtime>{}, std::forward<C>(c)
   ));
 }
@@ -1275,7 +1275,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_subflow_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Subflow>{}, std::forward<C>(c)
   ));
 }
@@ -1283,7 +1283,7 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
   ));
 }
@@ -1291,9 +1291,26 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_multi_condition_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back("", nullptr, nullptr, 0,
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
   ));
+}
+
+// Function: composed_of
+template <typename T>
+Task FlowBuilder::composed_of(T& object) {
+  auto node = _graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+    std::in_place_type_t<Node::Module>{}, object
+  );
+  return Task(node);
+}
+
+// Function: placeholder
+inline Task FlowBuilder::placeholder() {
+  auto node = _graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+    std::in_place_type_t<Node::Placeholder>{}
+  );
+  return Task(node);
 }
 
 // Function: emplace
@@ -1309,39 +1326,19 @@ inline void FlowBuilder::erase(Task task) {
     return;
   }
 
-  task.for_each_dependent([&] (Task dependent) {
-    auto& S = dependent._node->_successors;
-    if(auto I = std::find(S.begin(), S.end(), task._node); I != S.end()) {
-      S.erase(I);
-    }
-  });
+  // remove task from its successors' predecessor list
+  for(size_t i=0; i<task._node->_num_successors; ++i) {
+    task._node->_edges[i]->_remove_predecessors(task._node);
+  }
 
-  task.for_each_successor([&] (Task dependent) {
-    auto& D = dependent._node->_dependents;
-    if(auto I = std::find(D.begin(), D.end(), task._node); I != D.end()) {
-      D.erase(I);
-    }
-  });
+  // remove task from its precedessors' successor list
+  for(size_t i=task._node->_num_successors; i<task._node->_edges.size(); ++i) {
+    task._node->_edges[i]->_remove_successors(task._node);
+  }
 
   _graph._erase(task._node);
 }
 
-// Function: composed_of
-template <typename T>
-Task FlowBuilder::composed_of(T& object) {
-  auto node = _graph._emplace_back("", nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Module>{}, object
-  );
-  return Task(node);
-}
-
-// Function: placeholder
-inline Task FlowBuilder::placeholder() {
-  auto node = _graph._emplace_back("", nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Placeholder>{}
-  );
-  return Task(node);
-}
 
 // Procedure: _linearize
 template <typename L>
@@ -1380,8 +1377,7 @@ inline void FlowBuilder::linearize(std::initializer_list<Task> keys) {
 
 tf::Subflow is spawned from the execution of a task to dynamically manage a 
 child graph that may depend on runtime variables.
-You can explicitly join or detach a subflow by calling tf::Subflow::join
-or tf::Subflow::detach, respectively.
+You can explicitly join a subflow by calling tf::Subflow::join, respectively.
 By default, the %Taskflow runtime will implicitly join a subflow it is is joinable.
 
 The following example creates a taskflow graph that spawns a subflow from
@@ -1435,27 +1431,10 @@ class Subflow : public FlowBuilder {
     void join();
 
     /**
-    @brief enables the subflow to detach from its parent task
-
-    Performs an immediate action to detach the subflow. Once the subflow is detached,
-    it is considered finished and you may not modify the subflow anymore.
-
-    @code{.cpp}
-    taskflow.emplace([](tf::Subflow& sf){
-      sf.emplace([](){});
-      sf.detach();
-    });
-    @endcode
-
-    Only the worker that spawns this subflow can detach it.
-    */
-    void detach();
-
-    /**
     @brief queries if the subflow is joinable
 
     This member function queries if the subflow is joinable.
-    When a subflow is joined or detached, it becomes not joinable.
+    When a subflow is joined, it becomes not joinable.
 
     @code{.cpp}
     taskflow.emplace([](tf::Subflow& sf){
@@ -1477,11 +1456,25 @@ class Subflow : public FlowBuilder {
     @brief acquires the associated graph
     */
     Graph& graph() { return _graph; }
+    
+    /**
+    @brief specifies whether to keep the subflow after it is joined
+
+    @param flag `true` to retain the subflow after it is joined; `false` to discard it
+
+    By default, the runtime automatically clears a spawned subflow once it is joined.
+    Setting this flag to `true` allows the application to retain the subflow's structure 
+    for post-execution analysis like visualization.
+    */
+    void retain(bool flag) noexcept;
+
+    /**
+    @brief queries if the subflow will be retained after it is joined
+    @return `true` if the subflow will be retained after it is joined; `false` otherwise
+    */
+    bool retain() const;
 
   private:
-    
-    // with only the most significant bit set: 1000...000
-    constexpr static size_t JOINED_BIT = (~size_t(0)) ^ ((~size_t(0)) >> 1);
     
     Subflow(Executor&, Worker&, Node*, Graph&);
     
@@ -1492,8 +1485,6 @@ class Subflow : public FlowBuilder {
     Executor& _executor;
     Worker& _worker;
     Node* _parent;
-
-    size_t _tag;
 };
 
 // Constructor
@@ -1501,30 +1492,42 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
   FlowBuilder {graph}, 
   _executor   {executor}, 
   _worker     {worker}, 
-  _parent     {parent}, 
-  _tag        {graph.size()} {
+  _parent     {parent} {
+  
+  // need to reset since there could have iterative control flow
+  _parent->_nstate &= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);
 
-  // assert(_parent != nullptr);
-  // clear undetached nodes in reversed order
-  for(auto i = graph.rbegin(); i != graph.rend(); ++i) {
-    if((i->get()->_nstate & NSTATE::DETACHED) == 0) {
-      --_tag;
-    }
-    else {
-      break;
-    }
-  }
-  graph.resize(_tag);
+  // clear the graph
+  graph.clear();
 }
 
 // Function: joinable
 inline bool Subflow::joinable() const noexcept {
-  return (_tag & JOINED_BIT) == 0;
+  return !(_parent->_nstate & NSTATE::JOINED_SUBFLOW);
 }
 
 // Function: executor
 inline Executor& Subflow::executor() noexcept {
   return _executor;
+}
+
+// Function: retain
+inline void Subflow::retain(bool flag) noexcept {
+  // default value is not to retain 
+  if TF_LIKELY(flag == true) {
+    _parent->_nstate |= NSTATE::RETAIN_SUBFLOW;
+  }
+  else {
+    _parent->_nstate &= ~NSTATE::RETAIN_SUBFLOW;
+  }
+
+  //_parent->_nstate = (_parent->_nstate & ~NSTATE::RETAIN_SUBFLOW) | 
+  //                   (-static_cast<int>(flag) & NSTATE::RETAIN_SUBFLOW);
+}
+
+// Function: retain
+inline bool Subflow::retain() const {
+  return _parent->_nstate & NSTATE::RETAIN_SUBFLOW;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

@@ -4,7 +4,7 @@
 // wavefront computing
 void wavefront_taskflow(unsigned num_threads) {
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   std::vector<std::vector<tf::Task>> node(MB);

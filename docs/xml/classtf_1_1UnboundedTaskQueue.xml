@@ -96,7 +96,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="109" column="12" bodyfile="taskflow/core/tsq.hpp" bodystart="165" bodyend="170"/>
+        <location file="taskflow/core/tsq.hpp" line="109" column="12" bodyfile="taskflow/core/tsq.hpp" bodystart="178" bodyend="183"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -111,7 +111,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="114" column="3" bodyfile="taskflow/core/tsq.hpp" bodystart="174" bodyend="179"/>
+        <location file="taskflow/core/tsq.hpp" line="114" column="3" bodyfile="taskflow/core/tsq.hpp" bodystart="187" bodyend="192"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>bool</type>
@@ -126,7 +126,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="119" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="183" bodyend="187"/>
+        <location file="taskflow/core/tsq.hpp" line="119" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="196" bodyend="200"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
@@ -141,7 +141,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="124" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="191" bodyend="195"/>
+        <location file="taskflow/core/tsq.hpp" line="124" column="10" bodyfile="taskflow/core/tsq.hpp" bodystart="204" bodyend="208"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a54eb8fe122dd783c486c683e7c50c5e5" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>int64_t</type>
@@ -156,7 +156,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="129" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="273" bodyend="275"/>
+        <location file="taskflow/core/tsq.hpp" line="129" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="312" bodyend="314"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -185,7 +185,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="140" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="199" bodyend="215"/>
+        <location file="taskflow/core/tsq.hpp" line="140" column="8" bodyfile="taskflow/core/tsq.hpp" bodystart="212" bodyend="228"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -201,7 +201,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="148" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="219" bodyend="246"/>
+        <location file="taskflow/core/tsq.hpp" line="148" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="232" bodyend="259"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>T</type>
@@ -217,7 +217,36 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="156" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="250" bodyend="269"/>
+        <location file="taskflow/core/tsq.hpp" line="156" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="263" bodyend="282"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1UnboundedTaskQueue_1a1e73bc73447fa1d60b0957348c987d38" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>T</type>
+        <definition>T tf::UnboundedTaskQueue&lt; T &gt;::steal_with_hint</definition>
+        <argsstring>(size_t &amp;num_empty_steals)</argsstring>
+        <name>steal_with_hint</name>
+        <qualifiedname>tf::UnboundedTaskQueue::steal_with_hint</qualifiedname>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>num_empty_steals</declname>
+        </param>
+        <briefdescription>
+<para>attempts to steal a task with a hint mechanism </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>num_empty_steals</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a reference to a counter tracking consecutive empty steal attempts</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <computeroutput>num_empty_steals</computeroutput> is incremented; otherwise, <computeroutput>num_empty_steals</computeroutput> is reset to zero. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/tsq.hpp" line="169" column="5" bodyfile="taskflow/core/tsq.hpp" bodystart="286" bodyend="308"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -245,7 +274,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="160" column="9" bodyfile="taskflow/core/tsq.hpp" bodystart="279" bodyend="288"/>
+        <location file="taskflow/core/tsq.hpp" line="173" column="9" bodyfile="taskflow/core/tsq.hpp" bodystart="318" bodyend="335"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -265,7 +294,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
 <para>This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>.</para>
 <para>Only the queue owner can perform pop and push operations, while others can steal data from the queue simultaneously. </para>
     </detaileddescription>
-    <location file="taskflow/core/tsq.hpp" line="53" column="1" bodyfile="taskflow/core/tsq.hpp" bodystart="53" bodyend="161"/>
+    <location file="taskflow/core/tsq.hpp" line="53" column="1" bodyfile="taskflow/core/tsq.hpp" bodystart="53" bodyend="174"/>
     <listofallmembers>
       <member refid="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>_array</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>_bottom</name></member>
@@ -278,6 +307,7 @@ Only the owner thread can insert an item to the queue. The operation can trigger
       <member refid="classtf_1_1UnboundedTaskQueue_1a7925cbfb4473f5bd4b2dcf52da4985f7" prot="private" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>resize_array</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>size</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>steal</name></member>
+      <member refid="classtf_1_1UnboundedTaskQueue_1a1e73bc73447fa1d60b0957348c987d38" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>steal_with_hint</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1accc811a0a5d692a3cda366378367d7b6" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>UnboundedTaskQueue</name></member>
       <member refid="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue</scope><name>~UnboundedTaskQueue</name></member>
     </listofallmembers>

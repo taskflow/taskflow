@@ -5,6 +5,7 @@
     <includes local="no">cstdlib</includes>
     <includes local="no">cstdio</includes>
     <includes local="no">string</includes>
+    <includes local="no">thread</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
     <incdepgraph>
       <node id="1">
@@ -16,6 +17,8 @@
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
       </node>
       <node id="3">
         <label>cstdio</label>
@@ -25,6 +28,9 @@
       </node>
       <node id="4">
         <label>string</label>
+      </node>
+      <node id="5">
+        <label>thread</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
@@ -56,10 +62,10 @@
         <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="19">
+      <node id="14">
         <label>taskflow/core/flow_builder.hpp</label>
         <link refid="flow__builder_8hpp"/>
-        <childnode refid="20" relation="include">
+        <childnode refid="15" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -67,10 +73,10 @@
         <link refid="graph_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
-        <childnode refid="18" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="21">
+      <node id="16">
         <label>taskflow/core/observer.hpp</label>
         <link refid="observer_8hpp"/>
         <childnode refid="4" relation="include">
@@ -82,53 +88,25 @@
         <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="18">
+      <node id="13">
         <label>taskflow/core/task.hpp</label>
         <link refid="task_8hpp"/>
-        <childnode refid="19" relation="include">
+        <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="21" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="20">
+      <node id="15">
         <label>taskflow/core/taskflow.hpp</label>
         <link refid="core_2taskflow_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
       </node>
-      <node id="12">
-        <label>taskflow/cuda/algorithm/find.hpp</label>
-        <link refid="find_8hpp"/>
-      </node>
       <node id="11">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
-        <childnode refid="12" relation="include">
-        </childnode>
       </node>
-      <node id="13">
-        <label>taskflow/cuda/algorithm/merge.hpp</label>
-        <link refid="merge_8hpp"/>
-        <childnode refid="14" relation="include">
-        </childnode>
-      </node>
-      <node id="15">
-        <label>taskflow/cuda/algorithm/reduce.hpp</label>
-        <link refid="reduce_8hpp"/>
-        <childnode refid="12" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-      </node>
-      <node id="16">
-        <label>taskflow/cuda/algorithm/scan.hpp</label>
-        <link refid="scan_8hpp"/>
-      </node>
-      <node id="14">
-        <label>taskflow/cuda/algorithm/sort.hpp</label>
-        <link refid="sort_8hpp"/>
-      </node>
-      <node id="17">
+      <node id="12">
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
       </node>
@@ -137,11 +115,7 @@
         <link refid="cudaflow_8hpp"/>
         <childnode refid="11" relation="include">
         </childnode>
-        <childnode refid="13" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-        <childnode refid="17" relation="include">
+        <childnode refid="12" relation="include">
         </childnode>
       </node>
       <node id="6">
@@ -173,7 +147,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="7" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="7" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="8" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="8" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a3ec0624f8d8231cda51e2abb418a3709" prot="public" static="no">
         <name>TF_OS_DRAGONFLY</name>
@@ -184,7 +158,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="8" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="8" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="9" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="9" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a0aac3a1c18612858e4c17a6c670fb193" prot="public" static="no">
         <name>TF_OS_FREEBSD</name>
@@ -195,7 +169,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="9" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="9" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="10" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="10" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1ac5ab650c693abbd242ce2a369d142904" prot="public" static="no">
         <name>TF_OS_NETBSD</name>
@@ -206,7 +180,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="10" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="10" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="11" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="11" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a713e8fa1abb775e2e0d5d21ac28572f2" prot="public" static="no">
         <name>TF_OS_OPENBSD</name>
@@ -217,7 +191,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="11" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="11" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="12" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="12" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a75ba24da531078f3b4d67c45575ec7d3" prot="public" static="no">
         <name>TF_OS_DARWIN</name>
@@ -228,7 +202,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="12" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="12" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="13" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="13" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1aabdb0549f3144050bf68de54fcdd1a3e" prot="public" static="no">
         <name>TF_OS_WINDOWS</name>
@@ -239,7 +213,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="13" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="13" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="14" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="14" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a71b8e0621b467721b793859ae2798698" prot="public" static="no">
         <name>TF_OS_CNK</name>
@@ -250,7 +224,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="14" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="14" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="15" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="15" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a1aa487c4a2bc4da0a2e8c53e57e3bc20" prot="public" static="no">
         <name>TF_OS_HURD</name>
@@ -261,7 +235,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="15" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="15" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="16" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="16" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1ae8d8a6de7c7ab584218e6b78e7b55060" prot="public" static="no">
         <name>TF_OS_SOLARIS</name>
@@ -272,7 +246,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="16" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="16" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="17" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="17" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a592a193c49c31e6688dc1019d02269b4" prot="public" static="no">
         <name>TF_OS_UNIX</name>
@@ -283,7 +257,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="17" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="17" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="18" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="18" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1ade30f1836b6fb593039f13b67a20cec9" prot="public" static="no">
         <name>TF_OS_UNKNOWN</name>
@@ -294,7 +268,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="83" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="83" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="84" column="9" bodyfile="taskflow/utility/os.hpp" bodystart="84" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="os_8hpp_1a2f7ab3bdbd7b17f081cbb69422b3bf0b" prot="public" static="no">
         <name>TF_CACHELINE_SIZE</name>
@@ -305,7 +279,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="117" column="11" bodyfile="taskflow/utility/os.hpp" bodystart="117" bodyend="-1"/>
+        <location file="taskflow/utility/os.hpp" line="118" column="11" bodyfile="taskflow/utility/os.hpp" bodystart="118" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <briefdescription>

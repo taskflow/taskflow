@@ -52,7 +52,7 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @subsection release-3-0-0_cudaflow cudaFlow
 
-@li added tf::cudaFlowCapturer for building a %cudaFlow through stream capture (see @ref GPUTaskingcudaFlowCapturer)
+@li added tf::cudaFlowCapturer for building a %cudaFlow through stream capture
 @li added tf::cudaFlowCapturerBase for creating custom capturers
 @li added tf::cudaFlow::capture for capturing a %cudaFlow within a parent %cudaFlow
 @li added tf::Taskflow::emplace_on to place a %cudaFlow on a GPU
@@ -83,8 +83,8 @@ To use %Taskflow v3.0.0, you need a compiler that supports C++17:
 
 @subsection release-3-0-0_gpu_algorithms GPU Algorithms
 
-@li added single task (see @ref SingleTaskCUDA)
-@li added parallel iterations (see @ref ForEachCUDA)
+@li added single task 
+@li added parallel iterations 
 @li added parallel transforms 
 @li added parallel reduction
 
@@ -114,13 +114,9 @@ to support cancellation (see @ref AsyncTasking and @ref RequestCancellation)
 @li added @ref BenchmarkTaskflow
 @li added @ref LimitTheMaximumConcurrency
 @li added @ref AsyncTasking 
-@li added @ref GPUTaskingcudaFlowCapturer
+@li added @ref GPUTasking
 @li added @ref RequestCancellation
 @li added @ref Profiler
-@li added @ref cudaFlowAlgorithms
-  + @ref SingleTaskCUDA to run a kernel function in just a single thread
-  + @ref ForEachCUDA to perform parallel iterations over a range of items
-  + @ref ParallelTransformsCUDA to perform parallel transforms over a range of items
 @li added @ref Governance
   + @ref rules
   + @ref team

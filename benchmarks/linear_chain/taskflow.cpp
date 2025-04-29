@@ -8,7 +8,7 @@ void linear_chain_taskflow(size_t length, unsigned num_threads) {
 
   std::vector<tf::Task> tasks(length);
 
-  tf::Executor executor(num_threads);
+  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   for(size_t i=0; i<length; ++i) {

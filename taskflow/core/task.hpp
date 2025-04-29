@@ -85,16 +85,84 @@ inline const char* to_string(TaskType type) {
 }
 
 // ----------------------------------------------------------------------------
-// Task Traits
+// Static Task Trait
 // ----------------------------------------------------------------------------
 
 /**
-@brief determines if a callable is a dynamic task
+@private
+*/
+template <typename C, typename = void>
+struct is_static_task : std::false_type {};
 
-A dynamic task is a callable object constructible from std::function<void(Subflow&)>.
+/**
+@private
 */
 template <typename C>
-constexpr bool is_subflow_task_v = std::is_invocable_r_v<void, C, Subflow&>;
+struct is_static_task<C, std::enable_if_t<std::is_invocable_v<C>>>
+  : std::is_same<std::invoke_result_t<C>, void> {};
+
+/**
+@brief determines if a callable is a static task
+
+A static task is a callable object constructible from std::function<void()>.
+*/
+template <typename C>
+constexpr bool is_static_task_v = is_static_task<C>::value;
+
+// ----------------------------------------------------------------------------
+// Subflow Task Trait
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <typename C, typename = void>
+struct is_subflow_task : std::false_type {};
+
+/**
+@private
+*/
+template <typename C>
+struct is_subflow_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Subflow&>>>
+  : std::is_same<std::invoke_result_t<C, tf::Subflow&>, void> {};
+
+/**
+@brief determines if a callable is a subflow task
+
+A subflow task is a callable object constructible from std::function<void(Subflow&)>.
+*/
+template <typename C>
+constexpr bool is_subflow_task_v = is_subflow_task<C>::value;
+
+// ----------------------------------------------------------------------------
+// Runtime Task Trait
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <typename C, typename = void>
+struct is_runtime_task : std::false_type {};
+
+/**
+@private
+*/
+template <typename C>
+struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Runtime&>>>
+  : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
+
+/**
+@brief determines if a callable is a runtime task
+
+A runtime task is a callable object constructible from std::function<void(Runtime&)>.
+*/
+template <typename C>
+constexpr bool is_runtime_task_v = is_runtime_task<C>::value;
+
+
+// ----------------------------------------------------------------------------
+// Condition Task Trait
+// ----------------------------------------------------------------------------
 
 /**
 @brief determines if a callable is a condition task
@@ -113,23 +181,6 @@ std::function<tf::SmallVector<int>()>.
 template <typename C>
 constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int>, C>;
 
-/**
-@brief determines if a callable is a static task
-
-A static task is a callable object constructible from std::function<void()>.
-*/
-template <typename C>
-constexpr bool is_static_task_v = std::is_invocable_r_v<void, C> &&
-                                  !is_condition_task_v<C>        &&
-                                  !is_multi_condition_task_v<C>;
-
-/**
-@brief determines if a callable is a runtime task
-
-A runtime task is a callable object constructible from std::function<void(tf::Runtime&)>.
-*/
-template <typename C>
-constexpr bool is_runtime_task_v = std::is_invocable_r_v<void, C, Runtime&>;
 
 // ----------------------------------------------------------------------------
 // Task
@@ -200,17 +251,17 @@ class Task {
     /**
     @brief queries the number of predecessors of the task
     */
-    size_t num_dependents() const;
+    size_t num_predecessors() const;
 
     /**
     @brief queries the number of strong dependents of the task
     */
-    size_t num_strong_dependents() const;
+    size_t num_strong_dependencies() const;
 
     /**
     @brief queries the number of weak dependents of the task
     */
-    size_t num_weak_dependents() const;
+    size_t num_weak_dependencies() const;
 
     /**
     @brief assigns a name to the task
@@ -351,7 +402,7 @@ class Task {
     @brief applies an visitor callable to each dependents of the task
     */
     template <typename V>
-    void for_each_dependent(V&& visitor) const;
+    void for_each_predecessor(V&& visitor) const;
 
     /**
     @brief obtains a hash value of the underlying node
@@ -503,19 +554,19 @@ inline const std::string& Task::name() const {
   return _node->_name;
 }
 
-// Function: num_dependents
-inline size_t Task::num_dependents() const {
-  return _node->num_dependents();
+// Function: num_predecessors
+inline size_t Task::num_predecessors() const {
+  return _node->num_predecessors();
 }
 
-// Function: num_strong_dependents
-inline size_t Task::num_strong_dependents() const {
-  return _node->num_strong_dependents();
+// Function: num_strong_dependencies
+inline size_t Task::num_strong_dependencies() const {
+  return _node->num_strong_dependencies();
 }
 
-// Function: num_weak_dependents
-inline size_t Task::num_weak_dependents() const {
-  return _node->num_weak_dependents();
+// Function: num_weak_dependencies
+inline size_t Task::num_weak_dependencies() const {
+  return _node->num_weak_dependencies();
 }
 
 // Function: num_successors
@@ -552,16 +603,16 @@ inline TaskType Task::type() const {
 // Function: for_each_successor
 template <typename V>
 void Task::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_successors.size(); ++i) {
-    visitor(Task(_node->_successors[i]));
+  for(size_t i=0; i<_node->_num_successors; ++i) {
+    visitor(Task(_node->_edges[i]));
   }
 }
 
-// Function: for_each_dependent
+// Function: for_each_predecessor
 template <typename V>
-void Task::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node->_dependents.size(); ++i) {
-    visitor(Task(_node->_dependents[i]));
+void Task::for_each_predecessor(V&& visitor) const {
+  for(size_t i=_node->_num_successors; i<_node->_edges.size(); ++i) {
+    visitor(Task(_node->_edges[i]));
   }
 }
 
@@ -654,17 +705,17 @@ class TaskView {
     /**
     @brief queries the number of predecessors of the task
     */
-    size_t num_dependents() const;
+    size_t num_predecessors() const;
 
     /**
     @brief queries the number of strong dependents of the task
     */
-    size_t num_strong_dependents() const;
+    size_t num_strong_dependencies() const;
 
     /**
     @brief queries the number of weak dependents of the task
     */
-    size_t num_weak_dependents() const;
+    size_t num_weak_dependencies() const;
 
     /**
     @brief applies an visitor callable to each successor of the task
@@ -676,7 +727,7 @@ class TaskView {
     @brief applies an visitor callable to each dependents of the task
     */
     template <typename V>
-    void for_each_dependent(V&& visitor) const;
+    void for_each_predecessor(V&& visitor) const;
 
     /**
     @brief queries the task type
@@ -705,19 +756,19 @@ inline const std::string& TaskView::name() const {
   return _node._name;
 }
 
-// Function: num_dependents
-inline size_t TaskView::num_dependents() const {
-  return _node.num_dependents();
+// Function: num_predecessors
+inline size_t TaskView::num_predecessors() const {
+  return _node.num_predecessors();
 }
 
-// Function: num_strong_dependents
-inline size_t TaskView::num_strong_dependents() const {
-  return _node.num_strong_dependents();
+// Function: num_strong_dependencies
+inline size_t TaskView::num_strong_dependencies() const {
+  return _node.num_strong_dependencies();
 }
 
-// Function: num_weak_dependents
-inline size_t TaskView::num_weak_dependents() const {
-  return _node.num_weak_dependents();
+// Function: num_weak_dependencies
+inline size_t TaskView::num_weak_dependencies() const {
+  return _node.num_weak_dependencies();
 }
 
 // Function: num_successors
@@ -749,17 +800,23 @@ inline size_t TaskView::hash_value() const {
 // Function: for_each_successor
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node._successors.size(); ++i) {
-    visitor(TaskView(*_node._successors[i]));
+  for(size_t i=0; i<_node._num_successors; ++i) {
+    visitor(TaskView(*_node._edges[i]));
   }
+  //for(size_t i=0; i<_node._successors.size(); ++i) {
+  //  visitor(TaskView(*_node._successors[i]));
+  //}
 }
 
-// Function: for_each_dependent
+// Function: for_each_predecessor
 template <typename V>
-void TaskView::for_each_dependent(V&& visitor) const {
-  for(size_t i=0; i<_node._dependents.size(); ++i) {
-    visitor(TaskView(*_node._dependents[i]));
+void TaskView::for_each_predecessor(V&& visitor) const {
+  for(size_t i=_node._num_successors; i<_node._edges.size(); ++i) {
+    visitor(TaskView(*_node._edges[i]));
   }
+  //for(size_t i=0; i<_node._predecessors.size(); ++i) {
+  //  visitor(TaskView(*_node._predecessors[i]));
+  //}
 }
 
 }  // end of namespace tf. ----------------------------------------------------

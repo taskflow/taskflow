@@ -4,8 +4,11 @@
 // async_task cstdutation
 void async_task_std(unsigned, size_t num_tasks) {
   std::vector<std::future<void>> futures;
+  std::atomic<size_t> counter(0);
   for(size_t i=0; i<num_tasks; i++){
-    futures.emplace_back(std::async(func));
+    futures.emplace_back(std::async([&](){
+      func(counter); 
+    }));
   }
   for(auto& fu : futures) {
     fu.get();

@@ -4,61 +4,6 @@
 
 namespace tf {
 
-namespace detail {
-
-// Function: find_if_loop
-template <typename Iterator, typename Predicate>
-bool find_if_loop(
-  std::atomic<size_t>& offset, 
-  Iterator& beg,
-  size_t& prev_e,
-  size_t  curr_b, 
-  size_t  curr_e,
-  Predicate predicate
-) {
-  // early prune
-  if(offset.load(std::memory_order_relaxed) < curr_b) {
-    return true;
-  }
-  std::advance(beg, curr_b - prev_e);
-  for(size_t x = curr_b; x<curr_e; x++) {
-    if(predicate(*beg++)) {
-      atomic_min(offset, x);
-      return true;
-    }
-  }
-  prev_e = curr_e;
-  return false;
-}
-
-// Function: find_if_not_loop
-template <typename Iterator, typename Predicate>
-bool find_if_not_loop(
-  std::atomic<size_t>& offset, 
-  Iterator& beg,
-  size_t& prev_e,
-  size_t  curr_b, 
-  size_t  curr_e,
-  Predicate predicate
-) {
-
-  // early prune
-  if(offset.load(std::memory_order_relaxed) < curr_b) {
-    return true;
-  }
-  std::advance(beg, curr_b - prev_e);
-  for(size_t x = curr_b; x<curr_e; x++) {
-    if(!predicate(*beg++)) {
-      atomic_min(offset, x);
-      return true;
-    }
-  }
-  prev_e = curr_e;
-  return false;
-}
-
-}  // namespace detail --------------------------------------------------------
-
 // Function: make_find_if_task
 template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
 auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) {
@@ -79,7 +24,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ result = std::find_if(beg, end, predicate); })();
+      part([=, &result]() mutable { result = std::find_if(beg, end, predicate); })();
       return;
     }
     
@@ -89,31 +34,32 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     if(N < W) {
       W = N;
     }
-    
-    // we leverage smart pointer to let the last task update the result
-    std::shared_ptr<std::atomic<size_t>> offset(
-      new std::atomic<size_t>(N),
-      [=, &result](std::atomic<size_t>* p) {
-        result = std::next(beg, p->load(std::memory_order_relaxed));
-        delete p;
-      }
-    );
+
+    auto mutex = std::make_shared<std::mutex>();
+    const auto origin = beg;
+    result = std::next(origin, N);
     
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
-        auto task = part([=] () mutable {
+        auto task = part([=, &result] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
-            [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-              return detail::find_if_loop(
-                *offset, beg, prev_e, part_b, part_e, predicate
-              );
+            [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x = part_b; x<part_e; x++) {
+                if(predicate(*beg++)) {
+                  std::lock_guard<std::mutex> lock(*mutex);
+                  if(size_t offset = std::distance(origin, result); x < offset) {
+                    result = std::next(origin, x);
+                  }
+                  return true;
+                }
+              }
+              prev_e = part_e;
+              return false;
             }
           );
-          // must release the ownership before async is destroyed
-          // as the node deletion comes after the join counter reaches zero
-          offset.reset();
         });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
@@ -122,17 +68,23 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
-        auto task = part([=] () mutable {
+        auto task = part([=, &result] () mutable {
           part.loop_until(N, W, *next, 
-            [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-              return detail::find_if_loop(
-                *offset, beg, prev_e, curr_b, curr_e, predicate
-              );
+            [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x = part_b; x<part_e; x++) {
+                if(predicate(*beg++)) {
+                  std::lock_guard<std::mutex> lock(*mutex);
+                  if(size_t offset = std::distance(origin, result); x < offset) {
+                    result = std::next(origin, x);
+                  }
+                  return true;
+                }
+              }
+              prev_e = part_e;
+              return false;
             }
           );
-          // must release the ownership before async is destroyed
-          // as the node deletion comes after the join counter reaches zero
-          offset.reset();
         });
         (++w == W) ? task() : rt.silent_async(task);
       }
@@ -160,7 +112,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ result = std::find_if_not(beg, end, predicate); })();
+      part([=, &result] () mutable { result = std::find_if_not(beg, end, predicate); })();
       return;
     }
 
@@ -170,30 +122,31 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       W = N;
     }
     
-    // we leverage smart pointer to let the last task update the result
-    std::shared_ptr<std::atomic<size_t>> offset(
-      new std::atomic<size_t>(N),
-      [=, &result](std::atomic<size_t>* p) {
-        result = std::next(beg, p->load(std::memory_order_relaxed));
-        delete p;
-      }
-    );
-
+    auto mutex = std::make_shared<std::mutex>();
+    const auto origin = beg;
+    result = std::next(origin, N);
+    
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
-        auto task = part([=] () mutable {
+        auto task = part([=, &result] () mutable {
           part.loop_until(N, W, curr_b, chunk_size,
-            [=, &offset, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
-              return detail::find_if_not_loop(
-                *offset, beg, prev_e, part_b, part_e, predicate
-              );
+            [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x = part_b; x<part_e; x++) {
+                if(!predicate(*beg++)) {
+                  std::lock_guard<std::mutex> lock(*mutex);
+                  if(size_t offset = std::distance(origin, result); x < offset) {
+                    result = std::next(origin, x);
+                  }
+                  return true;
+                }
+              }
+              prev_e = part_e;
+              return false;
             }
           );
-          // must release the ownership before async is destroyed
-          // as the node deletion comes after the join counter reaches zero
-          offset.reset();
         });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
@@ -202,17 +155,23 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
-        auto task = part([=] () mutable {
+        auto task = part([=, &result] () mutable {
           part.loop_until(N, W, *next, 
-            [=, &offset, prev_e=size_t{0}](size_t curr_b, size_t curr_e) mutable {
-              return detail::find_if_not_loop(
-                *offset, beg, prev_e, curr_b, curr_e, predicate
-              );
+            [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
+              std::advance(beg, part_b - prev_e);
+              for(size_t x = part_b; x<part_e; x++) {
+                if(!predicate(*beg++)) {
+                  std::lock_guard<std::mutex> lock(*mutex);
+                  if(size_t offset = std::distance(origin, result); x < offset) {
+                    result = std::next(origin, x);
+                  }
+                  return true;
+                }
+              }
+              prev_e = part_e;
+              return false;
             }
           );
-          // must release the ownership before async is destroyed
-          // as the node deletion comes after the join counter reaches zero
-          offset.reset();
         });
         (++w == W) ? task() : rt.silent_async(task);
       }
@@ -240,7 +199,7 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ result = std::min_element(beg, end, comp); })();
+      part([=, &result] () mutable { result = std::min_element(beg, end, comp); })();
       return;
     }
 
@@ -384,7 +343,7 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([&](){ result = std::max_element(beg, end, comp); })();
+      part([=, &result] () mutable { result = std::max_element(beg, end, comp); })();
       return;
     }
 

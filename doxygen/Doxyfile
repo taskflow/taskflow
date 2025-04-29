@@ -985,18 +985,11 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          ../taskflow/cuda/cuda_device.hpp \
                          ../taskflow/cuda/cuda_memory.hpp \
                          ../taskflow/cuda/cuda_stream.hpp \
-                         ../taskflow/cuda/cuda_task.hpp \
+                         ../taskflow/cuda/cuda_graph.hpp \
+                         ../taskflow/cuda/cuda_graph_exec.hpp \
                          ../taskflow/cuda/cudaflow.hpp \
-                         ../taskflow/cuda/cuda_optimizer.hpp \
-                         ../taskflow/cuda/cuda_capturer.hpp \
-                         ../taskflow/cuda/cuda_execution_policy.hpp \
                          ../taskflow/cuda/algorithm/for_each.hpp \
                          ../taskflow/cuda/algorithm/transform.hpp \
-                         ../taskflow/cuda/algorithm/reduce.hpp \
-                         ../taskflow/cuda/algorithm/scan.hpp \
-                         ../taskflow/cuda/algorithm/merge.hpp \
-                         ../taskflow/cuda/algorithm/sort.hpp \
-                         ../taskflow/cuda/algorithm/find.hpp \
                          ../taskflow/taskflow.hpp \
                          QuickStart.dox \
                          releases/releases.dox \
@@ -1037,8 +1030,7 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          cookbook/async_tasking.dox \
                          cookbook/dependent_async_tasking.dox \
                          cookbook/exception.dox \
-                         cookbook/gpu_tasking_cudaflow.dox \
-                         cookbook/gpu_tasking_cudaflow_capturer.dox \
+                         cookbook/gpu_tasking.dox \
                          cookbook/cancellation.dox \
                          cookbook/profiler.dox \
                          algorithms/partitioner.dox \
@@ -1054,25 +1046,12 @@ INPUT                  = ../taskflow/utility/small_vector.hpp \
                          algorithms/scalable_pipeline.dox \
                          algorithms/data_pipeline.dox \
                          algorithms/pipeline_with_token_dependencies.dox \
-                         cudaflow_algorithms/cudaflow_algorithms.dox \
-                         cudaflow_algorithms/cudaflow_single_task.dox \
-                         cudaflow_algorithms/cudaflow_for_each.dox \
-                         cudaflow_algorithms/cudaflow_transform.dox \
-                         cuda_std_algorithms/cuda_std_algorithms.dox \
-                         cuda_std_algorithms/cuda_std_execution_policy.dox \
-                         cuda_std_algorithms/cuda_std_single_task.dox \
-                         cuda_std_algorithms/cuda_std_for_each.dox \
-                         cuda_std_algorithms/cuda_std_transform.dox \
-                         cuda_std_algorithms/cuda_std_reduce.dox \
-                         cuda_std_algorithms/cuda_std_scan.dox \
-                         cuda_std_algorithms/cuda_std_merge.dox \
-                         cuda_std_algorithms/cuda_std_find.dox \
                          examples/examples.dox \
                          examples/wavefront.dox \
-                         examples/matrix_multiplication.dox \
-                         examples/matrix_multiplication_cudaflow.dox \
+                         examples/matmul.dox \
+                         examples/matmul_cuda.dox \
                          examples/kmeans.dox \
-                         examples/kmeans_cudaflow.dox \
+                         examples/kmeans_cuda.dox \
                          examples/fibonacci.dox \
                          examples/flipcoins.dox \
                          examples/graph_traversal.dox \

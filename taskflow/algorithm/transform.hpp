@@ -29,7 +29,7 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([=](){ std::transform(beg, end, d_beg, c); })();
+      part([=]() mutable { std::transform(beg, end, d_beg, c); })();
       return;
     }
 
@@ -103,7 +103,7 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
-      part([=](){ std::transform(beg1, end1, beg2, d_beg, c); })();
+      part([=]() mutable { std::transform(beg1, end1, beg2, d_beg, c); })();
       return;
     }
     

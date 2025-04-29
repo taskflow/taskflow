@@ -1,0 +1,303 @@
+namespace tf {
+
+/** @page GPUTasking GPU Tasking
+
+Modern scientific computing typically leverages 
+GPU-powered parallel processing cores to speed up large-scale applications.
+This chapter discusses how to implement CPU-GPU heterogeneous tasking algorithms
+with Nvidia @cudaGraph.
+
+@tableofcontents
+
+@section GPUTaskingIncludeTheHeader Include the Header
+
+You need to include the header file, `%taskflow/cuda/cudaflow.hpp`, 
+for creating a GPU task graph using tf::cudaGraph.
+
+@code{.cpp}
+#include <taskflow/cuda/cudaflow.hpp>
+@endcode
+
+@section WhatIsACudaGraph What is a CUDA Graph?
+
+CUDA %Graph is a new execution model that enables 
+a series of CUDA kernels to be defined and encapsulated as a single unit, 
+i.e., a task graph of operations, 
+rather than a sequence of individually-launched operations. 
+This organization allows launching multiple GPU operations through a single CPU operation
+and hence reduces the launching overheads, especially for kernels of short running time.
+The benefit of CUDA %Graph can be demonstrated in the figure below:
+
+@image html images/cuda_graph_benefit.png
+
+In this example, a sequence of short kernels is launched one-by-one by the CPU. 
+The CPU launching overhead creates a significant gap in between the kernels.
+If we replace this sequence of kernels with a CUDA graph, 
+initially we will need to spend a little extra time on building the graph and 
+launching the whole graph in one go on the first occasion, 
+but subsequent executions will be very fast, as there will be very little gap between the kernels. 
+The difference is more pronounced when the same sequence of operations is repeated many times, 
+for example, many training epochs in machine learning workloads. 
+In that case, the initial costs of building and launching the graph will be amortized 
+over the entire training iterations. 
+
+@attention
+A comprehensive introduction about CUDA %Graph can be referred to 
+the [CUDA %Graph Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#cuda-graphs).
+
+@section CreateACUDAGraph Create a CUDA Graph
+
+%Taskflow leverages @cudaGraph to enable concurrent CPU-GPU tasking using a task graph model called tf::cudaGraph.
+A tf::cudaGraph is essentially a C++ wrapper over a native CUDA graph, designed to simplify GPU task graph programming
+by eliminating much of the boilerplate code required in raw CUDA %Graph programming.
+The following example creates a CUDA graph to perform the saxpy (A·X Plus Y) workload:
+
+@code{.cpp}
+#include <taskflow/cuda/cudaflow.hpp>
+
+// saxpy (single-precision A·X Plus Y) kernel
+__global__ void saxpy(int n, float a, float *x, float *y) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) {
+    y[i] = a*x[i] + y[i];
+  }
+}
+
+// main function begins
+int main() {
+
+  const unsigned N = 1<<20;                            // size of the vector
+
+  std::vector<float> hx(N, 1.0f);                      // x vector at host
+  std::vector<float> hy(N, 2.0f);                      // y vector at host
+
+  float *dx{nullptr};                                  // x vector at device
+  float *dy{nullptr};                                  // y vector at device
+ 
+  cudaMalloc(&dx, N*sizeof(float));
+  cudaMalloc(&dy, N*sizeof(float));
+
+  tf::cudaGraph cg;
+  
+  // create data transfer tasks
+  tf::cudaTask h2d_x = cg.copy(dx, hx.data(), N); 
+  tf::cudaTask h2d_y = cg.copy(dy, hy.data(), N);
+  tf::cudaTask d2h_x = cg.copy(hx.data(), dx, N);
+  tf::cudaTask d2h_y = cg.copy(hy.data(), dy, N);
+
+  // launch saxpy<<<(N+255)/256, 256, 0>>>(N, 2.0f, dx, dy)
+  tf::cudaTask kernel = cg.kernel(
+    (N+255)/256, 256, 0, saxpy, N, 2.0f, dx, dy
+  ).name("saxpy");
+
+  kernel.succeed(h2d_x, h2d_y)
+        .precede(d2h_x, d2h_y);
+
+  // instantiate a CUDA graph executable and run it through a stream
+  tf::cudaGraphExec ecec(cg);
+  tf::cudaStream stream;
+  stream.run(exec).synchronize();
+  
+  // dump the graph
+  cg.dump(std::cout);
+}
+@endcode
+
+The graph consists of two CPU-to-GPU data copies (@c h2d_x and @c h2d_y),
+one kernel (@c saxpy), and two GPU-to-CPU data copies (@c d2h_x and @c d2h_y),
+in this order of their task dependencies.
+
+<!-- @image html images/saxpy.svg width=60% -->
+@dotfile images/saxpy.dot
+
+
+We do not expend yet another effort on simplifying kernel programming 
+but focus on tasking CUDA operations and their dependencies.
+That is, tf::cudaGraph is simply a lightweight C++ wrapper over the native CUDA %Graph.
+This organization lets users fully take advantage of CUDA features 
+that are commensurate with their domain knowledge, 
+while leaving difficult task parallelism details to %Taskflow.
+
+@section CompileACUDAGraphProgram Compile a CUDA Graph Program
+
+Use @nvcc to compile a CUDA %Graph program:
+
+@code{.shell-session}
+~$ nvcc -std=c++20 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
+~$ ./my_cudaflow
+@endcode
+
+Please visit the page @ref CompileTaskflowWithCUDA for more details.
+
+@section RunACUDAGraphOnASpecificGPU Run a CUDA Graph on Specific GPU
+
+By default, a tf::cudaGraph runs on the current GPU context associated with the caller, 
+which is typically GPU @c 0. 
+Each CUDA GPU has an integer identifier in the range of <tt>[0, N)</tt>
+to represent the context of that GPU, 
+where @c N is the number of GPUs in the system. 
+You can run a CUDA graph on a specific GPU by switching the context to a different GPU
+using tf::cudaScopedDevice.
+The code below creates a CUDA graph and runs it on GPU @c 2.
+
+@code{.cpp}
+{
+  // create an RAII-styled switcher to the context of GPU 2
+  tf::cudaScopedDevice context(2);
+
+  // create a CUDA graph under GPU 2
+  tf::cudaGraph graph;
+  // ...
+
+  // create a stream under GPU 2 and offload the capturer to that GPU
+  tf::cudaStream stream;
+  tf::cudaGraphExec exec(graph);
+  stream.run(exec).synchronize();
+}
+@endcode
+
+tf::cudaScopedDevice is an RAII-styled wrapper to perform @em scoped switch
+to the given GPU context.
+When the scope is destroyed, it switches back to the original context.
+
+@attention
+tf::cudaScopedDevice allows you to place a CUDA Graph on a particular GPU device,
+but it is your responsibility to ensure correct memory access.
+For example, you may not allocate a memory block on GPU @c 2 while
+accessing it from a kernel on GPU @c 0.
+An easy practice for multi-GPU programming is to allocate <i>unified shared memory</i> using @c cudaMallocManaged 
+and let the CUDA runtime perform automatic memory migration between GPUs.
+
+@section GPUMemoryOperations Create Memory Operation Tasks
+
+tf::cudaGraph provides a set of methods for users to manipulate device memory.
+There are two categories, @em raw data and @em typed data.
+Raw data operations are methods with prefix @c mem, such as @c memcpy and @c memset,
+that operate in @em bytes.
+Typed data operations such as @c copy, @c fill, and @c zero,
+take <i>logical count</i> of elements.
+For instance, the following three methods have the same result of zeroing
+<tt>sizeof(int)*count</tt> bytes of the device memory area pointed to by @c target.
+
+@code{.cpp}
+int* target;
+cudaMalloc(&target, count*sizeof(int));
+
+tf::cudaGraph cg;
+memset_target = cg.memset(target, 0, sizeof(int) * count);
+same_as_above = cg.fill(target, 0, count);
+same_as_above_again = cg.zero(target, count);
+@endcode
+
+The method tf::cudaGraph::fill is a more powerful variant of tf::cudaGraph::memset.
+It can fill a memory area with any value of type @c T, 
+given that <tt>sizeof(T)</tt> is 1, 2, or 4 bytes.
+The following example creates a GPU task to fill @c count elements 
+in the array @c target with value @c 1234.
+
+@code{.cpp}
+cf.fill(target, 1234, count);
+@endcode
+
+Similar concept applies to tf::cudaGraph::memcpy and tf::cudaGraph::copy as well.
+The following two methods are equivalent to each other.
+
+@code{.cpp}
+cg.memcpy(target, source, sizeof(int) * count);
+cg.copy(target, source, count);
+@endcode
+
+@section RunACUDAGraph Run a CUDA Graph
+
+To offload a CUDA graph to a GPU, you need to instantiate an executable CUDA graph of tf::cudaGraphExec
+and create a tf::cudaStream to run the executable graph.
+The run method is asynchronous and can be explicitly synchronized on the given stream.
+
+@code{.cpp}
+tf::cudaGraph graph;
+// modify the graph ...
+
+// create an executable CUDA graph and run it through a stream
+tf::cudaGraphExec exec(graph);
+tf::cudaStream stream;
+stream.run(exec);
+
+// wait for the executable cuda graph to finish
+stream.synchronize();
+@endcode
+
+There is always an one-to-one mapping between an tf::cudaGraphExec and its parent CUDA graph
+in terms of its graph structure.
+However, the executable graph is an independent entity and has no lifetime dependency on its parent CUDA graph.
+You can instantiate multiple executable graphs from the same CUDA graph.
+
+@section UpdateAnExecutableCUDAGraph Update an Executable CUDA Graph
+
+Many GPU applications require launching a CUDA graph multiple times and updating node parameters (e.g., kernel arguments or memory addresses) between iterations.
+tf::cudaGraphExec allows you to update the parameters of tasks created from its parent CUDA graph.
+Every task creation method in tf::cudaGraph has a corresponding method in tf::cudaGraphExec for updating the parameters of that task.
+
+@code{.cpp}
+tf::cudaStream stream;
+tf::cudaGraph cg;
+
+// create a kernel task
+tf::cudaTask task = cf.kernel(grid1, block1, shm1, kernel, kernel_args_1);
+
+// instantiate an executable graph
+tf::cudaGraphExec exec(cg);
+stream.run(stream).synchronize();
+
+// update the created kernel task with different parameters
+exec.kernel(task, grid2, block2, shm2, kernel, kernel_args_2);
+
+// run the updated executable graph
+stream.run(stream).synchronize();
+@endcode
+
+Between successive offloads (i.e., iterative executions of a CUDA graph),
+you can @em ONLY update task parameters, 
+such as changing the kernel execution parameters and memory operation parameters.
+However, you must @em NOT change the topology of the CUDA graph,
+such as adding a new task or adding a new dependency.
+This is the limitation of Nvidia CUDA %Graph.
+
+@attention
+There are a few restrictions on updating task parameters in an executable CUDA graph:
++ You cannot change a task to a different type
++ kernel task
+  + The kernel function is not allowed to change. This restriction applies to all algorithm tasks that are created using lambda.
++ memset and memcpy tasks: 
+  + The CUDA device(s) to which the operand(s) was allocated/mapped 
+    cannot change
+  + The source/destination memory must be allocated from the same 
+    contexts as the original source/destination memory.
+
+@section IntegrateACUDAGraphIntoTaskflow Integrate a CUDA Graph into Taskflow
+
+As tf::cudaGraph is a standalone wrapper over Nvidia CUDA %Graph,
+you can simply run it as a task.
+The following example runs a CUDA graph from a static task:
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+taskflow.emplace([](){
+  // create a CUDA graph inside a static task
+  tf::cudaGraph cg;
+  cg.kernel(...);
+  
+  // instantiate a CUDA graph executable and run it through a stream
+  tf::cudaGraphExec ecec(cg);
+  tf::cudaStream stream;
+  stream.run(exec).synchronize();
+});
+@endcode
+
+
+*/
+
+}
+
+
