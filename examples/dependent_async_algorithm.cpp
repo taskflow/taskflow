@@ -1,6 +1,6 @@
 /**
   This program demonstrates how to use dependent async tasks to create
-  dependent algorithm tasks.
+  algorithm tasks.
 */
 
 #include <taskflow/taskflow.hpp>
