@@ -1476,7 +1476,7 @@ inline size_t Executor::num_observers() const noexcept {
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
   
-  // caller is a worker to this pool - starting at v3.5 we do not use
+  // caller is a worker of this executor - starting at v3.5 we do not use
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
@@ -1485,7 +1485,7 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
     return;
   }
   
-  // go through the centralized queue
+  // caller is not a worker of this executor - go through the centralized queue
   _buffers.push(node);
   _notifier.notify_one();
 }
@@ -1520,6 +1520,7 @@ void Executor::_schedule(Worker& worker, I first, I last) {
     return;
   }
   
+  // caller is not a worker of this executor - go through the centralized queue
   for(size_t i=0; i<num_nodes; i++) {
     _buffers.push(detail::get_node_ptr(first[i]));
   }
@@ -1712,7 +1713,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // non-condition task
     default: {
       for(size_t i=0; i<node->_num_successors; ++i) {
-        //if(auto s = node->_successors[i]; --(s->_join_counter) == 0) {
         if(auto s = node->_edges[i]; s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);

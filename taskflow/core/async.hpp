@@ -119,7 +119,7 @@ void Executor::silent_async(F&& f) {
 template <typename P, typename F>
 void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
   // silent task 
-  if constexpr (is_runtime_task_v<F> || std::is_invocable_v<F>) {
+  if constexpr (is_runtime_task_v<F> || is_static_task_v<F>) {
     _schedule_async_task(animate(
       NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0,
       std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
@@ -130,7 +130,7 @@ void Executor::_silent_async(P&& params, F&& f, Topology* tpg, Node* parent) {
     static_assert(dependent_false_v<F>, 
       "invalid silent_async target - must be one of the following types:\n\
       (1) [] (tf::Runtime&) -> void {}\n\
-      (2) [] () -> auto { ... return ... }\n"
+      (2) [] () -> void { ... }\n"
     );
   }
 }

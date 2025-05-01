@@ -1,20 +1,17 @@
 namespace tf {
 
-/** @page release-3-10-0 Release 3.10.0 (Master)
-
-%Taskflow 3.10.0 is the newest developing line to new features and improvements 
-we continue to support.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+/** @page release-3-10-0 Release 3.10.0 (2025/05/01)
 
 @tableofcontents
 
+@section release-3-10-0_summary Release Summary
+
+This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. 
+It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.
+
 @section release-3-10-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.10.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.10.0">here</a>.
 
 @section release-3-10-0_system_requirements System Requirements
 
@@ -34,10 +31,6 @@ To use %Taskflow v3.10.0, you need a compiler that supports C++17:
 Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
 
-@section release-3-10-0_summary Release Summary
-
-This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. 
-It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.
 
 @section release-3-10-0_new_features New Features
 
