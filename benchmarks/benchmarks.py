@@ -72,7 +72,13 @@ def main():
              'sort',
              'for_each',
              'async_task',
-             'hetero_traversal'],
+             'hetero_traversal',
+             'fibonacci',
+             'nqueens',
+             'integrate',
+             'primes',
+             'skynet'],
+
     required=True
   )
 

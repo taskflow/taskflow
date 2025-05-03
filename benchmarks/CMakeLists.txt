@@ -387,6 +387,77 @@ target_link_libraries(
 )
 set_target_properties(bench_fibonacci PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
 
+# benchmark 20: nqueens
+add_executable(
+  bench_nqueens
+  ${TF_BENCHMARK_DIR}/nqueens/main.cpp
+  ${TF_BENCHMARK_DIR}/nqueens/omp.cpp
+  ${TF_BENCHMARK_DIR}/nqueens/tbb.cpp
+  ${TF_BENCHMARK_DIR}/nqueens/taskflow.cpp
+)
+target_include_directories(bench_nqueens PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_nqueens
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_nqueens PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+# benchmark 21: integrate
+add_executable(
+  bench_integrate
+  ${TF_BENCHMARK_DIR}/integrate/main.cpp
+  ${TF_BENCHMARK_DIR}/integrate/omp.cpp
+  ${TF_BENCHMARK_DIR}/integrate/tbb.cpp
+  ${TF_BENCHMARK_DIR}/integrate/taskflow.cpp
+)
+target_include_directories(bench_integrate PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_integrate
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_integrate PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+# benchmark 22: primes
+add_executable(
+  bench_primes
+  ${TF_BENCHMARK_DIR}/primes/main.cpp
+  ${TF_BENCHMARK_DIR}/primes/omp.cpp
+  ${TF_BENCHMARK_DIR}/primes/tbb.cpp
+  ${TF_BENCHMARK_DIR}/primes/taskflow.cpp
+)
+target_include_directories(bench_primes PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_primes
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_primes PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
+# benchmark 23: skynet
+add_executable(
+  bench_skynet
+  ${TF_BENCHMARK_DIR}/skynet/main.cpp
+  ${TF_BENCHMARK_DIR}/skynet/tbb.cpp
+  ${TF_BENCHMARK_DIR}/skynet/taskflow.cpp
+)
+target_include_directories(bench_skynet PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)
+target_link_libraries(
+  bench_skynet
+  ${PROJECT_NAME} 
+  ${TBB_IMPORTED_TARGETS} 
+  ${OpenMP_CXX_LIBRARIES} 
+  tf::default_settings
+)
+set_target_properties(bench_skynet PROPERTIES COMPILE_FLAGS ${OpenMP_CXX_FLAGS})
+
 ###############################################################################
 # CUDA benchmarks
 ###############################################################################
