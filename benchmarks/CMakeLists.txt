@@ -446,6 +446,7 @@ add_executable(
   bench_skynet
   ${TF_BENCHMARK_DIR}/skynet/main.cpp
   ${TF_BENCHMARK_DIR}/skynet/tbb.cpp
+  ${TF_BENCHMARK_DIR}/skynet/omp.cpp
   ${TF_BENCHMARK_DIR}/skynet/taskflow.cpp
 )
 target_include_directories(bench_skynet PRIVATE ${PROJECT_SOURCE_DIR}/3rd-party/CLI11)

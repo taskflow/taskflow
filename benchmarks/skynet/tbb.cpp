@@ -1,23 +1,18 @@
 // The skynet benchmark as described here:
 // https://github.com/atemerev/skynet
 
-#include <tbb/tbb.h>
-
-#include <chrono>
-#include <cinttypes>
-#include <cstdio>
-#include <cstdlib>
+#include <tbb/task_group.h>
+#include <tbb/global_control.h>
 #include "skynet.hpp"
 
-template <size_t DepthMax>
-size_t skynet_one(size_t BaseNum, size_t Depth) {
+size_t skynet_one_tbb(size_t BaseNum, size_t Depth, size_t MaxDepth) {
 
-  if (Depth == DepthMax) {
+  if (Depth == MaxDepth) {
     return BaseNum;
   }
 
   size_t depthOffset = 1;
-  for (size_t i = 0; i < DepthMax - Depth - 1; ++i) {
+  for (size_t i = 0; i < MaxDepth - Depth - 1; ++i) {
     depthOffset *= 10;
   }
 
@@ -25,9 +20,8 @@ size_t skynet_one(size_t BaseNum, size_t Depth) {
 
   tbb::task_group tg;
   for (size_t i = 0; i < 10; ++i) {
-    tg.run([=, &results, idx = i]() {
-      results[idx] =
-        skynet_one<DepthMax>(BaseNum + depthOffset * idx, Depth + 1);
+    tg.run([=, &results]() {
+      results[i] = skynet_one_tbb(BaseNum + depthOffset * i, Depth + 1, MaxDepth);
     });
   }
   tg.wait();
@@ -39,17 +33,12 @@ size_t skynet_one(size_t BaseNum, size_t Depth) {
   return count;
 }
 
-
-template <size_t Depth = 8>
-void loop_skynet() {
-  skynet_one<Depth>(0,0);
-}
-
-
-std::chrono::microseconds measure_time_tbb(size_t num_threads) {
+std::chrono::microseconds measure_time_tbb(size_t num_threads, size_t MaxDepth) {
+  tbb::global_control c(
+    tbb::global_control::max_allowed_parallelism, num_threads
+  );
   auto beg = std::chrono::high_resolution_clock::now();
-  tbb::task_arena arena(num_threads);
-  arena.execute(loop_skynet<8>);
+  skynet_one_tbb(0, 0, MaxDepth);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
