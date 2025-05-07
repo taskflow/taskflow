@@ -52,7 +52,9 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>equal<sp/>to<sp/>std::thread::hardware_concurrency</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor2(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>worker<sp/>threads</highlight></codeline>
 </programlisting></para>
-<para>An executor can be reused to execute multiple taskflows. In most workloads, you may need only one executor to run multiple taskflows where each taskflow represents a part of a parallel decomposition.</para>
+<para><simplesect kind="attention"><para>Creating a <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> has non-negligible overhead. Unless your application requires multiple executors, we recommend creating a single <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> and reusing it to run multiple taskflows.</para>
+</simplesect>
+</para>
 </sect1>
 <sect1 id="ExecuteTaskflow_1UnderstandWorkStealingInExecutor">
 <title>Understand Work-stealing in Executor</title>
@@ -60,6 +62,11 @@
 <para><image type="html" name="work-stealing.png"></image>
 </para>
 <para>The key advantage of work-stealing lies in its <emphasis>decentralized</emphasis> nature and efficiency. Most of the time, worker threads work on their local queues without contention. Stealing only occurs when a worker becomes idle, minimizing overhead associated with synchronization and task distribution. This decentralized strategy effectively balances the workload, ensuring that idle workers are put to work and that the overall computation progresses efficiently.</para>
+<para>That being said, the internal scheduling mechanisms in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> are not trivial, and it&apos;s not easy to explain every detail in just a few sentences. If you&apos;re interested in learning more about the technical details, please refer to our paper published in 2022 <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>:</para>
+<para><itemizedlist>
+<listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022</para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="ExecuteTaskflow_1ExecuteATaskflow">
 <title>Execute a Taskflow</title>

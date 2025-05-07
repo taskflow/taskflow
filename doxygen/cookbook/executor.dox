@@ -24,9 +24,10 @@ tf::Executor executor1;     // create an executor with the number of workers
 tf::Executor executor2(4);  // create an executor of 4 worker threads
 @endcode
 
-An executor can be reused to execute multiple taskflows.
-In most workloads, you may need only one executor to run multiple taskflows
-where each taskflow represents a part of a parallel decomposition.
+@attention
+Creating a tf::Executor has non-negligible overhead. 
+Unless your application requires multiple executors, we recommend creating a single tf::Executor 
+and reusing it to run multiple taskflows.
 
 @section UnderstandWorkStealingInExecutor Understand Work-stealing in Executor
 
@@ -44,6 +45,13 @@ The key advantage of work-stealing lies in its *decentralized* nature and effici
 Most of the time, worker threads work on their local queues without contention. 
 Stealing only occurs when a worker becomes idle, minimizing overhead associated with synchronization and task distribution. 
 This decentralized strategy effectively balances the workload, ensuring that idle workers are put to work and that the overall computation progresses efficiently.
+
+That being said, the internal scheduling mechanisms in tf::Executor are not trivial, 
+and it's not easy to explain every detail in just a few sentences. 
+If you're interested in learning more about the technical details, please refer to our paper published in 
+2022 *IEEE Transactions on Parallel and Distributed Systems (TPDS)*:
+
++ Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, &quot;[Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System](https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf),&quot; <i>IEEE Transactions on Parallel and Distributed Systems (TPDS)</i>, vol. 33, no. 6, pp. 1303-1320, June 2022
 
 @section ExecuteATaskflow Execute a Taskflow
 

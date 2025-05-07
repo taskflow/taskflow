@@ -64,8 +64,19 @@ the parallel computing community to evaluate the system performance.
 | bench_parallel_sort | sorts a range of items |
 | bench_reduce_sum | sums a range of items using reduction |
 | bench_wavefront | propagates computations in a 2D grid |
-| bench_linear_pipeline | pipeline scheduling on a linear chain of pipes |
-| bench_graph_pipeline | pipeline scheduling on a graph of pipes |
+| bench_linear_pipeline | performs pipeline parallelism on a linear chain of pipes |
+| bench_graph_pipeline | performs pipeline parallelism on a graph of pipes |
+| bench_deferred_pipeline | performs pipeline parallelism with dependencies from future pipes |
+| bench_data_pipeline | performs pipeline parallelisms on a cache-friendly data wrapper |
+| bench_thread_pool | uses our executor as a simple thread pool |
+| bench_for_each | performs parallel-iteration algorithms |
+| bench_scan | performs parallel-scan algorithms |
+| bench_async_task | creates asynchronous tasks |
+| bench_fibonacci | finds Fibonacci numbers using recursive asynchronous tasking |
+| bench_nqueens | parallelizes n-queen search using recursive asynchronous tasking |
+| bench_integrate | parallelizes integration using recursive asynchronous tasking |
+| bench_primes | finds a range of prime numbers using parallel-reduction algorithms |
+| bench_skynet | traverses a 10-ray tree using recursive asynchronous tasking |
 
 
 @section ConfigureRunOptions Configure Run Options
@@ -75,10 +86,10 @@ Common options are:
 
 | option | value | function |
 | :-:    | :-:   | :-:      |
-| @c -h  | none  | display the help message |
-| @c -t  | integer | configure the number of threads to run |
-| @c -r  | integer | configure the number of rounds to run |
-| @c -m  | string | configure the baseline models to run, tbb, omp, or tf |
+| @c -h  | none  | displays the help message |
+| @c -t  | integer | configures the number of threads to run |
+| @c -r  | integer | configures the number of rounds to run |
+| @c -m  | string | configures the baseline models to run, tbb, omp, or tf |
 
 You can configure the benchmarking environment by giving different options.
 
@@ -125,8 +136,8 @@ Each problem size corresponds to one iteration.
 You can configure the number of rounds per iteration to average the runtime.
 
 @code{.shell-session}
-# measure the runtime in an average of 10 runs
-~$ ./bench_graph_traversal -r 10
+# measure the %Taskflow runtime by averaging the results over 10 runs
+~$ ./bench_graph_traversal -r 10 -m tf
 |V|+|E|     Runtime
       2       0.109   # the runtime value 0.109 is an average of 10 runs
     842       0.298

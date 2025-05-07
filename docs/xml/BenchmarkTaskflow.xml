@@ -64,7 +64,7 @@
 <codeline><highlight class="normal"><sp/><sp/>-m,--model<sp/>TEXT<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>model<sp/>name<sp/>tbb|omp|tf<sp/>(default=tf)</highlight></codeline>
 </programlisting></para>
 <para>We currently implement the following instances that are commonly used by the parallel computing community to evaluate the system performance.</para>
-<para><table rows="13" cols="2"><row>
+<para><table rows="24" cols="2"><row>
 <entry thead="yes" align='center'><para>Instance   </para>
 </entry><entry thead="yes" align='center'><para>Description    </para>
 </entry></row>
@@ -110,11 +110,55 @@
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>bench_linear_pipeline   </para>
-</entry><entry thead="no" align='center'><para>pipeline scheduling on a linear chain of pipes    </para>
+</entry><entry thead="no" align='center'><para>performs pipeline parallelism on a linear chain of pipes    </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para>bench_graph_pipeline   </para>
-</entry><entry thead="no" align='center'><para>pipeline scheduling on a graph of pipes   </para>
+</entry><entry thead="no" align='center'><para>performs pipeline parallelism on a graph of pipes    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_deferred_pipeline   </para>
+</entry><entry thead="no" align='center'><para>performs pipeline parallelism with dependencies from future pipes    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_data_pipeline   </para>
+</entry><entry thead="no" align='center'><para>performs pipeline parallelisms on a cache-friendly data wrapper    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_thread_pool   </para>
+</entry><entry thead="no" align='center'><para>uses our executor as a simple thread pool    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_for_each   </para>
+</entry><entry thead="no" align='center'><para>performs parallel-iteration algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_scan   </para>
+</entry><entry thead="no" align='center'><para>performs parallel-scan algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_async_task   </para>
+</entry><entry thead="no" align='center'><para>creates asynchronous tasks    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_fibonacci   </para>
+</entry><entry thead="no" align='center'><para>finds Fibonacci numbers using recursive asynchronous tasking    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_nqueens   </para>
+</entry><entry thead="no" align='center'><para>parallelizes n-queen search using recursive asynchronous tasking    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_integrate   </para>
+</entry><entry thead="no" align='center'><para>parallelizes integration using recursive asynchronous tasking    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_primes   </para>
+</entry><entry thead="no" align='center'><para>finds a range of prime numbers using parallel-reduction algorithms    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>bench_skynet   </para>
+</entry><entry thead="no" align='center'><para>traverses a 10-ray tree using recursive asynchronous tasking   </para>
 </entry></row>
 </table>
 </para>
@@ -130,22 +174,22 @@
 <row>
 <entry thead="no" align='center'><para><computeroutput>-h</computeroutput>   </para>
 </entry><entry thead="no" align='center'><para>none   </para>
-</entry><entry thead="no" align='center'><para>display the help message    </para>
+</entry><entry thead="no" align='center'><para>displays the help message    </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para><computeroutput>-t</computeroutput>   </para>
 </entry><entry thead="no" align='center'><para>integer   </para>
-</entry><entry thead="no" align='center'><para>configure the number of threads to run    </para>
+</entry><entry thead="no" align='center'><para>configures the number of threads to run    </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para><computeroutput>-r</computeroutput>   </para>
 </entry><entry thead="no" align='center'><para>integer   </para>
-</entry><entry thead="no" align='center'><para>configure the number of rounds to run    </para>
+</entry><entry thead="no" align='center'><para>configures the number of rounds to run    </para>
 </entry></row>
 <row>
 <entry thead="no" align='center'><para><computeroutput>-m</computeroutput>   </para>
 </entry><entry thead="no" align='center'><para>string   </para>
-</entry><entry thead="no" align='center'><para>configure the baseline models to run, tbb, omp, or tf   </para>
+</entry><entry thead="no" align='center'><para>configures the baseline models to run, tbb, omp, or tf   </para>
 </entry></row>
 </table>
 </para>
@@ -172,8 +216,8 @@
 <sect2 id="BenchmarkTaskflow_1SpecifyTheNumberOfRounds">
 <title>Specify the Number of Rounds</title>
 <para>Each benchmark instance evaluates the runtime of the implementation at different problem sizes. Each problem size corresponds to one iteration. You can configure the number of rounds per iteration to average the runtime.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>runtime<sp/>in<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
-<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-r<sp/>10</highlight></codeline>
+<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>measure<sp/>the<sp/>%Taskflow<sp/>runtime<sp/>by<sp/>averaging<sp/>the<sp/>results<sp/>over<sp/>10<sp/>runs</highlight></codeline>
+<codeline><highlight class="normal">~$<sp/>./bench_graph_traversal<sp/>-r<sp/>10<sp/>-m<sp/>tf</highlight></codeline>
 <codeline><highlight class="normal">|V|+|E|<sp/><sp/><sp/><sp/><sp/>Runtime</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>2<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.109<sp/><sp/><sp/>#<sp/>the<sp/>runtime<sp/>value<sp/>0.109<sp/>is<sp/>an<sp/>average<sp/>of<sp/>10<sp/>runs</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>842<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0.298</highlight></codeline>
