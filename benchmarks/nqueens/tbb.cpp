@@ -18,8 +18,6 @@ auto nqueens_tbb(int j, std::vector<char>& a) -> int {
     return 1;
   }
 
-  int res = 0L;
-
   std::vector<std::vector<char>> buf;
   buf.resize(N, std::vector<char>(N));
   

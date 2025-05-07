@@ -7,8 +7,6 @@
 #include <vector>
 #include "integrate.hpp"
 
-
-
 auto integrate_omp(double x1, double y1, double x2, double y2, double area) -> double {
 
   double half = (x2 - x1) / 2;
@@ -23,10 +21,13 @@ auto integrate_omp(double x1, double y1, double x2, double y2, double area) -> d
     return area_x1x2;
   }
 
-#pragma omp task untied default(shared)
+  #pragma omp task
   area_x1x0 = integrate_omp(x1, y1, x0, y0, area_x1x0);
+
+  #pragma omp task
   area_x0x2 = integrate_omp(x0, y0, x2, y2, area_x0x2);
-#pragma omp taskwait
+
+  #pragma omp taskwait
 
   return area_x1x0 + area_x0x2;
 }
@@ -36,11 +37,13 @@ std::chrono::microseconds measure_time_omp(size_t num_threads, size_t max_value)
 
   auto beg = std::chrono::high_resolution_clock::now();
  
-  volatile int output;
-
   #pragma omp parallel num_threads(num_threads)
-  #pragma omp single
-  output = integrate_omp(0, fn(0), max_value, fn(max_value), 0.0);
+  {
+    #pragma omp single
+    {
+      integrate_omp(0, fn(0), max_value, fn(max_value), 0.0);
+    }
+  }
   
   auto end = std::chrono::high_resolution_clock::now();
 

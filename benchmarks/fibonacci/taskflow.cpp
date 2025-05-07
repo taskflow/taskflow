@@ -1,9 +1,6 @@
 #include <taskflow/taskflow.hpp>
 #include "fibonacci.hpp"
 
-
-
-
 tf::Executor& get_executor() {
   static tf::Executor executor;
   return executor;
@@ -31,23 +28,19 @@ size_t spawn_async(size_t num_fibonacci, tf::Runtime& rt) {
 }
 
 
-size_t fibonacci_taskflow(size_t num_fibonacci) {
+size_t fibonacci_taskflow(size_t num_threads, size_t num_fibonacci) {
   size_t res;
-
+  static tf::Executor executor(num_threads);
   get_executor().async([num_fibonacci, &res](tf::Runtime& rt){
     res = spawn_async(num_fibonacci, rt);
   }).get();
-
   return res;
 }
 
-std::chrono::microseconds measure_time_taskflow(unsigned num_threads, unsigned num_fibonacci) {
+std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t num_fibonacci) {
   auto beg = std::chrono::high_resolution_clock::now();
-  auto result = fibonacci_taskflow(num_fibonacci);
+  fibonacci_taskflow(num_threads, num_fibonacci);
   auto end = std::chrono::high_resolution_clock::now();
-
-  assert(result == fibonacci_sequence[num_fibonacci]);
-
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 

@@ -46,9 +46,10 @@ std::chrono::microseconds measure_time_tbb(size_t num_threads, size_t max_value)
     tbb::global_control::max_allowed_parallelism, num_threads
   );
 
-  auto result = integrate_tbb(0, fn(0), max_value, fn(max_value), 0.0);
+  integrate_tbb(0, fn(0), max_value, fn(max_value), 0.0);
   
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
+

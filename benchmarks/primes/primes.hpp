@@ -16,13 +16,13 @@ std::chrono::microseconds measure_time_omp(size_t, size_t);
 std::chrono::microseconds measure_time_tbb(size_t, size_t);
 
 
-inline constexpr size_t primes_limit = 1000000;
+inline constexpr size_t primes_limit = 10000000;
 inline constexpr size_t primes_chunk = 10;
 
 /**
  * @brief See https://en.wikipedia.org/wiki/Primality_test
  */
-inline auto is_prime = [](int n) -> bool {
+inline auto is_prime = [](size_t n) -> bool {
   //
   if (n == 2 || n == 3) {
     return true;
