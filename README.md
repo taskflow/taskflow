@@ -377,8 +377,8 @@ To use Taskflow, you only need a compiler that supports C++17:
 
 Taskflow works on Linux, Windows, and Mac OS X.
 
-Although %Taskflow supports primarily C++17, you can enable C++20 compilation
-through `-std=c++20` to achieve better performance due to new C++20 features.
+Although Taskflow supports primarily C++17, you can enable C++20 compilation
+through `-std=c++20` (or `/std:c++20` for MSVC) to achieve better performance due to new C++20 features.
 
 # Learn More about Taskflow
 
