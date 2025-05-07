@@ -14,23 +14,26 @@ void bench_skynet(
             << std::setw(12) << "runtime"
             << std::endl;
 
+  for(size_t MaxDepth=1; MaxDepth<=8; MaxDepth++) { 
+    double runtime {0.0};
 
-  double runtime {0.0};
+    for(unsigned j=0; j<num_rounds; ++j) {
+      if(model == "tf") {
+        runtime += measure_time_taskflow(num_threads, MaxDepth).count();
+      }
+      else if(model == "tbb") {
+        runtime += measure_time_tbb(num_threads, MaxDepth).count();
+      }
+      else if(model == "omp") {
 
-  for(unsigned j=0; j<num_rounds; ++j) {
-    if(model == "tf") {
-      runtime += measure_time_taskflow(num_threads).count();
+      }
+      else assert(false);
     }
-    else if(model == "tbb") {
-      runtime += measure_time_tbb(num_threads).count();
-    }
-    
-    else assert(false);
+
+    std::cout << std::setw(12) << MaxDepth
+              << std::setw(12) << runtime / num_rounds / 1e3
+              << std::endl;
   }
-
-  std::cout << std::setw(12) << 8
-            << std::setw(12) << runtime / num_rounds / 1e3
-            << std::endl;
 }
 
 int main(int argc, char* argv[]) {
@@ -44,10 +47,10 @@ int main(int argc, char* argv[]) {
   app.add_option("-r,--num_rounds", num_rounds, "number of rounds (default=1)");
 
   std::string model = "tf";
-  app.add_option("-m,--model", model, "model name tf|tbb (default=tf)")
+  app.add_option("-m,--model", model, "model name tf|tbb|omp (default=tf)")
      ->check([] (const std::string& m) {
         if(m != "tf" && m != "tbb") {
-          return "model name should be \"tbb\", or \"tf\"";
+          return "model name should be \"tbb\", \"omp\", or \"tf\"";
         }
         return "";
      });

@@ -22,17 +22,13 @@ size_t fibonacci_omp(size_t num_fibonacci) {
 
 std::chrono::microseconds measure_time_omp(size_t num_threads, size_t num_fibonacci) {
   auto beg = std::chrono::high_resolution_clock::now();
-
   omp_set_num_threads(num_threads);
-
   #pragma omp parallel
   {
     #pragma omp single
     fibonacci_omp(num_fibonacci);
   }
-
   auto end = std::chrono::high_resolution_clock::now();
-  
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 
