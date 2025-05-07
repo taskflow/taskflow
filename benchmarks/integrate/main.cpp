@@ -12,7 +12,7 @@ void bench_integrate(
             << std::setw(12) << "runtime"
             << std::endl;
 
-  for(size_t v=10; v<=max_value; v+=10) {
+  for(size_t v=0; v<=max_value; v+=100) {
 
     double runtime {0.0};
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
   size_t num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
   
-  size_t max_value {100};
+  size_t max_value {2000};
   app.add_option("-v,--value", max_value, "max x-value (default=100)");
 
   size_t num_rounds {1};

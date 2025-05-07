@@ -49,16 +49,19 @@ std::chrono::microseconds measure_time_omp(size_t num_threads, size_t num_nqueen
 
   auto beg = std::chrono::high_resolution_clock::now();
  
-  volatile int output;
+  int result;
 
   #pragma omp parallel num_threads(num_threads)
-  #pragma omp single
-  output = omp_nqueens(0, buf);
+  {
+    #pragma omp single
+    {
+      result = omp_nqueens(0, buf);
+    }
+  }
   
   auto end = std::chrono::high_resolution_clock::now();
 
-  assert(output == answers[num_queens]);
-
+  assert(result == answers[num_queens]);
 
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

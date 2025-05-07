@@ -8,9 +8,11 @@
 
 template <size_t DepthMax>
 size_t skynet_one(tf::Runtime& rt, size_t BaseNum, size_t Depth) {
+
   if (Depth == DepthMax) {
     return BaseNum;
   }
+
   size_t depthOffset = 1;
   for (size_t i = 0; i < DepthMax - Depth - 1; ++i) {
     depthOffset *= 10;
@@ -34,28 +36,22 @@ size_t skynet_one(tf::Runtime& rt, size_t BaseNum, size_t Depth) {
 }
 
 template <size_t DepthMax>
-void skynet(tf::Executor& executor) {
+void skynet(size_t num_threads) {
+  
+  static tf::Executor executor(num_threads);
 
   tf::Taskflow taskflow;
   size_t count;
 
-  taskflow.emplace([&](tf::Runtime& rt) {
+  executor.async([&](tf::Runtime& rt) {
     count = skynet_one<DepthMax>(rt, 0, 0);
-  });
-
-  executor.run(taskflow).wait();
-
+  }).get();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads) {
   auto beg = std::chrono::high_resolution_clock::now();
-
-  tf::Executor executor(num_threads);
-  
-  skynet<8>(executor);
-  
+  skynet<8>(num_threads);
   auto end = std::chrono::high_resolution_clock::now();
-
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 

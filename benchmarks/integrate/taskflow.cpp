@@ -39,11 +39,12 @@ auto spawn_async(double x1, double y1, double x2, double y2, double area, tf::Ru
 }
 
 
-auto integrate_taskflow(double x1, double y1, double x2, double y2) {
+auto integrate_taskflow(size_t num_threads, double x1, double y1, double x2, double y2) {
 
   double area = 0.0;
+  static tf::Executor executor(num_threads);
 
-  get_executor().async([x1, y1, x2, y2, &area](tf::Runtime& rt){
+  executor.async([x1, y1, x2, y2, &area](tf::Runtime& rt){
     area = spawn_async(x1, y1, x2, y2, 0.0, rt);
   }).get();
 
@@ -53,7 +54,7 @@ auto integrate_taskflow(double x1, double y1, double x2, double y2) {
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t max_value) {
 
   auto beg = std::chrono::high_resolution_clock::now();
-  auto result = integrate_taskflow(0, fn(0), max_value, fn(max_value));
+  integrate_taskflow(num_threads, 0, fn(0), max_value, fn(max_value));
   auto end = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);

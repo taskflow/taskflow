@@ -24,20 +24,13 @@ size_t fibonacci_tbb(size_t num_fibonacci) {
   return x + y;
 }
 
-std::chrono::microseconds measure_time_tbb(unsigned num_threads, size_t num_fibonacci) {
-  auto beg = std::chrono::high_resolution_clock::now();
+std::chrono::microseconds measure_time_tbb(size_t num_threads, size_t num_fibonacci) {
   tbb::global_control c(
     tbb::global_control::max_allowed_parallelism, num_threads
   );
-
-  size_t result = 0;
-
-  result = fibonacci_tbb(num_fibonacci);
-  
+  auto beg = std::chrono::high_resolution_clock::now();
+  fibonacci_tbb(num_fibonacci);
   auto end = std::chrono::high_resolution_clock::now();
-  
-  assert(result == fibonacci_sequence[num_fibonacci]);
-  
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
 

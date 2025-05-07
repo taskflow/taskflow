@@ -6,12 +6,6 @@
 #include <taskflow/taskflow.hpp>
 #include "nqueens.hpp"
 
-tf::Executor& get_executor(int W) {
-  static tf::Executor executor(W);
-  return executor;
-}
-
-
 auto spawn_async(int j, std::vector<char>&a, tf::Runtime& rt) -> int {
 
   int N = a.size();
@@ -19,8 +13,6 @@ auto spawn_async(int j, std::vector<char>&a, tf::Runtime& rt) -> int {
   if (N == j) {
     return 1;
   }
-
-  int res = 0L;
 
   std::vector<std::vector<char>> buf;
   buf.resize(N, std::vector<char>(N));
@@ -51,11 +43,12 @@ auto spawn_async(int j, std::vector<char>&a, tf::Runtime& rt) -> int {
 
 
 
-int nqueens_taskflow(int i, int num_threads, std::vector<char>& buf) {
+int nqueens_taskflow(int i, size_t num_threads, std::vector<char>& buf) {
 
   int output;
+  static tf::Executor executor(num_threads);
 
-  get_executor(num_threads).async([i, &buf, &output](tf::Runtime& rt){
+  executor.async([i, &buf, &output](tf::Runtime& rt){
     output = spawn_async(i, buf, rt);
   }).get();
 
