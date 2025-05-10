@@ -1245,7 +1245,9 @@ inline void Executor::_spawn(size_t N) {
       // must use 1 as condition instead of !done because
       // the previous worker may stop while the following workers
       // are still preparing for entering the scheduling loop
+#ifndef TF_DISABLE_EXCEPTION_HANDLING
       try {
+#endif
 
         // worker loop
         while(1) {
@@ -1258,10 +1260,13 @@ inline void Executor::_spawn(size_t N) {
             break;
           }
         }
+
+#ifndef TF_DISABLE_EXCEPTION_HANDLING
       } 
       catch(...) {
         ptr = std::current_exception();
       }
+#endif
       
       // call the user-specified epilogue function
       if(_worker_interface) {
