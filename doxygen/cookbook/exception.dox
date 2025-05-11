@@ -296,6 +296,23 @@ For the above example, if the exception is not caught with tf::Runtime::corun,
 it will be propagated to its parent task, which is the tf::Runtime object `rt` in this case.
 Then, the exception will be propagated to `taskflow2`.
 
+@section TurnOffExceptionHandling Turn Off Exception Handling
+
+In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. %Taskflow allows you to disable exception handling entirely at compile time. 
+To do this, simply define the macro `TF_DISABLE_EXCEPTION_HANDLING` when compiling your program:
+
+@code{.cpp}
+~$ g++ -DTF_DISABLE_EXCEPTION_HANDLING your_taskflow_prog.cpp
+@endcode
+
+Disabling exception handling removes all try-catch blocks from the %Taskflow runtime, resulting in a leaner binary and potentially faster execution. 
+However, please note that this also means %Taskflow will not catch or report runtime exceptions. 
+
+@attention
+Disabling exception handling means that %Taskflow will not catch or report runtime exceptions.
+Any exception thrown during execution will propagate unchecked and may cause your program to behave abnormally.
+Use this option only if you are confident that your application does not rely on exception safety.
+
 */
 
 }

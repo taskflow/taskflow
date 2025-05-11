@@ -71,3 +71,18 @@ void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
 
 #define TF_THROW(...) tf::throw_re(__FILE__, __LINE__, __VA_ARGS__);
 
+// ----------------------------------------------------------------------------
+
+#ifdef TF_DISABLE_EXCEPTION_HANDLING
+  #define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block) \
+    code_block;
+#else
+  #define TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, code_block)  \
+    try {                                          \
+      code_block;                                  \
+    } catch(...) {                                 \
+      _process_exception(worker, node);            \
+    }
+#endif
+
+

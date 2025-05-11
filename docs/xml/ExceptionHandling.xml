@@ -20,6 +20,10 @@
         <name>Catch an Exception from a Corun Loop</name>
         <reference>ExceptionHandling_1CatchAnExceptionFromACorunLoop</reference>
     </tocsect>
+      <tocsect>
+        <name>Turn Off Exception Handling</name>
+        <reference>ExceptionHandling_1TurnOffExceptionHandling</reference>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -240,7 +244,17 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>For the above example, if the exception is not caught with <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref>, it will be propagated to its parent task, which is the <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> object <computeroutput>rt</computeroutput> in this case. Then, the exception will be propagated to <computeroutput>taskflow2</computeroutput>. </para>
+<para>For the above example, if the exception is not caught with <ref refid="classtf_1_1Runtime_1a1c772e90614302024cfa52fa86d75cac" kindref="member">tf::Runtime::corun</ref>, it will be propagated to its parent task, which is the <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> object <computeroutput>rt</computeroutput> in this case. Then, the exception will be propagated to <computeroutput>taskflow2</computeroutput>.</para>
+</sect1>
+<sect1 id="ExceptionHandling_1TurnOffExceptionHandling">
+<title>Turn Off Exception Handling</title>
+<para>In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. Taskflow allows you to disable exception handling entirely at compile time. To do this, simply define the macro <computeroutput>TF_DISABLE_EXCEPTION_HANDLING</computeroutput> when compiling your program:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">~$<sp/>g++<sp/>-DTF_DISABLE_EXCEPTION_HANDLING<sp/>your_taskflow_prog.cpp</highlight></codeline>
+</programlisting></para>
+<para>Disabling exception handling removes all try-catch blocks from the Taskflow runtime, resulting in a leaner binary and potentially faster execution. However, please note that this also means Taskflow will not catch or report runtime exceptions.</para>
+<para><simplesect kind="attention"><para>Disabling exception handling means that Taskflow will not catch or report runtime exceptions. Any exception thrown during execution will propagate unchecked and may cause your program to behave abnormally. Use this option only if you are confident that your application does not rely on exception safety. </para>
+</simplesect>
+</para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/cookbook/exception.dox"/>
