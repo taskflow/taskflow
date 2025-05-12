@@ -25,7 +25,7 @@ void bench_skynet(
         runtime += measure_time_tbb(num_threads, MaxDepth).count();
       }
       else if(model == "omp") {
-
+        runtime += measure_time_omp(num_threads, MaxDepth).count(); 
       }
       else assert(false);
     }
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
   std::string model = "tf";
   app.add_option("-m,--model", model, "model name tf|tbb|omp (default=tf)")
      ->check([] (const std::string& m) {
-        if(m != "tf" && m != "tbb") {
+        if(m != "tf" && m != "tbb" && m != "omp") {
           return "model name should be \"tbb\", \"omp\", or \"tf\"";
         }
         return "";

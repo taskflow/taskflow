@@ -1288,7 +1288,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
   exploit:
 
   while(!stop_predicate()) {
-
+    
+    // here we don't do while-loop to drain out the local queue as it can
+    // potentially enter a very deep recursive corun, cuasing stack overflow
     if(auto t = w._wsq.pop(); t) {
       _invoke(w, t);
     }
@@ -1297,8 +1299,6 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
       size_t vtm = w._vtm;
 
       explore:
-      
-      //auto vtm = udist(w._rdgen);
 
       t = (vtm < _workers.size()) ? _workers[vtm]._wsq.steal() : 
                                     _buffers.steal(vtm - _workers.size());
@@ -1336,9 +1336,6 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   // Make the worker steal immediately from the assigned victim.
   while(true) {
     
-    // Randomely generate a next victim.
-    //vtm = udist(w._rdgen); //w._rdvtm();
-
     // If the worker's victim thread is within the worker pool, steal from the worker's queue.
     // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
     t = (vtm < _workers.size())
@@ -1367,6 +1364,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
       return false;
     } 
 
+    // Randomely generate a next victim.
     vtm = udist(w._rdgen); //w._rdvtm();
   } 
   return true;

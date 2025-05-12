@@ -14,14 +14,11 @@ size_t skynet_one_omp(size_t BaseNum, size_t Depth, size_t MaxDepth) {
 
   std::array<size_t, 10> results = {};
   
-  #pragma omp single
-  {
-    for (size_t i = 0; i < 10; ++i) {
-      #pragma omp task firstprivate(i) shared(results)
-      {
-        results[i] = skynet_one_omp(BaseNum + depthOffset * i, Depth + 1, MaxDepth);
-      };
-    }
+  for (size_t i = 0; i < 10; ++i) {
+    #pragma omp task firstprivate(i) shared(results)
+    {
+      results[i] = skynet_one_omp(BaseNum + depthOffset * i, Depth + 1, MaxDepth);
+    };
   }
   
   #pragma omp taskwait
