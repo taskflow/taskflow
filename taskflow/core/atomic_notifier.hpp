@@ -5,6 +5,8 @@
 #include <atomic>
 #include <thread>
 #include <vector>
+#include <assert.h>
+#include "../utility/os.hpp"
 
 namespace tf {
 
