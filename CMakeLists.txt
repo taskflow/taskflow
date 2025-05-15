@@ -73,7 +73,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_options("/Zc:__cplusplus")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v14.14") 
+    message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v19.14") 
   endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0.1")
@@ -83,10 +83,10 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 else()
   message(FATAL_ERROR "\n\
 Taskflow currently supports the following compilers:\n\
-  - g++ v7.0 or above\n\
+  - g++ v8.4 or above\n\
   - clang++ v6.0 or above\n\
   - MSVC++ v19.14 or above\n\
-  - AppleClang v8 or above\n\
+  - AppleClang v12.0 or above\n\
   - Intel v19.0.1 or above\n\
 ")
 endif()

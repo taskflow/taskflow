@@ -369,7 +369,7 @@ To use Taskflow, you only need a compiler that supports C++17:
 
 + GNU C++ Compiler at least v8.4 with -std=c++17
 + Clang C++ Compiler at least v6.0 with -std=c++17
-+ Microsoft Visual Studio at least v19.27 with /std:c++17
++ Microsoft Visual Studio at least v19.14 with /std:c++17
 + AppleClang Xcode Version at least v12.0 with -std=c++17
 + Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
 + Intel C++ Compiler at least v19.0.1 with -std=c++17
@@ -377,8 +377,8 @@ To use Taskflow, you only need a compiler that supports C++17:
 
 Taskflow works on Linux, Windows, and Mac OS X.
 
-Although %Taskflow supports primarily C++17, you can enable C++20 compilation
-through `-std=c++20` to achieve better performance due to new C++20 features.
+Although Taskflow supports primarily C++17, you can enable C++20 compilation
+through `-std=c++20` (or `/std:c++20` for MSVC) to achieve better performance due to new C++20 features.
 
 # Learn More about Taskflow
 
