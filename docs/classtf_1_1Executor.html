@@ -324,7 +324,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><p>Users can alter the worker behavior, such as changing thread affinity, via deriving an instance from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a>.</p>
+<p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><p>Users can alter the worker behavior, such as changing thread affinity, via deriving an instance from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>An exception will be thrown if executor construction fails.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a5a511b0cc23b264826373d3dabcef670"><div>
             <h3>

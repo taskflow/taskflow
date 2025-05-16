@@ -4,13 +4,20 @@
 # To enable thread sanitizer: 
 # -DCMAKE_CXX_FLAGS="-fsanitize=thread -g"
 #
-# To enable address and leak sanitizers
+# To enable address and leak sanitizers:
 # -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g"
 #
-# To enable different c++ standards
+# To enable different c++ standards:
 # -DCMAKE_CXX_STANDARD=17
 # -DCMAKE_CXX_STANDARD=20
 # -DCMAKE_CXX_STANDARD=23
+#
+# To disable exception handling:
+# -DTF_DISABLE_EXCEPTION_HANDLING
+#
+# To use different notification algorithms:
+# -DTF_ENABLE_ATOMIC_NOTIFIER         // default choice under C++20
+# -DTF_ENABLE_NONBLOCKING_NOTIFIER    // default choice under C++17
 # -------------------------------------------------------------------
 
 
@@ -19,7 +26,7 @@ cmake_minimum_required (VERSION 3.18)
 MESSAGE(STATUS "CMAKE_ROOT: " ${CMAKE_ROOT})
 
 # Project name
-project(Taskflow VERSION 3.10.0 LANGUAGES CXX)
+project(Taskflow VERSION 3.11.0 LANGUAGES CXX)
 
 # build options
 option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)

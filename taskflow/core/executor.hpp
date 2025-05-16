@@ -73,6 +73,9 @@ class Executor {
 
   Users can alter the worker behavior, such as changing thread affinity,
   via deriving an instance from tf::WorkerInterface.
+
+  @attention
+  An exception will be thrown if executor construction fails.
   */
   explicit Executor(
     size_t N = std::thread::hardware_concurrency(),
@@ -1073,6 +1076,7 @@ class Executor {
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
+  void _shutdown();
   void _observer_prologue(Worker&, Node*);
   void _observer_epilogue(Worker&, Node*);
   void _spawn(size_t);
@@ -1144,8 +1148,20 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
   }
-
-  _spawn(N);
+  
+  // If spawning N threads fails, shut down any created threads before 
+  // rethrowing the exception.
+#ifndef TF_DISABLE_EXCEPTION_HANDLING
+  try {
+#endif
+    _spawn(N);
+#ifndef TF_DISABLE_EXCEPTION_HANDLING
+  }
+  catch(...) {
+    _shutdown();
+    std::rethrow_exception(std::current_exception());
+  }
+#endif
 
   // initialize the default observer if requested
   if(has_env(TF_ENABLE_PROFILER)) {
@@ -1155,6 +1171,11 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
 
 // Destructor
 inline Executor::~Executor() {
+  _shutdown();
+}
+
+// Function: _shutdown
+inline void Executor::_shutdown() {
 
   // wait for all topologies to complete
   wait_for_all();
@@ -1167,11 +1188,15 @@ inline Executor::~Executor() {
     _workers[i]._done.store(true, std::memory_order_relaxed);
   #endif
   }
-
+  
   _notifier.notify_all();
-
+  
+  // Only join the thread if it is joinable, as std::thread construction 
+  // may fail and throw an exception.
   for(auto& w : _workers) {
-    w._thread.join();
+    if(w._thread.joinable()) {
+      w._thread.join();
+    }
   }
 }
 
@@ -1220,7 +1245,6 @@ inline int Executor::this_worker_id() const {
 inline void Executor::_spawn(size_t N) {
 
   for(size_t id=0; id<N; ++id) {
-
     _workers[id]._id = id;
     _workers[id]._vtm = id;
     _workers[id]._executor = this;

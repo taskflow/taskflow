@@ -42,7 +42,7 @@
 /**
 @def TF_VERSION 
 
-@brief version of the %Taskflow (currently 3.10.0)
+@brief version of the %Taskflow (currently 3.11.0)
 
 The version system is made of a major version number, a minor version number,
 and a patch number:
@@ -92,7 +92,7 @@ namespace detail { }
 Release notes are available here: https://taskflow.github.io/taskflow/Releases.html
 */
 constexpr const char* version() {
-  return "3.10.0";
+  return "3.11.0";
 }
 
 
