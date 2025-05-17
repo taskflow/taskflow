@@ -12,12 +12,16 @@
 # -DCMAKE_CXX_STANDARD=20
 # -DCMAKE_CXX_STANDARD=23
 #
-# To disable exception handling:
+# To turn on/off taskflow macros:
 # -DTF_DISABLE_EXCEPTION_HANDLING
-#
-# To use different notification algorithms:
 # -DTF_ENABLE_ATOMIC_NOTIFIER         // default choice under C++20
 # -DTF_ENABLE_NONBLOCKING_NOTIFIER    // default choice under C++17
+#
+# To build different targets:
+# -DTF_BUILD_BENCHMARKS=OFF/ON        // default OFF
+# -DTF_BUILD_EXAMPLES=OFF/ON          // default ON
+# -DTF_BUILD_PROFILER=OFF/ON          // default OFF
+# -DTF_BUILD_TESTS=OFF/ON             // default ON
 # -------------------------------------------------------------------
 
 
