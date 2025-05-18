@@ -379,15 +379,7 @@ struct cudaSharedMemory <double>
 // ----------------------------------------------------------------------------
 
 /**
-@class cudaDeviceAllocator
-
-@brief class to create a CUDA device allocator 
-
-@tparam T element type
-
-A %cudaDeviceAllocator enables device-specific allocation for 
-standard library containers. It is typically passed as template parameter 
-when declaring standard library containers (e.g. std::vector).
+@private
 */
 template<typename T>
 class cudaDeviceAllocator {
@@ -575,15 +567,7 @@ class cudaDeviceAllocator {
 // ----------------------------------------------------------------------------
 
 /**
-@class cudaUSMAllocator
-
-@brief class to create a unified shared memory (USM) allocator 
-
-@tparam T element type
-
-A %cudaUSMAllocator enables using unified shared memory (USM) allocation for 
-standard library containers. It is typically passed as template parameter 
-when declaring standard library containers (e.g. std::vector).
+@private
 */
 template<typename T>
 class cudaUSMAllocator {

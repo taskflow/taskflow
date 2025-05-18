@@ -21,7 +21,7 @@ namespace tf {
 
 @brief class to create an executor 
 
-An executor manages a set of worker threads to run one or multiple taskflows
+An tf::Executor manages a set of worker threads to run tasks 
 using an efficient work-stealing scheduling algorithm.
 
 @code{.cpp}
@@ -47,8 +47,9 @@ executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
 executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
 @endcode
 
-All the @c run methods are @em thread-safe. You can submit multiple
-taskflows at the same time to an executor from different threads.
+All executor methods are @em thread-safe. 
+For example, you can submit multiple taskflows to an executor concurrently 
+from different threads, while other threads simultaneously create asynchronous tasks.
 */
 class Executor {
 

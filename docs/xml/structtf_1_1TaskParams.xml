@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="structtf_1_1TaskParams" kind="struct" language="C++" prot="public">
     <compoundname>tf::TaskParams</compoundname>
     <includes refid="graph_8hpp" local="no">taskflow/core/graph.hpp</includes>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1TaskParams_1aa6280a961a5faf0260bd39fff68e2666" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::TaskParams::name</definition>
         <argsstring></argsstring>
         <name>name</name>
+        <qualifiedname>tf::TaskParams::name</qualifiedname>
         <briefdescription>
 <para>name of the task </para>
         </briefdescription>
@@ -23,6 +24,7 @@
         <definition>void* tf::TaskParams::data</definition>
         <argsstring></argsstring>
         <name>data</name>
+        <qualifiedname>tf::TaskParams::data</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
 <para>C-styled pointer to user data. </para>
@@ -31,24 +33,24 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="116" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="116" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="116" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="116" bodyend="116"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>task parameters to use when creating an asynchronous task </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::string</label>
+      </node>
       <node id="1">
         <label>tf::TaskParams</label>
         <link refid="structtf_1_1TaskParams"/>
         <childnode refid="2" relation="usage">
           <edgelabel>name</edgelabel>
         </childnode>
-      </node>
-      <node id="2">
-        <label>std::string</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/graph.hpp" line="107" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="107" bodyend="117"/>

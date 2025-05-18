@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Pipeflow" kind="class" language="C++" prot="public">
     <compoundname>tf::Pipeflow</compoundname>
     <includes refid="pipeline_8hpp" local="no">taskflow/algorithm/pipeline.hpp</includes>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Pipeflow_1af65467c6cb27f4ef42522207f03ab9cf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -16,6 +16,7 @@
         <definition>friend class Pipeline</definition>
         <argsstring></argsstring>
         <name>Pipeline</name>
+        <qualifiedname>tf::Pipeflow::Pipeline</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Pipeline" kindref="compound">Pipeline</ref></type>
         </param>
@@ -25,7 +26,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/pipeline.hpp" line="105" column="3" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="105" bodyend="-1"/>
+        <location file="taskflow/algorithm/pipeline.hpp" line="105" column="16" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="105" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Pipeflow_1af64ddb98831b893b2388af2a2302acea" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -37,6 +38,7 @@
         <definition>friend class ScalablePipeline</definition>
         <argsstring></argsstring>
         <name>ScalablePipeline</name>
+        <qualifiedname>tf::Pipeflow::ScalablePipeline</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1ScalablePipeline" kindref="compound">ScalablePipeline</ref></type>
         </param>
@@ -46,7 +48,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/pipeline.hpp" line="108" column="3" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="108" bodyend="-1"/>
+        <location file="taskflow/algorithm/pipeline.hpp" line="108" column="16" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="108" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Pipeflow_1a576c05629fadf8120eb4db27cf28e659" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -60,6 +62,7 @@
         <definition>friend class DataPipeline</definition>
         <argsstring></argsstring>
         <name>DataPipeline</name>
+        <qualifiedname>tf::Pipeflow::DataPipeline</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1DataPipeline" kindref="compound">DataPipeline</ref></type>
         </param>
@@ -69,15 +72,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/pipeline.hpp" line="111" column="3" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="111" bodyend="-1"/>
+        <location file="taskflow/algorithm/pipeline.hpp" line="111" column="16" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="111" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Pipeflow_1a082a1a549ab50360c7e6e55a0fd4477f" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Pipeflow::_line</definition>
         <argsstring></argsstring>
         <name>_line</name>
+        <qualifiedname>tf::Pipeflow::_line</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -91,6 +95,7 @@
         <definition>size_t tf::Pipeflow::_pipe</definition>
         <argsstring></argsstring>
         <name>_pipe</name>
+        <qualifiedname>tf::Pipeflow::_pipe</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -104,6 +109,7 @@
         <definition>size_t tf::Pipeflow::_token</definition>
         <argsstring></argsstring>
         <name>_token</name>
+        <qualifiedname>tf::Pipeflow::_token</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -117,6 +123,7 @@
         <definition>bool tf::Pipeflow::_stop</definition>
         <argsstring></argsstring>
         <name>_stop</name>
+        <qualifiedname>tf::Pipeflow::_stop</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -130,6 +137,7 @@
         <definition>size_t tf::Pipeflow::_num_deferrals</definition>
         <argsstring></argsstring>
         <name>_num_deferrals</name>
+        <qualifiedname>tf::Pipeflow::_num_deferrals</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -139,10 +147,11 @@
         <location file="taskflow/algorithm/pipeline.hpp" line="183" column="10" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="183" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Pipeflow_1a444746d10472b56b8e6cb52fd35e3d84" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
+        <type><ref refid="cpp/container/unordered_set" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unordered_set</ref>&lt; size_t &gt;</type>
         <definition>std::unordered_set&lt;size_t&gt; tf::Pipeflow::_dependents</definition>
         <argsstring></argsstring>
         <name>_dependents</name>
+        <qualifiedname>tf::Pipeflow::_dependents</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -151,13 +160,14 @@
         </inbodydescription>
         <location file="taskflow/algorithm/pipeline.hpp" line="184" column="22" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="184" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Pipeflow_1a801877443f7046b9e450160c05c26d7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Pipeflow::Pipeflow</definition>
         <argsstring>()=default</argsstring>
         <name>Pipeflow</name>
+        <qualifiedname>tf::Pipeflow::Pipeflow</qualifiedname>
         <briefdescription>
 <para>default constructor </para>
         </briefdescription>
@@ -172,6 +182,7 @@
         <definition>size_t tf::Pipeflow::line</definition>
         <argsstring>() const</argsstring>
         <name>line</name>
+        <qualifiedname>tf::Pipeflow::line</qualifiedname>
         <briefdescription>
 <para>queries the line identifier of the present token </para>
         </briefdescription>
@@ -186,6 +197,7 @@
         <definition>size_t tf::Pipeflow::pipe</definition>
         <argsstring>() const</argsstring>
         <name>pipe</name>
+        <qualifiedname>tf::Pipeflow::pipe</qualifiedname>
         <briefdescription>
 <para>queries the pipe identifier of the present token </para>
         </briefdescription>
@@ -200,6 +212,7 @@
         <definition>size_t tf::Pipeflow::token</definition>
         <argsstring>() const</argsstring>
         <name>token</name>
+        <qualifiedname>tf::Pipeflow::token</qualifiedname>
         <briefdescription>
 <para>queries the token identifier </para>
         </briefdescription>
@@ -214,6 +227,7 @@
         <definition>void tf::Pipeflow::stop</definition>
         <argsstring>()</argsstring>
         <name>stop</name>
+        <qualifiedname>tf::Pipeflow::stop</qualifiedname>
         <briefdescription>
 <para>stops the pipeline scheduling </para>
         </briefdescription>
@@ -229,6 +243,7 @@
         <definition>size_t tf::Pipeflow::num_deferrals</definition>
         <argsstring>() const</argsstring>
         <name>num_deferrals</name>
+        <qualifiedname>tf::Pipeflow::num_deferrals</qualifiedname>
         <briefdescription>
 <para>queries the number of deferrals </para>
         </briefdescription>
@@ -243,6 +258,7 @@
         <definition>void tf::Pipeflow::defer</definition>
         <argsstring>(size_t token)</argsstring>
         <name>defer</name>
+        <qualifiedname>tf::Pipeflow::defer</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>token</declname>
@@ -257,14 +273,14 @@
         </inbodydescription>
         <location file="taskflow/algorithm/pipeline.hpp" line="167" column="8" bodyfile="taskflow/algorithm/pipeline.hpp" bodystart="167" bodyend="172"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a pipeflow object used by the pipe callable </para>
     </briefdescription>
     <detaileddescription>
 <para><ref refid="classtf_1_1Pipeflow" kindref="compound">Pipeflow</ref> represents a <emphasis>scheduling token</emphasis> in the pipeline scheduling framework. A pipeflow is created by the pipeline scheduler at runtime to pass to the pipe callable. Users can query the present statistics of that scheduling token, including the line identifier, pipe identifier, and token identifier, and build their application algorithms based on these statistics. At the first stage, users can explicitly call the stop method to stop the pipeline scheduler.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;token<sp/>id=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.token()</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Pipe{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[](tf::Pipeflow&amp;<sp/>pf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;token<sp/>id=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.token()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>at<sp/>line=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.line()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>at<sp/>pipe=&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>pf.pipe()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
