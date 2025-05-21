@@ -57,7 +57,7 @@ catch(const std::runtime_error& e) {
 }
 @endcode
 
-@code{.shell-session}
+@code{.bash}
 ~$ exception on A
 # execution of taskflow is cancelled after an execution is thrown
 @endcode
@@ -135,7 +135,7 @@ When an exception is thrown, it will cancel the execution of the parent subflow.
 All the subsequent tasks that depend on that exception task will not run.
 The above code example has the following output:
 
-@code{.shell-session}
+@code{.bash}
 Task A
 exception thrown during subflow joining: exception on A
 @endcode
@@ -172,7 +172,7 @@ catch (const std::runtime_error& re)
 }
 @endcode
 
-@code{.shell-session}
+@code{.bash}
 Task A
 exception thrown from running the taskflow: exception on A
 @endcode
@@ -196,7 +196,7 @@ catch(const std::runtime_error& e) {
 
 Running the program will show the exception message on the async task:
 
-@code{.shell-session}
+@code{.bash}
 ~$ exception
 @endcode
 

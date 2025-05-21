@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
   <compounddef id="ExceptionHandling" kind="page">
     <compoundname>ExceptionHandling</compoundname>
     <title>Exception Handling</title>
@@ -60,7 +60,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/>std::cerr<sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>exception<sp/>on<sp/>A</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>exception<sp/>on<sp/>A</highlight></codeline>
 <codeline><highlight class="normal">#<sp/>execution<sp/>of<sp/>taskflow<sp/>is<sp/>cancelled<sp/>after<sp/>an<sp/>execution<sp/>is<sp/>thrown</highlight></codeline>
 </programlisting></para>
 <para>When multiple tasks throw exceptions simultaneously, the executor will only catch one exception and store it in the shared state. Other exceptions will be silently ignored. For example, the following taskflow may concurrently throw two exceptions from task <computeroutput>B</computeroutput> and task <computeroutput>C</computeroutput>. Only one exception, either <computeroutput>B</computeroutput> or <computeroutput>C</computeroutput>, will be propagated.</para>
@@ -119,7 +119,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 </programlisting></para>
 <para>When an exception is thrown, it will cancel the execution of the parent subflow. All the subsequent tasks that depend on that exception task will not run. The above code example has the following output:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">Task<sp/>A</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">Task<sp/>A</highlight></codeline>
 <codeline><highlight class="normal">exception<sp/>thrown<sp/>during<sp/>subflow<sp/>joining:<sp/>exception<sp/>on<sp/>A</highlight></codeline>
 </programlisting></para>
 <para>Uncaught exception will be propagated to the parent level until being explicitly caught. For example, the code below will propagate the exception to the parent of the subflow, which in this case in its taskflow.</para>
@@ -149,7 +149,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;exception<sp/>thrown<sp/>from<sp/>running<sp/>the<sp/>taskflow:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">Task<sp/>A</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">Task<sp/>A</highlight></codeline>
 <codeline><highlight class="normal">exception<sp/>thrown<sp/>from<sp/>running<sp/>the<sp/>taskflow:<sp/>exception<sp/>on<sp/>A</highlight></codeline>
 </programlisting></para>
 </sect1>
@@ -165,7 +165,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Running the program will show the exception message on the async task:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>exception</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>exception</highlight></codeline>
 </programlisting></para>
 <para>On the other hand, since <ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">tf::Executor::silent_async</ref> does not return any future handle, any exception thrown from a silent-async task will be silently caught by the executor and (1) propagated to the its parent task if the parent task exists or (2) ignored if the parent task does not exist.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>

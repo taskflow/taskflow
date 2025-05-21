@@ -44,7 +44,7 @@ even though the weak dependency between @c A and @c C will never happen
 based on the graph structure itself.
 As a result, we will see both @c B and @c C in the output:
 
-@code{.shell-session}
+@code{.bash}
 B    # B leverages a runtime object to schedule C out of its dependency constraint
 C
 @endcode

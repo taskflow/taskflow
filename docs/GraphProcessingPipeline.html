@@ -498,43 +498,43 @@
 </g>
 </g>
 </svg>
-</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-console"><span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">1</span>
-<span class="go">ready</span>
-<span class="go">f1(A)</span>
-<span class="go">f2(A)</span>
-<span class="go">f1(B)</span>
-<span class="go">f2(B)</span>
-<span class="go">f3(A)</span>
-<span class="go">f1(C)</span>
-<span class="go">f2(C)</span>
-<span class="go">f3(B)</span>
-<span class="go">f3(C)</span>
-<span class="go">stopped</span>
+</div></section><section id="GraphPipelineSubmitTheTaskGraph"><h3><a href="#GraphPipelineSubmitTheTaskGraph">Submit the Task Graph</a></h3><p>Finally, we submit the taskflow to the execution and run it once:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>Three possible outputs are shown below:</p><pre class="m-code"><span class="c1"># possible output 1</span>
+ready
+f1<span class="o">(</span>A<span class="o">)</span>
+f2<span class="o">(</span>A<span class="o">)</span>
+f1<span class="o">(</span>B<span class="o">)</span>
+f2<span class="o">(</span>B<span class="o">)</span>
+f3<span class="o">(</span>A<span class="o">)</span>
+f1<span class="o">(</span>C<span class="o">)</span>
+f2<span class="o">(</span>C<span class="o">)</span>
+f3<span class="o">(</span>B<span class="o">)</span>
+f3<span class="o">(</span>C<span class="o">)</span>
+stopped
 
-<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">2</span>
-<span class="go">f1(A)</span>
-<span class="go">f2(A)</span>
-<span class="go">f3(A)</span>
-<span class="go">f1(B)</span>
-<span class="go">f2(B)</span>
-<span class="go">f3(B)</span>
-<span class="go">f1(C)</span>
-<span class="go">f2(C)</span>
-<span class="go">f3(C)</span>
-<span class="go">stopped</span>
+<span class="c1"># possible output 2</span>
+f1<span class="o">(</span>A<span class="o">)</span>
+f2<span class="o">(</span>A<span class="o">)</span>
+f3<span class="o">(</span>A<span class="o">)</span>
+f1<span class="o">(</span>B<span class="o">)</span>
+f2<span class="o">(</span>B<span class="o">)</span>
+f3<span class="o">(</span>B<span class="o">)</span>
+f1<span class="o">(</span>C<span class="o">)</span>
+f2<span class="o">(</span>C<span class="o">)</span>
+f3<span class="o">(</span>C<span class="o">)</span>
+stopped
 
-<span class="gp"># </span>possible<span class="w"> </span>output<span class="w"> </span><span class="m">3</span>
-<span class="go">ready</span>
-<span class="go">f1(A)</span>
-<span class="go">f2(A)</span>
-<span class="go">f3(A)</span>
-<span class="go">f1(B)</span>
-<span class="go">f2(B)</span>
-<span class="go">f1(C)</span>
-<span class="go">f2(C)</span>
-<span class="go">f3(B)</span>
-<span class="go">f3(C)</span>
-<span class="go">stopped</span></pre></section></section><section id="GraphPipelineReference"><h2><a href="#GraphPipelineReference">Reference</a></h2><p>We have applied the graph processing pipeline technique to speed up a circuit analysis problem. Details can be referred to our publication below:</p><ul><li>Cheng-Hsiang Chiu and Tsung-Wei Huang, &quot;<a href="https://tsung-wei-huang.github.io/papers/dac2022.pdf">Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms</a>,&quot; <em>ACM/IEEE Design Automation Conference (DAC)</em>, San Francisco, CA, 2022</li></ul></section>
+<span class="c1"># possible output 3</span>
+ready
+f1<span class="o">(</span>A<span class="o">)</span>
+f2<span class="o">(</span>A<span class="o">)</span>
+f3<span class="o">(</span>A<span class="o">)</span>
+f1<span class="o">(</span>B<span class="o">)</span>
+f2<span class="o">(</span>B<span class="o">)</span>
+f1<span class="o">(</span>C<span class="o">)</span>
+f2<span class="o">(</span>C<span class="o">)</span>
+f3<span class="o">(</span>B<span class="o">)</span>
+f3<span class="o">(</span>C<span class="o">)</span>
+stopped</pre></section></section><section id="GraphPipelineReference"><h2><a href="#GraphPipelineReference">Reference</a></h2><p>We have applied the graph processing pipeline technique to speed up a circuit analysis problem. Details can be referred to our publication below:</p><ul><li>Cheng-Hsiang Chiu and Tsung-Wei Huang, &quot;<a href="https://tsung-wei-huang.github.io/papers/dac2022.pdf">Efficient Timing Propagation with Simultaneous Structural and Pipeline Parallelisms</a>,&quot; <em>ACM/IEEE Design Automation Conference (DAC)</em>, San Francisco, CA, 2022</li></ul></section>
       </div>
     </div>
   </div>
@@ -579,7 +579,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.2 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

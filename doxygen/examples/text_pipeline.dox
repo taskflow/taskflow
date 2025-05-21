@@ -14,7 +14,7 @@ string to a final pair type.
 Given an input vector of strings, we want to compute the most frequent character
 for each string using a series of transform operations. For example:
 
-@code{.shell-session}
+@code{.bash}
 # input strings
 abade
 ddddf
@@ -251,7 +251,7 @@ executor.run(taskflow).wait();
 As the second stage is a parallel pipe, the output may interleave.
 One possible result is shown below:
 
-@code{.shell-session}
+@code{.bash}
 ready
 stage 1: input token = abade
 stage 1: input token = ddddf

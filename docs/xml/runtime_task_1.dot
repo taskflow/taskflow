@@ -1,0 +1,10 @@
+digraph Taskflow {
+p0x7bc400014030[label="D" ];
+p0x7bc400014118[label="C" ];
+p0x7bc400014200[label="B" shape=component];
+p0x7bc4000142e8[label="A" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7bc4000142e8 -> p0x7bc400014200 [style=dashed label="0"];
+p0x7bc4000142e8 -> p0x7bc400014118 [style=dashed label="1"];
+p0x7bc4000142e8 -> p0x7bc400014030 [style=dashed label="2"];
+}
+

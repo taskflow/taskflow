@@ -122,7 +122,7 @@ while leaving difficult task parallelism details to %Taskflow.
 
 Use @nvcc to compile a CUDA %Graph program:
 
-@code{.shell-session}
+@code{.bash}
 ~$ nvcc -std=c++20 my_cudaflow.cu -I path/to/include/taskflow -O2 -o my_cudaflow
 ~$ ./my_cudaflow
 @endcode

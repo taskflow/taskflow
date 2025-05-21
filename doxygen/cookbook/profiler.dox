@@ -17,7 +17,7 @@ To enable the profiler,
 set the environment variable @c TF_ENABLE_PROFILER to a file name
 in which the profiling result will be stored.
 
-@code{.shell-session}
+@code{.bash}
 ~$ TF_ENABLE_PROFILER=result.json ./my_taskflow
 ~$ cat result.json
 [
@@ -56,7 +56,7 @@ To compile the server, enable the cmake option
 @c TF_BUILD_PROFILER.
 You may visit @ref install to understand %Taskflow's build environment.
 
-@code{.shell-session}
+@code{.bash}
 # under the build directory
 ~$ cmake ../ -DTF_BUILD_PROFILER=ON
 ~$ make
@@ -67,7 +67,7 @@ you can find the executable at @c tfprof/server/tfprof.
 Now, generate profiling data from running a taskflow program
 but specify the output file with extension @c .tfp.
 
-@code{.shell-session}
+@code{.bash}
 ~$ TF_ENABLE_PROFILER=my_taskflow.tfp ./my_taskflow
 ~$ ls
 my_taskflow.tfp    # my_taskflow.tfp is of binary format
@@ -78,7 +78,7 @@ Launch the server program @c tfprof/server/tfprof and pass
 via the option @c --mount and
 (2) the @c my_taskflow.tfp via the option @c --input.
 
-@code{.shell-session}
+@code{.bash}
 # under the build/ directory
 ~$ ./tfprof/server/tfprof --mount ../tfprof/ --input my_taskflow.tfp
 @endcode
@@ -102,7 +102,7 @@ You can display a profile summary by specifying only the environment variable
 The %Taskflow will generate a separate summary report of tasks and workers
 for each executor created by the program.
 
-@code{.shell-session}
+@code{.bash}
 # enable the environment variable without any value
 ~$ TF_ENABLE_PROFILER=    ./my_taskflow_program  
 

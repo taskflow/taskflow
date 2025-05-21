@@ -39,7 +39,7 @@ int main(int argc, const char** argv) {
 The easiest way to compile %Taskflow with CUDA code (e.g., %cudaFlow, kernels)
 is to use @nvcc:
 
-@code{.shell-session}
+@code{.bash}
 ~$ nvcc -std=c++17 -I path/to/taskflow/ --extended-lambda simple.cu -o simple
 ~$ ./simple
 hello cudaFlow!
@@ -100,7 +100,7 @@ tf::Task make_cudaflow(tf::Taskflow& taskflow) {
 
 Compile each source to an object (@c g++ as an example):
 
-@code{.shell-session}
+@code{.bash}
 ~$ g++ -std=c++17 -I path/to/taskflow -c main.cpp -o main.o
 ~$ nvcc -std=c++17 --extended-lambda -x cu -I path/to/taskflow \
         -dc cudaflow.cpp -o cudaflow.o
@@ -123,7 +123,7 @@ on a compatible SM architecture using the option @-arch.
 For instance, the following command requires 
 device code linking to have compute capability 7.5 or later:
 
-@code{.shell-session}
+@code{.bash}
 ~$ nvcc -std=c++17 --extended-lambda -x cu -arch=sm_75 -I path/to/taskflow \
         -dc cudaflow.cpp -o cudaflow.o
 @endcode
@@ -134,7 +134,7 @@ Using @c nvcc to link compiled object code is nothing special but
 replacing the normal compiler with @c nvcc and it takes care of all the 
 necessary steps:
 
-@code{.shell-session}
+@code{.bash}
 ~$ nvcc main.o cudaflow.o -o main
 
 # run the main program 
@@ -150,7 +150,7 @@ Since your CPU compiler does not know how to link CUDA device code,
 you have to add a step in your build to have @c nvcc link the CUDA device code,
 using the option @c -dlink:
 
-@code{.shell-session}
+@code{.bash}
 ~$ nvcc -o gpuCode.o -dlink main.o cudaflow.o
 @endcode
 
@@ -163,7 +163,7 @@ and discards the CPU object code in @c main.o and @c cudaflow.o.
 
 To complete the link to an executable, you can use, for example, @c ld or @c g++.
 
-@code{.shell-session}
+@code{.bash}
 # replace /usr/local/cuda/lib64 with your own CUDA library installation path
 ~$ g++ -pthread -L /usr/local/cuda/lib64/ -lcudart \
    gpuCode.o main.o cudaflow.o -o main

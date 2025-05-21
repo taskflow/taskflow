@@ -55,7 +55,7 @@ semaphore after they are done.
 This organization limits the number of concurrently running tasks to only one.
 One possible output is shown below:
 
-@code{.shell-session}
+@code{.bash}
 # the output is a sequential chain of five tasks
 A
 B
@@ -96,7 +96,7 @@ for(auto & task : tasks) {  // each task acquires and release the semaphore
 executor.run(taskflow).wait();
 @endcode
 
-@code{.shell-session}
+@code{.bash}
 # One possible output: A, B, and C run concurrently, D and E run concurrently
 ABC
 ED
@@ -219,7 +219,7 @@ C.acquire(conflict_AC).release(conflict_AC);
 executor.run(taskflow).wait();
 @endcode
 
-@code{.shell-session}
+@code{.bash}
 # One possible output: B and C run concurrently after A
 A
 BC

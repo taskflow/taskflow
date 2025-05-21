@@ -2,20 +2,16 @@ namespace tf {
 
 /** @page ConditionalTasking Conditional Tasking
 
-One of the most powerful features that distinguishes %Taskflow from other systems is its 
-<i>conditional tasking interface</i>, also known as the <i>control taskflow programming model</i> (CTFG).
-CTFG enables you to embed control flow directly into a taskflow graph, allowing tasks to make decisions dynamically during execution.
-This powerful mechanism supports advanced in-graph control-flow patterns, such as dynamic branching, loops, and conditionals that are typically difficult or impossible to express in traditional existing task graph models.
-
+One of the most powerful features that distinguishes %Taskflow from other systems is its support for <i>conditional tasking</i>, also known as the <i>control taskflow programming model</i> (CTFG). CTFG allows you to embed control flow directly within a taskflow graph, enabling tasks to make decisions dynamically during execution. 
+This mechanism supports advanced in-graph control flow patterns, such as dynamic branching, loops, and conditionals—that are typically difficult or impossible to express in traditional task graph models.
 
 @tableofcontents
 
 @section CreateAConditionTask Create a Condition Task
 
-A condition task evaluates a set of instructions and returns an integer index 
-of the next successor task to execute. 
-The index is defined with respect to the order of its successor construction.
-The following example creates an if-else block using a single condition task.
+A condition task returns an integer index indicating which successor task to execute next. 
+The index corresponds to the position of the successor in the order it was added during task construction.
+The following example creates an if-else block using a condition task.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -40,16 +36,13 @@ With this order, when @c cond returns 0, the execution moves on to task @c yes.
 When @c cond returns 1, the execution moves on to task @c no.
 
 @attention
-It is your responsibility to ensure the return of a condition task goes to
-a correct successor task. If the return falls beyond the range of the successors,
-the executor will not schedule any tasks.
+It is your responsibility to ensure that the return value of a condition task corresponds to a valid successor.
+If the returned index is out of range, the executor will not schedule any successor tasks.
 
-Condition task can go cyclic to describe @em iterative control flow.
-The example below implements a simple yet commonly used feedback loop through
-a condition task (line 7-10) that returns
-a random binary value.
-If the return value from @c cond is @c 0, it loops back to itself, 
-or otherwise to @c stop. 
+
+A condition task can form a cycle to express @em iterative control flow.
+The example below demonstrates a simple yet commonly used feedback loop implemented using a condition task (lines 7–10) that returns a random binary value.
+If the return value from @c cond is @c 0, the task loops back to itself; otherwise, it proceeds to @c stop.
 
 @code{.cpp}
  1: tf::Taskflow taskflow;
@@ -73,9 +66,9 @@ or otherwise to @c stop.
 <!-- @image html images/conditional-tasking-1.svg width=45% -->
 @dotfile images/conditional-tasking-1.dot
 
-A taskflow of complex control flow often just takes a few lines of code 
-to implement, and different control flow blocks may run in parallel.
-The code below creates another taskflow with three condition tasks.
+Creating a taskflow with complex control flow often requires only a few lines of code to implement.
+Different control flow paths can execute in parallel, making it easy to express both logic and concurrency.
+The code below creates a taskflow with three condition tasks to demonstrate this capability:
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -113,24 +106,21 @@ cond_3.precede(cond_3, L);  // return 0 to 'cond_3' or 1 to 'L'
 taskflow.dump(std::cout);
 @endcode
 
-The above code creates three condition tasks:
-(1) a condition task @c cond_1 that loops back 
+The above code creates three condition tasks to implement three different control-flow tasks:
+  1. A condition task @c cond_1 that loops back 
 to @c B on returning @c 0, or proceeds to @c E on returning @c 1,
-(2) a condition task @c cond_2 that goes to @c G on returning @c 0,
+  2. A condition task @c cond_2 that goes to @c G on returning @c 0,
 or @c H on returning @c 1,
-(3) a condition task @c cond_3 that loops back to itself on returning @c 0, 
+  3. A condition task @c cond_3 that loops back to itself on returning @c 0, 
 or proceeds to @c L on returning @c 1
 
 <!-- @image html images/conditional-tasking-2.svg width=100% -->
 @dotfile images/conditional-tasking-2.dot
 
-You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.
+In this particular example, we can clearly see the advantage of CTFG: the execution of @c cond_1 can overlap with @c cond_2 or @c cond_3, enabling greater concurrency in control-driven workloads.
+Unlike traditional task graph models that require static structure or external orchestration to handle control flow, CTFG allows tasks to make decisions dynamically and continue execution without global synchronization barriers.
+This design leads to better parallelism, reduced overhead, and more expressive task graphs, especially in workloads with branching or iterative control flows.
 
-@attention
-Conditional tasking lets you make in-task control-flow decisions to
-enable @em end-to-end parallelism, 
-instead of resorting to client-side partition or synchronizing your task graph
-at the decision points of control flow.
 
 @section TaskSchedulingPolicy Understand our Task-level Scheduling
 
@@ -278,9 +268,8 @@ cond3.precede(equl3, grtr3);  // goes to grtr3 if i>3
 
 @subsection ImplementSwitchControlFlow Implement Switch Control Flow
 
-You can use conditional tasking to implement @em switch control flow.
-The following example creates a switch control flow diagram that 
-executes one of the three cases at random using four condition tasks.
+You can use condition tasks to implement @em switch-style control flow.
+The following example demonstrates this by creating a switch structure that randomly selects and executes one of three cases using four condition tasks.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -303,7 +292,7 @@ target.succeed(case1, case2, case3);
 
 Assuming @c swcond returns 1, the program outputs:
 
-@code{.shell-session}
+@code{.bash}
 source
 switch
 case 2
@@ -367,7 +356,7 @@ cond.precede(body, done);
 
 The program outputs:
 
-@code{.shell-session}
+@code{.bash}
 i=0
 i++ => i=1
 i++ => i=2
@@ -406,7 +395,7 @@ back.precede(cond);
 
 The program outputs:
 
-@code{.shell-session}
+@code{.bash}
 i=0
 while i<5
 i++=0
@@ -500,47 +489,6 @@ executor.run(taskflow).wait();
 The return type of a multi-condition task is tf::SmallVector,
 which provides C++ vector-style functionalities but comes with small buffer optimization.
 
-One important application of conditional tasking is implementing 
-<i>iterative control flow</i>.
-You can use multi-condition tasks to create multiple loops that run concurrently.
-The following code creates a sequential chain of four loops in which
-each loop increments a counter variable ten times.
-When the program completes, the value of the counter variable is @c 40.
-
-@code{.cpp}
-tf::Executor executor;
-tf::Taskflow taskflow;
-std::atomic<int> counter{0};
-
-auto loop = [&, c = int(0)]() mutable -> tf::SmallVector<int> {
-  counter.fetch_add(1, std::memory_order_relaxed);
-  return {++c < 10 ? 0 : 1};
-};
-auto init = taskflow.emplace([](){}).name("init");
-auto A = taskflow.emplace(loop).name("A");
-auto B = taskflow.emplace(loop).name("B");
-auto C = taskflow.emplace(loop).name("C");
-auto D = taskflow.emplace(loop).name("D");
-
-init.precede(A);
-A.precede(A, B);
-B.precede(B, C);
-C.precede(C, D);
-D.precede(D);
-
-executor.run(taskflow).wait();  // counter == 40
-taskflow.dump(std::cout);
-
-std::cout << "counter == " << counter << '\n';
-@endcode
-
-@dotfile images/multi-condition-task-2.dot
-
-@attention
-It is your responsibility to ensure the return of a multi-condition task 
-goes to a correct successor task.
-If a returned index falls outside the successor range of a multi-condition task,
-the scheduler will skip that index without doing anything.
 
 */
 

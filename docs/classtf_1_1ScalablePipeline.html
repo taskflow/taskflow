@@ -147,29 +147,29 @@
 <span class="p">}</span>
 <span class="n">pl</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pipes</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">pipes</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, first going through three serial pipes and then five serial pipes:</p><pre class="m-console"><span class="gp"># </span>initial<span class="w"> </span>construction<span class="w"> </span>of<span class="w"> </span>three<span class="w"> </span>serial<span class="w"> </span>pipes
-<span class="go">o -&gt; o -&gt; o</span>
-<span class="go">|    |    |</span>
-<span class="go">v    v    v</span>
-<span class="go">o -&gt; o -&gt; o</span>
-<span class="go">|    |    |</span>
-<span class="go">v    v    v</span>
-<span class="go">o -&gt; o -&gt; o</span>
-<span class="go">|    |    |</span>
-<span class="go">v    v    v</span>
-<span class="go">o -&gt; o -&gt; o</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, first going through three serial pipes and then five serial pipes:</p><pre class="m-code"><span class="c1"># initial construction of three serial pipes</span>
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
 
-<span class="gp"># </span>resetting<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>range<span class="w"> </span>of<span class="w"> </span>five<span class="w"> </span>serial<span class="w"> </span>pipes
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span>
-<span class="go">|    |    |    |    |</span>
-<span class="go">v    v    v    v    v</span>
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span>
-<span class="go">|    |    |    |    |</span>
-<span class="go">v    v    v    v    v</span>
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span>
-<span class="go">|    |    |    |    |</span>
-<span class="go">v    v    v    v    v</span>
-<span class="go">o -&gt; o -&gt; o -&gt; o -&gt; o</span></pre><p>Each pipe has the same type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>A scalable pipeline is move-only.</p>
+<span class="c1"># resetting to a new range of five serial pipes</span>
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
+<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
+v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v<span class="w">    </span>v
+o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o</pre><p>Each pipe has the same type of <code>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</code> and is kept in a vector that is amenable to change. We construct the scalable pipeline using two range iterators pointing to the beginning and the end of the vector. At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>A scalable pipeline is move-only.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
@@ -476,7 +476,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.2 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

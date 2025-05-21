@@ -72,7 +72,7 @@
             <li><a href="#CreateAMultiConditionTask">Create a Multi-condition Task</a></li>
           </ul>
         </nav>
-<p>One of the most powerful features that distinguishes Taskflow from other systems is its <em>conditional tasking interface</em>, also known as the <em>control taskflow programming model</em> (CTFG). CTFG enables you to embed control flow directly into a taskflow graph, allowing tasks to make decisions dynamically during execution. This powerful mechanism supports advanced in-graph control-flow patterns, such as dynamic branching, loops, and conditionals that are typically difficult or impossible to express in traditional existing task graph models.</p><section id="CreateAConditionTask"><h2><a href="#CreateAConditionTask">Create a Condition Task</a></h2><p>A condition task evaluates a set of instructions and returns an integer index of the next successor task to execute. The index is defined with respect to the order of its successor construction. The following example creates an if-else block using a single condition task.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<p>One of the most powerful features that distinguishes Taskflow from other systems is its support for <em>conditional tasking</em>, also known as the <em>control taskflow programming model</em> (CTFG). CTFG allows you to embed control flow directly within a taskflow graph, enabling tasks to make decisions dynamically during execution. This mechanism supports advanced in-graph control flow patterns, such as dynamic branching, loops, and conditionals—that are typically difficult or impossible to express in traditional task graph models.</p><section id="CreateAConditionTask"><h2><a href="#CreateAConditionTask">Create a Condition Task</a></h2><p>A condition task returns an integer index indicating which successor task to execute next. The index corresponds to the position of the successor in the order it was added during task construction. The following example creates an if-else block using a condition task.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="w"> </span><span class="mi">2</span><span class="o">:</span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">cond</span><span class="p">,</span><span class="w"> </span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span>
@@ -125,7 +125,7 @@
 </g>
 </g>
 </svg>
-</div><p>Line 5 creates a condition task <code>cond</code> and line 11 creates two dependencies from <code>cond</code> to two other tasks, <code>yes</code> and <code>no</code>. With this order, when <code>cond</code> returns 0, the execution moves on to task <code>yes</code>. When <code>cond</code> returns 1, the execution moves on to task <code>no</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure the return of a condition task goes to a correct successor task. If the return falls beyond the range of the successors, the executor will not schedule any tasks.</p></aside><p>Condition task can go cyclic to describe <em>iterative</em> control flow. The example below implements a simple yet commonly used feedback loop through a condition task (line 7-10) that returns a random binary value. If the return value from <code>cond</code> is <code>0</code>, it loops back to itself, or otherwise to <code>stop</code>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div><p>Line 5 creates a condition task <code>cond</code> and line 11 creates two dependencies from <code>cond</code> to two other tasks, <code>yes</code> and <code>no</code>. With this order, when <code>cond</code> returns 0, the execution moves on to task <code>yes</code>. When <code>cond</code> returns 1, the execution moves on to task <code>no</code>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure that the return value of a condition task corresponds to a valid successor. If the returned index is out of range, the executor will not schedule any successor tasks.</p></aside><p>A condition task can form a cycle to express <em>iterative</em> control flow. The example below demonstrates a simple yet commonly used feedback loop implemented using a condition task (lines 7–10) that returns a random binary value. If the return value from <code>cond</code> is <code>0</code>, the task loops back to itself; otherwise, it proceeds to <code>stop</code>.</p><pre class="m-code"><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span>
 <span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
 <span class="w"> </span><span class="mi">4</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stop&quot;</span><span class="p">);</span>
@@ -177,7 +177,7 @@
 </g>
 </g>
 </svg>
-</div><p>A taskflow of complex control flow often just takes a few lines of code to implement, and different control flow blocks may run in parallel. The code below creates another taskflow with three condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div><p>Creating a taskflow with complex control flow often requires only a few lines of code to implement. Different control flow paths can execute in parallel, making it easy to express both logic and concurrency. The code below creates a taskflow with three condition tasks to demonstrate this capability:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
@@ -209,7 +209,7 @@
 <span class="n">cond_2</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">);</span><span class="w">       </span><span class="c1">// return 0 to &#39;G&#39; or 1 to &#39;H&#39;</span>
 <span class="n">cond_3</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">cond_3</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">);</span><span class="w">  </span><span class="c1">// return 0 to &#39;cond_3&#39; or 1 to &#39;L&#39;</span>
 
-<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>The above code creates three condition tasks: (1) a condition task <code>cond_1</code> that loops back to <code>B</code> on returning <code>0</code>, or proceeds to <code>E</code> on returning <code>1</code>, (2) a condition task <code>cond_2</code> that goes to <code>G</code> on returning <code>0</code>, or <code>H</code> on returning <code>1</code>, (3) a condition task <code>cond_3</code> that loops back to itself on returning <code>0</code>, or proceeds to <code>L</code> on returning <code>1</code></p><div class="m-graph"><svg style="width: 78.800rem; height: 19.200rem;" viewBox="0.00 0.00 788.23 192.00">
+<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>The above code creates three condition tasks to implement three different control-flow tasks:</p><ol><li>A condition task <code>cond_1</code> that loops back to <code>B</code> on returning <code>0</code>, or proceeds to <code>E</code> on returning <code>1</code>,</li><li>A condition task <code>cond_2</code> that goes to <code>G</code> on returning <code>0</code>, or <code>H</code> on returning <code>1</code>,</li><li>A condition task <code>cond_3</code> that loops back to itself on returning <code>0</code>, or proceeds to <code>L</code> on returning <code>1</code></li></ol><div class="m-graph"><svg style="width: 78.800rem; height: 19.200rem;" viewBox="0.00 0.00 788.23 192.00">
 <g transform="scale(1 1) rotate(0) translate(4 188)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
@@ -375,7 +375,7 @@
 </g>
 </g>
 </svg>
-</div><p>You can use condition tasks to create cycles as long as the graph does not introduce task race during execution. However, cycles are not allowed in non-condition tasks.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Conditional tasking lets you make in-task control-flow decisions to enable <em>end-to-end</em> parallelism, instead of resorting to client-side partition or synchronizing your task graph at the decision points of control flow.</p></aside></section><section id="TaskSchedulingPolicy"><h2><a href="#TaskSchedulingPolicy">Understand our Task-level Scheduling</a></h2><p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a non-condition task to another task. A weak dependency is a preceding link from a condition task to another task. The number of dependencies of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p><table class="m-table"><thead><tr><th>task</th><th>strong dependency</th><th>weak dependency</th><th>dependencies</th></tr></thead><tbody><tr><td>A</td><td>0</td><td>0</td><td>0</td></tr><tr><td>B</td><td>1</td><td>1</td><td>2</td></tr><tr><td>C</td><td>1</td><td>0</td><td>1</td></tr><tr><td>D</td><td>1</td><td>0</td><td>1</td></tr><tr><td>E</td><td>0</td><td>1</td><td>1</td></tr><tr><td>F</td><td>1</td><td>0</td><td>1</td></tr><tr><td>G</td><td>0</td><td>1</td><td>1</td></tr><tr><td>H</td><td>0</td><td>1</td><td>1</td></tr><tr><td>I</td><td>1</td><td>0</td><td>1</td></tr><tr><td>K</td><td>1</td><td>0</td><td>1</td></tr><tr><td>L</td><td>0</td><td>1</td><td>1</td></tr><tr><td>M</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_2</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_3</td><td>1</td><td>1</td><td>2</td></tr></tbody></table><p>You can query the number of strong dependencies, the number of weak dependencies, and the number of dependencies of a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div><p>In this particular example, we can clearly see the advantage of CTFG: the execution of <code>cond_1</code> can overlap with <code>cond_2</code> or <code>cond_3</code>, enabling greater concurrency in control-driven workloads. Unlike traditional task graph models that require static structure or external orchestration to handle control flow, CTFG allows tasks to make decisions dynamically and continue execution without global synchronization barriers. This design leads to better parallelism, reduced overhead, and more expressive task graphs, especially in workloads with branching or iterative control flows.</p></section><section id="TaskSchedulingPolicy"><h2><a href="#TaskSchedulingPolicy">Understand our Task-level Scheduling</a></h2><p>In order to understand how an executor schedules condition tasks, we define two dependency types, <em>strong dependency</em> and <em>weak dependency</em>. A strong dependency is a preceding link from a non-condition task to another task. A weak dependency is a preceding link from a condition task to another task. The number of dependencies of a task is the sum of strong dependency and weak dependency. The table below lists the strong dependency and weak dependency numbers of each task in the previous example.</p><table class="m-table"><thead><tr><th>task</th><th>strong dependency</th><th>weak dependency</th><th>dependencies</th></tr></thead><tbody><tr><td>A</td><td>0</td><td>0</td><td>0</td></tr><tr><td>B</td><td>1</td><td>1</td><td>2</td></tr><tr><td>C</td><td>1</td><td>0</td><td>1</td></tr><tr><td>D</td><td>1</td><td>0</td><td>1</td></tr><tr><td>E</td><td>0</td><td>1</td><td>1</td></tr><tr><td>F</td><td>1</td><td>0</td><td>1</td></tr><tr><td>G</td><td>0</td><td>1</td><td>1</td></tr><tr><td>H</td><td>0</td><td>1</td><td>1</td></tr><tr><td>I</td><td>1</td><td>0</td><td>1</td></tr><tr><td>K</td><td>1</td><td>0</td><td>1</td></tr><tr><td>L</td><td>0</td><td>1</td><td>1</td></tr><tr><td>M</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_2</td><td>1</td><td>0</td><td>1</td></tr><tr><td>cond_3</td><td>1</td><td>1</td><td>2</td></tr></tbody></table><p>You can query the number of strong dependencies, the number of weak dependencies, and the number of dependencies of a task.</p><pre class="m-code"><span class="mi">1</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="mi">2</span><span class="o">:</span><span class="w"> </span>
 <span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="mi">4</span><span class="o">:</span><span class="w"> </span>
@@ -834,7 +834,7 @@
 </g>
 </g>
 </svg>
-</div></section><section id="ImplementSwitchControlFlow"><h3><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></h3><p>You can use conditional tasking to implement <em>switch</em> control flow. The following example creates a switch control flow diagram that executes one of the three cases at random using four condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div></section><section id="ImplementSwitchControlFlow"><h3><a href="#ImplementSwitchControlFlow">Implement Switch Control Flow</a></h3><p>You can use condition tasks to implement <em>switch-style</em> control flow. The following example demonstrates this by creating a switch structure that randomly selects and executes one of three cases using four condition tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">swcond</span><span class="p">,</span><span class="w"> </span><span class="n">case1</span><span class="p">,</span><span class="w"> </span><span class="n">case2</span><span class="p">,</span><span class="w"> </span><span class="n">case3</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
 <span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;source</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
@@ -923,10 +923,10 @@
 </g>
 </g>
 </svg>
-</div><p>Assuming <code>swcond</code> returns 1, the program outputs:</p><pre class="m-console"><span class="go">source</span>
-<span class="go">switch</span>
-<span class="go">case 2</span>
-<span class="go">target</span></pre><p>Keep in mind, both switch and case tasks must be described as condition tasks. The following implementation is a common mistake in which case tasks are not described as condition tasks.</p><pre class="m-code"><span class="c1">// wrong implementation of switch control flow using only one condition task</span>
+</div><p>Assuming <code>swcond</code> returns 1, the program outputs:</p><pre class="m-code"><span class="nb">source</span>
+switch
+<span class="k">case</span><span class="w"> </span><span class="m">2</span>
+target</pre><p>Keep in mind, both switch and case tasks must be described as condition tasks. The following implementation is a common mistake in which case tasks are not described as condition tasks.</p><pre class="m-code"><span class="c1">// wrong implementation of switch control flow using only one condition task</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">swcond</span><span class="p">,</span><span class="w"> </span><span class="n">case1</span><span class="p">,</span><span class="w"> </span><span class="n">case2</span><span class="p">,</span><span class="w"> </span><span class="n">case3</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
@@ -1073,13 +1073,13 @@
 </g>
 </g>
 </svg>
-</div><p>The program outputs:</p><pre class="m-console"><span class="go">i=0</span>
-<span class="go">i++ =&gt; i=1</span>
-<span class="go">i++ =&gt; i=2</span>
-<span class="go">i++ =&gt; i=3</span>
-<span class="go">i++ =&gt; i=4</span>
-<span class="go">i++ =&gt; i=5</span>
-<span class="go">done</span></pre></section><section id="ImplementWhileLoopControlFlow"><h3><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></h3><p>You can use conditional tasking to implement <em>while-loop</em> control flow. The following example creates a while-loop control flow diagram that repeatedly increments variable <code>i</code> five times using two condition task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+</div><p>The program outputs:</p><pre class="m-code"><span class="nv">i</span><span class="o">=</span><span class="m">0</span>
+i++<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">1</span>
+i++<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">2</span>
+i++<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">3</span>
+i++<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">4</span>
+i++<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">5</span>
+<span class="k">done</span></pre></section><section id="ImplementWhileLoopControlFlow"><h3><a href="#ImplementWhileLoopControlFlow">Implement While-Loop Control Flow</a></h3><p>You can use conditional tasking to implement <em>while-loop</em> control flow. The following example creates a while-loop control flow diagram that repeatedly increments variable <code>i</code> five times using two condition task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
 
@@ -1152,24 +1152,24 @@
 </g>
 </g>
 </svg>
-</div><p>The program outputs:</p><pre class="m-console"><span class="go">i=0</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=0</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=1</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=2</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=3</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">i++=4</span>
-<span class="go">back</span>
-<span class="go">while i&lt;5</span>
-<span class="go">done</span></pre><p>Notice that, when you implement a while-loop block, you cannot direct a dependency from the body task to the loop condition task. Doing so will introduce a strong dependency between the body task and the loop condition task, and the loop condition task will never be executed. The following code shows a common faulty implementation of while-loop control flow.</p><pre class="m-code"><span class="c1">// wrong implementation of while-loop using only one condition task</span>
+</div><p>The program outputs:</p><pre class="m-code"><span class="nv">i</span><span class="o">=</span><span class="m">0</span>
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+i++<span class="o">=</span><span class="m">0</span>
+back
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+i++<span class="o">=</span><span class="m">1</span>
+back
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+i++<span class="o">=</span><span class="m">2</span>
+back
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+i++<span class="o">=</span><span class="m">3</span>
+back
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+i++<span class="o">=</span><span class="m">4</span>
+back
+<span class="k">while</span><span class="w"> </span>i&lt;<span class="m">5</span>
+<span class="k">done</span></pre><p>Notice that, when you implement a while-loop block, you cannot direct a dependency from the body task to the loop condition task. Doing so will introduce a strong dependency between the body task and the loop condition task, and the loop condition task will never be executed. The following code shows a common faulty implementation of while-loop control flow.</p><pre class="m-code"><span class="c1">// wrong implementation of while-loop using only one condition task</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
@@ -1286,107 +1286,7 @@
 </g>
 </g>
 </svg>
-</div><aside class="m-note m-warning"><h4>Attention</h4><p>The return type of a multi-condition task is <a href="classtf_1_1SmallVector.html" class="m-doc">tf::<wbr />SmallVector</a>, which provides C++ vector-style functionalities but comes with small buffer optimization.</p></aside><p>One important application of conditional tasking is implementing <em>iterative control flow</em>. You can use multi-condition tasks to create multiple loops that run concurrently. The following code creates a sequential chain of four loops in which each loop increments a counter variable ten times. When the program completes, the value of the counter variable is <code>40</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-
-<span class="k">auto</span><span class="w"> </span><span class="n">loop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)]()</span><span class="w"> </span><span class="k">mutable</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">SmallVector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="o">++</span><span class="n">c</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
-<span class="p">};</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;init&quot;</span><span class="p">);</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">loop</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">);</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">loop</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">);</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">loop</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">);</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">loop</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;D&quot;</span><span class="p">);</span>
-
-<span class="n">init</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
-<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">);</span>
-<span class="n">B</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">);</span>
-<span class="n">C</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span>
-<span class="n">D</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">D</span><span class="p">);</span>
-
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span><span class="w">  </span><span class="c1">// counter == 40</span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;counter == &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre><div class="m-graph"><svg style="width: 43.900rem; height: 7.300rem;" viewBox="0.00 0.00 438.75 73.25">
-<g transform="scale(1 1) rotate(0) translate(4 69.25)">
-<title>Taskflow</title>
-<g class="m-node m-flat">
-<title>p0x7bc400014030</title>
-<ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
-</g>
-<g class="m-node">
-<title>p0x7bc400014118</title>
-<polygon points="118,-36 91,-18 118,0 145,-18 118,-36"/>
-<text text-anchor="middle" x="118" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc400014030&#45;&gt;p0x7bc400014118</title>
-<path d="M54.22,-18C61.96,-18 70.59,-18 78.91,-18"/>
-<polygon points="78.84,-21.5 88.84,-18 78.84,-14.5 78.84,-21.5"/>
-</g>
-<g class="m-edge">
-<title>p0x7bc400014118&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M110.67,-31.67C107.74,-42.66 110.18,-54 118,-54 123.01,-54 125.81,-49.34 126.41,-43.11"/>
-<polygon points="129.9,-42.8 125.47,-33.17 122.93,-43.46 129.9,-42.8"/>
-<text text-anchor="middle" x="118" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-<g class="m-node">
-<title>p0x7bc400014200</title>
-<polygon points="213.25,-36 186.25,-18 213.25,0 240.25,-18 213.25,-36"/>
-<text text-anchor="middle" x="213.25" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc400014118&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M145.47,-18C154.35,-18 164.44,-18 174.04,-18"/>
-<polygon points="173.87,-21.5 183.87,-18 173.87,-14.5 173.87,-21.5"/>
-<text text-anchor="middle" x="165.62" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc400014200&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M205.68,-31.29C202.45,-42.4 204.97,-54 213.25,-54 218.68,-54 221.64,-49 222.11,-42.43"/>
-<polygon points="225.62,-42.32 220.99,-32.8 218.67,-43.13 225.62,-42.32"/>
-<text text-anchor="middle" x="213.25" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-<g class="m-node">
-<title>p0x7bc4000142e8</title>
-<polygon points="308.5,-36 281.5,-18 308.5,0 335.5,-18 308.5,-36"/>
-<text text-anchor="middle" x="308.5" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc400014200&#45;&gt;p0x7bc4000142e8</title>
-<path stroke-dasharray="5,2" d="M240.72,-18C249.6,-18 259.69,-18 269.29,-18"/>
-<polygon points="269.12,-21.5 279.12,-18 269.12,-14.5 269.12,-21.5"/>
-<text text-anchor="middle" x="260.88" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000142e8&#45;&gt;p0x7bc4000142e8</title>
-<path stroke-dasharray="5,2" d="M300.93,-31.29C297.7,-42.4 300.22,-54 308.5,-54 313.93,-54 316.89,-49 317.36,-42.43"/>
-<polygon points="320.87,-42.32 316.24,-32.8 313.92,-43.13 320.87,-42.32"/>
-<text text-anchor="middle" x="308.5" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-<g class="m-node">
-<title>p0x7bc4000143d0</title>
-<polygon points="403.75,-36 376.75,-18 403.75,0 430.75,-18 403.75,-36"/>
-<text text-anchor="middle" x="403.75" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000142e8&#45;&gt;p0x7bc4000143d0</title>
-<path stroke-dasharray="5,2" d="M335.97,-18C344.85,-18 354.94,-18 364.54,-18"/>
-<polygon points="364.37,-21.5 374.37,-18 364.37,-14.5 364.37,-21.5"/>
-<text text-anchor="middle" x="356.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000143d0&#45;&gt;p0x7bc4000143d0</title>
-<path stroke-dasharray="5,2" d="M396.18,-31.29C392.95,-42.4 395.47,-54 403.75,-54 409.18,-54 412.14,-49 412.61,-42.43"/>
-<polygon points="416.12,-42.32 411.49,-32.8 409.17,-43.13 416.12,-42.32"/>
-<text text-anchor="middle" x="403.75" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-</g>
-</svg>
-</div><aside class="m-note m-warning"><h4>Attention</h4><p>It is your responsibility to ensure the return of a multi-condition task goes to a correct successor task. If a returned index falls outside the successor range of a multi-condition task, the scheduler will skip that index without doing anything.</p></aside></section>
+</div><aside class="m-note m-warning"><h4>Attention</h4><p>The return type of a multi-condition task is <a href="classtf_1_1SmallVector.html" class="m-doc">tf::<wbr />SmallVector</a>, which provides C++ vector-style functionalities but comes with small buffer optimization.</p></aside></section>
       </div>
     </div>
   </div>
@@ -1431,7 +1331,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.2 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

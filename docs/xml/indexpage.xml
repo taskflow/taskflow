@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
   <compounddef id="indexpage" kind="page">
     <compoundname>index</compoundname>
     <title>Modern C++ Parallel Task Programming</title>
@@ -84,7 +84,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Taskflow is <emphasis>header-only</emphasis> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">TaskA</highlight></codeline>
@@ -95,7 +95,7 @@
 <para>Taskflow comes with a built-in profiler, <ulink url="https://taskflow.github.io/tfprof/">Taskflow Profiler</ulink>, for you to profile and visualize taskflow programs in an easy-to-use web-based interface.</para>
 <para><image type="html" name="tfprof.png"></image>
 </para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>program<sp/>with<sp/>the<sp/>environment<sp/>variable<sp/>TF_ENABLE_PROFILER<sp/>enabled</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>program<sp/>with<sp/>the<sp/>environment<sp/>variable<sp/>TF_ENABLE_PROFILER<sp/>enabled</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>TF_ENABLE_PROFILER=simple.json<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>cat<sp/>simple.json</highlight></codeline>
 <codeline><highlight class="normal">[</highlight></codeline>
@@ -211,7 +211,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="index_1QuickStartRunATaskflowThroughAnExecution">
-<title>Run a Taskflow through an Executor</title><para>The executor provides several <emphasis>thread-safe</emphasis> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <computeroutput>tf::Future&lt;void&gt;</computeroutput> return to let you query the execution status.</para>
+<title>Run a Taskflow through an Executor</title><para>The executor provides several <emphasis>thread-safe</emphasis> methods to run a taskflow. You can run a taskflow once, multiple times, or until a stopping criteria is met. These methods are non-blocking with a <computeroutput><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref></computeroutput> return to let you query the execution status.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>runs<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>run_once<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>

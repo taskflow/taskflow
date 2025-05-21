@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
   <compounddef id="CompileTaskflowWithCUDA" kind="page">
     <compoundname>CompileTaskflowWithCUDA</compoundname>
     <title>Compile Taskflow with CUDA</title>
@@ -54,7 +54,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The easiest way to compile Taskflow with CUDA code (e.g., cudaFlow, kernels) is to use <ulink url="https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html">nvcc</ulink>:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>-I<sp/>path/to/taskflow/<sp/>--extended-lambda<sp/>simple.cu<sp/>-o<sp/>simple</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>-I<sp/>path/to/taskflow/<sp/>--extended-lambda<sp/>simple.cu<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
 <codeline><highlight class="normal">hello<sp/>cudaFlow!</highlight></codeline>
 </programlisting></para>
@@ -101,7 +101,7 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Compile each source to an object (<computeroutput>g++</computeroutput> as an example):</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++17<sp/>-I<sp/>path/to/taskflow<sp/>-c<sp/>main.cpp<sp/>-o<sp/>main.o</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++17<sp/>-I<sp/>path/to/taskflow<sp/>-c<sp/>main.cpp<sp/>-o<sp/>main.o</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>--extended-lambda<sp/>-x<sp/>cu<sp/>-I<sp/>path/to/taskflow<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-dc<sp/>cudaflow.cpp<sp/>-o<sp/>cudaflow.o</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>ls</highlight></codeline>
@@ -110,12 +110,12 @@
 </programlisting></para>
 <para>The <computeroutput>--extended-lambda</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate GPU code for the lambda defined with <computeroutput><bold>device</bold></computeroutput>. The <computeroutput>-x cu</computeroutput> tells <computeroutput>nvcc</computeroutput> to treat the input files as <computeroutput></computeroutput>.cu files containing both CPU and GPU code. By default, <computeroutput>nvcc</computeroutput> treats <computeroutput></computeroutput>.cpp files as CPU-only code. This option is required to have <computeroutput>nvcc</computeroutput> generate device code here, but it is also a handy way to avoid renaming source files in larger projects. The <computeroutput>–dc</computeroutput> option tells <computeroutput>nvcc</computeroutput> to generate device code for later linking.</para>
 <para>You may also need to specify the target architecture to tell <computeroutput>nvcc</computeroutput> to target on a compatible SM architecture using the option -arch. For instance, the following command requires device code linking to have compute capability 7.5 or later:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>--extended-lambda<sp/>-x<sp/>cu<sp/>-arch=sm_75<sp/>-I<sp/>path/to/taskflow<sp/>\</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-std=c++17<sp/>--extended-lambda<sp/>-x<sp/>cu<sp/>-arch=sm_75<sp/>-I<sp/>path/to/taskflow<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>-dc<sp/>cudaflow.cpp<sp/>-o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>
 <sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDANaiveLinking">
 <title>Link Objects Using nvcc</title><para>Using <computeroutput>nvcc</computeroutput> to link compiled object code is nothing special but replacing the normal compiler with <computeroutput>nvcc</computeroutput> and it takes care of all the necessary steps:</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>main.o<sp/>cudaflow.o<sp/>-o<sp/>main</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>main.o<sp/>cudaflow.o<sp/>-o<sp/>main</highlight></codeline>
 <codeline></codeline>
 <codeline><highlight class="normal">#<sp/>run<sp/>the<sp/>main<sp/>program<sp/></highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./main</highlight></codeline>
@@ -125,13 +125,13 @@
 </sect2>
 <sect2 id="CompileTaskflowWithCUDA_1CompileTaskflowWithCUDADifferentLinkers">
 <title>Link Objects Using Different Linkers</title><para>You can choose to use a compiler other than <computeroutput>nvcc</computeroutput> for the final link step. Since your CPU compiler does not know how to link CUDA device code, you have to add a step in your build to have <computeroutput>nvcc</computeroutput> link the CUDA device code, using the option <computeroutput>-dlink:</computeroutput> </para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>nvcc<sp/>-o<sp/>gpuCode.o<sp/>-dlink<sp/>main.o<sp/>cudaflow.o</highlight></codeline>
 </programlisting></para>
 <para>This step links all the <emphasis>device object code</emphasis> and places it into <computeroutput>gpuCode.o</computeroutput>.</para>
 <para><simplesect kind="attention"><para>Note that this step does not link the CPU object code and discards the CPU object code in <computeroutput>main.o</computeroutput> and <computeroutput>cudaflow.o</computeroutput>.</para>
 </simplesect>
 To complete the link to an executable, you can use, for example, <computeroutput>ld</computeroutput> or <computeroutput>g++</computeroutput>.</para>
-<para><programlisting filename=".shell-session"><codeline><highlight class="normal">#<sp/>replace<sp/>/usr/local/cuda/lib64<sp/>with<sp/>your<sp/>own<sp/>CUDA<sp/>library<sp/>installation<sp/>path</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">#<sp/>replace<sp/>/usr/local/cuda/lib64<sp/>with<sp/>your<sp/>own<sp/>CUDA<sp/>library<sp/>installation<sp/>path</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>g++<sp/>-pthread<sp/>-L<sp/>/usr/local/cuda/lib64/<sp/>-lcudart<sp/>\</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/>gpuCode.o<sp/>main.o<sp/>cudaflow.o<sp/>-o<sp/>main</highlight></codeline>
 <codeline></codeline>
