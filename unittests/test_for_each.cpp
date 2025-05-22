@@ -1310,3 +1310,69 @@ TEST_CASE("ParallelFor.SilentDependentAsync.8threads" * doctest::timeout(300)) {
   silent_dependent_async(8);
 }
 
+// ----------------------------------------------------------------------------
+// Nested for loop
+// ----------------------------------------------------------------------------
+
+void nested_for_loop(unsigned W) {
+
+  int N1 = 2048;
+  int N2 = 2048;
+
+  tf::Executor executor(W);
+  
+  // initialize the data
+  std::vector<std::vector<int>> data(N1);
+  
+  for(int i=0; i<N1; ++i) {
+    data[i].resize(N2);
+  } 
+
+  // initialize data[i][j] = i
+  executor.async(tf::make_for_each_index_task(0, N1, 1, [&](int i){ 
+    executor.async(tf::make_for_each_index_task(0, N2, 1, [&, i](int j) {
+      data[i][j] = i + j;
+    }));
+  })); 
+  
+  executor.wait_for_all();
+
+  for(int i=0; i<N1; i++) {
+    for(int j=0; j<N2; ++j) {
+      REQUIRE(data[i][j] == i + j);
+    }
+  }
+}
+
+TEST_CASE("ParallelFor.Nested.1thread" * doctest::timeout(300)) {
+  nested_for_loop(1);
+}
+
+TEST_CASE("ParallelFor.Nested.2threads" * doctest::timeout(300)) {
+  nested_for_loop(2);
+}
+
+TEST_CASE("ParallelFor.Nested.3threads" * doctest::timeout(300)) {
+  nested_for_loop(3);
+}
+
+TEST_CASE("ParallelFor.Nested.4threads" * doctest::timeout(300)) {
+  nested_for_loop(4);
+}
+
+TEST_CASE("ParallelFor.Nested.5threads" * doctest::timeout(300)) {
+  nested_for_loop(5);
+}
+
+TEST_CASE("ParallelFor.Nested.6threads" * doctest::timeout(300)) {
+  nested_for_loop(6);
+}
+
+TEST_CASE("ParallelFor.Nested.7threads" * doctest::timeout(300)) {
+  nested_for_loop(7);
+}
+
+TEST_CASE("ParallelFor.Nested.8threads" * doctest::timeout(300)) {
+  nested_for_loop(8);
+}
+

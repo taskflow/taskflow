@@ -386,7 +386,9 @@ inline void Runtime::corun_all() {
   corun();
 }
 
-inline bool Runtime::is_cancelled() { return _parent->_is_cancelled(); }
+inline bool Runtime::is_cancelled() { 
+  return _parent->_is_cancelled(); 
+}
 
 // ------------------------------------
 // Runtime::silent_async series
