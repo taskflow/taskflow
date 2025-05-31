@@ -71,14 +71,14 @@ inline const char* to_string(TaskType type) {
   const char* val;
 
   switch(type) {
-    case TaskType::PLACEHOLDER:      val = "placeholder";     break;
-    case TaskType::STATIC:           val = "static";          break;
-    case TaskType::RUNTIME:          val = "runtime";         break;
-    case TaskType::SUBFLOW:          val = "subflow";         break;
-    case TaskType::CONDITION:        val = "condition";       break;
-    case TaskType::MODULE:           val = "module";          break;
-    case TaskType::ASYNC:            val = "async";           break;
-    default:                         val = "undefined";       break;
+    case TaskType::PLACEHOLDER: val = "placeholder";     break;
+    case TaskType::STATIC:      val = "static";          break;
+    case TaskType::RUNTIME:     val = "runtime";         break;
+    case TaskType::SUBFLOW:     val = "subflow";         break;
+    case TaskType::CONDITION:   val = "condition";       break;
+    case TaskType::MODULE:      val = "module";          break;
+    case TaskType::ASYNC:       val = "async";           break;
+    default:                    val = "undefined";       break;
   }
 
   return val;
@@ -254,12 +254,12 @@ class Task {
     size_t num_predecessors() const;
 
     /**
-    @brief queries the number of strong dependents of the task
+    @brief queries the number of strong dependencies of the task
     */
     size_t num_strong_dependencies() const;
 
     /**
-    @brief queries the number of weak dependents of the task
+    @brief queries the number of weak dependencies of the task
     */
     size_t num_weak_dependencies() const;
 
@@ -394,15 +394,37 @@ class Task {
 
     /**
     @brief applies an visitor callable to each successor of the task
+    
+    @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
+    @param visitor visitor to apply to each subflow task
+
+    This method allows you to traverse and inspect successor tasks of this task.
     */
     template <typename V>
     void for_each_successor(V&& visitor) const;
 
     /**
-    @brief applies an visitor callable to each dependents of the task
+    @brief applies an visitor callable to each predecessor of the task
+    
+    @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
+    @param visitor visitor to apply to each predecessor task
+
+    This method allows you to traverse and inspect predecessor tasks of this task.
     */
     template <typename V>
     void for_each_predecessor(V&& visitor) const;
+
+    /**
+    @brief applies an visitor callable to each subflow task
+
+    @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
+    @param visitor visitor to apply to each subflow task
+
+    This method allows you to traverse and inspect tasks within a subflow.
+    It only applies to a subflow task.
+    */
+    template <typename V>
+    void for_each_subflow_task(V&& visitor) const;
 
     /**
     @brief obtains a hash value of the underlying node
@@ -616,6 +638,16 @@ void Task::for_each_predecessor(V&& visitor) const {
   }
 }
 
+// Function: for_each_subflow_task
+template <typename V>
+void Task::for_each_subflow_task(V&& visitor) const {
+  if(auto ptr = std::get_if<Node::Subflow>(&_node->_handle); ptr) {
+    for(auto itr = ptr->subgraph.begin(); itr != ptr->subgraph.end(); ++itr) {
+      visitor(Task(itr->get()));
+    }
+  }
+}
+
 // Function: hash_value
 inline size_t Task::hash_value() const {
   return std::hash<Node*>{}(_node);
@@ -708,23 +740,33 @@ class TaskView {
     size_t num_predecessors() const;
 
     /**
-    @brief queries the number of strong dependents of the task
+    @brief queries the number of strong dependencies of the task
     */
     size_t num_strong_dependencies() const;
 
     /**
-    @brief queries the number of weak dependents of the task
+    @brief queries the number of weak dependencies of the task
     */
     size_t num_weak_dependencies() const;
 
     /**
     @brief applies an visitor callable to each successor of the task
+    
+    @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
+    @param visitor visitor to apply to each subflow task
+
+    This method allows you to traverse and inspect successor tasks of this task.
     */
     template <typename V>
     void for_each_successor(V&& visitor) const;
 
     /**
-    @brief applies an visitor callable to each dependents of the task
+    @brief applies an visitor callable to each predecessor of the task
+    
+    @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
+    @param visitor visitor to apply to each predecessor task
+
+    This method allows you to traverse and inspect predecessor tasks of this task.
     */
     template <typename V>
     void for_each_predecessor(V&& visitor) const;

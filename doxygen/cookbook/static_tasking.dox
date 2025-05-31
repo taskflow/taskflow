@@ -193,6 +193,15 @@ my_task.for_each_predecessor([d=0] (tf::Task predecessor) mutable {
 });
 @endcode
 
+If the task contains a subflow, you can use tf::Task::for_each_subflow_task
+to iterate all tasks associated with that subflow.
+
+@code{.cpp}
+my_task.for_each_subflow_task([](tf::Task stask){
+  std::cout << "subflow task " << stask.name() << '\n';
+});
+@endcode
+
 @section AttachUserDataToATask Attach User Data to a Task
 
 You can attach custom data to a task using tf::Task::data(void*)

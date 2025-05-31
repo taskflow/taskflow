@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Semaphores" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Semaphores</compoundname>
-    <sectiondef kind="public-attrib">
+      <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Semaphores_1a38c40511dbc9e8f719398c316752b2c1" prot="public" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; <ref refid="classtf_1_1Semaphore" kindref="compound">Semaphore</ref> * &gt;</type>
         <definition>SmallVector&lt;Semaphore*&gt; tf::Node::Semaphores::to_acquire</definition>
         <argsstring></argsstring>
         <name>to_acquire</name>
-        <qualifiedname>tf::Node::Semaphores::to_acquire</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -22,7 +21,6 @@
         <definition>SmallVector&lt;Semaphore*&gt; tf::Node::Semaphores::to_release</definition>
         <argsstring></argsstring>
         <name>to_release</name>
-        <qualifiedname>tf::Node::Semaphores::to_release</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -31,7 +29,7 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="269" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="269" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -44,28 +42,28 @@
           <edgelabel>to_release</edgelabel>
         </childnode>
       </node>
+      <node id="5">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
       <node id="2">
         <label>tf::SmallVector&lt; tf::Semaphore * &gt;</label>
         <link refid="classtf_1_1SmallVector"/>
         <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="6">
-        <label>tf::SmallVectorBase</label>
-      </node>
       <node id="3">
         <label>tf::SmallVectorImpl&lt; T &gt;</label>
         <childnode refid="4" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="6">
+        <label>tf::SmallVectorBase</label>
+      </node>
       <node id="4">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
         <childnode refid="5" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="5">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="6" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

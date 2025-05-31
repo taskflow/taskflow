@@ -5,7 +5,7 @@
   <title>tf::TaskView class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -79,21 +79,21 @@
             <dt id="adb798808f6ef9b46399fae1c2dbed19b">
               <span class="m-doc-wrap-bumper">auto <a href="#adb798808f6ef9b46399fae1c2dbed19b" class="m-doc-self">num_strong_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
-            <dd>queries the number of strong dependents of the task</dd>
+            <dd>queries the number of strong dependencies of the task</dd>
             <dt id="aaefc8ab88f17ac27e6537f6d6ecb37cf">
               <span class="m-doc-wrap-bumper">auto <a href="#aaefc8ab88f17ac27e6537f6d6ecb37cf" class="m-doc-self">num_weak_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
-            <dd>queries the number of weak dependents of the task</dd>
-            <dt id="a3cb647dc0064b5d11e0c87226c47f8f8">
+            <dd>queries the number of weak dependencies of the task</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename V&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a3cb647dc0064b5d11e0c87226c47f8f8" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a3cb647dc0064b5d11e0c87226c47f8f8" class="m-doc">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
             <dd>applies an visitor callable to each successor of the task</dd>
-            <dt id="a1db6f5c5e325ea0e0d41a16aee2e3ad6">
+            <dt>
               <div class="m-doc-template">template&lt;typename V&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a1db6f5c5e325ea0e0d41a16aee2e3ad6" class="m-doc-self">for_each_predecessor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a1db6f5c5e325ea0e0d41a16aee2e3ad6" class="m-doc">for_each_predecessor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
-            <dd>applies an visitor callable to each dependents of the task</dd>
+            <dd>applies an visitor callable to each predecessor of the task</dd>
             <dt id="aa20d7b5796064c3ab194e6d7ebe2adb1">
               <span class="m-doc-wrap-bumper">auto <a href="#aa20d7b5796064c3ab194e6d7ebe2adb1" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a></span>
             </dt>
@@ -103,6 +103,69 @@
             </dt>
             <dd>obtains a hash value of the underlying node</dd>
           </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a3cb647dc0064b5d11e0c87226c47f8f8"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename V&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TaskView::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3cb647dc0064b5d11e0c87226c47f8f8" class="m-doc-self">for_each_successor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span></span>
+            </h3>
+            <p>applies an visitor callable to each successor of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">V</td>
+                  <td>a callable type (function, lambda, etc.) that accepts a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>visitor</td>
+                  <td>visitor to apply to each subflow task</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This method allows you to traverse and inspect successor tasks of this task.</p>
+          </div></section>
+          <section class="m-doc-details" id="a1db6f5c5e325ea0e0d41a16aee2e3ad6"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename V&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />TaskView::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1db6f5c5e325ea0e0d41a16aee2e3ad6" class="m-doc-self">for_each_predecessor</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span></span>
+            </h3>
+            <p>applies an visitor callable to each predecessor of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">V</td>
+                  <td>a callable type (function, lambda, etc.) that accepts a <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> handle</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>visitor</td>
+                  <td>visitor to apply to each predecessor task</td>
+                </tr>
+              </tbody>
+            </table>
+<p>This method allows you to traverse and inspect predecessor tasks of this task.</p>
+          </div></section>
         </section>
       </div>
     </div>
@@ -148,7 +211,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.2 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

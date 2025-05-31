@@ -1,30 +1,28 @@
-// This example demonstrates how to use Taskflow to create
-// dynamic workload during execution.
-//
-// We first create four tasks A, B, C, and D. During the execution
-// of B, it uses flow builder to creates another three tasks
-// B1, B2, and B3, and adds dependencies from B1 and B2 to B3.
-//
-// We use dispatch and get to wait until the graph finished.
-// Do so is difference from "wait_for_all" which will clean up the
-// finished graphs. After the graph finished, we dump the topology
-// for inspection.
-//
-// Usage: ./subflow
-//
+/**
+ This example demonstrates how to use Taskflow to create a subflow during the
+ execution of a task.
+ 
+ We first create four tasks: A, B, C, and D, where task A runs before B and C,
+ and task D runs after B and C. During the execution of B, it spawns another subflow
+ graph of three tasks: B1, B2, and B3, where B3 runs after B1 and B2.
+ Upon completion of the subflow, it joins its parent task B.
+ 
+ By default, subflows are automatically cleaned up when they finish to avoid memory explosion. 
+ In this example, since we would like to inspect the spawned subflow,
+ we disable this behavior by calling `tf::Subflow::retain(true)`.
 
+ Note that we must run the subflow once for it to be created.
+*/
 #include <taskflow/taskflow.hpp>
 
 int main() {
 
-  // Create a taskflow graph with three regular tasks and one subflow task.
+  // Create a taskflow graph with three static tasks and one subflow task.
   tf::Executor executor(4);
   tf::Taskflow taskflow("Subflow Demo");
 
-  // Task A
   auto A = taskflow.emplace([] () { std::cout << "TaskA\n"; });
   auto B = taskflow.emplace(
-    // Task B
     [cap=std::vector<int>{1,2,3,4,5,6,7,8}] (tf::Subflow& subflow) {
       std::cout << "TaskB is spawning B1, B2, and B3 ...\n";
 

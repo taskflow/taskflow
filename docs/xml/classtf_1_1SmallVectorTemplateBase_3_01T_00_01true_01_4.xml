@@ -1,21 +1,19 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorTemplateBase&lt; T, true &gt;</compoundname>
-    <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</basecompoundref>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</basecompoundref>
     <templateparamlist>
       <param>
         <type>typename T</type>
       </param>
     </templateparamlist>
-    <sectiondef kind="protected-func">
+      <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a6b9849e3fc0a0dbd6e30f8c69c7db935" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::SmallVectorTemplateBase&lt; T, true &gt;::SmallVectorTemplateBase</definition>
         <argsstring>(size_t Size)</argsstring>
         <name>SmallVectorTemplateBase</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::SmallVectorTemplateBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -33,7 +31,6 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, true &gt;::grow</definition>
         <argsstring>(size_t MinSize=0)</argsstring>
         <name>grow</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::grow</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>MinSize</declname>
@@ -48,52 +45,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="364" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="364" bodyend="366"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1adc772391e02b84d14f4c5513542b29a9" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type></type>
-        <definition>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::SmallVectorTemplateBase</definition>
-        <argsstring>(size_t Size)</argsstring>
-        <name>SmallVectorTemplateBase</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::SmallVectorTemplateBase</qualifiedname>
-        <param>
-          <type>size_t</type>
-          <declname>Size</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="242" column="3" bodyfile="taskflow/utility/small_vector.hpp" bodystart="242" bodyend="242"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1ab804c48d808741a114c698847860d64c" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::grow</definition>
-        <argsstring>(size_t MinSize=0)</argsstring>
-        <name>grow</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::grow</qualifiedname>
-        <param>
-          <type>size_t</type>
-          <declname>MinSize</declname>
-          <defval>0</defval>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Grow the allocated memory (without initializing new elements), doubling the size of the allocated memory. Guarantees space for at least one more element, or MinSize more elements if specified. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="269" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="296" bodyend="318"/>
-      </memberdef>
-    </sectiondef>
-    <sectiondef kind="protected-static-func">
+      </sectiondef>
+      <sectiondef kind="protected-static-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a1c3bcbc4c635b97d99ece152d8c3b29d" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>static void tf::SmallVectorTemplateBase&lt; T, true &gt;::destroy_range</definition>
         <argsstring>(T *, T *)</argsstring>
         <name>destroy_range</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::destroy_range</qualifiedname>
         <param>
           <type>T *</type>
         </param>
@@ -121,7 +79,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_move</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_move</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_move</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -156,7 +113,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_copy</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_copy</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_copy</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -191,7 +147,6 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_copy</definition>
         <argsstring>(T1 *I, T1 *E, T2 *Dest, typename std::enable_if&lt; std::is_same&lt; typename std::remove_const&lt; T1 &gt;::type, T2 &gt;::value &gt;::type *=nullptr)</argsstring>
         <name>uninitialized_copy</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_copy</qualifiedname>
         <param>
           <type>T1 *</type>
           <declname>I</declname>
@@ -205,7 +160,7 @@
           <declname>Dest</declname>
         </param>
         <param>
-          <type>typename <ref refid="cpp/types/enable_if" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::enable_if</ref>&lt; <ref refid="cpp/types/is_same" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_same</ref>&lt; typename <ref refid="cpp/types/remove_cv" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::remove_const</ref>&lt; T1 &gt;::type, T2 &gt;::value &gt;::type *</type>
+          <type>typename <ref refid="cpp/types/enable_if" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::enable_if</ref>&lt; <ref refid="cpp/types/is_same" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::is_same</ref>&lt; typename <ref refid="cpp/types/remove_cv" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::remove_const</ref>&lt; T1 &gt;::type, T2 &gt;::value &gt;::type *</type>
           <defval>nullptr</defval>
         </param>
         <briefdescription>
@@ -217,90 +172,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="350" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="350" bodyend="360"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a00ebcf9e81eed0b433be97131fd3d1d1" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::destroy_range</definition>
-        <argsstring>(T *S, T *E)</argsstring>
-        <name>destroy_range</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::destroy_range</qualifiedname>
-        <param>
-          <type>T *</type>
-          <declname>S</declname>
-        </param>
-        <param>
-          <type>T *</type>
-          <declname>E</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="244" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="244" bodyend="249"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1adf1b336ce5b5f404de1bb43c354fe1dd" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_move</definition>
-        <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
-        <name>uninitialized_move</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_move</qualifiedname>
-        <param>
-          <type>It1</type>
-          <declname>I</declname>
-        </param>
-        <param>
-          <type>It1</type>
-          <declname>E</declname>
-        </param>
-        <param>
-          <type>It2</type>
-          <declname>Dest</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Move the range [I, E) into the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="254" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="254" bodyend="257"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1ab8738fe3287f4ef437fe7363e8ae2d60" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_copy</definition>
-        <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
-        <name>uninitialized_copy</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::uninitialized_copy</qualifiedname>
-        <param>
-          <type>It1</type>
-          <declname>I</declname>
-        </param>
-        <param>
-          <type>It1</type>
-          <declname>E</declname>
-        </param>
-        <param>
-          <type>It2</type>
-          <declname>Dest</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>Copy the range [I, E) onto the uninitialized memory starting with &quot;Dest&quot;, constructing elements as needed. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="262" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="262" bodyend="264"/>
-      </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1afd3661d5e240bf35cd814c486916ad8b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateBase&lt; T, true &gt;::push_back</definition>
         <argsstring>(const T &amp;Elt)</argsstring>
         <name>push_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::push_back</qualifiedname>
         <param>
           <type>const T &amp;</type>
           <declname>Elt</declname>
@@ -318,7 +196,6 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, true &gt;::pop_back</definition>
         <argsstring>()</argsstring>
         <name>pop_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::pop_back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -327,92 +204,38 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="375" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="375" bodyend="377"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a6b7c01c4c054379358315a1aac0d49a7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
-        <argsstring>(const T &amp;Elt)</argsstring>
-        <name>push_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::push_back</qualifiedname>
-        <param>
-          <type>const T &amp;</type>
-          <declname>Elt</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="272" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="272" bodyend="277"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a6509b362398934d6ceed4a74ad0e6547" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
-        <argsstring>(T &amp;&amp;Elt)</argsstring>
-        <name>push_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::push_back</qualifiedname>
-        <param>
-          <type>T &amp;&amp;</type>
-          <declname>Elt</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="279" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="279" bodyend="284"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1aaa3d3554c2ae0be47eed43c324e5e73b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::pop_back</definition>
-        <argsstring>()</argsstring>
-        <name>pop_back</name>
-        <qualifiedname>tf::SmallVectorTemplateBase&lt; T, true &gt;::pop_back</qualifiedname>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="286" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="286" bodyend="289"/>
-      </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
+      <node id="2">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
       <node id="3">
         <label>tf::SmallVectorBase</label>
       </node>
       <node id="1">
         <label>tf::SmallVectorTemplateBase&lt; T, true &gt;</label>
         <childnode refid="2" relation="public-inheritance">
-        </childnode>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="2">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
       <node id="3">
         <label>tf::SmallVectorBase</label>
       </node>
       <node id="1">
         <label>tf::SmallVectorTemplateBase&lt; T, true &gt;</label>
         <childnode refid="2" relation="public-inheritance">
-        </childnode>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>
@@ -435,7 +258,6 @@
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a65c0541a7bf64e1ac4ae2a326d103cee" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>data</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a6d3b04be0f7fef50e88269934c4f95cd" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>data</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a1c3bcbc4c635b97d99ece152d8c3b29d" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>destroy_range</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1a00ebcf9e81eed0b433be97131fd3d1d1" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>destroy_range</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1adbfcf9d6ec0b239d48567a420a43b6f6" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>difference_type</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>empty</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a59e18797630dc06cef6c2ae5acf591a0" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>end</name></member>
@@ -444,7 +266,6 @@
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a2a1b3b20ba44906c4df269f6033c1f36" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>front</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a0d17587a21aeba5f1230d183be131252" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>front</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1af4f15a8eb802cb9388356d5995eb70e1" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>grow</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1ab804c48d808741a114c698847860d64c" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>grow</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a607fabb915c09ab97b1d80fb463e91fc" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>grow_pod</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a39b8b0b14783568a42fc606dee073096" prot="protected" virt="non-virtual" ambiguityscope="tf::SmallVectorBase::"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>grow_pod</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ad541b208571c7244efc8fbe42b90d608" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>isSmall</name></member>
@@ -454,10 +275,7 @@
       <member refid="classtf_1_1SmallVectorTemplateCommon_1af77ae362f96acd803ed7577fb48b5efd" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>operator[]</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a4762cde1bfad65cb37752b4df255ddab" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>pointer</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a83dc7f432fa5eb3f6a69dd4c4eee1b89" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>pop_back</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1aaa3d3554c2ae0be47eed43c324e5e73b" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>pop_back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1afd3661d5e240bf35cd814c486916ad8b" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>push_back</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1a6b7c01c4c054379358315a1aac0d49a7" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>push_back</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1a6509b362398934d6ceed4a74ad0e6547" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>push_back</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a83f50a1376ad1b3c828e89b9fa34b56d" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>rbegin</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a96c2d2979402cc76f84a76ff08720933" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>rbegin</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a4b9db31beb2fe6aef612cd8ce248eb4a" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>reference</name></member>
@@ -471,13 +289,10 @@
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a0af2aaae74afd35894e91e96e221f2b4" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>size_type</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a326c733a440cd9a1197bed0f75892152" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>SmallVectorBase</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a6b9849e3fc0a0dbd6e30f8c69c7db935" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>SmallVectorTemplateBase</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1adc772391e02b84d14f4c5513542b29a9" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>SmallVectorTemplateBase</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1a4717897cb4e6fea34640801c69469355" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>SmallVectorTemplateCommon</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a92be65048cff5789a37b93e9c7f71e02" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>uninitialized_copy</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a73f97021aca0b8f5b263abbb9346aa36" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>uninitialized_copy</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1ab8738fe3287f4ef437fe7363e8ae2d60" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>uninitialized_copy</name></member>
       <member refid="classtf_1_1SmallVectorTemplateBase_3_01T_00_01true_01_4_1a736e3e5914675f5bbd9350b2351f0e54" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>uninitialized_move</name></member>
-      <member refid="classtf_1_1SmallVectorTemplateBase_1adf1b336ce5b5f404de1bb43c354fe1dd" prot="protected" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>uninitialized_move</name></member>
       <member refid="classtf_1_1SmallVectorTemplateCommon_1ad92ebf3b12a1cd9a7a80d5161cc4449b" prot="public" virt="non-virtual"><scope>tf::SmallVectorTemplateBase&lt; T, true &gt;</scope><name>value_type</name></member>
     </listofallmembers>
   </compounddef>

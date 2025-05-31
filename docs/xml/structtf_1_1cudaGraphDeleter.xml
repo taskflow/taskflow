@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1cudaGraphDeleter" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaGraphDeleter</compoundname>
     <includes refid="cuda__graph_8hpp" local="no">taskflow/cuda/cuda_graph.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaGraphDeleter_1a058b64fdc54fedcd666c24ff3b813129" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaGraphDeleter::operator()</definition>
         <argsstring>(cudaGraph_t g) const</argsstring>
         <name>operator()</name>
-        <qualifiedname>tf::cudaGraphDeleter::operator()</qualifiedname>
         <param>
           <type>cudaGraph_t</type>
           <declname>g</declname>
@@ -34,7 +33,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_graph.hpp" line="462" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="462" bodyend="464"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>a functor for deleting a CUDA graph </para>
     </briefdescription>

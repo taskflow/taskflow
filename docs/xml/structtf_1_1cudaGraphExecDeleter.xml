@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1cudaGraphExecDeleter" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaGraphExecDeleter</compoundname>
     <includes refid="cuda__graph__exec_8hpp" local="no">taskflow/cuda/cuda_graph_exec.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaGraphExecDeleter_1ae5c3d634ee147c89ae75ac4e271023bd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaGraphExecDeleter::operator()</definition>
         <argsstring>(cudaGraphExec_t executable) const</argsstring>
         <name>operator()</name>
-        <qualifiedname>tf::cudaGraphExecDeleter::operator()</qualifiedname>
         <param>
           <type>cudaGraphExec_t</type>
           <declname>executable</declname>
@@ -34,7 +33,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_graph_exec.hpp" line="70" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="70" bodyend="72"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>a functor for deleting an executable CUDA graph </para>
     </briefdescription>

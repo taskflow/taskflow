@@ -38,6 +38,7 @@ list(APPEND TF_EXAMPLES
   exception
   subflow_exception
   worker_interface
+  task_visitor
 )
 
 foreach(example IN LISTS TF_EXAMPLES)
