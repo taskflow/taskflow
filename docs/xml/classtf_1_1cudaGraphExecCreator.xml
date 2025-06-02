@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaGraphExecCreator" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaGraphExecCreator</compoundname>
+    <includes refid="cuda__graph__exec_8hpp" local="no">taskflow/cuda/cuda_graph_exec.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecCreator_1af9fb8a423bd7dbbaa6683a946ff114f1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraphExec_t</type>
+        <definition>cudaGraphExec_t tf::cudaGraphExecCreator::operator()</definition>
+        <argsstring>() const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphExecCreator::operator()</qualifiedname>
+        <briefdescription>
+<para>returns a null executable CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="26" column="19" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="26" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecCreator_1a362cf7f64ad4e43a3a8265499b21d7f0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraphExec_t</type>
+        <definition>cudaGraphExec_t tf::cudaGraphExecCreator::operator()</definition>
+        <argsstring>(cudaGraphExec_t exec) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphExecCreator::operator()</qualifiedname>
+        <param>
+          <type>cudaGraphExec_t</type>
+          <declname>exec</declname>
+        </param>
+        <briefdescription>
+<para>returns the given executable graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="33" column="19" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="33" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecCreator_1a2e819878817a88ff0bd2ed16eb6b3250" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraphExec_t</type>
+        <definition>cudaGraphExec_t tf::cudaGraphExecCreator::operator()</definition>
+        <argsstring>(cudaGraph_t graph) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphExecCreator::operator()</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>returns a newly instantiated executable graph from the given CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="40" column="19" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="40" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecCreator_1a14fa4bcc0f94658523a92eb91967e873" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename C</type>
+          </param>
+          <param>
+            <type>typename D</type>
+          </param>
+        </templateparamlist>
+        <type>cudaGraphExec_t</type>
+        <definition>cudaGraphExec_t tf::cudaGraphExecCreator::operator()</definition>
+        <argsstring>(const cudaGraphBase&lt; C, D &gt; &amp;graph) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphExecCreator::operator()</qualifiedname>
+        <param>
+          <type>const <ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref>&lt; C, D &gt; &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>returns a newly instantiated executable graph from the given CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="53" column="19" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="53" bodyend="55"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create functors for constructing executable CUDA graphs </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides an overloaded function call operator to create a new executable CUDA graph using <computeroutput>cudaGraphCreate</computeroutput>. </para>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_graph_exec.hpp" line="19" column="1" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="19" bodyend="56"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaGraphExecCreator_1af9fb8a423bd7dbbaa6683a946ff114f1" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaGraphExecCreator_1a362cf7f64ad4e43a3a8265499b21d7f0" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaGraphExecCreator_1a2e819878817a88ff0bd2ed16eb6b3250" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaGraphExecCreator_1a14fa4bcc0f94658523a92eb91967e873" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecCreator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

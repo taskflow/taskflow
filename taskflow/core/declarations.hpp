@@ -51,8 +51,8 @@ class cudaGraphExecBase;
 // ----------------------------------------------------------------------------
 // struct 
 // ----------------------------------------------------------------------------
-struct TaskParams;
-struct DefaultTaskParams;
+class TaskParams;
+class DefaultTaskParams;
 
 
 }  // end of namespace tf -----------------------------------------------------

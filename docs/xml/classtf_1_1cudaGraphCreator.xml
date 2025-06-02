@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaGraphCreator" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaGraphCreator</compoundname>
+    <includes refid="cuda__graph_8hpp" local="no">taskflow/cuda/cuda_graph.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphCreator_1aa3a254b55ad44889e0c3b43b1fedd32d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraph_t</type>
+        <definition>cudaGraph_t tf::cudaGraphCreator::operator()</definition>
+        <argsstring>() const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphCreator::operator()</qualifiedname>
+        <briefdescription>
+<para>creates a new CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Calls <computeroutput>cudaGraphCreate</computeroutput> to generate a CUDA native graph and returns it. If the graph creation fails, an error is reported.</para>
+<para><simplesect kind="return"><para>A newly created <computeroutput>cudaGraph_t</computeroutput> instance. </para>
+</simplesect>
+<parameterlist kind="exception"><parameteritem>
+<parameternamelist>
+<parametername>If</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>CUDA graph creation fails, an error is logged. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="432" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="432" bodyend="436"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaGraphCreator_1affeea3c41fd20e7682df077aebdea425" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaGraph_t</type>
+        <definition>cudaGraph_t tf::cudaGraphCreator::operator()</definition>
+        <argsstring>(cudaGraph_t graph) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphCreator::operator()</qualifiedname>
+        <param>
+          <type>cudaGraph_t</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+<para>return the given CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="441" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="441" bodyend="443"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create functors that construct CUDA graphs </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class define functors to new CUDA graphs using <computeroutput>cudaGraphCreate</computeroutput>. </para>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_graph.hpp" line="419" column="1" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="419" bodyend="445"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaGraphCreator_1aa3a254b55ad44889e0c3b43b1fedd32d" prot="public" virt="non-virtual"><scope>tf::cudaGraphCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaGraphCreator_1affeea3c41fd20e7682df077aebdea425" prot="public" virt="non-virtual"><scope>tf::cudaGraphCreator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1cudaEventDeleter" kind="struct" language="C++" prot="public">
     <compoundname>tf::cudaEventDeleter</compoundname>
     <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
-      <sectiondef kind="public-func">
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1cudaEventDeleter_1afe6ff663a2e030397316c12e690d2b82" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaEventDeleter::operator()</definition>
         <argsstring>(cudaEvent_t event) const</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::cudaEventDeleter::operator()</qualifiedname>
         <param>
           <type>cudaEvent_t</type>
           <declname>event</declname>
@@ -22,7 +23,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_stream.hpp" line="63" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="63" bodyend="65"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>functor to delete a <computeroutput>cudaEvent_t</computeroutput> object </para>
     </briefdescription>

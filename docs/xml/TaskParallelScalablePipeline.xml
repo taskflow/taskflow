@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="TaskParallelScalablePipeline" kind="page">
     <compoundname>TaskParallelScalablePipeline</compoundname>
     <title>Task-parallel Scalable Pipeline</title>
@@ -7,44 +7,42 @@
       <tocsect>
         <name>Include the Header</name>
         <reference>TaskParallelScalablePipeline_1IncludeTheScalablePipelineHeader</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Create a Scalable Pipeline Module Task</name>
         <reference>TaskParallelScalablePipeline_1CreateAScalablePipelineModuleTask</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Reset a Placeholder Scalable Pipeline</name>
         <reference>TaskParallelScalablePipeline_1ResetAPlaceholderScalablePipeline</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Use Other Iterator Types</name>
         <reference>TaskParallelScalablePipeline_1ScalablePipelineUseOtherIteratorTypes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Learn More about Taskflow Pipeline</name>
         <reference>TaskParallelScalablePipeline_1ParallelScalablePipelineLearnMore</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> (see <ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</para>
 <sect1 id="TaskParallelScalablePipeline_1IncludeTheScalablePipelineHeader">
-<title>Include the Header</title>
-<para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for creating a scalable pipeline scheduling framework.</para>
+<title>Include the Header</title><para>You need to include the header file, <computeroutput>taskflow/algorithm/pipeline.hpp</computeroutput>, for creating a scalable pipeline scheduling framework.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="pipeline_8hpp" kindref="compound">taskflow/algorithm/pipeline.hpp</ref>&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="TaskParallelScalablePipeline_1CreateAScalablePipelineModuleTask">
-<title>Create a Scalable Pipeline Module Task</title>
-<para>Similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is a composable graph object to implement a <emphasis>pipeline scheduling framework</emphasis> in a taskflow. The key difference between <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> and <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is that a scalable pipeline can accept <emphasis>variable</emphasis> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</para>
+<title>Create a Scalable Pipeline Module Task</title><para>Similar to <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is a composable graph object to implement a <emphasis>pipeline scheduling framework</emphasis> in a taskflow. The key difference between <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> and <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> is that a scalable pipeline can accept <emphasis>variable</emphasis> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>4;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>data<sp/>storage</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;int, num_lines&gt;</ref><sp/>buffer;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>define<sp/>the<sp/>pipe<sp/>callable</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>pipe_callable<sp/>=<sp/>[&amp;buffer]<sp/>(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{</highlight></codeline>
@@ -56,7 +54,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;stage<sp/>1:<sp/>input<sp/>token<sp/>=<sp/>%zu\n&quot;</highlight><highlight class="normal">,<sp/>pf.token());</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()]<sp/>=<sp/>pf.token();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
@@ -66,7 +64,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>other<sp/>stages<sp/>propagate<sp/>the<sp/>previous<sp/>result<sp/>to<sp/>this<sp/>pipe<sp/>and</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>increment<sp/>it<sp/>by<sp/>one</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;stage<sp/>%zu:<sp/>input<sp/>buffer[%zu]<sp/>=<sp/>%d\n&quot;</highlight><highlight class="normal">,<sp/>pf.pipe(),<sp/>pf.line(),<sp/>buffer[pf.line()]</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>buffer[pf.line()]<sp/>=<sp/>buffer[pf.line()]<sp/>+<sp/>1;</highlight></codeline>
@@ -76,7 +74,7 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>vector<sp/>of<sp/>three<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;<sp/>&gt;<sp/>pipes;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<sp/><ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;<sp/>&gt;<sp/>pipes;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;3;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>pipes.emplace_back(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>pipe_callable);</highlight></codeline>
@@ -86,11 +84,11 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>pl(num_lines,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>build<sp/>the<sp/>pipeline<sp/>graph<sp/>using<sp/>composition</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;ready\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;starting<sp/>pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(pl)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stop<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;stopped\n&quot;</highlight><highlight class="normal">;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;pipeline<sp/>stopped&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>task<sp/>dependency</highlight><highlight class="normal"></highlight></codeline>
@@ -98,10 +96,10 @@
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(stop);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>pipeline<sp/>graph<sp/>structure<sp/>(with<sp/>composition)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>pipeline</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reset<sp/>the<sp/>pipeline<sp/>to<sp/>a<sp/>new<sp/>range<sp/>of<sp/>five<sp/>pipes<sp/>and<sp/>starts<sp/>from</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>the<sp/>initial<sp/>state<sp/>(i.e.,<sp/>token<sp/>counts<sp/>from<sp/>zero)</highlight><highlight class="normal"></highlight></codeline>
@@ -110,37 +108,36 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">pl.reset(pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>The program defines a uniform pipe type of <computeroutput>tf::Pipe&lt;std::function&lt;void(tf::Pipeflow&amp;)&gt;&gt;</computeroutput> and keep all pipes in a vector that is amenable to change. Then, it constructs a scalable pipeline using two range iterators, <computeroutput>[first, last)</computeroutput>, that point to the beginning and the end of the pipe vector, resulting in a pipeline of three serial stages:</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/scalable_pipeline_1.dot"></dotfile>
+<para><dotfile name="scalable_pipeline_1.dot"></dotfile>
 </para>
 <para>Then, the program appends another two pipes into the vector and resets the pipeline to the new range of two additional pipes, resulting in a pipeline of five serial stages:</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/scalable_pipeline_2.dot"></dotfile>
+<para><dotfile name="scalable_pipeline_2.dot"></dotfile>
 </para>
 <para>When resetting a scalable pipeline to a new range, it will start from the initial state as if it has just been constructed, i.e., the token number counts from zero.</para>
-<para><simplesect kind="attention"><para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> that keeps the given pipes in a <ref refid="cpp/utility/tuple" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref> object, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</para>
+<para><simplesect kind="attention"><para>Unlike <ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref> that keeps the given pipes in a <ref refid="cpp/utility/tuple" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tuple</ref> object, <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref> does not own the given pipe but maintains a vector of iterators to each pipe in the given range. It is your responsibility to keep those pipe objects alive during the execution of the pipeline task.</para>
 </simplesect>
 </para>
 </sect1>
 <sect1 id="TaskParallelScalablePipeline_1ResetAPlaceholderScalablePipeline">
-<title>Reset a Placeholder Scalable Pipeline</title>
-<para>It is possible to create a scalable pipeline as a placeholder using the constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para>
+<title>Reset a Placeholder Scalable Pipeline</title><para>It is possible to create a scalable pipeline as a placeholder using the constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline(size_t num_lines)</ref> and reset it to another range later in the application. The following code creates a task to emplace a range of pipes and reset the pipeline to that range, before running the pipeline task:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_pipes<sp/>=<sp/>10;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_lines<sp/>=<sp/>10;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>pipes;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>decltype(pipes)::iterator&gt;<sp/>spl(num_lines);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>pipes;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">decltype</highlight><highlight class="normal">(pipes)::iterator&gt;<sp/>spl(num_lines);<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;num_pipes;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>pipes.emplace_back(<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>,<sp/>[&amp;](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;<sp/>pf)<sp/>{<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(pf.<ref refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kindref="member">pipe</ref>()<sp/>==<sp/>0<sp/>&amp;&amp;<sp/>pf.<ref refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kindref="member">token</ref>()<sp/>==<sp/>1024)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.stop();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>return;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pf.<ref refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kindref="member">stop</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
@@ -149,35 +146,33 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>pipeline<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">composed_of</ref>(spl).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;pipeline&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">pipeline.<ref refid="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" kindref="member">succeed</ref>(init);</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();<sp/><sp/></highlight></codeline>
 </programlisting></para>
 <para>The task graph of this program is shown below:</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/scalable_pipeline_3.dot"></dotfile>
+<para><dotfile name="scalable_pipeline_3.dot"></dotfile>
 </para>
 <para><simplesect kind="attention"><para>It is your responsibility to ensure a scalable pipeline has a valid structure before running it. A valid pipeline must have at least one parallel line and one pipe, where the first pipe is a serial type.</para>
 </simplesect>
 Similarly, you can create an empty scalable pipeline using the default constructor <ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline()</ref> and reset it later in your program.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>pipes;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>decltype(pipes)::iterator&gt;<sp/>spl;<sp/></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>pipes;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">decltype</highlight><highlight class="normal">(pipes)::iterator&gt;<sp/>spl;<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>pipes<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">spl.reset(num_lines,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
+<codeline><highlight class="normal">spl.<ref refid="classtf_1_1ScalablePipeline_1a940a8de7b53ac5cbd59c55091d88c88f" kindref="member">reset</ref>(num_lines,<sp/>pipes.begin(),<sp/>pipes.end());</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="TaskParallelScalablePipeline_1ScalablePipelineUseOtherIteratorTypes">
-<title>Use Other Iterator Types</title>
-<para>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <computeroutput>++</computeroutput>.</para>
+<title>Use Other Iterator Types</title><para>When assigning a range to a scalable pipeline, the pipeline fetches all pipe iterators in that range to an internal vector. This organization allows invoking a pipe callable to be a random accessible operation, regardless of the pipe container type. Taskflow does not have much restriction on the iterator type, as long as these pipes can be iterated in a sequential order using the postfix increment operator, <computeroutput>++</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>use<sp/>vector<sp/>to<sp/>store<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>vector;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>vector;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>spl1(num_lines,<sp/>vector.begin(),<sp/>vector.end());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>use<sp/>list<sp/>to<sp/>store<sp/>pipes</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/list" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>list;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt;<ref refid="classtf_1_1Pipe" kindref="compound">tf::Pipe</ref>&lt;<ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt;void(<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;)&gt;&gt;&gt;<sp/>list;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1ScalablePipeline" kindref="compound">tf::ScalablePipeline</ref><sp/>spl2(num_lines,<sp/>list.begin(),<sp/>list.end());</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="TaskParallelScalablePipeline_1ParallelScalablePipelineLearnMore">
-<title>Learn More about Taskflow Pipeline</title>
-<para>Visit the following pages to learn more about pipeline:</para>
+<title>Learn More about Taskflow Pipeline</title><para>Visit the following pages to learn more about pipeline:</para>
 <para><itemizedlist>
 <listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para>
 </listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para>

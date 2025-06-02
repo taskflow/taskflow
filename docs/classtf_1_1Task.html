@@ -5,7 +5,7 @@
   <title>tf::Task class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -49,7 +49,7 @@
           <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>Task <span class="m-thin">class</span>
           <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
         </h1>
-        <p>class to create a task handle over a node in a taskflow graph</p>
+        <p>class to create a task handle over a taskflow node</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -62,16 +62,33 @@
             </li>
           </ul>
         </nav>
-<p>A task is a wrapper over a node in a taskflow graph. It provides a set of methods for users to access and modify the attributes of the associated node in the taskflow graph. A task is very lightweight object (i.e., only storing a node pointer) that can be trivially copied around, and it does not own the lifetime of the associated node.</p>
+<p>A task is a wrapper over a node in a taskflow graph. It provides a set of methods for users to access and modify attributes of the associated node. A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially copied around.</p><pre class="m-code"><span class="c1">// create two tasks with one dependency</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task1&quot;</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task2&quot;</span><span class="p">);</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
+
+<span class="c1">// dump the task information through std::cout</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>A task created from a taskflow can be one of the following types:</p><ul><li>static task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">tf::<wbr />TaskType::<wbr />STATIC</a>) - <a href="StaticTasking.html" class="m-doc">Static Tasking</a></li><li>condition task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">tf::<wbr />TaskType::<wbr />CONDITION</a>) - <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a></li><li>runtime task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">tf::<wbr />TaskType::<wbr />RUNTIME</a>) - <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a></li><li>subflow task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" class="m-doc">tf::<wbr />TaskType::<wbr />SUBFLOW</a>) - <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a></li><li>module task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">tf::<wbr />TaskType::<wbr />MODULE</a>) - <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a></li></ul><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;condition task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;runtime task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;subflow task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;module task&quot;</span><span class="p">);</span></pre><p>A <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> is polymorphic. Once created, you can reassign it to a different callable of a different task type using <a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc">tf::<wbr />Task::<wbr />work</a>. For example, the code below creates a static task and reworks it to a subflow task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
+<span class="n">task</span><span class="p">.</span><span class="n">work</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;subflow task&quot;</span><span class="p">);</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p><a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> does not own the lifetime of the associated node. Accessing the attributes of the associated node after the taskflow has been destroyed can result in undefined behavior.</p></aside>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
-            <dt id="a5ed7ba63e8eeaa0f21fe08c80aa474ba">
-              <span class="m-doc-wrap-bumper"><a href="#a5ed7ba63e8eeaa0f21fe08c80aa474ba" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a5ed7ba63e8eeaa0f21fe08c80aa474ba" class="m-doc">Task</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>constructs an empty task</dd>
-            <dt id="a53deffe60d7c758df4265aeb81063928">
-              <span class="m-doc-wrap-bumper"><a href="#a53deffe60d7c758df4265aeb81063928" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other)</span>
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a53deffe60d7c758df4265aeb81063928" class="m-doc">Task</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other)</span>
             </dt>
             <dd>constructs the task with the copy of the other task</dd>
           </dl>
@@ -79,40 +96,40 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="aebdcc47e47a119f261daab673a971458">
-              <span class="m-doc-wrap-bumper">auto <a href="#aebdcc47e47a119f261daab673a971458" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5393b9ce6a7152efd995bf0fc6a8d07e" class="m-doc">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>replaces the contents with a copy of the other task</dd>
-            <dt id="a4b0e3d6a1985a353626c15970c51c820">
-              <span class="m-doc-wrap-bumper">auto <a href="#a4b0e3d6a1985a353626c15970c51c820" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/types/nullptr_t.html" class="m-doc-external">std::<wbr />nullptr_t</a>) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4b0e3d6a1985a353626c15970c51c820" class="m-doc">operator=</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/types/nullptr_t.html" class="m-doc-external">std::<wbr />nullptr_t</a>) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>replaces the contents with a null pointer</dd>
-            <dt id="ad87bb498b0a4eae0c375bc59b66dbba8">
-              <span class="m-doc-wrap-bumper">auto <a href="#ad87bb498b0a4eae0c375bc59b66dbba8" class="m-doc-self">operator==</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad87bb498b0a4eae0c375bc59b66dbba8" class="m-doc">operator==</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
             </dt>
-            <dd>compares if two tasks are associated with the same graph node</dd>
-            <dt id="af4e13636e3a494297b30c2b2e483f095">
-              <span class="m-doc-wrap-bumper">auto <a href="#af4e13636e3a494297b30c2b2e483f095" class="m-doc-self">operator!=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
+            <dd>compares if two tasks are associated with the same taskflow node</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#af4e13636e3a494297b30c2b2e483f095" class="m-doc">operator!=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const -&gt; bool</span>
             </dt>
-            <dd>compares if two tasks are not associated with the same graph node</dd>
-            <dt id="a08ada0425b490997b6ff7f310107e5e3">
-              <span class="m-doc-wrap-bumper">auto <a href="#a08ada0425b490997b6ff7f310107e5e3" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">) const -&gt; const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</span>
+            <dd>compares if two tasks are not associated with the same taskflow node</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a08ada0425b490997b6ff7f310107e5e3" class="m-doc">name</a>(</span><span class="m-doc-wrap">) const -&gt; const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp;</span>
             </dt>
             <dd>queries the name of the task</dd>
-            <dt id="a1a0afc89e8a6a416c511e74d82df135d">
-              <span class="m-doc-wrap-bumper">auto <a href="#a1a0afc89e8a6a416c511e74d82df135d" class="m-doc-self">num_successors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1a0afc89e8a6a416c511e74d82df135d" class="m-doc">num_successors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of successors of the task</dd>
-            <dt id="adefb65d68a64bd8a75364a8801cfec44">
-              <span class="m-doc-wrap-bumper">auto <a href="#adefb65d68a64bd8a75364a8801cfec44" class="m-doc-self">num_predecessors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#adefb65d68a64bd8a75364a8801cfec44" class="m-doc">num_predecessors</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of predecessors of the task</dd>
-            <dt id="a0b7b789c9b8a21927a992f6ccc11de81">
-              <span class="m-doc-wrap-bumper">auto <a href="#a0b7b789c9b8a21927a992f6ccc11de81" class="m-doc-self">num_strong_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0b7b789c9b8a21927a992f6ccc11de81" class="m-doc">num_strong_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of strong dependencies of the task</dd>
-            <dt id="ad5e874b7cc77df1e7dc875d436ff7b72">
-              <span class="m-doc-wrap-bumper">auto <a href="#ad5e874b7cc77df1e7dc875d436ff7b72" class="m-doc-self">num_weak_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#ad5e874b7cc77df1e7dc875d436ff7b72" class="m-doc">num_weak_dependencies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>queries the number of weak dependencies of the task</dd>
             <dt>
@@ -139,23 +156,23 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a331b1b726555072e7c7d10941257f664" class="m-doc">succeed</a>(</span><span class="m-doc-wrap">Ts &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>adds precedence links from other tasks to this</dd>
-            <dt id="a26709523eb112f2d024f4c0e9d2f0019">
-              <span class="m-doc-wrap-bumper">auto <a href="#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc-self">release</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc">release</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
-            <dd>makes the task release this semaphore</dd>
-            <dt id="a1c64e317dba24a8cf4f8da6123bc33af">
+            <dd>makes the task release the given semaphore</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename I&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1c64e317dba24a8cf4f8da6123bc33af" class="m-doc-self">release</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a1c64e317dba24a8cf4f8da6123bc33af" class="m-doc">release</a>(</span><span class="m-doc-wrap">I first,
               I last) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>makes the task release the given range of semaphores</dd>
-            <dt id="a076ab9c6f3a0346e16cfb5fee7dc4ce8">
-              <span class="m-doc-wrap-bumper">auto <a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
-            <dd>makes the task acquire this semaphore</dd>
-            <dt id="a39efdef7d401205115d10c3c2e76e456">
+            <dd>makes the task acquire the given semaphore</dd>
+            <dt>
               <div class="m-doc-template">template&lt;typename I&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a39efdef7d401205115d10c3c2e76e456" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a39efdef7d401205115d10c3c2e76e456" class="m-doc">acquire</a>(</span><span class="m-doc-wrap">I first,
               I last) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>makes the task acquire the given range of semaphores</dd>
@@ -163,20 +180,20 @@
               <span class="m-doc-wrap-bumper">auto <a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc">data</a>(</span><span class="m-doc-wrap">void* data) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp;</span>
             </dt>
             <dd>assigns pointer to user data</dd>
-            <dt id="a302f51ed717d0a4e99edc50f92a571f3">
-              <span class="m-doc-wrap-bumper">void <a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc">reset</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>resets the task handle to null</dd>
             <dt id="aec3ab712e12137542b7e4bc311ee9f20">
               <span class="m-doc-wrap-bumper">void <a href="#aec3ab712e12137542b7e4bc311ee9f20" class="m-doc-self">reset_work</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>resets the associated work to a placeholder</dd>
-            <dt id="a8149edcf9ec2bfac18dd171f7a55ce06">
-              <span class="m-doc-wrap-bumper">auto <a href="#a8149edcf9ec2bfac18dd171f7a55ce06" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8149edcf9ec2bfac18dd171f7a55ce06" class="m-doc">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
-            <dd>queries if the task handle points to a task node</dd>
-            <dt id="afc4ecb89dd4e4645b3ec3fb7c1bb0ec5">
-              <span class="m-doc-wrap-bumper">auto <a href="#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" class="m-doc-self">has_work</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            <dd>queries if the task handle is associated with a taskflow node</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" class="m-doc">has_work</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
             </dt>
             <dd>queries if the task has a work assigned</dd>
             <dt>
@@ -194,26 +211,317 @@
               <span class="m-doc-wrap-bumper">void <a href="#a20a23c08612084e96bda764e06842c3a" class="m-doc">for_each_subflow_task</a>(</span><span class="m-doc-wrap">V&amp;&amp; visitor) const</span>
             </dt>
             <dd>applies an visitor callable to each subflow task</dd>
-            <dt id="a1c9301f2a330cc23ee18e8f61688141f">
-              <span class="m-doc-wrap-bumper">auto <a href="#a1c9301f2a330cc23ee18e8f61688141f" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1c9301f2a330cc23ee18e8f61688141f" class="m-doc">hash_value</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
             <dd>obtains a hash value of the underlying node</dd>
-            <dt id="af2df95e6c8c5870c033d692e88af0bc2">
-              <span class="m-doc-wrap-bumper">auto <a href="#af2df95e6c8c5870c033d692e88af0bc2" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#af2df95e6c8c5870c033d692e88af0bc2" class="m-doc">type</a>(</span><span class="m-doc-wrap">) const -&gt; <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a></span>
             </dt>
             <dd>returns the task type</dd>
-            <dt id="a3318a49ff9d0a01cd1e8ee675251e3b7">
-              <span class="m-doc-wrap-bumper">void <a href="#a3318a49ff9d0a01cd1e8ee675251e3b7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a3318a49ff9d0a01cd1e8ee675251e3b7" class="m-doc">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span>
             </dt>
             <dd>dumps the task through an output stream</dd>
-            <dt id="a320827cb70295a6fe2cc37691405409c">
-              <span class="m-doc-wrap-bumper">auto <a href="#a320827cb70295a6fe2cc37691405409c" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">) const -&gt; void*</span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a320827cb70295a6fe2cc37691405409c" class="m-doc">data</a>(</span><span class="m-doc-wrap">) const -&gt; void*</span>
             </dt>
             <dd>queries pointer to user data</dd>
           </dl>
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a5ed7ba63e8eeaa0f21fe08c80aa474ba"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5ed7ba63e8eeaa0f21fe08c80aa474ba" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">) <span class="m-label m-info">defaulted</span></span></span>
+            </h3>
+            <p>constructs an empty task</p>
+<p>An empty task is not associated with any node in a taskflow.</p>
+          </div></section>
+          <section class="m-doc-details" id="a53deffe60d7c758df4265aeb81063928"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a53deffe60d7c758df4265aeb81063928" class="m-doc-self">Task</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other)</span></span>
+            </h3>
+            <p>constructs the task with the copy of the other task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">other</td>
+                  <td>the other task to copy</td>
+                </tr>
+              </tbody>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Task A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="nf">B</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">B</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">A</span><span class="p">);</span><span class="w"> </span><span class="c1">// Now, B and A refer to the same underlying node</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a5393b9ce6a7152efd995bf0fc6a8d07e"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5393b9ce6a7152efd995bf0fc6a8d07e" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; other)</span></span>
+            </h3>
+            <p>replaces the contents with a copy of the other task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">other</td>
+                  <td>the other task to copy</td>
+                </tr>
+              </tbody>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
+<span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">;</span><span class="w">  </span><span class="c1">// B now refers to the same node as A</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a4b0e3d6a1985a353626c15970c51c820"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4b0e3d6a1985a353626c15970c51c820" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/types/nullptr_t.html" class="m-doc-external">std::<wbr />nullptr_t</a>)</span></span>
+            </h3>
+            <p>replaces the contents with a null pointer</p>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w">  </span><span class="c1">// A no longer refers to any node</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="ad87bb498b0a4eae0c375bc59b66dbba8"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad87bb498b0a4eae0c375bc59b66dbba8" class="m-doc-self">operator==</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const</span></span>
+            </h3>
+            <p>compares if two tasks are associated with the same taskflow node</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">rhs</td>
+                  <td>the other task to compare with</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>true if both tasks refer to the same node; false otherwise</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// A and B refer to the same node</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="af4e13636e3a494297b30c2b2e483f095"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af4e13636e3a494297b30c2b2e483f095" class="m-doc-self">operator!=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; rhs) const</span></span>
+            </h3>
+            <p>compares if two tasks are not associated with the same taskflow node</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">rhs</td>
+                  <td>the other task to compare with</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>true if they refer to different nodes; false otherwise</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// A and B refer to different nodes</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a08ada0425b490997b6ff7f310107e5e3"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a08ada0425b490997b6ff7f310107e5e3" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the name of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the name of the task as a constant string reference</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;MyTask&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Task name: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a1a0afc89e8a6a416c511e74d82df135d"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1a0afc89e8a6a416c511e74d82df135d" class="m-doc-self">num_successors</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the number of successors of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the number of successor tasks.</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// B is a successor of A</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;A has &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">A</span><span class="p">.</span><span class="n">num_successors</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; successor(s).&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="adefb65d68a64bd8a75364a8801cfec44"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adefb65d68a64bd8a75364a8801cfec44" class="m-doc-self">num_predecessors</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the number of predecessors of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the number of predecessor tasks</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span><span class="w">  </span><span class="c1">// A is a predecessor of B</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B has &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">B</span><span class="p">.</span><span class="n">num_predecessors</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; predecessor(s).&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a0b7b789c9b8a21927a992f6ccc11de81"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0b7b789c9b8a21927a992f6ccc11de81" class="m-doc-self">num_strong_dependencies</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the number of strong dependencies of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the number of strong dependencies to this task</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A strong dependency is a preceding link from one non-condition task to another task. For instance, task <code>cond</code> below has one strong dependency, while tasks <code>yes</code> and <code>no</code> each have one weak dependency.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">cond</span><span class="p">,</span><span class="w"> </span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">);</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">);</span><span class="w">  </span><span class="c1">// executes yes if cond returns 0</span>
+<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 25.600rem; height: 9.800rem;" viewBox="0.00 0.00 256.17 98.00">
+<g transform="scale(1 1) rotate(0) translate(4 94)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700030</title>
+<ellipse cx="27" cy="-45" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
+</g>
+<g class="m-node">
+<title>p0x7f9e1e700140</title>
+<polygon points="121.96,-63 91,-45 121.96,-27 152.92,-45 121.96,-63"/>
+<text text-anchor="middle" x="121.96" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700030&#45;&gt;p0x7f9e1e700140</title>
+<path d="M54.39,-45C61.98,-45 70.45,-45 78.74,-45"/>
+<polygon points="78.72,-48.5 88.72,-45 78.72,-41.5 78.72,-48.5"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700250</title>
+<ellipse cx="221.17" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="221.17" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700250</title>
+<path stroke-dasharray="5,2" d="M143.58,-50.73C155.63,-54.07 171.16,-58.39 185.08,-62.25"/>
+<polygon points="183.78,-65.52 194.35,-64.83 185.65,-58.78 183.78,-65.52"/>
+<text text-anchor="middle" x="173.55" y="-61.06" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700360</title>
+<ellipse cx="221.17" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="221.17" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700360</title>
+<path stroke-dasharray="5,2" d="M143.58,-39.27C155.63,-35.93 171.16,-31.61 185.08,-27.75"/>
+<polygon points="185.65,-31.22 194.35,-25.17 183.78,-24.48 185.65,-31.22"/>
+<text text-anchor="middle" x="173.55" y="-33.25" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+</g>
+</g>
+</svg>
+</div><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="ad5e874b7cc77df1e7dc875d436ff7b72"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ad5e874b7cc77df1e7dc875d436ff7b72" class="m-doc-self">num_weak_dependencies</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries the number of weak dependencies of the task</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the number of weak dependencies to this task</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A weak dependency is a preceding link from one condition task to another task. For instance, task <code>cond</code> below has one strong dependency, while tasks <code>yes</code> and <code>no</code> each have one weak dependency.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">cond</span><span class="p">,</span><span class="w"> </span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;yes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;no</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">);</span>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">);</span><span class="w">  </span><span class="c1">// executes yes if cond returns 0</span>
+<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 25.600rem; height: 9.800rem;" viewBox="0.00 0.00 256.17 98.00">
+<g transform="scale(1 1) rotate(0) translate(4 94)">
+<title>Taskflow</title>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700030</title>
+<ellipse cx="27" cy="-45" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
+</g>
+<g class="m-node">
+<title>p0x7f9e1e700140</title>
+<polygon points="121.96,-63 91,-45 121.96,-27 152.92,-45 121.96,-63"/>
+<text text-anchor="middle" x="121.96" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700030&#45;&gt;p0x7f9e1e700140</title>
+<path d="M54.39,-45C61.98,-45 70.45,-45 78.74,-45"/>
+<polygon points="78.72,-48.5 88.72,-45 78.72,-41.5 78.72,-48.5"/>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700250</title>
+<ellipse cx="221.17" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="221.17" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700250</title>
+<path stroke-dasharray="5,2" d="M143.58,-50.73C155.63,-54.07 171.16,-58.39 185.08,-62.25"/>
+<polygon points="183.78,-65.52 194.35,-64.83 185.65,-58.78 183.78,-65.52"/>
+<text text-anchor="middle" x="173.55" y="-61.06" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+</g>
+<g class="m-node m-flat">
+<title>p0x7f9e1e700360</title>
+<ellipse cx="221.17" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="221.17" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
+</g>
+<g class="m-edge">
+<title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700360</title>
+<path stroke-dasharray="5,2" d="M143.58,-39.27C155.63,-35.93 171.16,-31.61 185.08,-27.75"/>
+<polygon points="185.65,-31.22 194.35,-25.17 183.78,-24.48 185.65,-31.22"/>
+<text text-anchor="middle" x="173.55" y="-33.25" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+</g>
+</g>
+</svg>
+</div><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p>
+          </div></section>
           <section class="m-doc-details" id="a9057ecd0f3833b717480e914f8568f02"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9057ecd0f3833b717480e914f8568f02" class="m-doc-self">name</a>(</span><span class="m-doc-wrap">const <a href="http://en.cppreference.com/w/cpp/string/basic_string.html" class="m-doc-external">std::<wbr />string</a>&amp; name)</span></span>
@@ -226,7 +534,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">name</td>
-                  <td>a <a href="https://en.cppreference.com/w/cpp/string/basic_string">std::<wbr />string</a> acceptable string</td>
+                  <td>a <a href="https://en.cppreference.com/w/cpp/string/basic_string">std::<wbr />string</a></td>
                 </tr>
               </tbody>
               <tfoot>
@@ -236,6 +544,7 @@
                 </tr>
               </tfoot>
             </table>
+<p><code class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task name&quot;</span><span class="p">);</span></code></p>
           </div></section>
           <section class="m-doc-details" id="a2f6f4cec42d016e5eb89390f362ffe99"><div>
             <h3>
@@ -271,6 +580,11 @@
                 </tr>
               </tfoot>
             </table>
+<p>A <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> is polymorphic. Once created, you can reassign it to a different callable of a different task type using <a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc">tf::<wbr />Task::<wbr />work</a>. For example, the code below creates a static task and reworks it to a subflow task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
+<span class="n">task</span><span class="p">.</span><span class="n">work</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;subflow task&quot;</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="ab38be520fe700cb4ca1f312308a95585"><div>
             <h3>
@@ -306,6 +620,7 @@
                 </tr>
               </tfoot>
             </table>
+<p>The example below creates a module task from a taskflow:</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span></pre><p>To understand how Taskflow schedules a module task and how to create a schedulable graph, pleas refer to <a href="ComposableTasking.html#CreateACustomComposableGraph" class="m-doc">Create a Custom Composable Graph</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a8c78c453295a553c1c016e4062da8588"><div>
             <h3>
@@ -341,6 +656,11 @@
                 </tr>
               </tfoot>
             </table>
+<p>The example below creates a taskflow of two tasks, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">task1</span><span class="p">,</span><span class="w"> </span><span class="n">task2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">);</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a331b1b726555072e7c7d10941257f664"><div>
             <h3>
@@ -376,6 +696,47 @@
                 </tr>
               </tfoot>
             </table>
+<p>The example below creates a taskflow of two tasks, where <code>task1</code> runs before <code>task2</code>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">task1</span><span class="p">,</span><span class="w"> </span><span class="n">task2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">);</span>
+<span class="n">task2</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">task1</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a26709523eb112f2d024f4c0e9d2f0019"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc-self">release</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore)</span></span>
+            </h3>
+            <p>makes the task release the given semaphore</p>
+<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a1c64e317dba24a8cf4f8da6123bc33af"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c64e317dba24a8cf4f8da6123bc33af" class="m-doc-self">release</a>(</span><span class="m-doc-wrap">I first,
+              I last)</span></span>
+            </h3>
+            <p>makes the task release the given range of semaphores</p>
+<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a076ab9c6f3a0346e16cfb5fee7dc4ce8"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore)</span></span>
+            </h3>
+            <p>makes the task acquire the given semaphore</p>
+<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a39efdef7d401205115d10c3c2e76e456"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename I&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a39efdef7d401205115d10c3c2e76e456" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap">I first,
+              I last)</span></span>
+            </h3>
+            <p>makes the task acquire the given range of semaphores</p>
+<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
           </div></section>
           <section class="m-doc-details" id="afd82ab6d6518d1142a72c4d2c97ff114"><div>
             <h3>
@@ -399,12 +760,12 @@
                 </tr>
               </tfoot>
             </table>
-<p>The following example shows how to attach user data to a task and run the task iteratively while changing the data value:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
+<p>The following example shows how to attach a user data to a task and retrieve it during the execution of the task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
 
-<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">  </span><span class="c1">// user data</span>
 
-<span class="c1">// create a task and attach it the data</span>
+<span class="c1">// create a task and attach it a user data</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span>
 <span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">).</span><span class="n">work</span><span class="p">([</span><span class="n">A</span><span class="p">](){</span>
 <span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">());</span>
@@ -415,6 +776,51 @@
 <span class="k">for</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">++</span><span class="p">){</span>
 <span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 <span class="p">}</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a302f51ed717d0a4e99edc50f92a571f3"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a302f51ed717d0a4e99edc50f92a571f3" class="m-doc-self">reset</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>resets the task handle to null</p>
+<p>Resetting a task will remove its associated taskflow node and make it an empty task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="n">task</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a8149edcf9ec2bfac18dd171f7a55ce06"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8149edcf9ec2bfac18dd171f7a55ce06" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries if the task handle is associated with a taskflow node</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>true if the task is not associated with any taskflow node; otherwise false</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="p">;</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span></pre><p>Note that an empty task is not equal to a placeholder task. A placeholder task is created from <a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf" class="m-doc">tf::<wbr />Taskflow::<wbr />placeholder</a> and is associated with a taskflow node, but its work is not assigned yet.</p>
+          </div></section>
+          <section class="m-doc-details" id="afc4ecb89dd4e4645b3ec3fb7c1bb0ec5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" class="m-doc-self">has_work</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries if the task has a work assigned</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>true if the task has a work assigned (not placeholder); otherwise false</td>
+                </tr>
+              </tfoot>
+            </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">has_work</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="c1">// assign a static task callable to this task</span>
+<span class="n">task</span><span class="p">.</span><span class="n">work</span><span class="p">([](){});</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">has_work</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="aff13a503d4a3c994eb08cb6f22e1b427"><div>
             <h3>
@@ -444,7 +850,15 @@
                 </tr>
               </tbody>
             </table>
-<p>This method allows you to traverse and inspect successor tasks of this task.</p>
+<p>This method allows you to traverse and inspect successor tasks of this task. For instance, the code below iterates the two successors (<code>task2</code> and <code>task3</code>) of <code>task1</code>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">task1</span><span class="p">,</span><span class="w"> </span><span class="n">task2</span><span class="p">,</span><span class="w"> </span><span class="n">task3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">});</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">,</span><span class="w"> </span><span class="n">task3</span><span class="p">);</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">for_each_successor</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">successor</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;successor task &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">successor</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="p">});</span></pre>
           </div></section>
           <section class="m-doc-details" id="a31d8069d4c0b10b55e68d260c4d28c1f"><div>
             <h3>
@@ -474,7 +888,15 @@
                 </tr>
               </tbody>
             </table>
-<p>This method allows you to traverse and inspect predecessor tasks of this task.</p>
+<p>This method allows you to traverse and inspect predecessor tasks of this task. For instance, the code below iterates the two predecessors (<code>task2</code> and <code>task3</code>) of <code>task1</code>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">task1</span><span class="p">,</span><span class="w"> </span><span class="n">task2</span><span class="p">,</span><span class="w"> </span><span class="n">task3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">[](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;task 3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">});</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">task2</span><span class="p">,</span><span class="w"> </span><span class="n">task3</span><span class="p">);</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">for_each_predecessor</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">predecessor</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;predecessor task &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">predecessor</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="p">});</span></pre>
           </div></section>
           <section class="m-doc-details" id="a20a23c08612084e96bda764e06842c3a"><div>
             <h3>
@@ -504,7 +926,75 @@
                 </tr>
               </tbody>
             </table>
-<p>This method allows you to traverse and inspect tasks within a subflow. It only applies to a subflow task.</p>
+<p>This method allows you to traverse and inspect tasks within a subflow. It only applies to a subflow task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stask1&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;stask2&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="c1">// Iterate tasks in the subflow and print each subflow task.</span>
+<span class="n">task</span><span class="p">.</span><span class="n">for_each_subflow_task</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;subflow task &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">stask</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="p">});</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a1c9301f2a330cc23ee18e8f61688141f"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1c9301f2a330cc23ee18e8f61688141f" class="m-doc-self">hash_value</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>obtains a hash value of the underlying node</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>the hash value of the underlying node</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The method returns <a href="http://en.cppreference.com/w/cpp/utility/hash.html" class="m-doc-external">std::<wbr />hash</a> on the underlying node pointer.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;hash value of task is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">hash_value</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="af2df95e6c8c5870c033d692e88af0bc2"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af2df95e6c8c5870c033d692e88af0bc2" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>returns the task type</p>
+<p>A task can be one of the types defined in <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">tf::<wbr />TaskType</a> and can be printed in a human-readable form using <a href="namespacetf.html#a18c45bc96e6725943e0a4396fa59b524" class="m-doc">tf::<wbr />to_string</a>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; type=[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a3318a49ff9d0a01cd1e8ee675251e3b7"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3318a49ff9d0a01cd1e8ee675251e3b7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span></span>
+            </h3>
+            <p>dumps the task through an output stream</p>
+<p>The method dumps the name and the type of this task through <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a>.</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a320827cb70295a6fe2cc37691405409c"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void* tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a320827cb70295a6fe2cc37691405409c" class="m-doc-self">data</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>queries pointer to user data</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>C-styled pointer to the attached user data by <a href="#afd82ab6d6518d1142a72c4d2c97ff114" class="m-doc">tf::<wbr />Task::<wbr />data(void* data)</a></td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The following example shows how to attach a user data to a task and retrieve it during the execution of the task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">  </span><span class="c1">// user data</span>
+
+<span class="c1">// create a task and attach it a user data</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">placeholder</span><span class="p">();</span>
+<span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">).</span><span class="n">work</span><span class="p">([</span><span class="n">A</span><span class="p">](){</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">A</span><span class="p">.</span><span class="n">data</span><span class="p">());</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;data is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// run the taskflow iteratively with changing data</span>
+<span class="k">for</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">data</span><span class="o">++</span><span class="p">){</span>
+<span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
+<span class="p">}</span></pre>
           </div></section>
         </section>
       </div>
@@ -551,7 +1041,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

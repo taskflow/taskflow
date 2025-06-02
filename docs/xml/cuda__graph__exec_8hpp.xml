@@ -1,20 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="cuda__graph__exec_8hpp" kind="file" language="C++">
     <compoundname>cuda_graph_exec.hpp</compoundname>
     <includes refid="cuda__graph_8hpp" local="yes">cuda_graph.hpp</includes>
     <includedby refid="cudaflow_8hpp" local="yes">taskflow/cuda/cudaflow.hpp</includedby>
     <incdepgraph>
-      <node id="3">
-        <label>filesystem</label>
+      <node id="9">
+        <label>../utility/traits.hpp</label>
       </node>
-      <node id="6">
-        <label>cuda_error.hpp</label>
-      </node>
-      <node id="4">
-        <label>cuda_memory.hpp</label>
-        <link refid="cuda__memory_8hpp"/>
-        <childnode refid="5" relation="include">
+      <node id="5">
+        <label>cuda_device.hpp</label>
+        <link refid="cuda__device_8hpp"/>
+        <childnode refid="6" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -37,33 +34,36 @@
         <childnode refid="2" relation="include">
         </childnode>
       </node>
+      <node id="4">
+        <label>cuda_memory.hpp</label>
+        <link refid="cuda__memory_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
       <node id="7">
         <label>cuda_stream.hpp</label>
         <link refid="cuda__stream_8hpp"/>
         <childnode refid="6" relation="include">
         </childnode>
       </node>
-      <node id="9">
-        <label>../utility/traits.hpp</label>
-      </node>
-      <node id="5">
-        <label>cuda_device.hpp</label>
-        <link refid="cuda__device_8hpp"/>
-        <childnode refid="6" relation="include">
-        </childnode>
+      <node id="6">
+        <label>cuda_error.hpp</label>
       </node>
       <node id="8">
         <label>cuda_meta.hpp</label>
       </node>
+      <node id="3">
+        <label>filesystem</label>
+      </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="4">
-        <label>taskflow/cuda/algorithm/transform.hpp</label>
-        <link refid="transform_8hpp"/>
-      </node>
       <node id="3">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
+      </node>
+      <node id="4">
+        <label>taskflow/cuda/algorithm/transform.hpp</label>
+        <link refid="transform_8hpp"/>
       </node>
       <node id="1">
         <label>taskflow/cuda/cuda_graph_exec.hpp</label>
@@ -80,8 +80,8 @@
         </childnode>
       </node>
     </invincdepgraph>
-    <innerclass refid="structtf_1_1cudaGraphExecCreator" prot="public">tf::cudaGraphExecCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaGraphExecDeleter" prot="public">tf::cudaGraphExecDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaGraphExecCreator" prot="public">tf::cudaGraphExecCreator</innerclass>
+    <innerclass refid="classtf_1_1cudaGraphExecDeleter" prot="public">tf::cudaGraphExecDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaGraphExecBase" prot="public">tf::cudaGraphExecBase</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <briefdescription>

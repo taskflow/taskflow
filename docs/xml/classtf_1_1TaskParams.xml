@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1TaskParams" kind="class" language="C++" prot="public">
+    <compoundname>tf::TaskParams</compoundname>
+    <includes refid="graph_8hpp" local="no">taskflow/core/graph.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classtf_1_1TaskParams_1aa6280a961a5faf0260bd39fff68e2666" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <definition>std::string tf::TaskParams::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>tf::TaskParams::name</qualifiedname>
+        <briefdescription>
+<para>name of the task </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="114" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1TaskParams_1ab0c8d56bea820fd5125afd864dd299bf" prot="public" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* tf::TaskParams::data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <qualifiedname>tf::TaskParams::data</qualifiedname>
+        <initializer>{nullptr}</initializer>
+        <briefdescription>
+<para>C-styled pointer to user data. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="119" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="119" bodyend="119"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create a task parameter object </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::string</label>
+      </node>
+      <node id="1">
+        <label>tf::TaskParams</label>
+        <link refid="classtf_1_1TaskParams"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>name</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/core/graph.hpp" line="107" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="107" bodyend="120"/>
+    <listofallmembers>
+      <member refid="classtf_1_1TaskParams_1ab0c8d56bea820fd5125afd864dd299bf" prot="public" virt="non-virtual"><scope>tf::TaskParams</scope><name>data</name></member>
+      <member refid="classtf_1_1TaskParams_1aa6280a961a5faf0260bd39fff68e2666" prot="public" virt="non-virtual"><scope>tf::TaskParams</scope><name>name</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

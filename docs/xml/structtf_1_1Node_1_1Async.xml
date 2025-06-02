@@ -1,23 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Async" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Async</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Async_1ac83ba983946540c55d31c120e0504734" prot="public" static="no" mutable="no">
-        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;)&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;, bool)&gt; &gt;</type>
+        <type>std::variant&lt; <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;)&gt;, <ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;, bool)&gt; &gt;</type>
         <definition>std::variant&lt; std::function&lt;void()&gt;, std::function&lt;void(tf::Runtime&amp;)&gt;, std::function&lt;void(tf::Runtime&amp;, bool)&gt; &gt; tf::Node::Async::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::Async::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="236" column="2" bodyfile="taskflow/core/graph.hpp" bodystart="236" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="238" column="2" bodyfile="taskflow/core/graph.hpp" bodystart="238" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a368fa43e2d7715828da6f3459b5dbcbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -28,6 +29,7 @@
         <definition>tf::Node::Async::Async</definition>
         <argsstring>(T &amp;&amp;)</argsstring>
         <name>Async</name>
+        <qualifiedname>tf::Node::Async::Async</qualifiedname>
         <param>
           <type>T &amp;&amp;</type>
         </param>
@@ -37,7 +39,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="230" column="5"/>
+        <location file="taskflow/core/graph.hpp" line="232" column="5"/>
       </memberdef>
       <memberdef kind="function" id="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -49,6 +51,7 @@
         <definition>tf::Node::Async::Async</definition>
         <argsstring>(C &amp;&amp;c)</argsstring>
         <name>Async</name>
+        <qualifiedname>tf::Node::Async::Async</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>c</declname>
@@ -59,14 +62,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="429" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="429" bodyend="430"/>
+        <location file="taskflow/core/graph.hpp" line="431" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="431" bodyend="432"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/graph.hpp" line="227" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="227" bodyend="237"/>
+    <location file="taskflow/core/graph.hpp" line="229" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="229" bodyend="239"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Async_1a368fa43e2d7715828da6f3459b5dbcbf" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>
       <member refid="structtf_1_1Node_1_1Async_1a6fae56cffa17e20ff0e99eafd4670e07" prot="public" virt="non-virtual"><scope>tf::Node::Async</scope><name>Async</name></member>

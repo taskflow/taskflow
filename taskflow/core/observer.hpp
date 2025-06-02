@@ -443,7 +443,9 @@ class TFProfObserver : public ObserverInterface {
   friend class Executor;
   friend class TFProfManager;
 
-  /** @private overall task summary */
+  /** 
+  @private 
+  */
   struct TaskSummary {
     size_t count {0};
     size_t total_span {0};
@@ -453,7 +455,9 @@ class TFProfObserver : public ObserverInterface {
     float avg_span() const { return total_span * 1.0f / count; }
   };
 
-  /** @private worker summary at a level */
+  /** 
+  @private 
+  */
   struct WorkerSummary {
 
     size_t id;
@@ -469,7 +473,9 @@ class TFProfObserver : public ObserverInterface {
     //return count < 2 ? 0.0f : total_delay * 1.0f / (count-1); 
   };
   
-  /** @private */
+  /** 
+  @private 
+  */
   struct Summary {
     std::array<TaskSummary, TASK_TYPES.size()> tsum;
     std::vector<WorkerSummary> wsum;

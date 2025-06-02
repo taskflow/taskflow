@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="rules" kind="page">
     <compoundname>rules</compoundname>
     <title>Rules</title>
@@ -7,31 +7,31 @@
       <tocsect>
         <name>The Project Overview</name>
         <reference>rules_1TheProjectOverview</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Joining Core Members</name>
         <reference>rules_1JoiningCoreMembers</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Rules for Roles</name>
         <reference>rules_1RulesForRoles</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Software Decisions</name>
         <reference>rules_1SoftwareDecisions</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Financial Decisions</name>
         <reference>rules_1FinancialDecisions</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Community Partners</name>
         <reference>rules_1CommunityPartners</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Changing the Governance Rules</name>
         <reference>rules_1ChangingTheRules</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -39,31 +39,25 @@
 <para>This page summarizes coordination rules fulfilled by the Taskflow <ref refid="team_1CoreMembers" kindref="member">Core Members</ref>. We impose these rules to ensure scientific excellence, continuity, and transparency. Since the Taskflow community has matured substantially in recent months, we will revisit these rules as the community needs.</para>
 <para>We accomplish these rules with reference to the governance document of <ulink url="https://dask.org/">Dask</ulink> and <ulink url="https://tardis-sn.github.io/tardis/index.html">TARDIS</ulink>.</para>
 <sect1 id="rules_1TheProjectOverview">
-<title>The Project Overview</title>
-<para>Taskflow (The Project) is an open-source software project that aims to simplify parallel and heterogeneous computing in C++ software ecosystem. We release Taskflow under the non-viral MIT license, developed openly and hosted in public GitHub repositories under the <ulink url="https://github.com/taskflow/">Project GitHub</ulink>. Examples of project software include the Taskflow core library, Taskflow profiler (tfprof), and applications to other domains such as computer-aided design (CAD) and machine learning. We host a <ulink url="https://taskflow.github.io/">Project Website</ulink> to highlight these components.</para>
+<title>The Project Overview</title><para>Taskflow (The Project) is an open-source software project that aims to simplify parallel and heterogeneous computing in C++ software ecosystem. We release Taskflow under the non-viral MIT license, developed openly and hosted in public GitHub repositories under the <ulink url="https://github.com/taskflow/">Project GitHub</ulink>. Examples of project software include the Taskflow core library, Taskflow profiler (tfprof), and applications to other domains such as computer-aided design (CAD) and machine learning. We host a <ulink url="https://taskflow.github.io/">Project Website</ulink> to highlight these components.</para>
 <para>Taskflow is developed by a distributed team of developers, called <ref refid="contributors" kindref="compound">Contributors</ref>. Contributors are individuals who have contributed code, documentation, designs, user support, or other work to one or more project repositories. Anyone can be a Contributor. Contributors can be affiliated with any legal entity or none. Contributors participate in the project by submitting, reviewing and discussing GitHub Pull Requests and Issues and participating in open and public project discussions on GitHub, Stack Overflow, Gitter chat rooms, and mailing lists. The foundation of project participation is <emphasis>openness</emphasis> and <emphasis>transparency</emphasis>.</para>
 <para>Taskflow community consists of all contributors and users. Contributors work on behalf of and are responsible to the larger project community and we strive to keep the barrier between contributors and users as low as possible.</para>
 </sect1>
 <sect1 id="rules_1JoiningCoreMembers">
-<title>Joining Core Members</title>
-<para><ref refid="team_1CoreMembers" kindref="member">Core Members</ref> are essential to the growth of Taskflow because they provide the core technical development, maintenance, and support for the community. New members of are nominated by current members or our sponsors. All core members can vote on nominated candidates, who require a 2/3 majority in their favor in order to be approved.</para>
+<title>Joining Core Members</title><para><ref refid="team_1CoreMembers" kindref="member">Core Members</ref> are essential to the growth of Taskflow because they provide the core technical development, maintenance, and support for the community. New members of are nominated by current members or our sponsors. All core members can vote on nominated candidates, who require a 2/3 majority in their favor in order to be approved.</para>
 </sect1>
 <sect1 id="rules_1RulesForRoles">
-<title>Rules for Roles</title>
-<para>Every core member of Taskflow can vote and the election will go through an anonymous rank voting system. If there is a tie, the principal investigator will facilitate a discussion to make a runoff decision.</para>
+<title>Rules for Roles</title><para>Every core member of Taskflow can vote and the election will go through an anonymous rank voting system. If there is a tie, the principal investigator will facilitate a discussion to make a runoff decision.</para>
 <para>Depending on the funding status, the principal investigator may change and be re-selected. Such a change will be broadcast to all core members and we will strike a balance between how each member is funded and how the funding may direct Taskflow. At this stage, <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> is the principal investigator and will remain the role for another 3-4 years.</para>
 </sect1>
 <sect1 id="rules_1SoftwareDecisions">
-<title>Software Decisions</title>
-<para>Decisions about software architecture and design, and releases should take into account consistency over the Taskflow codebase and best practices. The final decision rests with the core members by a 2/3 majority.</para>
+<title>Software Decisions</title><para>Decisions about software architecture and design, and releases should take into account consistency over the Taskflow codebase and best practices. The final decision rests with the core members by a 2/3 majority.</para>
 </sect1>
 <sect1 id="rules_1FinancialDecisions">
-<title>Financial Decisions</title>
-<para>Financial decisions, such as research grants and company gifts, are made by the Principal Investigator, <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>. We will inform the core members with a reasonable time ahead to allow them to raise any objections, for example, biased features to an individual&apos;s interest. The core members can veto decisions with a 2/3 majority.</para>
+<title>Financial Decisions</title><para>Financial decisions, such as research grants and company gifts, are made by the Principal Investigator, <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>. We will inform the core members with a reasonable time ahead to allow them to raise any objections, for example, biased features to an individual&apos;s interest. The core members can veto decisions with a 2/3 majority.</para>
 </sect1>
 <sect1 id="rules_1CommunityPartners">
-<title>Community Partners</title>
-<para>We acknowledge the importance of <emphasis>Community Partners</emphasis> in disseminating Taskflow to external communities. A Community Partner is a set of individuals (does not need legal recognition) that effectively supports and communicates the needs of an external community in using the Project. External communities might be focused around a specific scientific or social discipline (like biology or education), a social grouping (like Chinese speakers), or another such group that benefits from a collective voice. Community Partners will have demonstrated technical expertise in using the Project, as well as social expertise in effectively filtering concerns, and questions from their community to keep our project thrive.</para>
+<title>Community Partners</title><para>We acknowledge the importance of <emphasis>Community Partners</emphasis> in disseminating Taskflow to external communities. A Community Partner is a set of individuals (does not need legal recognition) that effectively supports and communicates the needs of an external community in using the Project. External communities might be focused around a specific scientific or social discipline (like biology or education), a social grouping (like Chinese speakers), or another such group that benefits from a collective voice. Community Partners will have demonstrated technical expertise in using the Project, as well as social expertise in effectively filtering concerns, and questions from their community to keep our project thrive.</para>
 <para>We acknowledge Community Partners in the following ways:</para>
 <para><itemizedlist>
 <listitem><para>Public acknowledgement of their community on Taskflow webpages and other promotional material if that community is organized enough to have a central brand. </para>
@@ -74,8 +68,7 @@
 Please also visit <ref refid="guidelines_1HowCanIGetCredit" kindref="member">How Can I Get Credit?</ref> to understand how we acknowledge contributors.</para>
 </sect1>
 <sect1 id="rules_1ChangingTheRules">
-<title>Changing the Governance Rules</title>
-<para>Changes to the governance rules are submitted via a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink> to edit this documentation. The pull request is then refined in response to public comment and review, with the goal being consensus in the community. </para>
+<title>Changing the Governance Rules</title><para>Changes to the governance rules are submitted via a <ulink url="https://github.com/taskflow/taskflow/pulls">pull request</ulink> to edit this documentation. The pull request is then refined in response to public comment and review, with the goal being consensus in the community. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/governance/rules.dox"/>

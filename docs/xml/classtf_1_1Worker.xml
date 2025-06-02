@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1Worker" kind="class" language="C++" prot="public">
     <compoundname>tf::Worker</compoundname>
     <includes refid="worker_8hpp" local="no">taskflow/core/worker.hpp</includes>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::Worker::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -18,13 +19,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="54" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="54" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="54" column="16" bodyfile="taskflow/core/worker.hpp" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Worker_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Runtime</definition>
         <argsstring></argsstring>
         <name>Runtime</name>
+        <qualifiedname>tf::Worker::Runtime</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref></type>
         </param>
@@ -34,13 +36,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="55" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="55" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="55" column="16" bodyfile="taskflow/core/worker.hpp" bodystart="55" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class WorkerView</definition>
         <argsstring></argsstring>
         <name>WorkerView</name>
+        <qualifiedname>tf::Worker::WorkerView</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref></type>
         </param>
@@ -50,15 +53,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="56" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="56" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="56" column="16" bodyfile="taskflow/core/worker.hpp" bodystart="56" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Worker_1ada70062226121ca425070a6d52d9c8d2" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; bool &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; bool &gt;</type>
         <definition>std::atomic&lt;bool&gt; tf::Worker::_done</definition>
         <argsstring></argsstring>
         <name>_done</name>
+        <qualifiedname>tf::Worker::_done</qualifiedname>
         <initializer>{false}</initializer>
         <briefdescription>
         </briefdescription>
@@ -66,13 +70,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="95" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="95" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="95" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="95" bodyend="95"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Worker::_id</definition>
         <argsstring></argsstring>
         <name>_id</name>
+        <qualifiedname>tf::Worker::_id</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -86,6 +91,7 @@
         <definition>size_t tf::Worker::_vtm</definition>
         <argsstring></argsstring>
         <name>_vtm</name>
+        <qualifiedname>tf::Worker::_vtm</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -99,6 +105,7 @@
         <definition>Executor* tf::Worker::_executor</definition>
         <argsstring></argsstring>
         <name>_executor</name>
+        <qualifiedname>tf::Worker::_executor</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -106,13 +113,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="100" column="14" bodyfile="taskflow/core/worker.hpp" bodystart="100" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="100" column="14" bodyfile="taskflow/core/worker.hpp" bodystart="100" bodyend="100"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1a559e98c3b61a201903d70952e39ab14f" prot="private" static="no" mutable="no">
         <type>DefaultNotifier::Waiter *</type>
         <definition>DefaultNotifier::Waiter* tf::Worker::_waiter</definition>
         <argsstring></argsstring>
         <name>_waiter</name>
+        <qualifiedname>tf::Worker::_waiter</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -122,10 +130,11 @@
         <location file="taskflow/core/worker.hpp" line="101" column="29" bodyfile="taskflow/core/worker.hpp" bodystart="101" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref></type>
+        <type><ref refid="cpp/thread/thread" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref></type>
         <definition>std::thread tf::Worker::_thread</definition>
         <argsstring></argsstring>
         <name>_thread</name>
+        <qualifiedname>tf::Worker::_thread</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -135,10 +144,11 @@
         <location file="taskflow/core/worker.hpp" line="102" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="102" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/numeric/random" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::default_random_engine</ref></type>
+        <type><ref refid="cpp/numeric/random" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::default_random_engine</ref></type>
         <definition>std::default_random_engine tf::Worker::_rdgen</definition>
         <argsstring></argsstring>
         <name>_rdgen</name>
+        <qualifiedname>tf::Worker::_rdgen</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -152,6 +162,7 @@
         <definition>BoundedTaskQueue&lt;Node*&gt; tf::Worker::_wsq</definition>
         <argsstring></argsstring>
         <name>_wsq</name>
+        <qualifiedname>tf::Worker::_wsq</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -160,13 +171,14 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="107" column="22" bodyfile="taskflow/core/worker.hpp" bodystart="107" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Worker::id</definition>
         <argsstring>() const</argsstring>
         <name>id</name>
+        <qualifiedname>tf::Worker::id</qualifiedname>
         <briefdescription>
 <para>queries the worker id associated with its parent executor </para>
         </briefdescription>
@@ -182,6 +194,7 @@
         <definition>size_t tf::Worker::queue_size</definition>
         <argsstring>() const</argsstring>
         <name>queue_size</name>
+        <qualifiedname>tf::Worker::queue_size</qualifiedname>
         <briefdescription>
 <para>queries the size of the queue (i.e., number of enqueued tasks to run) associated with the worker </para>
         </briefdescription>
@@ -196,6 +209,7 @@
         <definition>size_t tf::Worker::queue_capacity</definition>
         <argsstring>() const</argsstring>
         <name>queue_capacity</name>
+        <qualifiedname>tf::Worker::queue_capacity</qualifiedname>
         <briefdescription>
 <para>queries the current capacity of the queue </para>
         </briefdescription>
@@ -205,11 +219,12 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="78" column="19" bodyfile="taskflow/core/worker.hpp" bodystart="78" bodyend="78"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Worker_1a0fcc11826d72537655bf9bb50b68a3f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Worker_1a6be4d2da8d539bec4ff9899bf7d74929" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> *</type>
-        <definition>Executor* tf::Worker::executor</definition>
+        <definition>Executor * tf::Worker::executor</definition>
         <argsstring>()</argsstring>
         <name>executor</name>
+        <qualifiedname>tf::Worker::executor</qualifiedname>
         <briefdescription>
 <para>acquires the associated executor </para>
         </briefdescription>
@@ -219,11 +234,12 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="83" column="21" bodyfile="taskflow/core/worker.hpp" bodystart="83" bodyend="83"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Worker_1a8ece561266a54409268856ec5768a3c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> &amp;</type>
-        <definition>std::thread&amp; tf::Worker::thread</definition>
+      <memberdef kind="function" id="classtf_1_1Worker_1a6158f91db3b980e3072cc0329cbe3c14" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="cpp/thread/thread" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref> &amp;</type>
+        <definition>std::thread &amp; tf::Worker::thread</definition>
         <argsstring>()</argsstring>
         <name>thread</name>
+        <qualifiedname>tf::Worker::thread</qualifiedname>
         <briefdescription>
 <para>acquires the associated thread </para>
         </briefdescription>
@@ -233,7 +249,7 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="88" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="88" bodyend="88"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a worker in an executor </para>
     </briefdescription>
@@ -251,12 +267,12 @@
       <member refid="classtf_1_1Worker_1a559e98c3b61a201903d70952e39ab14f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_waiter</name></member>
       <member refid="classtf_1_1Worker_1a582ddc7de274ecd0988af3dfb5d0f5bf" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_wsq</name></member>
       <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>Executor</name></member>
-      <member refid="classtf_1_1Worker_1a0fcc11826d72537655bf9bb50b68a3f5" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>executor</name></member>
+      <member refid="classtf_1_1Worker_1a6be4d2da8d539bec4ff9899bf7d74929" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>executor</name></member>
       <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>id</name></member>
       <member refid="classtf_1_1Worker_1a0c0505b0ce5b464d4458b5278265429a" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_capacity</name></member>
       <member refid="classtf_1_1Worker_1a5e1ec48fd2295d260e8f335ff22b95ae" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>queue_size</name></member>
       <member refid="classtf_1_1Worker_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>Runtime</name></member>
-      <member refid="classtf_1_1Worker_1a8ece561266a54409268856ec5768a3c5" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>thread</name></member>
+      <member refid="classtf_1_1Worker_1a6158f91db3b980e3072cc0329cbe3c14" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>thread</name></member>
       <member refid="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>WorkerView</name></member>
     </listofallmembers>
   </compounddef>

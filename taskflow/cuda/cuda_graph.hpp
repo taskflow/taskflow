@@ -260,7 +260,7 @@ constexpr const char* to_string(cudaGraphNodeType type) {
 /**
 @class cudaTask
 
-@brief class to create a task handle of a CUDA Graph node
+@brief class to create a task handle of a CUDA %Graph node
 */
 class cudaTask {
 
@@ -409,14 +409,16 @@ inline std::ostream& operator << (std::ostream& os, const cudaTask& ct) {
 // ----------------------------------------------------------------------------
 
 /**
- * @struct cudaGraphCreator
- * @brief  a functor for creating a CUDA graph
- *
- * This structure provides an overloaded function call operator to create a
- * new CUDA graph using `cudaGraphCreate`. 
- *
- */
-struct cudaGraphCreator {
+ @class cudaGraphCreator
+
+ @brief class to create functors that construct CUDA graphs
+ 
+ This class define functors to new CUDA graphs using `cudaGraphCreate`. 
+ 
+*/
+class cudaGraphCreator {
+
+  public:
 
   /**
    * @brief creates a new CUDA graph
@@ -443,15 +445,18 @@ struct cudaGraphCreator {
 };
 
 /**
- * @struct cudaGraphDeleter
- * @brief a functor for deleting a CUDA graph
- *
- * This structure provides an overloaded function call operator to safely
- * destroy a CUDA graph using `cudaGraphDestroy`.
- *
- */
-struct cudaGraphDeleter {
+ @class cudaGraphDeleter
 
+ @brief class to create a functor that deletes a CUDA graph
+ 
+ This structure provides an overloaded function call operator to safely
+ destroy a CUDA graph using `cudaGraphDestroy`.
+ 
+*/
+class cudaGraphDeleter {
+
+  public:
+ 
   /**
    * @brief deletes a CUDA graph
    *

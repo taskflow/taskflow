@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-2-0" kind="page">
     <compoundname>release-3-2-0</compoundname>
     <title>Release 3.2.0 (2021/07/29)</title>
@@ -7,77 +7,75 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-2-0_1release-3-2-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-2-0_1release-3-2-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Working Items</name>
         <reference>release-3-2-0_1release-3-2-0_working_items</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-2-0_1release-3-2-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-2-0_1release-3-2-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-2-0_1release-3-2-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>syclFlow</name>
-        <reference>release-3-2-0_1release-3-2-0_syclflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>CUDA Standard Parallel Algorithms</name>
-        <reference>release-3-2-0_1release-3-2-0_cuda_std_algorithms</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-2-0_1release-3-2-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-2-0_1release-3-2-0_profiler</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-2-0_1release-3-2-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>cudaFlow</name>
+            <reference>release-3-2-0_1release-3-2-0_cudaflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>syclFlow</name>
+            <reference>release-3-2-0_1release-3-2-0_syclflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>CUDA Standard Parallel Algorithms</name>
+            <reference>release-3-2-0_1release-3-2-0_cuda_std_algorithms</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-2-0_1release-3-2-0_utilities</reference>
+          </tocsect>
+          <tocsect>
+            <name>Taskflow Profiler (TFProf)</name>
+            <reference>release-3-2-0_1release-3-2-0_profiler</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-2-0_1release-3-2-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-2-0_1release-3-2-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Deprecated and Removed Items</name>
         <reference>release-3-2-0_1release-3-2-0_deprecated_items</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-2-0_1release-3-2-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-2-0_1release-3-2-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.2.0 is the 3rd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
 <sect1 id="release-3-2-0_1release-3-2-0_download">
-<title>Download</title>
-<para>Taskflow 3.2.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.2.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.2.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.2.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.2.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.2.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -97,8 +95,7 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_working_items">
-<title>Working Items</title>
-<para><itemizedlist>
+<title>Working Items</title><para><itemizedlist>
 <listitem><para>enhancing support for SYCL with Intel DPC++ </para>
 </listitem>
 <listitem><para>enhancing parallel CPU and GPU algorithms </para>
@@ -109,10 +106,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
+<title>New Features</title><sect2 id="release-3-2-0_1release-3-2-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> optimization for optimizing the dependency storage in a graph </para>
 </listitem>
 <listitem><para>added move constructor and move assignment operator for <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><itemizedlist>
@@ -122,12 +117,12 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </listitem>
 <listitem><para>added moved run in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> for automatically managing taskflow&apos;s lifetimes<itemizedlist>
-<listitem><para><ref refid="classtf_1_1Executor_1a4b97752c00b788918cb8396fbb1b3ad0" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1a2d0dc32d81100202168e42ac1d3dd8f9" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1a04aa012598622e807dba3272aa464d7e" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1ae5c5c6a1c1f6d4740414c86daa6a3901" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1a724d188df2952f64c1f2c60555a0a611" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para>
-</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad7aa69f06309b9226a4046f8c400144e" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para>
+<listitem><para><ref refid="classtf_1_1Executor_1a4bbef53618db1852003a0cd1e1e40c50" kindref="member">tf::Executor::run(Taskflow&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1a52c27df2fb7372277f4926f4ab0a0937" kindref="member">tf::Executor::run(Taskflow&amp;&amp;, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad10a12c9e14c8132e414c9a48443d938" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ad14430ac62f0e64e9e21712ba35c22ea" kindref="member">tf::Executor::run_n(Taskflow&amp;&amp;, size_t, C&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1ab10fac2869d80049e5a75d2084a78eda" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;)</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Executor_1af30c6947f060e4bdf344e90b6b44fc70" kindref="member">tf::Executor::run_until(Taskflow&amp;&amp;, P&amp;&amp;, C&amp;&amp;)</ref></para>
 </listitem></itemizedlist>
 </para>
 </listitem>
@@ -135,8 +130,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cudaflow">
-<title>cudaFlow</title>
-<para><itemizedlist>
+<title>cudaFlow</title><para><itemizedlist>
 <listitem><para>improved the execution flow of tf::cudaFlowCapturer when updates involve</para>
 </listitem>
 </itemizedlist>
@@ -208,11 +202,9 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_syclflow">
-<title>syclFlow</title>
-</sect2>
+<title>syclFlow</title></sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_cuda_std_algorithms">
-<title>CUDA Standard Parallel Algorithms</title>
-<para><itemizedlist>
+<title>CUDA Standard Parallel Algorithms</title><para><itemizedlist>
 <listitem><para>added tf::cuda_for_each </para>
 </listitem>
 <listitem><para>added tf::cuda_for_each_index </para>
@@ -253,8 +245,7 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_utilities">
-<title>Utilities</title>
-<para><itemizedlist>
+<title>Utilities</title><para><itemizedlist>
 <listitem><para>added CUDA meta programming </para>
 </listitem>
 <listitem><para>added SYCL meta programming</para>
@@ -263,12 +254,10 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect2>
 <sect2 id="release-3-2-0_1release-3-2-0_profiler">
-<title>Taskflow Profiler (TFProf)</title>
-</sect2>
+<title>Taskflow Profiler (TFProf)</title></sect2>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>fixed compilation errors in constructing tf::cudaRoundRobinCapturing </para>
 </listitem>
 <listitem><para>fixed compilation errors of TLS worker pointer in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para>
@@ -285,12 +274,10 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_breaking_changes">
-<title>Breaking Changes</title>
-<para>There are no breaking changes in this release.</para>
+<title>Breaking Changes</title><para>There are no breaking changes in this release.</para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-<para><itemizedlist>
+<title>Deprecated and Removed Items</title><para><itemizedlist>
 <listitem><para>removed tf::cudaFlow::kernel_on method </para>
 </listitem>
 <listitem><para>removed explicit partitions in parallel iterations and reductions </para>
@@ -305,8 +292,7 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref><itemizedlist>
 <listitem><para><ref refid="StaticTasking_1MoveATaskflow" kindref="member">Move a Taskflow</ref> </para>
 </listitem></itemizedlist>
@@ -321,8 +307,7 @@ New algorithms in tf::cudaFlow and tf::cudaFlowCapturer:</para>
 </para>
 </sect1>
 <sect1 id="release-3-2-0_1release-3-2-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para>We have published tf::cudaFlow in the following conference:<itemizedlist>
+<title>Miscellaneous Items</title><para>We have published tf::cudaFlow in the following conference:<itemizedlist>
 <listitem><para>Dian-Lun Lin and Tsung-Wei Huang, "Efficient GPU Computation using Task <ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> Parallelism," <emphasis>European Conference on Parallel and Distributed Computing (EuroPar)</emphasis>, 2021 </para>
 </listitem></itemizedlist>
 </para>

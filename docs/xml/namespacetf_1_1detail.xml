@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="namespacetf_1_1detail" kind="namespace" language="C++">
     <compoundname>tf::detail</compoundname>
-      <sectiondef kind="func">
+    <sectiondef kind="func">
       <memberdef kind="function" id="small__vector_8hpp_1af7219c0a48eb7108171068b23dd93c92" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>uint64_t</type>
         <definition>uint64_t tf::detail::NextCapacity</definition>
         <argsstring>(uint64_t A)</argsstring>
         <name>NextCapacity</name>
+        <qualifiedname>tf::detail::NextCapacity</qualifiedname>
         <param>
           <type>uint64_t</type>
           <declname>A</declname>
@@ -21,16 +22,17 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="30" column="17" bodyfile="taskflow/utility/small_vector.hpp" bodystart="30" bodyend="38"/>
       </memberdef>
-      <memberdef kind="function" id="graph_8hpp_1a161a286a50a96357a744b6f0c6bc1911" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="graph_8hpp_1a99b20eff00b902f1756d2d0b33d21256" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
           </param>
         </templateparamlist>
         <type>TF_FORCE_INLINE Node *</type>
-        <definition>TF_FORCE_INLINE Node* tf::detail::get_node_ptr</definition>
+        <definition>TF_FORCE_INLINE Node * tf::detail::get_node_ptr</definition>
         <argsstring>(T &amp;node)</argsstring>
         <name>get_node_ptr</name>
+        <qualifiedname>tf::detail::get_node_ptr</qualifiedname>
         <param>
           <type>T &amp;</type>
           <declname>node</declname>
@@ -41,7 +43,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="723" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="723" bodyend="734"/>
+        <location file="taskflow/core/graph.hpp" line="725" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="725" bodyend="736"/>
       </memberdef>
       <memberdef kind="function" id="for__each_8hpp_1ad562902469d10ccdd9da04f51f380799" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -59,6 +61,7 @@
         <definition>__global__ void tf::detail::cuda_for_each_kernel</definition>
         <argsstring>(I first, unsigned count, C c)</argsstring>
         <name>cuda_for_each_kernel</name>
+        <qualifiedname>tf::detail::cuda_for_each_kernel</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -95,6 +98,7 @@
         <definition>__global__ void tf::detail::cuda_for_each_index_kernel</definition>
         <argsstring>(I first, I inc, unsigned count, C c)</argsstring>
         <name>cuda_for_each_index_kernel</name>
+        <qualifiedname>tf::detail::cuda_for_each_index_kernel</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -138,6 +142,7 @@
         <definition>__global__ void tf::detail::cuda_transform_kernel</definition>
         <argsstring>(I first, unsigned count, O output, C op)</argsstring>
         <name>cuda_transform_kernel</name>
+        <qualifiedname>tf::detail::cuda_transform_kernel</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -184,6 +189,7 @@
         <definition>__global__ void tf::detail::cuda_transform_kernel</definition>
         <argsstring>(I1 first1, I2 first2, unsigned count, O output, C op)</argsstring>
         <name>cuda_transform_kernel</name>
+        <qualifiedname>tf::detail::cuda_transform_kernel</qualifiedname>
         <param>
           <type>I1</type>
           <declname>first1</declname>
@@ -212,7 +218,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/algorithm/transform.hpp" line="40" column="17" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="40" bodyend="54"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

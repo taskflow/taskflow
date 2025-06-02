@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaGraphExecDeleter" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaGraphExecDeleter</compoundname>
+    <includes refid="cuda__graph__exec_8hpp" local="no">taskflow/cuda/cuda_graph_exec.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaGraphExecDeleter_1ae5c3d634ee147c89ae75ac4e271023bd" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::cudaGraphExecDeleter::operator()</definition>
+        <argsstring>(cudaGraphExec_t executable) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaGraphExecDeleter::operator()</qualifiedname>
+        <param>
+          <type>cudaGraphExec_t</type>
+          <declname>executable</declname>
+        </param>
+        <briefdescription>
+<para>deletes an executable CUDA graph </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Calls <computeroutput>cudaGraphDestroy</computeroutput> to release the CUDA graph resource if it is valid.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>executable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the executable CUDA graph to be destroyed </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_graph_exec.hpp" line="76" column="8" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="76" bodyend="78"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create a functor for deleting an executable CUDA graph </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides an overloaded function call operator to safely destroy a CUDA graph using <computeroutput>cudaGraphDestroy</computeroutput>. </para>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_graph_exec.hpp" line="65" column="1" bodyfile="taskflow/cuda/cuda_graph_exec.hpp" bodystart="65" bodyend="79"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaGraphExecDeleter_1ae5c3d634ee147c89ae75ac4e271023bd" prot="public" virt="non-virtual"><scope>tf::cudaGraphExecDeleter</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

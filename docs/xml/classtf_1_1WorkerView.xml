@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1WorkerView" kind="class" language="C++" prot="public">
     <compoundname>tf::WorkerView</compoundname>
     <includes refid="worker_8hpp" local="no">taskflow/core/worker.hpp</includes>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1WorkerView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::WorkerView::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -18,15 +19,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="146" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="146" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="146" column="16" bodyfile="taskflow/core/worker.hpp" bodystart="146" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1WorkerView_1ad4df9bf3972a4fe4253fd27477f51808" prot="private" static="no" mutable="no">
         <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
         <definition>const Worker&amp; tf::WorkerView::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
+        <qualifiedname>tf::WorkerView::_worker</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -35,13 +37,14 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="175" column="18" bodyfile="taskflow/core/worker.hpp" bodystart="175" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1WorkerView_1ab12c901b0bd8a9f1fa33d305a32ae259" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::WorkerView::id</definition>
         <argsstring>() const</argsstring>
         <name>id</name>
+        <qualifiedname>tf::WorkerView::id</qualifiedname>
         <briefdescription>
 <para>queries the worker id associated with its parent executor </para>
         </briefdescription>
@@ -57,6 +60,7 @@
         <definition>size_t tf::WorkerView::queue_size</definition>
         <argsstring>() const</argsstring>
         <name>queue_size</name>
+        <qualifiedname>tf::WorkerView::queue_size</qualifiedname>
         <briefdescription>
 <para>queries the size of the queue (i.e., number of pending tasks to run) associated with the worker </para>
         </briefdescription>
@@ -71,6 +75,7 @@
         <definition>size_t tf::WorkerView::queue_capacity</definition>
         <argsstring>() const</argsstring>
         <name>queue_capacity</name>
+        <qualifiedname>tf::WorkerView::queue_capacity</qualifiedname>
         <briefdescription>
 <para>queries the current capacity of the queue </para>
         </briefdescription>
@@ -80,13 +85,14 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="168" column="12" bodyfile="taskflow/core/worker.hpp" bodystart="194" bodyend="196"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
+    </sectiondef>
+    <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1WorkerView_1af5023cb4d6b24fab8992310741952bea" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::WorkerView::WorkerView</definition>
         <argsstring>(const Worker &amp;)</argsstring>
         <name>WorkerView</name>
+        <qualifiedname>tf::WorkerView::WorkerView</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <defname>w</defname>
@@ -104,6 +110,7 @@
         <definition>tf::WorkerView::WorkerView</definition>
         <argsstring>(const WorkerView &amp;)=default</argsstring>
         <name>WorkerView</name>
+        <qualifiedname>tf::WorkerView::WorkerView</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref> &amp;</type>
         </param>
@@ -115,7 +122,7 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="173" column="5"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create an immutable view of a worker </para>
     </briefdescription>

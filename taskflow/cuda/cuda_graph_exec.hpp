@@ -10,13 +10,16 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
-@struct cudaGraphExecCreator
-@brief a functor for creating an executable CUDA graph
+@class cudaGraphExecCreator
+@brief class to create functors for constructing executable CUDA graphs
 
-This structure provides an overloaded function call operator to create a
+This class provides an overloaded function call operator to create a
 new executable CUDA graph using `cudaGraphCreate`. 
 */
-struct cudaGraphExecCreator {
+class cudaGraphExecCreator {
+  
+  public:
+
   /**
   @brief returns a null executable CUDA graph
   */
@@ -53,20 +56,23 @@ struct cudaGraphExecCreator {
 };
   
 /**
-@struct cudaGraphExecDeleter
-@brief a functor for deleting an executable CUDA graph
+@class cudaGraphExecDeleter
+@brief class to create a functor for deleting an executable CUDA graph
 
-This structure provides an overloaded function call operator to safely
+This class provides an overloaded function call operator to safely
 destroy a CUDA graph using `cudaGraphDestroy`.
 */
-struct cudaGraphExecDeleter {
+class cudaGraphExecDeleter {
+
+  public:
+
   /**
-   * @brief deletes an executable CUDA graph
-   *
-   * Calls `cudaGraphDestroy` to release the CUDA graph resource if it is valid.
-   *
-   * @param executable the executable CUDA graph to be destroyed
-   */
+   @brief deletes an executable CUDA graph
+   
+   Calls `cudaGraphDestroy` to release the CUDA graph resource if it is valid.
+   
+   @param executable the executable CUDA graph to be destroyed
+  */
   void operator () (cudaGraphExec_t executable) const {
     cudaGraphExecDestroy(executable);
   }

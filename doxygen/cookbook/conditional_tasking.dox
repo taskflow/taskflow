@@ -127,14 +127,11 @@ This design leads to better parallelism, reduced overhead, and more expressive t
 In order to understand how an executor schedules condition tasks,
 we define two dependency types,
 <em>strong dependency</em> and <em>weak dependency</em>.
-A strong dependency is a preceding link from a non-condition task to 
-another task.
-A weak dependency is a preceding link from a condition task to
-another task. 
-The number of dependencies of a task is the sum of strong dependency 
-and weak dependency.
-The table below lists the strong dependency and
-weak dependency numbers of each task in the previous example.
+A strong dependency is a preceding link from one non-condition task to another task.
+A weak dependency is a preceding link from one condition task to another task.
+The number of dependencies of a task is the sum of its strong dependencies and weak dependencies.
+The table below lists the number of strong dependencies and weak dependencies
+of each task in the previous example:
 
 <div align="center">
 | task   | strong dependency | weak dependency | dependencies |

@@ -1,21 +1,25 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="cuda__stream_8hpp" kind="file" language="C++">
     <compoundname>cuda_stream.hpp</compoundname>
     <includes local="yes">cuda_error.hpp</includes>
     <includedby refid="cuda__graph_8hpp" local="yes">taskflow/cuda/cuda_graph.hpp</includedby>
     <incdepgraph>
-      <node id="2">
-        <label>cuda_error.hpp</label>
-      </node>
       <node id="1">
         <label>taskflow/cuda/cuda_stream.hpp</label>
         <link refid="cuda__stream_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
       </node>
+      <node id="2">
+        <label>cuda_error.hpp</label>
+      </node>
     </incdepgraph>
     <invincdepgraph>
+      <node id="5">
+        <label>taskflow/cuda/algorithm/for_each.hpp</label>
+        <link refid="for__each_8hpp"/>
+      </node>
       <node id="6">
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
@@ -27,10 +31,6 @@
         </childnode>
         <childnode refid="4" relation="include">
         </childnode>
-      </node>
-      <node id="5">
-        <label>taskflow/cuda/algorithm/for_each.hpp</label>
-        <link refid="for__each_8hpp"/>
       </node>
       <node id="3">
         <label>taskflow/cuda/cuda_graph_exec.hpp</label>
@@ -53,11 +53,11 @@
         </childnode>
       </node>
     </invincdepgraph>
-    <innerclass refid="structtf_1_1cudaEventCreator" prot="public">tf::cudaEventCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaEventDeleter" prot="public">tf::cudaEventDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaEventCreator" prot="public">tf::cudaEventCreator</innerclass>
+    <innerclass refid="classtf_1_1cudaEventDeleter" prot="public">tf::cudaEventDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaEventBase" prot="public">tf::cudaEventBase</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamCreator" prot="public">tf::cudaStreamCreator</innerclass>
-    <innerclass refid="structtf_1_1cudaStreamDeleter" prot="public">tf::cudaStreamDeleter</innerclass>
+    <innerclass refid="classtf_1_1cudaStreamCreator" prot="public">tf::cudaStreamCreator</innerclass>
+    <innerclass refid="classtf_1_1cudaStreamDeleter" prot="public">tf::cudaStreamDeleter</innerclass>
     <innerclass refid="classtf_1_1cudaStreamBase" prot="public">tf::cudaStreamBase</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <briefdescription>

@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1WorkerInterface" kind="class" language="C++" prot="public" abstract="yes">
     <compoundname>tf::WorkerInterface</compoundname>
     <includes refid="worker_8hpp" local="no">taskflow/core/worker.hpp</includes>
-      <sectiondef kind="public-func">
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a4f086cadaabff4094cf07fd387b2e185" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type></type>
         <definition>virtual tf::WorkerInterface::~WorkerInterface</definition>
         <argsstring>()=default</argsstring>
         <name>~WorkerInterface</name>
+        <qualifiedname>tf::WorkerInterface::~WorkerInterface</qualifiedname>
         <briefdescription>
 <para>default destructor </para>
         </briefdescription>
@@ -23,6 +24,7 @@
         <definition>virtual void tf::WorkerInterface::scheduler_prologue</definition>
         <argsstring>(Worker &amp;worker)=0</argsstring>
         <name>scheduler_prologue</name>
+        <qualifiedname>tf::WorkerInterface::scheduler_prologue</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <declname>worker</declname>
@@ -51,12 +53,13 @@ The method is called by the constructor of an executor. </para>
         <definition>virtual void tf::WorkerInterface::scheduler_epilogue</definition>
         <argsstring>(Worker &amp;worker, std::exception_ptr ptr)=0</argsstring>
         <name>scheduler_epilogue</name>
+        <qualifiedname>tf::WorkerInterface::scheduler_epilogue</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
           <declname>worker</declname>
         </param>
         <param>
-          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
+          <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
           <declname>ptr</declname>
         </param>
         <briefdescription>
@@ -86,7 +89,7 @@ The method is called by the constructor of an executor. </para>
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="271" column="16"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to configure worker behavior in an executor </para>
     </briefdescription>
@@ -110,7 +113,7 @@ The method is called by the constructor of an executor. </para>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(...)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>exception_ptr<sp/>=<sp/><ref refid="cpp/error/current_exception" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::current_exception</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>exception_ptr<sp/>=<sp/><ref refid="cpp/error/current_exception" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::current_exception</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>leaves<sp/>the<sp/>scheduling<sp/>loop<sp/>and<sp/>joins<sp/>this<sp/>worker<sp/>thread</highlight><highlight class="normal"></highlight></codeline>

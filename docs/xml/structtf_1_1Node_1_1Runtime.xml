@@ -1,23 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Runtime" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Runtime</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Runtime_1a9a4a9b752d58da42469cf5a7a09da400" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;)&gt;</type>
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> &amp;)&gt;</type>
         <definition>std::function&lt;void(tf::Runtime&amp;)&gt; tf::Node::Runtime::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::Runtime::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="186" column="19" bodyfile="taskflow/core/graph.hpp" bodystart="186" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="188" column="19" bodyfile="taskflow/core/graph.hpp" bodystart="188" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Node_1_1Runtime_1a2522de6d8c0a35ff28b3fe31068cf475" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -28,6 +29,7 @@
         <definition>tf::Node::Runtime::Runtime</definition>
         <argsstring>(C &amp;&amp;)</argsstring>
         <name>Runtime</name>
+        <qualifiedname>tf::Node::Runtime::Runtime</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <defname>c</defname>
@@ -38,25 +40,25 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="184" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="384" bodyend="385"/>
+        <location file="taskflow/core/graph.hpp" line="186" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="386" bodyend="387"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::function&lt; void(tf::Runtime &amp;)&gt;</label>
+      </node>
       <node id="1">
         <label>tf::Node::Runtime</label>
         <childnode refid="2" relation="usage">
           <edgelabel>work</edgelabel>
         </childnode>
       </node>
-      <node id="2">
-        <label>std::function&lt; void(tf::Runtime &amp;)&gt;</label>
-      </node>
     </collaborationgraph>
-    <location file="taskflow/core/graph.hpp" line="181" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="181" bodyend="187"/>
+    <location file="taskflow/core/graph.hpp" line="183" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="183" bodyend="189"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Runtime_1a2522de6d8c0a35ff28b3fe31068cf475" prot="public" virt="non-virtual"><scope>tf::Node::Runtime</scope><name>Runtime</name></member>
       <member refid="structtf_1_1Node_1_1Runtime_1a9a4a9b752d58da42469cf5a7a09da400" prot="public" virt="non-virtual"><scope>tf::Node::Runtime</scope><name>work</name></member>

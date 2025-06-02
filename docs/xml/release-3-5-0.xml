@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-5-0" kind="page">
     <compoundname>release-3-5-0</compoundname>
     <title>Release 3.5.0 (2023/01/05)</title>
@@ -7,69 +7,67 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-5-0_1release-3-5-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-5-0_1release-3-5-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-5-0_1release-3-5-0_summary</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-5-0_1release-3-5-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-5-0_1release-3-5-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-5-0_1release-3-5-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-5-0_1release-3-5-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-5-0_1release-3-5-0_profiler</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-5-0_1release-3-5-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>cudaFlow</name>
+            <reference>release-3-5-0_1release-3-5-0_cudaflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-5-0_1release-3-5-0_utilities</reference>
+          </tocsect>
+          <tocsect>
+            <name>Taskflow Profiler (TFProf)</name>
+            <reference>release-3-5-0_1release-3-5-0_profiler</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-5-0_1release-3-5-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-5-0_1release-3-5-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Deprecated and Removed Items</name>
         <reference>release-3-5-0_1release-3-5-0_deprecated_items</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-5-0_1release-3-5-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-5-0_1release-3-5-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.5.0 is the 6th release in the 3.x line! This release includes several new changes, such as pipeline parallelism, improved work-stealing performance, profiling, documentation, examples, and unit tests.</para>
 <sect1 id="release-3-5-0_1release-3-5-0_download">
-<title>Download</title>
-<para>Taskflow 3.5.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.5.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.5.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.5.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.5.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.5.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -89,14 +87,11 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_summary">
-<title>Release Summary</title>
-<para>This release introduces a new data-parallel pipeline programming model, solves the busy-waiting problem in our work-stealing scheduler, and adds a new text-based feature for profiler report.</para>
+<title>Release Summary</title><para>This release introduces a new data-parallel pipeline programming model, solves the busy-waiting problem in our work-stealing scheduler, and adds a new text-based feature for profiler report.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-5-0_1release-3-5-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
+<title>New Features</title><sect2 id="release-3-5-0_1release-3-5-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>Added <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to allow changing properties of workers upon their creations</para>
 </listitem><listitem><para>Added tf::Executor::loop_until to allow looping a worker with a custom stop predicate</para>
 </listitem><listitem><para>Added <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> to implement data-parallel algorithms<itemizedlist>
@@ -110,21 +105,18 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-5-0_1release-3-5-0_cudaflow">
-<title>cudaFlow</title>
-<para>This release has no update on tf::cudaFlow.</para>
+<title>cudaFlow</title><para>This release has no update on tf::cudaFlow.</para>
 </sect2>
 <sect2 id="release-3-5-0_1release-3-5-0_utilities">
-<title>Utilities</title>
-<para><itemizedlist>
+<title>Utilities</title><para><itemizedlist>
 <listitem><para>Added tf::unroll to unroll loops using template techniques</para>
-</listitem><listitem><para>Added <ref refid="structtf_1_1CachelineAligned" kindref="compound">tf::CachelineAligned</ref> to create a cacheline-aligned object</para>
-</listitem><listitem><para>Replaced <ref refid="cpp/types/aligned_union" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::aligned_union</ref> (deprecated in C++23) with a custom byte type (<ulink url="https://github.com/taskflow/taskflow/issues/445">#445</ulink>)</para>
+</listitem><listitem><para>Added <ref refid="classtf_1_1CachelineAligned" kindref="compound">tf::CachelineAligned</ref> to create a cacheline-aligned object</para>
+</listitem><listitem><para>Replaced <ref refid="cpp/types/aligned_union" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::aligned_union</ref> (deprecated in C++23) with a custom byte type (<ulink url="https://github.com/taskflow/taskflow/issues/445">#445</ulink>)</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-3-5-0_1release-3-5-0_profiler">
-<title>Taskflow Profiler (TFProf)</title>
-<para><itemizedlist>
+<title>Taskflow Profiler (TFProf)</title><para><itemizedlist>
 <listitem><para>Added a new feature to generate a profile summary report<itemizedlist>
 <listitem><para>See <ref refid="Profiler_1ProfilerDisplayProfileSummary" kindref="member">Display Profile Summary</ref></para>
 </listitem></itemizedlist>
@@ -134,8 +126,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect2>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>Fixed the compilation error in taking move-only types for <ref refid="classtf_1_1FlowBuilder_1aa62d24438c0860e76153ffd129deba41" kindref="member">tf::Taskflow::transform_reduce</ref></para>
 </listitem><listitem><para>Fixed the compilation error in the graph pipeline benchmark</para>
 </listitem><listitem><para>Fixed the compilation error in unknown OS (replaced with <computeroutput>TF_OS_UNKNOWN</computeroutput>)</para>
@@ -144,16 +135,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_breaking_changes">
-<title>Breaking Changes</title>
-<para>This release has no breaking changes.</para>
+<title>Breaking Changes</title><para>This release has no breaking changes.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-<para>This release has no deprecated and removed items.</para>
+<title>Deprecated and Removed Items</title><para>This release has no deprecated and removed items.</para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>Revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref><itemizedlist>
 <listitem><para>Added <ref refid="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker" kindref="member">Execute a Taskflow from an Internal Worker</ref></para>
 </listitem></itemizedlist>
@@ -163,8 +151,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-5-0_1release-3-5-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para>We have published Taskflow in the following venues:<itemizedlist>
+<title>Miscellaneous Items</title><para>We have published Taskflow in the following venues:<itemizedlist>
 <listitem><para>Tsung-Wei Huang and Leslie Hwang, "<ulink url="https://tsung-wei-huang.github.io/papers/hpec22-semaphore.pdf">Task-Parallel Programming with Constrained Parallelism</ulink>," <emphasis>IEEE High-Performance Extreme Computing Conference (HPEC)</emphasis>, MA, 2022</para>
 </listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/hpec22-ot.pdf">Enhancing the Performance Portability of Heterogeneous Circuit Analysis Programs</ulink>," <emphasis>IEEE High-Performance Extreme Computing Conference (HPEC)</emphasis>, MA, 2022</para>
 </listitem><listitem><para>Dian-Lun Lin, Haoxing Ren, Yanqing Zhang, and Tsung-Wei Huang, "<ulink url="https://doi.org/10.1145/3545008.3545091">From RTL to CUDA: A GPU Acceleration Flow for RTL Simulation with Batch Stimulus</ulink>," <emphasis>ACM International Conference on Parallel Processing (ICPP)</emphasis>, Bordeaux, France, 2022</para>

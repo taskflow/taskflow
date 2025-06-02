@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; Fibonacci Number | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -89,102 +89,102 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;-th Fibonacci number is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The <code>fibonacci</code> function recursively spawns two asynchronous tasks to compute <code>fibonacci(N-1)</code> and <code>fibonacci(N-2)</code> in parallel using <code><a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a></code>. After spawning the two tasks, the function invokes <a href="classtf_1_1Runtime.html#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">tf::<wbr />Runtime::<wbr />corun()</a> to wait until all tasks spawned by <code>rt</code> complete, without blocking the caller worker. In the main function, the executor creates an async task from the top Fibonacci number and waits for completion using <a href="classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">tf::<wbr />Executor::<wbr />wait_for_all</a>. Once finished, the result is printed. The figure below shows the execution diagram, where the suffixes *_1 and *_2 represent the left and right children spawned by their parent runtime:</p><div class="m-graph"><svg style="width: 40.400rem; height: 26.000rem;" viewBox="0.00 0.00 404.00 260.00">
+<span class="p">}</span></pre><p>The <code>fibonacci</code> function recursively spawns two asynchronous tasks to compute <code>fibonacci(N-1)</code> and <code>fibonacci(N-2)</code> in parallel using <code><a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a></code>. After spawning the two tasks, the function invokes <a href="classtf_1_1Runtime.html#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">tf::<wbr />Runtime::<wbr />corun()</a> to wait until all tasks spawned by <code>rt</code> complete, without blocking the caller worker. In the main function, the executor creates an async task from the top Fibonacci number and waits for completion using <a href="classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">tf::<wbr />Executor::<wbr />wait_for_all</a>. Once finished, the result is printed. The figure below shows the execution diagram, where the suffixes *_1 and *_2 represent the left and right children spawned by their parent runtime:</p><div class="m-graph"><svg style="width: 36.800rem; height: 26.000rem;" viewBox="0.00 0.00 368.25 260.00">
 <g transform="scale(1 1) rotate(0) translate(4 256)">
 <title>Fibonacci</title>
 <g class="m-node m-flat">
 <title>F4</title>
-<polygon points="258,-252 184,-252 184,-216 258,-216 258,-252"/>
-<text text-anchor="middle" x="221" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
-<text text-anchor="middle" x="221" y="-226" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="234.25,-252 168,-252 168,-216 234.25,-216 234.25,-252"/>
+<text text-anchor="middle" x="201.12" y="-235.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
+<text text-anchor="middle" x="201.12" y="-224.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-node m-flat">
 <title>F3_1</title>
-<polygon points="212,-180 138,-180 138,-144 212,-144 212,-180"/>
-<text text-anchor="middle" x="175" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
-<text text-anchor="middle" x="175" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="192.25,-180 126,-180 126,-144 192.25,-144 192.25,-180"/>
+<text text-anchor="middle" x="159.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
+<text text-anchor="middle" x="159.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F3_1</title>
-<path d="M209.63,-215.7C204.28,-207.56 197.8,-197.69 191.89,-188.7"/>
-<polygon points="194.66,-186.54 186.24,-180.1 188.81,-190.38 194.66,-186.54"/>
+<path d="M190.74,-215.7C186.06,-207.9 180.43,-198.51 175.22,-189.83"/>
+<polygon points="178.31,-188.18 170.17,-181.4 172.31,-191.78 178.31,-188.18"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_2</title>
-<polygon points="304,-180 230,-180 230,-144 304,-144 304,-180"/>
-<text text-anchor="middle" x="267" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="267" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2]</text>
+<polygon points="276.25,-180 210,-180 210,-144 276.25,-144 276.25,-180"/>
+<text text-anchor="middle" x="243.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="243.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F2_2</title>
-<path d="M232.37,-215.7C237.72,-207.56 244.2,-197.69 250.11,-188.7"/>
-<polygon points="253.19,-190.38 255.76,-180.1 247.34,-186.54 253.19,-190.38"/>
+<path d="M211.51,-215.7C216.19,-207.9 221.82,-198.51 227.03,-189.83"/>
+<polygon points="229.94,-191.78 232.08,-181.4 223.94,-188.18 229.94,-191.78"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_1</title>
-<polygon points="120,-108 46,-108 46,-72 120,-72 120,-108"/>
-<text text-anchor="middle" x="83" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="83" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+<polygon points="108.25,-108 42,-108 42,-72 108.25,-72 108.25,-108"/>
+<text text-anchor="middle" x="75.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="75.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F2_1</title>
-<path d="M152.26,-143.7C140.56,-134.8 126.14,-123.82 113.49,-114.2"/>
-<polygon points="115.56,-111.37 105.48,-108.1 111.32,-116.94 115.56,-111.37"/>
+<path d="M138.36,-143.7C128.16,-135.2 115.7,-124.81 104.54,-115.51"/>
+<polygon points="107.03,-113.03 97.1,-109.32 102.55,-118.41 107.03,-113.03"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_2</title>
-<polygon points="212,-108 138,-108 138,-72 212,-72 212,-108"/>
-<text text-anchor="middle" x="175" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="175" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_2]</text>
+<polygon points="192.25,-108 126,-108 126,-72 192.25,-72 192.25,-108"/>
+<text text-anchor="middle" x="159.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="159.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_2]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F1_2</title>
-<path d="M175,-143.7C175,-135.98 175,-126.71 175,-118.11"/>
-<polygon points="178.5,-118.1 175,-108.1 171.5,-118.1 178.5,-118.1"/>
+<path d="M159.12,-143.7C159.12,-136.41 159.12,-127.73 159.12,-119.54"/>
+<polygon points="162.63,-119.62 159.13,-109.62 155.63,-119.62 162.63,-119.62"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_1</title>
-<polygon points="74,-36 0,-36 0,0 74,0 74,-36"/>
-<text text-anchor="middle" x="37" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="37" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
+<polygon points="66.25,-36 0,-36 0,0 66.25,0 66.25,-36"/>
+<text text-anchor="middle" x="33.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="33.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F1_1</title>
-<path d="M71.63,-71.7C66.28,-63.56 59.8,-53.69 53.89,-44.7"/>
-<polygon points="56.66,-42.54 48.24,-36.1 50.81,-46.38 56.66,-42.54"/>
+<path d="M64.74,-71.7C60.06,-63.9 54.43,-54.51 49.22,-45.83"/>
+<polygon points="52.31,-44.18 44.17,-37.4 46.31,-47.78 52.31,-44.18"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_1</title>
-<polygon points="166,-36 92,-36 92,0 166,0 166,-36"/>
-<text text-anchor="middle" x="129" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="129" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_2]</text>
+<polygon points="150.25,-36 84,-36 84,0 150.25,0 150.25,-36"/>
+<text text-anchor="middle" x="117.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="117.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_2]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F0_1</title>
-<path d="M94.37,-71.7C99.72,-63.56 106.2,-53.69 112.11,-44.7"/>
-<polygon points="115.19,-46.38 117.76,-36.1 109.34,-42.54 115.19,-46.38"/>
+<path d="M85.51,-71.7C90.19,-63.9 95.82,-54.51 101.03,-45.83"/>
+<polygon points="103.94,-47.78 106.08,-37.4 97.94,-44.18 103.94,-47.78"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_3</title>
-<polygon points="304,-108 230,-108 230,-72 304,-72 304,-108"/>
-<text text-anchor="middle" x="267" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="267" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_1]</text>
+<polygon points="276.25,-108 210,-108 210,-72 276.25,-72 276.25,-108"/>
+<text text-anchor="middle" x="243.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="243.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F1_3</title>
-<path d="M267,-143.7C267,-135.98 267,-126.71 267,-118.11"/>
-<polygon points="270.5,-118.1 267,-108.1 263.5,-118.1 270.5,-118.1"/>
+<path d="M243.12,-143.7C243.12,-136.41 243.12,-127.73 243.12,-119.54"/>
+<polygon points="246.63,-119.62 243.13,-109.62 239.63,-119.62 246.63,-119.62"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_2</title>
-<polygon points="396,-108 322,-108 322,-72 396,-72 396,-108"/>
-<text text-anchor="middle" x="359" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="359" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_2]</text>
+<polygon points="360.25,-108 294,-108 294,-72 360.25,-72 360.25,-108"/>
+<text text-anchor="middle" x="327.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="327.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt2_2]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F0_2</title>
-<path d="M289.74,-143.7C301.44,-134.8 315.86,-123.82 328.51,-114.2"/>
-<polygon points="330.68,-116.94 336.52,-108.1 326.44,-111.37 330.68,-116.94"/>
+<path d="M263.89,-143.7C274.09,-135.2 286.55,-124.81 297.71,-115.51"/>
+<polygon points="299.7,-118.41 305.15,-109.32 295.22,-113.03 299.7,-118.41"/>
 </g>
 </g>
 </svg>
@@ -203,102 +203,102 @@
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime. As we can see, the right child is optimized out through tail recursion optimization.</p><div class="m-graph"><svg style="width: 40.400rem; height: 26.000rem;" viewBox="0.00 0.00 404.00 260.00">
+<span class="p">}</span></pre><p>The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime. As we can see, the right child is optimized out through tail recursion optimization.</p><div class="m-graph"><svg style="width: 36.800rem; height: 26.000rem;" viewBox="0.00 0.00 368.25 260.00">
 <g transform="scale(1 1) rotate(0) translate(4 256)">
 <title>Fibonacci</title>
 <g class="m-node m-flat">
 <title>F4</title>
-<polygon points="258,-252 184,-252 184,-216 258,-216 258,-252"/>
-<text text-anchor="middle" x="221" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
-<text text-anchor="middle" x="221" y="-226" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="234.25,-252 168,-252 168,-216 234.25,-216 234.25,-252"/>
+<text text-anchor="middle" x="201.12" y="-235.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
+<text text-anchor="middle" x="201.12" y="-224.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-node m-flat">
 <title>F3_1</title>
-<polygon points="212,-180 138,-180 138,-144 212,-144 212,-180"/>
-<text text-anchor="middle" x="175" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
-<text text-anchor="middle" x="175" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="192.25,-180 126,-180 126,-144 192.25,-144 192.25,-180"/>
+<text text-anchor="middle" x="159.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
+<text text-anchor="middle" x="159.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F3_1</title>
-<path d="M209.63,-215.7C204.28,-207.56 197.8,-197.69 191.89,-188.7"/>
-<polygon points="194.66,-186.54 186.24,-180.1 188.81,-190.38 194.66,-186.54"/>
+<path d="M190.74,-215.7C186.06,-207.9 180.43,-198.51 175.22,-189.83"/>
+<polygon points="178.31,-188.18 170.17,-181.4 172.31,-191.78 178.31,-188.18"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_2</title>
-<polygon points="304,-180 230,-180 230,-144 304,-144 304,-180"/>
-<text text-anchor="middle" x="267" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="267" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="276.25,-180 210,-180 210,-144 276.25,-144 276.25,-180"/>
+<text text-anchor="middle" x="243.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="243.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F2_2</title>
-<path d="M232.37,-215.7C237.72,-207.56 244.2,-197.69 250.11,-188.7"/>
-<polygon points="253.19,-190.38 255.76,-180.1 247.34,-186.54 253.19,-190.38"/>
+<path d="M211.51,-215.7C216.19,-207.9 221.82,-198.51 227.03,-189.83"/>
+<polygon points="229.94,-191.78 232.08,-181.4 223.94,-188.18 229.94,-191.78"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_1</title>
-<polygon points="120,-108 46,-108 46,-72 120,-72 120,-108"/>
-<text text-anchor="middle" x="83" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="83" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+<polygon points="108.25,-108 42,-108 42,-72 108.25,-72 108.25,-108"/>
+<text text-anchor="middle" x="75.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="75.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F2_1</title>
-<path d="M152.26,-143.7C140.56,-134.8 126.14,-123.82 113.49,-114.2"/>
-<polygon points="115.56,-111.37 105.48,-108.1 111.32,-116.94 115.56,-111.37"/>
+<path d="M138.36,-143.7C128.16,-135.2 115.7,-124.81 104.54,-115.51"/>
+<polygon points="107.03,-113.03 97.1,-109.32 102.55,-118.41 107.03,-113.03"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_2</title>
-<polygon points="212,-108 138,-108 138,-72 212,-72 212,-108"/>
-<text text-anchor="middle" x="175" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="175" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="192.25,-108 126,-108 126,-72 192.25,-72 192.25,-108"/>
+<text text-anchor="middle" x="159.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="159.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F1_2</title>
-<path d="M175,-143.7C175,-135.98 175,-126.71 175,-118.11"/>
-<polygon points="178.5,-118.1 175,-108.1 171.5,-118.1 178.5,-118.1"/>
+<path d="M159.12,-143.7C159.12,-136.41 159.12,-127.73 159.12,-119.54"/>
+<polygon points="162.63,-119.62 159.13,-109.62 155.63,-119.62 162.63,-119.62"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_1</title>
-<polygon points="74,-36 0,-36 0,0 74,0 74,-36"/>
-<text text-anchor="middle" x="37" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="37" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
+<polygon points="66.25,-36 0,-36 0,0 66.25,0 66.25,-36"/>
+<text text-anchor="middle" x="33.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="33.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F1_1</title>
-<path d="M71.63,-71.7C66.28,-63.56 59.8,-53.69 53.89,-44.7"/>
-<polygon points="56.66,-42.54 48.24,-36.1 50.81,-46.38 56.66,-42.54"/>
+<path d="M64.74,-71.7C60.06,-63.9 54.43,-54.51 49.22,-45.83"/>
+<polygon points="52.31,-44.18 44.17,-37.4 46.31,-47.78 52.31,-44.18"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_1</title>
-<polygon points="166,-36 92,-36 92,0 166,0 166,-36"/>
-<text text-anchor="middle" x="129" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="129" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+<polygon points="150.25,-36 84,-36 84,0 150.25,0 150.25,-36"/>
+<text text-anchor="middle" x="117.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="117.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F0_1</title>
-<path d="M94.37,-71.7C99.72,-63.56 106.2,-53.69 112.11,-44.7"/>
-<polygon points="115.19,-46.38 117.76,-36.1 109.34,-42.54 115.19,-46.38"/>
+<path d="M85.51,-71.7C90.19,-63.9 95.82,-54.51 101.03,-45.83"/>
+<polygon points="103.94,-47.78 106.08,-37.4 97.94,-44.18 103.94,-47.78"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_3</title>
-<polygon points="304,-108 230,-108 230,-72 304,-72 304,-108"/>
-<text text-anchor="middle" x="267" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="267" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="276.25,-108 210,-108 210,-72 276.25,-72 276.25,-108"/>
+<text text-anchor="middle" x="243.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="243.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F1_3</title>
-<path d="M267,-143.7C267,-135.98 267,-126.71 267,-118.11"/>
-<polygon points="270.5,-118.1 267,-108.1 263.5,-118.1 270.5,-118.1"/>
+<path d="M243.12,-143.7C243.12,-136.41 243.12,-127.73 243.12,-119.54"/>
+<polygon points="246.63,-119.62 243.13,-109.62 239.63,-119.62 246.63,-119.62"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_2</title>
-<polygon points="396,-108 322,-108 322,-72 396,-72 396,-108"/>
-<text text-anchor="middle" x="359" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="359" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="360.25,-108 294,-108 294,-72 360.25,-72 360.25,-108"/>
+<text text-anchor="middle" x="327.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="327.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F0_2</title>
-<path d="M289.74,-143.7C301.44,-134.8 315.86,-123.82 328.51,-114.2"/>
-<polygon points="330.68,-116.94 336.52,-108.1 326.44,-111.37 330.68,-116.94"/>
+<path d="M263.89,-143.7C274.09,-135.2 286.55,-124.81 297.71,-115.51"/>
+<polygon points="299.7,-118.41 305.15,-109.32 295.22,-113.03 299.7,-118.41"/>
 </g>
 </g>
 </svg>
@@ -347,7 +347,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

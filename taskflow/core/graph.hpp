@@ -100,11 +100,14 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
 // ----------------------------------------------------------------------------
 
 /**
-@struct TaskParams
+@class TaskParams
 
-@brief task parameters to use when creating an asynchronous task
+@brief class to create a task parameter object 
 */
-struct TaskParams {
+class TaskParams {
+
+  public:
+
   /**
   @brief name of the task
   */
@@ -117,20 +120,19 @@ struct TaskParams {
 };
 
 /**
-@struct DefaultTaskParams
+@class DefaultTaskParams
 
-@brief empty task parameter type for compile-time optimization
+@brief class to create an empty task parameter for compile-time optimization
 */
-struct DefaultTaskParams {
-};
+class DefaultTaskParams {};
 
 /**
 @brief determines if the given type is a task parameter type
 
 Task parameters can be specified in one of the following types:
-  + tf::TaskParams: assign the struct of defined parameters
-  + tf::DefaultTaskParams: assign nothing
-  + std::string: assign a name to the task
+  + tf::TaskParams
+  + tf::DefaultTaskParams
+  + std::string
 */
 template <typename P>
 constexpr bool is_task_params_v =

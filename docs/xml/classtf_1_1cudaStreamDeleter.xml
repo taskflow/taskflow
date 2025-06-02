@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaStreamDeleter" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaStreamDeleter</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaStreamDeleter_1a626619c00a871c7be86071fe262ce63e" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::cudaStreamDeleter::operator()</definition>
+        <argsstring>(cudaStream_t stream) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaStreamDeleter::operator()</qualifiedname>
+        <param>
+          <type>cudaStream_t</type>
+          <declname>stream</declname>
+        </param>
+        <briefdescription>
+<para>deletes the given <computeroutput>cudaStream_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="172" column="8" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="172" bodyend="174"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create a functor that deletes a CUDA stream </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="165" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="165" bodyend="175"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaStreamDeleter_1a626619c00a871c7be86071fe262ce63e" prot="public" virt="non-virtual"><scope>tf::cudaStreamDeleter</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

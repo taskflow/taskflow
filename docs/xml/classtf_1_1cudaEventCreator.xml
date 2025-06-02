@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaEventCreator" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaEventCreator</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaEvent_t</type>
+        <definition>cudaEvent_t tf::cudaEventCreator::operator()</definition>
+        <argsstring>() const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaEventCreator::operator()</qualifiedname>
+        <briefdescription>
+<para>creates a new <computeroutput>cudaEvent_t</computeroutput> object using <computeroutput>cudaEventCreate</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="29" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="29" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaEventCreator_1a94c304977d6ac96bd550bad52341b1fa" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaEvent_t</type>
+        <definition>cudaEvent_t tf::cudaEventCreator::operator()</definition>
+        <argsstring>(unsigned int flag) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaEventCreator::operator()</qualifiedname>
+        <param>
+          <type>unsigned int</type>
+          <declname>flag</declname>
+        </param>
+        <briefdescription>
+<para>creates a new <computeroutput>cudaEvent_t</computeroutput> object using <computeroutput>cudaEventCreate</computeroutput> with the given <computeroutput>flag</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="38" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="38" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaEventCreator_1a77d564f66017d0ad700fdca98e57e24a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaEvent_t</type>
+        <definition>cudaEvent_t tf::cudaEventCreator::operator()</definition>
+        <argsstring>(cudaEvent_t event) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaEventCreator::operator()</qualifiedname>
+        <param>
+          <type>cudaEvent_t</type>
+          <declname>event</declname>
+        </param>
+        <briefdescription>
+<para>returns the given <computeroutput>cudaEvent_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="50" column="15" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="50" bodyend="52"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create functors that construct CUDA events </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="22" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="22" bodyend="53"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaEventCreator_1aa479fabea27a173213d94062c07f3599" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaEventCreator_1a94c304977d6ac96bd550bad52341b1fa" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaEventCreator_1a77d564f66017d0ad700fdca98e57e24a" prot="public" virt="non-virtual"><scope>tf::cudaEventCreator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -5,7 +5,7 @@
   <title>Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -50,28 +50,28 @@
           <li class="m-doc-collapsible">
             <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespacetf.html" class="m-doc">tf</a> <span class="m-doc">taskflow namespace</span>
             <ul class="m-doc">
-              <li>class <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a> <span class="m-doc">class to create a dependent asynchronous task (async task)</span></li>
+              <li>class <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a> <span class="m-doc">class to create a dependent asynchronous task</span></li>
               <li>class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a> <span class="m-doc">class to create a lock-free bounded work-stealing queue</span></li>
-              <li>struct <a href="structtf_1_1CachelineAligned.html" class="m-doc">CachelineAligned</a> <span class="m-doc">struct to ensure cacheline-aligned storage for an object.</span></li>
+              <li>class <a href="classtf_1_1CachelineAligned.html" class="m-doc">CachelineAligned</a> <span class="m-doc">class to ensure cacheline-aligned storage for an object.</span></li>
               <li>class <a href="classtf_1_1ChromeObserver.html" class="m-doc">ChromeObserver</a> <span class="m-doc">class to create an observer based on Chrome tracing format</span></li>
-              <li>class <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing <code>cudaEvent_t</code></span></li>
-              <li>struct <a href="structtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a> <span class="m-doc">functor to create a <code>cudaEvent_t</code> object</span></li>
-              <li>struct <a href="structtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a> <span class="m-doc">functor to delete a <code>cudaEvent_t</code> object</span></li>
+              <li>class <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing a CUDA event</span></li>
+              <li>class <a href="classtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a> <span class="m-doc">class to create functors that construct CUDA events</span></li>
+              <li>class <a href="classtf_1_1cudaEventDeleter.html" class="m-doc">cudaEventDeleter</a> <span class="m-doc">class to create a functor that deletes a CUDA event</span></li>
               <li>class <a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a> <span class="m-doc">class to create a CUDA graph managed by C++ smart pointer</span></li>
-              <li>struct <a href="structtf_1_1cudaGraphCreator.html" class="m-doc">cudaGraphCreator</a> <span class="m-doc">a functor for creating a CUDA graph</span></li>
-              <li>struct <a href="structtf_1_1cudaGraphDeleter.html" class="m-doc">cudaGraphDeleter</a> <span class="m-doc">a functor for deleting a CUDA graph</span></li>
+              <li>class <a href="classtf_1_1cudaGraphCreator.html" class="m-doc">cudaGraphCreator</a> <span class="m-doc">class to create functors that construct CUDA graphs</span></li>
+              <li>class <a href="classtf_1_1cudaGraphDeleter.html" class="m-doc">cudaGraphDeleter</a> <span class="m-doc">class to create a functor that deletes a CUDA graph</span></li>
               <li>class <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a> <span class="m-doc">class to create an executable CUDA graph managed by C++ smart pointer</span></li>
-              <li>struct <a href="structtf_1_1cudaGraphExecCreator.html" class="m-doc">cudaGraphExecCreator</a> <span class="m-doc">a functor for creating an executable CUDA graph</span></li>
-              <li>struct <a href="structtf_1_1cudaGraphExecDeleter.html" class="m-doc">cudaGraphExecDeleter</a> <span class="m-doc">a functor for deleting an executable CUDA graph</span></li>
+              <li>class <a href="classtf_1_1cudaGraphExecCreator.html" class="m-doc">cudaGraphExecCreator</a> <span class="m-doc">class to create functors for constructing executable CUDA graphs</span></li>
+              <li>class <a href="classtf_1_1cudaGraphExecDeleter.html" class="m-doc">cudaGraphExecDeleter</a> <span class="m-doc">class to create a functor for deleting an executable CUDA graph</span></li>
               <li>class <a href="classtf_1_1cudaScopedDevice.html" class="m-doc">cudaScopedDevice</a> <span class="m-doc">class to create an RAII-styled context switch</span></li>
-              <li>class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing <code>cudaStream_t</code></span></li>
-              <li>struct <a href="structtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a> <span class="m-doc">functor to create a <code>cudaStream_t</code> object</span></li>
-              <li>struct <a href="structtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a> <span class="m-doc">functor to delete a <code>cudaStream_t</code> object</span></li>
-              <li>class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> <span class="m-doc">class to create a task handle of a CUDA <a href="classtf_1_1Graph.html" class="m-doc">Graph</a> node</span></li>
+              <li>class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a> <span class="m-doc">class to create a smart pointer wrapper for managing a CUDA stream</span></li>
+              <li>class <a href="classtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a> <span class="m-doc">class to create functors that construct CUDA streams</span></li>
+              <li>class <a href="classtf_1_1cudaStreamDeleter.html" class="m-doc">cudaStreamDeleter</a> <span class="m-doc">class to create a functor that deletes a CUDA stream</span></li>
+              <li>class <a href="classtf_1_1cudaTask.html" class="m-doc">cudaTask</a> <span class="m-doc">class to create a task handle of a CUDA Graph node</span></li>
               <li>class <a href="classtf_1_1DataPipe.html" class="m-doc">DataPipe</a> <span class="m-doc">class to create a stage in a data-parallel pipeline</span></li>
               <li>class <a href="classtf_1_1DataPipeline.html" class="m-doc">DataPipeline</a> <span class="m-doc">class to create a data-parallel pipeline scheduling framework</span></li>
-              <li>struct <a href="structtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a> <span class="m-doc">default closure wrapper that simply runs the given closure as is</span></li>
-              <li>struct <a href="structtf_1_1DefaultTaskParams.html" class="m-doc">DefaultTaskParams</a> <span class="m-doc">empty task parameter type for compile-time optimization</span></li>
+              <li>class <a href="classtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a> <span class="m-doc">class to create a default closure wrapper for compile-time optimization</span></li>
+              <li>class <a href="classtf_1_1DefaultTaskParams.html" class="m-doc">DefaultTaskParams</a> <span class="m-doc">class to create an empty task parameter for compile-time optimization</span></li>
               <li>class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a> <span class="m-doc">class to construct a dynamic partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a> <span class="m-doc">class to create an executor</span></li>
               <li>class <a href="classtf_1_1FlowBuilder.html" class="m-doc">FlowBuilder</a> <span class="m-doc">class to build a task dependency graph</span></li>
@@ -91,17 +91,11 @@
               <li>class <a href="classtf_1_1SmallVector.html" class="m-doc">SmallVector</a> <span class="m-doc">class to define a vector optimized for small array</span></li>
               <li>class <a href="classtf_1_1StaticPartitioner.html" class="m-doc">StaticPartitioner</a> <span class="m-doc">class to construct a static partitioner for scheduling parallel algorithms</span></li>
               <li>class <a href="classtf_1_1Subflow.html" class="m-doc">Subflow</a> <span class="m-doc">class to construct a subflow graph from the execution of a dynamic task</span></li>
-              <li>class <a href="classtf_1_1Task.html" class="m-doc">Task</a> <span class="m-doc">class to create a task handle over a node in a taskflow graph</span></li>
+              <li>class <a href="classtf_1_1Task.html" class="m-doc">Task</a> <span class="m-doc">class to create a task handle over a taskflow node</span></li>
               <li>class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a> <span class="m-doc">class to create a taskflow object</span></li>
-              <li>struct <a href="structtf_1_1TaskParams.html" class="m-doc">TaskParams</a> <span class="m-doc">task parameters to use when creating an asynchronous task</span></li>
+              <li>class <a href="classtf_1_1TaskParams.html" class="m-doc">TaskParams</a> <span class="m-doc">class to create a task parameter object</span></li>
               <li>class <a href="classtf_1_1TaskView.html" class="m-doc">TaskView</a> <span class="m-doc">class to access task information from the observer interface</span></li>
-              <li class="m-doc-collapsible collapsed">
-                <a href="#" onclick="return toggle(this)">class</a> <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a> <span class="m-doc">class to create an observer based on the built-in taskflow profiler format</span>
-                <ul class="m-doc">
-                  <li>struct <a href="structtf_1_1TFProfObserver_1_1TaskSummary.html" class="m-doc">TaskSummary</a> <span class="m-doc"></span></li>
-                  <li>struct <a href="structtf_1_1TFProfObserver_1_1WorkerSummary.html" class="m-doc">WorkerSummary</a> <span class="m-doc"></span></li>
-                </ul>
-              </li>
+              <li>class <a href="classtf_1_1TFProfObserver.html" class="m-doc">TFProfObserver</a> <span class="m-doc">class to create an observer based on the built-in taskflow profiler format</span></li>
               <li>class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">UnboundedTaskQueue</a> <span class="m-doc">class to create a lock-free unbounded work-stealing queue</span></li>
               <li>class <a href="classtf_1_1Worker.html" class="m-doc">Worker</a> <span class="m-doc">class to create a worker in an executor</span></li>
               <li>class <a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a> <span class="m-doc">class to configure worker behavior in an executor</span></li>
@@ -169,7 +163,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

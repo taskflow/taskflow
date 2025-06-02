@@ -44,12 +44,11 @@ enum class PartitionerType : int {
 //};
 
 /**
-@struct DefaultClosureWrapper
+@class DefaultClosureWrapper
 
-@brief default closure wrapper that simply runs the given closure as is
+@brief class to create a default closure wrapper for compile-time optimization
 */
-struct DefaultClosureWrapper {
-};
+class DefaultClosureWrapper {};
 
 /**
 @private

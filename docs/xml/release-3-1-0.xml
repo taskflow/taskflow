@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-1-0" kind="page">
     <compoundname>release-3-1-0</compoundname>
     <title>Release 3.1.0 (2021/04/14)</title>
@@ -7,65 +7,63 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-1-0_1release-3-1-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-1-0_1release-3-1-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-1-0_1release-3-1-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-1-0_1release-3-1-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-1-0_1release-3-1-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-1-0_1release-3-1-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-1-0_1release-3-1-0_profiler</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-1-0_1release-3-1-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>cudaFlow</name>
+            <reference>release-3-1-0_1release-3-1-0_cudaflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-1-0_1release-3-1-0_utilities</reference>
+          </tocsect>
+          <tocsect>
+            <name>Taskflow Profiler (TFProf)</name>
+            <reference>release-3-1-0_1release-3-1-0_profiler</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-1-0_1release-3-1-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-1-0_1release-3-1-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Deprecated and Removed Items</name>
         <reference>release-3-1-0_1release-3-1-0_deprecated_items</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-1-0_1release-3-1-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-1-0_1release-3-1-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.1.0 is the 2nd release in the 3.x line! This release includes several new changes such as CPU-GPU tasking, algorithm collection, enhanced web-based profiler, documentation, and unit tests.</para>
 <sect1 id="release-3-1-0_1release-3-1-0_download">
-<title>Download</title>
-<para>Taskflow 3.1.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.1.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.1.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.1.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -85,11 +83,9 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
-<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para>
+<title>New Features</title><sect2 id="release-3-1-0_1release-3-1-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
+<listitem><para>optimized task node storage by using <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> for semaphores </para>
 </listitem>
 <listitem><para>merged the execution flow of cudaFlow and cudaFlow capturer</para>
 </listitem>
@@ -97,8 +93,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_cudaflow">
-<title>cudaFlow</title>
-<para><itemizedlist>
+<title>cudaFlow</title><para><itemizedlist>
 <listitem><para>optimized tf::cudaRoundRobinCapturing through an event-pruning heuristic </para>
 </listitem>
 <listitem><para>optimized the default block size used in cudaFlow algorithms </para>
@@ -143,8 +138,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_utilities">
-<title>Utilities</title>
-<para><itemizedlist>
+<title>Utilities</title><para><itemizedlist>
 <listitem><para>resolved the compiler warning in serializer caused by <computeroutput>constexpr if</computeroutput> </para>
 </listitem>
 <listitem><para>resolved the compiler error of nvcc when parsin variadic namespace</para>
@@ -153,13 +147,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-1-0_1release-3-1-0_profiler">
-<title>Taskflow Profiler (TFProf)</title>
-<para>No update for TFProf in this release.</para>
+<title>Taskflow Profiler (TFProf)</title><para>No update for TFProf in this release.</para>
 </sect2>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>fixed the macro expansion issue with MSVC on <computeroutput>TF_CUDA_CHECK</computeroutput> </para>
 </listitem><listitem><para>fixed the serializer compile error (<ulink url="https://github.com/taskflow/taskflow/issues/288">#288</ulink>)</para>
 </listitem><listitem><para>fixed the <ref refid="classtf_1_1cudaTask_1a78b6a856c844a08d4d9cfa992dc6cfef" kindref="member">tf::cudaTask::type</ref> bug in mixing host and empty task types</para>
@@ -167,23 +159,19 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_breaking_changes">
-<title>Breaking Changes</title>
-<para>There are no breaking changes in this release.</para>
+<title>Breaking Changes</title><para>There are no breaking changes in this release.</para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-<para>There are no deprecated or removed items in this release.</para>
+<title>Deprecated and Removed Items</title><para>There are no deprecated or removed items in this release.</para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>added <ref refid="ExecuteTaskflow_1QueryTheWorkerID" kindref="member">Query the Worker ID</ref> to the cookbook page <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-1-0_1release-3-1-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para><itemizedlist>
+<title>Miscellaneous Items</title><para><itemizedlist>
 <listitem><para>removed Circle-CI from the continuous integration</para>
 </listitem><listitem><para>updated <ulink url="https://github.com/GrokImageCompression/grok">grok</ulink> to the user list</para>
 </listitem><listitem><para>updated <ulink url="https://github.com/Ravbug/RavEngine">RavEngine</ulink> to the user list</para>

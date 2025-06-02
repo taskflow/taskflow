@@ -15,12 +15,14 @@ namespace tf {
 // ----------------------------------------------------------------------------
   
 /**
-@struct cudaEventCreator
+@class cudaEventCreator
 
-@brief functor to create a `cudaEvent_t` object
+@brief class to create functors that construct CUDA events
 */
-struct cudaEventCreator {
+class cudaEventCreator {
     
+  public:
+
   /**
   @brief creates a new `cudaEvent_t` object using `cudaEventCreate`
   */
@@ -51,12 +53,12 @@ struct cudaEventCreator {
 };
 
 /**
-@struct cudaEventDeleter
+@class cudaEventDeleter
 
-@brief functor to delete a `cudaEvent_t` object
+@brief class to create a functor that deletes a CUDA event
 */
-struct cudaEventDeleter {
-
+class cudaEventDeleter {
+  public:
   /**
   @brief deletes the given `cudaEvent_t` object using `cudaEventDestroy`
   */
@@ -68,7 +70,7 @@ struct cudaEventDeleter {
 /**
 @class cudaEventBase
 
-@brief class to create a smart pointer wrapper for managing `cudaEvent_t`
+@brief class to create a smart pointer wrapper for managing a CUDA event
 
 @tparam Creator functor to create the stream (used in constructor)
 @tparam Deleter functor to delete the stream (used in destructor)
@@ -130,12 +132,14 @@ using cudaEvent = cudaEventBase<cudaEventCreator, cudaEventDeleter>;
 // ----------------------------------------------------------------------------
 
 /**
-@struct cudaStreamCreator 
+@class cudaStreamCreator 
 
-@brief functor to create a `cudaStream_t` object
+@brief class to create functors that construct CUDA streams
 */
-struct cudaStreamCreator {
+class cudaStreamCreator {
   
+  public:
+
   /**
   @brief constructs a new `cudaStream_t` object using `cudaStreamCreate`
   */
@@ -154,11 +158,13 @@ struct cudaStreamCreator {
 };
 
 /**
-@struct cudaStreamDeleter
+@class cudaStreamDeleter
 
-@brief functor to delete a `cudaStream_t` object
+@brief class to create a functor that deletes a CUDA stream
 */
-struct cudaStreamDeleter {
+class cudaStreamDeleter {
+
+  public:
 
   /**
   @brief deletes the given `cudaStream_t` object
@@ -171,7 +177,7 @@ struct cudaStreamDeleter {
 /**
 @class cudaStreamBase
 
-@brief class to create a smart pointer wrapper for managing `cudaStream_t`
+@brief class to create a smart pointer wrapper for managing a CUDA stream
 
 @tparam Creator functor to create the stream (used in constructor)
 @tparam Deleter functor to delete the stream (used in destructor)

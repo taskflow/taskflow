@@ -1,36 +1,38 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1Subflow" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::Subflow</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1Subflow_1ab2f15bdfcde9f0dcb89fb3d300f2bd4a" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> &amp;)&gt;</type>
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> &amp;)&gt;</type>
         <definition>std::function&lt;void(tf::Subflow&amp;)&gt; tf::Node::Subflow::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::Subflow::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="195" column="19" bodyfile="taskflow/core/graph.hpp" bodystart="195" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="197" column="19" bodyfile="taskflow/core/graph.hpp" bodystart="197" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Node_1_1Subflow_1aa35f00009f005b567776f6165e2bfee7" prot="public" static="no" mutable="no">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref></type>
         <definition>Graph tf::Node::Subflow::subgraph</definition>
         <argsstring></argsstring>
         <name>subgraph</name>
+        <qualifiedname>tf::Node::Subflow::subgraph</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="196" column="11" bodyfile="taskflow/core/graph.hpp" bodystart="196" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="198" column="11" bodyfile="taskflow/core/graph.hpp" bodystart="198" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Node_1_1Subflow_1ad44a30fc82cf603f089e562f8df6c184" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -41,6 +43,7 @@
         <definition>tf::Node::Subflow::Subflow</definition>
         <argsstring>(C &amp;&amp;)</argsstring>
         <name>Subflow</name>
+        <qualifiedname>tf::Node::Subflow::Subflow</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <defname>c</defname>
@@ -51,14 +54,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="193" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="393" bodyend="394"/>
+        <location file="taskflow/core/graph.hpp" line="195" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="395" bodyend="396"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::function&lt; void(tf::Subflow &amp;)&gt;</label>
+      </node>
       <node id="4">
         <label>std::vector&lt; std::unique_ptr&lt; Node &gt; &gt;</label>
       </node>
@@ -67,9 +73,6 @@
         <link refid="classtf_1_1Graph"/>
         <childnode refid="4" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="2">
-        <label>std::function&lt; void(tf::Subflow &amp;)&gt;</label>
       </node>
       <node id="1">
         <label>tf::Node::Subflow</label>
@@ -81,7 +84,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/graph.hpp" line="190" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="190" bodyend="197"/>
+    <location file="taskflow/core/graph.hpp" line="192" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="192" bodyend="199"/>
     <listofallmembers>
       <member refid="structtf_1_1Node_1_1Subflow_1ad44a30fc82cf603f089e562f8df6c184" prot="public" virt="non-virtual"><scope>tf::Node::Subflow</scope><name>Subflow</name></member>
       <member refid="structtf_1_1Node_1_1Subflow_1aa35f00009f005b567776f6165e2bfee7" prot="public" virt="non-virtual"><scope>tf::Node::Subflow</scope><name>subgraph</name></member>

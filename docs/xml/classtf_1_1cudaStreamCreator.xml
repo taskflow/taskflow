@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="classtf_1_1cudaStreamCreator" kind="class" language="C++" prot="public">
+    <compoundname>tf::cudaStreamCreator</compoundname>
+    <includes refid="cuda__stream_8hpp" local="no">taskflow/cuda/cuda_stream.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaStream_t</type>
+        <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
+        <argsstring>() const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaStreamCreator::operator()</qualifiedname>
+        <briefdescription>
+<para>constructs a new <computeroutput>cudaStream_t</computeroutput> object using <computeroutput>cudaStreamCreate</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="146" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="146" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>cudaStream_t</type>
+        <definition>cudaStream_t tf::cudaStreamCreator::operator()</definition>
+        <argsstring>(cudaStream_t stream) const</argsstring>
+        <name>operator()</name>
+        <qualifiedname>tf::cudaStreamCreator::operator()</qualifiedname>
+        <param>
+          <type>cudaStream_t</type>
+          <declname>stream</declname>
+        </param>
+        <briefdescription>
+<para>returns the given <computeroutput>cudaStream_t</computeroutput> object </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/cuda/cuda_stream.hpp" line="155" column="16" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="155" bodyend="157"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>class to create functors that construct CUDA streams </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="taskflow/cuda/cuda_stream.hpp" line="139" column="1" bodyfile="taskflow/cuda/cuda_stream.hpp" bodystart="139" bodyend="158"/>
+    <listofallmembers>
+      <member refid="classtf_1_1cudaStreamCreator_1a45240b5459cef8b2d5c8d48d57cc3910" prot="public" virt="non-virtual"><scope>tf::cudaStreamCreator</scope><name>operator()</name></member>
+      <member refid="classtf_1_1cudaStreamCreator_1aa3a5085f22ba5a44a3332b488fab891f" prot="public" virt="non-virtual"><scope>tf::cudaStreamCreator</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

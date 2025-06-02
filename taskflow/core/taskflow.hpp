@@ -278,9 +278,8 @@ class Taskflow : public FlowBuilder {
     /**
     @brief returns a reference to the underlying graph object
 
-    A graph object (of type tf::Graph) is the ultimate storage for the
-    task dependency graph and should only be used as an opaque
-    data structure to interact with the executor (e.g., composition).
+    A graph object (of type tf::Graph) stores the task dependency graph
+    that can be scheduled by the executor through composition.
     */
     Graph& graph();
 
