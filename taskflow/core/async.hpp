@@ -181,18 +181,18 @@ tf::AsyncTask Executor::silent_dependent_async(
 
   _increment_topology();
 
-  size_t num_dependents = std::distance(first, last);
+  size_t num_predecessors = std::distance(first, last);
   
   AsyncTask task(animate(
-    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_dependents,
+    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_predecessors,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
   
   for(; first != last; first++) {
-    _process_async_dependent(task._node, *first, num_dependents);
+    _process_dependent_async(task._node, *first, num_predecessors);
   }
 
-  if(num_dependents == 0) {
+  if(num_predecessors == 0) {
     _schedule_async_task(task._node);
   }
 
@@ -238,7 +238,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   
   _increment_topology();
     
-  size_t num_dependents = std::distance(first, last);
+  size_t num_predecessors = std::distance(first, last);
   
   // async with runtime: [] (tf::Runtime&) -> void {}
   if constexpr (is_runtime_task_v<F>) {
@@ -247,7 +247,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, num_dependents,
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
@@ -261,10 +261,10 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     ));
 
     for(; first != last; first++) {
-      _process_async_dependent(task._node, *first, num_dependents);
+      _process_dependent_async(task._node, *first, num_predecessors);
     }
 
-    if(num_dependents == 0) {
+    if(num_predecessors == 0) {
       _schedule_async_task(task._node);
     }
 
@@ -278,16 +278,16 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_dependents,
+      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=make_moc(std::move(p))] () mutable { p.object(); }
     ));
 
     for(; first != last; first++) {
-      _process_async_dependent(task._node, *first, num_dependents);
+      _process_dependent_async(task._node, *first, num_predecessors);
     }
 
-    if(num_dependents == 0) {
+    if(num_predecessors == 0) {
       _schedule_async_task(task._node);
     }
 
@@ -302,10 +302,16 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
 // Dependent Async Helper Functions
 // ----------------------------------------------------------------------------
 
-// Procedure: _process_async_dependent
-inline void Executor::_process_async_dependent(
-  Node* node, tf::AsyncTask& task, size_t& num_dependents
+// Procedure: _process_dependent_async
+inline void Executor::_process_dependent_async(
+  Node* node, tf::AsyncTask& task, size_t& num_predecessors
 ) {
+
+  // special case: the task is not associated with any dependent-async task
+  if(task.empty()) {
+    num_predecessors = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
+    return;
+  }
 
   auto& state = std::get_if<Node::DependentAsync>(&(task._node->_handle))->state;
 
@@ -324,7 +330,7 @@ inline void Executor::_process_async_dependent(
 
     // If already finished, decrement the join counter
     if (target == ASTATE::FINISHED) {
-      num_dependents = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
+      num_predecessors = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
       break;
     }
 

@@ -10,6 +10,24 @@
 #include <taskflow/algorithm/module.hpp>
 
 // ----------------------------------------------------------------------------
+// null dependent-async task
+// ----------------------------------------------------------------------------
+
+TEST_CASE("DependentAsync.NullDependency") {
+
+  tf::Executor executor;    
+  tf::AsyncTask dummy;
+  int v1, v2, v3;
+  auto t1 = executor.silent_dependent_async([&](){ v1 = 100; }, dummy);
+  auto t2 = executor.silent_dependent_async([&](){ v2 = 200; }, dummy);
+  auto [t3, fu3] = executor.dependent_async([&](){ v3 = v1 + v2; }, t1, t2);
+  fu3.wait();
+  REQUIRE(v1 == 100);
+  REQUIRE(v2 == 200);
+  REQUIRE(v3 == v1 + v2);
+}
+
+// ----------------------------------------------------------------------------
 // embarrassing parallelism
 // ----------------------------------------------------------------------------
 

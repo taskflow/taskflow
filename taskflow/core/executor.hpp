@@ -1104,7 +1104,7 @@ class Executor {
   void _invoke_static_task(Worker&, Node*);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
-  void _process_async_dependent(Node*, tf::AsyncTask&, size_t&);
+  void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _schedule_async_task(Node*);
   void _update_cache(Worker&, Node*&, Node*);

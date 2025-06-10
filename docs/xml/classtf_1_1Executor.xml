@@ -2724,12 +2724,12 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1106" column="8"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1a824fbb761eaece4549da2fe070f95dac" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1a62a4f5f02d7318fdc6cecaacb27d2673" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
-        <definition>void tf::Executor::_process_async_dependent</definition>
+        <definition>void tf::Executor::_process_dependent_async</definition>
         <argsstring>(Node *, tf::AsyncTask &amp;, size_t &amp;)</argsstring>
-        <name>_process_async_dependent</name>
-        <qualifiedname>tf::Executor::_process_async_dependent</qualifiedname>
+        <name>_process_dependent_async</name>
+        <qualifiedname>tf::Executor::_process_dependent_async</qualifiedname>
         <param>
           <type>Node *</type>
         </param>
@@ -3304,7 +3304,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1a9cd8c1a72af4477bc0f9575b68ffb16a" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_observer_epilogue</name></member>
       <member refid="classtf_1_1Executor_1ae023614977a19def9e04cf7212eab65b" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_observer_prologue</name></member>
       <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_observers</name></member>
-      <member refid="classtf_1_1Executor_1a824fbb761eaece4549da2fe070f95dac" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_process_async_dependent</name></member>
+      <member refid="classtf_1_1Executor_1a62a4f5f02d7318fdc6cecaacb27d2673" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_process_dependent_async</name></member>
       <member refid="classtf_1_1Executor_1ad3c24a3fa701517bfdf119c549e2729a" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_process_exception</name></member>
       <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule</name></member>
       <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule</name></member>
