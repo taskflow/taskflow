@@ -14,7 +14,7 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
-@brief class to create a dependent asynchronous task
+@brief class to hold a dependent asynchronous task with shared ownership
 
 A tf::AsyncTask is a lightweight handle that retains @em shared ownership
 of a dependent asynchronous task (async task) created by an executor.

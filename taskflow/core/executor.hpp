@@ -57,6 +57,7 @@ std::thread t2([&](){ executor.async([](){ std::cout << "async task from t2\n"; 
 executor.async([&](){ std::cout << "async task from the main thread\n"; });
 @endcode
 
+@note
 To know more about tf::Executor, please refer to @ref ExecuteTaskflow.
 */
 class Executor {

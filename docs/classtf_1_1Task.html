@@ -62,20 +62,20 @@
             </li>
           </ul>
         </nav>
-<p>A task is a wrapper over a node in a taskflow graph. It provides a set of methods for users to access and modify attributes of the associated node. A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially copied around.</p><pre class="m-code"><span class="c1">// create two tasks with one dependency</span>
+<p>A task points to a node in a taskflow graph and provides a set of methods for users to access and modify attributes of the associated node, such as dependencies, callable, names, and so on. A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially copied around.</p><pre class="m-code"><span class="c1">// create two tasks with one dependency</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task1&quot;</span><span class="p">);</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task2&quot;</span><span class="p">);</span>
 <span class="n">task1</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">task2</span><span class="p">);</span>
 
 <span class="c1">// dump the task information through std::cout</span>
-<span class="n">task1</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>A task created from a taskflow can be one of the following types:</p><ul><li>static task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">tf::<wbr />TaskType::<wbr />STATIC</a>) - <a href="StaticTasking.html" class="m-doc">Static Tasking</a></li><li>condition task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">tf::<wbr />TaskType::<wbr />CONDITION</a>) - <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a></li><li>runtime task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">tf::<wbr />TaskType::<wbr />RUNTIME</a>) - <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a></li><li>subflow task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" class="m-doc">tf::<wbr />TaskType::<wbr />SUBFLOW</a>) - <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a></li><li>module task (<a href="namespacetf.html#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">tf::<wbr />TaskType::<wbr />MODULE</a>) - <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a></li></ul><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
+<span class="n">task1</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre><p>A task created from a taskflow can be one of the following types:</p><ul><li><a href="namespacetf.html#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">tf::<wbr />TaskType::<wbr />STATIC</a> - <a href="StaticTasking.html" class="m-doc">Static Tasking</a></li><li><a href="namespacetf.html#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">tf::<wbr />TaskType::<wbr />CONDITION</a> - <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a></li><li><a href="namespacetf.html#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">tf::<wbr />TaskType::<wbr />RUNTIME</a> - <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a></li><li><a href="namespacetf.html#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" class="m-doc">tf::<wbr />TaskType::<wbr />SUBFLOW</a> - <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a></li><li><a href="namespacetf.html#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">tf::<wbr />TaskType::<wbr />MODULE</a> - <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a></li></ul><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;condition task&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;runtime task&quot;</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="p">}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;subflow task&quot;</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;module task&quot;</span><span class="p">);</span></pre><p>A <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> is polymorphic. Once created, you can reassign it to a different callable of a different task type using <a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc">tf::<wbr />Task::<wbr />work</a>. For example, the code below creates a static task and reworks it to a subflow task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;module task&quot;</span><span class="p">);</span></pre><p>A <a href="classtf_1_1Task.html" class="m-doc">tf::<wbr />Task</a> is polymorphic. Once created, you can assign a different task type to it using <a href="#a2f6f4cec42d016e5eb89390f362ffe99" class="m-doc">tf::<wbr />Task::<wbr />work</a>. For example, the code below creates a static task and then reworks it to a subflow task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;static task&quot;</span><span class="p">);</span>
 <span class="n">task</span><span class="p">.</span><span class="n">work</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">stask2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
@@ -455,7 +455,7 @@
 </g>
 </g>
 </svg>
-</div><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p>
+</div><aside class="m-note m-info"><h4>Note</h4><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="ad5e874b7cc77df1e7dc875d436ff7b72"><div>
             <h3>
@@ -520,7 +520,7 @@
 </g>
 </g>
 </svg>
-</div><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p>
+</div><aside class="m-note m-info"><h4>Note</h4><p>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a9057ecd0f3833b717480e914f8568f02"><div>
             <h3>
@@ -544,7 +544,8 @@
                 </tr>
               </tfoot>
             </table>
-<p><code class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task name&quot;</span><span class="p">);</span></code></p>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;foo&quot;</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a2f6f4cec42d016e5eb89390f362ffe99"><div>
             <h3>
@@ -620,7 +621,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The example below creates a module task from a taskflow:</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span></pre><p>To understand how Taskflow schedules a module task and how to create a schedulable graph, pleas refer to <a href="ComposableTasking.html#CreateACustomComposableGraph" class="m-doc">Create a Custom Composable Graph</a>.</p>
+<p>The example below creates a module task from a taskflow:</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span></pre><p>To understand how Taskflow schedules a module task including how to create a schedulable graph, pleas refer to <a href="ComposableTasking.html#CreateACustomComposableGraph" class="m-doc">Create a Custom Composable Graph</a>.</p>
           </div></section>
           <section class="m-doc-details" id="a8c78c453295a553c1c016e4062da8588"><div>
             <h3>
@@ -707,7 +708,7 @@
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a26709523eb112f2d024f4c0e9d2f0019" class="m-doc-self">release</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore)</span></span>
             </h3>
             <p>makes the task release the given semaphore</p>
-<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+<aside class="m-note m-info"><h4>Note</h4><p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a1c64e317dba24a8cf4f8da6123bc33af"><div>
             <h3>
@@ -718,14 +719,14 @@
               I last)</span></span>
             </h3>
             <p>makes the task release the given range of semaphores</p>
-<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+<aside class="m-note m-info"><h4>Note</h4><p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a076ab9c6f3a0346e16cfb5fee7dc4ce8"><div>
             <h3>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a>&amp; tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a076ab9c6f3a0346e16cfb5fee7dc4ce8" class="m-doc-self">acquire</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Semaphore.html" class="m-doc">Semaphore</a>&amp; semaphore)</span></span>
             </h3>
             <p>makes the task acquire the given semaphore</p>
-<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+<aside class="m-note m-info"><h4>Note</h4><p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a39efdef7d401205115d10c3c2e76e456"><div>
             <h3>
@@ -736,7 +737,7 @@
               I last)</span></span>
             </h3>
             <p>makes the task acquire the given range of semaphores</p>
-<p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p>
+<aside class="m-note m-info"><h4>Note</h4><p>To know more about <a href="classtf_1_1Semaphore.html" class="m-doc">tf::<wbr />Semaphore</a>, please refer to <a href="LimitTheMaximumConcurrency.html" class="m-doc">Limit the Maximum Concurrency</a>.</p></aside>
           </div></section>
           <section class="m-doc-details" id="afd82ab6d6518d1142a72c4d2c97ff114"><div>
             <h3>
@@ -796,7 +797,7 @@
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td>true if the task is not associated with any taskflow node; otherwise false</td>
+                  <td><code>true</code> if the task is not associated with any taskflow node; otherwise <code>false</code></td>
                 </tr>
               </tfoot>
             </table>
@@ -812,7 +813,7 @@
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td>true if the task has a work assigned (not placeholder); otherwise false</td>
+                  <td><code>true</code> if the task has a work assigned (not placeholder); otherwise <code>false</code></td>
                 </tr>
               </tfoot>
             </table>

@@ -70,7 +70,7 @@ class cudaEventDeleter {
 /**
 @class cudaEventBase
 
-@brief class to create a smart pointer wrapper for managing a CUDA event
+@brief class to create a CUDA event with unique ownership
 
 @tparam Creator functor to create the stream (used in constructor)
 @tparam Deleter functor to delete the stream (used in destructor)
@@ -177,7 +177,7 @@ class cudaStreamDeleter {
 /**
 @class cudaStreamBase
 
-@brief class to create a smart pointer wrapper for managing a CUDA stream
+@brief class to create a CUDA stream with unique ownership
 
 @tparam Creator functor to create the stream (used in constructor)
 @tparam Deleter functor to delete the stream (used in destructor)

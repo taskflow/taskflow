@@ -88,7 +88,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="288" column="24" bodyfile="taskflow/core/taskflow.hpp" bodystart="288" bodyend="-1"/>
+        <location file="taskflow/core/taskflow.hpp" line="326" column="24" bodyfile="taskflow/core/taskflow.hpp" bodystart="326" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a5f4243689c241ccb5ca4316211d21a62" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -102,7 +102,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="290" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="290" bodyend="-1"/>
+        <location file="taskflow/core/taskflow.hpp" line="328" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="328" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a78a7df50a7d2aeacb7c5c6948f5dd94a" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref></type>
@@ -116,7 +116,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="292" column="11" bodyfile="taskflow/core/taskflow.hpp" bodystart="292" bodyend="-1"/>
+        <location file="taskflow/core/taskflow.hpp" line="330" column="11" bodyfile="taskflow/core/taskflow.hpp" bodystart="330" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1a7016553915989a1725addcf7d4e975bf" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/queue" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::queue</ref>&lt; <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; Topology &gt; &gt;</type>
@@ -130,7 +130,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="294" column="16" bodyfile="taskflow/core/taskflow.hpp" bodystart="294" bodyend="-1"/>
+        <location file="taskflow/core/taskflow.hpp" line="332" column="16" bodyfile="taskflow/core/taskflow.hpp" bodystart="332" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Taskflow_1ad5d60317ed24250a1e1f919e65572d34" prot="private" static="no" mutable="no">
         <type>std::optional&lt; <ref refid="cpp/container/list" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::list</ref>&lt; <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &gt;::iterator &gt;</type>
@@ -144,7 +144,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="295" column="20" bodyfile="taskflow/core/taskflow.hpp" bodystart="295" bodyend="-1"/>
+        <location file="taskflow/core/taskflow.hpp" line="333" column="20" bodyfile="taskflow/core/taskflow.hpp" bodystart="333" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
@@ -168,7 +168,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="90" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="303" bodyend="306"/>
+        <location file="taskflow/core/taskflow.hpp" line="90" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="341" bodyend="344"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1ade7fc641d136a3f8c96682c08040626a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -183,7 +183,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="95" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="309" bodyend="310"/>
+        <location file="taskflow/core/taskflow.hpp" line="95" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="347" bodyend="348"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1afd790de6db6d16ddf4729967c1edebb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -203,11 +203,13 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow1(<ref refid="cpp/utility/move" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::move</ref>(taskflow2));</highlight></codeline>
 <codeline><highlight class="normal">assert(taskflow2.empty());</highlight></codeline>
 </programlisting></para>
-<para>Notice that <computeroutput>taskflow2</computeroutput> should not be running in an executor during the move operation, or the behavior is undefined. </para>
+<para><simplesect kind="attention"><para>You should avoid moving a taskflow that is currently running on an executor. Doing so results in undefined behavior. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="112" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="313" bodyend="323"/>
+        <location file="taskflow/core/taskflow.hpp" line="112" column="5" bodyfile="taskflow/core/taskflow.hpp" bodystart="351" bodyend="361"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1aa4957a41e63e1d1a6f77c540d70d04fa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &amp;</type>
@@ -227,11 +229,13 @@
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow1<sp/>=<sp/><ref refid="cpp/utility/move" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::move</ref>(taskflow2);</highlight></codeline>
 <codeline><highlight class="normal">assert(taskflow2.empty());</highlight></codeline>
 </programlisting></para>
-<para>Notice that both <computeroutput>taskflow1</computeroutput> and <computeroutput>taskflow2</computeroutput> should not be running in an executor during the move operation, or the behavior is undefined. </para>
+<para><simplesect kind="attention"><para>You should avoid moving a taskflow that is currently running on an executor. Doing so results in undefined behavior. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="129" column="14" bodyfile="taskflow/core/taskflow.hpp" bodystart="326" bodyend="336"/>
+        <location file="taskflow/core/taskflow.hpp" line="129" column="14" bodyfile="taskflow/core/taskflow.hpp" bodystart="364" bodyend="374"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1aa966a69493ecc8ecb9131ef3c5354b8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -290,7 +294,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="184" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="393" bodyend="397"/>
+        <location file="taskflow/core/taskflow.hpp" line="184" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="431" bodyend="435"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a9c4900da1831dce708664a06b3e3a3fb" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -306,7 +310,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="192" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="386" bodyend="390"/>
+        <location file="taskflow/core/taskflow.hpp" line="192" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="424" bodyend="428"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -315,13 +319,31 @@
         <name>num_tasks</name>
         <qualifiedname>tf::Taskflow::num_tasks</qualifiedname>
         <briefdescription>
-<para>queries the number of tasks </para>
+<para>queries the number of tasks in this taskflow </para>
         </briefdescription>
         <detaileddescription>
+<para>The number of tasks in this taskflow is defined at the first level of hierarchy. Tasks that are created dynamically, such as those via <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>, are not counted.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>my_task<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>reassign<sp/>my_task<sp/>to<sp/>a<sp/>subflow<sp/>of<sp/>four<sp/>tasks</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">my_task.work([](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>C\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>D\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>subflow<sp/>tasks<sp/>will<sp/>not<sp/>be<sp/>counted</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">num_tasks</ref>()<sp/>==<sp/>1);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="197" column="12" bodyfile="taskflow/core/taskflow.hpp" bodystart="344" bodyend="346"/>
+        <location file="taskflow/core/taskflow.hpp" line="219" column="12" bodyfile="taskflow/core/taskflow.hpp" bodystart="382" bodyend="384"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a224301842d94c44fd7fe99d8ac2ba241" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -330,14 +352,19 @@
         <name>empty</name>
         <qualifiedname>tf::Taskflow::empty</qualifiedname>
         <briefdescription>
-<para>queries the emptiness of the taskflow </para>
+<para>queries if this taskflow is empty (has no tasks) </para>
         </briefdescription>
         <detaileddescription>
-<para>An empty taskflow has no tasks. That is the return of <ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">tf::Taskflow::num_tasks</ref> is zero. </para>
+<para>An empty taskflow has no tasks, i.e., the return of <ref refid="classtf_1_1Taskflow_1af4f03bca084deb5c2228ac8936d33649" kindref="member">tf::Taskflow::num_tasks</ref> is <computeroutput>0</computeroutput>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1a224301842d94c44fd7fe99d8ac2ba241" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){});</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.<ref refid="classtf_1_1Taskflow_1a224301842d94c44fd7fe99d8ac2ba241" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="205" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="349" bodyend="351"/>
+        <location file="taskflow/core/taskflow.hpp" line="233" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="387" bodyend="389"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1ad5706e5819aa01a63c4aa2e3485546b9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -350,15 +377,16 @@
           <defname>name</defname>
         </param>
         <briefdescription>
-<para>assigns a name to the taskflow </para>
+<para>assigns a new name to this taskflow </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.name(</highlight><highlight class="stringliteral">&quot;assign<sp/>another<sp/>name&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.name(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.name()<sp/>==<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="214" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="354" bodyend="356"/>
+        <location file="taskflow/core/taskflow.hpp" line="243" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="392" bodyend="394"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a911edd95acc1322433bddfcfeaf2ccb0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
@@ -367,15 +395,16 @@
         <name>name</name>
         <qualifiedname>tf::Taskflow::name</qualifiedname>
         <briefdescription>
-<para>queries the name of the taskflow </para>
+<para>queries the name of this taskflow </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;my<sp/>name<sp/>is:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>taskflow.name();</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow(</highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">assert(taskflow.name()<sp/>==<sp/></highlight><highlight class="stringliteral">&quot;foo&quot;</highlight><highlight class="normal">);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="223" column="23" bodyfile="taskflow/core/taskflow.hpp" bodystart="359" bodyend="361"/>
+        <location file="taskflow/core/taskflow.hpp" line="253" column="23" bodyfile="taskflow/core/taskflow.hpp" bodystart="397" bodyend="399"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a1f00bbe72a1553c9656ecae4d98bb9af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -391,7 +420,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="232" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="339" bodyend="341"/>
+        <location file="taskflow/core/taskflow.hpp" line="262" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="377" bodyend="379"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a6350d0d6653ae9ae7b94c35e42fffe07" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -409,7 +438,7 @@
           <declname>visitor</declname>
         </param>
         <briefdescription>
-<para>applies a visitor to each task in the taskflow </para>
+<para>applies a visitor to each task in this taskflow </para>
         </briefdescription>
         <detaileddescription>
 <para>A visitor is a callable that takes an argument of type <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> and returns nothing. The following example iterates each task in a taskflow and prints its name:</para>
@@ -420,7 +449,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="248" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="370" bodyend="374"/>
+        <location file="taskflow/core/taskflow.hpp" line="278" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="408" bodyend="412"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -457,7 +486,7 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
+Removing the depencency from task <computeroutput>from</computeroutput> to task <computeroutput>to</computeroutput> is equivalent to removing <computeroutput>to</computeroutput> from the succcessor list of <computeroutput>from</computeroutput> and removing <computeroutput>from</computeroutput> from the predecessor list of <computeroutput>to</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>a<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>().<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;a&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>b<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1acab0b4ac82260f47fdb36a3244ee3aaf" kindref="member">placeholder</ref>().<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;b&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -473,11 +502,14 @@
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1a354a7673fabeaf3be66928ad6b573900" kindref="member">remove_dependency</ref>(a,<sp/>b);</highlight></codeline>
 <codeline><highlight class="normal">assert(a.num_successors()<sp/>==<sp/>2);</highlight></codeline>
 <codeline><highlight class="normal">assert(b.num_predecessors()<sp/>==<sp/>0);</highlight></codeline>
-</programlisting> </para>
+</programlisting></para>
+<para><simplesect kind="attention"><para>For performance reason, Taskflow does not store the graph using linked lists but vectors with contiguous space. Therefore, removing tasks or dependencies incurs linear time complexity proportional to the size of the graph and the dependency count of a task. </para>
+</simplesect>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="276" column="17" bodyfile="taskflow/core/taskflow.hpp" bodystart="377" bodyend="383"/>
+        <location file="taskflow/core/taskflow.hpp" line="313" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="415" bodyend="421"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a8da984d149b439e88468bf26e02ecf27" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
@@ -489,11 +521,11 @@
 <para>returns a reference to the underlying graph object </para>
         </briefdescription>
         <detaileddescription>
-<para>A graph object (of type <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>) stores the task dependency graph that can be scheduled by the executor through composition. </para>
+<para>A graph object is of type <ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref> and stores a task dependency graph that can be executed by an <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="284" column="11" bodyfile="taskflow/core/taskflow.hpp" bodystart="364" bodyend="366"/>
+        <location file="taskflow/core/taskflow.hpp" line="322" column="11" bodyfile="taskflow/core/taskflow.hpp" bodystart="402" bodyend="404"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -517,7 +549,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="297" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="400" bodyend="431"/>
+        <location file="taskflow/core/taskflow.hpp" line="335" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="438" bodyend="469"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1a22bd6faed11509c504c4a9cb8cb81fd6" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -543,7 +575,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="298" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="434" bodyend="495"/>
+        <location file="taskflow/core/taskflow.hpp" line="336" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="472" bodyend="533"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Taskflow_1afdfa1f01d5471d3cddc39b3bae11c464" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -569,7 +601,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/taskflow.hpp" line="299" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="498" bodyend="532"/>
+        <location file="taskflow/core/taskflow.hpp" line="337" column="10" bodyfile="taskflow/core/taskflow.hpp" bodystart="536" bodyend="570"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -638,7 +670,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/taskflow.hpp" line="67" column="1" bodyfile="taskflow/core/taskflow.hpp" bodystart="67" bodyend="300"/>
+    <location file="taskflow/core/taskflow.hpp" line="67" column="1" bodyfile="taskflow/core/taskflow.hpp" bodystart="67" bodyend="338"/>
     <listofallmembers>
       <member refid="classtf_1_1Taskflow_1a34c956aeab7ae7e44add3538504ea9aa" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_dump</name></member>
       <member refid="classtf_1_1Taskflow_1a22bd6faed11509c504c4a9cb8cb81fd6" prot="private" virt="non-virtual"><scope>tf::Taskflow</scope><name>_dump</name></member>

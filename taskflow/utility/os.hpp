@@ -127,12 +127,12 @@ namespace tf {
 
  @brief class to ensure cacheline-aligned storage for an object.
  
+ @tparam T The type of the stored object.
+ 
  This utility class aligns the stored object `data` to twice the size of a cacheline.
  The alignment improves performance by optimizing data access in cache-sensitive scenarios.
  
- @tparam T The type of the stored object.
- 
- @code
+ @code{.cpp}
  // create two integers on two separate cachelines to avoid false sharing
  tf::CachelineAligned<int> counter1;
  tf::CachelineAligned<int> counter2;

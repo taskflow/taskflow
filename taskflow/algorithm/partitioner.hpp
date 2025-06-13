@@ -46,7 +46,7 @@ enum class PartitionerType : int {
 /**
 @class DefaultClosureWrapper
 
-@brief class to create a default closure wrapper for compile-time optimization
+@brief class to create a default closure wrapper
 */
 class DefaultClosureWrapper {};
 
@@ -220,7 +220,7 @@ class PartitionerBase : public IsPartitioner {
 
 @tparam C closure wrapper type (default tf::DefaultClosureWrapper)
 
-@brief class to construct a guided partitioner for scheduling parallel algorithms
+@brief class to create a guided partitioner for scheduling parallel algorithms
 
 The size of a partition is proportional to the number of unassigned iterations 
 divided by the number of workers, 
@@ -395,7 +395,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
 /**
 @class DynamicPartitioner
 
-@brief class to construct a dynamic partitioner for scheduling parallel algorithms
+@brief class to create a dynamic partitioner for scheduling parallel algorithms
 
 @tparam C closure wrapper type (default tf::DefaultClosureWrapper)
 

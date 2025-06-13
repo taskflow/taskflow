@@ -13,15 +13,15 @@ We are grateful for the following contributors (alphabetic order) to the %Taskfl
   @li <a href="https://github.com/Anesthesia4">Anesthesia4</a>: added unit tests for parallel-transform algorithms  
   @li <a href="https://antonysigma.github.io/">Antony Chan</a>: added unit tests for parallel-transform algorithms  @li <a href="https://github.com/aolofsson">Andreas Olofsson</a>: supported the %Taskflow project through the DARPA IDEA program
   @li <a href="https://github.com/boxerab">Aaron Boxer</a>: fixed compiler warning caused by unsigned-signed conversion
-  @li <a href="https://github.com/bangerth">Wolfgang Bangerth</a>: fixed the redudndant `nullptr` check
-  @li <a href="https://github.com/bkmgit">Benson Muite</a>: fixed compilation errors of the wavefront benchmark
+  @li <a href="https://github.com/bangerth">Wolfgang Bangerth</a>: fixed the redundant `nullptr` check
+  @li <a href="https://github.com/bkmgit">Benson Muite</a>: fixed compilation errors of the BFS benchmark
   @li <a href="https://cheng-hsiang-chiu.github.io/">Cheng-Hsiang Chiu</a>: improved the documentation, fixes typos, and test code examples
   @li <a href="https://www.linkedin.com/in/chandrahas-pundru-04552916a/">Chandrahas Pundru</a>: implemented cancellation of submitted taskflows
   @li <a href="https://github.com/clin99">Chun-Xun Lin</a>: co-created the %Taskflow project and designed the core functionalities
   @li <a href="https://github.com/conradjones">Conrad Jones</a>: added cancellation query support from the runtime task
   @li <a href="https://github.com/craffael">Craffael</a>: improved the CMake to allow relocatable installation
-  @li <a href="https://github.com/danielytics">Dan Kersten</a>: designed an interface to allow customizing worker behaviors upon their creation in an executor
-  @li <a href="https://github.com/musteresel">Daniel Jour</a>: improved cmake through out-of-tree builds and designed the semaphore interface
+  @li <a href="https://github.com/danielytics">Dan Kersten</a>: designed an interface to allow customizing worker behaviors
+  @li <a href="https://github.com/musteresel">Daniel Jour</a>: improved cmake via out-of-tree builds and designed the semaphore interface
   @li <a href="https://github.com/dian-lun-lin">Dian-Lun Lin</a>: applied %Taskflow to win the champion award of the IEEE HPEC 2020 %Graph Challenge 
   @li <a href="https://github.com/egorodet">Evgeny Gorodetskiy</a>: fixed task queue compilation error due to wrong macro locations 
   @li <a href="https://github.com/fstrugar">Filip Strugar</a>: fixed the bugs in fire-and-get taskflow execution and parallel algorithms
@@ -33,9 +33,9 @@ We are grateful for the following contributors (alphabetic order) to the %Taskfl
   @li <a href="https://github.com/hjxy2012">Hjxy2012</a>: fixed the compilation error in nvcc due to removed features in C++17
   @li <a href="https://github.com/xq114">Hoildkv</a>: fixed documentation errors in explaining the observer interface of executor
   @li <a href="https://github.com/IkeOTL">Isaac Yousuf</a>: fixed the bug in exception handling for worker loop
-  @li <a href="https://ossia.io/">Jean Michael</a>: integrated %Taskflow to the OSSIA project and reported feedback in comparison to TBB
+  @li <a href="https://ossia.io/">Jean Michael</a>: integrated %Taskflow to the OSSIA project
   @li <a href="https://jw-liu.xyz/">Jiawei Liu</a>: fixed typos in the documentation
-  @li <a href="https://github.com/juliangilbey">Junlian Gilbey</a>: added the explicit link to libatomic on some archs 
+  @li <a href="https://github.com/juliangilbey">Junlian Gilbey</a>: added the explicit link to libatomic on some architectures
   @li <a href="https://github.com/junlinmessi">Junlin Huang</a>: fixed the erroneous template argument in serializer and deserializer
   @li <a href="https://github.com/KingDuckZ">KingDuckZ</a>: helped discover memory leak in the object pool
   @li <a href="https://github.com/Levi-Armstrong">Levi Armstrong</a>: added threads target to the CMake file as an interface library
@@ -73,13 +73,13 @@ We are grateful for the following contributors (alphabetic order) to the %Taskfl
   @li <a href="https://www.linkedin.com/in/vedanta-krishna-bhutani-96035317a/">Vedanta Krishna Bhutani</a>: implemented cancellation of submitted taskflows
   @li <a href="https://github.com/Endilll">Vlad Serebrennikov</a>: implemented the interface to attach user data in a task
   @li <a href="https://vedran.miletic.net/">Vedran Miletic</a>: patched the OS detection utility to include Solaris and illumos
-  @li <a href="http://blog.mosra.cz/">Vladimir Von­drus</a>: helped modernize %Taskflow handbook using m.css and make pages mobile-friendly
+  @li <a href="http://blog.mosra.cz/">Vladimir Von­drus</a>: helped modernize %Taskflow handbook using m.css
   @li <a href="https://github.com/innermous">Vladyslav</a>: fixed comment errors in README.md and examples
   @li <a href="https://github.com/qq978358810">WiCyn</a>: identified a bug in scheduling condition tasks during run-n
   @li <a href="https://github.com/Ya-Za">Yasin Zamani</a>: benchmarked the parallel sort with the TBB baseline
   @li <a href="http://yibolin.com/">Yibo Lin</a>: helped design the interface of conditional tasking
   @li <a href="https://github.com/QiuYilin">Yilin Qiu</a>: helped implement the dependency removal methods in %Taskflow
-  @li <a href="https://github.com/yumeno-yan">Yumeno Yan</a>: fixed the cplusplus macro error in the MSVC environment
+  @li <a href="https://github.com/yumeno-yan">Yumeno Yan</a>: fixed the C++ macro error in the MSVC environment
   @li <a href="https://github.com/weilewei">Weile</a>: helped added %Taskflow to the compiler explorer interface
   @li <a href="https://guozz.cn/">Zizheng Guo</a>: applied %Taskflow to speed up VLSI timing analysis and shared his feedback
 
@@ -108,7 +108,7 @@ We are grateful for the following organizations and projects that are using %Tas
 @li <a href="https://github.com/GrokImageCompression/grok">GROK</a>: World's Leading Open Source JPEG 2000 Codec
 @li <a href="https://github.com/Ravbug/RavEngine">RavEngine</a>: A fast, easy to use C++17 3D game library for modern computers
 @li <a href="https://github.com/erri120/rpgmpacker">RPGMPacker</a>: CLI program for packaging RPG Maker games in an automated build/deploy pipeline.
-@li <a href="https://github.com/JayXon/Leanify">Leanify</a>: A lightweight lossless file minifier and optimizer
+@li <a href="https://github.com/JayXon/Leanify">Leanify</a>: A lightweight lossless file compressor
 @li <a href="https://www.xanadu.ai/">Xanadu AI</a>: Accelerate simulation using quantum computing
 @li <a href="https://github.com/heal-research/operon">Operon</a>: Modern C++ framework for Symbolic Regression using Genetic Programming 
 @li <a href="https://github.com/ExplosionEngine/Explosion">Explosion</a>: A modern cross-platform game engine
@@ -120,7 +120,7 @@ We are grateful for the following organizations and projects that are using %Tas
 @li <a href="https://github.com/maxbachmann/RapidFuzz">RapidFuxx</a>: Rapid fuzzy string matching in Python using various string metrics
 @li <a href="https://github.com/KomodoPlatform/atomicDEX-Desktop">AtomicDEX</a>: Secure wallet and decentralized exchange rolled into one application
 @li <a href="https://github.com/intel-ai/oox">OOX</a>: Out-of-order task execution library in modern C++
-@li <a href="https://reagent.ai/">ReAgent</a>: An open end-to-end platform for applied reinforcement learning  developed and used at Facebook
+@li <a href="https://reagent.ai/">ReAgent</a>: An open-source platform for applied reinforcement learning developed by Meta
 @li <a href="https://github.com/GauravDawra/Beast">Beast-Build</a>: A build system built for speed and power 
 @li <a href="https://gdimitrak.github.io/papers/taskflow-tcad22.pdf">Gate Sizing</a>: A task-parallel gate sizing algorithm for VLSI design automation
 @li <a href="https://github.com/fragcolor-xyz/shards">Shards</a>: A scripting tool to build tools

@@ -70,7 +70,7 @@
             <dt>
               class <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>
             </dt>
-            <dd>class to create a dependent asynchronous task</dd>
+            <dd>class to hold a dependent asynchronous task with shared ownership</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
               class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">BoundedTaskQueue</a>
@@ -89,7 +89,7 @@
               <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
               class <a href="classtf_1_1cudaEventBase.html" class="m-doc">cudaEventBase</a>
             </dt>
-            <dd>class to create a smart pointer wrapper for managing a CUDA event</dd>
+            <dd>class to create a CUDA event with unique ownership</dd>
             <dt>
               class <a href="classtf_1_1cudaEventCreator.html" class="m-doc">cudaEventCreator</a>
             </dt>
@@ -102,7 +102,7 @@
               <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
               class <a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>
             </dt>
-            <dd>class to create a CUDA graph managed by C++ smart pointer</dd>
+            <dd>class to create a CUDA graph with uunique ownership</dd>
             <dt>
               class <a href="classtf_1_1cudaGraphCreator.html" class="m-doc">cudaGraphCreator</a>
             </dt>
@@ -115,7 +115,7 @@
               <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
               class <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>
             </dt>
-            <dd>class to create an executable CUDA graph managed by C++ smart pointer</dd>
+            <dd>class to create an executable CUDA graph with unique ownership</dd>
             <dt>
               class <a href="classtf_1_1cudaGraphExecCreator.html" class="m-doc">cudaGraphExecCreator</a>
             </dt>
@@ -132,7 +132,7 @@
               <div class="m-doc-template">template&lt;typename Creator, typename Deleter&gt;</div>
               class <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>
             </dt>
-            <dd>class to create a smart pointer wrapper for managing a CUDA stream</dd>
+            <dd>class to create a CUDA stream with unique ownership</dd>
             <dt>
               class <a href="classtf_1_1cudaStreamCreator.html" class="m-doc">cudaStreamCreator</a>
             </dt>
@@ -158,7 +158,7 @@
             <dt>
               class <a href="classtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>
             </dt>
-            <dd>class to create a default closure wrapper for compile-time optimization</dd>
+            <dd>class to create a default closure wrapper</dd>
             <dt>
               class <a href="classtf_1_1DefaultTaskParams.html" class="m-doc">DefaultTaskParams</a>
             </dt>
@@ -167,7 +167,7 @@
               <div class="m-doc-template">template&lt;typename C = <a href="classtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1DynamicPartitioner.html" class="m-doc">DynamicPartitioner</a>
             </dt>
-            <dd>class to construct a dynamic partitioner for scheduling parallel algorithms</dd>
+            <dd>class to create a dynamic partitioner for scheduling parallel algorithms</dd>
             <dt>
               class <a href="classtf_1_1Executor.html" class="m-doc">Executor</a>
             </dt>
@@ -189,7 +189,7 @@
               <div class="m-doc-template">template&lt;typename C = <a href="classtf_1_1DefaultClosureWrapper.html" class="m-doc">DefaultClosureWrapper</a>&gt;</div>
               class <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>
             </dt>
-            <dd>class to construct a guided partitioner for scheduling parallel algorithms</dd>
+            <dd>class to create a guided partitioner for scheduling parallel algorithms</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
               class <a href="classtf_1_1IndexRange.html" class="m-doc">IndexRange</a>
@@ -1650,13 +1650,7 @@
               <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="task_8hpp.html">&lt;taskflow/core/task.hpp&gt;</a></div>
             </h3>
             <p>convert a task type to a human-readable string</p>
-<p>The name of each task type is the litte-case string of its characters.</p><pre class="m-code"><span class="n">TaskType</span><span class="o">::</span><span class="n">PLACEHOLDER</span><span class="w">     </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;placeholder&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">STATIC</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;static&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">RUNTIME</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;runtime&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">SUBFLOW</span><span class="w">         </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;subflow&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">CONDITION</span><span class="w">       </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;condition&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">MODULE</span><span class="w">          </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;module&quot;</span>
-<span class="n">TaskType</span><span class="o">::</span><span class="n">ASYNC</span><span class="w">           </span><span class="o">-&gt;</span><span class="w">  </span><span class="s">&quot;async&quot;</span></pre>
+<p>The name of each task type is the litte-case string of its characters.</p><ul><li><a href="#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842" class="m-doc">TaskType::<wbr />PLACEHOLDER</a> is of string <code>placeholder</code></li><li><a href="#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" class="m-doc">TaskType::<wbr />STATIC</a> is of string <code>static</code></li><li><a href="#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8" class="m-doc">TaskType::<wbr />RUNTIME</a> is of string <code>runtime</code></li><li><a href="#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad" class="m-doc">TaskType::<wbr />SUBFLOW</a> is of string <code>subflow</code></li><li><a href="#a1355048578785a80414707ff308b395aa9f768c0bb1c3e84ca086a85211e978ac" class="m-doc">TaskType::<wbr />CONDITION</a> is of string <code>condition</code></li><li><a href="#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69" class="m-doc">TaskType::<wbr />MODULE</a> is of string <code>module</code></li><li><a href="#a1355048578785a80414707ff308b395aabe553330beb7b3d994656e0a4e66cd96" class="m-doc">TaskType::<wbr />ASYNC</a> is of string <code>async</code></li></ul>
           </div></section>
           <section class="m-doc-details" id="ad8b1b906950270c6b7bc19e7074daa23"><div>
             <h3>

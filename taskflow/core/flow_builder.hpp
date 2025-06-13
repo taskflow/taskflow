@@ -44,7 +44,8 @@ class FlowBuilder {
   @code{.cpp}
   tf::Task static_task = taskflow.emplace([](){});
   @endcode
-
+  
+  @note
   Please refer to @ref StaticTasking for details.
   */
   template <typename C,
@@ -67,6 +68,7 @@ class FlowBuilder {
   tf::Task static_task = taskflow.emplace([](tf::Runtime&){});
   @endcode
 
+  @note
   Please refer to @ref RuntimeTasking for details.
   */
   template <typename C,
@@ -93,6 +95,7 @@ class FlowBuilder {
   });
   @endcode
 
+  @note
   Please refer to @ref SubflowTasking for details.
   */
   template <typename C,
@@ -127,6 +130,7 @@ class FlowBuilder {
   cond.succeed(init);
   @endcode
 
+  @note
   Please refer to @ref ConditionalTasking for details.
   */
   template <typename C,
@@ -163,6 +167,7 @@ class FlowBuilder {
   cond.succeed(init);
   @endcode
 
+  @note
   Please refer to @ref ConditionalTasking for details.
   */
   template <typename C,
@@ -268,6 +273,7 @@ class FlowBuilder {
   tf::Task comp = taskflow.composed_of(obj);
   @endcode
 
+  @note
   Please refer to @ref ComposableTasking for details.
   */
   template <typename T>
@@ -369,6 +375,7 @@ class FlowBuilder {
   The callable needs to take a single argument of
   the dereferenced iterator type.
 
+  @note
   Please refer to @ref ParallelIterations for details.
   */
   template <typename B, typename E, typename C, typename P = DefaultPartitioner>
@@ -410,6 +417,7 @@ class FlowBuilder {
   Iterators can be made stateful by using std::reference_wrapper
   The callable needs to take a single argument of the integral index type.
 
+  @note
   Please refer to @ref ParallelIterations for details.
   */
   template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
@@ -448,6 +456,7 @@ class FlowBuilder {
 
   The callable needs to take a single argument of type tf::IndexRange.
 
+  @note
   Please refer to @ref ParallelIterations for details.
   */
   template <typename R, typename C, typename P = DefaultPartitioner>
@@ -488,6 +497,7 @@ class FlowBuilder {
   The callable needs to take a single argument of the dereferenced
   iterator type.
   
+  @note
   Please refer to @ref ParallelTransforms for details.
   */
   template <
@@ -529,6 +539,7 @@ class FlowBuilder {
   The callable needs to take two arguments of dereferenced elements
   from the two input ranges.
   
+  @note
   Please refer to @ref ParallelTransforms for details.
   */
   template <
@@ -571,6 +582,7 @@ class FlowBuilder {
 
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelReduction for details.
   */
   template <typename B, typename E, typename T, typename O, typename P = DefaultPartitioner>
@@ -627,6 +639,7 @@ class FlowBuilder {
 
   Range can be made stateful by using std::reference_wrapper.
 
+  @note
   Please refer to @ref ParallelReduction for details.
   */
   template <typename R, typename T, typename L, typename G, typename P = DefaultPartitioner>
@@ -668,6 +681,7 @@ class FlowBuilder {
 
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelReduction for details.
   */
   template <
@@ -709,6 +723,7 @@ class FlowBuilder {
  
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelReduction for details.
   */
   
@@ -760,6 +775,7 @@ class FlowBuilder {
 
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP>
@@ -802,6 +818,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
  
+  @note
   Please refer to @ref ParallelScan for details.
 
   */
@@ -845,6 +862,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   
+  @note
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename T, typename BOP>
@@ -892,6 +910,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   
+  @note
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP, typename UOP>
@@ -938,6 +957,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   
+  @note
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
@@ -983,6 +1003,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   
+  @note
   Please refer to @ref ParallelScan for details.
   */
   template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
@@ -1212,6 +1233,7 @@ class FlowBuilder {
 
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelSort for details.
   */
   template <typename B, typename E, typename C>
@@ -1233,6 +1255,7 @@ class FlowBuilder {
 
   Iterators can be made stateful by using std::reference_wrapper
 
+  @note
   Please refer to @ref ParallelSort for details.
    */
   template <typename B, typename E>

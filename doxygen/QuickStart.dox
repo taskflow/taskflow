@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @mainpage Modern C++ Parallel Task Programming
+/** @mainpage A General-purpose Task-parallel Programming System
 
 %Taskflow helps you quickly write parallel and heterogeneous 
 task programs with <i>high performance</i>
@@ -13,14 +13,13 @@ The source code is available in our @ProjectGitHub.
 
 @section ASimpleFirstProgram Start Your First Taskflow Program
 
-The following program (@c simple.cpp) creates four tasks 
+The following program (@c simple.cpp) creates a taskflow of four tasks 
 @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
 runs after @c B and @c C.
 When @c A finishes, @c B and @c C can run in parallel.
 
 
-<!-- @image html images/simple.svg width=35% -->
-@dotfile images/simple.dot
+
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>  // Taskflow is header-only
@@ -45,6 +44,9 @@ int main(){
   return 0;
 }
 @endcode
+
+<!-- @image html images/simple.svg width=35% -->
+@dotfile images/simple.dot
 
 %Taskflow is *header-only* and there is no wrangle with installation.
 To compile the program, clone the %Taskflow project and 

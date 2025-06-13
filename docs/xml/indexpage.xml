@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="indexpage" kind="page">
     <compoundname>index</compoundname>
-    <title>Modern C++ Parallel Task Programming</title>
+    <title>A General-purpose Task-parallel Programming System</title>
     <tableofcontents>
       <tocsect>
         <name>Start Your First Taskflow Program</name>
@@ -58,9 +58,7 @@
     <detaileddescription>
 <para>Taskflow helps you quickly write parallel and heterogeneous task programs with <emphasis>high performance</emphasis> and simultaneous <emphasis>high productivity</emphasis>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries. The source code is available in our <ulink url="https://github.com/taskflow/">Project GitHub</ulink>.</para>
 <sect1 id="index_1ASimpleFirstProgram">
-<title>Start Your First Taskflow Program</title><para>The following program (<computeroutput>simple.cpp</computeroutput>) creates four tasks <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel.</para>
-<para><dotfile name="simple.dot"></dotfile>
-</para>
+<title>Start Your First Taskflow Program</title><para>The following program (<computeroutput>simple.cpp</computeroutput>) creates a taskflow of four tasks <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Taskflow<sp/>is<sp/>header-only</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(){</highlight></codeline>
@@ -83,6 +81,8 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
+<para><dotfile name="simple.dot"></dotfile>
+</para>
 <para>Taskflow is <emphasis>header-only</emphasis> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>

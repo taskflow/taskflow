@@ -55,16 +55,13 @@ inline constexpr std::array<TaskType, 7> TASK_TYPES = {
 @brief convert a task type to a human-readable string
 
 The name of each task type is the litte-case string of its characters.
-
-@code{.cpp}
-TaskType::PLACEHOLDER     ->  "placeholder"
-TaskType::STATIC          ->  "static"
-TaskType::RUNTIME         ->  "runtime"
-TaskType::SUBFLOW         ->  "subflow"
-TaskType::CONDITION       ->  "condition"
-TaskType::MODULE          ->  "module"
-TaskType::ASYNC           ->  "async"
-@endcode
+  + TaskType::PLACEHOLDER is of string `placeholder`
+  + TaskType::STATIC is of string `static`
+  + TaskType::RUNTIME is of string `runtime`
+  + TaskType::SUBFLOW is of string `subflow`
+  + TaskType::CONDITION is of string `condition`
+  + TaskType::MODULE is of string `module`
+  + TaskType::ASYNC is of string `async`
 */
 inline const char* to_string(TaskType type) {
 
@@ -191,11 +188,11 @@ constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int
 
 @brief class to create a task handle over a taskflow node
 
-A task is a wrapper over a node in a taskflow graph. 
-It provides a set of methods for users to access and modify attributes of the associated node. 
+A task points to a node in a taskflow graph and provides a set of methods for users to access and modify 
+attributes of the associated node,
+such as dependencies, callable, names, and so on.
 A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially 
 copied around. 
-
 
 @code{.cpp}
 // create two tasks with one dependency
@@ -208,11 +205,11 @@ task1.dump(std::cout);
 @endcode
 
 A task created from a taskflow can be one of the following types:
-  + static task (tf::TaskType::STATIC) - @ref StaticTasking
-  + condition task (tf::TaskType::CONDITION) - @ref ConditionalTasking
-  + runtime task (tf::TaskType::RUNTIME) - @ref RuntimeTasking
-  + subflow task (tf::TaskType::SUBFLOW) - @ref SubflowTasking
-  + module task (tf::TaskType::MODULE) - @ref ComposableTasking
+  + tf::TaskType::STATIC - @ref StaticTasking
+  + tf::TaskType::CONDITION - @ref ConditionalTasking
+  + tf::TaskType::RUNTIME - @ref RuntimeTasking
+  + tf::TaskType::SUBFLOW - @ref SubflowTasking
+  + tf::TaskType::MODULE - @ref ComposableTasking
 
 @code{.cpp}
 tf::Task task1 = taskflow.emplace([](){}).name("static task");
@@ -226,9 +223,8 @@ tf::Task task5 = taskflow.composed_of(taskflow2).name("module task");
 @endcode
 
 A tf::Task is polymorphic. 
-Once created, you can reassign it to a different callable of a different task type 
-using tf::Task::work.
-For example, the code below creates a static task and reworks it to a subflow task:
+Once created, you can assign a different task type to it using tf::Task::work.
+For example, the code below creates a static task and then reworks it to a subflow task:
 
 @code{.cpp}
 tf::Task task = taskflow.emplace([](){}).name("static task");
@@ -290,6 +286,7 @@ class Task {
 
     /**
     @brief replaces the contents with a null pointer
+
     @code{.cpp}
     tf::Task A = taskflow.emplace([](){ std::cout << "A\n"; });
     A = nullptr;  // A no longer refers to any node
@@ -388,7 +385,8 @@ class Task {
     @endcode
 
     @dotfile images/conditional-tasking-if-else.dot
-
+    
+    @note
     To understand how %Taskflow schedule tasks under strong and weak dependencies,
     please refer to @ref ConditionalTasking.
     */
@@ -417,6 +415,7 @@ class Task {
 
     @dotfile images/conditional-tasking-if-else.dot
     
+    @note
     To understand how %Taskflow schedule tasks under strong and weak dependencies,
     please refer to @ref ConditionalTasking.
     */
@@ -430,7 +429,8 @@ class Task {
     @return @c *this
 
     @code{.cpp}
-    tf::Task task = taskflow.emplace([](){}).name("task name");
+    tf::Task task = taskflow.emplace([](){}).name("foo");
+    assert(task.name*) == "foo");
     @endcode
     */
     Task& name(const std::string& name);
@@ -474,7 +474,7 @@ class Task {
     task.composed_of(taskflow);
     @endcode
 
-    To understand how %Taskflow schedules a module task and how to create a schedulable graph,
+    To understand how %Taskflow schedules a module task including how to create a schedulable graph,
     pleas refer to @ref CreateACustomComposableGraph.
     */
     template <typename T>
@@ -527,6 +527,7 @@ class Task {
     /**
     @brief makes the task release the given semaphore
     
+    @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
     Task& release(Semaphore& semaphore);
@@ -534,6 +535,7 @@ class Task {
     /**
     @brief makes the task release the given range of semaphores
     
+    @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
     template <typename I>
@@ -542,6 +544,7 @@ class Task {
     /**
     @brief makes the task acquire the given semaphore
     
+    @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
     Task& acquire(Semaphore& semaphore);
@@ -549,6 +552,7 @@ class Task {
     /**
     @brief makes the task acquire the given range of semaphores
     
+    @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
     template <typename I>
@@ -607,7 +611,7 @@ class Task {
     /**
     @brief queries if the task handle is associated with a taskflow node
 
-    @return true if the task is not associated with any taskflow node; otherwise false
+    @return `true` if the task is not associated with any taskflow node; otherwise `false`
 
     @code{.cpp}
     tf::Task task;
@@ -623,7 +627,7 @@ class Task {
     /**
     @brief queries if the task has a work assigned
 
-    @return true if the task has a work assigned (not placeholder); otherwise false
+    @return `true` if the task has a work assigned (not placeholder); otherwise `false`
 
     @code{.cpp}
     tf::Task task = taskflow.placeholder();

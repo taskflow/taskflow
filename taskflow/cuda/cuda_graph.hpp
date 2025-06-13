@@ -473,7 +473,7 @@ class cudaGraphDeleter {
 /**
 @class cudaGraphBase
 
-@brief class to create a CUDA graph managed by C++ smart pointer
+@brief class to create a CUDA graph with uunique ownership
 
 @tparam Creator functor to create the stream (used in constructor)
 @tparam Deleter functor to delete the stream (used in destructor)

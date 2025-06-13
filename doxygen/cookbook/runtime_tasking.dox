@@ -9,12 +9,11 @@ tasking on the fly.
 
 @tableofcontents
 
-@section CreateARuntimeTask Create a Runtime Object
+@section CreateARuntimeTask Create a Runtime Task
 
-%Taskflow allows users to define a *runtime task* that takes a referenced tf::Runtime object,
-which provides a set of methods to interact with the underlying scheduling runtime.
-The following example demonstrates a runtime task can explicitly schedule a condition task,
-which would not be executed under normal scheduling circumstances:
+%Taskflow allows users to define a runtime task that accepts a reference to a tf::Runtime object. 
+This object provides methods to interact with the underlying scheduling engine. 
+For example, a runtime task can be used to explicitly schedule another task that would not normally execute due to the graph's structure or conditional dependencies:
 
 @code{.cpp}
 tf::Task A, B, C, D;
@@ -33,32 +32,30 @@ executor.run(taskflow).wait();
 
 @dotfile images/runtime_task_1.dot
 
-When the condition task @c A completes and returns @c 0,
+In the above code, when the condition task @c A completes and returns @c 0,
 the scheduler moves on to task @c B.
-Under the normal circumstance, tasks @c C and @c D will not run because their 
-conditional dependencies never happen.
-This can be broken by forcefully scheduling @c C or/and @c D via a runtime
+Under normal circumstances, tasks @c C and @c D will not run because their
+conditional dependencies never occur.
+This behavior can be overridden by forcefully scheduling @c C or/and @c D via a runtime
 object of a task that resides in the same graph.
-Here, task @c B call tf::Runtime::schedule to forcefully run task @c C
-even though the weak dependency between @c A and @c C will never happen
+Here, task @c B calls tf::Runtime::schedule to forcefully run task @c C,
+even though the weak dependency between @c A and @c C will never occur
 based on the graph structure itself.
 As a result, we will see both @c B and @c C in the output:
 
 @code{.bash}
-B    # B leverages a runtime object to schedule C out of its dependency constraint
+B    # B uses a runtime object to schedule C out of its dependency constraint
 C
 @endcode
 
 @attention
-You should only schedule an @em active task from a runtime object.
-An active task is a task in a running taskflow. 
-The task may or may not be running, and scheduling that task 
-will immediately put it into the task queue of the worker that
-is running the runtime object.
+You should only schedule an @em active task when using tf::Runtime::schedule.
+An active task is one that belongs to a currently running taskflow. 
+The task may or may not be executing at the moment, but scheduling it will immediately place it into the task queue of the worker that invoked the runtime object.
 
 @section AcquireTheRunningExecutor Acquire the Running Executor
 
-You can acquire the reference to the running executor using tf::Runtime::executor().
+You can acquire the reference to the running executor using tf::Runtime::executor.
 The executor associated with a runtime object is the executor that runs the parent 
 task of that runtime object.
   
@@ -71,12 +68,12 @@ taskflow.emplace([&](tf::Runtime& rt){
 executor.run(taskflow).wait();
 @endcode
 
-@section RuntimeTaskingRunATaskGraphAynchronously Run a Task Graph Asynchronously
+@section CorunTaskflowsFromARuntimeTask Corun Taskflows from a Runtime Task
 
-A tf::Runtime object spawn a task graph asynchronously using tf::Runtime::corun.
-This model enables dynamic tasking, allowing parallel workloads to execute directly within the runtime context.
-The following example demonstrates how to run a predefined task graph during the execution of a runtime task, 
-without blocking the calling worker using tf::Runtime::corun:
+One of the most powerful features of a runtime task is tf::Runtime::corun.
+The method tf::Runtime::corun provides a *non-blocking* mechanism that allows the calling worker to continue executing other available tasks in the executor while waiting for all tasks spawned from that runtime to complete.
+This behavior is critical for avoiding deadlock in nested or recursive tasking patterns, where workers may otherwise block while waiting on subgraphs of children tasks to finish, leading to a situation where no workers are left to make forward progress.
+The following example demonstrates how to use tf::Runtime::corun to run a predefined task graph during the execution of a runtime task, without blocking the calling worker:
 
 @code{.cpp}
 // create a custom graph
@@ -94,7 +91,7 @@ executor.run_n(taskflow, 10000);
 Although tf::Runtime::corun does not return control to the program until the given graph finishes its execution,
 the calling worker (i.e., parent worker) of the runtime indeed joins the executor's work-stealing loop
 and continues executing other tasks together with graph execution.
-This behavior differs from waiting on a submitted taskflow using tf::Future<T>::wait,
+This behavior differs from waiting on a submitted taskflow using std::future<T>::wait (i.e., base class of tf::Future),
 which blocks the calling thread entirely until completion.
 If multiple taskflows are submitted and waited on in this blocking manner,
 it can potentially lead to deadlock, especially in recursive or nested patterns.
@@ -119,7 +116,7 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-Using tf::Runtime::corun allows each worker to co-run these taskflows without blocking on a wait,
+To avoid deadlock, you should instead use tf::Runtime::corun that allows the calling worker to **corun** these taskflows without blocking its execution,
 thereby avoiding deadlocks.
 
 @code{.cpp}
@@ -140,13 +137,13 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-@section RunATaskAsynchronously Run a Task Asynchronously
+@section CorunAsynchronousTasksFromARuntimeTask Corun Asynchronous Tasks from a Runtime Task
 
-One of the most powerful features of tf::Runtime is its ability to launch asynchronous tasks on the fly.
-You can dynamically create tasks during execution using tf::Runtime::async or tf::Runtime::silent_async.
-Each asynchronous task can itself be a runtime task, enabling recursive task creation and dynamic parallelism.
-This model is particularly useful for implementing divide-and-conquer algorithms, such as parallel sort, graph traversal, and other runtime-driven parallel patterns.
-For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from tf::Runtime:
+Similar to tf::Executor, tf::Runtime allows you to create asynchronous tasks on the fly using tf::Runtime::async or tf::Runtime::silent_async.
+Asynchronous tasks spawned from a runtime task are logically parented to that runtime and can be explicitly synchronized using tf::Runtime::corun.
+Furthermore, each asynchronous task can itself be a runtime task, enabling recursive task creation and dynamic parallelism.
+This model is particularly powerful for implementing divide-and-conquer algorithms, such as parallel sort, graph traversal, and recursion.
+For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking with tf::Runtime:
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
@@ -161,8 +158,7 @@ size_t fibonacci(size_t N, tf::Runtime& rt) {
   // tail optimization for the right child
   res2 = fibonacci(N-2, rt);
 
-  // use corun to avoid blocking the worker from waiting the two children tasks 
-  // to finish
+  // use corun to avoid blocking the worker from waiting children tasks to finish
   rt.corun();
 
   return res1 + res2;
@@ -182,11 +178,17 @@ int main() {
 }
 @endcode
 
-The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.
+The figure below shows the execution diagram, where the task with suffix `*_1` represents the left child spawned by its parent runtime.
 
 @dotfile images/fibonacci_4_tail_optimized.dot
 
 For more details, please refer to @ref AsyncTasking and @ref fibonacci.
+
+@attention
+While asynchronous tasks spawned from a runtime task are parented to that runtime task, the runtime task does not automatically synchronize their execution or wait for their completion upon destruction.
+To ensure all spawned tasks finish before proceeding, you should explicitly call tf::Runtime::corun to synchronize them.
+This prevents potential issues such as tasks being destroyed prematurely or lost without execution.
+
 
 
 */

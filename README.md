@@ -73,7 +73,7 @@ Technical details can be referred to our [IEEE TPDS paper][TPDS22].
 
 # Start Your First Taskflow Program
 
-The following program (`simple.cpp`) creates four tasks 
+The following program (`simple.cpp`) creates a taskflow of four tasks 
 `A`, `B`, `C`, and `D`, where `A` runs before `B` and `C`, and `D`
 runs after `B` and `C`.
 When `A` finishes, `B` and `C` can run in parallel.

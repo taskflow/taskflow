@@ -273,7 +273,7 @@
       </memberdef>
     </sectiondef>
     <briefdescription>
-<para>class to create a dependent asynchronous task </para>
+<para>class to hold a dependent asynchronous task with shared ownership </para>
     </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is a lightweight handle that retains <emphasis>shared</emphasis> ownership of a dependent asynchronous task (async task) created by an executor. This shared ownership ensures that the async task remains alive when adding it to the dependency list of another async task, thus avoiding the classical <ulink url="https://en.wikipedia.org/wiki/ABA_problem">ABA problem</ulink>.</para>

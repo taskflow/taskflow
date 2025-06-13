@@ -106,8 +106,8 @@ class Taskflow : public FlowBuilder {
     assert(taskflow2.empty());
     @endcode
 
-    Notice that @c taskflow2 should not be running in an executor
-    during the move operation, or the behavior is undefined.
+    @attention You should avoid moving a taskflow that is currently running on an executor.
+    Doing so results in undefined behavior.
     */
     Taskflow(Taskflow&& rhs);
 
@@ -123,8 +123,8 @@ class Taskflow : public FlowBuilder {
     assert(taskflow2.empty());
     @endcode
 
-    Notice that both @c taskflow1 and @c taskflow2 should not be running
-    in an executor during the move operation, or the behavior is undefined.
+    @attention You should avoid moving a taskflow that is currently running on an executor.
+    Doing so results in undefined behavior.
     */
     Taskflow& operator = (Taskflow&& rhs);
 
@@ -192,32 +192,62 @@ class Taskflow : public FlowBuilder {
     std::string dump() const;
 
     /**
-    @brief queries the number of tasks
+    @brief queries the number of tasks in this taskflow
+    
+    The number of tasks in this taskflow is defined at the first level of hierarchy.
+    Tasks that are created dynamically, such as those via tf::Subflow, are not counted.
+
+    @code{.cpp}
+    tf::Taskflow taskflow;
+    auto my_task = taskflow.emplace([](){});
+    assert(taskflow.num_tasks() == 1);
+    
+    // reassign my_task to a subflow of four tasks
+    my_task.work([](tf::Subflow& sf){
+      sf.emplace(
+        [](){ std::cout << "Task A\n"; },
+        [](){ std::cout << "Task B\n"; },
+        [](){ std::cout << "Task C\n"; },
+        [](){ std::cout << "Task D\n"; }
+      );
+    });
+    
+    // subflow tasks will not be counted
+    assert(taskflow.num_tasks() == 1);
+    @endcode
     */
     size_t num_tasks() const;
 
     /**
-    @brief queries the emptiness of the taskflow
+    @brief queries if this taskflow is empty (has no tasks)
 
-    An empty taskflow has no tasks. That is the return of
-    tf::Taskflow::num_tasks is zero.
+    An empty taskflow has no tasks, i.e., the return of tf::Taskflow::num_tasks is `0`.
+    
+    @code{.cpp}
+    tf::Taskflow taskflow;
+    assert(taskflow.empty() == true);
+    taskflow.emplace([](){});
+    assert(taskflow.empty() == false);
+    @endcode
     */
     bool empty() const;
 
     /**
-    @brief assigns a name to the taskflow
+    @brief assigns a new name to this taskflow
 
     @code{.cpp}
-    taskflow.name("assign another name");
+    taskflow.name("foo");
+    assert(taskflow.name() == "foo");
     @endcode
     */
     void name(const std::string&);
 
     /**
-    @brief queries the name of the taskflow
+    @brief queries the name of this taskflow
 
     @code{.cpp}
-    std::cout << "my name is: " << taskflow.name();
+    tf::Taskflow taskflow("foo");
+    assert(taskflow.name() == "foo");
     @endcode
     */
     const std::string& name() const;
@@ -232,7 +262,7 @@ class Taskflow : public FlowBuilder {
     void clear();
 
     /**
-    @brief applies a visitor to each task in the taskflow
+    @brief applies a visitor to each task in this taskflow
 
     A visitor is a callable that takes an argument of type tf::Task
     and returns nothing. The following example iterates each task in a
@@ -253,7 +283,9 @@ class Taskflow : public FlowBuilder {
     @param from from task (dependent)
     @param to to task (successor)
 
-    <p><!-- Doxygen warning workaround --></p>
+    Removing the depencency from task `from` to task `to` is equivalent to 
+    removing `to` from the succcessor list of `from` and 
+    removing `from` from the predecessor list of `to`.
 
     @code{.cpp}
     tf::Taskflow taskflow;
@@ -272,14 +304,20 @@ class Taskflow : public FlowBuilder {
     assert(a.num_successors() == 2);
     assert(b.num_predecessors() == 0);
     @endcode
+
+    @attention For performance reason, %Taskflow does not store the graph using linked lists but 
+    vectors with contiguous space. 
+    Therefore, removing tasks or dependencies incurs linear time complexity proportional
+    to the size of the graph and the dependency count of a task.
     */
-    inline void remove_dependency(Task from, Task to);
+    void remove_dependency(Task from, Task to);
 
     /**
     @brief returns a reference to the underlying graph object
 
-    A graph object (of type tf::Graph) stores the task dependency graph
-    that can be scheduled by the executor through composition.
+    A graph object is of type tf::Graph and stores a task dependency graph that can be executed
+    by an tf::Executor.
+
     */
     Graph& graph();
 
@@ -541,7 +579,7 @@ inline void Taskflow::_dump(
 @brief class to access the result of an execution
 
 tf::Future is a derived class from std::future that will eventually hold the
-execution result of a submitted taskflow (tf::Executor::run)
+execution result of a submitted taskflow (tf::Executor::run series).
 In addition to the base methods inherited from std::future,
 you can call tf::Future::cancel to cancel the execution of the running taskflow
 associated with this future object.
@@ -609,10 +647,30 @@ class Future : public std::future<T>  {
     @return @c true if the execution can be cancelled or
             @c false if the execution has already completed
 
-    When you request a cancellation, the executor will stop scheduling
-    any tasks onwards. Tasks that are already running will continue to finish
-    (non-preemptive).
+    When you request a cancellation, the executor will stop scheduling any tasks onwards. 
+    Tasks that are already running will continue to finish as their executions are non-preemptive.
     You can call tf::Future::wait to wait for the cancellation to complete.
+
+    @code{.cpp}
+    // create a taskflow of four tasks and submit it to an executor
+    taskflow.emplace(
+      [](){ std::cout << "Task A\n"; },
+      [](){ std::cout << "Task B\n"; },
+      [](){ std::cout << "Task C\n"; },
+      [](){ std::cout << "Task D\n"; }
+    );
+    auto future = executor.run(taskflow);
+
+    // cancel the execution of the taskflow and wait until it finishes all running tasks
+    future.cancel();
+    future.wait();
+    @endcode
+
+    In the above example, we submit a taskflow of four tasks to the executor and then
+    issue a cancellation to stop its execution.
+    Since the cancellation is non-deterministic with the executor runtime, 
+    we may still see some tasks complete their executions or none.
+
     */
     bool cancel();
 

@@ -374,7 +374,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The following example creates a static task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span></pre><p>Please refer to <a href="StaticTasking.html" class="m-doc">Static Tasking</a> for details.</p>
+<p>The following example creates a static task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="StaticTasking.html" class="m-doc">Static Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
@@ -410,7 +410,7 @@
                 </tr>
               </tfoot>
             </table>
-<p>The following example creates a runtime task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){});</span></pre><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> for details.</p>
+<p>The following example creates a runtime task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="p">){});</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
@@ -449,7 +449,7 @@
 <p>The following example creates a dynamic task (<a href="classtf_1_1Subflow.html" class="m-doc">tf::<wbr />Subflow</a>) that spawns two static tasks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">dynamic_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">){</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
 <span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">static_task2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sf</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){});</span>
-<span class="p">});</span></pre><p>Please refer to <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a> for details.</p>
+<span class="p">});</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="SubflowTasking.html" class="m-doc">Subflow Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
@@ -496,7 +496,7 @@
 
 <span class="c1">// executes yes if cond returns 0, or no if cond returns 1</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">);</span>
-<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a60d7a666cab71ecfa3010b2efb0d6b57"><div>
             <h3>
@@ -544,7 +544,7 @@
 
 <span class="c1">// executes branch1 and branch3 when cond returns 0 and 2</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">branch1</span><span class="p">,</span><span class="w"> </span><span class="n">branch2</span><span class="p">,</span><span class="w"> </span><span class="n">branch3</span><span class="p">);</span>
-<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p>
+<span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">);</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ConditionalTasking.html" class="m-doc">Conditional Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a1f6118326ad434f6c839007a1a79fe1b"><div>
             <h3>
@@ -665,7 +665,7 @@
 <span class="p">};</span>
 
 <span class="n">MyObj</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span></pre><p>Please refer to <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a> for details.</p>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span></pre><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ComposableTasking.html" class="m-doc">Composable Tasking</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="acab0b4ac82260f47fdb36a3244ee3aaf"><div>
             <h3>
@@ -800,7 +800,7 @@
             </table>
 <p>The task spawns asynchronous tasks that applies the callable object to each object obtained by dereferencing every iterator in the range <code>[first, last)</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the dereferenced iterator type.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a3b132bd902331a11b04b4ad66cf8bf77"><div>
             <h3>
@@ -880,7 +880,7 @@
 <span class="c1">// case 2: step size is negative</span>
 <span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="o">&gt;</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">+=</span><span class="n">step</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">callable</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the integral index type.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the integral index type.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a2582a216d54dacca2b7022ea7e89452a"><div>
             <h3>
@@ -945,7 +945,7 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The callable needs to take a single argument of type <a href="classtf_1_1IndexRange.html" class="m-doc">tf::<wbr />IndexRange</a>.</p><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The callable needs to take a single argument of type <a href="classtf_1_1IndexRange.html" class="m-doc">tf::<wbr />IndexRange</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelIterations.html" class="m-doc">Parallel Iterations</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a97be7ceef6fa4276e3b074c10c13b826"><div>
             <h3>
@@ -1019,7 +1019,7 @@
             </table>
 <p>The task spawns asynchronous tasks that applies the callable object to an input range and stores the result in another output range. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the dereferenced iterator type.</p><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take a single argument of the dereferenced iterator type.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a7ea96d3fa0aa9e3ff337a9f1e37682b0"><div>
             <h3>
@@ -1102,7 +1102,7 @@
             </table>
 <p>The task spawns asynchronous tasks that applies the callable object to two input ranges and stores the result in another output range. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">first1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">last1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="o">*</span><span class="n">d_first</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">(</span><span class="o">*</span><span class="n">first1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">first2</span><span class="o">++</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take two arguments of dereferenced elements from the two input ranges.</p><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a> The callable needs to take two arguments of dereferenced elements from the two input ranges.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelTransforms.html" class="m-doc">Parallel Transforms</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="afb24798ebf46e253a40b01bffb1da6a7"><div>
             <h3>
@@ -1176,7 +1176,7 @@
             </table>
 <p>The task spawns asynchronous tasks to perform parallel reduction over <code>init</code> and the elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr</span><span class="p">);</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a3ea810696c4b29824d1aaef15342c825"><div>
             <h3>
@@ -1270,7 +1270,7 @@
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">plus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></pre><p>Range can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="n">assert</span><span class="p">(</span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></pre><p>Range can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a>.</p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="aa62d24438c0860e76153ffd129deba41"><div>
             <h3>
@@ -1353,7 +1353,7 @@
             </table>
 <p>The task spawns asynchronous tasks to perform parallel reduction over <code>init</code> and the transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr</span><span class="o">=</span><span class="n">first</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">!=</span><span class="n">last</span><span class="p">;</span><span class="w"> </span><span class="n">itr</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">uop</span><span class="p">(</span><span class="o">*</span><span class="n">itr</span><span class="p">));</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="adcd90e5b46299f4ccab33caf46edcbc0"><div>
             <h3>
@@ -1445,7 +1445,7 @@
             </table>
 <p>The task spawns asynchronous tasks to perform parallel reduction over <code>init</code> and transformed elements in the range <code>[first, last)</code>. The reduced result is store in <code>init</code>. This method is equivalent to the parallel execution of the following loop:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">itr1</span><span class="o">=</span><span class="n">first1</span><span class="p">,</span><span class="w"> </span><span class="n">itr2</span><span class="o">=</span><span class="n">first2</span><span class="p">;</span><span class="w"> </span><span class="n">itr1</span><span class="o">!=</span><span class="n">last1</span><span class="p">;</span><span class="w"> </span><span class="n">itr1</span><span class="o">++</span><span class="p">,</span><span class="w"> </span><span class="n">itr2</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bop_r</span><span class="p">(</span><span class="n">init</span><span class="p">,</span><span class="w"> </span><span class="n">bop_t</span><span class="p">(</span><span class="o">*</span><span class="n">itr1</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">itr2</span><span class="p">));</span>
-<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p>
+<span class="p">}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelReduction.html" class="m-doc">Parallel Reduction</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a1c2ace9290d83c2a006614a4d66ad588"><div>
             <h3>
@@ -1508,7 +1508,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {1, 3, 6, 10, 15}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {1, 3, 6, 10, 15}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a0b589a5bbf9b18e6484fa9e554d39a39"><div>
             <h3>
@@ -1580,7 +1580,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {0, 2, 5, 9, 14}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {0, 2, 5, 9, 14}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a4e0d618d8eb0b3b2e5e00443a10bf512"><div>
             <h3>
@@ -1652,7 +1652,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {-1, 0, 2, 5, 9}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {-1, 0, 2, 5, 9}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a82f3c3f49a2d52cd52f6eac07a659e9c"><div>
             <h3>
@@ -1725,7 +1725,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {-1, -3, -6, -10, -15}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {-1, -3, -6, -10, -15}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a49f7e17d02c708035b9134d8c6c89f90"><div>
             <h3>
@@ -1808,7 +1808,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {-2, -4, -7, -11, -16}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {-2, -4, -7, -11, -16}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a8549478ef819699b30f8daf88f04d577"><div>
             <h3>
@@ -1890,7 +1890,7 @@
 <span class="p">);</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
-<span class="c1">// input is {-1, -2, -4, -7, -11}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p>
+<span class="c1">// input is {-1, -2, -4, -7, -11}</span></pre><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelScan.html" class="m-doc">Parallel Scan</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a46a96f5889e6ac87b1ff8d6313b5f471"><div>
             <h3>
@@ -2260,7 +2260,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The task spawns asynchronous tasks to sort elements in the range <code>[first, last)</code> in parallel.</p><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
+<p>The task spawns asynchronous tasks to sort elements in the range <code>[first, last)</code> in parallel.</p><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a7d844e9856c7c65b26ccdb83ffdab1d6"><div>
             <h3>
@@ -2299,7 +2299,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The task spawns asynchronous tasks to parallel sort elements in the range <code>[first, last)</code> using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the dereferenced iterator type.</p><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p>
+<p>The task spawns asynchronous tasks to parallel sort elements in the range <code>[first, last)</code> using the <code>std::less&lt;T&gt;</code> comparator, where <code>T</code> is the dereferenced iterator type.</p><p>Iterators can be made stateful by using <a href="http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper.html" class="m-doc-external">std::<wbr />reference_wrapper</a></p><aside class="m-note m-info"><h4>Note</h4><p>Please refer to <a href="ParallelSort.html" class="m-doc">Parallel Sort</a> for details.</p></aside>
           </div></section>
         </section>
       </div>

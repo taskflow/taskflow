@@ -10,7 +10,7 @@ namespace tf {
 @brief class to include a runtime object in a task
 
 A runtime object allows users to interact with the
-scheduling runtime inside a task, such as scheduling an active task,
+scheduling runtime inside a task (or the *parent task* of this runtime), such as scheduling an active task,
 spawning an asynchronous task, corunning a graph target, and so on.
 
 @code{.cpp}
@@ -28,8 +28,10 @@ A.precede(B, C, D);
 executor.run(taskflow).wait();
 @endcode
 
-A runtime object is associated with the worker and the executor
-that runs the task.
+A runtime object is associated with the worker and the executor that runs its parent task.
+
+@note
+To understand how %Taskflow schedules a runtime task, please refer to @ref RuntimeTasking.
 
 */
 class Runtime {

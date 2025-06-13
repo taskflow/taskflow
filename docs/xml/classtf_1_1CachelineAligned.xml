@@ -67,7 +67,6 @@
 <para>class to ensure cacheline-aligned storage for an object. </para>
     </briefdescription>
     <detaileddescription>
-<para>This utility class aligns the stored object <computeroutput>data</computeroutput> to twice the size of a cacheline. The alignment improves performance by optimizing data access in cache-sensitive scenarios.</para>
 <para><parameterlist kind="templateparam"><parameteritem>
 <parameternamelist>
 <parametername>T</parametername>
@@ -77,7 +76,8 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<programlisting><codeline><highlight class="comment">//<sp/>create<sp/>two<sp/>integers<sp/>on<sp/>two<sp/>separate<sp/>cachelines<sp/>to<sp/>avoid<sp/>false<sp/>sharing</highlight><highlight class="normal"></highlight></codeline>
+This utility class aligns the stored object <computeroutput>data</computeroutput> to twice the size of a cacheline. The alignment improves performance by optimizing data access in cache-sensitive scenarios.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>create<sp/>two<sp/>integers<sp/>on<sp/>two<sp/>separate<sp/>cachelines<sp/>to<sp/>avoid<sp/>false<sp/>sharing</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1CachelineAligned" kindref="compound">tf::CachelineAligned&lt;int&gt;</ref><sp/>counter1;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1CachelineAligned" kindref="compound">tf::CachelineAligned&lt;int&gt;</ref><sp/>counter2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
