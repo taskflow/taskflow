@@ -18,19 +18,13 @@ std::future<int> future = executor.async([](){ return 1; });
 assert(future.get() == 1);
 @endcode
 
-@attention
-Unlike std::async, the future object returned from tf::Executor::async does not block on destruction
-until completing the function.
-
 If you do not need the return value or do not require a std::future for synchronization,
 you should use tf::Executor::silent_async.
 This method returns nothing and incurs less overhead than tf::Executor::async,
 as it avoids the cost of managing a shared state for std::future.
 
 @code{.cpp}
-executor.silent_async([](){
-  // do some work without returning any result
-});
+executor.silent_async([](){});
 @endcode
 
 

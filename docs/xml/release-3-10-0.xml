@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="release-3-10-0" kind="page">
     <compoundname>release-3-10-0</compoundname>
     <title>Release 3.10.0 (2025/05/01)</title>
@@ -126,14 +126,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>residual;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>global<sp/>reducer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;double&gt;</ref>()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::plus&lt;double&gt;()</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>added <computeroutput>static</computeroutput> keyword to the executor creation in taskflow benchmarks</para>
 </listitem><listitem><para>added waiter test to detect over-subscription issues</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Executor_1a5205c78ec06ef01de0c7d6a71adad07a" kindref="member">tf::Executor::num_waiters</ref> (C++20 only) for querying the number of non-stealing workers</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1ad13f8d0b6628d895792570515497139c" kindref="member">tf::make_module_task</ref> to the algorithm collection (see <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref>)</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref> to the algorithm collection (see <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref>)</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Runtime_1a20d9756a7aa6b58d0d04437818c10066" kindref="member">tf::Runtime::is_cancelled</ref> to query if the parent taskflow is cancelled</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to async tasking to simplify designs of recursive parallelism (see <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref>)</para>
 </listitem></itemizedlist>
@@ -142,8 +142,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect2 id="release-3-10-0_1release-3-10-0_utilities">
 <title>Utilities</title><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange</ref> for index range-based parallel-for algorithm</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1af00f6babb0818202960cbbf0a83bd8e7" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1aa4db761760106ce6f6d2e7c1ac4d8520" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -192,14 +192,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">retain</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/><sp/></highlight><highlight class="comment">//<sp/>retain<sp/>the<sp/>subflow<sp/>after<sp/>join<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>subflow<sp/>implicitly<sp/>joins<sp/>here</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>subflow<sp/>graph<sp/>is<sp/>now<sp/>retained<sp/>and<sp/>can<sp/>be<sp/>visualized<sp/>using<sp/>taskflow.dump(...)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(std::cout);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>disabled the support for tf::cudaFlow and tf::cudaFlowCapturer<itemizedlist>
@@ -211,13 +211,13 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>programming<sp/>tf::cudaGraph<sp/>is<sp/>consistent<sp/>with<sp/>Nvidia<sp/>CUDA<sp/>Graph<sp/>but<sp/>offers<sp/>a<sp/>simpler<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>and<sp/>more<sp/>intuitive<sp/>interface<sp/>by<sp/>abstracting<sp/>away<sp/>low-level<sp/>CUDA<sp/>Graph<sp/>boilerplate.</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaGraphBase" kindref="compound">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
 <codeline><highlight class="normal">cg.<ref refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" kindref="member">kernel</ref>(...);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>same<sp/>as<sp/>cudaFlow/cudaFlowCapturer</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>unlike<sp/>cudaFlow/cudaFlowCapturer,<sp/>you<sp/>need<sp/>to<sp/>explicitly<sp/>instantiate<sp/>an<sp/>executable<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>CUDA<sp/>graph<sp/>now<sp/>and<sp/>submit<sp/>it<sp/>to<sp/>a<sp/>stream<sp/>for<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1a2be50e6880ead1d49a3fec2fc4bb893e" kindref="member">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a7dcdfb79385a57c4c59b7c9f21e8beb9" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a1e5140505629afd4b3422399f8080cb0" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 </sect1>

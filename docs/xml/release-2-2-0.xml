@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="release-2-2-0" kind="page">
     <compoundname>release-2-2-0</compoundname>
     <title>Release 2.2.0 (2019/06/15)</title>
@@ -57,7 +57,7 @@
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(4);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>threads</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">tf::Executor<sp/>executor(4);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>4<sp/>threads</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow);<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>once</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow,<sp/>2);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>twice</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.wait_for_all();<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>three<sp/>runs<sp/>to<sp/>finish</highlight></codeline>

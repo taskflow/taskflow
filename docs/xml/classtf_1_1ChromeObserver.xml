@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1ChromeObserver" kind="class" language="C++" prot="public">
     <compoundname>tf::ChromeObserver</compoundname>
     <basecompoundref refid="classtf_1_1ObserverInterface" prot="public" virt="non-virtual">tf::ObserverInterface</basecompoundref>
@@ -228,20 +228,20 @@
     </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1ChromeObserver" kindref="compound">tf::ChromeObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</ulink>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>insert<sp/>tasks<sp/>into<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::ChromeObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1ChromeObserver" kindref="compound">tf::ChromeObserver</ref>&gt;();</highlight></codeline>
+<codeline><highlight class="normal">std::shared_ptr&lt;tf::ChromeObserver&gt;<sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;tf::ChromeObserver&gt;();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>thread<sp/>activities<sp/>to<sp/>a<sp/>chrome-tracing<sp/>format.</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">observer-&gt;dump(std::cout);</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>

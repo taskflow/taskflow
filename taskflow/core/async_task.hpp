@@ -17,9 +17,9 @@ namespace tf {
 @brief class to hold a dependent asynchronous task with shared ownership
 
 A tf::AsyncTask is a lightweight handle that retains @em shared ownership
-of a dependent asynchronous task (async task) created by an executor.
-This shared ownership ensures that the async task remains alive when
-adding it to the dependency list of another async task, 
+of a dependent asynchronous (dependent-async) task created by an executor.
+This shared ownership ensures that the dependent-async task remains alive when
+adding it to the dependency list of another dependent-async task, 
 thus avoiding the classical [ABA problem](https://en.wikipedia.org/wiki/ABA_problem).
 
 @code{.cpp}
@@ -31,13 +31,16 @@ tf::AsyncTask A = executor.silent_dependent_async([](){});
 tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
 @endcode
 
-Currently, tf::AsyncTask is implemented based on the logic of 
+tf::AsyncTask is implemented based on the logic of 
 C++ smart pointer std::shared_ptr and 
 is considered cheap to copy or move as long as only a handful of objects
 own it.
 When a worker completes an async task, it will remove the task from the executor,
 decrementing the number of shared owners by one.
 If that counter reaches zero, the task is destroyed.
+
+@note
+To know more about dependent-async task, please refer to @ref DependentAsyncTasking.
 */
 class AsyncTask {
   
@@ -51,22 +54,22 @@ class AsyncTask {
     AsyncTask() = default;
     
     /**
-    @brief destroys the managed async task if this is the last owner
+    @brief destroys the managed dependent-async task if this is the last owner
     */
     ~AsyncTask();
     
     /**
-    @brief constructs an async task that shares ownership of @c rhs
+    @brief constructs a dependent-async task that shares ownership of @c rhs
     */
     AsyncTask(const AsyncTask& rhs);
 
     /**
-    @brief move-constructs an async task from @c rhs
+    @brief move-constructs an dependent-async task from @c rhs
     */
     AsyncTask(AsyncTask&& rhs);
     
     /**
-    @brief copy-assigns the async task from @c rhs
+    @brief copy-assigns the dependent-async task from @c rhs
 
     Releases the managed object of @c this and retains a new shared ownership
     of @c rhs.
@@ -74,35 +77,82 @@ class AsyncTask {
     AsyncTask& operator = (const AsyncTask& rhs);
 
     /**
-    @brief move-assigns the async task from @c rhs
+    @brief move-assigns the dependent-async task from @c rhs
     
     Releases the managed object of @c this and takes over the ownership of @c rhs.
     */
     AsyncTask& operator = (AsyncTask&& rhs);
     
     /**
-    @brief checks if this async task is associated with a callable
+    @brief checks if this dependent-async task is associated with any task
+
+    An empty dependent-async task is not associated with any task created 
+    from the executor.
+
+    @code{.cpp}
+    tf::AsyncTask task;
+    assert(task.empty());
+    @endcode
     */
     bool empty() const;
 
     /**
     @brief release the managed object of @c this
+    
+    Releases the ownership of the managed task, if any. 
+    After the call `*this` manages no task.
+
+    @code{.cpp}
+    tf::AsyncTask task = executor.silent_dependent_async([](){});
+    assert(task.empty() == false);
+    task.reset();
+    assert(task.empty() == true);
+    @endcode
     */
     void reset();
     
     /**
-    @brief obtains the hashed value of this async task
+    @brief obtains the hashed value of this dependent-async task
+    
+    @code{.cpp}
+    tf::AsyncTask task = executor.silent_dependent_async([](){});
+    std::cout << task.hash_value() << '\n';
+    @endcode
     */
     size_t hash_value() const;
 
     /**
     @brief returns the number of shared owners that are currently managing 
-           this async task
+           this dependent-async task
+    
+    In a multithreaded environment, `use_count` atomically retrieves 
+    (with `memory_order_relaxed` load) the number of tf::AsyncTask instances that manage 
+    the current task.
+
+    @code{.cpp}
+    tf::AsyncTask task;
+    assert(task.use_count() == 0);
+    @endcode
     */
     size_t use_count() const;
 
     /**                                                                                                       
-    @brief checks if the async task finishes
+    @brief checks if this dependent-async task finishes
+
+    In a multithreaded environment, `is_done` atomically retrieves 
+    (with `memory_order_acquire` load) the underlying state bit that indicates
+    the completion of this dependent-async task.
+    If the dependent-async task is empty, returns `true`.
+
+    @code{.cpp}
+    tf::AsyncTask task = executor.silent_dependent_async([](){});
+    while(task.is_done() == false);
+    std::cout << "dependent-async task finishes\n";
+
+    task.reset();
+    assert(task.is_done() == true);
+    @endcode
+
     */
     bool is_done() const; 
 
@@ -198,7 +248,8 @@ inline size_t AsyncTask::use_count() const {
 
 // Function: is_done
 inline bool AsyncTask::is_done() const {
-  return std::get_if<Node::DependentAsync>(&(_node->_handle))->state.load(
+  return _node == nullptr ? true:
+  std::get_if<Node::DependentAsync>(&(_node->_handle))->state.load(
     std::memory_order_acquire
   ) == ASTATE::FINISHED;
 }
