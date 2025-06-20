@@ -523,6 +523,53 @@ class Task {
     */
     template <typename... Ts>
     Task& succeed(Ts&&... tasks);
+	
+    /**
+    @brief removes predecessor links from other tasks to this
+
+    @tparam Ts parameter pack
+
+    @param tasks one or multiple tasks
+
+    @return @c *this
+
+    This method removes the dependency links where the given tasks are predecessors
+    of this task (i.e., tasks -> this). It ensures both sides of the dependency
+    are updated to maintain graph consistency.
+    */
+    template <typename... Ts>
+    Task& remove_predecessors(Ts&&... tasks);
+
+    /**
+    @brief removes successor links from this to other tasks
+
+    @tparam Ts parameter pack
+
+    @param tasks one or multiple tasks
+
+    @return @c *this
+
+    This method removes the dependency links where this task is a predecessor
+    of the given tasks (i.e., this -> tasks). It ensures both sides of the dependency
+    are updated to maintain graph consistency.
+    */
+    template <typename... Ts>
+    Task& remove_successors(Ts&&... tasks);
+
+    /**
+    @brief removes all dependency links between this task and other tasks
+
+    @tparam Ts parameter pack
+
+    @param tasks one or multiple tasks
+
+    @return @c *this
+
+    This method removes all dependency links (both directions) between this task
+    and the given tasks, by calling remove_predecessors and remove_successors.
+    */
+    template <typename... Ts>
+    Task& remove_dependencies(Ts&&... tasks);
 
     /**
     @brief makes the task release the given semaphore
@@ -808,6 +855,30 @@ Task& Task::succeed(Ts&&... tasks) {
   (tasks._node->_precede(_node), ...);
   //_succeed(std::forward<Ts>(tasks)...);
   return *this;
+}
+
+// Function: remove_predecessors
+template <typename... Ts>
+Task& Task::remove_predecessors(Ts&&... tasks) {
+    (tasks._node->_remove_successors(_node), ...);
+    (_node->_remove_predecessors(tasks._node), ...);
+    return *this;
+}
+
+// Function: remove_successors
+template <typename... Ts>
+Task& Task::remove_successors(Ts&&... tasks) {
+    (_node->_remove_successors(tasks._node), ...);
+    (tasks._node->_remove_predecessors(_node), ...);
+    return *this;
+}
+
+// Function: remove_dependencies
+template <typename... Ts>
+Task& Task::remove_dependencies(Ts&&... tasks) {
+    remove_predecessors(std::forward<Ts>(tasks)...);
+    remove_successors(std::forward<Ts>(tasks)...);
+    return *this;
 }
 
 // Function: composed_of
