@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1Segment" kind="struct" language="C++" prot="private">
     <compoundname>tf::Segment</compoundname>
-    <sectiondef kind="public-attrib">
+      <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Segment_1a3e259f6da83dcf714ec785aa1a3d14bd" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::Segment::name</definition>
         <argsstring></argsstring>
         <name>name</name>
-        <qualifiedname>tf::Segment::name</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -22,7 +21,6 @@
         <definition>TaskType tf::Segment::type</definition>
         <argsstring></argsstring>
         <name>type</name>
-        <qualifiedname>tf::Segment::type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -32,11 +30,10 @@
         <location file="taskflow/core/observer.hpp" line="28" column="12" bodyfile="taskflow/core/observer.hpp" bodystart="28" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Segment_1aad42f04f26507aa8ad977627774ee2b4" prot="public" static="no" mutable="no">
-        <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
+        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
         <definition>observer_stamp_t tf::Segment::beg</definition>
         <argsstring></argsstring>
         <name>beg</name>
-        <qualifiedname>tf::Segment::beg</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -46,11 +43,10 @@
         <location file="taskflow/core/observer.hpp" line="30" column="20" bodyfile="taskflow/core/observer.hpp" bodystart="30" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Segment_1ae7558748ed58c8e274539295e6c6d770" prot="public" static="no" mutable="no">
-        <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
+        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
         <definition>observer_stamp_t tf::Segment::end</definition>
         <argsstring></argsstring>
         <name>end</name>
-        <qualifiedname>tf::Segment::end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -59,8 +55,8 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="31" column="20" bodyfile="taskflow/core/observer.hpp" bodystart="31" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Segment_1a24021971938c984d134c29a44b5b6093" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -71,7 +67,6 @@
         <definition>auto tf::Segment::save</definition>
         <argsstring>(Archiver &amp;ar) const</argsstring>
         <name>save</name>
-        <qualifiedname>tf::Segment::save</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -94,7 +89,6 @@
         <definition>auto tf::Segment::load</definition>
         <argsstring>(Archiver &amp;ar)</argsstring>
         <name>load</name>
-        <qualifiedname>tf::Segment::load</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -112,7 +106,6 @@
         <definition>tf::Segment::Segment</definition>
         <argsstring>()=default</argsstring>
         <name>Segment</name>
-        <qualifiedname>tf::Segment::Segment</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -126,9 +119,8 @@
         <definition>tf::Segment::Segment</definition>
         <argsstring>(const std::string &amp;n, TaskType t, observer_stamp_t b, observer_stamp_t e)</argsstring>
         <name>Segment</name>
-        <qualifiedname>tf::Segment::Segment</qualifiedname>
         <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <declname>n</declname>
         </param>
         <param>
@@ -136,11 +128,11 @@
           <declname>t</declname>
         </param>
         <param>
-          <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
+          <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
           <declname>b</declname>
         </param>
         <param>
-          <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
+          <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
           <declname>e</declname>
         </param>
         <briefdescription>
@@ -156,7 +148,6 @@
         <definition>auto tf::Segment::span</definition>
         <argsstring>() const</argsstring>
         <name>span</name>
-        <qualifiedname>tf::Segment::span</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -165,27 +156,27 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="50" column="8" bodyfile="taskflow/core/observer.hpp" bodystart="50" bodyend="52"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="3">
-        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
-      </node>
       <node id="2">
-        <label>std::string</label>
+        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
       </node>
       <node id="1">
         <label>tf::Segment</label>
         <childnode refid="2" relation="usage">
-          <edgelabel>name</edgelabel>
-        </childnode>
-        <childnode refid="3" relation="usage">
           <edgelabel>beg</edgelabel>
           <edgelabel>end</edgelabel>
         </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>name</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>std::string</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/observer.hpp" line="25" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="25" bodyend="53"/>

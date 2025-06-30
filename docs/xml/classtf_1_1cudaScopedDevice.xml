@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaScopedDevice" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaScopedDevice</compoundname>
     <includes refid="cuda__device_8hpp" local="no">taskflow/cuda/cuda_device.hpp</includes>
-    <sectiondef kind="private-attrib">
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1cudaScopedDevice_1a350583393e3c5edb51543726ca659687" prot="private" static="no" mutable="no">
         <type>int</type>
         <definition>int tf::cudaScopedDevice::_p</definition>
         <argsstring></argsstring>
         <name>_p</name>
-        <qualifiedname>tf::cudaScopedDevice::_p</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -18,14 +17,13 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_device.hpp" line="315" column="9" bodyfile="taskflow/cuda/cuda_device.hpp" bodystart="315" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaScopedDevice_1a03d75e2c0b084c8e926a00a922302653" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::cudaScopedDevice::cudaScopedDevice</definition>
         <argsstring>(int device)</argsstring>
         <name>cudaScopedDevice</name>
-        <qualifiedname>tf::cudaScopedDevice::cudaScopedDevice</qualifiedname>
         <param>
           <type>int</type>
           <declname>device</declname>
@@ -54,7 +52,6 @@
         <definition>tf::cudaScopedDevice::~cudaScopedDevice</definition>
         <argsstring>()</argsstring>
         <name>~cudaScopedDevice</name>
-        <qualifiedname>tf::cudaScopedDevice::~cudaScopedDevice</qualifiedname>
         <briefdescription>
 <para>destructs the guard and switches back to the previous device context </para>
         </briefdescription>
@@ -64,14 +61,13 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_device.hpp" line="307" column="5" bodyfile="taskflow/cuda/cuda_device.hpp" bodystart="330" bodyend="335"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1cudaScopedDevice_1a4315f5b72224a82ec8a7d6e5e2a45a7d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaScopedDevice::cudaScopedDevice</definition>
         <argsstring>()=delete</argsstring>
         <name>cudaScopedDevice</name>
-        <qualifiedname>tf::cudaScopedDevice::cudaScopedDevice</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -85,7 +81,6 @@
         <definition>tf::cudaScopedDevice::cudaScopedDevice</definition>
         <argsstring>(const cudaScopedDevice &amp;)=delete</argsstring>
         <name>cudaScopedDevice</name>
-        <qualifiedname>tf::cudaScopedDevice::cudaScopedDevice</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaScopedDevice" kindref="compound">cudaScopedDevice</ref> &amp;</type>
         </param>
@@ -102,7 +97,6 @@
         <definition>tf::cudaScopedDevice::cudaScopedDevice</definition>
         <argsstring>(cudaScopedDevice &amp;&amp;)=delete</argsstring>
         <name>cudaScopedDevice</name>
-        <qualifiedname>tf::cudaScopedDevice::cudaScopedDevice</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">cudaScopedDevice</ref> &amp;&amp;</type>
         </param>
@@ -114,14 +108,14 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_device.hpp" line="313" column="5"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create an RAII-styled context switch </para>
     </briefdescription>
     <detaileddescription>
 <para>Sample usage:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::cudaScopedDevice<sp/>device(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>switch<sp/>to<sp/>the<sp/>device<sp/>context<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaScopedDevice" kindref="compound">tf::cudaScopedDevice</ref><sp/>device(1);<sp/><sp/></highlight><highlight class="comment">//<sp/>switch<sp/>to<sp/>the<sp/>device<sp/>context<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>stream<sp/>under<sp/>device<sp/>context<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cudaStream_t<sp/>stream;</highlight></codeline>

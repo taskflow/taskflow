@@ -536,6 +536,20 @@ class Task {
     This method removes the dependency links where the given tasks are predecessors
     of this task (i.e., tasks -> this). It ensures both sides of the dependency
     are updated to maintain graph consistency.
+    
+    @code{.cpp}
+    tf::Task A = taskflow.emplace([](){});
+    tf::Task B = taskflow.emplace([](){});
+    tf::Task C = taskflow.emplace([](){});
+    // create a linear chain of tasks, A->B->C
+    B.succeed(A)
+     .precede(C);
+    assert(B.num_successors() == 1 && C.num_predecessors() == 1);
+
+    // remove C from B's successor list
+    C.remove_predecessors(B);
+    assert(B.num_successors() == 0 && C.num_predecessors() == 0);
+    @endcode
     */
     template <typename... Ts>
     Task& remove_predecessors(Ts&&... tasks);
@@ -552,24 +566,23 @@ class Task {
     This method removes the dependency links where this task is a predecessor
     of the given tasks (i.e., this -> tasks). It ensures both sides of the dependency
     are updated to maintain graph consistency.
+
+    @code{.cpp}
+    tf::Task A = taskflow.emplace([](){});
+    tf::Task B = taskflow.emplace([](){});
+    tf::Task C = taskflow.emplace([](){});
+    // create a linear chain of tasks, A->B->C
+    B.succeed(A)
+     .precede(C);
+    assert(B.num_successors() == 1 && C.num_predecessors() == 1);
+
+    // remove C from B's successor list
+    B.remove_successors(C);
+    assert(B.num_successors() == 0 && C.num_predecessors() == 0);
+    @endcode
     */
     template <typename... Ts>
     Task& remove_successors(Ts&&... tasks);
-
-    /**
-    @brief removes all dependency links between this task and other tasks
-
-    @tparam Ts parameter pack
-
-    @param tasks one or multiple tasks
-
-    @return @c *this
-
-    This method removes all dependency links (both directions) between this task
-    and the given tasks, by calling remove_predecessors and remove_successors.
-    */
-    template <typename... Ts>
-    Task& remove_dependencies(Ts&&... tasks);
 
     /**
     @brief makes the task release the given semaphore
@@ -860,25 +873,17 @@ Task& Task::succeed(Ts&&... tasks) {
 // Function: remove_predecessors
 template <typename... Ts>
 Task& Task::remove_predecessors(Ts&&... tasks) {
-    (tasks._node->_remove_successors(_node), ...);
-    (_node->_remove_predecessors(tasks._node), ...);
-    return *this;
+  (tasks._node->_remove_successors(_node), ...);
+  (_node->_remove_predecessors(tasks._node), ...);
+  return *this;
 }
 
 // Function: remove_successors
 template <typename... Ts>
 Task& Task::remove_successors(Ts&&... tasks) {
-    (_node->_remove_successors(tasks._node), ...);
-    (tasks._node->_remove_predecessors(_node), ...);
-    return *this;
-}
-
-// Function: remove_dependencies
-template <typename... Ts>
-Task& Task::remove_dependencies(Ts&&... tasks) {
-    remove_predecessors(std::forward<Ts>(tasks)...);
-    remove_successors(std::forward<Ts>(tasks)...);
-    return *this;
+  (_node->_remove_successors(tasks._node), ...);
+  (tasks._node->_remove_predecessors(_node), ...);
+  return *this;
 }
 
 // Function: composed_of

@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1UnboundedTaskQueue_1_1Array" kind="struct" language="C++" prot="private">
     <compoundname>tf::UnboundedTaskQueue::Array</compoundname>
-    <sectiondef kind="public-attrib">
+      <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1UnboundedTaskQueue_1_1Array_1a4aa0afbaf4c1bc0755b6da3ea6df3914" prot="public" static="no" mutable="no">
         <type>int64_t</type>
         <definition>int64_t tf::UnboundedTaskQueue&lt; T &gt;::Array::C</definition>
         <argsstring></argsstring>
         <name>C</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::C</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -22,7 +21,6 @@
         <definition>int64_t tf::UnboundedTaskQueue&lt; T &gt;::Array::M</definition>
         <argsstring></argsstring>
         <name>M</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::M</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -32,11 +30,10 @@
         <location file="taskflow/core/tsq.hpp" line="60" column="13" bodyfile="taskflow/core/tsq.hpp" bodystart="60" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1UnboundedTaskQueue_1_1Array_1a1e6b66b7175c0efadeaf586b6d8ddf1e" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; *</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; *</type>
         <definition>std::atomic&lt;T&gt;* tf::UnboundedTaskQueue&lt; T &gt;::Array::S</definition>
         <argsstring></argsstring>
         <name>S</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::S</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -45,14 +42,13 @@
         </inbodydescription>
         <location file="taskflow/core/tsq.hpp" line="61" column="17" bodyfile="taskflow/core/tsq.hpp" bodystart="61" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1UnboundedTaskQueue_1_1Array_1a6d928f82f712a68167a9bcc0b9a92302" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::UnboundedTaskQueue&lt; T &gt;::Array::Array</definition>
         <argsstring>(int64_t c)</argsstring>
         <name>Array</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::Array</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>c</declname>
@@ -70,7 +66,6 @@
         <definition>tf::UnboundedTaskQueue&lt; T &gt;::Array::~Array</definition>
         <argsstring>()</argsstring>
         <name>~Array</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::~Array</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -84,7 +79,6 @@
         <definition>int64_t tf::UnboundedTaskQueue&lt; T &gt;::Array::capacity</definition>
         <argsstring>() const noexcept</argsstring>
         <name>capacity</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::capacity</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -98,7 +92,6 @@
         <definition>void tf::UnboundedTaskQueue&lt; T &gt;::Array::push</definition>
         <argsstring>(int64_t i, T o) noexcept</argsstring>
         <name>push</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::push</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>i</declname>
@@ -120,7 +113,6 @@
         <definition>T tf::UnboundedTaskQueue&lt; T &gt;::Array::pop</definition>
         <argsstring>(int64_t i) noexcept</argsstring>
         <name>pop</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::pop</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>i</declname>
@@ -133,12 +125,11 @@
         </inbodydescription>
         <location file="taskflow/core/tsq.hpp" line="81" column="7" bodyfile="taskflow/core/tsq.hpp" bodystart="81" bodyend="83"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1UnboundedTaskQueue_1_1Array_1af31638a12ec124ae453313d149f9e6e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1UnboundedTaskQueue_1_1Array_1a5effb524e2f639b1f3c2d0ca0a10bf0b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>Array *</type>
-        <definition>Array * tf::UnboundedTaskQueue&lt; T &gt;::Array::resize</definition>
+        <definition>Array* tf::UnboundedTaskQueue&lt; T &gt;::Array::resize</definition>
         <argsstring>(int64_t b, int64_t t)</argsstring>
         <name>resize</name>
-        <qualifiedname>tf::UnboundedTaskQueue::Array::resize</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>b</declname>
@@ -155,7 +146,7 @@
         </inbodydescription>
         <location file="taskflow/core/tsq.hpp" line="85" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="85" bodyend="91"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
@@ -179,7 +170,7 @@
       <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a0b1b87427355534a661de7061042dc20" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>M</name></member>
       <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a72665ccf0d39de3dd5c75d856a5ea68a" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>pop</name></member>
       <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a4d703ed34e1b6ab4a23c4ccfa04028f7" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>push</name></member>
-      <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1af31638a12ec124ae453313d149f9e6e5" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>resize</name></member>
+      <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a5effb524e2f639b1f3c2d0ca0a10bf0b" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>resize</name></member>
       <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a1e6b66b7175c0efadeaf586b6d8ddf1e" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>S</name></member>
       <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a972575b02a5806c6cf1d521282cdceec" prot="public" virt="non-virtual"><scope>tf::UnboundedTaskQueue::Array</scope><name>~Array</name></member>
     </listofallmembers>

@@ -1,16 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1SmallVectorBase" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorBase</compoundname>
-    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; Node * &gt;</derivedcompoundref>
-    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateCommon" prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</derivedcompoundref>
-    <sectiondef kind="protected-attrib">
+      <sectiondef kind="protected-attrib">
       <memberdef kind="variable" id="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" static="no" mutable="no">
         <type>void *</type>
         <definition>void* tf::SmallVectorBase::BeginX</definition>
         <argsstring></argsstring>
         <name>BeginX</name>
-        <qualifiedname>tf::SmallVectorBase::BeginX</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -24,7 +21,6 @@
         <definition>void * tf::SmallVectorBase::EndX</definition>
         <argsstring></argsstring>
         <name>EndX</name>
-        <qualifiedname>tf::SmallVectorBase::EndX</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -38,7 +34,6 @@
         <definition>void * tf::SmallVectorBase::CapacityX</definition>
         <argsstring></argsstring>
         <name>CapacityX</name>
-        <qualifiedname>tf::SmallVectorBase::CapacityX</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -47,14 +42,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="57" column="20" bodyfile="taskflow/utility/small_vector.hpp" bodystart="57" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="protected-func">
+      </sectiondef>
+      <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a326c733a440cd9a1197bed0f75892152" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::SmallVectorBase::SmallVectorBase</definition>
         <argsstring>(void *FirstEl, size_t Size)</argsstring>
         <name>SmallVectorBase</name>
-        <qualifiedname>tf::SmallVectorBase::SmallVectorBase</qualifiedname>
         <param>
           <type>void *</type>
           <declname>FirstEl</declname>
@@ -76,7 +70,6 @@
         <definition>void tf::SmallVectorBase::grow_pod</definition>
         <argsstring>(void *FirstEl, size_t MinSizeInBytes, size_t TSize)</argsstring>
         <name>grow_pod</name>
-        <qualifiedname>tf::SmallVectorBase::grow_pod</qualifiedname>
         <param>
           <type>void *</type>
           <declname>FirstEl</declname>
@@ -98,14 +91,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="65" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="65" bodyend="87"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorBase::size_in_bytes</definition>
         <argsstring>() const</argsstring>
         <name>size_in_bytes</name>
-        <qualifiedname>tf::SmallVectorBase::size_in_bytes</qualifiedname>
         <briefdescription>
 <para>This returns size()*sizeof(T). </para>
         </briefdescription>
@@ -120,7 +112,6 @@
         <definition>size_t tf::SmallVectorBase::capacity_in_bytes</definition>
         <argsstring>() const</argsstring>
         <name>capacity_in_bytes</name>
-        <qualifiedname>tf::SmallVectorBase::capacity_in_bytes</qualifiedname>
         <briefdescription>
 <para>capacity_in_bytes - This returns capacity()*sizeof(T). </para>
         </briefdescription>
@@ -135,7 +126,6 @@
         <definition>bool tf::SmallVectorBase::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
-        <qualifiedname>tf::SmallVectorBase::empty</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -144,26 +134,11 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="100" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="100" bodyend="100"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <inheritancegraph>
-      <node id="1">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; Node * &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="3">
-        <label>tf::SmallVectorTemplateCommon&lt; tf::Semaphore * &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
     <location file="taskflow/utility/small_vector.hpp" line="55" column="1" bodyfile="taskflow/utility/small_vector.hpp" bodystart="55" bodyend="101"/>
     <listofallmembers>
       <member refid="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>BeginX</name></member>
