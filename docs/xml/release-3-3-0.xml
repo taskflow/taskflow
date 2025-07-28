@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-3-0" kind="page">
     <compoundname>release-3-3-0</compoundname>
     <title>Release 3.3.0 (2022/01/03)</title>
@@ -7,61 +7,61 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-3-0_1release-3-3-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-3-0_1release-3-3-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-3-0_1release-3-3-0_summary</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-3-0_1release-3-3-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-3-0_1release-3-3-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>cudaFlow</name>
-        <reference>release-3-3-0_1release-3-3-0_cudaflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>syclFlow</name>
-        <reference>release-3-3-0_1release-3-3-0_syclflow</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-3-0_1release-3-3-0_utilities</reference>
-    </tocsect>
-      <tocsect>
-        <name>Taskflow Profiler (TFProf)</name>
-        <reference>release-3-3-0_1release-3-3-0_profiler</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-3-0_1release-3-3-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>cudaFlow</name>
+            <reference>release-3-3-0_1release-3-3-0_cudaflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>syclFlow</name>
+            <reference>release-3-3-0_1release-3-3-0_syclflow</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-3-0_1release-3-3-0_utilities</reference>
+          </tocsect>
+          <tocsect>
+            <name>Taskflow Profiler (TFProf)</name>
+            <reference>release-3-3-0_1release-3-3-0_profiler</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-3-0_1release-3-3-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-3-0_1release-3-3-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Deprecated and Removed Items</name>
         <reference>release-3-3-0_1release-3-3-0_deprecated_items</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-3-0_1release-3-3-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-3-0_1release-3-3-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -71,12 +71,10 @@
 </simplesect>
 </para>
 <sect1 id="release-3-3-0_1release-3-3-0_download">
-<title>Download</title>
-<para>Taskflow 3.3.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.3.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.3.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.3.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.3.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -96,8 +94,7 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_summary">
-<title>Release Summary</title>
-<para><orderedlist>
+<title>Release Summary</title><para><orderedlist>
 <listitem><para>This release has resolved data race issues reported by <ulink url="https://github.com/google/sanitizers">tsan</ulink> and has incorporated essential sanitizers into the <ulink url="https://github.com/taskflow/taskflow/actions">continuous integration workflows</ulink> for detecting data race, illegal memory access, and memory leak of the Taskflow codebase.</para>
 </listitem><listitem><para>This release has introduced a new pipeline interface (<ref refid="classtf_1_1Pipeline" kindref="compound">tf::Pipeline</ref>) that allow users to create a pipeline scheduling framework for implementing pipeline algorithms.</para>
 </listitem><listitem><para>This release has introduced a new thread-id mapping algorithm to resolve unexpected thread-local storage (TLS) errors when building Taskflow projects in a shared library environment.</para>
@@ -105,10 +102,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
+<title>New Features</title><sect2 id="release-3-3-0_1release-3-3-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>Changed all lambda operators in parallel algorithms to copy by default</para>
 </listitem><listitem><para>Cleaned up data race errors in <ulink url="https://github.com/google/sanitizers">tsan</ulink> caused by incorrect memory order</para>
 </listitem><listitem><para>Enhanced scheduling performance by caching tasks in the invoke loop</para>
@@ -126,29 +121,24 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_cudaflow">
-<title>cudaFlow</title>
-<para>Starting from v3.3, using tf::cudaFlow needs to include the header, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>. See <ref refid="release-3-3-0_1release-3-3-0_breaking_changes" kindref="member">Breaking Changes</ref>.</para>
+<title>cudaFlow</title><para>Starting from v3.3, using tf::cudaFlow needs to include the header, <computeroutput>taskflow/cuda/cudaflow.hpp</computeroutput>. See <ref refid="release-3-3-0_1release-3-3-0_breaking_changes" kindref="member">Breaking Changes</ref>.</para>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_syclflow">
-<title>syclFlow</title>
-<para>This release does not have any update on syclFlow.</para>
+<title>syclFlow</title><para>This release does not have any update on syclFlow.</para>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_utilities">
-<title>Utilities</title>
-<para><itemizedlist>
+<title>Utilities</title><para><itemizedlist>
 <listitem><para>Added <ref refid="classtf_1_1SmallVector" kindref="compound">tf::SmallVector</ref> to the documentation</para>
 </listitem><listitem><para>Added relax_cpu call to optimize the work-stealing loop</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-3-3-0_1release-3-3-0_profiler">
-<title>Taskflow Profiler (TFProf)</title>
-<para>This release does not have any update on the profiler.</para>
+<title>Taskflow Profiler (TFProf)</title><para>This release does not have any update on the profiler.</para>
 </sect2>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>Fixed incorrect static TLS access when building Taskflow in a shared lib</para>
 </listitem><listitem><para>Fixed memory leak in updating tf::cudaFlowCapturer of undestroyed graph</para>
 </listitem><listitem><para>Fixed data race in the object-pool when accessing the heap pointer</para>
@@ -162,8 +152,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para>If you encounter any potential bugs, please submit an issue at <ulink url="https://github.com/taskflow/taskflow/issues">issue tracker</ulink>.</para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_breaking_changes">
-<title>Breaking Changes</title>
-<para>For the purpose of compilation speed, you will need to separately include the follwoing files for using specific features and algorithms:<itemizedlist>
+<title>Breaking Changes</title><para>For the purpose of compilation speed, you will need to separately include the follwoing files for using specific features and algorithms:<itemizedlist>
 <listitem><para><computeroutput>taskflow/algorithm/reduce.hpp</computeroutput> for creating a parallel-reduction task</para>
 </listitem><listitem><para><computeroutput>taskflow/algorithm/sort.hpp</computeroutput> for creating a parallel-sort task</para>
 </listitem><listitem><para><computeroutput>taskflow/algorithm/transform.hpp</computeroutput> for creating a parallel-transform task</para>
@@ -181,12 +170,10 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_deprecated_items">
-<title>Deprecated and Removed Items</title>
-<para>This release does not have any deprecated and removed items.</para>
+<title>Deprecated and Removed Items</title><para>This release does not have any deprecated and removed items.</para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>Revised <ref refid="install" kindref="compound">Building and Installing</ref><itemizedlist>
 <listitem><para><ref refid="install_1BAIBuildSanitizers" kindref="member">Build Sanitizers</ref></para>
 </listitem></itemizedlist>
@@ -217,8 +204,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-3-0_1release-3-3-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para>We have published Taskflow in the following venues:<orderedlist>
+<title>Miscellaneous Items</title><para>We have published Taskflow in the following venues:<orderedlist>
 <listitem><para>Tsung-Wei Huang, Dian-Lun Lin, Chun-Xun Lin, and Yibo Lin, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">Taskflow: A Lightweight Parallel and Heterogeneous Task Graph Computing System</ulink>," <emphasis>IEEE Transactions on Parallel and Distributed Systems (TPDS)</emphasis>, vol. 33, no. 6, pp. 1303-1320, June 2022</para>
 </listitem><listitem><para>Tsung-Wei Huang, "<ulink url="https://tsung-wei-huang.github.io/papers/tpds21-taskflow.pdf">TFProf: Profiling Large Taskflow Programs with Modern D3 and C++</ulink>," <emphasis>IEEE International Workshop on Programming and Performance Visualization Tools (ProTools)</emphasis>, St. Louis, Missouri, 2021</para>
 </listitem></orderedlist>

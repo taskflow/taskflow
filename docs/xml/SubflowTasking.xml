@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="SubflowTasking" kind="page">
     <compoundname>SubflowTasking</compoundname>
     <title>Subflow Tasking</title>
@@ -7,27 +7,26 @@
       <tocsect>
         <name>Create a Subflow</name>
         <reference>SubflowTasking_1CreateASubflow</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Retain a Subflow</name>
         <reference>SubflowTasking_1RetainASubflow</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Join a Subflow Explicitly</name>
         <reference>SubflowTasking_1JoinASubflow</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Create a Nested Subflow</name>
         <reference>SubflowTasking_1CreateANestedSubflow</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>It is very common for a parallel program to spawn task dependency graphs at runtime. In Taskflow, we call this <emphasis>subflow tasking</emphasis>.</para>
 <sect1 id="SubflowTasking_1CreateASubflow">
-<title>Create a Subflow</title>
-<para>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <emphasis>subflow</emphasis> dependency graph. To create a subflow, emplace a callable that takes an argument of type <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. A <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> object will be created and forwarded to the execution context of the task. All methods you find in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> are applicable for <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>.</para>
+<title>Create a Subflow</title><para>Subflow tasks are those created during the execution of a graph. These tasks are spawned from a parent task and are grouped together to a <emphasis>subflow</emphasis> dependency graph. To create a subflow, emplace a callable that takes an argument of type <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>. A <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> object will be created and forwarded to the execution context of the task. All methods you find in <ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref> are applicable for <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:</highlight></codeline>
@@ -48,9 +47,9 @@
 <codeline><highlight class="normal">18:<sp/>B.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>B</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">19:<sp/>C.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(D);<sp/><sp/></highlight><highlight class="comment">//<sp/>D<sp/>runs<sp/>after<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">20:</highlight></codeline>
-<codeline><highlight class="normal">21:<sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();<sp/><sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight></codeline>
+<codeline><highlight class="normal">21:<sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).get();<sp/><sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight></codeline>
 </programlisting></para>
-<para><parblock><para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/subflow-join.dot"></dotfile>
+<para><parblock><para><dotfile name="subflow-join.dot"></dotfile>
  </para>
 </parblock></para>
 <para>Debrief: <itemizedlist>
@@ -68,28 +67,26 @@
 Lines 8-14 are the main block to enable subflow tasking at task B. The runtime will create a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> passing it to task B, and spawn a dependency graph as described by the associated callable. This new subflow graph will be added to the topology of its parent task B.</para>
 </sect1>
 <sect1 id="SubflowTasking_1RetainASubflow">
-<title>Retain a Subflow</title>
-<para>By default, a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> automatically clears its internal task graph once it is joined. After a subflow joins, its structure and associated resources are no longer accessible. This behavior is designed to reduce memory usage, particularly in applications that recursively spawn many subflows. For applications that require post-processing, such as visualizing the subflow through <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref>, users can disable this default cleanup behavior by calling <ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">tf::Subflow::retain</ref> on <computeroutput>true</computeroutput>. This instructs the runtime to retain the subflow&apos;s task graph even after it has joined, enabling further inspection or visualization.</para>
+<title>Retain a Subflow</title><para>By default, a <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> automatically clears its internal task graph once it is joined. After a subflow joins, its structure and associated resources are no longer accessible. This behavior is designed to reduce memory usage, particularly in applications that recursively spawn many subflows. For applications that require post-processing, such as visualizing the subflow through <ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">tf::Taskflow::dump</ref>, users can disable this default cleanup behavior by calling <ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">tf::Subflow::retain</ref> on <computeroutput>true</computeroutput>. This instructs the runtime to retain the subflow&apos;s task graph even after it has joined, enabling further inspection or visualization.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">retain</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/><sp/></highlight><highlight class="comment">//<sp/>retain<sp/>the<sp/>subflow<sp/>after<sp/>join<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>subflow<sp/>implicitly<sp/>joins<sp/>here</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>subflow<sp/>graph<sp/>is<sp/>now<sp/>retained<sp/>and<sp/>can<sp/>be<sp/>visualized<sp/>using<sp/>taskflow.dump(...)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="SubflowTasking_1JoinASubflow">
-<title>Join a Subflow Explicitly</title>
-<para>By default, a subflow <emphasis>implicitly</emphasis> joins its parent task when execution leaves its context. All terminal nodes (i.e., nodes with no outgoing edges) in the subflow are guaranteed to precede the parent task. Upon joining, the subflow&apos;s task graph and associated resources are automatically cleaned up. If your application needs to access variables defined within the subflow after it joins, you can explicitly join the subflow and handle post-processing accordingly. A common use case is parallelizing recursive computations such as the Fibonacci sequence:</para>
+<title>Join a Subflow Explicitly</title><para>By default, a subflow <emphasis>implicitly</emphasis> joins its parent task when execution leaves its context. All terminal nodes (i.e., nodes with no outgoing edges) in the subflow are guaranteed to precede the parent task. Upon joining, the subflow&apos;s task graph and associated resources are automatically cleaned up. If your application needs to access variables defined within the subflow after it joins, you can explicitly join the subflow and handle post-processing accordingly. A common use case is parallelizing recursive computations such as the Fibonacci sequence:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>spawn(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n,<sp/><ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sbf)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(n<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>n;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
@@ -103,33 +100,32 @@ Lines 8-14 are the main block to enable subflow tasking at task B. The runtime w
 <codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/>spawn(5,<sp/>sbf);<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>The code above computes the fifth Fibonacci number using recursive subflow. Calling <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> <emphasis>immediately</emphasis> materializes the subflow by executing all associated tasks to recursively compute Fibonacci numbers. The taskflow graph is shown below:</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/fibonacci_7.dot"></dotfile>
+<para><dotfile name="fibonacci_7.dot"></dotfile>
 </para>
 <para><simplesect kind="attention"><para>Using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to implement recursive parallelism like finding Fibonacci numbers may not be as efficient as <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> due to additional task graph overhead. For more details, readers can refer to <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>.</para>
 </simplesect>
 </para>
 </sect1>
 <sect1 id="SubflowTasking_1CreateANestedSubflow">
-<title>Create a Nested Subflow</title>
-<para>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</para>
+<title>Create a Nested Subflow</title><para>A subflow can be nested or recursive. You can create another subflow from the execution of a subflow and so on.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><sp/>1:<sp/><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>2:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>3:<sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
-<codeline><highlight class="normal"><sp/>4:<sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>spawns<sp/>A1<sp/>&amp;<sp/>subflow<sp/>A2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>4:<sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>spawns<sp/>A1<sp/>&amp;<sp/>subflow<sp/>A2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>5:<sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A1<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/>6:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/>6:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/>7:<sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;A1&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/>8:</highlight></codeline>
 <codeline><highlight class="normal"><sp/>9:<sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A2<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>(<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf2){</highlight></codeline>
-<codeline><highlight class="normal">10:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A2<sp/>spawns<sp/>A2_1<sp/>&amp;<sp/>A2_2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">10:<sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A2<sp/>spawns<sp/>A2_1<sp/>&amp;<sp/>A2_2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">11:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A2_1<sp/>=<sp/>sf2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">12:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A2_1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">12:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A2_1\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">13:<sp/><sp/><sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;A2_1&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">14:<sp/><sp/><sp/><sp/><sp/><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A2_2<sp/>=<sp/>sf2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([]<sp/>()<sp/>{</highlight></codeline>
-<codeline><highlight class="normal">15:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A2_2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal">15:<sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subtask<sp/>A2_2\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">16:<sp/><sp/><sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;A2_2&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">17:<sp/><sp/><sp/><sp/><sp/>A2_1.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(A2_2);</highlight></codeline>
 <codeline><highlight class="normal">18:<sp/><sp/><sp/>}).name(</highlight><highlight class="stringliteral">&quot;A2&quot;</highlight><highlight class="normal">);</highlight></codeline>
@@ -137,9 +133,9 @@ Lines 8-14 are the main block to enable subflow tasking at task B. The runtime w
 <codeline><highlight class="normal">20:<sp/>}).name(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">21:</highlight></codeline>
 <codeline><highlight class="normal">22:<sp/></highlight><highlight class="comment">//<sp/>execute<sp/>the<sp/>graph<sp/>to<sp/>spawn<sp/>the<sp/>subflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">23:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>().<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
+<codeline><highlight class="normal">23:<sp/><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref>().<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/nested_subflow.dot"></dotfile>
+<para><dotfile name="nested_subflow.dot"></dotfile>
 </para>
 <para>Debrief: <itemizedlist>
 <listitem><para>Line 1 creates a taskflow object </para>

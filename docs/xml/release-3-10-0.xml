@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-10-0" kind="page">
     <compoundname>release-3-10-0</compoundname>
     <title>Release 3.10.0 (2025/05/01)</title>
@@ -7,60 +7,57 @@
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-10-0_1release-3-10-0_summary</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-3-10-0_1release-3-10-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-10-0_1release-3-10-0_system_requirements</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-10-0_1release-3-10-0_new_features</reference>
-    <tableofcontents>
-      <tocsect>
-        <name>Taskflow Core</name>
-        <reference>release-3-10-0_1release-3-10-0_taskflow_core</reference>
-    </tocsect>
-      <tocsect>
-        <name>Utilities</name>
-        <reference>release-3-10-0_1release-3-10-0_utilities</reference>
-    </tocsect>
-    </tableofcontents>
-    </tocsect>
+        <tableofcontents>
+          <tocsect>
+            <name>Taskflow Core</name>
+            <reference>release-3-10-0_1release-3-10-0_taskflow_core</reference>
+          </tocsect>
+          <tocsect>
+            <name>Utilities</name>
+            <reference>release-3-10-0_1release-3-10-0_utilities</reference>
+          </tocsect>
+        </tableofcontents>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-10-0_1release-3-10-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-10-0_1release-3-10-0_breaking_changes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-10-0_1release-3-10-0_documentation</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-10-0_1release-3-10-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <sect1 id="release-3-10-0_1release-3-10-0_summary">
-<title>Release Summary</title>
-<para>This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.</para>
+<title>Release Summary</title><para>This release improves scheduling performance through optimized work-stealing threshold tuning and a constrained decentralized buffer. It also introduces index-range-based parallel-for and parallel-reduction algorithms and modifies subflow tasking behavior to significantly enhance the performance of recursive parallelism.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_download">
-<title>Download</title>
-<para>Taskflow 3.10.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.10.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 3.10.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.10.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_system_requirements">
-<title>System Requirements</title>
-<para>To use Taskflow v3.10.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title><para>To use Taskflow v3.10.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -83,10 +80,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_new_features">
-<title>New Features</title>
-<sect2 id="release-3-10-0_1release-3-10-0_taskflow_core">
-<title>Taskflow Core</title>
-<para><itemizedlist>
+<title>New Features</title><sect2 id="release-3-10-0_1release-3-10-0_taskflow_core">
+<title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>optimized work-stealing loop with an adaptive breaking strategy</para>
 </listitem><listitem><para>optimized shut-down signal detection using decentralized variables</para>
 </listitem><listitem><para>optimized memory layout of node by combining successors and predecessors together</para>
@@ -96,7 +91,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>initialize<sp/>data1<sp/>and<sp/>data2<sp/>to<sp/>10<sp/>using<sp/>two<sp/>different<sp/>approaches</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data1(100),<sp/>data2(100);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data1(100),<sp/>data2(100);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Approach<sp/>1:<sp/>initialize<sp/>data1<sp/>using<sp/>explicit<sp/>index<sp/>range</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.for_each_index(0,<sp/>100,<sp/>1,<sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/>data1[i]<sp/>=<sp/>10;<sp/>});</highlight></codeline>
@@ -113,7 +108,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <listitem><para>added index range-based parallel-reduction algorithm (<ulink url="https://github.com/taskflow/taskflow/issues/654">#654</ulink>)</para>
 </listitem></itemizedlist>
 </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;double&gt;</ref><sp/>data(100000);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;double&gt;</ref><sp/>data(100000);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>res<sp/>=<sp/>1.0;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.reduce_by_index(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>index<sp/>range</highlight><highlight class="normal"></highlight></codeline>
@@ -127,39 +122,37 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>data[i]<sp/>=<sp/>1.0;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>residual<sp/>+=<sp/>data[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;partial<sp/>sum<sp/>=<sp/>%lf\n&quot;</highlight><highlight class="normal">,<sp/>residual);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;partial<sp/>sum<sp/>=<sp/>%lf\n&quot;</highlight><highlight class="normal">,<sp/>residual);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>residual;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>global<sp/>reducer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;double&gt;</ref>()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/plus" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::plus&lt;double&gt;</ref>()</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>added <computeroutput>static</computeroutput> keyword to the executor creation in taskflow benchmarks</para>
 </listitem><listitem><para>added waiter test to detect over-subscription issues</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Executor_1a5205c78ec06ef01de0c7d6a71adad07a" kindref="member">tf::Executor::num_waiters</ref> (C++20 only) for querying the number of non-stealing workers</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref> to the algorithm collection (see <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref>)</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1ad13f8d0b6628d895792570515497139c" kindref="member">tf::make_module_task</ref> to the algorithm collection (see <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref>)</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Runtime_1a20d9756a7aa6b58d0d04437818c10066" kindref="member">tf::Runtime::is_cancelled</ref> to query if the parent taskflow is cancelled</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to async tasking to simplify designs of recursive parallelism (see <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref>)</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-3-10-0_1release-3-10-0_utilities">
-<title>Utilities</title>
-<para><itemizedlist>
+<title>Utilities</title><para><itemizedlist>
 <listitem><para>added <ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange</ref> for index range-based parallel-for algorithm</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a02a73acf6a05a3a4c673068daaad866f" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
-</listitem><listitem><para>added <ref refid="namespacetf_1a5643bf94c64370ee721692e3e6d9dc80" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1a491336a2b20d6999c4d184a3a770d2f0" kindref="member">tf::distance</ref> to calculate the number of iterations in an index range</para>
+</listitem><listitem><para>added <ref refid="namespacetf_1a84959c9a3780bbb98451c5b8a52dcedd" kindref="member">tf::is_index_range_invalid</ref> to check if the given index range is valid</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>fixed the compilation error of CLI11 due to version incompatibility (<ulink url="https://github.com/taskflow/taskflow/issues/672">#672</ulink>)</para>
 </listitem><listitem><para>fixed the compilation error of template deduction on packaged_task (<ulink url="https://github.com/taskflow/taskflow/issues/657">#657</ulink>)</para>
-</listitem><listitem><para>fixed the MSVC compilation error due to macro clash with std::min and std::max (<ulink url="https://github.com/taskflow/taskflow/issues/670">#670</ulink>)</para>
+</listitem><listitem><para>fixed the MSVC compilation error due to macro clash with <ref refid="cpp/algorithm/min" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::min</ref> and <ref refid="cpp/algorithm/max" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::max</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/670">#670</ulink>)</para>
 </listitem><listitem><para>fixed the runtime error due to the use of latch in <ref refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" kindref="member">tf::Executor::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/667">#667</ulink>)</para>
 </listitem><listitem><para>fixed the compilation error due to incorrect const qualifier used in algorithms (<ulink url="https://github.com/taskflow/taskflow/issues/673">#673</ulink>)</para>
 </listitem><listitem><para>fixed the TSAN error when using find-if algorithm tasks with closure wrapper (<ulink url="https://github.com/taskflow/taskflow/issues/675">#675</ulink>)</para>
@@ -169,8 +162,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_breaking_changes">
-<title>Breaking Changes</title>
-<para><itemizedlist>
+<title>Breaking Changes</title><para><itemizedlist>
 <listitem><para>corrected the terminology by replacing &apos;dependents&apos; with &apos;predecessors&apos;<itemizedlist>
 <listitem><para><ref refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" kindref="member">tf::Task::num_predecessors</ref> (previously tf::Task::num_dependents)</para>
 </listitem><listitem><para><ref refid="classtf_1_1Task_1a31d8069d4c0b10b55e68d260c4d28c1f" kindref="member">tf::Task::for_each_predecessor</ref> (previously tf::Task::for_each_dependent)</para>
@@ -198,21 +190,21 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref>&amp;<sp/>sf){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1ac585638d8ca8fb2f34c4826cb0d4f39f" kindref="member">retain</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);<sp/><sp/></highlight><highlight class="comment">//<sp/>retain<sp/>the<sp/>subflow<sp/>after<sp/>join<sp/>for<sp/>visualization</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>B<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>C<sp/>=<sp/>sf.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>runs<sp/>before<sp/>B<sp/>and<sp/>C</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>subflow<sp/>implicitly<sp/>joins<sp/>here</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>The<sp/>subflow<sp/>graph<sp/>is<sp/>now<sp/>retained<sp/>and<sp/>can<sp/>be<sp/>visualized<sp/>using<sp/>taskflow.dump(...)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1Taskflow_1ac433018262e44b12c4cc9f0c4748d758" kindref="member">dump</ref>(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting></para>
 <para><itemizedlist>
 <listitem><para>disabled the support for tf::cudaFlow and tf::cudaFlowCapturer<itemizedlist>
-<listitem><para>introduced a cleaner interface <ref refid="namespacetf_1ac76b07f7b7055967f6a2f1dc78b0978a" kindref="member">tf::cudaGraph</ref> directly atop <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink> (see <ref refid="GPUTasking" kindref="compound">GPU Tasking</ref>)</para>
-</listitem><listitem><para><ref refid="namespacetf_1ac76b07f7b7055967f6a2f1dc78b0978a" kindref="member">tf::cudaGraph</ref> has similar interface to tf::cudaFlow and can be changed as follows:</para>
+<listitem><para>introduced a cleaner interface <ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> directly atop <ulink url="https://developer.nvidia.com/blog/cuda-graphs/">CUDA Graph</ulink> (see <ref refid="GPUTasking" kindref="compound">GPU Tasking</ref>)</para>
+</listitem><listitem><para><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref> has similar interface to tf::cudaFlow and can be changed as follows:</para>
 </listitem></itemizedlist>
 </para>
 </listitem></itemizedlist>
@@ -226,12 +218,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>CUDA<sp/>graph<sp/>now<sp/>and<sp/>submit<sp/>it<sp/>to<sp/>a<sp/>stream<sp/>for<sp/>execution</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1a7dcdfb79385a57c4c59b7c9f21e8beb9" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a1e5140505629afd4b3422399f8080cb0" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_documentation">
-<title>Documentation</title>
-<para><itemizedlist>
+<title>Documentation</title><para><itemizedlist>
 <listitem><para>added <ref refid="ModuleAlgorithm" kindref="compound">Module Algorithm</ref></para>
 </listitem><listitem><para>revised <ref refid="SubflowTasking" kindref="compound">Subflow Tasking</ref></para>
 </listitem><listitem><para>revised <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref></para>
@@ -245,8 +236,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-10-0_1release-3-10-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
+<title>Miscellaneous Items</title><para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-3.10.0.dox"/>

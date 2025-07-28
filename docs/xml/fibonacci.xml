@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="fibonacci" kind="page">
     <compoundname>fibonacci</compoundname>
     <title>Fibonacci Number</title>
@@ -7,27 +7,26 @@
       <tocsect>
         <name>Problem Formulation</name>
         <reference>fibonacci_1FibonacciNumberProblem</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Recursive Fibonacci Parallelism</name>
         <reference>fibonacci_1RecursiveFibonacciParallelism</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Tail Recursion Optimization</name>
         <reference>fibonacci_1TailRecursionOptimization</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Benchmarking</name>
         <reference>fibonacci_1FibonacciNumberBenchmarking</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>We study the classic problem, <emphasis>Fibonacci Number</emphasis>, to demonstrate the use of recursive task parallelism.</para>
 <sect1 id="fibonacci_1FibonacciNumberProblem">
-<title>Problem Formulation</title>
-<para>In mathematics, the Fibonacci numbers, commonly denoted <computeroutput>F(n)</computeroutput>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</para>
+<title>Problem Formulation</title><para>In mathematics, the Fibonacci numbers, commonly denoted <computeroutput>F(n)</computeroutput>, form a sequence such that each number is the sum of the two preceding ones, starting from 0 and 1.</para>
 <para><computeroutput>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</computeroutput></para>
 <para>A common solution for computing fibonacci numbers is <emphasis>recursion</emphasis>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fib(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>n)<sp/>{</highlight></codeline>
@@ -37,8 +36,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="fibonacci_1RecursiveFibonacciParallelism">
-<title>Recursive Fibonacci Parallelism</title>
-<para>We use <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref> and <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to recursively compute Fibonacci numbers in parallel. A runtime task tasks a reference to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> as its argument, allowing users to interact with the executor and spawn tasks dynamically. The example below demonstrates a parallel recursive implementation of Fibonacci numbers using <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>:</para>
+<title>Recursive Fibonacci Parallelism</title><para>We use <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref> and <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> to recursively compute Fibonacci numbers in parallel. A runtime task tasks a reference to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> as its argument, allowing users to interact with the executor and spawn tasks dynamically. The example below demonstrates a parallel recursive implementation of Fibonacci numbers using <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{</highlight></codeline>
@@ -64,18 +62,17 @@
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([N,<sp/>&amp;res](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/>res<sp/>=<sp/>fibonacci(N,<sp/>rt);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The <computeroutput>fibonacci</computeroutput> function recursively spawns two asynchronous tasks to compute <computeroutput>fibonacci(N-1)</computeroutput> and <computeroutput>fibonacci(N-2)</computeroutput> in parallel using <computeroutput><ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref></computeroutput>. After spawning the two tasks, the function invokes <ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">tf::Runtime::corun()</ref> to wait until all tasks spawned by <computeroutput>rt</computeroutput> complete, without blocking the caller worker. In the main function, the executor creates an async task from the top Fibonacci number and waits for completion using <ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">tf::Executor::wait_for_all</ref>. Once finished, the result is printed. The figure below shows the execution diagram, where the suffixes *_1 and *_2 represent the left and right children spawned by their parent runtime:</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/fibonacci_4.dot"></dotfile>
+<para><dotfile name="fibonacci_4.dot"></dotfile>
 </para>
 </sect1>
 <sect1 id="fibonacci_1TailRecursionOptimization">
-<title>Tail Recursion Optimization</title>
-<para>In recursive parallelism, especially for problems like Fibonacci computation, spawning both recursive branches as asynchronous tasks can lead to excessive task creation and stack growth, which may degrade performance and overwhelm the runtime scheduler. Additionally, when both child tasks are launched asynchronously, the parent task must wait for both to finish, potentially blocking a worker thread and reducing parallel throughput. To address these issues, we apply tail recursion optimization to one branch of the Fibonacci call. This allows one of the recursive calls to proceed immediately in the current execution context, reducing both scheduling overhead and stack usage.</para>
+<title>Tail Recursion Optimization</title><para>In recursive parallelism, especially for problems like Fibonacci computation, spawning both recursive branches as asynchronous tasks can lead to excessive task creation and stack growth, which may degrade performance and overwhelm the runtime scheduler. Additionally, when both child tasks are launched asynchronously, the parent task must wait for both to finish, potentially blocking a worker thread and reducing parallel throughput. To address these issues, we apply tail recursion optimization to one branch of the Fibonacci call. This allows one of the recursive calls to proceed immediately in the current execution context, reducing both scheduling overhead and stack usage.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N,<sp/><ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>N;<sp/></highlight></codeline>
@@ -94,12 +91,11 @@
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime. As we can see, the right child is optimized out through tail recursion optimization.</para>
-<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/fibonacci_4_tail_optimized.dot"></dotfile>
+<para><dotfile name="fibonacci_4_tail_optimized.dot"></dotfile>
 </para>
 </sect1>
 <sect1 id="fibonacci_1FibonacciNumberBenchmarking">
-<title>Benchmarking</title>
-<para>Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism (1) with tail recursion optimization and (2) without it, across different Fibonacci numbers.</para>
+<title>Benchmarking</title><para>Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism (1) with tail recursion optimization and (2) without it, across different Fibonacci numbers.</para>
 <para> <table rows="6" cols="3"><row>
 <entry thead="yes" align='center'><para>N   </para>
 </entry><entry thead="yes" align='center'><para>w/ tail recursion optimization   </para>

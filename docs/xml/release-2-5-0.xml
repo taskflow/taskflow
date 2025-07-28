@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-2-5-0" kind="page">
     <compoundname>release-2-5-0</compoundname>
     <title>Release 2.5.0 (2020/06/01)</title>
@@ -7,19 +7,19 @@
       <tocsect>
         <name>Download</name>
         <reference>release-2-5-0_1release-2-5-0_download</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-2-5-0_1release-2-5-0_new_features</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-2-5-0_1release-2-5-0_bug_fixes</reference>
-    </tocsect>
+      </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-2-5-0_1release-2-5-0_miscellaneous_items</reference>
-    </tocsect>
+      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -27,13 +27,11 @@
 <para>Starting from v2.5.0, we have renamed Cpp-Taskflow to <emphasis>Taskflow</emphasis> to broaden its impact and support. Taskflow will explore multiple scopes of applications and language bindings, rather than just C++. This also made Taskflow naming more succinct and concise.</para>
 <para>Taskflow 2.5.0 is the 7th release in the 2.x line! This release includes several new changes such as CPU-GPU tasking, web-based profiler, documentation, and unit tests.</para>
 <sect1 id="release-2-5-0_1release-2-5-0_download">
-<title>Download</title>
-<para>Taskflow 2.5.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.5.0">here</ulink>.</para>
+<title>Download</title><para>Taskflow 2.5.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v2.5.0">here</ulink>.</para>
 <para>To download the newest version of Taskflow, please clone from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
 </sect1>
 <sect1 id="release-2-5-0_1release-2-5-0_new_features">
-<title>New Features</title>
-<para><itemizedlist>
+<title>New Features</title><para><itemizedlist>
 <listitem><para>enhanced the performance of the work-stealing algorithm </para>
 </listitem>
 <listitem><para>enhanced the interface of concurrent CPU-GPU tasking (added tf::cudaFlow::zero, tf::cudaFlow::memset, tf::cudaFlow::memcpy, tf::cudaFlow::fill) </para>
@@ -46,7 +44,7 @@
 </listitem>
 <listitem><para>added <ref refid="Examples" kindref="compound">Learning from Examples</ref> pages </para>
 </listitem>
-<listitem><para>made observer a <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> object </para>
+<listitem><para>made observer a <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> object </para>
 </listitem>
 <listitem><para>enabled multiple observers to coexit in an executor </para>
 </listitem>
@@ -57,8 +55,7 @@
 </para>
 </sect1>
 <sect1 id="release-2-5-0_1release-2-5-0_bug_fixes">
-<title>Bug Fixes</title>
-<para><itemizedlist>
+<title>Bug Fixes</title><para><itemizedlist>
 <listitem><para>fixed the bug in assigning the block pointer before constructor of an object in object pool </para>
 </listitem>
 <listitem><para>fixed the namespace conflicting in using MPark.Variant from upstream code</para>
@@ -67,8 +64,7 @@
 </para>
 </sect1>
 <sect1 id="release-2-5-0_1release-2-5-0_miscellaneous_items">
-<title>Miscellaneous Items</title>
-<para><itemizedlist>
+<title>Miscellaneous Items</title><para><itemizedlist>
 <listitem><para>fixed the warning between unsigned and size_t conversion in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> </para>
 </listitem>
 <listitem><para>submitted the technical paper to arXiv </para>
