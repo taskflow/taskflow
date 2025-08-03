@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "graph.hpp"
 
@@ -19,22 +19,22 @@ namespace tf {
 @brief enumeration of all task types
 */
 enum class TaskType : int {
-  /** @brief placeholder task type */
-  PLACEHOLDER = 0,
-  /** @brief static task type */
-  STATIC,
-  /** @brief runtime task type */
-  RUNTIME,
-  /** @brief dynamic (subflow) task type */
-  SUBFLOW,
-  /** @brief condition task type */
-  CONDITION,
-  /** @brief module task type */
-  MODULE,
-  /** @brief asynchronous task type */
-  ASYNC,
-  /** @brief undefined task type (for internal use only) */
-  UNDEFINED
+    /** @brief placeholder task type */
+    PLACEHOLDER = 0,
+    /** @brief static task type */
+    STATIC,
+    /** @brief runtime task type */
+    RUNTIME,
+    /** @brief dynamic (subflow) task type */
+    SUBFLOW,
+    /** @brief condition task type */
+    CONDITION,
+    /** @brief module task type */
+    MODULE,
+    /** @brief asynchronous task type */
+    ASYNC,
+    /** @brief undefined task type (for internal use only) */
+    UNDEFINED
 };
 
 /**
@@ -42,13 +42,13 @@ enum class TaskType : int {
 @brief array of all task types (used for iterating task types)
 */
 inline constexpr std::array<TaskType, 7> TASK_TYPES = {
-  TaskType::PLACEHOLDER,
-  TaskType::STATIC,
-  TaskType::RUNTIME,
-  TaskType::SUBFLOW,
-  TaskType::CONDITION,
-  TaskType::MODULE,
-  TaskType::ASYNC,
+    TaskType::PLACEHOLDER,
+    TaskType::STATIC,
+    TaskType::RUNTIME,
+    TaskType::SUBFLOW,
+    TaskType::CONDITION,
+    TaskType::MODULE,
+    TaskType::ASYNC,
 };
 
 /**
@@ -65,9 +65,9 @@ The name of each task type is the litte-case string of its characters.
 */
 inline const char* to_string(TaskType type) {
 
-  const char* val;
+    const char* val;
 
-  switch(type) {
+    switch(type) {
     case TaskType::PLACEHOLDER: val = "placeholder";     break;
     case TaskType::STATIC:      val = "static";          break;
     case TaskType::RUNTIME:     val = "runtime";         break;
@@ -76,9 +76,9 @@ inline const char* to_string(TaskType type) {
     case TaskType::MODULE:      val = "module";          break;
     case TaskType::ASYNC:       val = "async";           break;
     default:                    val = "undefined";       break;
-  }
+    }
 
-  return val;
+    return val;
 }
 
 // ----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ struct is_static_task : std::false_type {};
 */
 template <typename C>
 struct is_static_task<C, std::enable_if_t<std::is_invocable_v<C>>>
-  : std::is_same<std::invoke_result_t<C>, void> {};
+    : std::is_same<std::invoke_result_t<C>, void> {};
 
 /**
 @brief determines if a callable is a static task
@@ -105,6 +105,7 @@ A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
 constexpr bool is_static_task_v = is_static_task<C>::value;
+
 
 // ----------------------------------------------------------------------------
 // Subflow Task Trait
@@ -121,7 +122,7 @@ struct is_subflow_task : std::false_type {};
 */
 template <typename C>
 struct is_subflow_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Subflow&>>>
-  : std::is_same<std::invoke_result_t<C, tf::Subflow&>, void> {};
+    : std::is_same<std::invoke_result_t<C, tf::Subflow&>, void> {};
 
 /**
 @brief determines if a callable is a subflow task
@@ -146,7 +147,7 @@ struct is_runtime_task : std::false_type {};
 */
 template <typename C>
 struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Runtime&>>>
-  : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
+    : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
 
 /**
 @brief determines if a callable is a runtime task
@@ -179,6 +180,187 @@ template <typename C>
 constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int>, C>;
 
 
+
+#ifdef TF_ENABLE_DELEGATE
+
+// ----------------------------------------------------------------------------
+// Static Task Trait with Instance
+// ----------------------------------------------------------------------------
+
+template <typename C, typename T, typename = void>
+struct is_static_task_with_arg : std::false_type {};
+
+// General specialization: ordinary callable objects (excluding member function pointers)
+template <typename C, typename T>
+struct is_static_task_with_arg<
+    C, T,
+    std::enable_if_t<
+        std::is_invocable_v<C, T> &&
+        std::is_same_v<std::invoke_result_t<C, T>, void> &&
+        !std::is_member_function_pointer_v<C> &&
+        (std::is_lvalue_reference_v<T> || std::is_pointer_v<std::remove_reference_t<T>>)
+        >
+    > : std::true_type {};
+
+// Member function pointer: R (Class::*)() or R (Class::*)() const
+template <typename R, typename Class, typename T>
+struct is_static_task_with_arg<
+    R (Class::*)(), T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename R, typename Class, typename T>
+struct is_static_task_with_arg<
+    R (Class::*)() const, T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename C, typename T>
+inline constexpr bool is_static_task_with_arg_v = is_static_task_with_arg<C, T>::value;
+
+// ----------------------------------------------------------------------------
+// Subflow Task Trait with Instance
+// ----------------------------------------------------------------------------
+
+template <typename C, typename T, typename = void>
+struct is_subflow_task_with_arg : std::false_type {};
+
+// General specialization: non-member callable objects
+template <typename C, typename T>
+struct is_subflow_task_with_arg<
+    C, T,
+    std::enable_if_t<
+        std::is_invocable_v<C, T, tf::Subflow&> &&
+        std::is_same_v<std::invoke_result_t<C, T, tf::Subflow&>, void> &&
+        !std::is_member_function_pointer_v<C> &&
+        (std::is_lvalue_reference_v<T> || std::is_pointer_v<std::remove_reference_t<T>>)
+        >
+    > : std::true_type {};
+
+// Member function pointer: R (Class::*)(tf::Subflow&) or R (Class::*)(tf::Subflow&) const
+template <typename R, typename Class, typename T>
+struct is_subflow_task_with_arg<
+    R (Class::*)(tf::Subflow&), T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename R, typename Class, typename T>
+struct is_subflow_task_with_arg<
+    R (Class::*)(tf::Subflow&) const, T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename C, typename T>
+inline constexpr bool is_subflow_task_with_arg_v = is_subflow_task_with_arg<C, T>::value;
+
+// ----------------------------------------------------------------------------
+// Runtime Task Trait with Instance
+// ----------------------------------------------------------------------------
+
+template <typename C, typename T, typename = void>
+struct is_runtime_task_with_arg : std::false_type {};
+
+// General specialization: non-member callable objects
+template <typename C, typename T>
+struct is_runtime_task_with_arg<
+    C, T,
+    std::enable_if_t<
+        std::is_invocable_v<C, T, tf::Runtime&> &&
+        std::is_same_v<std::invoke_result_t<C, T, tf::Runtime&>, void> &&
+        !std::is_member_function_pointer_v<C> &&
+        (std::is_lvalue_reference_v<T> || std::is_pointer_v<std::remove_reference_t<T>>)
+        >
+    > : std::true_type {};
+
+// Member function pointer: R (Class::*)(tf::Runtime&) or R (Class::*)(tf::Runtime&) const
+template <typename R, typename Class, typename T>
+struct is_runtime_task_with_arg<
+    R (Class::*)(tf::Runtime&), T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename R, typename Class, typename T>
+struct is_runtime_task_with_arg<
+    R (Class::*)(tf::Runtime&) const, T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, void>> {};
+
+template <typename C, typename T>
+inline constexpr bool is_runtime_task_with_arg_v = is_runtime_task_with_arg<C, T>::value;
+
+// ----------------------------------------------------------------------------
+// Condition Task Trait with Instance
+// ----------------------------------------------------------------------------
+
+template <typename C, typename T, typename = void>
+struct is_condition_task_with_arg : std::false_type {};
+
+// General specialization: non-member callable objects returning int
+template <typename C, typename T>
+struct is_condition_task_with_arg<
+    C, T,
+    std::enable_if_t<
+        std::is_invocable_v<C, T> &&
+        std::is_same_v<std::invoke_result_t<C, T>, int> &&
+        !std::is_member_function_pointer_v<C> &&
+        (std::is_lvalue_reference_v<T> || std::is_pointer_v<std::remove_reference_t<T>>)
+        >
+    > : std::true_type {};
+
+// Member function pointer: R (Class::*)() or R (Class::*)() const returning int
+template <typename R, typename Class, typename T>
+struct is_condition_task_with_arg<
+    R (Class::*)(), T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, int>> {};
+
+template <typename R, typename Class, typename T>
+struct is_condition_task_with_arg<
+    R (Class::*)() const, T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, int>> {};
+
+template <typename C, typename T>
+inline constexpr bool is_condition_task_with_arg_v = is_condition_task_with_arg<C, T>::value;
+
+// ----------------------------------------------------------------------------
+// Multi-Condition Task Trait with Instance
+// ----------------------------------------------------------------------------
+
+template <typename C, typename T, typename = void>
+struct is_multi_condition_task_with_arg : std::false_type {};
+
+// General specialization: non-member callable objects returning SmallVector<int>
+template <typename C, typename T>
+struct is_multi_condition_task_with_arg<
+    C, T,
+    std::enable_if_t<
+        std::is_invocable_v<C, T> &&
+        std::is_same_v<std::invoke_result_t<C, T>, SmallVector<int>> &&
+        !std::is_member_function_pointer_v<C> &&
+        (std::is_lvalue_reference_v<T> || std::is_pointer_v<std::remove_reference_t<T>>)
+        >
+    > : std::true_type {};
+
+// Member function pointer: R (Class::*)() or R (Class::*)() const returning SmallVector<int>
+template <typename R, typename Class, typename T>
+struct is_multi_condition_task_with_arg<
+    R (Class::*)(), T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, SmallVector<int>>> {};
+
+template <typename R, typename Class, typename T>
+struct is_multi_condition_task_with_arg<
+    R (Class::*)() const, T,
+    std::enable_if_t<std::is_same_v<T, Class*> || std::is_same_v<T, Class&>>
+    > : std::bool_constant<std::is_same_v<R, SmallVector<int>>> {};
+
+template <typename C, typename T>
+inline constexpr bool is_multi_condition_task_with_arg_v = is_multi_condition_task_with_arg<C, T>::value;
+
+#endif
+
+
 // ----------------------------------------------------------------------------
 // Task
 // ----------------------------------------------------------------------------
@@ -188,11 +370,11 @@ constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int
 
 @brief class to create a task handle over a taskflow node
 
-A task points to a node in a taskflow graph and provides a set of methods for users to access and modify 
+A task points to a node in a taskflow graph and provides a set of methods for users to access and modify
 attributes of the associated node,
 such as dependencies, callable, names, and so on.
-A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially 
-copied around. 
+A task is a very lightweight object (i.e., it only stores a node pointer) and can be trivially
+copied around.
 
 @code{.cpp}
 // create two tasks with one dependency
@@ -222,7 +404,7 @@ tf::Task task4 = taskflow.emplace([](tf::Subflow& sf){
 tf::Task task5 = taskflow.composed_of(taskflow2).name("module task");
 @endcode
 
-A tf::Task is polymorphic. 
+A tf::Task is polymorphic.
 Once created, you can assign a different task type to it using tf::Task::work.
 For example, the code below creates a static task and then reworks it to a subflow task:
 
@@ -236,19 +418,19 @@ task.work([](tf::Subflow& sf){
 
 @attention
 tf::Task does not own the lifetime of the associated node.
-Accessing the attributes of the associated node after the taskflow has been destroyed 
+Accessing the attributes of the associated node after the taskflow has been destroyed
 can result in undefined behavior.
 
 */
 class Task {
 
-  friend class FlowBuilder;
-  friend class Runtime;
-  friend class Taskflow;
-  friend class TaskView;
-  friend class Executor;
+    friend class FlowBuilder;
+    friend class Runtime;
+    friend class Taskflow;
+    friend class TaskView;
+    friend class Executor;
 
-  public:
+public:
 
     /**
     @brief constructs an empty task
@@ -326,7 +508,7 @@ class Task {
     @brief queries the name of the task
 
     @return the name of the task as a constant string reference
-    
+
     @code{.cpp}
     tf::Task task = taskflow.emplace([](){});
     task.name("MyTask");
@@ -339,7 +521,7 @@ class Task {
     @brief queries the number of successors of the task
 
     @return the number of successor tasks.
-    
+
     @code{.cpp}
     tf::Task A = taskflow.emplace([](){});
     tf::Task B = taskflow.emplace([](){});
@@ -353,7 +535,7 @@ class Task {
     @brief queries the number of predecessors of the task
 
     @return the number of predecessor tasks
-    
+
     @code{.cpp}
     tf::Task A = taskflow.emplace([](){});
     tf::Task B = taskflow.emplace([](){});
@@ -371,7 +553,7 @@ class Task {
     A strong dependency is a preceding link from one non-condition task to another task.
     For instance, task `cond` below has one strong dependency, while tasks `yes` and `no`
     each have one weak dependency.
-    
+
     @code{.cpp}
     auto [init, cond, yes, no] = taskflow.emplace(
      [] () { },
@@ -385,7 +567,7 @@ class Task {
     @endcode
 
     @dotfile images/conditional-tasking-if-else.dot
-    
+
     @note
     To understand how %Taskflow schedule tasks under strong and weak dependencies,
     please refer to @ref ConditionalTasking.
@@ -414,7 +596,7 @@ class Task {
     @endcode
 
     @dotfile images/conditional-tasking-if-else.dot
-    
+
     @note
     To understand how %Taskflow schedule tasks under strong and weak dependencies,
     please refer to @ref ConditionalTasking.
@@ -424,7 +606,7 @@ class Task {
     /**
     @brief assigns a name to the task
 
-    @param name a @std_string 
+    @param name a @std_string
 
     @return @c *this
 
@@ -435,6 +617,13 @@ class Task {
     */
     Task& name(const std::string& name);
 
+#ifdef TF_ENABLE_DELEGATE
+    template <auto C>
+    Task& work();
+
+    template <auto C, typename T>
+    Task& work(T&& value_or_instance);
+#else
     /**
     @brief assigns a callable
 
@@ -444,11 +633,11 @@ class Task {
 
     @return @c *this
 
-    A tf::Task is polymorphic. 
-    Once created, you can reassign it to a different callable of a different task type 
+    A tf::Task is polymorphic.
+    Once created, you can reassign it to a different callable of a different task type
     using tf::Task::work.
     For example, the code below creates a static task and reworks it to a subflow task:
-    
+
     @code{.cpp}
     tf::Task task = taskflow.emplace([](){}).name("static task");
     task.work([](tf::Subflow& sf){
@@ -459,7 +648,7 @@ class Task {
     */
     template <typename C>
     Task& work(C&& callable);
-
+#endif
     /**
     @brief creates a module task from a taskflow
 
@@ -469,7 +658,7 @@ class Task {
     @return @c *this
 
     The example below creates a module task from a taskflow:
-    
+
     @code{.cpp}
     task.composed_of(taskflow);
     @endcode
@@ -510,7 +699,7 @@ class Task {
     @param tasks one or multiple tasks
 
     @return @c *this
-    
+
     The example below creates a taskflow of two tasks, where `task1` runs before `task2`.
 
     @code{.cpp}
@@ -523,7 +712,7 @@ class Task {
     */
     template <typename... Ts>
     Task& succeed(Ts&&... tasks);
-	
+
     /**
     @brief removes predecessor links from other tasks to this
 
@@ -536,7 +725,7 @@ class Task {
     This method removes the dependency links where the given tasks are predecessors
     of this task (i.e., tasks -> this). It ensures both sides of the dependency
     are updated to maintain graph consistency.
-    
+
     @code{.cpp}
     tf::Task A = taskflow.emplace([](){});
     tf::Task B = taskflow.emplace([](){});
@@ -586,15 +775,15 @@ class Task {
 
     /**
     @brief makes the task release the given semaphore
-    
+
     @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
     Task& release(Semaphore& semaphore);
-    
+
     /**
     @brief makes the task release the given range of semaphores
-    
+
     @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
@@ -603,7 +792,7 @@ class Task {
 
     /**
     @brief makes the task acquire the given semaphore
-    
+
     @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
@@ -611,7 +800,7 @@ class Task {
 
     /**
     @brief makes the task acquire the given range of semaphores
-    
+
     @note
     To know more about tf::Semaphore, please refer to @ref LimitTheMaximumConcurrency.
     */
@@ -624,13 +813,13 @@ class Task {
     @param data pointer to user data
     @return @c *this
 
-    The following example shows how to attach a user data to a task and retrieve it 
+    The following example shows how to attach a user data to a task and retrieve it
     during the execution of the task.
 
     @code{.cpp}
     tf::Executor executor;
     tf::Taskflow taskflow("attach data to a task");
-    
+
     int data;  // user data
 
     // create a task and attach it a user data
@@ -648,7 +837,7 @@ class Task {
 
     */
     Task& data(void* data);
-    
+
     /**
     @brief resets the task handle to null
 
@@ -701,13 +890,13 @@ class Task {
 
     /**
     @brief applies an visitor callable to each successor of the task
-    
+
     @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
     @param visitor visitor to apply to each subflow task
 
     This method allows you to traverse and inspect successor tasks of this task.
     For instance, the code below iterates the two successors (`task2` and `task3`) of `task1`.
-    
+
     @code{.cpp}
     auto [task1, task2, task3] = taskflow.emplace(
       [](){ std::cout << "task 1\n"; },
@@ -726,13 +915,13 @@ class Task {
 
     /**
     @brief applies an visitor callable to each predecessor of the task
-    
+
     @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
     @param visitor visitor to apply to each predecessor task
 
     This method allows you to traverse and inspect predecessor tasks of this task.
     For instance, the code below iterates the two predecessors (`task2` and `task3`) of `task1`.
-    
+
     @code{.cpp}
     auto [task1, task2, task3] = taskflow.emplace(
       [](){ std::cout << "task 1\n"; },
@@ -788,7 +977,7 @@ class Task {
     /**
     @brief returns the task type
 
-    A task can be one of the types defined in tf::TaskType and can be printed in 
+    A task can be one of the types defined in tf::TaskType and can be printed in
     a human-readable form using tf::to_string.
 
     @code{.cpp}
@@ -814,14 +1003,14 @@ class Task {
     @brief queries pointer to user data
 
     @return C-styled pointer to the attached user data by tf::Task::data(void* data)
-    
-    The following example shows how to attach a user data to a task and retrieve it 
+
+    The following example shows how to attach a user data to a task and retrieve it
     during the execution of the task.
 
     @code{.cpp}
     tf::Executor executor;
     tf::Taskflow taskflow("attach data to a task");
-    
+
     int data;  // user data
 
     // create a task and attach it a user data
@@ -839,7 +1028,7 @@ class Task {
     */
     void* data() const;
 
-  private:
+private:
 
     Task(Node*);
 
@@ -857,166 +1046,166 @@ inline Task::Task(const Task& rhs) : _node {rhs._node} {
 // Function: precede
 template <typename... Ts>
 Task& Task::precede(Ts&&... tasks) {
-  (_node->_precede(tasks._node), ...);
-  //_precede(std::forward<Ts>(tasks)...);
-  return *this;
+    (_node->_precede(tasks._node), ...);
+    //_precede(std::forward<Ts>(tasks)...);
+    return *this;
 }
 
 // Function: succeed
 template <typename... Ts>
 Task& Task::succeed(Ts&&... tasks) {
-  (tasks._node->_precede(_node), ...);
-  //_succeed(std::forward<Ts>(tasks)...);
-  return *this;
+    (tasks._node->_precede(_node), ...);
+    //_succeed(std::forward<Ts>(tasks)...);
+    return *this;
 }
 
 // Function: remove_predecessors
 template <typename... Ts>
 Task& Task::remove_predecessors(Ts&&... tasks) {
-  (tasks._node->_remove_successors(_node), ...);
-  (_node->_remove_predecessors(tasks._node), ...);
-  return *this;
+    (tasks._node->_remove_successors(_node), ...);
+    (_node->_remove_predecessors(tasks._node), ...);
+    return *this;
 }
 
 // Function: remove_successors
 template <typename... Ts>
 Task& Task::remove_successors(Ts&&... tasks) {
-  (_node->_remove_successors(tasks._node), ...);
-  (tasks._node->_remove_predecessors(_node), ...);
-  return *this;
+    (_node->_remove_successors(tasks._node), ...);
+    (tasks._node->_remove_predecessors(_node), ...);
+    return *this;
 }
 
 // Function: composed_of
 template <typename T>
 Task& Task::composed_of(T& object) {
-  _node->_handle.emplace<Node::Module>(object);
-  return *this;
+    _node->_handle.emplace<Node::Module>(object);
+    return *this;
 }
 
 // Operator =
 inline Task& Task::operator = (const Task& rhs) {
-  _node = rhs._node;
-  return *this;
+    _node = rhs._node;
+    return *this;
 }
 
 // Operator =
 inline Task& Task::operator = (std::nullptr_t ptr) {
-  _node = ptr;
-  return *this;
+    _node = ptr;
+    return *this;
 }
 
 // Operator ==
 inline bool Task::operator == (const Task& rhs) const {
-  return _node == rhs._node;
+    return _node == rhs._node;
 }
 
 // Operator !=
 inline bool Task::operator != (const Task& rhs) const {
-  return _node != rhs._node;
+    return _node != rhs._node;
 }
 
 // Function: name
 inline Task& Task::name(const std::string& name) {
-  _node->_name = name;
-  return *this;
+    _node->_name = name;
+    return *this;
 }
 
 // Function: acquire
 inline Task& Task::acquire(Semaphore& s) {
-  if(!_node->_semaphores) {
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_acquire.push_back(&s);
-  return *this;
+    if(!_node->_semaphores) {
+        _node->_semaphores = std::make_unique<Node::Semaphores>();
+    }
+    _node->_semaphores->to_acquire.push_back(&s);
+    return *this;
 }
 
 // Function: acquire
 template <typename I>
 Task& Task::acquire(I first, I last) {
-  if(!_node->_semaphores) {
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_acquire.reserve(
-    _node->_semaphores->to_acquire.size() + std::distance(first, last)
-  );
-  for(auto s = first; s != last; ++s){
-    _node->_semaphores->to_acquire.push_back(&(*s));
-  }
-  return *this;
+    if(!_node->_semaphores) {
+        _node->_semaphores = std::make_unique<Node::Semaphores>();
+    }
+    _node->_semaphores->to_acquire.reserve(
+        _node->_semaphores->to_acquire.size() + std::distance(first, last)
+        );
+    for(auto s = first; s != last; ++s){
+        _node->_semaphores->to_acquire.push_back(&(*s));
+    }
+    return *this;
 }
 
 // Function: release
 inline Task& Task::release(Semaphore& s) {
-  if(!_node->_semaphores) {
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_release.push_back(&s);
-  return *this;
+    if(!_node->_semaphores) {
+        _node->_semaphores = std::make_unique<Node::Semaphores>();
+    }
+    _node->_semaphores->to_release.push_back(&s);
+    return *this;
 }
 
 // Function: release
 template <typename I>
 Task& Task::release(I first, I last) {
-  if(!_node->_semaphores) {
-    _node->_semaphores = std::make_unique<Node::Semaphores>();
-  }
-  _node->_semaphores->to_release.reserve(
-    _node->_semaphores->to_release.size() + std::distance(first, last)
-  );
-  for(auto s = first; s != last; ++s) {
-    _node->_semaphores->to_release.push_back(&(*s));
-  }
-  return *this;
+    if(!_node->_semaphores) {
+        _node->_semaphores = std::make_unique<Node::Semaphores>();
+    }
+    _node->_semaphores->to_release.reserve(
+        _node->_semaphores->to_release.size() + std::distance(first, last)
+        );
+    for(auto s = first; s != last; ++s) {
+        _node->_semaphores->to_release.push_back(&(*s));
+    }
+    return *this;
 }
 
 // Procedure: reset
 inline void Task::reset() {
-  _node = nullptr;
+    _node = nullptr;
 }
 
 // Procedure: reset_work
 inline void Task::reset_work() {
-  _node->_handle.emplace<std::monostate>();
+    _node->_handle.emplace<std::monostate>();
 }
 
 // Function: name
 inline const std::string& Task::name() const {
-  return _node->_name;
+    return _node->_name;
 }
 
 // Function: num_predecessors
 inline size_t Task::num_predecessors() const {
-  return _node->num_predecessors();
+    return _node->num_predecessors();
 }
 
 // Function: num_strong_dependencies
 inline size_t Task::num_strong_dependencies() const {
-  return _node->num_strong_dependencies();
+    return _node->num_strong_dependencies();
 }
 
 // Function: num_weak_dependencies
 inline size_t Task::num_weak_dependencies() const {
-  return _node->num_weak_dependencies();
+    return _node->num_weak_dependencies();
 }
 
 // Function: num_successors
 inline size_t Task::num_successors() const {
-  return _node->num_successors();
+    return _node->num_successors();
 }
 
 // Function: empty
 inline bool Task::empty() const {
-  return _node == nullptr;
+    return _node == nullptr;
 }
 
 // Function: has_work
 inline bool Task::has_work() const {
-  return _node ? _node->_handle.index() != 0 : false;
+    return _node ? _node->_handle.index() != 0 : false;
 }
 
 // Function: task_type
 inline TaskType Task::type() const {
-  switch(_node->_handle.index()) {
+    switch(_node->_handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
     case Node::RUNTIME:         return TaskType::RUNTIME;
@@ -1027,82 +1216,129 @@ inline TaskType Task::type() const {
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
     default:                    return TaskType::UNDEFINED;
-  }
+    }
 }
 
 // Function: for_each_successor
 template <typename V>
 void Task::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node->_num_successors; ++i) {
-    visitor(Task(_node->_edges[i]));
-  }
+    for(size_t i=0; i<_node->_num_successors; ++i) {
+        visitor(Task(_node->_edges[i]));
+    }
 }
 
 // Function: for_each_predecessor
 template <typename V>
 void Task::for_each_predecessor(V&& visitor) const {
-  for(size_t i=_node->_num_successors; i<_node->_edges.size(); ++i) {
-    visitor(Task(_node->_edges[i]));
-  }
+    for(size_t i=_node->_num_successors; i<_node->_edges.size(); ++i) {
+        visitor(Task(_node->_edges[i]));
+    }
 }
 
 // Function: for_each_subflow_task
 template <typename V>
 void Task::for_each_subflow_task(V&& visitor) const {
-  if(auto ptr = std::get_if<Node::Subflow>(&_node->_handle); ptr) {
-    for(auto itr = ptr->subgraph.begin(); itr != ptr->subgraph.end(); ++itr) {
-      visitor(Task(itr->get()));
+    if(auto ptr = std::get_if<Node::Subflow>(&_node->_handle); ptr) {
+        for(auto itr = ptr->subgraph.begin(); itr != ptr->subgraph.end(); ++itr) {
+            visitor(Task(itr->get()));
+        }
     }
-  }
 }
 
 // Function: hash_value
 inline size_t Task::hash_value() const {
-  return std::hash<Node*>{}(_node);
+    return std::hash<Node*>{}(_node);
 }
 
 // Procedure: dump
 inline void Task::dump(std::ostream& os) const {
-  os << "task ";
-  if(name().empty()) os << _node;
-  else os << name();
-  os << " [type=" << to_string(type()) << ']';
+    os << "task ";
+    if(name().empty()) os << _node;
+    else os << name();
+    os << " [type=" << to_string(type()) << ']';
 }
 
+#ifdef TF_ENABLE_DELEGATE
+template <auto C>
+Task& Task::work() {
+    if constexpr (is_static_task_v<decltype(C)>) {
+        _node->_handle.emplace<Node::Static>(WorkHandle<void()>{connect_arg<C>});
+    }
+    else if constexpr (is_runtime_task_v<decltype(C)>) {
+        _node->_handle.emplace<Node::Runtime>(WorkHandle<void(tf::Runtime&)>{connect_arg<C>});
+    }
+    else if constexpr (is_subflow_task_v<decltype(C)>) {
+        _node->_handle.emplace<Node::Subflow>(WorkHandle<void(tf::Subflow&)>{connect_arg<C>});
+    }
+    else if constexpr (is_condition_task_v<decltype(C)>) {
+        _node->_handle.emplace<Node::Condition>(WorkHandle<int()>{connect_arg<C>});
+    }
+    else if constexpr (is_multi_condition_task_v<decltype(C)>) {
+        _node->_handle.emplace<Node::MultiCondition>(WorkHandle<SmallVector<int>()>{connect_arg<C>});
+    }
+    else {
+        static_assert(dependent_false_v<decltype(C)>, "invalid task callable");
+    }
+    return *this;
+}
+
+template <auto C, typename T>
+Task& Task::work(T&& value_or_instance) {
+    if constexpr (is_static_task_with_arg_v<decltype(C), T>) {
+        _node->_handle.emplace<Node::Static>(WorkHandle<void()>{connect_arg<C>, std::forward<T>(value_or_instance)});
+    }
+    else if constexpr (is_runtime_task_with_arg_v<decltype(C), T>) {
+        _node->_handle.emplace<Node::Runtime>(WorkHandle<void(tf::Runtime&)>{connect_arg<C>, std::forward<T>(value_or_instance)});
+    }
+    else if constexpr (is_subflow_task_with_arg_v<decltype(C), T>) {
+        _node->_handle.emplace<Node::Subflow>(WorkHandle<void(tf::Subflow&)>{connect_arg<C>, std::forward<T>(value_or_instance)});
+    }
+    else if constexpr (is_condition_task_with_arg_v<decltype(C), T>) {
+        _node->_handle.emplace<Node::Condition>(WorkHandle<int()>{connect_arg<C>, std::forward<T>(value_or_instance)});
+    }
+    else if constexpr (is_multi_condition_task_with_arg_v<decltype(C), T>) {
+        _node->_handle.emplace<Node::MultiCondition>(WorkHandle<SmallVector<int>()>{connect_arg<C>, std::forward<T>(value_or_instance)});
+    }
+    else {
+        static_assert(dependent_false_v<decltype(C)>, "invalid task callable");
+    }
+    return *this;
+}
+#else
 // Function: work
 template <typename C>
 Task& Task::work(C&& c) {
 
-  if constexpr(is_static_task_v<C>) {
-    _node->_handle.emplace<Node::Static>(std::forward<C>(c));
-  }
-  else if constexpr(is_runtime_task_v<C>) {
-    _node->_handle.emplace<Node::Runtime>(std::forward<C>(c));
-  }
-  else if constexpr(is_subflow_task_v<C>) {
-    _node->_handle.emplace<Node::Subflow>(std::forward<C>(c));
-  }
-  else if constexpr(is_condition_task_v<C>) {
-    _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
-  }
-  else if constexpr(is_multi_condition_task_v<C>) {
-    _node->_handle.emplace<Node::MultiCondition>(std::forward<C>(c));
-  }
-  else {
-    static_assert(dependent_false_v<C>, "invalid task callable");
-  }
-  return *this;
+    if constexpr(is_static_task_v<C>) {
+        _node->_handle.emplace<Node::Static>(std::forward<C>(c));
+    }
+    else if constexpr(is_runtime_task_v<C>) {
+        _node->_handle.emplace<Node::Runtime>(std::forward<C>(c));
+    }
+    else if constexpr(is_subflow_task_v<C>) {
+        _node->_handle.emplace<Node::Subflow>(std::forward<C>(c));
+    }
+    else if constexpr(is_condition_task_v<C>) {
+        _node->_handle.emplace<Node::Condition>(std::forward<C>(c));
+    }
+    else if constexpr(is_multi_condition_task_v<C>) {
+        _node->_handle.emplace<Node::MultiCondition>(std::forward<C>(c));
+    }
+    else {
+        static_assert(dependent_false_v<C>, "invalid task callable");
+    }
+    return *this;
 }
-
+#endif
 // Function: data
 inline void* Task::data() const {
-  return _node->_data;
+    return _node->_data;
 }
 
 // Function: data
 inline Task& Task::data(void* data) {
-  _node->_data = data;
-  return *this;
+    _node->_data = data;
+    return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -1113,8 +1349,8 @@ inline Task& Task::data(void* data) {
 @brief overload of ostream inserter operator for Task
 */
 inline std::ostream& operator << (std::ostream& os, const Task& task) {
-  task.dump(os);
-  return os;
+    task.dump(os);
+    return os;
 }
 
 // ----------------------------------------------------------------------------
@@ -1128,9 +1364,9 @@ inline std::ostream& operator << (std::ostream& os, const Task& task) {
 */
 class TaskView {
 
-  friend class Executor;
+    friend class Executor;
 
-  public:
+public:
 
     /**
     @brief queries the name of the task
@@ -1159,7 +1395,7 @@ class TaskView {
 
     /**
     @brief applies an visitor callable to each successor of the task
-    
+
     @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
     @param visitor visitor to apply to each subflow task
 
@@ -1170,7 +1406,7 @@ class TaskView {
 
     /**
     @brief applies an visitor callable to each predecessor of the task
-    
+
     @tparam V a callable type (function, lambda, etc.) that accepts a tf::Task handle
     @param visitor visitor to apply to each predecessor task
 
@@ -1189,7 +1425,7 @@ class TaskView {
     */
     size_t hash_value() const;
 
-  private:
+private:
 
     TaskView(const Node&);
     TaskView(const TaskView&) = default;
@@ -1203,32 +1439,32 @@ inline TaskView::TaskView(const Node& node) : _node {node} {
 
 // Function: name
 inline const std::string& TaskView::name() const {
-  return _node._name;
+    return _node._name;
 }
 
 // Function: num_predecessors
 inline size_t TaskView::num_predecessors() const {
-  return _node.num_predecessors();
+    return _node.num_predecessors();
 }
 
 // Function: num_strong_dependencies
 inline size_t TaskView::num_strong_dependencies() const {
-  return _node.num_strong_dependencies();
+    return _node.num_strong_dependencies();
 }
 
 // Function: num_weak_dependencies
 inline size_t TaskView::num_weak_dependencies() const {
-  return _node.num_weak_dependencies();
+    return _node.num_weak_dependencies();
 }
 
 // Function: num_successors
 inline size_t TaskView::num_successors() const {
-  return _node.num_successors();
+    return _node.num_successors();
 }
 
 // Function: type
 inline TaskType TaskView::type() const {
-  switch(_node._handle.index()) {
+    switch(_node._handle.index()) {
     case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
     case Node::STATIC:          return TaskType::STATIC;
     case Node::RUNTIME:         return TaskType::RUNTIME;
@@ -1239,34 +1475,34 @@ inline TaskType TaskView::type() const {
     case Node::ASYNC:           return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
     default:                    return TaskType::UNDEFINED;
-  }
+    }
 }
 
 // Function: hash_value
 inline size_t TaskView::hash_value() const {
-  return std::hash<const Node*>{}(&_node);
+    return std::hash<const Node*>{}(&_node);
 }
 
 // Function: for_each_successor
 template <typename V>
 void TaskView::for_each_successor(V&& visitor) const {
-  for(size_t i=0; i<_node._num_successors; ++i) {
-    visitor(TaskView(*_node._edges[i]));
-  }
-  //for(size_t i=0; i<_node._successors.size(); ++i) {
-  //  visitor(TaskView(*_node._successors[i]));
-  //}
+    for(size_t i=0; i<_node._num_successors; ++i) {
+        visitor(TaskView(*_node._edges[i]));
+    }
+    //for(size_t i=0; i<_node._successors.size(); ++i) {
+    //  visitor(TaskView(*_node._successors[i]));
+    //}
 }
 
 // Function: for_each_predecessor
 template <typename V>
 void TaskView::for_each_predecessor(V&& visitor) const {
-  for(size_t i=_node._num_successors; i<_node._edges.size(); ++i) {
-    visitor(TaskView(*_node._edges[i]));
-  }
-  //for(size_t i=0; i<_node._predecessors.size(); ++i) {
-  //  visitor(TaskView(*_node._predecessors[i]));
-  //}
+    for(size_t i=_node._num_successors; i<_node._edges.size(); ++i) {
+        visitor(TaskView(*_node._edges[i]));
+    }
+    //for(size_t i=0; i<_node._predecessors.size(); ++i) {
+    //  visitor(TaskView(*_node._predecessors[i]));
+    //}
 }
 
 }  // end of namespace tf. ----------------------------------------------------
@@ -1280,9 +1516,9 @@ namespace std {
 */
 template <>
 struct hash<tf::Task> {
-  auto operator() (const tf::Task& task) const noexcept {
-    return task.hash_value();
-  }
+    auto operator() (const tf::Task& task) const noexcept {
+        return task.hash_value();
+    }
 };
 
 /**
@@ -1292,9 +1528,9 @@ struct hash<tf::Task> {
 */
 template <>
 struct hash<tf::TaskView> {
-  auto operator() (const tf::TaskView& task_view) const noexcept {
-    return task_view.hash_value();
-  }
+    auto operator() (const tf::TaskView& task_view) const noexcept {
+        return task_view.hash_value();
+    }
 };
 
 }  // end of namespace std ----------------------------------------------------
