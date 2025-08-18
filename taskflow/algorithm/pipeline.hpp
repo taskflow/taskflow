@@ -201,6 +201,18 @@ enum class PipeType : int {
   SERIAL   = 2
 };
 
+/**
+@enum PipeOperationType
+
+@brief enumeration of all pipe operration types
+*/
+enum class PipeOperationType : int {
+  /** @brief cancellable type */
+  Cancellable = 1,
+  /** @brief normal type */
+  Normal = 2
+};
+
 // ----------------------------------------------------------------------------
 // Class Definition: Pipe
 // ----------------------------------------------------------------------------
@@ -240,6 +252,8 @@ class Pipe {
   */
   using callable_t = C;
 
+  PipeOperationType Optype;
+
   /**
   @brief default constructor
   */
@@ -265,6 +279,27 @@ class Pipe {
   Pipe(PipeType d, C&& callable) :
     _type{d}, _callable{std::forward<C>(callable)} {
   }
+  /**
+  @brief constructs the pipe object
+
+  @param d pipe type (tf::PipeType)
+  @param d pipe operation type (tf::PipeOperationType)
+  @param callable callable type
+
+  The constructor constructs a pipe with the given direction
+  (tf::PipeType::SERIAL or tf::PipeType::PARALLEL) and the given callable. 
+  The callable must take a referenced tf::Pipeflow object in the first argument.
+
+  @code{.cpp}
+  Pipe{PipeType::SERIAL, [](tf::Pipeflow&){}}
+  @endcode
+
+  When creating a pipeline, the direction of the first pipe must be serial
+  (tf::PipeType::SERIAL).
+  */
+  Pipe(PipeType d, PipeOperationType o, C&& callable) :
+    _type{d}, Optype(o), _callable{std::forward<C>(callable)} {
+  }
 
   /**
   @brief queries the type of the pipe
@@ -273,6 +308,14 @@ class Pipe {
   */
   PipeType type() const {
     return _type;
+  }
+  /**
+  @brief queries the type of the pipe
+
+  Returns the type of the callable.
+  */
+  PipeOperationType optype() const {
+    return Optype;
   }
 
   /**
@@ -417,7 +460,10 @@ class Pipeline {
   */
   struct PipeMeta {
     PipeType type;
+    PipeOperationType optype;
   };
+
+  std::atomic<bool> _is_stopped{false};
 
   public:
 
@@ -456,6 +502,12 @@ class Pipeline {
   can achieve.
   */
   size_t num_lines() const noexcept;
+  /**
+  @brief queries the number of active parallel lines
+
+  The function returns the number of active parallel lines which are not stopped by the user
+  */
+  size_t active_lines();
 
   /**
   @brief queries the number of pipes
@@ -490,6 +542,12 @@ class Pipeline {
   */
   Graph& graph();
 
+  /**
+  @brief stops a pipeline
+
+  stops all pipes of a pipeline
+  */
+  void stop();
 
   private:
 
@@ -549,7 +607,7 @@ class Pipeline {
 template <typename... Ps>
 Pipeline<Ps...>::Pipeline(size_t num_lines, Ps&&... ps) :
   _pipes     {std::make_tuple(std::forward<Ps>(ps)...)},
-  _meta      {PipeMeta{ps.type()}...},
+  _meta      {PipeMeta{ ps.type(), ps.optype()}...},
   _lines     (num_lines),
   _tasks     (num_lines + 1),
   _pipeflows (num_lines) {
@@ -593,7 +651,7 @@ Pipeline<Ps...>::Pipeline(size_t num_lines, std::tuple<Ps...>&& ps) :
 template <typename... Ps>
 template <size_t... I>
 auto Pipeline<Ps...>::_gen_meta(std::tuple<Ps...>&& ps, std::index_sequence<I...>) {
-  return std::array{PipeMeta{std::get<I>(ps).type()}...};
+  return std::array{PipeMeta{std::get<I>(ps).type(), std::get<I>(ps).optype()}...};
 }
 
 // Function: num_lines
@@ -601,6 +659,18 @@ template <typename... Ps>
 size_t Pipeline<Ps...>::num_lines() const noexcept {
   return _pipeflows.size();
 }
+
+// Function: active_lines
+template <typename... Ps>
+size_t Pipeline<Ps...>::active_lines() {
+  size_t al= 0;
+  for (size_t i = 0; i < num_lines(); i++)
+  {
+    if(!_pipeflows[i]._stop) {al++;} 
+  }
+  return al;
+}
+
 
 // Function: num_pipes
 template <typename... Ps>
@@ -656,6 +726,25 @@ void Pipeline<Ps...>::reset() {
     _lines[l][0].join_counter.store(
       static_cast<size_t>(_meta[0].type) - 1, std::memory_order_relaxed
     );
+  }
+
+}
+
+// Procedure: _on_pipe
+template <typename... Ps>
+void Pipeline<Ps...>::stop() {
+  int stoppable = 0;
+  for(size_t l = 0; l<num_lines(); l++) {
+    _pipeflows[l]._pipe = 0;
+    _pipeflows[l].stop();
+    if (_meta[_pipeflows[l]._pipe].optype == PipeOperationType::Cancellable)
+    {
+      stoppable++;
+    }
+  }
+
+  if (stoppable == num_lines()){
+    _is_stopped->store(true, std::memory_order_relaxed);
   }
 }
 
@@ -874,6 +963,10 @@ void Pipeline<Ps...>::_build() {
         _on_pipe(*pf, rt);
       }
 
+      if (this->_is_stopped->load(std::memory_order_relaxed)) {
+        return;
+      }
+      
       size_t c_f = pf->_pipe;
       size_t n_f = (pf->_pipe + 1) % num_pipes();
       size_t n_l = (pf->_line + 1) % num_lines();
@@ -1509,7 +1602,7 @@ void ScalablePipeline<P>::reset() {
 // Procedure: _on_pipe
 template <typename P>
 void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime& rt) {
-    
+
   using callable_t = typename pipe_t::callable_t;
 
   if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
