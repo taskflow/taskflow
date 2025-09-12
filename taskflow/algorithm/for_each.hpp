@@ -113,7 +113,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
     }
     
     // static partitioner
-    if constexpr(part.type() == PartitionerType::STATIC) {
+    if constexpr(P::type() == PartitionerType::STATIC) {
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {

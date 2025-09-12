@@ -149,15 +149,68 @@ inline size_t cuda_graph_get_num_nodes(cudaGraph_t graph) {
 }
 
 /**
+@brief Handles compatibility with CUDA <= 12.x and CUDA == 13.x
+ */
+inline size_t cuda_graph_get_num_edges(cudaGraph_t graph, cudaGraphNode_t* from, cudaGraphNode_t* to) {
+  size_t num_edges;
+  TF_CHECK_CUDA(
+      TF_CUDA_PRE13(cudaGraphGetEdges(graph, from, to, &num_edges))
+      TF_CUDA_POST13(cudaGraphGetEdges(graph, from, to, nullptr, &num_edges)),
+      "failed to get native graph edges"
+  );
+  return num_edges;
+}
+
+/**
+@brief Handles compatibility with CUDA <= 12.x and CUDA 13
+* @param node
+* @param dependencies
+* @return
+ */
+inline size_t cuda_graph_node_get_dependencies(cudaGraphNode_t node, cudaGraphNode_t* dependencies) {
+  size_t num_predecessors;
+  TF_CHECK_CUDA(
+      TF_CUDA_PRE13(cudaGraphNodeGetDependencies(node, dependencies, &num_predecessors))
+      TF_CUDA_POST13(cudaGraphNodeGetDependencies(node, dependencies, nullptr, &num_predecessors)),
+  "Failed to get number of dependencies");
+  return num_predecessors;
+}
+
+/**
+@brief Handles compatibility with CUDA <= 12.x and CUDA 13
+@param node
+@param dependent_nodes
+@return
+ */
+inline size_t cuda_graph_node_get_dependent_nodes(cudaGraphNode_t node, cudaGraphNode_t *dependent_nodes) {
+  size_t num_successors;
+  TF_CHECK_CUDA(
+      TF_CUDA_PRE13(cudaGraphNodeGetDependentNodes(node, dependent_nodes, &num_successors))
+      TF_CUDA_POST13(cudaGraphNodeGetDependentNodes(node, dependent_nodes, nullptr, &num_successors)),
+      "Failed to get CUDA dependent nodes");
+  return num_successors;
+}
+
+/**
+@brief Handles compatibility with CUDA <= 12.x and CUDA 13
+@param graph
+@param from
+@param to
+@param numDependencies
+ */
+inline void cuda_graph_add_dependencies(cudaGraph_t graph, const cudaGraphNode_t *from, const cudaGraphNode_t *to, size_t numDependencies) {
+  TF_CHECK_CUDA(
+      TF_CUDA_PRE13(cudaGraphAddDependencies(graph, from, to, numDependencies))
+      TF_CUDA_POST13(cudaGraphAddDependencies(graph, from, to, nullptr, numDependencies)),
+      "Failed to add CUDA graph node dependencies"
+      );
+}
+
+/**
 @brief queries the number of edges in a native CUDA graph
 */
 inline size_t cuda_graph_get_num_edges(cudaGraph_t graph) {
-  size_t num_edges;
-  TF_CHECK_CUDA(
-    cudaGraphGetEdges(graph, nullptr, nullptr, &num_edges),
-    "failed to get native graph edges"
-  );
-  return num_edges;
+  return cuda_graph_get_num_edges(graph, nullptr, nullptr);
 }
 
 
@@ -195,10 +248,7 @@ inline std::vector<std::pair<cudaGraphNode_t, cudaGraphNode_t>>
 cuda_graph_get_edges(cudaGraph_t graph) {
   size_t num_edges = cuda_graph_get_num_edges(graph);
   std::vector<cudaGraphNode_t> froms(num_edges), tos(num_edges);
-  TF_CHECK_CUDA(
-    cudaGraphGetEdges(graph, froms.data(), tos.data(), &num_edges),
-    "failed to get native graph edges"
-  );
+  num_edges = cuda_graph_get_num_edges(graph, froms.data(), tos.data());
   std::vector<std::pair<cudaGraphNode_t, cudaGraphNode_t>> edges(num_edges);
   for(size_t i=0; i<num_edges; i++) {
     edges[i] = std::make_pair(froms[i], tos[i]);
@@ -356,7 +406,7 @@ inline cudaTask::cudaTask(cudaGraph_t native_graph, cudaGraphNode_t native_node)
 template <typename... Ts>
 cudaTask& cudaTask::precede(Ts&&... tasks) {
   (
-    cudaGraphAddDependencies(
+    cuda_graph_add_dependencies(
       _native_graph, &_native_node, &(tasks._native_node), 1
     ), ...
   );
@@ -372,16 +422,12 @@ cudaTask& cudaTask::succeed(Ts&&... tasks) {
 
 // Function: num_predecessors
 inline size_t cudaTask::num_predecessors() const {
-  size_t num_predecessors {0};
-  cudaGraphNodeGetDependencies(_native_node, nullptr, &num_predecessors);
-  return num_predecessors;
+  return cuda_graph_node_get_dependencies(_native_node, nullptr);
 }
 
 // Function: num_successors
 inline size_t cudaTask::num_successors() const {
-  size_t num_successors {0};
-  cudaGraphNodeGetDependentNodes(_native_node, nullptr, &num_successors);
-  return num_successors;
+  return cuda_graph_node_get_dependent_nodes(_native_node, nullptr);
 }
 
 // Function: type

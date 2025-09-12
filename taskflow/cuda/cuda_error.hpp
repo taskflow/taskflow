@@ -24,3 +24,11 @@ if(TF_CUDA_GET_FIRST(__VA_ARGS__) != cudaSuccess) {              \
   throw std::runtime_error(oss.str());                           \
 }
 
+#if __CUDACC_VER_MAJOR__ >= 13
+#define TF_CUDA_POST13(X) X
+#define TF_CUDA_PRE13(X)
+#else
+#define TF_CUDA_PRE13(X) X
+#define TF_CUDA_POST13(X)
+#endif
+

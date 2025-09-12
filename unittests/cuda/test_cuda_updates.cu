@@ -53,16 +53,28 @@ void multiply(const T* a, const T* b, T* c, size_t size) {
   }
 }
 
+// CUDA on windows require the enclosing parent function of an extended lambda
+// to not have internal or no linkage, so we have to add something that is not a
+// lambda.
+struct cuda_graph_update_single_task_assign_int {
+  int* var;
+  int to_set;
+
+  __device__ void operator()() const {
+    *var = to_set;
+  }
+};
+
 // update single_task
 TEST_CASE("cudaGraph.Update.SingleTask") {
 
   tf::cudaGraph cg;
-  
+
   auto var = tf::cuda_malloc_shared<int>(1);
   *var = 1;
   REQUIRE(*var == 1);
 
-  auto task = cg.single_task([=] __device__ () { *var = 2; });
+  auto task = cg.single_task(cuda_graph_update_single_task_assign_int{var, 2});
 
   tf::cudaGraphExec exec(cg);
   tf::cudaStream stream;
@@ -70,7 +82,7 @@ TEST_CASE("cudaGraph.Update.SingleTask") {
 
   REQUIRE(*var == 2);
 
-  exec.single_task(task, [=] __device__ () { *var = 10; });
+  exec.single_task(task, cuda_graph_update_single_task_assign_int{var, 10});
   
   stream.run(exec).synchronize();
 

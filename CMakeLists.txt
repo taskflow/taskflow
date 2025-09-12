@@ -80,8 +80,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   endif()
 ## microsoft visual c++
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  add_definitions(/bigobj)
-  add_compile_options("/Zc:__cplusplus")
   if(NOT MSVC_VERSION GREATER_EQUAL 1914)
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
     message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v19.14") 
@@ -197,7 +195,9 @@ if(TF_BUILD_CUDA)
     error_settings
     BEFORE
     INTERFACE
-    $<$<COMPILE_LANGUAGE:CUDA>:--extended-lambda -Xcompiler=-Wall,-Wextra,-Wfatal-errors,-Wshadow>
+    $<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CXX_COMPILER_ID:CLANG>>:--extended-lambda -Xcompiler=-Wall,-Wextra,-Wfatal-errors,-Wshadow>
+    $<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CXX_COMPILER_ID:GNU>>:--extended-lambda -Xcompiler=-Wall,-Wextra,-Wfatal-errors,-Wshadow>
+    $<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CXX_COMPILER_ID:MSVC>>:--extended-lambda -Xcompiler=/W3,/permissive->
   )
 endif(TF_BUILD_CUDA)
 
