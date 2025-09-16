@@ -872,12 +872,7 @@ bool cudaGraphBase<Creator, Deleter>::empty() const {
 // query the number of edges
 template <typename Creator, typename Deleter>
 size_t cudaGraphBase<Creator, Deleter>::num_edges() const {
-  size_t num_edges;
-  TF_CHECK_CUDA(
-    cudaGraphGetEdges(this->get(), nullptr, nullptr, &num_edges),
-    "failed to get native graph edges"
-  );
-  return num_edges;
+  return cuda_graph_get_num_edges(this->get());
 }
 
 //// dump the graph
