@@ -82,13 +82,9 @@ inline void cuda_dump_device_property(std::ostream& os, const cudaDeviceProp& p)
     os << p.maxGridSize[i];;
   }
   os << '\n';
-
-  os << "Clock rate:                    " << p.clockRate << '\n'
-     << "Total constant memory:         " << p.totalConstMem << '\n'
+  os << "Total constant memory:         " << p.totalConstMem << '\n'
      << "Texture alignment:             " << p.textureAlignment << '\n'
-     << "Concurrent copy and execution: " << p.deviceOverlap << '\n'
      << "Number of multiprocessors:     " << p.multiProcessorCount << '\n'
-     << "Kernel execution timeout:      " << p.kernelExecTimeoutEnabled << '\n'
      << "GPU sharing Host Memory:       " << p.integrated << '\n'
      << "Host page-locked mem mapping:  " << p.canMapHostMemory << '\n'
      << "Alignment for Surfaces:        " << p.surfaceAlignment << '\n'
