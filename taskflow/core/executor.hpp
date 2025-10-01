@@ -1382,7 +1382,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     }
 
     // Increment the steal count, and if it exceeds MAX_STEALS, yield the thread.
-    // If the number of *consecutive* empty steals reaches MAX_STEALS, exit the loop.
+    // If the number of empty steals reaches MAX_STEALS, exit the loop.
     if (++num_steals > MAX_STEALS) {
       std::this_thread::yield();
       if(num_steals > 150 + MAX_STEALS) {

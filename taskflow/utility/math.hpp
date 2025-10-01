@@ -102,7 +102,7 @@ constexpr size_t floor_log2(T n) {
 /**
 @brief returns the floor of `log2(N)` at compile time 
 */
-template<size_t N>
+template <size_t N>
 constexpr size_t static_floor_log2() {
   return (N < 2) ? 0 : 1 + static_floor_log2<N / 2>();
   //auto log = 0;
@@ -111,6 +111,7 @@ constexpr size_t static_floor_log2() {
   //}
   //return log;
 }
+
 
 /**
  * @brief finds the median of three numbers pointed to by iterators using the given comparator

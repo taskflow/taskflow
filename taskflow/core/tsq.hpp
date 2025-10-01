@@ -243,8 +243,7 @@ T UnboundedTaskQueue<T>::pop() {
     item = a->pop(b);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1,
-                                               std::memory_order_seq_cst,
+      if(!_top.compare_exchange_strong(t, t+1, std::memory_order_seq_cst,
                                                std::memory_order_relaxed)) {
         item = nullptr;
       }
