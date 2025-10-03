@@ -17,7 +17,6 @@ class Task;
 class TaskView;
 class Taskflow;
 class Topology;
-class TopologyBase;
 class Executor;
 class Worker;
 class WorkerView;

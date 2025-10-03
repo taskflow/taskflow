@@ -4,10 +4,6 @@ namespace tf {
 
 // ----------------------------------------------------------------------------
 
-class TopologyBase {
-
-};
-
 // class: Topology
 class Topology {
 

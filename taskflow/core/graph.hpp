@@ -161,9 +161,6 @@ class Node {
   friend class AnchorGuard;
   friend class PreemptionGuard;
 
-  //template <typename T>
-  //friend class Freelist;
-
 #ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
 #endif

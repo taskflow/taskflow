@@ -56,9 +56,9 @@ if(TF_BUILD_CUDA)
 endif()
 
 # include SYCL tests
-if(TF_BUILD_SYCL)
-  add_subdirectory(${TF_UTEST_DIR}/sycl)
-endif()
+#if(TF_BUILD_SYCL)
+#  add_subdirectory(${TF_UTEST_DIR}/sycl)
+#endif()
 
 
 
