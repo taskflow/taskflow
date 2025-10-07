@@ -67,9 +67,11 @@ in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github
 + *"Best poster award for open-source parallel programming library." [Cpp Conference 2018][Cpp Conference 2018]*
 + *"Second Prize of Open-source Software Competition." [ACM Multimedia Conference 2019](https://tsung-wei-huang.github.io/img/mm19-ossc-award.jpg)*
 
-See a quick [presentation](https://taskflow.github.io/) and
+See a quick poster presentation below and
 visit the [documentation][documentation] to learn more about Taskflow.
 Technical details can be referred to our [IEEE TPDS paper][TPDS22].
+
+![](image/taskflow-poster.png)
 
 # Start Your First Taskflow Program
 
