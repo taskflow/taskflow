@@ -802,7 +802,7 @@ class Task {
     /**
     @brief dumps the task through an output stream
 
-    The method dumps the name and the type of this task through std::cout.
+    The method dumps the name and the type of this task through the given output stream.
 
     @code{.cpp}
     task.dump(std::cout);
