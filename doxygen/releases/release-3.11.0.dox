@@ -36,6 +36,9 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-11-0_summary Release Summary
 
+This release enhanced the scheduling performance through a better memory order in the
+notification algorithm. We also revised several cookbook pages to enhance the readability.
+
 @section release-3-11-0_new_features New Features
 
 @subsection release-3-11-0_taskflow_core Taskflow Core
@@ -47,15 +50,24 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
   + integrate
   + nqueens
   + primes
++ removed code support for SYCL
++ enhanced the performance of atomic notifier via relaxed memory order
 
 @subsection release-3-11-0_utilities Utilities
 
++ added `coprime` function
++ added `floor_log2` function
+
 @section release-3-11-0_bug_fixes Bug Fixes 
 
++ toggled exception block in executor ([#690](https://github.com/taskflow/taskflow/pull/690))
 + fixed missing exception on thread creation failure in tf::Executor ([#693](https://github.com/taskflow/taskflow/issues/693))
 + fixed segmentation fault caused by empty async dependency ([#700](https://github.com/taskflow/taskflow/issues/700))
++ fixed compilation errors for CUDA 13 ([#721](https://github.com/taskflow/taskflow/pull/721))
 
 @section release-3-11-0_breaking_changes Breaking Changes
+
+There are no breaking changes in this release.
 
 @section release-3-11-0_documentation Documentation
 
