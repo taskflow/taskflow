@@ -10,6 +10,7 @@ class Topology {
   friend class Executor;
   friend class Subflow;
   friend class Runtime;
+  friend class NonpreemptiveRuntime;
   friend class Node;
 
   template <typename T>

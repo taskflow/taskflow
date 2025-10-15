@@ -28,8 +28,6 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
       return;
     }
     
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }
@@ -159,8 +157,6 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
       return;
     }
     
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }
@@ -294,8 +290,6 @@ auto make_transform_reduce_task(
       return;
     }   
     
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }   
@@ -428,8 +422,6 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
       return;
     }
     
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }

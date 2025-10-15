@@ -65,6 +65,7 @@ class Executor {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+  friend class NonpreemptiveRuntime;
   friend class Algorithm;
 
   public:
@@ -1103,6 +1104,7 @@ class Executor {
   void _decrement_topology();
   void _invoke(Worker&, Node*);
   void _invoke_static_task(Worker&, Node*);
+  void _invoke_nonpreemptive_runtime_task(Worker&, Node*);
   void _invoke_condition_task(Worker&, Node*, SmallVector<int>&);
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
   void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
@@ -1652,6 +1654,12 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       }
     }
     break;
+    
+    // non-preemptive runtime task
+    case Node::NONPREEMPTIVE_RUNTIME:{
+      _invoke_nonpreemptive_runtime_task(worker, node);
+    }
+    break;
 
     // subflow task
     case Node::SUBFLOW: {
@@ -1719,7 +1727,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // + We must do this before scheduling the successors to avoid race
   //   condition on _predecessors.
   // + We must use fetch_add instead of direct assigning
-  //   because the user-space call on "invoke" may explicitly schedule 
+  //   because the user-level call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
   node->_join_counter.fetch_add(
     node->num_predecessors() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
@@ -2264,7 +2272,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
       //assert(tpg->_join_counter == 0);
 
       // Set the promise
-      tpg->_promise.set_value();
+      tpg->_carry_out_promise();
       f._topologies.pop();
       tpg = f._topologies.front().get();
 

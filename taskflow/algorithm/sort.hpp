@@ -614,7 +614,7 @@ auto make_sort_task(B b, E e, C cmp) {
       return;
     }
 
-    PreemptionGuard preemption_guard(rt);
+    //PreemptionGuard preemption_guard(rt);
 
     //detail::parallel_3wqsort(rt, beg, end-1, cmp);
     detail::parallel_pdqsort<B_t, C,

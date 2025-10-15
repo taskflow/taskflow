@@ -149,6 +149,13 @@ struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Runtime&>>
   : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
 
 /**
+@private
+*/
+template <typename C>
+struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::NonpreemptiveRuntime&>>>
+  : std::is_same<std::invoke_result_t<C, tf::NonpreemptiveRuntime&>, void> {};
+
+/**
 @brief determines if a callable is a runtime task
 
 A runtime task is a callable object constructible from std::function<void(Runtime&)>.
@@ -244,6 +251,7 @@ class Task {
 
   friend class FlowBuilder;
   friend class Runtime;
+  friend class NonpreemptiveRuntime;
   friend class Taskflow;
   friend class TaskView;
   friend class Executor;
@@ -1017,16 +1025,17 @@ inline bool Task::has_work() const {
 // Function: task_type
 inline TaskType Task::type() const {
   switch(_node->_handle.index()) {
-    case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
-    case Node::STATIC:          return TaskType::STATIC;
-    case Node::RUNTIME:         return TaskType::RUNTIME;
-    case Node::SUBFLOW:         return TaskType::SUBFLOW;
-    case Node::CONDITION:       return TaskType::CONDITION;
-    case Node::MULTI_CONDITION: return TaskType::CONDITION;
-    case Node::MODULE:          return TaskType::MODULE;
-    case Node::ASYNC:           return TaskType::ASYNC;
-    case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
-    default:                    return TaskType::UNDEFINED;
+    case Node::PLACEHOLDER:           return TaskType::PLACEHOLDER;
+    case Node::STATIC:                return TaskType::STATIC;
+    case Node::RUNTIME:               return TaskType::RUNTIME;
+    case Node::NONPREEMPTIVE_RUNTIME: return TaskType::RUNTIME;
+    case Node::SUBFLOW:               return TaskType::SUBFLOW;
+    case Node::CONDITION:             return TaskType::CONDITION;
+    case Node::MULTI_CONDITION:       return TaskType::CONDITION;
+    case Node::MODULE:                return TaskType::MODULE;
+    case Node::ASYNC:                 return TaskType::ASYNC;
+    case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
+    default:                          return TaskType::UNDEFINED;
   }
 }
 
@@ -1229,16 +1238,17 @@ inline size_t TaskView::num_successors() const {
 // Function: type
 inline TaskType TaskView::type() const {
   switch(_node._handle.index()) {
-    case Node::PLACEHOLDER:     return TaskType::PLACEHOLDER;
-    case Node::STATIC:          return TaskType::STATIC;
-    case Node::RUNTIME:         return TaskType::RUNTIME;
-    case Node::SUBFLOW:         return TaskType::SUBFLOW;
-    case Node::CONDITION:       return TaskType::CONDITION;
-    case Node::MULTI_CONDITION: return TaskType::CONDITION;
-    case Node::MODULE:          return TaskType::MODULE;
-    case Node::ASYNC:           return TaskType::ASYNC;
-    case Node::DEPENDENT_ASYNC: return TaskType::ASYNC;
-    default:                    return TaskType::UNDEFINED;
+    case Node::PLACEHOLDER:           return TaskType::PLACEHOLDER;
+    case Node::STATIC:                return TaskType::STATIC;
+    case Node::RUNTIME:               return TaskType::RUNTIME;
+    case Node::NONPREEMPTIVE_RUNTIME: return TaskType::RUNTIME;
+    case Node::SUBFLOW:               return TaskType::SUBFLOW;
+    case Node::CONDITION:             return TaskType::CONDITION;
+    case Node::MULTI_CONDITION:       return TaskType::CONDITION;
+    case Node::MODULE:                return TaskType::MODULE;
+    case Node::ASYNC:                 return TaskType::ASYNC;
+    case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
+    default:                          return TaskType::UNDEFINED;
   }
 }
 

@@ -412,7 +412,7 @@ the following organizations for sponsoring the Taskflow project!
 |<img src="doxygen/images/utah-ece-logo.png">|<img src="doxygen/images/nsf.png"> | <img src="doxygen/images/darpa.png"> | <img src="doxygen/images/NumFocus.png">|
 |<img src="doxygen/images/nvidia-logo.png"> | <img src="doxygen/images/uw-madison-ece-logo.png"> | | |
 
-[Taskflow](https://ads.fund/token/0xadf8c696719c904923504683d3f3f7d18774ac06) project is supported by ADS.FUND
+[Taskflow](https://ads.fund/token/0xadf8c696719c904923504683d3f3f7d18774ac06) project is also supported by ADS.FUND.
 
 # License
 

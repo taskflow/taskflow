@@ -70,8 +70,8 @@ TEST_CASE("Runtime.ExternalGraph.Simple" * doctest::timeout(300)) {
     B.precede(C);
     C.precede(D);
 
-    taskflow.emplace([&res=results[i], &graph=graphs[i]](tf::Runtime& rt)mutable{
-      rt.corun(graph);
+    taskflow.emplace([&executor, &res=results[i], &graph=graphs[i]](tf::Runtime&) mutable {
+      executor.corun(graph);
     });
   }
   

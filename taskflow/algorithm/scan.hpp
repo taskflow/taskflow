@@ -300,7 +300,7 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop, T init) {
       curr_b += chunk_size;
     }
 
-    rt.corun_all();
+    rt.corun();
   };
 }
 
@@ -378,7 +378,7 @@ auto make_transform_inclusive_scan_task(
       curr_b += chunk_size;
     }
 
-    rt.corun_all();
+    rt.corun();
   };
 }
 
@@ -453,7 +453,7 @@ auto make_transform_inclusive_scan_task(
       std::advance(d_beg, chunk_size);
       curr_b += chunk_size;
     }
-    rt.corun_all();
+    rt.corun();
   };
 }
 
@@ -540,7 +540,7 @@ auto make_exclusive_scan_task(
       std::advance(d_beg, chunk_size);
       curr_b += chunk_size;
     }
-    rt.corun_all();
+    rt.corun();
   };
 }
 

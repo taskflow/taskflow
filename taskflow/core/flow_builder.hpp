@@ -1290,9 +1290,19 @@ Task FlowBuilder::emplace(C&& c) {
 // Function: emplace
 template <typename C, std::enable_if_t<is_runtime_task_v<C>, void>*>
 Task FlowBuilder::emplace(C&& c) {
-  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Runtime>{}, std::forward<C>(c)
-  ));
+  if constexpr (std::is_invocable_v<C, tf::Runtime&>) {
+    return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+      std::in_place_type_t<Node::Runtime>{}, std::forward<C>(c)
+    ));
+  }
+  else if constexpr (std::is_invocable_v<C, tf::NonpreemptiveRuntime&>) {
+    return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+      std::in_place_type_t<Node::NonpreemptiveRuntime>{}, std::forward<C>(c)
+    ));
+  }
+  else {
+    static_assert(dependent_false_v<C>, "invalid runtime task callable");
+  }
 }
 
 // Function: emplace

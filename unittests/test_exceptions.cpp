@@ -2,6 +2,7 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/for_each.hpp>
 
 // --------------------------------------------------------
 // Testcase: static_task
@@ -524,15 +525,17 @@ void nested_subflow(unsigned N) {
   
   // corun the nested subflow from an async task's runtime
   num_tasks = 0;
-  executor.async([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  executor.async([&](tf::Runtime&){
+    //REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
   }).get(); 
   REQUIRE(num_tasks == 12);
   
   // corun the nested subflow from an silent-async task's runtime
   num_tasks = 0;
-  executor.silent_async([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  executor.silent_async([&](tf::Runtime&){
+    //REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
   });
   executor.wait_for_all(); 
   REQUIRE(num_tasks == 12);
@@ -665,15 +668,17 @@ void nested_subflow_2(unsigned N) {
   
   // corun the nested subflow from an async task's runtime
   num_tasks = 0;
-  executor.async([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  executor.async([&](tf::Runtime&){
+    //REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
   }).get(); 
   REQUIRE(num_tasks == 12);
   
   // corun the nested subflow from an silent-async task's runtime
   num_tasks = 0;
-  executor.silent_async([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  executor.silent_async([&](tf::Runtime&){
+    //REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
   });
   executor.wait_for_all(); 
   REQUIRE(num_tasks == 12);
@@ -823,8 +828,8 @@ void runtime_corun_1(unsigned W) {
     throw std::runtime_error("x");
   });
 
-  auto task = taskflow2.emplace([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow1), "x", std::runtime_error);
+  auto task = taskflow2.emplace([&](tf::Runtime&){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow1), "x", std::runtime_error);
   });
   executor.run(taskflow2).get();
   
@@ -841,8 +846,8 @@ void runtime_corun_1(unsigned W) {
   executor.run(taskflow2).get();
   
   // change it to parent propagation
-  task.work([&](tf::Runtime& rt){
-    rt.corun(taskflow1);
+  task.work([&](tf::Runtime&){
+    executor.corun(taskflow1);
   });
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
 }
@@ -889,16 +894,16 @@ void runtime_corun_2(unsigned W) {
   
   // uncaught corun exception propagates to the topology 
   tf::Taskflow taskflow2;
-  taskflow2.emplace([&](tf::Runtime& rt){
-    rt.corun(taskflow);
+  taskflow2.emplace([&](tf::Runtime&){
+    executor.corun(taskflow);
   });
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow2).get(), "x", std::runtime_error);
   REQUIRE(counter == 2);
 
   // catch corun exception directly
   tf::Taskflow taskflow3;
-  taskflow3.emplace([&](tf::Runtime& rt){
-    REQUIRE_THROWS_WITH_AS(rt.corun(taskflow), "x", std::runtime_error);
+  taskflow3.emplace([&](tf::Runtime&){
+    REQUIRE_THROWS_WITH_AS(executor.corun(taskflow), "x", std::runtime_error);
   });
   executor.run(taskflow3).get();
   REQUIRE(counter == 4);
@@ -1249,4 +1254,30 @@ TEST_CASE("Exception.Semaphore.3threads" * doctest::timeout(300)) {
 TEST_CASE("Exception.Semaphore.4threads" * doctest::timeout(300)) {
   semaphore1(4);
 }
+
+// ------------------------------------------------------------------------------------------------
+// Preemption
+// ------------------------------------------------------------------------------------------------
+
+void preemption(unsigned n_threads) {
+  tf::Executor executor(n_threads);
+  for (size_t j = 0; j < 10; ++j) {
+    tf::Taskflow taskflow;
+    taskflow.for_each_index(
+      0, 50, 1,
+      [&](int) {
+        throw std::runtime_error("preemption");
+      },
+      tf::DynamicPartitioner<>()
+    );
+    REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "preemption", std::runtime_error);
+  }
+}
+
+TEST_CASE("Exception.Preemption.2threads" * doctest::timeout(600)) {
+  preemption(2);
+}
+
+
+
 

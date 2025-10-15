@@ -538,7 +538,7 @@ class Pipeline {
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
 
-  void _on_pipe(Pipeflow&, Runtime&);
+  void _on_pipe(Pipeflow&, NonpreemptiveRuntime&);
   void _build();
   void _check_dependents(Pipeflow&);
   void _construct_deferred_tokens(Pipeflow&);
@@ -661,13 +661,13 @@ void Pipeline<Ps...>::reset() {
 
 // Procedure: _on_pipe
 template <typename... Ps>
-void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime& rt) {
+void Pipeline<Ps...>::_on_pipe(Pipeflow& pf, NonpreemptiveRuntime& rt) {
   visit_tuple([&](auto&& pipe){
     using callable_t = typename std::decay_t<decltype(pipe)>::callable_t;
     if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
       pipe._callable(pf);
     }
-    else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+    else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, NonpreemptiveRuntime&>) {
       pipe._callable(pf, rt);
     }
     else {
@@ -809,7 +809,7 @@ void Pipeline<Ps...>::_build() {
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
 
-    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt) mutable {
+    _tasks[l + 1] = fb.emplace([this, l] (tf::NonpreemptiveRuntime& rt) mutable {
 
       auto pf = &_pipeflows[l];
 
@@ -1250,7 +1250,7 @@ class ScalablePipeline {
   void _resolve_token_dependencies(Pipeflow&);
   // chchiu
 
-  void _on_pipe(Pipeflow&, Runtime&);
+  void _on_pipe(Pipeflow&, NonpreemptiveRuntime&);
   void _build();
 
   Line& _line(size_t, size_t);
@@ -1508,14 +1508,14 @@ void ScalablePipeline<P>::reset() {
 
 // Procedure: _on_pipe
 template <typename P>
-void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, Runtime& rt) {
+void ScalablePipeline<P>::_on_pipe(Pipeflow& pf, NonpreemptiveRuntime& rt) {
     
   using callable_t = typename pipe_t::callable_t;
 
   if constexpr (std::is_invocable_v<callable_t, Pipeflow&>) {
     _pipes[pf._pipe]->_callable(pf);
   }
-  else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+  else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, NonpreemptiveRuntime&>) {
     _pipes[pf._pipe]->_callable(pf, rt);
   }
   else {
@@ -1612,7 +1612,7 @@ void ScalablePipeline<P>::_build() {
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
     
-    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt) mutable {
+    _tasks[l + 1] = fb.emplace([this, l] (tf::NonpreemptiveRuntime& rt) mutable {
 
       auto pf = &_pipeflows[l];
 

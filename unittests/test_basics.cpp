@@ -18,6 +18,7 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto t4 = taskflow.composed_of(taskflow2);
   auto t5 = taskflow.emplace([](){ return tf::SmallVector{1, 2}; });
   auto t6 = taskflow.emplace([](tf::Runtime&){});
+  auto t7 = taskflow.emplace([](tf::NonpreemptiveRuntime&){});
 
   REQUIRE(t1.type() == tf::TaskType::STATIC);
   REQUIRE(t2.type() == tf::TaskType::CONDITION);
@@ -25,6 +26,7 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   REQUIRE(t4.type() == tf::TaskType::MODULE);
   REQUIRE(t5.type() == tf::TaskType::CONDITION);
   REQUIRE(t6.type() == tf::TaskType::RUNTIME);
+  REQUIRE(t7.type() == tf::TaskType::RUNTIME);
 
   // static assert
   auto task1 = [](){};
@@ -33,6 +35,8 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   auto task4 = [](tf::Subflow&) { return 1; };
   auto task5 = [](tf::Runtime&) {};
   auto task6 = [](tf::Runtime&) { return 1; };
+  auto task7 = [](tf::NonpreemptiveRuntime&) {};
+  auto task8 = [](tf::NonpreemptiveRuntime&) { return 1; };
 
   static_assert(tf::is_static_task_v<decltype(task1)> == true, "");
   static_assert(tf::is_static_task_v<decltype(task2)> == false, "");
@@ -41,6 +45,8 @@ TEST_CASE("Type" * doctest::timeout(300)) {
   static_assert(tf::is_subflow_task_v<decltype(task4)> == false, "");
   static_assert(tf::is_runtime_task_v<decltype(task5)> == true, "");
   static_assert(tf::is_runtime_task_v<decltype(task6)> == false, "");
+  static_assert(tf::is_runtime_task_v<decltype(task7)> == true, "");
+  static_assert(tf::is_runtime_task_v<decltype(task8)> == false, "");
 }
 
 // --------------------------------------------------------

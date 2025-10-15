@@ -16,7 +16,6 @@ auto Algorithm::make_module_task(T&& target) {
     if(graph.empty()) {
       return;
     }
-    PreemptionGuard preemption_guard(rt);
     rt._executor._schedule_graph_with_parent(
       rt._worker, graph.begin(), graph.end(), rt._parent
     );

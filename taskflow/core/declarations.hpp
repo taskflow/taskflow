@@ -13,6 +13,7 @@ class FlowBuilder;
 class Semaphore;
 class Subflow;
 class Runtime;
+class NonpreemptiveRuntime;
 class Task;
 class TaskView;
 class Taskflow;

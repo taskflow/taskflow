@@ -158,8 +158,8 @@ class Node {
   friend class FlowBuilder;
   friend class Subflow;
   friend class Runtime;
+  friend class NonpreemptiveRuntime;
   friend class AnchorGuard;
-  friend class PreemptionGuard;
 
 #ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
@@ -175,7 +175,7 @@ class Node {
 
     std::function<void()> work;
   };
-  
+
   // runtime work handle
   struct Runtime {
 
@@ -183,6 +183,14 @@ class Node {
     Runtime(C&&);
 
     std::function<void(tf::Runtime&)> work;
+  };
+  
+  struct NonpreemptiveRuntime {
+    
+    template <typename C>
+    NonpreemptiveRuntime(C&&);
+
+    std::function<void(tf::NonpreemptiveRuntime&)> work;
   };
 
   // subflow work handle
@@ -252,15 +260,16 @@ class Node {
   };
 
   using handle_t = std::variant<
-    Placeholder,      // placeholder
-    Static,           // static tasking
-    Runtime,          // runtime tasking
-    Subflow,          // subflow tasking
-    Condition,        // conditional tasking
-    MultiCondition,   // multi-conditional tasking
-    Module,           // composable tasking
-    Async,            // async tasking
-    DependentAsync    // dependent async tasking
+    Placeholder,          // placeholder
+    Static,               // static tasking
+    Runtime,              // runtime tasking
+    NonpreemptiveRuntime, // runtime (non-preemptive) tasking
+    Subflow,              // subflow tasking
+    Condition,            // conditional tasking
+    MultiCondition,       // multi-conditional tasking
+    Module,               // composable tasking
+    Async,                // async tasking
+    DependentAsync        // dependent async tasking
   >;
 
   struct Semaphores {
@@ -271,15 +280,16 @@ class Node {
   public:
 
   // variant index
-  constexpr static auto PLACEHOLDER     = get_index_v<Placeholder, handle_t>;
-  constexpr static auto STATIC          = get_index_v<Static, handle_t>;
-  constexpr static auto RUNTIME         = get_index_v<Runtime, handle_t>;
-  constexpr static auto SUBFLOW         = get_index_v<Subflow, handle_t>;
-  constexpr static auto CONDITION       = get_index_v<Condition, handle_t>;
-  constexpr static auto MULTI_CONDITION = get_index_v<MultiCondition, handle_t>;
-  constexpr static auto MODULE          = get_index_v<Module, handle_t>;
-  constexpr static auto ASYNC           = get_index_v<Async, handle_t>;
-  constexpr static auto DEPENDENT_ASYNC = get_index_v<DependentAsync, handle_t>;
+  constexpr static auto PLACEHOLDER           = get_index_v<Placeholder, handle_t>;
+  constexpr static auto STATIC                = get_index_v<Static, handle_t>;
+  constexpr static auto RUNTIME               = get_index_v<Runtime, handle_t>;
+  constexpr static auto NONPREEMPTIVE_RUNTIME = get_index_v<NonpreemptiveRuntime, handle_t>;
+  constexpr static auto SUBFLOW               = get_index_v<Subflow, handle_t>;
+  constexpr static auto CONDITION             = get_index_v<Condition, handle_t>;
+  constexpr static auto MULTI_CONDITION       = get_index_v<MultiCondition, handle_t>;
+  constexpr static auto MODULE                = get_index_v<Module, handle_t>;
+  constexpr static auto ASYNC                 = get_index_v<Async, handle_t>;
+  constexpr static auto DEPENDENT_ASYNC       = get_index_v<DependentAsync, handle_t>;
 
   Node() = default;
   
@@ -381,6 +391,11 @@ Node::Static::Static(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C>
 Node::Runtime::Runtime(C&& c) : work {std::forward<C>(c)} {
+}
+
+// Constructor
+template <typename C>
+Node::NonpreemptiveRuntime::NonpreemptiveRuntime(C&& c) : work {std::forward<C>(c)} {
 }
 
 // ----------------------------------------------------------------------------

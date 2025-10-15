@@ -366,7 +366,7 @@ class DataPipeline {
   template <size_t... I>
   auto _gen_meta(std::tuple<Ps...>&&, std::index_sequence<I...>);
 
-  void _on_pipe(Pipeflow&, Runtime&);
+  void _on_pipe(Pipeflow&, NonpreemptiveRuntime&);
   void _build();
 };
 
@@ -481,7 +481,7 @@ void DataPipeline<Ps...>::reset() {
 
 // Procedure: _on_pipe
 template <typename... Ps>
-void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
+void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, NonpreemptiveRuntime&) {
 
   visit_tuple([&](auto&& pipe){
 
@@ -524,7 +524,7 @@ void DataPipeline<Ps...>::_on_pipe(Pipeflow& pf, Runtime&) {
         );
       }
     }
-    //else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, Runtime&>) {
+    //else if constexpr(std::is_invocable_v<callable_t, Pipeflow&, NonpreemptiveRuntime&>) {
     //  pipe._callable(pf, rt);
     //}
     else {
@@ -549,7 +549,7 @@ void DataPipeline<Ps...>::_build() {
   // line task
   for(size_t l = 0; l < num_lines(); l++) {
 
-    _tasks[l + 1] = fb.emplace([this, l] (tf::Runtime& rt) mutable {
+    _tasks[l + 1] = fb.emplace([this, l] (tf::NonpreemptiveRuntime& rt) mutable {
 
       auto pf = &_pipeflows[l];
 

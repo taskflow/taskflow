@@ -4,6 +4,10 @@
 
 namespace tf {
 
+// ------------------------------------------------------------------------------------------------
+// class: Runtime
+// ------------------------------------------------------------------------------------------------
+
 /**
 @class Runtime
 
@@ -239,34 +243,6 @@ class Runtime {
   void silent_async(P&& params, F&& f);
   
   /**
-  @brief co-runs the given target and waits until it completes
-  
-  A corunnable target must have `tf::Graph& T::graph()` defined.
-
-  // co-run a taskflow and wait until all tasks complete
-  @code{.cpp}
-  tf::Taskflow taskflow1, taskflow2;
-  taskflow1.emplace([](){ std::cout << "running taskflow1\n"; });
-  taskflow2.emplace([&](tf::Runtime& rt){
-    std::cout << "running taskflow2\n";
-    rt.corun(taskflow1);
-  });
-  executor.run(taskflow2).wait();
-  @endcode
-
-  Although tf::Runtime::corun blocks until the operation completes, 
-  the caller thread (worker) is not blocked (e.g., sleeping or holding any lock).
-  Instead, the caller thread joins the work-stealing loop of the executor 
-  and returns when all tasks in the target completes.
-  
-  @attention
-  This method can only be called by the parent worker of this runtime,
-  or the behavior is undefined.
-  */
-  template <typename T>
-  void corun(T&& target);
-
-  /**
   @brief corun all tasks spawned by this runtime with other workers
 
   Coruns all tasks spawned by this runtime with other workers until all these tasks finish.
@@ -306,7 +282,8 @@ class Runtime {
   */
   bool is_cancelled();
 
-protected:
+  private:
+
   /**
   @private
   */
@@ -326,11 +303,6 @@ protected:
   @private
   */
   Node* _parent;
-  
-  /**
-  @private
-  */
-  bool _preempted {false};
 };
 
 // constructor
@@ -352,7 +324,7 @@ inline Worker& Runtime::worker() {
 
 // Procedure: schedule
 inline void Runtime::schedule(Task task) {
-  
+
   auto node = task._node;
   // need to keep the invariant: when scheduling a task, the task must have
   // zero dependency (join counter is 0)
@@ -365,19 +337,12 @@ inline void Runtime::schedule(Task task) {
   _executor._schedule(_worker, node);
 }
 
-// Procedure: corun
-template <typename T>
-void Runtime::corun(T&& target) {
-  static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
-  _executor._corun_graph(*pt::this_worker, _parent, target.graph().begin(), target.graph().end());
-}
-
 // Function: corun
 inline void Runtime::corun() {
   {
     AnchorGuard anchor(_parent);
     _executor._corun_until(_worker, [this] () -> bool {
-      return _parent->_join_counter.load(std::memory_order_acquire) == 0;
+      return _parent->_join_counter.load(std::memory_order_acquire) == 1;
     });
   }
   _parent->_rethrow_exception();
@@ -431,46 +396,6 @@ auto Runtime::async(P&& params, F&& f) {
 }
 
 // ----------------------------------------------------------------------------
-// Preemption guard
-// ----------------------------------------------------------------------------
-
-/**
-@private
-*/
-class PreemptionGuard {
-
-  public:
-
-  PreemptionGuard(Runtime& runtime) : _runtime {runtime} {
-    if(_runtime._preempted == true) {
-      TF_THROW("runtime is not preemptible");
-    }
-    _runtime._parent->_nstate |= NSTATE::PREEMPTED;
-    _runtime._preempted = true;
-    _runtime._parent->_join_counter.fetch_add(1, std::memory_order_release);
-  }
-
-  ~PreemptionGuard() {
-    // If I am the last to join, then there is not need to preempt the runtime
-    if(_runtime._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      _runtime._preempted = false;
-      _runtime._parent->_nstate &= ~NSTATE::PREEMPTED;
-    }
-  }
-
-  PreemptionGuard(const PreemptionGuard&) = delete;
-  PreemptionGuard(PreemptionGuard&&) = delete;
-
-  PreemptionGuard& operator = (const PreemptionGuard&) = delete;
-  PreemptionGuard& operator = (PreemptionGuard&&) = delete;
-  
-  private:
-
-  Runtime& _runtime;
-};
-
-
-// ----------------------------------------------------------------------------
 // Executor Forward Declaration
 // ----------------------------------------------------------------------------
 
@@ -490,19 +415,30 @@ inline bool Executor::_invoke_runtime_task_impl(
 
     Runtime rt(*this, worker, node);
 
+    rt._parent->_nstate |= NSTATE::PREEMPTED;
+    rt._parent->_join_counter.fetch_add(1, std::memory_order_release);
+
     _observer_prologue(worker, node);
     TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
       work(rt);
     });
     _observer_epilogue(worker, node);
     
+    // I am the last one - no need to preempt this runtime
+    if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      rt._parent->_nstate &= ~NSTATE::PREEMPTED;
+    }
+    else {
+      return true;
+    }
+    
     // here, we cannot check the state from node->_nstate due to data race
     // Ex: if preempted, another task may finish real quck and insert this parent task
     // again into the scheduling queue. When running this parent task, it will jump to
     // else branch below and modify tne nstate, thus incuring data race.
-    if(rt._preempted) {
-      return true;
-    }
+    //if(rt._preempted) {
+    //  return true;
+    //}
   }
   // second time - previously preempted
   else {
@@ -520,6 +456,9 @@ inline bool Executor::_invoke_runtime_task_impl(
 
   // first time
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+    
+    rt._parent->_nstate |= NSTATE::PREEMPTED;
+    rt._parent->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
     TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
@@ -527,13 +466,22 @@ inline bool Executor::_invoke_runtime_task_impl(
     });
     _observer_epilogue(worker, node);
     
+    // I am the last one - no need to preempt this runtime
+    if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      rt._parent->_nstate &= ~NSTATE::PREEMPTED;
+      //return false;
+    }
+    else {
+      return true;
+    }
+    
     // here, we cannot check the state from node->_nstate due to data race
     // Ex: if preempted, another task may finish real quck and insert this parent task
     // again into the scheduling queue. When running this parent task, it will jump to
     // else branch below and modify tne nstate, thus incuring data race.
-    if(rt._preempted) {
-      return true;
-    }
+    //if(rt._preempted) {
+    //  return true;
+    //}
   }
   // second time - previously preempted
   else {
@@ -546,7 +494,75 @@ inline bool Executor::_invoke_runtime_task_impl(
   return false;
 }
 
+// ------------------------------------------------------------------------------------------------
+// class: NonpreemptiveRuntime
+// ------------------------------------------------------------------------------------------------
 
+/**
+@private
+*/
+class NonpreemptiveRuntime {
+
+  friend class Executor;
+
+  public:
+  
+  void schedule(Task task);
+  
+  private:
+
+  /**
+  @private
+  */
+  explicit NonpreemptiveRuntime(Executor& executor, Worker& worker, Node* parent) :
+    _executor {executor}, _worker {worker}, _parent{parent} {
+  }
+  
+  /**
+  @private
+  */
+  Executor& _executor;
+  
+  /**
+  @private
+  */
+  Worker& _worker;
+  
+  /**
+  @private
+  */
+  Node* _parent;
+  
+};
+
+// Procedure: schedule
+inline void NonpreemptiveRuntime::schedule(Task task) {
+
+  auto node = task._node;
+  // need to keep the invariant: when scheduling a task, the task must have
+  // zero dependency (join counter is 0)
+  // or we can encounter bug when inserting a nested flow (e.g., module task)
+  node->_join_counter.store(0, std::memory_order_relaxed);
+
+  auto& j = node->_parent ? node->_parent->_join_counter :
+                            node->_topology->_join_counter;
+  j.fetch_add(1, std::memory_order_relaxed);
+  _executor._schedule(_worker, node);
+}
+
+// ----------------------------------------------------------------------------
+// Executor Forward Declaration
+// ----------------------------------------------------------------------------
+
+// Procedure: _invoke_nonpreemptive_runtime_task
+inline void Executor::_invoke_nonpreemptive_runtime_task(Worker& worker, Node* node) {
+  _observer_prologue(worker, node);
+  tf::NonpreemptiveRuntime nprt(*this, worker, node);
+  TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
+    std::get_if<Node::NonpreemptiveRuntime>(&node->_handle)->work(nprt);
+  });
+  _observer_epilogue(worker, node);
+}
 
 
 

@@ -23,14 +23,13 @@ list(APPEND TF_UNITTESTS
   test_find
   test_modules
   test_traversals
+  test_runtimes
+  test_workers
   test_pipelines
   test_scalable_pipelines
   test_deferred_pipelines
   test_deferred_scalable_pipelines
   test_data_pipelines
-  test_runtimes
-  test_workers
-  #test_exceptions
 )
 
 # we only do exception tests if sanitizer is not enabled

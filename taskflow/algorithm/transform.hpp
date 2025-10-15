@@ -33,8 +33,6 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
       return;
     }
 
-    PreemptionGuard preemption_guard(rt);
-    
     if(N < W) {
       W = N;
     }
@@ -107,8 +105,6 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
       return;
     }
     
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }

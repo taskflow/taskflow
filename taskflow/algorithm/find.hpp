@@ -28,8 +28,6 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       return;
     }
     
-    PreemptionGuard preemption_guard(rt);
-
     // use no more workers than the iteration count
     if(N < W) {
       W = N;
@@ -116,8 +114,6 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       return;
     }
 
-    PreemptionGuard preemption_guard(rt);
-
     if(N < W) {
       W = N;
     }
@@ -202,8 +198,6 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
       part([=, &result] () mutable { result = std::min_element(beg, end, comp); })();
       return;
     }
-
-    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
@@ -346,8 +340,6 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
       part([=, &result] () mutable { result = std::max_element(beg, end, comp); })();
       return;
     }
-
-    PreemptionGuard preemption_guard(rt);
 
     if(N < W) {
       W = N;
