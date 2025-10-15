@@ -1,4 +1,3 @@
-namespace tf {
 
 /** @page ExecuteTaskflow %Executor
 
@@ -243,7 +242,7 @@ executor.run(taskflow).wait();
 To avoid this problem,
 the executor has a method, tf::Executor::corun, to execute
 a taskflow from a worker of that executor.
-The worker will not block but co-run the taskflow with other tasks
+The worker will not block but corun the taskflow with other tasks
 in its work-stealing loop.
 
 @code{.cpp}

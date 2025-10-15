@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-11-0" kind="page">
     <compoundname>release-3-11-0</compoundname>
     <title>Release 3.11.0 (Master)</title>
@@ -7,55 +7,57 @@
       <tocsect>
         <name>Download</name>
         <reference>release-3-11-0_1release-3-11-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-11-0_1release-3-11-0_system_requirements</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Release Summary</name>
         <reference>release-3-11-0_1release-3-11-0_summary</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-3-11-0_1release-3-11-0_new_features</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Taskflow Core</name>
-            <reference>release-3-11-0_1release-3-11-0_taskflow_core</reference>
-          </tocsect>
-          <tocsect>
-            <name>Utilities</name>
-            <reference>release-3-11-0_1release-3-11-0_utilities</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-3-11-0_1release-3-11-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-3-11-0_1release-3-11-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-3-11-0_1release-3-11-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-3-11-0_1release-3-11-0_breaking_changes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-3-11-0_1release-3-11-0_documentation</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-3-11-0_1release-3-11-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.11.0 is the newest developing line to new features and improvements we continue to support. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While it may be difficult to be keep all things consistent when introducing new features, we continue to try our best to ensure backward compatibility.</para>
 <sect1 id="release-3-11-0_1release-3-11-0_download">
-<title>Download</title><para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<title>Download</title>
+<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_system_requirements">
-<title>System Requirements</title><para>To use Taskflow v3.11.0, you need a compiler that supports C++17:</para>
+<title>System Requirements</title>
+<para>To use Taskflow v3.11.0, you need a compiler that supports C++17:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v8.4 with -std=c++17 </para>
 </listitem>
@@ -78,10 +80,14 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_summary">
-<title>Release Summary</title></sect1>
+<title>Release Summary</title>
+<para>This release enhanced the scheduling performance through a better memory order in the notification algorithm. We also revised several cookbook pages to enhance the readability.</para>
+</sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_new_features">
-<title>New Features</title><sect2 id="release-3-11-0_1release-3-11-0_taskflow_core">
-<title>Taskflow Core</title><para><itemizedlist>
+<title>New Features</title>
+<sect2 id="release-3-11-0_1release-3-11-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
 <listitem><para>added <computeroutput>examples/task_visitor.cpp</computeroutput> to demonstrate how to traverse a taskflow (<ulink url="https://github.com/taskflow/taskflow/issues/699">#699</ulink>)</para>
 </listitem><listitem><para>added five benchmarks to showcase the capability of <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref><itemizedlist>
 <listitem><para>fibonacci</para>
@@ -91,23 +97,52 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>primes</para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>removed code support for SYCL</para>
+</listitem><listitem><para>enhanced the performance of atomic notifier via relaxed memory order</para>
+</listitem><listitem><para>enforced implicit synchronization at the end of a runtime task&apos;s scope for safer usage</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-3-11-0_1release-3-11-0_utilities">
-<title>Utilities</title></sect2>
+<title>Utilities</title>
+<para><itemizedlist>
+<listitem><para>added <computeroutput>coprime</computeroutput> function</para>
+</listitem><listitem><para>added <computeroutput>floor_log2</computeroutput> function</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_bug_fixes">
-<title>Bug Fixes</title><para><itemizedlist>
-<listitem><para>fixed missing exception on thread creation failure in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/693">#693</ulink>)</para>
+<title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>toggled exception block in executor (<ulink url="https://github.com/taskflow/taskflow/pull/690">#690</ulink>)</para>
+</listitem><listitem><para>fixed missing exception on thread creation failure in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/693">#693</ulink>)</para>
 </listitem><listitem><para>fixed segmentation fault caused by empty async dependency (<ulink url="https://github.com/taskflow/taskflow/issues/700">#700</ulink>)</para>
+</listitem><listitem><para>fixed compilation errors for CUDA 13 (<ulink url="https://github.com/taskflow/taskflow/pull/721">#721</ulink>)</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_breaking_changes">
-<title>Breaking Changes</title></sect1>
+<title>Breaking Changes</title>
+<para><itemizedlist>
+<listitem><para>removed <computeroutput>tf::corun(graph)</computeroutput> due to a design flaw in its exception-handling behavior</para>
+</listitem></itemizedlist>
+</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>previously</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">corun</ref>(graph);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>now<sp/>-<sp/>simply<sp/>use<sp/>tf::Executor::corun</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.corun(graph);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>There are no breaking changes in this release.</para>
+</sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_documentation">
-<title>Documentation</title><para><itemizedlist>
+<title>Documentation</title>
+<para><itemizedlist>
 <listitem><para>revised <ref refid="StaticTasking" kindref="compound">Static Tasking</ref></para>
 </listitem><listitem><para>revised <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref></para>
 </listitem><listitem><para>revised <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref></para>
@@ -119,7 +154,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
+<title>Miscellaneous Items</title>
+<para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-3.11.0.dox"/>

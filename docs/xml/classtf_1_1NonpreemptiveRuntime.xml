@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1NonpreemptiveRuntime" kind="class" language="C++" prot="private">
+    <compoundname>tf::NonpreemptiveRuntime</compoundname>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1NonpreemptiveRuntime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <param>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="492" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="492" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1NonpreemptiveRuntime_1a0dd3cfafc2db805af18f8cbfda9c45c5" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
+        <definition>Executor&amp; tf::NonpreemptiveRuntime::_executor</definition>
+        <argsstring></argsstring>
+        <name>_executor</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="513" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="513" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NonpreemptiveRuntime_1accf597658e86dd6834cffa7c078afc92" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+        <definition>Worker&amp; tf::NonpreemptiveRuntime::_worker</definition>
+        <argsstring></argsstring>
+        <name>_worker</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="518" column="10" bodyfile="taskflow/core/runtime.hpp" bodystart="518" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NonpreemptiveRuntime_1ac3bd91c8de131190aa3d87d2757bb7f5" prot="private" static="no" mutable="no">
+        <type>Node *</type>
+        <definition>Node* tf::NonpreemptiveRuntime::_parent</definition>
+        <argsstring></argsstring>
+        <name>_parent</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="523" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="523" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1NonpreemptiveRuntime_1abea061d5e44c7e06a5a39b1f8832f033" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::NonpreemptiveRuntime::schedule</definition>
+        <argsstring>(Task task)</argsstring>
+        <name>schedule</name>
+        <param>
+          <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="499" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="528" bodyend="540"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1NonpreemptiveRuntime_1a4b7759ef50d9476da91cfcab0dac6ada" prot="private" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::NonpreemptiveRuntime::NonpreemptiveRuntime</definition>
+        <argsstring>(Executor &amp;executor, Worker &amp;worker, Node *parent)</argsstring>
+        <name>NonpreemptiveRuntime</name>
+        <param>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
+          <declname>executor</declname>
+        </param>
+        <param>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+          <declname>worker</declname>
+        </param>
+        <param>
+          <type>Node *</type>
+          <declname>parent</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/runtime.hpp" line="506" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="506" bodyend="508"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>currently for internal use only </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="taskflow/core/runtime.hpp" line="490" column="1" bodyfile="taskflow/core/runtime.hpp" bodystart="490" bodyend="525"/>
+    <listofallmembers>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1a0dd3cfafc2db805af18f8cbfda9c45c5" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>_executor</name></member>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1ac3bd91c8de131190aa3d87d2757bb7f5" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>_parent</name></member>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1accf597658e86dd6834cffa7c078afc92" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>_worker</name></member>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>Executor</name></member>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1a4b7759ef50d9476da91cfcab0dac6ada" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>NonpreemptiveRuntime</name></member>
+      <member refid="classtf_1_1NonpreemptiveRuntime_1abea061d5e44c7e06a5a39b1f8832f033" prot="private" virt="non-virtual"><scope>tf::NonpreemptiveRuntime</scope><name>schedule</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

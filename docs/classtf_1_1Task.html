@@ -5,7 +5,7 @@
   <title>tf::Task class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -423,45 +423,45 @@
 <span class="p">);</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">);</span><span class="w">  </span><span class="c1">// executes yes if cond returns 0</span>
-<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 25.600rem; height: 9.800rem;" viewBox="0.00 0.00 256.17 98.00">
+<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 26.300rem; height: 9.800rem;" viewBox="0.00 0.00 262.60 98.00">
 <g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700030</title>
 <ellipse cx="27" cy="-45" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
+<text text-anchor="middle" x="27" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
 </g>
 <g class="m-node">
 <title>p0x7f9e1e700140</title>
-<polygon points="121.96,-63 91,-45 121.96,-27 152.92,-45 121.96,-63"/>
-<text text-anchor="middle" x="121.96" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+<polygon points="124.3,-63 91.2,-45 124.3,-27 157.4,-45 124.3,-63"/>
+<text text-anchor="middle" x="124.3" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700030&#45;&gt;p0x7f9e1e700140</title>
-<path d="M54.39,-45C61.98,-45 70.45,-45 78.74,-45"/>
-<polygon points="78.72,-48.5 88.72,-45 78.72,-41.5 78.72,-48.5"/>
+<path d="M54.04,-45C62.37,-45 71.82,-45 80.99,-45"/>
+<polygon points="81.17,-48.5 91.17,-45 81.17,-41.5 81.17,-48.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700250</title>
-<ellipse cx="221.17" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="221.17" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
+<ellipse cx="227.6" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="227.6" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700250</title>
-<path stroke-dasharray="5,2" d="M143.58,-50.73C155.63,-54.07 171.16,-58.39 185.08,-62.25"/>
-<polygon points="183.78,-65.52 194.35,-64.83 185.65,-58.78 183.78,-65.52"/>
-<text text-anchor="middle" x="173.55" y="-61.06" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M147.03,-50.79C160.16,-54.29 177.19,-58.83 192.13,-62.81"/>
+<polygon points="191.49,-66.27 202.06,-65.46 193.3,-59.5 191.49,-66.27"/>
+<text text-anchor="middle" x="179.1" y="-63" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700360</title>
-<ellipse cx="221.17" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="221.17" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
+<ellipse cx="227.6" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="227.6" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700360</title>
-<path stroke-dasharray="5,2" d="M143.58,-39.27C155.63,-35.93 171.16,-31.61 185.08,-27.75"/>
-<polygon points="185.65,-31.22 194.35,-25.17 183.78,-24.48 185.65,-31.22"/>
-<text text-anchor="middle" x="173.55" y="-33.25" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M147.03,-39.21C160.16,-35.71 177.19,-31.17 192.13,-27.19"/>
+<polygon points="193.3,-30.5 202.06,-24.54 191.49,-23.73 193.3,-30.5"/>
+<text text-anchor="middle" x="179.1" y="-34" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 </g>
 </svg>
@@ -488,45 +488,45 @@
 <span class="p">);</span>
 <span class="n">cond</span><span class="p">.</span><span class="n">succeed</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">yes</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="p">);</span><span class="w">  </span><span class="c1">// executes yes if cond returns 0</span>
-<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 25.600rem; height: 9.800rem;" viewBox="0.00 0.00 256.17 98.00">
+<span class="w">                        </span><span class="c1">// executes no  if cond returns 1</span></pre><div class="m-graph"><svg style="width: 26.300rem; height: 9.800rem;" viewBox="0.00 0.00 262.60 98.00">
 <g transform="scale(1 1) rotate(0) translate(4 94)">
 <title>Taskflow</title>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700030</title>
 <ellipse cx="27" cy="-45" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
+<text text-anchor="middle" x="27" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00">init</text>
 </g>
 <g class="m-node">
 <title>p0x7f9e1e700140</title>
-<polygon points="121.96,-63 91,-45 121.96,-27 152.92,-45 121.96,-63"/>
-<text text-anchor="middle" x="121.96" y="-41.12" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
+<polygon points="124.3,-63 91.2,-45 124.3,-27 157.4,-45 124.3,-63"/>
+<text text-anchor="middle" x="124.3" y="-42.5" font-family="Helvetica,sans-Serif" font-size="10.00">cond</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700030&#45;&gt;p0x7f9e1e700140</title>
-<path d="M54.39,-45C61.98,-45 70.45,-45 78.74,-45"/>
-<polygon points="78.72,-48.5 88.72,-45 78.72,-41.5 78.72,-48.5"/>
+<path d="M54.04,-45C62.37,-45 71.82,-45 80.99,-45"/>
+<polygon points="81.17,-48.5 91.17,-45 81.17,-41.5 81.17,-48.5"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700250</title>
-<ellipse cx="221.17" cy="-72" rx="27" ry="18"/>
-<text text-anchor="middle" x="221.17" y="-68.12" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
+<ellipse cx="227.6" cy="-72" rx="27" ry="18"/>
+<text text-anchor="middle" x="227.6" y="-69.5" font-family="Helvetica,sans-Serif" font-size="10.00">yes</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700250</title>
-<path stroke-dasharray="5,2" d="M143.58,-50.73C155.63,-54.07 171.16,-58.39 185.08,-62.25"/>
-<polygon points="183.78,-65.52 194.35,-64.83 185.65,-58.78 183.78,-65.52"/>
-<text text-anchor="middle" x="173.55" y="-61.06" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
+<path stroke-dasharray="5,2" d="M147.03,-50.79C160.16,-54.29 177.19,-58.83 192.13,-62.81"/>
+<polygon points="191.49,-66.27 202.06,-65.46 193.3,-59.5 191.49,-66.27"/>
+<text text-anchor="middle" x="179.1" y="-63" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x7f9e1e700360</title>
-<ellipse cx="221.17" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="221.17" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
+<ellipse cx="227.6" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="227.6" y="-15.5" font-family="Helvetica,sans-Serif" font-size="10.00">no</text>
 </g>
 <g class="m-edge">
 <title>p0x7f9e1e700140&#45;&gt;p0x7f9e1e700360</title>
-<path stroke-dasharray="5,2" d="M143.58,-39.27C155.63,-35.93 171.16,-31.61 185.08,-27.75"/>
-<polygon points="185.65,-31.22 194.35,-25.17 183.78,-24.48 185.65,-31.22"/>
-<text text-anchor="middle" x="173.55" y="-33.25" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
+<path stroke-dasharray="5,2" d="M147.03,-39.21C160.16,-35.71 177.19,-31.17 192.13,-27.19"/>
+<polygon points="193.3,-30.5 202.06,-24.54 191.49,-23.73 193.3,-30.5"/>
+<text text-anchor="middle" x="179.1" y="-34" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
 </g>
 </g>
 </svg>
@@ -864,7 +864,7 @@
               </tfoot>
             </table>
 <p>The following example shows how to attach a user data to a task and retrieve it during the execution of the task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">  </span><span class="c1">// user data</span>
 
@@ -1059,7 +1059,7 @@
               <span class="m-doc-wrap-bumper"><a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">TaskType</a> tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af2df95e6c8c5870c033d692e88af0bc2" class="m-doc-self">type</a>(</span><span class="m-doc-wrap">) const</span></span>
             </h3>
             <p>returns the task type</p>
-<p>A task can be one of the types defined in <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">tf::<wbr />TaskType</a> and can be printed in a human-readable form using <a href="namespacetf.html#a18c45bc96e6725943e0a4396fa59b524" class="m-doc">tf::<wbr />to_string</a>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task&quot;</span><span class="p">);</span>
+<p>A task can be one of the types defined in <a href="namespacetf.html#a1355048578785a80414707ff308b395a" class="m-doc">tf::<wbr />TaskType</a> and can be printed in a human-readable form using <a href="namespacetf.html#a9ca58dc6c666698cc7373eb0262140ef" class="m-doc">tf::<wbr />to_string</a>.</p><pre class="m-code"><span class="k">auto</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){}).</span><span class="n">name</span><span class="p">(</span><span class="s">&quot;task&quot;</span><span class="p">);</span>
 <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">task</span><span class="p">.</span><span class="n">name</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; type=[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">type</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span></pre>
           </div></section>
           <section class="m-doc-details" id="a3318a49ff9d0a01cd1e8ee675251e3b7"><div>
@@ -1067,7 +1067,7 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr />Task::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3318a49ff9d0a01cd1e8ee675251e3b7" class="m-doc-self">dump</a>(</span><span class="m-doc-wrap"><a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />ostream</a>&amp; ostream) const</span></span>
             </h3>
             <p>dumps the task through an output stream</p>
-<p>The method dumps the name and the type of this task through <a href="http://en.cppreference.com/w/cpp/io/basic_ostream.html" class="m-doc-external">std::<wbr />cout</a>.</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
+<p>The method dumps the name and the type of this task through the given output stream.</p><pre class="m-code"><span class="n">task</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a320827cb70295a6fe2cc37691405409c"><div>
             <h3>
@@ -1083,7 +1083,7 @@
               </tfoot>
             </table>
 <p>The following example shows how to attach a user data to a task and retrieve it during the execution of the task.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="nf">taskflow</span><span class="p">(</span><span class="s">&quot;attach data to a task&quot;</span><span class="p">);</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">  </span><span class="c1">// user data</span>
 
@@ -1144,7 +1144,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

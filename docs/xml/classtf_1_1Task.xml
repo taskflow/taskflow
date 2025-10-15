@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Task" kind="class" language="C++" prot="public">
     <compoundname>tf::Task</compoundname>
     <includes refid="task_8hpp" local="no">taskflow/core/task.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Task_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class FlowBuilder</definition>
         <argsstring></argsstring>
         <name>FlowBuilder</name>
-        <qualifiedname>tf::Task::FlowBuilder</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1FlowBuilder" kindref="compound">FlowBuilder</ref></type>
         </param>
@@ -19,14 +18,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="245" column="16" bodyfile="taskflow/core/task.hpp" bodystart="245" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="252" column="3" bodyfile="taskflow/core/task.hpp" bodystart="252" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Runtime</definition>
         <argsstring></argsstring>
         <name>Runtime</name>
-        <qualifiedname>tf::Task::Runtime</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref></type>
         </param>
@@ -36,14 +34,29 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="246" column="16" bodyfile="taskflow/core/task.hpp" bodystart="246" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="253" column="3" bodyfile="taskflow/core/task.hpp" bodystart="253" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1Task_1a5336d73e2623282058a4f84a0423fac3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class NonpreemptiveRuntime</definition>
+        <argsstring></argsstring>
+        <name>NonpreemptiveRuntime</name>
+        <param>
+          <type>NonpreemptiveRuntime</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/task.hpp" line="254" column="3" bodyfile="taskflow/core/task.hpp" bodystart="254" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1af043dd6f6a359602805d9c7dd7539cca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Taskflow</definition>
         <argsstring></argsstring>
         <name>Taskflow</name>
-        <qualifiedname>tf::Task::Taskflow</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref></type>
         </param>
@@ -53,14 +66,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="247" column="16" bodyfile="taskflow/core/task.hpp" bodystart="247" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="255" column="3" bodyfile="taskflow/core/task.hpp" bodystart="255" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1a0aa0e12e4a0ba023033e808fb2132fdf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class TaskView</definition>
         <argsstring></argsstring>
         <name>TaskView</name>
-        <qualifiedname>tf::Task::TaskView</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref></type>
         </param>
@@ -70,14 +82,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="248" column="16" bodyfile="taskflow/core/task.hpp" bodystart="248" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="256" column="3" bodyfile="taskflow/core/task.hpp" bodystart="256" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Task_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::Task::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -87,16 +98,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="249" column="16" bodyfile="taskflow/core/task.hpp" bodystart="249" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="257" column="3" bodyfile="taskflow/core/task.hpp" bodystart="257" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Task_1abff81069222d0f449e0b43136aea2f05" prot="private" static="no" mutable="no">
         <type>Node *</type>
         <definition>Node* tf::Task::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
-        <qualifiedname>tf::Task::_node</qualifiedname>
         <initializer>{nullptr}</initializer>
         <briefdescription>
         </briefdescription>
@@ -104,16 +114,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="846" column="10" bodyfile="taskflow/core/task.hpp" bodystart="846" bodyend="846"/>
+        <location file="taskflow/core/task.hpp" line="854" column="10" bodyfile="taskflow/core/task.hpp" bodystart="854" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Task_1a5ed7ba63e8eeaa0f21fe08c80aa474ba" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Task::Task</definition>
         <argsstring>()=default</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <briefdescription>
 <para>constructs an empty task </para>
         </briefdescription>
@@ -122,14 +131,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="258" column="5"/>
+        <location file="taskflow/core/task.hpp" line="266" column="5"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a53deffe60d7c758df4265aeb81063928" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Task::Task</definition>
         <argsstring>(const Task &amp;other)</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>other</declname>
@@ -148,21 +156,20 @@
 </parameteritem>
 </parameterlist>
 <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B(A);</highlight></codeline>
 <codeline><highlight class="normal">assert(B<sp/>==<sp/>A);<sp/></highlight><highlight class="comment">//<sp/>Now,<sp/>B<sp/>and<sp/>A<sp/>refer<sp/>to<sp/>the<sp/>same<sp/>underlying<sp/>node</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="272" column="5" bodyfile="taskflow/core/task.hpp" bodystart="854" bodyend="855"/>
+        <location file="taskflow/core/task.hpp" line="280" column="5" bodyfile="taskflow/core/task.hpp" bodystart="862" bodyend="863"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a5393b9ce6a7152efd995bf0fc6a8d07e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::operator=</definition>
         <argsstring>(const Task &amp;other)</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::Task::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>other</declname>
@@ -180,43 +187,41 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B;</highlight></codeline>
 <codeline><highlight class="normal">B<sp/>=<sp/>A;<sp/><sp/></highlight><highlight class="comment">//<sp/>B<sp/>now<sp/>refers<sp/>to<sp/>the<sp/>same<sp/>node<sp/>as<sp/>A</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="285" column="10" bodyfile="taskflow/core/task.hpp" bodystart="897" bodyend="900"/>
+        <location file="taskflow/core/task.hpp" line="293" column="10" bodyfile="taskflow/core/task.hpp" bodystart="905" bodyend="908"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a4b0e3d6a1985a353626c15970c51c820" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::operator=</definition>
         <argsstring>(std::nullptr_t)</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::Task::operator=</qualifiedname>
         <param>
-          <type><ref refid="cpp/types/nullptr_t" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::nullptr_t</ref></type>
+          <type><ref refid="cpp/types/nullptr_t" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::nullptr_t</ref></type>
           <defname>ptr</defname>
         </param>
         <briefdescription>
 <para>replaces the contents with a null pointer </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A<sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>no<sp/>longer<sp/>refers<sp/>to<sp/>any<sp/>node</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="295" column="10" bodyfile="taskflow/core/task.hpp" bodystart="903" bodyend="906"/>
+        <location file="taskflow/core/task.hpp" line="303" column="10" bodyfile="taskflow/core/task.hpp" bodystart="911" bodyend="914"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1ad87bb498b0a4eae0c375bc59b66dbba8" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::Task::operator==</definition>
         <argsstring>(const Task &amp;rhs) const</argsstring>
         <name>operator==</name>
-        <qualifiedname>tf::Task::operator==</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>rhs</declname>
@@ -236,21 +241,20 @@
 </parameterlist>
 <simplesect kind="return"><para>true if both tasks refer to the same node; false otherwise</para>
 </simplesect>
-<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>A;</highlight></codeline>
 <codeline><highlight class="normal">assert(A<sp/>==<sp/>B);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>and<sp/>B<sp/>refer<sp/>to<sp/>the<sp/>same<sp/>node</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="309" column="10" bodyfile="taskflow/core/task.hpp" bodystart="909" bodyend="911"/>
+        <location file="taskflow/core/task.hpp" line="317" column="10" bodyfile="taskflow/core/task.hpp" bodystart="917" bodyend="919"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1af4e13636e3a494297b30c2b2e483f095" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::Task::operator!=</definition>
         <argsstring>(const Task &amp;rhs) const</argsstring>
         <name>operator!=</name>
-        <qualifiedname>tf::Task::operator!=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
           <declname>rhs</declname>
@@ -270,21 +274,20 @@
 </parameterlist>
 <simplesect kind="return"><para>true if they refer to different nodes; false otherwise</para>
 </simplesect>
-<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">assert(A<sp/>!=<sp/>B);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>and<sp/>B<sp/>refer<sp/>to<sp/>different<sp/>nodes</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="323" column="10" bodyfile="taskflow/core/task.hpp" bodystart="914" bodyend="916"/>
+        <location file="taskflow/core/task.hpp" line="331" column="10" bodyfile="taskflow/core/task.hpp" bodystart="922" bodyend="924"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
         <definition>const std::string &amp; tf::Task::name</definition>
         <argsstring>() const</argsstring>
         <name>name</name>
-        <qualifiedname>tf::Task::name</qualifiedname>
         <briefdescription>
 <para>queries the name of the task </para>
         </briefdescription>
@@ -293,19 +296,18 @@
 </simplesect>
 <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;MyTask&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>name:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>name:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="336" column="23" bodyfile="taskflow/core/task.hpp" bodystart="983" bodyend="985"/>
+        <location file="taskflow/core/task.hpp" line="344" column="23" bodyfile="taskflow/core/task.hpp" bodystart="991" bodyend="993"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Task::num_successors</definition>
         <argsstring>() const</argsstring>
         <name>num_successors</name>
-        <qualifiedname>tf::Task::num_successors</qualifiedname>
         <briefdescription>
 <para>queries the number of successors of the task </para>
         </briefdescription>
@@ -315,19 +317,18 @@
 <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);<sp/><sp/></highlight><highlight class="comment">//<sp/>B<sp/>is<sp/>a<sp/>successor<sp/>of<sp/>A</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>has<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>A.<ref refid="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" kindref="member">num_successors</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>successor(s).&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A<sp/>has<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>A.<ref refid="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" kindref="member">num_successors</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>successor(s).&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="350" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1003" bodyend="1005"/>
+        <location file="taskflow/core/task.hpp" line="358" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1011" bodyend="1013"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Task::num_predecessors</definition>
         <argsstring>() const</argsstring>
         <name>num_predecessors</name>
-        <qualifiedname>tf::Task::num_predecessors</qualifiedname>
         <briefdescription>
 <para>queries the number of predecessors of the task </para>
         </briefdescription>
@@ -337,19 +338,18 @@
 <programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);<sp/><sp/></highlight><highlight class="comment">//<sp/>A<sp/>is<sp/>a<sp/>predecessor<sp/>of<sp/>B</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B<sp/>has<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>B.<ref refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" kindref="member">num_predecessors</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>predecessor(s).&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B<sp/>has<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>B.<ref refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" kindref="member">num_predecessors</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>predecessor(s).&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="364" column="12" bodyfile="taskflow/core/task.hpp" bodystart="988" bodyend="990"/>
+        <location file="taskflow/core/task.hpp" line="372" column="12" bodyfile="taskflow/core/task.hpp" bodystart="996" bodyend="998"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Task::num_strong_dependencies</definition>
         <argsstring>() const</argsstring>
         <name>num_strong_dependencies</name>
-        <qualifiedname>tf::Task::num_strong_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of strong dependencies of the task </para>
         </briefdescription>
@@ -360,14 +360,14 @@ A strong dependency is a preceding link from one non-condition task to another t
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">cond.succeed(init)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>.precede(yes,<sp/>no);<sp/><sp/></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>executes<sp/>no<sp/><sp/>if<sp/>cond<sp/>returns<sp/>1</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="conditional-tasking-if-else.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/conditional-tasking-if-else.dot"></dotfile>
 </para>
 <para><simplesect kind="note"><para>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>. </para>
 </simplesect>
@@ -375,14 +375,13 @@ A strong dependency is a preceding link from one non-condition task to another t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="393" column="12" bodyfile="taskflow/core/task.hpp" bodystart="993" bodyend="995"/>
+        <location file="taskflow/core/task.hpp" line="401" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1001" bodyend="1003"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1ad5e874b7cc77df1e7dc875d436ff7b72" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Task::num_weak_dependencies</definition>
         <argsstring>() const</argsstring>
         <name>num_weak_dependencies</name>
-        <qualifiedname>tf::Task::num_weak_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of weak dependencies of the task </para>
         </briefdescription>
@@ -393,14 +392,14 @@ A weak dependency is a preceding link from one condition task to another task. F
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[init,<sp/>cond,<sp/>yes,<sp/>no]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/>},</highlight></codeline>
 <codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;yes\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;no\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">cond.succeed(init)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>.precede(yes,<sp/>no);<sp/><sp/></highlight><highlight class="comment">//<sp/>executes<sp/>yes<sp/>if<sp/>cond<sp/>returns<sp/>0</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>executes<sp/>no<sp/><sp/>if<sp/>cond<sp/>returns<sp/>1</highlight></codeline>
 </programlisting></para>
-<para><dotfile name="conditional-tasking-if-else.dot"></dotfile>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/conditional-tasking-if-else.dot"></dotfile>
 </para>
 <para><simplesect kind="note"><para>To understand how Taskflow schedule tasks under strong and weak dependencies, please refer to <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>. </para>
 </simplesect>
@@ -408,16 +407,15 @@ A weak dependency is a preceding link from one condition task to another task. F
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="422" column="12" bodyfile="taskflow/core/task.hpp" bodystart="998" bodyend="1000"/>
+        <location file="taskflow/core/task.hpp" line="430" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1006" bodyend="1008"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::name</definition>
         <argsstring>(const std::string &amp;name)</argsstring>
         <name>name</name>
-        <qualifiedname>tf::Task::name</qualifiedname>
         <param>
-          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+          <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
           <declname>name</declname>
         </param>
         <briefdescription>
@@ -441,7 +439,7 @@ A weak dependency is a preceding link from one condition task to another task. F
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="436" column="10" bodyfile="taskflow/core/task.hpp" bodystart="919" bodyend="922"/>
+        <location file="taskflow/core/task.hpp" line="444" column="10" bodyfile="taskflow/core/task.hpp" bodystart="927" bodyend="930"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a2f6f4cec42d016e5eb89390f362ffe99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -453,7 +451,6 @@ A weak dependency is a preceding link from one condition task to another task. F
         <definition>Task &amp; tf::Task::work</definition>
         <argsstring>(C &amp;&amp;callable)</argsstring>
         <name>work</name>
-        <qualifiedname>tf::Task::work</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -492,7 +489,7 @@ A <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> is polymorphic.
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="461" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1074" bodyend="1095"/>
+        <location file="taskflow/core/task.hpp" line="469" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1083" bodyend="1104"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -504,7 +501,6 @@ A <ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref> is polymorphic.
         <definition>Task &amp; tf::Task::composed_of</definition>
         <argsstring>(T &amp;object)</argsstring>
         <name>composed_of</name>
-        <qualifiedname>tf::Task::composed_of</qualifiedname>
         <param>
           <type>T &amp;</type>
           <declname>object</declname>
@@ -540,7 +536,7 @@ The example below creates a module task from a taskflow:</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="481" column="10" bodyfile="taskflow/core/task.hpp" bodystart="891" bodyend="894"/>
+        <location file="taskflow/core/task.hpp" line="489" column="10" bodyfile="taskflow/core/task.hpp" bodystart="899" bodyend="902"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -554,7 +550,6 @@ The example below creates a module task from a taskflow:</para>
         <definition>Task &amp; tf::Task::precede</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>precede</name>
-        <qualifiedname>tf::Task::precede</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -585,15 +580,15 @@ The example below creates a module task from a taskflow:</para>
 </simplesect>
 The example below creates a taskflow of two tasks, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task1,<sp/>task2]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task2\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task2\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">task1.precede(task2);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="503" column="10" bodyfile="taskflow/core/task.hpp" bodystart="859" bodyend="863"/>
+        <location file="taskflow/core/task.hpp" line="511" column="10" bodyfile="taskflow/core/task.hpp" bodystart="867" bodyend="871"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a331b1b726555072e7c7d10941257f664" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -607,7 +602,6 @@ The example below creates a taskflow of two tasks, where <computeroutput>task1</
         <definition>Task &amp; tf::Task::succeed</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>succeed</name>
-        <qualifiedname>tf::Task::succeed</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -638,15 +632,15 @@ The example below creates a taskflow of two tasks, where <computeroutput>task1</
 </simplesect>
 The example below creates a taskflow of two tasks, where <computeroutput>task1</computeroutput> runs before <computeroutput>task2</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task1,<sp/>task2]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task2\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task2\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">task2.succeed(task1);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="525" column="10" bodyfile="taskflow/core/task.hpp" bodystart="867" bodyend="871"/>
+        <location file="taskflow/core/task.hpp" line="533" column="10" bodyfile="taskflow/core/task.hpp" bodystart="875" bodyend="879"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1ac44d868e1ab0897799ce41786c649037" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -660,7 +654,6 @@ The example below creates a taskflow of two tasks, where <computeroutput>task1</
         <definition>Task &amp; tf::Task::remove_predecessors</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>remove_predecessors</name>
-        <qualifiedname>tf::Task::remove_predecessors</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -705,7 +698,7 @@ This method removes the dependency links where the given tasks are predecessors 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="555" column="10" bodyfile="taskflow/core/task.hpp" bodystart="875" bodyend="879"/>
+        <location file="taskflow/core/task.hpp" line="563" column="10" bodyfile="taskflow/core/task.hpp" bodystart="883" bodyend="887"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a1920d567ec88f4dcc93d5e6bdd09e262" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -719,7 +712,6 @@ This method removes the dependency links where the given tasks are predecessors 
         <definition>Task &amp; tf::Task::remove_successors</definition>
         <argsstring>(Ts &amp;&amp;... tasks)</argsstring>
         <name>remove_successors</name>
-        <qualifiedname>tf::Task::remove_successors</qualifiedname>
         <param>
           <type>Ts &amp;&amp;...</type>
           <declname>tasks</declname>
@@ -764,14 +756,13 @@ This method removes the dependency links where this task is a predecessor of the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="585" column="10" bodyfile="taskflow/core/task.hpp" bodystart="883" bodyend="887"/>
+        <location file="taskflow/core/task.hpp" line="593" column="10" bodyfile="taskflow/core/task.hpp" bodystart="891" bodyend="895"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::release</definition>
         <argsstring>(Semaphore &amp;semaphore)</argsstring>
         <name>release</name>
-        <qualifiedname>tf::Task::release</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Semaphore" kindref="compound">Semaphore</ref> &amp;</type>
           <declname>semaphore</declname>
@@ -786,7 +777,7 @@ This method removes the dependency links where this task is a predecessor of the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="593" column="10" bodyfile="taskflow/core/task.hpp" bodystart="949" bodyend="955"/>
+        <location file="taskflow/core/task.hpp" line="601" column="10" bodyfile="taskflow/core/task.hpp" bodystart="957" bodyend="963"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a1c64e317dba24a8cf4f8da6123bc33af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -798,7 +789,6 @@ This method removes the dependency links where this task is a predecessor of the
         <definition>Task &amp; tf::Task::release</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>release</name>
-        <qualifiedname>tf::Task::release</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -817,14 +807,13 @@ This method removes the dependency links where this task is a predecessor of the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="602" column="10" bodyfile="taskflow/core/task.hpp" bodystart="959" bodyend="970"/>
+        <location file="taskflow/core/task.hpp" line="610" column="10" bodyfile="taskflow/core/task.hpp" bodystart="967" bodyend="978"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::acquire</definition>
         <argsstring>(Semaphore &amp;semaphore)</argsstring>
         <name>acquire</name>
-        <qualifiedname>tf::Task::acquire</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Semaphore" kindref="compound">Semaphore</ref> &amp;</type>
           <declname>semaphore</declname>
@@ -839,7 +828,7 @@ This method removes the dependency links where this task is a predecessor of the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="610" column="10" bodyfile="taskflow/core/task.hpp" bodystart="925" bodyend="931"/>
+        <location file="taskflow/core/task.hpp" line="618" column="10" bodyfile="taskflow/core/task.hpp" bodystart="933" bodyend="939"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a39efdef7d401205115d10c3c2e76e456" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -851,7 +840,6 @@ This method removes the dependency links where this task is a predecessor of the
         <definition>Task &amp; tf::Task::acquire</definition>
         <argsstring>(I first, I last)</argsstring>
         <name>acquire</name>
-        <qualifiedname>tf::Task::acquire</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -870,14 +858,13 @@ This method removes the dependency links where this task is a predecessor of the
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="619" column="10" bodyfile="taskflow/core/task.hpp" bodystart="935" bodyend="946"/>
+        <location file="taskflow/core/task.hpp" line="627" column="10" bodyfile="taskflow/core/task.hpp" bodystart="943" bodyend="954"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1afd82ab6d6518d1142a72c4d2c97ff114" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref> &amp;</type>
         <definition>Task &amp; tf::Task::data</definition>
         <argsstring>(void *data)</argsstring>
         <name>data</name>
-        <qualifiedname>tf::Task::data</qualifiedname>
         <param>
           <type>void *</type>
           <declname>data</declname>
@@ -907,25 +894,24 @@ The following example shows how to attach a user data to a task and retrieve it 
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.placeholder();</highlight></codeline>
 <codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>).work([A](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>*</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(A.data());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>iteratively<sp/>with<sp/>changing<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>++){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="650" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1103" bodyend="1106"/>
+        <location file="taskflow/core/task.hpp" line="658" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1112" bodyend="1115"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a302f51ed717d0a4e99edc50f92a571f3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Task::reset</definition>
         <argsstring>()</argsstring>
         <name>reset</name>
-        <qualifiedname>tf::Task::reset</qualifiedname>
         <briefdescription>
 <para>resets the task handle to null </para>
         </briefdescription>
@@ -939,14 +925,13 @@ The following example shows how to attach a user data to a task and retrieve it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="664" column="10" bodyfile="taskflow/core/task.hpp" bodystart="973" bodyend="975"/>
+        <location file="taskflow/core/task.hpp" line="672" column="10" bodyfile="taskflow/core/task.hpp" bodystart="981" bodyend="983"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1aec3ab712e12137542b7e4bc311ee9f20" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Task::reset_work</definition>
         <argsstring>()</argsstring>
         <name>reset_work</name>
-        <qualifiedname>tf::Task::reset_work</qualifiedname>
         <briefdescription>
 <para>resets the associated work to a placeholder </para>
         </briefdescription>
@@ -954,14 +939,13 @@ The following example shows how to attach a user data to a task and retrieve it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="669" column="10" bodyfile="taskflow/core/task.hpp" bodystart="978" bodyend="980"/>
+        <location file="taskflow/core/task.hpp" line="677" column="10" bodyfile="taskflow/core/task.hpp" bodystart="986" bodyend="988"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a8149edcf9ec2bfac18dd171f7a55ce06" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::Task::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
-        <qualifiedname>tf::Task::empty</qualifiedname>
         <briefdescription>
 <para>queries if the task handle is associated with a taskflow node </para>
         </briefdescription>
@@ -975,14 +959,13 @@ The following example shows how to attach a user data to a task and retrieve it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="685" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1008" bodyend="1010"/>
+        <location file="taskflow/core/task.hpp" line="693" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1016" bodyend="1018"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1afc4ecb89dd4e4645b3ec3fb7c1bb0ec5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::Task::has_work</definition>
         <argsstring>() const</argsstring>
         <name>has_work</name>
-        <qualifiedname>tf::Task::has_work</qualifiedname>
         <briefdescription>
 <para>queries if the task has a work assigned </para>
         </briefdescription>
@@ -998,7 +981,7 @@ The following example shows how to attach a user data to a task and retrieve it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="700" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1013" bodyend="1015"/>
+        <location file="taskflow/core/task.hpp" line="708" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1021" bodyend="1023"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1aff13a503d4a3c994eb08cb6f22e1b427" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1010,7 +993,6 @@ The following example shows how to attach a user data to a task and retrieve it 
         <definition>void tf::Task::for_each_successor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_successor</name>
-        <qualifiedname>tf::Task::for_each_successor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -1039,19 +1021,19 @@ The following example shows how to attach a user data to a task and retrieve it 
 </parameterlist>
 This method allows you to traverse and inspect successor tasks of this task. For instance, the code below iterates the two successors (<computeroutput>task2</computeroutput> and <computeroutput>task3</computeroutput>) of <computeroutput>task1</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task1,<sp/>task2,<sp/>task3]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">task1.precede(task2,<sp/>task3);</highlight></codeline>
 <codeline><highlight class="normal">task1.for_each_successor([](<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>successor){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;successor<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>successor.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;successor<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>successor.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="725" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1035" bodyend="1039"/>
+        <location file="taskflow/core/task.hpp" line="733" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1044" bodyend="1048"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a31d8069d4c0b10b55e68d260c4d28c1f" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1063,7 +1045,6 @@ This method allows you to traverse and inspect successor tasks of this task. For
         <definition>void tf::Task::for_each_predecessor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_predecessor</name>
-        <qualifiedname>tf::Task::for_each_predecessor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -1092,19 +1073,19 @@ This method allows you to traverse and inspect successor tasks of this task. For
 </parameterlist>
 This method allows you to traverse and inspect predecessor tasks of this task. For instance, the code below iterates the two predecessors (<computeroutput>task2</computeroutput> and <computeroutput>task3</computeroutput>) of <computeroutput>task1</computeroutput>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[task1,<sp/>task2,<sp/>task3]<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>1\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>2\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;task<sp/>3\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">task1.succeed(task2,<sp/>task3);</highlight></codeline>
 <codeline><highlight class="normal">task1.for_each_predecessor([](<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>predecessor){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;predecessor<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>predecessor.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;predecessor<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>predecessor.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="749" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1043" bodyend="1047"/>
+        <location file="taskflow/core/task.hpp" line="757" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1052" bodyend="1056"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a20a23c08612084e96bda764e06842c3a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1116,7 +1097,6 @@ This method allows you to traverse and inspect predecessor tasks of this task. F
         <definition>void tf::Task::for_each_subflow_task</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_subflow_task</name>
-        <qualifiedname>tf::Task::for_each_subflow_task</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -1150,82 +1130,78 @@ This method allows you to traverse and inspect tasks within a subflow. It only a
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Iterate<sp/>tasks<sp/>in<sp/>the<sp/>subflow<sp/>and<sp/>print<sp/>each<sp/>subflow<sp/>task.</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1Task_1a20a23c08612084e96bda764e06842c3a" kindref="member">for_each_subflow_task</ref>([](<ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>stask){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subflow<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>stask.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;subflow<sp/>task<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>stask.<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="772" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1051" bodyend="1057"/>
+        <location file="taskflow/core/task.hpp" line="780" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1060" bodyend="1066"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::Task::hash_value</definition>
         <argsstring>() const</argsstring>
         <name>hash_value</name>
-        <qualifiedname>tf::Task::hash_value</qualifiedname>
         <briefdescription>
 <para>obtains a hash value of the underlying node </para>
         </briefdescription>
         <detaileddescription>
 <para><simplesect kind="return"><para>the hash value of the underlying node</para>
 </simplesect>
-The method returns <ref refid="cpp/utility/hash" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::hash</ref> on the underlying node pointer.</para>
+The method returns <ref refid="cpp/utility/hash" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::hash</ref> on the underlying node pointer.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>task<sp/>=<sp/>taskflow.emplace([](){});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;hash<sp/>value<sp/>of<sp/>task<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" kindref="member">hash_value</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;hash<sp/>value<sp/>of<sp/>task<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" kindref="member">hash_value</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="786" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1060" bodyend="1062"/>
+        <location file="taskflow/core/task.hpp" line="794" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1069" bodyend="1071"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1af2df95e6c8c5870c033d692e88af0bc2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref></type>
         <definition>TaskType tf::Task::type</definition>
         <argsstring>() const</argsstring>
         <name>type</name>
-        <qualifiedname>tf::Task::type</qualifiedname>
         <briefdescription>
 <para>returns the task type </para>
         </briefdescription>
         <detaileddescription>
-<para>A task can be one of the types defined in <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">tf::TaskType</ref> and can be printed in a human-readable form using <ref refid="namespacetf_1a18c45bc96e6725943e0a4396fa59b524" kindref="member">tf::to_string</ref>.</para>
+<para>A task can be one of the types defined in <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">tf::TaskType</ref> and can be printed in a human-readable form using <ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">tf::to_string</ref>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>task<sp/>=<sp/>taskflow.emplace([](){}).<ref refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" kindref="member">name</ref>(</highlight><highlight class="stringliteral">&quot;task&quot;</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>task.name()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>type=[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="namespacetf_1a18c45bc96e6725943e0a4396fa59b524" kindref="member">tf::to_string</ref>(task.type())<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>task.name()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>type=[&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" kindref="member">tf::to_string</ref>(task.type())<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;]\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="800" column="14" bodyfile="taskflow/core/task.hpp" bodystart="1018" bodyend="1031"/>
+        <location file="taskflow/core/task.hpp" line="808" column="14" bodyfile="taskflow/core/task.hpp" bodystart="1026" bodyend="1040"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a3318a49ff9d0a01cd1e8ee675251e3b7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Task::dump</definition>
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::Task::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
 <para>dumps the task through an output stream </para>
         </briefdescription>
         <detaileddescription>
-<para>The method dumps the name and the type of this task through <ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">task.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<para>The method dumps the name and the type of this task through the given output stream.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">task.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="811" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1065" bodyend="1070"/>
+        <location file="taskflow/core/task.hpp" line="819" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1074" bodyend="1079"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void *</type>
         <definition>void * tf::Task::data</definition>
         <argsstring>() const</argsstring>
         <name>data</name>
-        <qualifiedname>tf::Task::data</qualifiedname>
         <briefdescription>
 <para>queries pointer to user data </para>
         </briefdescription>
@@ -1242,27 +1218,26 @@ The following example shows how to attach a user data to a task and retrieve it 
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>A<sp/>=<sp/>taskflow.placeholder();</highlight></codeline>
 <codeline><highlight class="normal">A.data(&amp;<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>).work([A](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>d<sp/>=<sp/>*</highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(A.data());</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;data<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>d<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow<sp/>iteratively<sp/>with<sp/>changing<sp/>data</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(<ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref><sp/>=<sp/>0;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>&lt;10;<sp/><ref refid="classtf_1_1Task_1a320827cb70295a6fe2cc37691405409c" kindref="member">data</ref>++){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="840" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1098" bodyend="1100"/>
+        <location file="taskflow/core/task.hpp" line="848" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1107" bodyend="1109"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Task_1a43d108a6cc0417cc470a00b5e95a65f5" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Task::Task</definition>
         <argsstring>(Node *)</argsstring>
         <name>Task</name>
-        <qualifiedname>tf::Task::Task</qualifiedname>
         <param>
           <type>Node *</type>
           <defname>node</defname>
@@ -1273,9 +1248,9 @@ The following example shows how to attach a user data to a task and retrieve it 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="844" column="5" bodyfile="taskflow/core/task.hpp" bodystart="850" bodyend="851"/>
+        <location file="taskflow/core/task.hpp" line="852" column="5" bodyfile="taskflow/core/task.hpp" bodystart="858" bodyend="859"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a task handle over a taskflow node </para>
     </briefdescription>
@@ -1287,7 +1262,7 @@ The following example shows how to attach a user data to a task and retrieve it 
 <codeline><highlight class="normal">task1.precede(task2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>task<sp/>information<sp/>through<sp/>std::cout</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">task1.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
+<codeline><highlight class="normal">task1.dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting></para>
 <para>A task created from a taskflow can be one of the following types:<itemizedlist>
 <listitem><para><ref refid="namespacetf_1a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc" kindref="member">tf::TaskType::STATIC</ref> - <ref refid="StaticTasking" kindref="compound">Static Tasking</ref></para>
@@ -1317,7 +1292,7 @@ The following example shows how to attach a user data to a task and retrieve it 
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/task.hpp" line="243" column="1" bodyfile="taskflow/core/task.hpp" bodystart="243" bodyend="847"/>
+    <location file="taskflow/core/task.hpp" line="250" column="1" bodyfile="taskflow/core/task.hpp" bodystart="250" bodyend="855"/>
     <listofallmembers>
       <member refid="classtf_1_1Task_1abff81069222d0f449e0b43136aea2f05" prot="private" virt="non-virtual"><scope>tf::Task</scope><name>_node</name></member>
       <member refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>acquire</name></member>
@@ -1336,6 +1311,7 @@ The following example shows how to attach a user data to a task and retrieve it 
       <member refid="classtf_1_1Task_1a1c9301f2a330cc23ee18e8f61688141f" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>hash_value</name></member>
       <member refid="classtf_1_1Task_1a08ada0425b490997b6ff7f310107e5e3" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>name</name></member>
       <member refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>name</name></member>
+      <member refid="classtf_1_1Task_1a5336d73e2623282058a4f84a0423fac3" prot="private" virt="non-virtual"><scope>tf::Task</scope><name>NonpreemptiveRuntime</name></member>
       <member refid="classtf_1_1Task_1adefb65d68a64bd8a75364a8801cfec44" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_predecessors</name></member>
       <member refid="classtf_1_1Task_1a0b7b789c9b8a21927a992f6ccc11de81" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_strong_dependencies</name></member>
       <member refid="classtf_1_1Task_1a1a0afc89e8a6a416c511e74d82df135d" prot="public" virt="non-virtual"><scope>tf::Task</scope><name>num_successors</name></member>

@@ -209,3 +209,164 @@ TEST_CASE("Runtime.Cancel" * doctest::timeout(300)) {
   REQUIRE(cancelled == true);
 }
 
+// ------------------------------------------------------------------------------------------------
+// implicit_join
+// ------------------------------------------------------------------------------------------------
+
+void implicit_join(size_t num_threads) {
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+  std::atomic<size_t> counter;
+
+  auto A = taskflow.emplace([&](){ counter.store(0, std::memory_order_relaxed); });
+  auto B = taskflow.emplace([&](tf::Runtime& rt){
+    // explicitly synchronize all async tasks
+    for(size_t i=0; i<100; i++) {
+      rt.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    for(size_t i=0; i<100; i++) {
+      rt.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    rt.corun();
+    REQUIRE(counter.load(std::memory_order_relaxed) == 200);
+    
+    // implicitly synchronize all async tasks
+    for(size_t i=0; i<100; i++) {
+      rt.async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    for(size_t i=0; i<100; i++) {
+      rt.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+    }
+    // implicit synchronization at the end of the runtime scope
+  });
+  auto C = taskflow.emplace([&](){
+    REQUIRE(counter.load(std::memory_order_relaxed) == 400);
+  });
+
+  B.succeed(A).precede(C);
+
+  executor.run(taskflow).wait();
+}
+
+
+TEST_CASE("Runtime.ImplicitJoin.1thread" * doctest::timeout(300)) {
+  implicit_join(1);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.2threads" * doctest::timeout(300)) {
+  implicit_join(2);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.3threads" * doctest::timeout(300)) {
+  implicit_join(3);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.4threads" * doctest::timeout(300)) {
+  implicit_join(4);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.5threads" * doctest::timeout(300)) {
+  implicit_join(5);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.6threads" * doctest::timeout(300)) {
+  implicit_join(6);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.7threads" * doctest::timeout(300)) {
+  implicit_join(7);
+}
+
+TEST_CASE("Runtime.ImplicitJoin.8threads" * doctest::timeout(300)) {
+  implicit_join(8);
+}
+
+// ------------------------------------------------------------------------------------------------
+// implicit_join
+// ------------------------------------------------------------------------------------------------
+
+void recursive_implicit_join(size_t num_threads) {
+
+  const size_t N1 = 100;
+  const size_t N2 = 10;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+  std::atomic<size_t> counter;
+
+  auto A = taskflow.emplace([&](){ counter.store(0, std::memory_order_relaxed); });
+  auto B = taskflow.emplace([&](tf::Runtime& rt1){
+    // implicitly synchronize all async tasks
+    for(size_t i=0; i<N1; i++) {
+      rt1.async([&](tf::Runtime& rt2){ 
+        counter.fetch_add(1, std::memory_order_relaxed); 
+        // each of the N1 async task spawns N2 async task
+        for(size_t j=0; j<N2; j++) {
+          rt2.silent_async([&](){
+            counter.fetch_add(1, std::memory_order_relaxed); 
+          });
+        }
+      });
+    }
+    for(size_t i=0; i<N1; i++) {
+      rt1.silent_async([&](tf::Runtime& rt2){ 
+        counter.fetch_add(1, std::memory_order_relaxed); 
+        // each of the N1 async task spawns N2 async task
+        for(size_t j=0; j<N2; j++) {
+          rt2.async([&](){
+            counter.fetch_add(1, std::memory_order_relaxed); 
+          });
+        }
+      });
+    }
+    // implicit synchronization at the end of the runtime scope
+  });
+  auto C = taskflow.emplace([&](){
+    REQUIRE(counter.load(std::memory_order_relaxed) == 2*(N1+N1*N2));
+  });
+
+  B.succeed(A).precede(C);
+
+  executor.run(taskflow).wait();
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.1thread" * doctest::timeout(300)) {
+  recursive_implicit_join(1);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.2threads" * doctest::timeout(300)) {
+  recursive_implicit_join(2);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.3threads" * doctest::timeout(300)) {
+  recursive_implicit_join(3);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.4threads" * doctest::timeout(300)) {
+  recursive_implicit_join(4);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.5threads" * doctest::timeout(300)) {
+  recursive_implicit_join(5);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.6threads" * doctest::timeout(300)) {
+  recursive_implicit_join(6);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.7threads" * doctest::timeout(300)) {
+  recursive_implicit_join(7);
+}
+
+TEST_CASE("Runtime.RecursiveImplicitJoin.8threads" * doctest::timeout(300)) {
+  recursive_implicit_join(8);
+}
+
+
+
+
+
+
+
+

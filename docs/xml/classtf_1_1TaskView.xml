@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1TaskView" kind="class" language="C++" prot="public">
     <compoundname>tf::TaskView</compoundname>
     <includes refid="task_8hpp" local="no">taskflow/core/task.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1TaskView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::TaskView::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -19,32 +18,30 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1131" column="16" bodyfile="taskflow/core/task.hpp" bodystart="1131" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="1140" column="3" bodyfile="taskflow/core/task.hpp" bodystart="1140" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" prot="private" static="no" mutable="no">
         <type>const Node &amp;</type>
         <definition>const Node&amp; tf::TaskView::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
-        <qualifiedname>tf::TaskView::_node</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1197" column="16" bodyfile="taskflow/core/task.hpp" bodystart="1197" bodyend="-1"/>
+        <location file="taskflow/core/task.hpp" line="1206" column="16" bodyfile="taskflow/core/task.hpp" bodystart="1206" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1TaskView_1ac8cd58171de8ab4865e3c3f142db2db1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
+        <type>const <ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref> &amp;</type>
         <definition>const std::string &amp; tf::TaskView::name</definition>
         <argsstring>() const</argsstring>
         <name>name</name>
-        <qualifiedname>tf::TaskView::name</qualifiedname>
         <briefdescription>
 <para>queries the name of the task </para>
         </briefdescription>
@@ -52,14 +49,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1138" column="23" bodyfile="taskflow/core/task.hpp" bodystart="1205" bodyend="1207"/>
+        <location file="taskflow/core/task.hpp" line="1147" column="23" bodyfile="taskflow/core/task.hpp" bodystart="1214" bodyend="1216"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1aff16d269ac75cffa55a312593f20d30d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskView::num_successors</definition>
         <argsstring>() const</argsstring>
         <name>num_successors</name>
-        <qualifiedname>tf::TaskView::num_successors</qualifiedname>
         <briefdescription>
 <para>queries the number of successors of the task </para>
         </briefdescription>
@@ -67,14 +63,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1143" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1225" bodyend="1227"/>
+        <location file="taskflow/core/task.hpp" line="1152" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1234" bodyend="1236"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1a050f76e486dea993a2b9d930539aad85" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskView::num_predecessors</definition>
         <argsstring>() const</argsstring>
         <name>num_predecessors</name>
-        <qualifiedname>tf::TaskView::num_predecessors</qualifiedname>
         <briefdescription>
 <para>queries the number of predecessors of the task </para>
         </briefdescription>
@@ -82,14 +77,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1148" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1210" bodyend="1212"/>
+        <location file="taskflow/core/task.hpp" line="1157" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1219" bodyend="1221"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1adb798808f6ef9b46399fae1c2dbed19b" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskView::num_strong_dependencies</definition>
         <argsstring>() const</argsstring>
         <name>num_strong_dependencies</name>
-        <qualifiedname>tf::TaskView::num_strong_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of strong dependencies of the task </para>
         </briefdescription>
@@ -97,14 +91,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1153" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1215" bodyend="1217"/>
+        <location file="taskflow/core/task.hpp" line="1162" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1224" bodyend="1226"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1aaefc8ab88f17ac27e6537f6d6ecb37cf" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskView::num_weak_dependencies</definition>
         <argsstring>() const</argsstring>
         <name>num_weak_dependencies</name>
-        <qualifiedname>tf::TaskView::num_weak_dependencies</qualifiedname>
         <briefdescription>
 <para>queries the number of weak dependencies of the task </para>
         </briefdescription>
@@ -112,7 +105,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1158" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1220" bodyend="1222"/>
+        <location file="taskflow/core/task.hpp" line="1167" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1229" bodyend="1231"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1a3cb647dc0064b5d11e0c87226c47f8f8" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -124,7 +117,6 @@
         <definition>void tf::TaskView::for_each_successor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_successor</name>
-        <qualifiedname>tf::TaskView::for_each_successor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -155,7 +147,7 @@ This method allows you to traverse and inspect successor tasks of this task. </p
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1169" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1252" bodyend="1259"/>
+        <location file="taskflow/core/task.hpp" line="1178" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1262" bodyend="1269"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1a1db6f5c5e325ea0e0d41a16aee2e3ad6" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -167,7 +159,6 @@ This method allows you to traverse and inspect successor tasks of this task. </p
         <definition>void tf::TaskView::for_each_predecessor</definition>
         <argsstring>(V &amp;&amp;visitor) const</argsstring>
         <name>for_each_predecessor</name>
-        <qualifiedname>tf::TaskView::for_each_predecessor</qualifiedname>
         <param>
           <type>V &amp;&amp;</type>
           <declname>visitor</declname>
@@ -198,14 +189,13 @@ This method allows you to traverse and inspect predecessor tasks of this task. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1180" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1263" bodyend="1270"/>
+        <location file="taskflow/core/task.hpp" line="1189" column="10" bodyfile="taskflow/core/task.hpp" bodystart="1273" bodyend="1280"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1aa20d7b5796064c3ab194e6d7ebe2adb1" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref></type>
         <definition>TaskType tf::TaskView::type</definition>
         <argsstring>() const</argsstring>
         <name>type</name>
-        <qualifiedname>tf::TaskView::type</qualifiedname>
         <briefdescription>
 <para>queries the task type </para>
         </briefdescription>
@@ -213,14 +203,13 @@ This method allows you to traverse and inspect predecessor tasks of this task. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1185" column="14" bodyfile="taskflow/core/task.hpp" bodystart="1230" bodyend="1243"/>
+        <location file="taskflow/core/task.hpp" line="1194" column="14" bodyfile="taskflow/core/task.hpp" bodystart="1239" bodyend="1253"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1abe95eb9e866cd7b8137d5e8ca5deace6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::TaskView::hash_value</definition>
         <argsstring>() const</argsstring>
         <name>hash_value</name>
-        <qualifiedname>tf::TaskView::hash_value</qualifiedname>
         <briefdescription>
 <para>obtains a hash value of the underlying node </para>
         </briefdescription>
@@ -228,16 +217,15 @@ This method allows you to traverse and inspect predecessor tasks of this task. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1190" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1246" bodyend="1248"/>
+        <location file="taskflow/core/task.hpp" line="1199" column="12" bodyfile="taskflow/core/task.hpp" bodystart="1256" bodyend="1258"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1TaskView_1ad19afa391850d49513c4280439fc50ee" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::TaskView::TaskView</definition>
         <argsstring>(const Node &amp;)</argsstring>
         <name>TaskView</name>
-        <qualifiedname>tf::TaskView::TaskView</qualifiedname>
         <param>
           <type>const Node &amp;</type>
           <defname>node</defname>
@@ -248,14 +236,13 @@ This method allows you to traverse and inspect predecessor tasks of this task. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1194" column="5" bodyfile="taskflow/core/task.hpp" bodystart="1201" bodyend="1202"/>
+        <location file="taskflow/core/task.hpp" line="1203" column="5" bodyfile="taskflow/core/task.hpp" bodystart="1210" bodyend="1211"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1TaskView_1ae85861fa894c206e800a9e5d4ee45cbf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::TaskView::TaskView</definition>
         <argsstring>(const TaskView &amp;)=default</argsstring>
         <name>TaskView</name>
-        <qualifiedname>tf::TaskView::TaskView</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref> &amp;</type>
         </param>
@@ -265,15 +252,15 @@ This method allows you to traverse and inspect predecessor tasks of this task. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task.hpp" line="1195" column="5"/>
+        <location file="taskflow/core/task.hpp" line="1204" column="5"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to access task information from the observer interface </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/task.hpp" line="1129" column="1" bodyfile="taskflow/core/task.hpp" bodystart="1129" bodyend="1198"/>
+    <location file="taskflow/core/task.hpp" line="1138" column="1" bodyfile="taskflow/core/task.hpp" bodystart="1138" bodyend="1207"/>
     <listofallmembers>
       <member refid="classtf_1_1TaskView_1a05d718be8be0374448b570276709bedb" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>_node</name></member>
       <member refid="classtf_1_1TaskView_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::TaskView</scope><name>Executor</name></member>

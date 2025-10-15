@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaGraphBase" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaGraphBase</compoundname>
     <basecompoundref refid="cpp/memory/unique_ptr" prot="public" virt="non-virtual">std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</basecompoundref>
@@ -12,24 +12,23 @@
         <type>typename Deleter</type>
       </param>
     </templateparamlist>
-    <sectiondef kind="public-type">
+      <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1cudaGraphBase_1aa90cf577e0404d311c0f1b391a0fba31" prot="public" static="no">
-        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, Deleter &gt;</type>
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, Deleter &gt;</type>
         <definition>using tf::cudaGraphBase&lt; Creator, Deleter &gt;::base_type =  std::unique_ptr&lt;std::remove_pointer_t&lt;cudaGraph_t&gt;, Deleter&gt;</definition>
         <argsstring></argsstring>
         <name>base_type</name>
-        <qualifiedname>tf::cudaGraphBase::base_type</qualifiedname>
         <briefdescription>
-<para>base <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> type </para>
+<para>base <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> type </para>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="494" column="3" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="494" bodyend="-1"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="540" column="3" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="540" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a7ac97676bc2fbba66aa7c2f8853b387c" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -42,7 +41,6 @@
         <definition>tf::cudaGraphBase&lt; Creator, Deleter &gt;::cudaGraphBase</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>cudaGraphBase</name>
-        <qualifiedname>tf::cudaGraphBase::cudaGraphBase</qualifiedname>
         <param>
           <type>ArgsT &amp;&amp;...</type>
           <declname>args</declname>
@@ -65,14 +63,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="504" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="504" bodyend="507"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="550" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="550" bodyend="553"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a395a6f47f4c4566475082f842cc61e70" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaGraphBase&lt; Creator, Deleter &gt;::cudaGraphBase</definition>
         <argsstring>(cudaGraphBase &amp;&amp;)=default</argsstring>
         <name>cudaGraphBase</name>
-        <qualifiedname>tf::cudaGraphBase::cudaGraphBase</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;&amp;</type>
         </param>
@@ -83,14 +80,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="512" column="3"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="558" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1add84e6029241ccf460537f7f4183d41e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ac3d3b39adda7bb93a9799f5669bc0662" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;</type>
-        <definition>cudaGraphBase &amp; tf::cudaGraphBase&lt; Creator, Deleter &gt;::operator=</definition>
+        <definition>cudaGraphBase&amp; tf::cudaGraphBase&lt; Creator, Deleter &gt;::operator=</definition>
         <argsstring>(cudaGraphBase &amp;&amp;)=default</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::cudaGraphBase::operator=</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;&amp;</type>
         </param>
@@ -101,14 +97,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="517" column="17"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="563" column="17"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ad53731e3a0415df2ae86f7121969851a" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::cudaGraphBase&lt; Creator, Deleter &gt;::num_nodes</definition>
         <argsstring>() const</argsstring>
         <name>num_nodes</name>
-        <qualifiedname>tf::cudaGraphBase::num_nodes</qualifiedname>
         <briefdescription>
 <para>queries the number of nodes in a native CUDA graph </para>
         </briefdescription>
@@ -116,14 +111,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="522" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="811" bodyend="818"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="568" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="857" bodyend="864"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a05b48f98e182ed0eb88e313ad41d1bf2" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::cudaGraphBase&lt; Creator, Deleter &gt;::num_edges</definition>
         <argsstring>() const</argsstring>
         <name>num_edges</name>
-        <qualifiedname>tf::cudaGraphBase::num_edges</qualifiedname>
         <briefdescription>
 <para>queries the number of edges in a native CUDA graph </para>
         </briefdescription>
@@ -131,14 +125,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="527" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="828" bodyend="835"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="573" column="10" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="874" bodyend="876"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a585b00b8f12e75cbea6405fa32bc2819" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::cudaGraphBase&lt; Creator, Deleter &gt;::empty</definition>
         <argsstring>() const</argsstring>
         <name>empty</name>
-        <qualifiedname>tf::cudaGraphBase::empty</qualifiedname>
         <briefdescription>
 <para>queries if the graph is empty </para>
         </briefdescription>
@@ -146,16 +139,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="532" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="822" bodyend="824"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="578" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="868" bodyend="870"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1abd73a9268b80e74803f241ee10a842b6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void tf::cudaGraphBase&lt; Creator, Deleter &gt;::dump</definition>
         <argsstring>(std::ostream &amp;os)</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::cudaGraphBase::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>os</declname>
         </param>
         <briefdescription>
@@ -175,14 +167,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="539" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="914" bodyend="934"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="585" column="8" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="955" bodyend="975"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1aefa705b9b705be5791e99587d69d8b09" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::noop</definition>
         <argsstring>()</argsstring>
         <name>noop</name>
-        <qualifiedname>tf::cudaGraphBase::noop</qualifiedname>
         <briefdescription>
 <para>creates a no-operation task </para>
         </briefdescription>
@@ -193,7 +184,7 @@ An empty node performs no operation during execution, but can be used for transi
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="557" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="938" bodyend="948"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="603" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="979" bodyend="989"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a4b730405596091d534af5737752b4682" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -205,7 +196,6 @@ An empty node performs no operation during execution, but can be used for transi
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::host</definition>
         <argsstring>(C &amp;&amp;callable, void *user_data)</argsstring>
         <name>host</name>
-        <qualifiedname>tf::cudaGraphBase::host</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <declname>callable</declname>
@@ -232,7 +222,7 @@ An empty node performs no operation during execution, but can be used for transi
 <parametername>callable</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>a callable object with neither arguments nor return (i.e., constructible from <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function&lt;void()&gt;</ref></computeroutput>) </para>
+<para>a callable object with neither arguments nor return (i.e., constructible from <computeroutput>std::function&lt;void()&gt;</computeroutput>) </para>
 </parameterdescription>
 </parameteritem>
 <parameteritem>
@@ -250,7 +240,7 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="574" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="953" bodyend="964"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="620" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="994" bodyend="1005"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -267,7 +257,6 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::kernel</definition>
         <argsstring>(dim3 g, dim3 b, size_t s, F f, ArgsT... args)</argsstring>
         <name>kernel</name>
-        <qualifiedname>tf::cudaGraphBase::kernel</qualifiedname>
         <param>
           <type>dim3</type>
           <declname>g</declname>
@@ -356,14 +345,13 @@ A host task can only execute CPU-specific functions and cannot do any CUDA calls
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="591" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="969" bodyend="991"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="637" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1010" bodyend="1032"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a10196f49de261a4042de328aab2452c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::memset</definition>
         <argsstring>(void *dst, int v, size_t count)</argsstring>
         <name>memset</name>
-        <qualifiedname>tf::cudaGraphBase::memset</qualifiedname>
         <param>
           <type>void *</type>
           <declname>dst</declname>
@@ -411,14 +399,13 @@ A memset task fills the first <computeroutput>count</computeroutput> bytes of de
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="605" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1049" bodyend="1060"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="651" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1090" bodyend="1101"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a5e704c7bb669a82f4fe140ecb4576eb0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaTask" kindref="compound">cudaTask</ref></type>
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::memcpy</definition>
         <argsstring>(void *tgt, const void *src, size_t bytes)</argsstring>
         <name>memcpy</name>
-        <qualifiedname>tf::cudaGraphBase::memcpy</qualifiedname>
         <param>
           <type>void *</type>
           <declname>tgt</declname>
@@ -466,7 +453,7 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="619" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1064" bodyend="1075"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="665" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1105" bodyend="1116"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ab45bc592a33380adf74d6f1e7690bd4c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -482,7 +469,6 @@ A memcpy task transfers <computeroutput>bytes</computeroutput> of data from a so
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::zero</definition>
         <argsstring>(T *dst, size_t count)</argsstring>
         <name>zero</name>
-        <qualifiedname>tf::cudaGraphBase::zero</qualifiedname>
         <param>
           <type>T *</type>
           <declname>dst</declname>
@@ -527,7 +513,7 @@ A zero task zeroes the first <computeroutput>count</computeroutput> elements of 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="636" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="998" bodyend="1009"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="682" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1039" bodyend="1050"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a32634c5645c14b99ceeaafe77ea5ea62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -543,7 +529,6 @@ A zero task zeroes the first <computeroutput>count</computeroutput> elements of 
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::fill</definition>
         <argsstring>(T *dst, T value, size_t count)</argsstring>
         <name>fill</name>
-        <qualifiedname>tf::cudaGraphBase::fill</qualifiedname>
         <param>
           <type>T *</type>
           <declname>dst</declname>
@@ -600,7 +585,7 @@ A fill task fills the first <computeroutput>count</computeroutput> elements of t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="656" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1016" bodyend="1026"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="702" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1057" bodyend="1067"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -616,7 +601,6 @@ A fill task fills the first <computeroutput>count</computeroutput> elements of t
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::copy</definition>
         <argsstring>(T *tgt, const T *src, size_t num)</argsstring>
         <name>copy</name>
-        <qualifiedname>tf::cudaGraphBase::copy</qualifiedname>
         <param>
           <type>T *</type>
           <declname>tgt</declname>
@@ -673,7 +657,7 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="675" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1034" bodyend="1045"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="721" column="12" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="1075" bodyend="1086"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1abb33299f42206f30f1d0f35c7c6fe6de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -685,7 +669,6 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::single_task</definition>
         <argsstring>(C c)</argsstring>
         <name>single_task</name>
-        <qualifiedname>tf::cudaGraphBase::single_task</qualifiedname>
         <param>
           <type>C</type>
           <declname>c</declname>
@@ -718,7 +701,7 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="691" column="12"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="737" column="12"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a09aea268c4a0e94e750ae57088674d34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -737,7 +720,6 @@ A copy task transfers <computeroutput>num*sizeof(T)</computeroutput> bytes of da
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::for_each</definition>
         <argsstring>(I first, I last, C callable)</argsstring>
         <name>for_each</name>
-        <qualifiedname>tf::cudaGraphBase::for_each</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -814,7 +796,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="715" column="12" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="53" bodyend="61"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="761" column="12" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="53" bodyend="61"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1acc2126d8237fe3ef59a1a6943cbf1aa0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -833,7 +815,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::for_each_index</definition>
         <argsstring>(I first, I last, I step, C callable)</argsstring>
         <name>for_each_index</name>
-        <qualifiedname>tf::cudaGraphBase::for_each_index</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -928,7 +909,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="746" column="12" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="79" bodyend="87"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="792" column="12" bodyfile="taskflow/cuda/algorithm/for_each.hpp" bodystart="79" bodyend="87"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ab2603e952d8e5bc53cc1fc76df2b843f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -950,7 +931,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::transform</definition>
         <argsstring>(I first, I last, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaGraphBase::transform</qualifiedname>
         <param>
           <type>I</type>
           <declname>first</declname>
@@ -1047,7 +1027,7 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="772" column="12" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="65" bodyend="74"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="818" column="12" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="65" bodyend="74"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1ac4f81fa07cf1d55597154f125b66314a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1072,7 +1052,6 @@ This method is equivalent to the parallel execution of the following loop on a G
         <definition>cudaTask tf::cudaGraphBase&lt; Creator, Deleter &gt;::transform</definition>
         <argsstring>(I1 first1, I1 last1, I2 first2, O output, C op)</argsstring>
         <name>transform</name>
-        <qualifiedname>tf::cudaGraphBase::transform</qualifiedname>
         <param>
           <type>I1</type>
           <declname>first1</declname>
@@ -1189,16 +1168,15 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="801" column="12" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="79" bodyend="88"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="847" column="12" bodyfile="taskflow/cuda/algorithm/transform.hpp" bodystart="79" bodyend="88"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1cudaGraphBase_1adc5c2f3f48b3d6877898de5aeda1c82d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::cudaGraphBase&lt; Creator, Deleter &gt;::cudaGraphBase</definition>
         <argsstring>(const cudaGraphBase &amp;)=delete</argsstring>
         <name>cudaGraphBase</name>
-        <qualifiedname>tf::cudaGraphBase::cudaGraphBase</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;</type>
         </param>
@@ -1208,14 +1186,13 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="805" column="3"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="851" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1a41aea0b690e167ea1e1d4ac98c267287" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1cudaGraphBase_1affc6d41f6ad4770c763f33b588aef9ef" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;</type>
-        <definition>cudaGraphBase &amp; tf::cudaGraphBase&lt; Creator, Deleter &gt;::operator=</definition>
+        <definition>cudaGraphBase&amp; tf::cudaGraphBase&lt; Creator, Deleter &gt;::operator=</definition>
         <argsstring>(const cudaGraphBase &amp;)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::cudaGraphBase::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1cudaGraphBase" kindref="compound">cudaGraphBase</ref> &amp;</type>
         </param>
@@ -1225,9 +1202,9 @@ This method is equivalent to the parallel execution of the following loop on a G
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/cuda/cuda_graph.hpp" line="806" column="17"/>
+        <location file="taskflow/cuda/cuda_graph.hpp" line="852" column="17"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a CUDA graph with uunique ownership </para>
     </briefdescription>
@@ -1249,31 +1226,31 @@ This method is equivalent to the parallel execution of the following loop on a G
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This class wraps a <computeroutput>cudaGraph_t</computeroutput> handle with <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> to ensure proper resource management and automatic cleanup. </para>
+This class wraps a <computeroutput>cudaGraph_t</computeroutput> handle with <ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref> to ensure proper resource management and automatic cleanup. </para>
     </detaileddescription>
     <inheritancegraph>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
-      </node>
       <node id="1">
         <label>tf::cudaGraphBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaGraphBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
-        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
-      </node>
       <node id="1">
         <label>tf::cudaGraphBase&lt; Creator, Deleter &gt;</label>
         <link refid="classtf_1_1cudaGraphBase"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
+      <node id="2">
+        <label>std::unique_ptr&lt; std::remove_pointer_t&lt; cudaGraph_t &gt;, cudaGraphDeleter &gt;</label>
+      </node>
     </collaborationgraph>
-    <location file="taskflow/cuda/cuda_graph.hpp" line="485" column="1" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="485" bodyend="807"/>
+    <location file="taskflow/cuda/cuda_graph.hpp" line="531" column="1" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="531" bodyend="853"/>
     <listofallmembers>
       <member refid="classtf_1_1cudaGraphBase_1aa90cf577e0404d311c0f1b391a0fba31" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>base_type</name></member>
       <member refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>copy</name></member>
@@ -1292,8 +1269,8 @@ This class wraps a <computeroutput>cudaGraph_t</computeroutput> handle with <ref
       <member refid="classtf_1_1cudaGraphBase_1aefa705b9b705be5791e99587d69d8b09" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>noop</name></member>
       <member refid="classtf_1_1cudaGraphBase_1a05b48f98e182ed0eb88e313ad41d1bf2" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>num_edges</name></member>
       <member refid="classtf_1_1cudaGraphBase_1ad53731e3a0415df2ae86f7121969851a" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>num_nodes</name></member>
-      <member refid="classtf_1_1cudaGraphBase_1add84e6029241ccf460537f7f4183d41e" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>operator=</name></member>
-      <member refid="classtf_1_1cudaGraphBase_1a41aea0b690e167ea1e1d4ac98c267287" prot="private" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1ac3d3b39adda7bb93a9799f5669bc0662" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>operator=</name></member>
+      <member refid="classtf_1_1cudaGraphBase_1affc6d41f6ad4770c763f33b588aef9ef" prot="private" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>operator=</name></member>
       <member refid="classtf_1_1cudaGraphBase_1abb33299f42206f30f1d0f35c7c6fe6de" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>single_task</name></member>
       <member refid="classtf_1_1cudaGraphBase_1ab2603e952d8e5bc53cc1fc76df2b843f" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>transform</name></member>
       <member refid="classtf_1_1cudaGraphBase_1ac4f81fa07cf1d55597154f125b66314a" prot="public" virt="non-virtual"><scope>tf::cudaGraphBase</scope><name>transform</name></member>

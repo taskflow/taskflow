@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Runtime Tasking | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -53,111 +53,55 @@
           <h3>Contents</h3>
           <ul>
             <li><a href="#CreateARuntimeTask">Create a Runtime Task</a></li>
-            <li><a href="#AcquireTheRunningExecutor">Acquire the Running Executor</a></li>
-            <li><a href="#CorunTaskflowsFromARuntimeTask">Corun Taskflows from a Runtime Task</a></li>
-            <li><a href="#CorunAsynchronousTasksFromARuntimeTask">Corun Asynchronous Tasks from a Runtime Task</a></li>
+            <li><a href="#CreateAsynchronousTasksFromARuntimeTask">Create Asynchronous Tasks from a Runtime Task</a></li>
+            <li><a href="#SynchronizeWithCooperativeExecution">Synchronize with Cooperative Execution</a></li>
+            <li><a href="#CreateRecursiveAsynchronousTasksFromARuntimeTask">Create Recursive Asynchronous Tasks from a Runtime Task</a></li>
           </ul>
         </nav>
-<p>Taskflow allows you to interact with the scheduling runtime by taking a <em>runtime object</em> as an argument of a task. This is mostly useful for designing recursive parallel algorithms that require dynamic tasking on the fly.</p><section id="CreateARuntimeTask"><h2><a href="#CreateARuntimeTask">Create a Runtime Task</a></h2><p>Taskflow allows users to define a runtime task that accepts a reference to a <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object. This object provides methods to interact with the underlying scheduling engine. For example, a runtime task can be used to explicitly schedule another task that would not normally execute due to the graph&#x27;s structure or conditional dependencies:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">tie</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span>
-<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="p">[</span><span class="o">&amp;</span><span class="n">C</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// C must be captured by reference</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span>
-<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">C</span><span class="p">);</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span>
-<span class="w">  </span><span class="p">[]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;D</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="p">);</span>
-<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">);</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><div class="m-graph"><svg style="width: 20.600rem; height: 12.700rem;" viewBox="0.00 0.00 206.00 127.25">
-<g transform="scale(1 1) rotate(0) translate(4 123.25)">
-<title>Taskflow</title>
-<g class="m-node m-flat">
-<title>p0x7bc400014030</title>
-<ellipse cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">D</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x7bc400014118</title>
-<ellipse cx="99" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="99" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">C</text>
-</g>
-<g class="m-node m-flat">
-<title>p0x7bc400014200</title>
-<polygon points="198,-36 144,-36 144,-32 140,-32 140,-28 144,-28 144,-8 140,-8 140,-4 144,-4 144,0 198,0 198,-36"/>
-<polyline points="144,-32 148,-32 148,-28 144,-28"/>
-<polyline points="144,-8 148,-8 148,-4 144,-4"/>
-<text text-anchor="middle" x="171" y="-14.12" font-family="Helvetica,sans-Serif" font-size="10.00">B</text>
-</g>
-<g class="m-node">
-<title>p0x7bc4000142e8</title>
-<polygon points="99,-119.25 72,-101.25 99,-83.25 126,-101.25 99,-119.25"/>
-<text text-anchor="middle" x="99" y="-97.38" font-family="Helvetica,sans-Serif" font-size="10.00">A</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000142e8&#45;&gt;p0x7bc400014030</title>
-<path stroke-dasharray="5,2" d="M89.29,-89.29C78.7,-77.34 61.44,-57.86 47.77,-42.44"/>
-<polygon points="50.47,-40.21 41.22,-35.05 45.23,-44.85 50.47,-40.21"/>
-<text text-anchor="middle" x="69.94" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">2</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000142e8&#45;&gt;p0x7bc400014118</title>
-<path stroke-dasharray="5,2" d="M99,-83.02C99,-72.75 99,-59.45 99,-47.64"/>
-<polygon points="102.5,-48 99,-38 95.5,-48 102.5,-48"/>
-<text text-anchor="middle" x="101.62" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">1</text>
-</g>
-<g class="m-edge">
-<title>p0x7bc4000142e8&#45;&gt;p0x7bc400014200</title>
-<path stroke-dasharray="5,2" d="M108.71,-89.29C118.79,-77.92 134.9,-59.74 148.22,-44.71"/>
-<polygon points="150.65,-47.24 154.66,-37.44 145.41,-42.6 150.65,-47.24"/>
-<text text-anchor="middle" x="141.94" y="-55.75" font-family="Helvetica,sans-Serif" font-size="10.00">0</text>
-</g>
-</g>
-</svg>
-</div><p>In the above code, when the condition task <code>A</code> completes and returns <code>0</code>, the scheduler moves on to task <code>B</code>. Under normal circumstances, tasks <code>C</code> and <code>D</code> will not run because their conditional dependencies never occur. This behavior can be overridden by forcefully scheduling <code>C</code> or/and <code>D</code> via a runtime object of a task that resides in the same graph. Here, task <code>B</code> calls <a href="classtf_1_1Runtime.html#aa7e72cc0f298475195b252c8f1793343" class="m-doc">tf::<wbr />Runtime::<wbr />schedule</a> to forcefully run task <code>C</code>, even though the weak dependency between <code>A</code> and <code>C</code> will never occur based on the graph structure itself. As a result, we will see both <code>B</code> and <code>C</code> in the output:</p><pre class="m-code">B<span class="w">    </span><span class="c1"># B uses a runtime object to schedule C out of its dependency constraint</span>
-C</pre><aside class="m-note m-warning"><h4>Attention</h4><p>You should only schedule an <em>active</em> task when using <a href="classtf_1_1Runtime.html#aa7e72cc0f298475195b252c8f1793343" class="m-doc">tf::<wbr />Runtime::<wbr />schedule</a>. An active task is one that belongs to a currently running taskflow. The task may or may not be executing at the moment, but scheduling it will immediately place it into the task queue of the worker that invoked the runtime object.</p></aside></section><section id="AcquireTheRunningExecutor"><h2><a href="#AcquireTheRunningExecutor">Acquire the Running Executor</a></h2><p>You can acquire the reference to the running executor using <a href="classtf_1_1Runtime.html#a4ee48a82df1f9758a999d18e6015cec4" class="m-doc">tf::<wbr />Runtime::<wbr />executor</a>. The executor associated with a runtime object is the executor that runs the parent task of that runtime object.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<p>Taskflow allows tasks to interact with the scheduling runtime by taking a <em>runtime object</em> as an argument. This feature is particularly useful for implementing recursive parallel algorithms that create tasks dynamically.</p><section id="CreateARuntimeTask"><h2><a href="#CreateARuntimeTask">Create a Runtime Task</a></h2><p>A runtime task is a special type of task that interacts directly with the <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a> scheduling runtime through a <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object. By taking a <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a>&amp; parameter, a runtime task can dynamically create and manage other tasks during its execution. This capability enables flexible and expressive patterns such as recursive parallelism, cooperative task execution, and dynamic task spawning based on runtime conditions. For example, the code below creates a runtime task and acquires its running executor via <a href="classtf_1_1Runtime.html#a4ee48a82df1f9758a999d18e6015cec4" class="m-doc">tf::<wbr />Runtime::<wbr />executor()</a>:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w">  </span><span class="c1">// a runtime task</span>
 <span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">rt</span><span class="p">.</span><span class="n">executor</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">&amp;</span><span class="n">executor</span><span class="p">);</span>
 <span class="p">});</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="CorunTaskflowsFromARuntimeTask"><h2><a href="#CorunTaskflowsFromARuntimeTask">Corun Taskflows from a Runtime Task</a></h2><p>One of the most powerful features of a runtime task is <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a>. The method <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> provides a <em>non-blocking</em> mechanism that allows the calling worker to continue executing other available tasks in the executor while waiting for all tasks spawned from that runtime to complete. This behavior is critical for avoiding deadlock in nested or recursive tasking patterns, where workers may otherwise block while waiting on subgraphs of children tasks to finish, leading to a situation where no workers are left to make forward progress. The following example demonstrates how to use <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> to run a predefined task graph during the execution of a runtime task, without blocking the calling worker:</p><pre class="m-code"><span class="c1">// create a custom graph</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span>
-<span class="n">graph</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
-<span class="n">graph</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;independent task 2</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="CreateAsynchronousTasksFromARuntimeTask"><h2><a href="#CreateAsynchronousTasksFromARuntimeTask">Create Asynchronous Tasks from a Runtime Task</a></h2><p>Similar to <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>, <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> allows you to create asynchronous tasks using <a href="classtf_1_1Runtime.html#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> or <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>. Asynchronous tasks spawned from a runtime task are logically parented to that runtime and are implicitly synchronized at the end of the runtime&#x27;s scope. For example, the code below creates a runtime task <code>A</code> that spawns 1,000 asynchronous tasks during its execution. These 1,000 asynchronous tasks will be implicitly joined before task <code>A</code> completes, ensuring that all of them finish before the runtime proceeds to task <code>B</code>.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="n">num_threads</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
-<span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span><span class="w"> </span>
-<span class="w">  </span><span class="c1">// coruns the graph without blocking the calling worker of this runtime</span>
-<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="c1">// spawn 1000 asynchronous tasks from this runtime task</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// implicit synchronization at the end of the runtime scope</span>
 <span class="p">});</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run_n</span><span class="p">(</span><span class="n">taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">10000</span><span class="p">);</span></pre><p>Although <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> does not return control to the program until the given graph finishes its execution, the calling worker (i.e., parent worker) of the runtime indeed joins the executor&#x27;s work-stealing loop and continues executing other tasks together with graph execution. This behavior differs from waiting on a submitted taskflow using <a href="http://en.cppreference.com/w/cpp/thread/future/wait.html" class="m-doc-external">std::<wbr />future&lt;T&gt;::<wbr />wait</a> (i.e., base class of <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a>), which blocks the calling thread entirely until completion. If multiple taskflows are submitted and waited on in this blocking manner, it can potentially lead to deadlock, especially in recursive or nested patterns. For example, the code below submits a taskflow of 1000 tasks to an executor of two workers, where each worker blocks while waiting on another taskflow of 500 tasks, causing deadlock:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="SynchronizeWithCooperativeExecution"><h2><a href="#SynchronizeWithCooperativeExecution">Synchronize with Cooperative Execution</a></h2><p>The <a href="classtf_1_1Runtime.html#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> method enables cooperative execution within a runtime task. It explicitly waits for all tasks spawned through the same <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> object to complete before continuing execution. This is particularly useful when a runtime task launches multiple subtasks that must finish before the next phase of computation. Similar to <a href="classtf_1_1Executor.html#a8fcd9e0557922bb8194999f0cd433ea8" class="m-doc">tf::<wbr />Executor::<wbr />corun</a>, the calling worker does not block; instead, it continues to execute available tasks from the executor, cooperating with other workers through the work-stealing loop.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="n">num_threads</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="o">&gt;</span><span class="w"> </span><span class="n">others</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">500</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">others</span><span class="p">[</span><span class="n">n</span><span class="p">].</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="c1">// spawn 1000 asynchronous tasks from this runtime task</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">executor</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tf</span><span class="o">=</span><span class="n">others</span><span class="p">[</span><span class="n">n</span><span class="p">]](){</span>
-<span class="w">    </span><span class="c1">// blocking the worker can introduce deadlock where</span>
-<span class="w">    </span><span class="c1">// all workers are waiting for their taskflows to finish</span>
-<span class="w">    </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
-<span class="w">  </span><span class="p">});</span>
-<span class="p">}</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>To avoid deadlock, you should instead use <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> that allows the calling worker to <strong>corun</strong> these taskflows without blocking its execution, thereby avoiding deadlocks.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="o">&gt;</span><span class="w"> </span><span class="n">others</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// explicitly synchronize all asynchronous tasks without blocking the calling worker</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
 
-<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">500</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">others</span><span class="p">[</span><span class="n">n</span><span class="p">].</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){});</span>
+<span class="w">  </span><span class="c1">// spawn another 1000 asynchronous tasks from this runtime task</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-<span class="w">  </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="n">tf</span><span class="o">=</span><span class="n">others</span><span class="p">[</span><span class="n">n</span><span class="p">]](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
-<span class="w">    </span><span class="c1">// the caller worker will not block on wait but corun these</span>
-<span class="w">    </span><span class="c1">// taskflows through its work-stealing loop</span>
-<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">tf</span><span class="p">);</span>
-<span class="w">  </span><span class="p">});</span>
-<span class="p">}</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre></section><section id="CorunAsynchronousTasksFromARuntimeTask"><h2><a href="#CorunAsynchronousTasksFromARuntimeTask">Corun Asynchronous Tasks from a Runtime Task</a></h2><p>Similar to <a href="classtf_1_1Executor.html" class="m-doc">tf::<wbr />Executor</a>, <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a> allows you to create asynchronous tasks on the fly using <a href="classtf_1_1Runtime.html#a5688b13034f179c4a8b2b0ebbb215051" class="m-doc">tf::<wbr />Runtime::<wbr />async</a> or <a href="classtf_1_1Runtime.html#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>. Asynchronous tasks spawned from a runtime task are logically parented to that runtime and can be explicitly synchronized using <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a>. Furthermore, each asynchronous task can itself be a runtime task, enabling recursive task creation and dynamic parallelism. This model is particularly powerful for implementing divide-and-conquer algorithms, such as parallel sort, graph traversal, and recursion. For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking with <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a>:</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span>
+<span class="w">  </span><span class="c1">// implicit synchronization at the end of the runtime scope</span>
+<span class="p">});</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2000</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>In this example, all 100 asynchronous tasks spawned by the runtime are guaranteed to complete before the call to corun returns. This cooperative execution model is especially useful for expressing multi-phase or hierarchical parallel algorithms that require intermediate synchronization within a single runtime task.</p></section><section id="CreateRecursiveAsynchronousTasksFromARuntimeTask"><h2><a href="#CreateRecursiveAsynchronousTasksFromARuntimeTask">Create Recursive Asynchronous Tasks from a Runtime Task</a></h2><p>Each asynchronous task can itself be a runtime task, enabling recursive task creation and dynamic parallelism. This model is particularly powerful for implementing divide-and-conquer algorithms, such as parallel sort, graph traversal, and recursion. For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking with <a href="classtf_1_1Runtime.html" class="m-doc">tf::<wbr />Runtime</a>:</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/taskflow.hpp&gt;</span>
 
 <span class="kt">size_t</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
@@ -186,106 +130,106 @@ C</pre><aside class="m-note m-warning"><h4>Attention</h4><p>You should only sche
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;-th Fibonacci number is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span></pre><p>The figure below shows the execution diagram, where the task with suffix <code>*_1</code> represents the left child spawned by its parent runtime.</p><div class="m-graph"><svg style="width: 36.800rem; height: 26.000rem;" viewBox="0.00 0.00 368.25 260.00">
+<span class="p">}</span></pre><p>The figure below shows the execution diagram, where the task with suffix <code>*_1</code> represents the left child spawned by its parent runtime.</p><div class="m-graph"><svg style="width: 40.400rem; height: 26.000rem;" viewBox="0.00 0.00 404.00 260.00">
 <g transform="scale(1 1) rotate(0) translate(4 256)">
 <title>Fibonacci</title>
 <g class="m-node m-flat">
 <title>F4</title>
-<polygon points="234.25,-252 168,-252 168,-216 234.25,-216 234.25,-252"/>
-<text text-anchor="middle" x="201.12" y="-235.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
-<text text-anchor="middle" x="201.12" y="-224.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="258,-252 184,-252 184,-216 258,-216 258,-252"/>
+<text text-anchor="middle" x="221" y="-237" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(4)</text>
+<text text-anchor="middle" x="221" y="-226" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-node m-flat">
 <title>F3_1</title>
-<polygon points="192.25,-180 126,-180 126,-144 192.25,-144 192.25,-180"/>
-<text text-anchor="middle" x="159.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
-<text text-anchor="middle" x="159.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="212,-180 138,-180 138,-144 212,-144 212,-180"/>
+<text text-anchor="middle" x="175" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(3)</text>
+<text text-anchor="middle" x="175" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F3_1</title>
-<path d="M190.74,-215.7C186.06,-207.9 180.43,-198.51 175.22,-189.83"/>
-<polygon points="178.31,-188.18 170.17,-181.4 172.31,-191.78 178.31,-188.18"/>
+<path d="M209.63,-215.7C204.28,-207.56 197.8,-197.69 191.89,-188.7"/>
+<polygon points="194.66,-186.54 186.24,-180.1 188.81,-190.38 194.66,-186.54"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_2</title>
-<polygon points="276.25,-180 210,-180 210,-144 276.25,-144 276.25,-180"/>
-<text text-anchor="middle" x="243.12" y="-163.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="243.12" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="304,-180 230,-180 230,-144 304,-144 304,-180"/>
+<text text-anchor="middle" x="267" y="-165" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="267" y="-154" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-edge">
 <title>F4&#45;&gt;F2_2</title>
-<path d="M211.51,-215.7C216.19,-207.9 221.82,-198.51 227.03,-189.83"/>
-<polygon points="229.94,-191.78 232.08,-181.4 223.94,-188.18 229.94,-191.78"/>
+<path d="M232.37,-215.7C237.72,-207.56 244.2,-197.69 250.11,-188.7"/>
+<polygon points="253.19,-190.38 255.76,-180.1 247.34,-186.54 253.19,-190.38"/>
 </g>
 <g class="m-node m-flat">
 <title>F2_1</title>
-<polygon points="108.25,-108 42,-108 42,-72 108.25,-72 108.25,-108"/>
-<text text-anchor="middle" x="75.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
-<text text-anchor="middle" x="75.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+<polygon points="120,-108 46,-108 46,-72 120,-72 120,-108"/>
+<text text-anchor="middle" x="83" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(2)</text>
+<text text-anchor="middle" x="83" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F2_1</title>
-<path d="M138.36,-143.7C128.16,-135.2 115.7,-124.81 104.54,-115.51"/>
-<polygon points="107.03,-113.03 97.1,-109.32 102.55,-118.41 107.03,-113.03"/>
+<path d="M152.26,-143.7C140.56,-134.8 126.14,-123.82 113.49,-114.2"/>
+<polygon points="115.56,-111.37 105.48,-108.1 111.32,-116.94 115.56,-111.37"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_2</title>
-<polygon points="192.25,-108 126,-108 126,-72 192.25,-72 192.25,-108"/>
-<text text-anchor="middle" x="159.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="159.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="212,-108 138,-108 138,-72 212,-72 212,-108"/>
+<text text-anchor="middle" x="175" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="175" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F3_1&#45;&gt;F1_2</title>
-<path d="M159.12,-143.7C159.12,-136.41 159.12,-127.73 159.12,-119.54"/>
-<polygon points="162.63,-119.62 159.13,-109.62 155.63,-119.62 162.63,-119.62"/>
+<path d="M175,-143.7C175,-135.98 175,-126.71 175,-118.11"/>
+<polygon points="178.5,-118.1 175,-108.1 171.5,-118.1 178.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_1</title>
-<polygon points="66.25,-36 0,-36 0,0 66.25,0 66.25,-36"/>
-<text text-anchor="middle" x="33.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="33.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
+<polygon points="74,-36 0,-36 0,0 74,0 74,-36"/>
+<text text-anchor="middle" x="37" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="37" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F1_1</title>
-<path d="M64.74,-71.7C60.06,-63.9 54.43,-54.51 49.22,-45.83"/>
-<polygon points="52.31,-44.18 44.17,-37.4 46.31,-47.78 52.31,-44.18"/>
+<path d="M71.63,-71.7C66.28,-63.56 59.8,-53.69 53.89,-44.7"/>
+<polygon points="56.66,-42.54 48.24,-36.1 50.81,-46.38 56.66,-42.54"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_1</title>
-<polygon points="150.25,-36 84,-36 84,0 150.25,0 150.25,-36"/>
-<text text-anchor="middle" x="117.12" y="-19.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="117.12" y="-8.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
+<polygon points="166,-36 92,-36 92,0 166,0 166,-36"/>
+<text text-anchor="middle" x="129" y="-21" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="129" y="-10" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1_1]</text>
 </g>
 <g class="m-edge">
 <title>F2_1&#45;&gt;F0_1</title>
-<path d="M85.51,-71.7C90.19,-63.9 95.82,-54.51 101.03,-45.83"/>
-<polygon points="103.94,-47.78 106.08,-37.4 97.94,-44.18 103.94,-47.78"/>
+<path d="M94.37,-71.7C99.72,-63.56 106.2,-53.69 112.11,-44.7"/>
+<polygon points="115.19,-46.38 117.76,-36.1 109.34,-42.54 115.19,-46.38"/>
 </g>
 <g class="m-node m-flat">
 <title>F1_3</title>
-<polygon points="276.25,-108 210,-108 210,-72 276.25,-72 276.25,-108"/>
-<text text-anchor="middle" x="243.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
-<text text-anchor="middle" x="243.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
+<polygon points="304,-108 230,-108 230,-72 304,-72 304,-108"/>
+<text text-anchor="middle" x="267" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(1)</text>
+<text text-anchor="middle" x="267" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt1]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F1_3</title>
-<path d="M243.12,-143.7C243.12,-136.41 243.12,-127.73 243.12,-119.54"/>
-<polygon points="246.63,-119.62 243.13,-109.62 239.63,-119.62 246.63,-119.62"/>
+<path d="M267,-143.7C267,-135.98 267,-126.71 267,-118.11"/>
+<polygon points="270.5,-118.1 267,-108.1 263.5,-118.1 270.5,-118.1"/>
 </g>
 <g class="m-node m-flat">
 <title>F0_2</title>
-<polygon points="360.25,-108 294,-108 294,-72 360.25,-72 360.25,-108"/>
-<text text-anchor="middle" x="327.12" y="-91.75" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
-<text text-anchor="middle" x="327.12" y="-80.5" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
+<polygon points="396,-108 322,-108 322,-72 396,-72 396,-108"/>
+<text text-anchor="middle" x="359" y="-93" font-family="Helvetica,sans-Serif" font-size="10.00">fibonacci(0)</text>
+<text text-anchor="middle" x="359" y="-82" font-family="Helvetica,sans-Serif" font-size="10.00">[rt]</text>
 </g>
 <g class="m-edge">
 <title>F2_2&#45;&gt;F0_2</title>
-<path d="M263.89,-143.7C274.09,-135.2 286.55,-124.81 297.71,-115.51"/>
-<polygon points="299.7,-118.41 305.15,-109.32 295.22,-113.03 299.7,-118.41"/>
+<path d="M289.74,-143.7C301.44,-134.8 315.86,-123.82 328.51,-114.2"/>
+<polygon points="330.68,-116.94 336.52,-108.1 326.44,-111.37 330.68,-116.94"/>
 </g>
 </g>
 </svg>
-</div><p>For more details, please refer to <a href="AsyncTasking.html" class="m-doc">Asynchronous Tasking</a> and <a href="fibonacci.html" class="m-doc">Fibonacci Number</a>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>While asynchronous tasks spawned from a runtime task are parented to that runtime task, the runtime task does not automatically synchronize their execution or wait for their completion upon destruction. To ensure all spawned tasks finish before proceeding, you should explicitly call <a href="classtf_1_1Runtime.html#a1c772e90614302024cfa52fa86d75cac" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> to synchronize them. This prevents potential issues such as tasks being destroyed prematurely or lost without execution.</p></aside></section>
+</div><p>For more details, please refer to <a href="AsyncTasking.html" class="m-doc">Asynchronous Tasking</a> and <a href="fibonacci.html" class="m-doc">Fibonacci Number</a>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>While asynchronous tasks spawned from a runtime task are parented to that runtime task, the runtime task does not automatically synchronize their execution or wait for their completion upon destruction. To ensure all spawned tasks finish before proceeding, you should explicitly call <a href="classtf_1_1Runtime.html#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">tf::<wbr />Runtime::<wbr />corun</a> to synchronize them. This prevents potential issues such as tasks being destroyed prematurely or lost without execution.</p></aside></section>
       </div>
     </div>
   </div>
@@ -330,7 +274,7 @@ C</pre><aside class="m-note m-warning"><h4>Attention</h4><p>You should only sche
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

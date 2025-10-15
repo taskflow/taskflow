@@ -52,6 +52,7 @@ notification algorithm. We also revised several cookbook pages to enhance the re
   + primes
 + removed code support for SYCL
 + enhanced the performance of atomic notifier via relaxed memory order
++ enforced implicit synchronization at the end of a runtime task's scope for safer usage
 
 @subsection release-3-11-0_utilities Utilities
 
@@ -66,6 +67,20 @@ notification algorithm. We also revised several cookbook pages to enhance the re
 + fixed compilation errors for CUDA 13 ([#721](https://github.com/taskflow/taskflow/pull/721))
 
 @section release-3-11-0_breaking_changes Breaking Changes
+
++ removed `tf::corun(graph)` due to a design flaw in its exception-handling behavior
+ 
+@code{.cpp}
+// previously
+taskflow.emplace([&](tf::Runtime& rt){
+  rt.corun(graph);
+});
+
+// now - simply use tf::Executor::corun
+taskflow.emplace([&](tf::Runtime& rt){
+  executor.corun(graph);
+});
+@endcode
 
 There are no breaking changes in this release.
 

@@ -1256,26 +1256,38 @@ TEST_CASE("Exception.Semaphore.4threads" * doctest::timeout(300)) {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Preemption
+// algorithm
 // ------------------------------------------------------------------------------------------------
 
-void preemption(unsigned n_threads) {
+void algorithm(unsigned n_threads) {
   tf::Executor executor(n_threads);
   for (size_t j = 0; j < 10; ++j) {
     tf::Taskflow taskflow;
     taskflow.for_each_index(
       0, 50, 1,
       [&](int) {
-        throw std::runtime_error("preemption");
+        throw std::runtime_error("algorithm");
       },
       tf::DynamicPartitioner<>()
     );
-    REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "preemption", std::runtime_error);
+    REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "algorithm", std::runtime_error);
   }
 }
 
-TEST_CASE("Exception.Preemption.2threads" * doctest::timeout(600)) {
-  preemption(2);
+TEST_CASE("Exception.Algorithm.1threads" * doctest::timeout(600)) {
+  algorithm(1);
+}
+
+TEST_CASE("Exception.Algorithm.2threads" * doctest::timeout(600)) {
+  algorithm(2);
+}
+
+TEST_CASE("Exception.Algorithm.3threads" * doctest::timeout(600)) {
+  algorithm(3);
+}
+
+TEST_CASE("Exception.Algorithm.4threads" * doctest::timeout(600)) {
+  algorithm(4);
 }
 
 

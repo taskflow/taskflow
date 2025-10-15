@@ -13,22 +13,31 @@ namespace tf {
 
 @brief class to include a runtime object in a task
 
-A runtime object allows users to interact with the
-scheduling runtime inside a task (or the *parent task* of this runtime), such as scheduling an active task,
-spawning an asynchronous task, corunning a graph target, and so on.
+A runtime object provides an interface for interacting with the scheduling system from within a task 
+(i.e., the parent task of this runtime). 
+It enables operations such as spawning asynchronous tasks, executing tasks cooperatively, 
+and implementing recursive parallelism. 
+The runtime guarantees an implicit join at the end of its scope, 
+so all spawned tasks will finish before the parent runtime task continues to its successors.
 
 @code{.cpp}
-tf::Task A, B, C, D;
-std::tie(A, B, C, D) = taskflow.emplace(
-  [] () { return 0; },
-  [&C] (tf::Runtime& rt) {  // C must be captured by reference
-    std::cout << "B\n";
-    rt.schedule(C);
-  },
-  [] () { std::cout << "C\n"; },
-  [] () { std::cout << "D\n"; }
-);
-A.precede(B, C, D);
+tf::Executor executor(num_threads);
+tf::Taskflow taskflow;
+std::atomic<size_t> counter(0);
+
+tf::Task A = taskflow.emplace([&](tf::Runtime& rt){
+  // spawn 1000 asynchronous tasks from this runtime task
+  for(size_t i=0; i<1000; i++) {
+    rt.silent_async([&](){ counter.fetch_add(1, std::memory_order_relaxed); });
+  }
+  // implicit synchronization at the end of the runtime scope
+});
+tf::Task B = taskflow.emplace([&](){
+  REQUIRE(counter.load(std::memory_order_relaxed) == 1000);
+});
+
+A.precede(B);
+
 executor.run(taskflow).wait();
 @endcode
 
@@ -121,12 +130,11 @@ class Runtime {
   @tparam F callable type
   @param f callable object
     
-  The method creates an asynchronous task to launch the given
-  function on the given arguments.
-  The difference to tf::Executor::async is that the created asynchronous task
-  pertains to the runtime object.
-  Applications can explicitly issue tf::Runtime::corun
-  to wait for all spawned asynchronous tasks to finish.
+  This method creates an asynchronous task that executes the given function with the specified arguments.
+  Unlike tf::Executor::async, the task created here is bound to the runtime object and 
+  is implicitly synchronized at the end of the runtime's scope.
+  Applications may also call tf::Runtime::corun explicitly to wait for all 
+  asynchronous tasks spawned from the runtime to complete.
   For example:
 
   @code{.cpp}
@@ -137,39 +145,14 @@ class Runtime {
     fu1.get();
     fu2.get();
     assert(counter == 2);
-    
     // spawn 100 asynchronous tasks from the worker of the runtime
     for(int i=0; i<100; i++) {
       rt.silent_async([&](){ counter++; });
     }
-    
-    // wait for the 100 asynchronous tasks to finish
+    // explicitly wait for the 100 asynchronous tasks to finish
     rt.corun();
     assert(counter == 102);
-  });
-  @endcode
-
-  This method is thread-safe and can be called by multiple workers
-  that hold the reference to the runtime.
-  For example, the code below spawns 100 tasks from the worker of
-  a runtime, and each of the 100 tasks spawns another task
-  that will be run by another worker.
-  
-  @code{.cpp}
-  std::atomic<int> counter(0);
-  taskflow.emplace([&](tf::Runtime& rt){
-    // worker of the runtime spawns 100 tasks each spawning another task
-    // that will be run by another worker
-    for(int i=0; i<100; i++) {
-      rt.async([&](){ 
-        counter++; 
-        rt.async([](){ counter++; });
-      });
-    }
-    
-    // wait for the 200 asynchronous tasks to finish
-    rt.corun();
-    assert(counter == 200);
+    // do something else afterwards ...
   });
   @endcode
   */
@@ -185,7 +168,8 @@ class Runtime {
   @param params task parameters
   @param f callable
 
-  <p><!-- Doxygen warning workaround --></p>
+  Similar to tf::Runtime::async, but takes a parameter of type tf::TaskParams to initialize
+  the created asynchronous task.
 
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
@@ -204,8 +188,8 @@ class Runtime {
   @tparam F callable type
   @param f callable
 
-  This member function is more efficient than tf::Runtime::async
-  and is encouraged to use when there is no data returned.
+  This function is more efficient than tf::Runtime::async and is recommended when the result
+  of the asynchronous task does not need to be accessed via a std::future.
 
   @code{.cpp}
   std::atomic<int> counter(0);
@@ -230,12 +214,12 @@ class Runtime {
   @param params task parameters
   @param f callable
 
-  <p><!-- Doxygen warning workaround --></p>
+  Similar to tf::Runtime::silent_async, but takes a parameter of type tf::TaskParams to initialize
+  the created asynchronous task.
 
   @code{.cpp}
   taskflow.emplace([&](tf::Runtime& rt){
     rt.silent_async("my task", [](){});
-    rt.corun();
   });
   @endcode
   */
@@ -245,7 +229,8 @@ class Runtime {
   /**
   @brief corun all tasks spawned by this runtime with other workers
 
-  Coruns all tasks spawned by this runtime with other workers until all these tasks finish.
+  Coruns all tasks spawned by this runtime cooperatively with other workers 
+  until all these tasks finish.
     
   @code{.cpp}
   std::atomic<size_t> counter{0};
@@ -469,7 +454,6 @@ inline bool Executor::_invoke_runtime_task_impl(
     // I am the last one - no need to preempt this runtime
     if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       rt._parent->_nstate &= ~NSTATE::PREEMPTED;
-      //return false;
     }
     else {
       return true;
@@ -500,6 +484,8 @@ inline bool Executor::_invoke_runtime_task_impl(
 
 /**
 @private
+
+@brief currently for internal use only
 */
 class NonpreemptiveRuntime {
 
@@ -507,6 +493,9 @@ class NonpreemptiveRuntime {
 
   public:
   
+  /**
+  @private
+  */
   void schedule(Task task);
   
   private:
