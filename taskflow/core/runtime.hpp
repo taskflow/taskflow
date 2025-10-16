@@ -409,21 +409,18 @@ inline bool Executor::_invoke_runtime_task_impl(
     });
     _observer_epilogue(worker, node);
     
-    // I am the last one - no need to preempt this runtime
+    // Last one to leave the runtime; no need to preempt this runtime.
     if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       rt._parent->_nstate &= ~NSTATE::PREEMPTED;
     }
-    else {
-      return true;
-    }
-    
-    // here, we cannot check the state from node->_nstate due to data race
+    // Here, we cannot let caller check the state from node->_nstate due to data race,
+    // but return a stateless boolean to indicate preemption.
     // Ex: if preempted, another task may finish real quck and insert this parent task
     // again into the scheduling queue. When running this parent task, it will jump to
     // else branch below and modify tne nstate, thus incuring data race.
-    //if(rt._preempted) {
-    //  return true;
-    //}
+    else {
+      return true;
+    }
   }
   // second time - previously preempted
   else {
@@ -451,21 +448,18 @@ inline bool Executor::_invoke_runtime_task_impl(
     });
     _observer_epilogue(worker, node);
     
-    // I am the last one - no need to preempt this runtime
+    // Last one to leave this runtime; no need to preempt this runtime
     if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       rt._parent->_nstate &= ~NSTATE::PREEMPTED;
     }
-    else {
-      return true;
-    }
-    
-    // here, we cannot check the state from node->_nstate due to data race
+    // Here, we cannot let caller check the state from node->_nstate due to data race,
+    // but return a stateless boolean to indicate preemption.
     // Ex: if preempted, another task may finish real quck and insert this parent task
     // again into the scheduling queue. When running this parent task, it will jump to
     // else branch below and modify tne nstate, thus incuring data race.
-    //if(rt._preempted) {
-    //  return true;
-    //}
+    else {
+      return true;
+    }
   }
   // second time - previously preempted
   else {

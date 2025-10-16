@@ -4,6 +4,28 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/for_each.hpp>
 
+/*
+This exception test should only be enabled without thread sanitizer involved.
+Currently, thread sanitizer has limited support for code with exception.
+For instance,
+
+```
+ThreadSanitizer: data race (/lib/x86_64-linux-gnu/libstdc++.so.6+0xae02c) in std::__exception_ptr::exception_ptr::_M_release()
+```
+
+is a known, commonly seen false positive or benign warning that comes from 
+how libstdc++ implements std::exception_ptr reference counting.
+std::exception_ptr is a small handle internally containing a reference-counted pointer to a shared exception object.
+When you copy or destroy it, libstdc++ increments/decrements that shared refcount.
+
+In GCC’s libstdc++ implementation, the refcount is not always atomic.
+It relies on the assumption that exception_ptr objects are thread-confined unless explicitly synchronized.
+
+When exceptions are captured in one thread and propagated or destroyed in another, 
+TSan can see concurrent increments/decrements to that internal counter and report a race inside _M_release() or _M_addref().
+*/
+
+
 // --------------------------------------------------------
 // Testcase: static_task
 // --------------------------------------------------------
@@ -1259,22 +1281,19 @@ TEST_CASE("Exception.Semaphore.4threads" * doctest::timeout(300)) {
 // algorithm
 // ------------------------------------------------------------------------------------------------
 
-void algorithm(unsigned n_threads) {
-  tf::Executor executor(n_threads);
+void algorithm(unsigned num_threads) {
+  tf::Executor executor(num_threads);
   for (size_t j = 0; j < 10; ++j) {
     tf::Taskflow taskflow;
     taskflow.for_each_index(
       0, 50, 1,
-      [&](int) {
-        throw std::runtime_error("algorithm");
-      },
-      tf::DynamicPartitioner<>()
+      [&](int) { throw std::runtime_error("algorithm"); }
     );
     REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "algorithm", std::runtime_error);
   }
 }
 
-TEST_CASE("Exception.Algorithm.1threads" * doctest::timeout(600)) {
+TEST_CASE("Exception.Algorithm.1thread" * doctest::timeout(600)) {
   algorithm(1);
 }
 
@@ -1290,6 +1309,43 @@ TEST_CASE("Exception.Algorithm.4threads" * doctest::timeout(600)) {
   algorithm(4);
 }
 
+// ------------------------------------------------------------------------------------------------
+// nested algorithm
+// ------------------------------------------------------------------------------------------------
 
+void nested_algorithm(unsigned num_threads) {
+  tf::Executor executor(num_threads);
+  for (size_t j = 0; j < 10; ++j) {
+    tf::Taskflow taskflow;
+    taskflow.for_each_index(
+      0, 10, 1,
+      [&](int) {
+        tf::Taskflow taskflow2;
+        taskflow2.for_each_index(
+          0, 10, 1,
+          [&](int) { throw std::runtime_error("oops"); }
+        );
+        executor.corun(taskflow2);
+      }
+    );
+    REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "oops", std::runtime_error);
+  }
+}
+
+TEST_CASE("Exception.NestedAlgorithm.1thread" * doctest::timeout(600)) {
+  nested_algorithm(1);
+}
+
+TEST_CASE("Exception.NestedAlgorithm.2threads" * doctest::timeout(600)) {
+  nested_algorithm(2);
+}
+
+TEST_CASE("Exception.NestedAlgorithm.3threads" * doctest::timeout(600)) {
+  nested_algorithm(3);
+}
+
+TEST_CASE("Exception.NestedAlgorithm.4threads" * doctest::timeout(600)) {
+  nested_algorithm(4);
+}
 
 

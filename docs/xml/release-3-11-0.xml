@@ -81,7 +81,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_summary">
 <title>Release Summary</title>
-<para>This release enhanced the scheduling performance through a better memory order in the notification algorithm. We also revised several cookbook pages to enhance the readability.</para>
+<para>This release improves scheduling performance through optimized memory ordering in the notification algorithm and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.</para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_new_features">
 <title>New Features</title>
@@ -116,7 +116,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Bug Fixes</title>
 <para><itemizedlist>
 <listitem><para>toggled exception block in executor (<ulink url="https://github.com/taskflow/taskflow/pull/690">#690</ulink>)</para>
-</listitem><listitem><para>fixed missing exception on thread creation failure in <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/693">#693</ulink>)</para>
+</listitem><listitem><para>fixed missing exception on thread creation failure in executor (<ulink url="https://github.com/taskflow/taskflow/issues/693">#693</ulink>)</para>
+</listitem><listitem><para>fixed missing exception on recursive runtime tasking (<ulink url="https://github.com/taskflow/taskflow/issues/724">#724</ulink>)</para>
 </listitem><listitem><para>fixed segmentation fault caused by empty async dependency (<ulink url="https://github.com/taskflow/taskflow/issues/700">#700</ulink>)</para>
 </listitem><listitem><para>fixed compilation errors for CUDA 13 (<ulink url="https://github.com/taskflow/taskflow/pull/721">#721</ulink>)</para>
 </listitem></itemizedlist>

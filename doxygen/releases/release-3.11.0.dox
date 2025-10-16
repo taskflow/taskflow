@@ -36,8 +36,8 @@ through `-std=c++20` to achieve better performance due to new C++20 features.
 
 @section release-3-11-0_summary Release Summary
 
-This release enhanced the scheduling performance through a better memory order in the
-notification algorithm. We also revised several cookbook pages to enhance the readability.
+This release improves scheduling performance through optimized memory ordering in the notification algorithm 
+and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.
 
 @section release-3-11-0_new_features New Features
 
@@ -62,7 +62,8 @@ notification algorithm. We also revised several cookbook pages to enhance the re
 @section release-3-11-0_bug_fixes Bug Fixes 
 
 + toggled exception block in executor ([#690](https://github.com/taskflow/taskflow/pull/690))
-+ fixed missing exception on thread creation failure in tf::Executor ([#693](https://github.com/taskflow/taskflow/issues/693))
++ fixed missing exception on thread creation failure in executor ([#693](https://github.com/taskflow/taskflow/issues/693))
++ fixed missing exception on recursive runtime tasking ([#724](https://github.com/taskflow/taskflow/issues/724))
 + fixed segmentation fault caused by empty async dependency ([#700](https://github.com/taskflow/taskflow/issues/700))
 + fixed compilation errors for CUDA 13 ([#721](https://github.com/taskflow/taskflow/pull/721))
 
@@ -75,7 +76,6 @@ notification algorithm. We also revised several cookbook pages to enhance the re
 taskflow.emplace([&](tf::Runtime& rt){
   rt.corun(graph);
 });
-
 // now - simply use tf::Executor::corun
 taskflow.emplace([&](tf::Runtime& rt){
   executor.corun(graph);

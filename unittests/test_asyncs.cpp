@@ -283,10 +283,10 @@ TEST_CASE("MixedAsync.16threads" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
-// Testcase: RuntimeAsync
+// Testcase: AsyncRuntime
 // --------------------------------------------------------
 
-void runtime_async(size_t W) {
+void async_runtime(size_t W) {
 
   tf::Taskflow taskflow;
   tf::Executor executor(W);
@@ -344,38 +344,108 @@ void runtime_async(size_t W) {
   REQUIRE(counter == 4005);
 }
 
-TEST_CASE("RuntimeAsync.1thread") {
-  runtime_async(1);
+TEST_CASE("AsyncRuntime.1thread") {
+  async_runtime(1);
 }
 
-TEST_CASE("RuntimeAsync.2threads") {
-  runtime_async(2);
+TEST_CASE("AsyncRuntime.2threads") {
+  async_runtime(2);
 }
 
-TEST_CASE("RuntimeAsync.3threads") {
-  runtime_async(3);
+TEST_CASE("AsyncRuntime.3threads") {
+  async_runtime(3);
 }
 
-TEST_CASE("RuntimeAsync.4threads") {
-  runtime_async(4);
+TEST_CASE("AsyncRuntime.4threads") {
+  async_runtime(4);
 }
 
-TEST_CASE("RuntimeAsync.5threads") {
-  runtime_async(5);
+TEST_CASE("AsyncRuntime.5threads") {
+  async_runtime(5);
 }
 
-TEST_CASE("RuntimeAsync.6threads") {
-  runtime_async(6);
+TEST_CASE("AsyncRuntime.6threads") {
+  async_runtime(6);
 }
 
-TEST_CASE("RuntimeAsync.7threads") {
-  runtime_async(7);
+TEST_CASE("AsyncRuntime.7threads") {
+  async_runtime(7);
 }
 
-TEST_CASE("RuntimeAsync.8threads") {
-  runtime_async(8);
+TEST_CASE("AsyncRuntime.8threads") {
+  async_runtime(8);
 }
 
-TEST_CASE("RuntimeAsync.11threads") {
-  runtime_async(11);
+// ------------------------------------------------------------------------------------------------
+// Recursive Async Runtime
+// ------------------------------------------------------------------------------------------------
+
+void recursive_async_runtime(size_t num_threads) {
+
+  const size_t N1 = 100;
+  const size_t N2 = 10;
+
+  tf::Executor executor(num_threads);
+  std::atomic<size_t> counter;
+
+  // async
+  counter = 0;
+  executor.async([&](tf::Runtime& rt1){
+    counter.fetch_add(1, std::memory_order_relaxed);
+    for(size_t i=0; i<N1; ++i) {
+      rt1.silent_async([&](tf::Runtime& rt2) {
+        counter.fetch_add(1, std::memory_order_relaxed);
+        for(size_t j=0; j<N2; ++j) {
+          rt2.silent_async([&](tf::Runtime&) {
+            counter.fetch_add(1, std::memory_order_relaxed);
+          });
+        } 
+      });
+    }
+  }).get();
+  REQUIRE(counter.load() == (N2*N1 + N1 + 1));
+  
+  // dependent async
+  counter = 0;
+
+  auto [task, fu] = executor.dependent_async([&](tf::Runtime& rt1){
+    counter.fetch_add(1, std::memory_order_relaxed);
+    for(size_t i=0; i<N1; ++i) {
+      rt1.silent_async([&](tf::Runtime& rt2) {
+        counter.fetch_add(1, std::memory_order_relaxed);
+        for(size_t j=0; j<N2; ++j) {
+          rt2.silent_async([&](tf::Runtime&) {
+            counter.fetch_add(1, std::memory_order_relaxed);
+          });
+        } 
+      });
+    }
+  });
+  
+  fu.get();
+
+  REQUIRE(counter.load() == (N2*N1 + N1 + 1));
 }
+
+TEST_CASE("RecursiveAsyncRuntime.1thread") {
+  recursive_async_runtime(1);
+}
+
+TEST_CASE("RecursiveAsyncRuntime.2threads") {
+  recursive_async_runtime(2);
+}
+
+TEST_CASE("RecursiveAsyncRuntime.3threads") {
+  recursive_async_runtime(3);
+}
+
+TEST_CASE("RecursiveAsyncRuntime.4threads") {
+  recursive_async_runtime(4);
+}
+
+
+
+
+
+
+

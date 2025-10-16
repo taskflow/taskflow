@@ -340,19 +340,6 @@
   </compound>
   <compound refid="classtf_1_1DefaultTaskParams" kind="class"><name>tf::DefaultTaskParams</name>
   </compound>
-  <compound refid="classtf_1_1DeferredPipeflow" kind="class"><name>tf::DeferredPipeflow</name>
-    <member refid="classtf_1_1DeferredPipeflow_1af65467c6cb27f4ef42522207f03ab9cf" kind="friend"><name>Pipeline</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1af64ddb98831b893b2388af2a2302acea" kind="friend"><name>ScalablePipeline</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1a980f82b352812b6113679176ae86cd06" kind="variable"><name>_token</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1af1c058902aa45aab8441df9ae6d3a8e8" kind="variable"><name>_num_deferrals</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1ae6b4ab057aefe7b7dac6925f64026c9b" kind="variable"><name>_dependents</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1a0d872e94c733f69a25814f21f2e96791" kind="function"><name>DeferredPipeflow</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1af7901bf11f47c8a18f4a975f9c3310b5" kind="function"><name>DeferredPipeflow</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1af73af50f0d304ec6b51219c9f2f9babc" kind="function"><name>DeferredPipeflow</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1a2f54d8b4097235501de465000490e5d8" kind="function"><name>DeferredPipeflow</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1a13188876ec55da73f71f7d6d36a3024e" kind="function"><name>operator=</name></member>
-    <member refid="classtf_1_1DeferredPipeflow_1ae7356cbbea96ae9f62711703e610eba8" kind="function"><name>operator=</name></member>
-  </compound>
   <compound refid="structtf_1_1Node_1_1DependentAsync" kind="struct"><name>tf::Node::DependentAsync</name>
     <member refid="structtf_1_1Node_1_1DependentAsync_1a07b31cf8a6cc3a22e2aa6fd8ec87a597" kind="variable"><name>work</name></member>
     <member refid="structtf_1_1Node_1_1DependentAsync_1a7fafc495551519e0ca220136b923aae7" kind="variable"><name>use_count</name></member>
@@ -698,15 +685,11 @@
     <member refid="classtf_1_1Pipeflow_1a597744cac4ef0dd9e31e1d694f71f7ec" kind="variable"><name>_pipe</name></member>
     <member refid="classtf_1_1Pipeflow_1a16275ecab224bf1ede060d9e24b4eb48" kind="variable"><name>_token</name></member>
     <member refid="classtf_1_1Pipeflow_1a7474a98aa648d96011df53b085d53965" kind="variable"><name>_stop</name></member>
-    <member refid="classtf_1_1Pipeflow_1a669318dadb120d96c277529670a02588" kind="variable"><name>_num_deferrals</name></member>
-    <member refid="classtf_1_1Pipeflow_1a444746d10472b56b8e6cb52fd35e3d84" kind="variable"><name>_dependents</name></member>
     <member refid="classtf_1_1Pipeflow_1a801877443f7046b9e450160c05c26d7d" kind="function"><name>Pipeflow</name></member>
     <member refid="classtf_1_1Pipeflow_1afee054e6a99965d4b3e36ff903227e6c" kind="function"><name>line</name></member>
     <member refid="classtf_1_1Pipeflow_1a4914c1f381a3016e98285b019cf60d6d" kind="function"><name>pipe</name></member>
     <member refid="classtf_1_1Pipeflow_1a295e5d884665c076f4ef5d78139f7c51" kind="function"><name>token</name></member>
     <member refid="classtf_1_1Pipeflow_1a830b7f204cb87fff17e8d424918d9453" kind="function"><name>stop</name></member>
-    <member refid="classtf_1_1Pipeflow_1a2f909c75e15b6bdf83faf2c0b74c7a74" kind="function"><name>num_deferrals</name></member>
-    <member refid="classtf_1_1Pipeflow_1a5fbd2326b68a69826423bf0528a7c961" kind="function"><name>defer</name></member>
   </compound>
   <compound refid="classtf_1_1Pipeline" kind="class"><name>tf::Pipeline</name>
     <member refid="classtf_1_1Pipeline_1a1e3ad41a55de7fdc1f2ad40ee49a4d4a" kind="variable"><name>_graph</name></member>
@@ -716,10 +699,6 @@
     <member refid="classtf_1_1Pipeline_1a21eaa8e9904e9ebb9a1b1ea4a1e183de" kind="variable"><name>_lines</name></member>
     <member refid="classtf_1_1Pipeline_1aba0c750fa328b21fcda5cb44801d6289" kind="variable"><name>_tasks</name></member>
     <member refid="classtf_1_1Pipeline_1a8d0536148e5fdd373b4ed81965498749" kind="variable"><name>_pipeflows</name></member>
-    <member refid="classtf_1_1Pipeline_1a10499ef31797d4db31243e6f73fb2ee8" kind="variable"><name>_ready_tokens</name></member>
-    <member refid="classtf_1_1Pipeline_1ab19a3164e7584ce1d16ecbff975421a7" kind="variable"><name>_token_dependencies</name></member>
-    <member refid="classtf_1_1Pipeline_1a7ff727cd8c130fc9b606c01dbfa12f9d" kind="variable"><name>_deferred_tokens</name></member>
-    <member refid="classtf_1_1Pipeline_1aaee01340ac6e941a949931b7e478d83e" kind="variable"><name>_longest_deferral</name></member>
     <member refid="classtf_1_1Pipeline_1aad8735676e4f9fd8474ad1ac51b58f3e" kind="function"><name>Pipeline</name></member>
     <member refid="classtf_1_1Pipeline_1a879a54b37af5db33e5768e5b3c135ba6" kind="function"><name>Pipeline</name></member>
     <member refid="classtf_1_1Pipeline_1a79f066bacd6c1abd28c26d8196955e95" kind="function"><name>num_lines</name></member>
@@ -730,9 +709,6 @@
     <member refid="classtf_1_1Pipeline_1a5c0604ba81fb2c8d0ba9c076df13ddda" kind="function"><name>_gen_meta</name></member>
     <member refid="classtf_1_1Pipeline_1ae73b9f33756d0e44980f83138b435239" kind="function"><name>_on_pipe</name></member>
     <member refid="classtf_1_1Pipeline_1ad091bbd38c1538884aa83d488fdf40f2" kind="function"><name>_build</name></member>
-    <member refid="classtf_1_1Pipeline_1afb16e7472b979f81a8d997eae134e1c9" kind="function"><name>_check_dependents</name></member>
-    <member refid="classtf_1_1Pipeline_1a2d90bf386da24e7913b021febbcb6809" kind="function"><name>_construct_deferred_tokens</name></member>
-    <member refid="classtf_1_1Pipeline_1aa69993288e9ceefed489ff0c71ed1aca" kind="function"><name>_resolve_token_dependencies</name></member>
   </compound>
   <compound refid="structtf_1_1DataPipeline_1_1PipeMeta" kind="struct"><name>tf::DataPipeline::PipeMeta</name>
     <member refid="structtf_1_1DataPipeline_1_1PipeMeta_1a46556eee44255bb7e1048e8445086e80" kind="variable"><name>type</name></member>
@@ -803,10 +779,6 @@
     <member refid="classtf_1_1ScalablePipeline_1a66182f2b381be1f628da346b2e47c2ab" kind="variable"><name>_tasks</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a879b367ce62ff667d00c16c18313021c" kind="variable"><name>_pipeflows</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a2d6a310af9e3a69efaea0e8002960062" kind="variable"><name>_lines</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1a18a2b6051521959ee807c4f1899ec2f3" kind="variable"><name>_ready_tokens</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1a93c0b0ee2cff99ff3cdaabbb81592744" kind="variable"><name>_token_dependencies</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1aadda92015e28c2545014f7576078bddb" kind="variable"><name>_deferred_tokens</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1aaf2267b9dbb1173f533aee5a0a250cf3" kind="variable"><name>_longest_deferral</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a26f5e7e768b77f9e95100c5d6467db71" kind="function"><name>ScalablePipeline</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a0f99aa297a26b97d549b62722d91e8ca" kind="function"><name>ScalablePipeline</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a884818f628bbd4ab876d566b1d2d62dc" kind="function"><name>ScalablePipeline</name></member>
@@ -821,9 +793,6 @@
     <member refid="classtf_1_1ScalablePipeline_1a8165894518d642ceaa0141e2a66d365a" kind="function"><name>reset</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a693a2ea53cfac9c0b220d5b3a28e6313" kind="function"><name>num_tokens</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a2f45a4cb7116fbe9bbc54305f13c52a8" kind="function"><name>graph</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1a3cea771eaee545d4445114c824a3f6df" kind="function"><name>_check_dependents</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1a4583da84f07196c55c636e3556a1e5e3" kind="function"><name>_construct_deferred_tokens</name></member>
-    <member refid="classtf_1_1ScalablePipeline_1ad210e4d59d58c79100a830df51d55b1f" kind="function"><name>_resolve_token_dependencies</name></member>
     <member refid="classtf_1_1ScalablePipeline_1af6700eee995fbe6fb7db99278bfd6884" kind="function"><name>_on_pipe</name></member>
     <member refid="classtf_1_1ScalablePipeline_1ae695c9b1bbe3a5f65a5bb4217087c356" kind="function"><name>_build</name></member>
     <member refid="classtf_1_1ScalablePipeline_1a81b18c25db2cba4c530d85c5ab413a6c" kind="function"><name>_line</name></member>
@@ -1905,8 +1874,6 @@
   </compound>
   <compound refid="pipeline_8dox" kind="file"><name>pipeline.dox</name>
   </compound>
-  <compound refid="pipeline__with__token__dependencies_8dox" kind="file"><name>pipeline_with_token_dependencies.dox</name>
-  </compound>
   <compound refid="reduce_8dox" kind="file"><name>reduce.dox</name>
   </compound>
   <compound refid="scalable__pipeline_8dox" kind="file"><name>scalable_pipeline.dox</name>
@@ -2236,8 +2203,6 @@
   <compound refid="TaskParallelScalablePipeline" kind="page"><name>TaskParallelScalablePipeline</name>
   </compound>
   <compound refid="DataParallelPipeline" kind="page"><name>DataParallelPipeline</name>
-  </compound>
-  <compound refid="TaskParallelPipelineWithTokenDependencies" kind="page"><name>TaskParallelPipelineWithTokenDependencies</name>
   </compound>
   <compound refid="Examples" kind="page"><name>Examples</name>
   </compound>

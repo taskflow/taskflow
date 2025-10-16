@@ -616,9 +616,11 @@ void DataPipeline<Ps...>::_build() {
           goto pipeline;
         }
         case 1: {
+          // downward dependency 
           if (retval[0] == 1) {
             pf = &_pipeflows[n_l];
           }
+          // forward dependency
           goto pipeline;
         }
       }

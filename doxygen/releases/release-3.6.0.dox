@@ -72,8 +72,6 @@ model that offers great flexibility for expressing dynamic task graph parallelis
   + tf::Taskflow::reduce(B first, E last, T& result, O bop, P&& part) 
   + tf::Taskflow::transform_reduce(B first, E last, T& result, BOP bop, UOP uop, P&& part)
 + Improved the performance of tf::Taskflow::sort for plain-old-data (POD) type
-+ Extended task-parallel pipeline to handle token dependencies
-  + @ref TaskParallelPipelineWithTokenDependencies
 
 @subsection release-3-6-0_cudaflow cudaFlow
 
@@ -210,7 +208,6 @@ executor.async("name", [](){});
   + @ref ParallelIterations
   + @ref ParallelTransforms
   + @ref ParallelReduction
-+ Added @ref TaskParallelPipelineWithTokenDependencies
 + Added @ref ParallelScan
 + Added @ref DependentAsyncTasking
 

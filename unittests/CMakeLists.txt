@@ -27,8 +27,6 @@ list(APPEND TF_UNITTESTS
   test_workers
   test_pipelines
   test_scalable_pipelines
-  test_deferred_pipelines
-  test_deferred_scalable_pipelines
   test_data_pipelines
 )
 
