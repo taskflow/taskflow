@@ -389,7 +389,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="138" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="138" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="133" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="133" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1aea3945d9b15c96a72540ea4fe61947e7" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -448,7 +448,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="725" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="725" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="720" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="720" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -1792,7 +1792,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="359" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="359" bodyend="365"/>
+        <location file="taskflow/core/graph.hpp" line="354" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="354" bodyend="360"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1809,7 +1809,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="370" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="370" bodyend="376"/>
+        <location file="taskflow/core/graph.hpp" line="365" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="365" bodyend="371"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a97960776f3c78e18e68c79c336ba4f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2009,7 +2009,7 @@ The distance of a range represents the number of required iterations to traverse
         </inbodydescription>
         <location file="taskflow/algorithm/data_pipeline.hpp" line="171" column="6" bodyfile="taskflow/algorithm/data_pipeline.hpp" bodystart="171" bodyend="173"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
@@ -2017,14 +2017,14 @@ The distance of a range represents the number of required iterations to traverse
         </templateparamlist>
         <type>auto</type>
         <definition>auto tf::Algorithm::make_module_task</definition>
-        <argsstring>(T &amp;&amp;target)</argsstring>
+        <argsstring>(T &amp;&amp;graph)</argsstring>
         <name>make_module_task</name>
         <param>
           <type>T &amp;&amp;</type>
-          <declname>target</declname>
+          <declname>graph</declname>
         </param>
         <briefdescription>
-<para>creates a module task using the given target </para>
+<para>creates a module task using the given graph </para>
         </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="templateparam"><parameteritem>
@@ -2032,22 +2032,22 @@ The distance of a range represents the number of required iterations to traverse
 <parametername>T</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>Type of the target object, which must define the method <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; graph()</computeroutput>. </para>
+<para>type of the graph object, which must define the method <computeroutput><ref refid="classtf_1_1Graph" kindref="compound">tf::Graph</ref>&amp; graph()</computeroutput> </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
 <parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>target</parametername>
+<parametername>graph</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>The target object used to create the module task. </para>
+<para>the graph object used to create the module task </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-<simplesect kind="return"><para>module task that can be used by Taskflow or asynchronous tasking.</para>
+<simplesect kind="return"><para>a module task that can be used by Taskflow or asynchronous tasking</para>
 </simplesect>
-This example demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</para>
+This example demonstrates how to create and launch multiple taskflows in parallel using modules with asynchronous tasking:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>A;</highlight></codeline>
@@ -2061,18 +2061,18 @@ This example demonstrates how to create and launch multiple taskflows in paralle
 <codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>four<sp/>taskflows<sp/>using<sp/>asynchronous<sp/>tasking</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(B));</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(C));</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(B));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(C));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/></highlight></codeline>
 </programlisting></para>
-<para>The module task maker, <ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>, is basically the same as <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</para>
+<para>The module task maker, <ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>, is basically the same as <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>approach<sp/>1:<sp/>composition<sp/>using<sp/>composed_of</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(taskflow2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>approach<sp/>2:<sp/>composition<sp/>using<sp/>make_module_task</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.emplace(<ref refid="namespacetf_1aae281ad3b89a5c421a1f4058f425e54c" kindref="member">tf::make_module_task</ref>(taskflow2));</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.emplace(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(taskflow2));</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="attention"><para>Users are responsible for ensuring that the given target remains valid throughout its execution. The executor does not assume ownership of the target object. </para>
 </simplesect>
@@ -2080,7 +2080,7 @@ This example demonstrates how to create and launch multiple taskflows in paralle
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/module.hpp" line="76" column="6" bodyfile="taskflow/algorithm/module.hpp" bodystart="76" bodyend="78"/>
+        <location file="taskflow/algorithm/module.hpp" line="75" column="6" bodyfile="taskflow/algorithm/module.hpp" bodystart="75" bodyend="77"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>

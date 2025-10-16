@@ -54,11 +54,6 @@ class Runtime {
   friend class PreemptionGuard;
   friend class Algorithm;
   
-  #define TF_RUNTIME_CHECK_CALLER(msg) \
-  if(pt::this_worker != &_worker) {    \
-    TF_THROW(msg);                     \
-  }
-
   public:
   
   /**
@@ -121,6 +116,7 @@ class Runtime {
   @attention
   This method can only be called by the parent worker of this runtime,
   or the behavior is undefined.
+  Furthermore, we currently do not support scheduling a runtime task.
   */
   void schedule(Task task);
   
@@ -400,8 +396,8 @@ inline bool Executor::_invoke_runtime_task_impl(
 
     Runtime rt(*this, worker, node);
 
-    rt._parent->_nstate |= NSTATE::PREEMPTED;
-    rt._parent->_join_counter.fetch_add(1, std::memory_order_release);
+    node->_nstate |= NSTATE::PREEMPTED;
+    node->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
     TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
@@ -410,8 +406,8 @@ inline bool Executor::_invoke_runtime_task_impl(
     _observer_epilogue(worker, node);
     
     // Last one to leave the runtime; no need to preempt this runtime.
-    if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      rt._parent->_nstate &= ~NSTATE::PREEMPTED;
+    if(node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      node->_nstate &= ~NSTATE::PREEMPTED;
     }
     // Here, we cannot let caller check the state from node->_nstate due to data race,
     // but return a stateless boolean to indicate preemption.
@@ -439,8 +435,8 @@ inline bool Executor::_invoke_runtime_task_impl(
   // first time
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     
-    rt._parent->_nstate |= NSTATE::PREEMPTED;
-    rt._parent->_join_counter.fetch_add(1, std::memory_order_release);
+    node->_nstate |= NSTATE::PREEMPTED;
+    node->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
     TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
@@ -449,8 +445,8 @@ inline bool Executor::_invoke_runtime_task_impl(
     _observer_epilogue(worker, node);
     
     // Last one to leave this runtime; no need to preempt this runtime
-    if(rt._parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      rt._parent->_nstate &= ~NSTATE::PREEMPTED;
+    if(node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      node->_nstate &= ~NSTATE::PREEMPTED;
     }
     // Here, we cannot let caller check the state from node->_nstate due to data race,
     // but return a stateless boolean to indicate preemption.
@@ -466,7 +462,7 @@ inline bool Executor::_invoke_runtime_task_impl(
     node->_nstate &= ~NSTATE::PREEMPTED;
   }
 
-  // clean up outstanding work
+  // clean up outstanding work (e.g., exception)
   work(rt, true);
 
   return false;

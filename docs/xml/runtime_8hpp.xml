@@ -306,22 +306,6 @@
     <innerclass refid="classtf_1_1Runtime" prot="public">tf::Runtime</innerclass>
     <innerclass refid="classtf_1_1NonpreemptiveRuntime" prot="private">tf::NonpreemptiveRuntime</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
-      <sectiondef kind="define">
-      <memberdef kind="define" id="runtime_8hpp_1a0b140fb327db1df313203abc7782693b" prot="public" static="no">
-        <name>TF_RUNTIME_CHECK_CALLER</name>
-        <param><defname>msg</defname></param>
-        <initializer>  if(pt::this_worker != &amp;_worker) {    \
-    TF_THROW(msg);                     \
-  }</initializer>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="57" column="11" bodyfile="taskflow/core/runtime.hpp" bodystart="57" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>

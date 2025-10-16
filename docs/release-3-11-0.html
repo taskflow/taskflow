@@ -72,7 +72,6 @@
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span>
 <span class="p">});</span>
-
 <span class="c1">// now - simply use tf::Executor::corun</span>
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">corun</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span>

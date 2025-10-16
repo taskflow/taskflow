@@ -12,7 +12,8 @@ namespace tf {
 struct NSTATE {
 
   using underlying_type = int;
-
+  
+  // state bits
   constexpr static underlying_type NONE           = 0x00000000;  
   constexpr static underlying_type CONDITIONED    = 0x10000000;  
   constexpr static underlying_type PREEMPTED      = 0x20000000;  
@@ -20,7 +21,7 @@ struct NSTATE {
   constexpr static underlying_type JOINED_SUBFLOW = 0x80000000;
 
   // mask to isolate state bits - non-state bits store # weak dependents
-  constexpr static underlying_type MASK        = 0xF0000000;
+  constexpr static underlying_type MASK           = 0xF0000000;
 };
 
 using nstate_t = NSTATE::underlying_type;

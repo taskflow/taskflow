@@ -32,7 +32,6 @@ namespace tf {
 // Class: Graph
 // ----------------------------------------------------------------------------
 
-
 /**
 @class Graph
 
@@ -40,9 +39,6 @@ namespace tf {
 
 A graph is the ultimate storage for a task dependency graph and is the main
 gateway to interact with an executor.
-A graph manages a set of nodes in a global object pool that animates and
-recycles node objects efficiently without going through repetitive and
-expensive memory allocations and deallocations.
 This class is mainly used for creating an opaque graph object in a custom
 class to interact with the executor through taskflow composition.
 
@@ -82,7 +78,6 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
   @brief assigns a graph using move semantics
   */
   Graph& operator = (Graph&&) = default;
-  
 
   private:
 

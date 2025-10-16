@@ -81,7 +81,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="280" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="280" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="276" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="276" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Runtime_1ae9bd2bcb1e004b078f627472fb9e0371" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
@@ -94,7 +94,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="285" column="10" bodyfile="taskflow/core/runtime.hpp" bodystart="285" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="281" column="10" bodyfile="taskflow/core/runtime.hpp" bodystart="281" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" static="no" mutable="no">
         <type>Node *</type>
@@ -107,7 +107,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="290" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="290" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="286" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="286" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -131,7 +131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="79" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="301" bodyend="303"/>
+        <location file="taskflow/core/runtime.hpp" line="74" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="297" bodyend="299"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1ae1dbce75fd7375ae3bf38948638e34ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
@@ -145,7 +145,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="84" column="17" bodyfile="taskflow/core/runtime.hpp" bodystart="306" bodyend="308"/>
+        <location file="taskflow/core/runtime.hpp" line="79" column="17" bodyfile="taskflow/core/runtime.hpp" bodystart="302" bodyend="304"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1aa7e72cc0f298475195b252c8f1793343" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -184,13 +184,13 @@ This member function immediately schedules an active task to the task queue of t
 <codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>The executor will first run the condition task <computeroutput>A</computeroutput> which returns <computeroutput>0</computeroutput> to inform the scheduler to go to the runtime task <computeroutput>B</computeroutput>. During the execution of <computeroutput>B</computeroutput>, it directly schedules task <computeroutput>C</computeroutput> without going through the normal taskflow graph scheduling process. At this moment, task <computeroutput>C</computeroutput> is active because its parent taskflow is running. When the taskflow finishes, we will see both <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> in the output.</para>
-<para><simplesect kind="attention"><para>This method can only be called by the parent worker of this runtime, or the behavior is undefined. </para>
+<para><simplesect kind="attention"><para>This method can only be called by the parent worker of this runtime, or the behavior is undefined. Furthermore, we currently do not support scheduling a runtime task. </para>
 </simplesect>
 </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="125" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="311" bodyend="323"/>
+        <location file="taskflow/core/runtime.hpp" line="121" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="307" bodyend="319"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -249,7 +249,7 @@ This method creates an asynchronous task that executes the given function with t
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="160" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="370" bodyend="372"/>
+        <location file="taskflow/core/runtime.hpp" line="156" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="366" bodyend="368"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a333a76d63e50f3ddfbea60c4356b86f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -319,7 +319,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="183" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="376" bodyend="381"/>
+        <location file="taskflow/core/runtime.hpp" line="179" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="372" bodyend="377"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -371,7 +371,7 @@ This function is more efficient than <ref refid="classtf_1_1Runtime_1a5688b13034
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="208" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="351" bodyend="353"/>
+        <location file="taskflow/core/runtime.hpp" line="204" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="347" bodyend="349"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a532d8cd09ebee59023e3ad65f3220f4e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -432,7 +432,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="227" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="357" bodyend="362"/>
+        <location file="taskflow/core/runtime.hpp" line="223" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="353" bodyend="358"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -467,7 +467,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="258" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="326" bodyend="334"/>
+        <location file="taskflow/core/runtime.hpp" line="254" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="322" bodyend="330"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1afcc18484a95fd2a834940d878eaf4dfc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -481,7 +481,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="263" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="337" bodyend="339"/>
+        <location file="taskflow/core/runtime.hpp" line="259" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="333" bodyend="335"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Runtime_1a20d9756a7aa6b58d0d04437818c10066" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -495,7 +495,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="268" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="341" bodyend="343"/>
+        <location file="taskflow/core/runtime.hpp" line="264" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="337" bodyend="339"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -522,7 +522,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="275" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="294" bodyend="298"/>
+        <location file="taskflow/core/runtime.hpp" line="271" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="290" bodyend="294"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -554,7 +554,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/runtime.hpp" line="50" column="1" bodyfile="taskflow/core/runtime.hpp" bodystart="50" bodyend="291"/>
+    <location file="taskflow/core/runtime.hpp" line="50" column="1" bodyfile="taskflow/core/runtime.hpp" bodystart="50" bodyend="287"/>
     <listofallmembers>
       <member refid="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_executor</name></member>
       <member refid="classtf_1_1Runtime_1ac040d7410fbb82703ac39ac3b1baf8fd" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>_parent</name></member>

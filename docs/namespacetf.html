@@ -500,9 +500,9 @@
             <dd>function to construct a data pipe (<a href="classtf_1_1DataPipe.html" class="m-doc">tf::<wbr />DataPipe</a>)</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target) -&gt; auto</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a68bb6933d40ea4468cc08191a0822f10" class="m-doc">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; graph) -&gt; auto</span>
             </dt>
-            <dd>creates a module task using the given target</dd>
+            <dd>creates a module task using the given graph</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#abffa70155a5f160b7ceb86ee52ab2136" class="m-doc">cuda_get_num_devices</a>(</span><span class="m-doc-wrap">) -&gt; size_t</span>
             </dt>
@@ -1731,14 +1731,14 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">);</span></pre>
           </div></section>
-          <section class="m-doc-details" id="aae281ad3b89a5c421a1f4058f425e54c"><div>
+          <section class="m-doc-details" id="a68bb6933d40ea4468cc08191a0822f10"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T&gt;
               </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc-self">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; target)</span></span>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a68bb6933d40ea4468cc08191a0822f10" class="m-doc-self">make_module_task</a>(</span><span class="m-doc-wrap">T&amp;&amp; graph)</span></span>
             </h3>
-            <p>creates a module task using the given target</p>
+            <p>creates a module task using the given graph</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -1746,7 +1746,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">T</td>
-                  <td>Type of the target object, which must define the method <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; graph()</code>.</td>
+                  <td>type of the graph object, which must define the method <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; graph()</code></td>
                 </tr>
               </tbody>
               <thead>
@@ -1754,18 +1754,18 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>target</td>
-                  <td>The target object used to create the module task.</td>
+                  <td>graph</td>
+                  <td>the graph object used to create the module task</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td>module task that can be used by Taskflow or asynchronous tasking.</td>
+                  <td>a module task that can be used by Taskflow or asynchronous tasking</td>
                 </tr>
               </tfoot>
             </table>
-<p>This example demonstrates how to create and launch multiple taskflows in parallel using asynchronous tasking:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<p>This example demonstrates how to create and launch multiple taskflows in parallel using modules with asynchronous tasking:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">A</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">B</span><span class="p">;</span>
@@ -1782,7 +1782,7 @@
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">B</span><span class="p">));</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">C</span><span class="p">));</span>
 <span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">make_module_task</span><span class="p">(</span><span class="n">D</span><span class="p">));</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">  </span></pre><p>The module task maker, <a href="#aae281ad3b89a5c421a1f4058f425e54c" class="m-doc">tf::<wbr />make_module_task</a>, is basically the same as <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span><span class="w">  </span></pre><p>The module task maker, <a href="#a68bb6933d40ea4468cc08191a0822f10" class="m-doc">tf::<wbr />make_module_task</a>, is basically the same as <a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" class="m-doc">tf::<wbr />Taskflow::<wbr />composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p><pre class="m-code"><span class="c1">// approach 1: composition using composed_of</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow1</span><span class="p">.</span><span class="n">composed_of</span><span class="p">(</span><span class="n">taskflow2</span><span class="p">);</span>
 
 <span class="c1">// approach 2: composition using make_module_task</span>
