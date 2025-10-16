@@ -21,7 +21,7 @@
         <reference>ExecuteTaskflow_1ExecuteATaskflowWithTransferredOwnership</reference>
     </tocsect>
       <tocsect>
-        <name>Execute a Taskflow from an Internal Worker</name>
+        <name>Execute a Taskflow from an Internal Worker Cooperatively</name>
         <reference>ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker</reference>
     </tocsect>
       <tocsect>
@@ -130,7 +130,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>leaving<sp/>the<sp/>scope<sp/>will<sp/>destroy<sp/>taskflow<sp/>while<sp/>it<sp/>is<sp/>running,<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>resulting<sp/>in<sp/>undefined<sp/>behavior</highlight></codeline>
 </programlisting></para>
-<para>Similarly, you should avoid touching a taskflow while it is running.</para>
+<para>Similarly, you should avoid touching a taskflow while it is running:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Add<sp/>tasks<sp/>into<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
@@ -188,8 +188,8 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 </programlisting></para>
 </sect1>
 <sect1 id="ExecuteTaskflow_1ExecuteATaskflowFromAnInternalWorker">
-<title>Execute a Taskflow from an Internal Worker</title>
-<para>Each run variant of <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> returns a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> object which allows you to wait for the result to complete. When calling <computeroutput>tf::Future::wait</computeroutput>, the caller blocks without doing anything until the associated state is written to be ready. This design, however, can introduce deadlock problem especially when you need to run multiple taskflows from the internal workers of an executor. For example, the code below creates a taskflow of 1000 tasks with each task running a taskflow of 500 tasks in a blocking fashion:</para>
+<title>Execute a Taskflow from an Internal Worker Cooperatively</title>
+<para>Each run variant of <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> returns a <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> object that allows you to wait for the associated execution to complete. When <computeroutput>tf::Future::wait</computeroutput> is called, the caller blocks until the underlying state becomes ready. However, this blocking design can lead to potential deadlocks, particularly when multiple taskflows are launched from within the internal workers of the same executor. For example, the following code creates a taskflow of 1,000 tasks, where each task runs another taskflow of 500 tasks in a blocking manner, leading to a potential deadlock problem:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::Taskflow, 1000&gt;</ref><sp/>others;</highlight></codeline>
@@ -206,7 +206,7 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
-<para>To avoid this problem, the executor has a method, <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref>, to execute a taskflow from a worker of that executor. The worker will not block but corun the taskflow with other tasks in its work-stealing loop.</para>
+<para>To avoid this deadlock issue, <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> provides a cooperative execution method, <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref>, which allows a worker to execute a taskflow <emphasis>cooperatively</emphasis> with other workers within the same executor. Specifically, instead of blocking, the calling worker cooperatively runs the taskflow alongside other tasks in the executor&apos;s work-stealing loop.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::Taskflow, 1000&gt;</ref><sp/>others;</highlight></codeline>
@@ -218,14 +218,13 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>others[n].emplace([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;executor,<sp/>&amp;<ref refid="namespacetf" kindref="compound">tf</ref>=others[n]](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>the<sp/>caller<sp/>worker<sp/>will<sp/>not<sp/>block<sp/>but<sp/>corun<sp/>these</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>taskflows<sp/>through<sp/>its<sp/>work-stealing<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>calling<sp/>worker<sp/>coruns<sp/>the<sp/>taskflow<sp/>cooperatively<sp/>with<sp/>other<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">corun</ref>(<ref refid="namespacetf" kindref="compound">tf</ref>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
-<para>Similar to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref>, the method <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> is another variant that keeps the calling worker in the work-stealing loop until the given predicate becomes true. You can use this method to prevent blocking a worker from doing useful things, such as being blocked when submitting an outstanding task (e.g., a GPU operation).</para>
+<para>Similar to <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref>, <ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">tf::Executor::corun_until</ref> provides a more general mechanism for cooperative execution. It allows the calling worker to execute tasks alongside other workers until the specified condition becomes true. This function is particularly useful when implementing custom synchronization or pooling patterns, where the worker should continue making progress on other available tasks while periodically checking for a termination condition.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu<sp/>=<sp/><ref refid="cpp/thread/async" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::async</ref>([](){<sp/>std::sleep(100s);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a0fc6eb19f168dc4a9cd0a7c6187c1d2d" kindref="member">corun_until</ref>([](){</highlight></codeline>
@@ -239,12 +238,12 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 </sect1>
 <sect1 id="ExecuteTaskflow_1ThreadSafetyOfExecution">
 <title>Thread Safety of Executor</title>
-<para>All <computeroutput>run_*</computeroutput> methods of <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> are <emphasis>thread-safe</emphasis>. You can safely invoke these methods from multiple threads to run different taskflows concurrently. However, the execution order of the submitted taskflows is non-deterministic and determined by the runtime scheduler.</para>
+<para>All <computeroutput>run_*</computeroutput> methods of <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> are <emphasis>thread-safe</emphasis>. You can safely call these methods from multiple threads to execute different taskflows concurrently. However, the execution order of the submitted taskflows is non-deterministic and determined by the runtime scheduler.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::Taskflow, 10&gt;</ref><sp/>taskflows;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;10;<sp/>++i)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/thread/thread" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref>([i,<sp/>&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...<sp/>modify<sp/>my<sp/>taskflow<sp/>at<sp/>i</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflows[i]);<sp/><sp/></highlight><highlight class="comment">//<sp/>run<sp/>my<sp/>taskflow<sp/>at<sp/>i</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflows[i]);<sp/><sp/></highlight><highlight class="comment">//<sp/>thread<sp/>i<sp/>runs<sp/>taskflow<sp/>i</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}).detach();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
@@ -253,17 +252,13 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <sect1 id="ExecuteTaskflow_1QueryTheWorkerID">
 <title>Query the Worker ID</title>
 <para>Each worker thread in a <ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref> is assigned a <emphasis>unique</emphasis> integer identifier in the range <computeroutput>[0, N)</computeroutput>, where <computeroutput>N</computeroutput> is the number of worker threads in the executor. You can query the identifier of the calling thread using <ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">tf::Executor::this_worker_id</ref>. If the calling thread is not a worker of the executor, the method returns -1. This functionality is particularly useful for establishing a one-to-one mapping between worker threads and application-specific data structures.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>worker_vectors[8];<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>one<sp/>vector<sp/>per<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>data[8];<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>worker-specific<sp/>data<sp/>vector</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>an<sp/>executor<sp/>of<sp/>eight<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">assert(executor.<ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">this_worker_id</ref>()<sp/>==<sp/>-1);<sp/><sp/></highlight><highlight class="comment">//<sp/>master<sp/>thread<sp/>is<sp/>not<sp/>a<sp/>worker</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">assert(executor.<ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">this_worker_id</ref>()<sp/>==<sp/>-1);<sp/><sp/></highlight><highlight class="comment">//<sp/>calling<sp/>thread<sp/>is<sp/>not<sp/>a<sp/>worker<sp/>of<sp/>the<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal"><sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" kindref="member">this_worker_id</ref>();<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>in<sp/>the<sp/>range<sp/>[0,<sp/>8)</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>vec<sp/>=<sp/>worker_vectors[worker_id];</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal">&amp;<sp/>vec<sp/>=<sp/>data[id];<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>worker<sp/>id<sp/>process<sp/>data[id]</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting></para>
 </sect1>

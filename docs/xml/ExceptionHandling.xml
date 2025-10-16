@@ -5,6 +5,24 @@
     <title>Exception Handling</title>
     <tableofcontents>
       <tocsect>
+        <name>Understand the Logic of Exception Handling in %Taskflow</name>
+        <reference>ExceptionHandling_1UnderstandTheLogicOfExceptionHandlingInTaskflow</reference>
+    <tableofcontents>
+      <tocsect>
+        <name>Exception Propagation through Shared State</name>
+        <reference>ExceptionHandling_1ExceptionPropagationThroughSharedState</reference>
+    </tocsect>
+      <tocsect>
+        <name>Immediate Exception in Blocking Executions</name>
+        <reference>ExceptionHandling_1ImmediateExceptionInBlockingExecutions</reference>
+    </tocsect>
+      <tocsect>
+        <name>Silent Exception Suppression</name>
+        <reference>ExceptionHandling_1SilentExceptionSuppression</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
+      <tocsect>
         <name>Catch an Exception from a Running Taskflow</name>
         <reference>ExceptionHandling_1CatchAnExceptionFromARunningTaskflow</reference>
     </tocsect>
@@ -28,15 +46,53 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>This chapters discusses how to handle exceptions from a submitted taskflow so you can properly catch or propagate exceptions in your workload.</para>
+<para>This chapter discusses how to handle exceptions in Taskflow, so you can correctly catch or propagate exceptions within your workloads.</para>
+<sect1 id="ExceptionHandling_1UnderstandTheLogicOfExceptionHandlingInTaskflow">
+<title>Understand the Logic of Exception Handling in %Taskflow</title>
+<para>Exception handling in <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. The logic can be understood in three distinct scenarios, depending on how the task is executed and how the runtime is expected to report errors.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/exception-handling-logic.dot"></dotfile>
+</para>
+<para>We start with a brief overview of the three scenarios and then examine different use cases in more detail.</para>
+<sect2 id="ExceptionHandling_1ExceptionPropagationThroughSharedState">
+<title>Exception Propagation through Shared State</title>
+<para>When you launch tasks using functions like <ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">tf::Executor::run</ref> or <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, any exception thrown within the task is captured and stored in a shared state associated with the returned <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> or <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>. This exception can later be rethrown when you access the result of the shared state.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Future" kindref="compound">tf::Future&lt;void&gt;</ref><sp/>fu<sp/>=<sp/>executor.run(taskflow);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>fu.get();<sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/exception" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect2>
+<sect2 id="ExceptionHandling_1ImmediateExceptionInBlockingExecutions">
+<title>Immediate Exception in Blocking Executions</title>
+<para>If the taskflow is executed in a blocking context, such as through <ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">tf::Executor::corun</ref>, exceptions are immediately propagated to the caller.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.corun(taskflow);<sp/></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/exception" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>In this scenario, the calling thread becomes the natural exception handler.</para>
+</sect2>
+<sect2 id="ExceptionHandling_1SilentExceptionSuppression">
+<title>Silent Exception Suppression</title>
+<para>In certain cases (e.g., <ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">tf::Executor::silent_async</ref>), exceptions are silently caught and discarded because there is no associated state or waiting context to report them to. This design ensures the runtime can continue executing other tasks safely without interruption.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.silent_dependent_async([](){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception<sp/>won&apos;t<sp/>be<sp/>caught&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>Use this form only when failure propagation is intentionally unnecessary (e.g., fire-and-forget logging, telemetry).</para>
+</sect2>
+</sect1>
 <sect1 id="ExceptionHandling_1CatchAnExceptionFromARunningTaskflow">
 <title>Catch an Exception from a Running Taskflow</title>
-<para>When a task throws an exception, the executor will store that exception in the shared state referenced by the <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> handle. You can catch that exception via calling the <computeroutput>get</computeroutput> method:</para>
+<para>When a task throws an exception, the executor captures it and stores it in the shared state associated with the returned <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> (a derived class of <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>). You can later catch the exception by calling the <computeroutput>get</computeroutput> method:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -46,14 +102,12 @@
 </programlisting></para>
 <para><simplesect kind="attention"><para>As <ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref> is derived from <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink>, it inherits all the exception handling behaviors defined by the C++ standard.</para>
 </simplesect>
-An exception will automatically cancel the execution of its parent taskflow. All the subsequent tasks that have dependencies on that exception task will not run. For instance, the following code defines two tasks, <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput>, where <computeroutput>B</computeroutput> runs after <computeroutput>A</computeroutput>. When <computeroutput>A</computeroutput> throws an exception, the executor will cancel the execution of the taskflow, stopping every tasks that run after <computeroutput>A</computeroutput>. In this case, <computeroutput>B</computeroutput> will not run.</para>
+When a task throws an exception, the executor automatically cancels the execution of its parent taskflow. All subsequent tasks that depend on the exception-throwing task will be skipped. For example, consider a taskflow with two tasks, <computeroutput>A</computeroutput> and <computeroutput>B</computeroutput>, where <computeroutput>B</computeroutput> runs after <computeroutput>A</computeroutput>. If <computeroutput>A</computeroutput> throws an exception, the executor cancels the remaining execution of the taskflow, preventing any dependent tasks (including <computeroutput>B</computeroutput>) from running.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception<sp/>on<sp/>A&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;Task<sp/>B\n&quot;</highlight><highlight class="normal">;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
@@ -64,7 +118,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>exception<sp/>on<sp/>A</highlight></codeline>
 <codeline><highlight class="normal">#<sp/>execution<sp/>of<sp/>taskflow<sp/>is<sp/>cancelled<sp/>after<sp/>an<sp/>execution<sp/>is<sp/>thrown</highlight></codeline>
 </programlisting></para>
-<para>When multiple tasks throw exceptions simultaneously, the executor will only catch one exception and store it in the shared state. Other exceptions will be silently ignored. For example, the following taskflow may concurrently throw two exceptions from task <computeroutput>B</computeroutput> and task <computeroutput>C</computeroutput>. Only one exception, either <computeroutput>B</computeroutput> or <computeroutput>C</computeroutput>, will be propagated.</para>
+<para>When multiple tasks throw exceptions simultaneously, the executor will store only one of these exceptions in the shared state. Other exceptions will still be caught but are silently ignored. For example, in the following taskflow, both task <computeroutput>B</computeroutput> and task <computeroutput>C</computeroutput> may throw exceptions concurrently. Only one exception, either from task B or task C, will be propagated.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -88,8 +142,7 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>caught<sp/>either<sp/>B&apos;s<sp/>or<sp/>C&apos;s<sp/>exception</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();<sp/><sp/></highlight><highlight class="comment">//<sp/>exception<sp/>of<sp/>either<sp/>B<sp/>or<sp/>C<sp/>is<sp/>caught</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect1>
@@ -113,8 +166,8 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>sf.<ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">join</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;exception<sp/>thrown<sp/>during<sp/>subflow<sp/>joining:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;exception<sp/>thrown<sp/>during<sp/>subflow<sp/>joining:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -146,9 +199,9 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal">{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)</highlight></codeline>
 <codeline><highlight class="normal">{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;exception<sp/>thrown<sp/>from<sp/>running<sp/>the<sp/>taskflow:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;exception<sp/>thrown<sp/>from<sp/>running<sp/>the<sp/>taskflow:<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">Task<sp/>A</highlight></codeline>
@@ -157,14 +210,14 @@ An exception will automatically cancel the execution of its parent taskflow. All
 </sect1>
 <sect1 id="ExceptionHandling_1CatchAnExceptionFromAnAsyncTask">
 <title>Catch an Exception from an Async Task</title>
-<para>Similar to <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink>, <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> will store the exception in the shared state referenced by the returned <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> handle.</para>
+<para>Similar to <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>, <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref> stores any exception in the shared state referenced by the returned <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref> handle.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;exception&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fu.get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>Running the program will show the exception message on the async task:</para>
@@ -184,8 +237,8 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 </sect1>
@@ -202,8 +255,8 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal">taskflow2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" kindref="member">corun</ref>(taskflow1);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow2).get();</highlight></codeline>
@@ -219,8 +272,8 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal">taskflow2.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">corun</ref>(taskflow1);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow2).get();</highlight></codeline>
@@ -240,19 +293,20 @@ An exception will automatically cancel the execution of its parent taskflow. All
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">try</highlight><highlight class="normal"><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow2).get();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>re)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>re.what()<sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">catch</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>&amp;<sp/>e)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cerr</ref><sp/>&lt;&lt;<sp/>e.what();</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>For the above example, if the exception is not caught with <ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">tf::Runtime::corun</ref>, it will be propagated to its parent task, which is the <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> object <computeroutput>rt</computeroutput> in this case. Then, the exception will be propagated to <computeroutput>taskflow2</computeroutput>.</para>
 </sect1>
 <sect1 id="ExceptionHandling_1TurnOffExceptionHandling">
 <title>Turn Off Exception Handling</title>
-<para>In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. Taskflow allows you to disable exception handling entirely at compile time. To do this, simply define the macro <computeroutput>TF_DISABLE_EXCEPTION_HANDLING</computeroutput> when compiling your program:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">~$<sp/>g++<sp/>-DTF_DISABLE_EXCEPTION_HANDLING<sp/>your_taskflow_prog.cpp</highlight></codeline>
+<para>In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. Taskflow allows you to disable exception handling entirely at compile time. To do this, define the macro <computeroutput>TF_DISABLE_EXCEPTION_HANDLING</computeroutput> when compiling your Taskflow program:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#<sp/>disable<sp/>exception<sp/>handling<sp/></highlight></codeline>
+<codeline><highlight class="preprocessor">~$<sp/>g++<sp/>-DTF_DISABLE_EXCEPTION_HANDLING<sp/>your_taskflow_prog.cpp</highlight></codeline>
 </programlisting></para>
-<para>Disabling exception handling removes all try-catch blocks from the Taskflow runtime, resulting in a leaner binary and potentially faster execution. However, please note that this also means Taskflow will not catch or report runtime exceptions.</para>
-<para><simplesect kind="attention"><para>Disabling exception handling means that Taskflow will not catch or report runtime exceptions. Any exception thrown during execution will propagate unchecked and may cause your program to behave abnormally. Use this option only if you are confident that your application does not rely on exception safety. </para>
+<para>Disabling exception handling removes all try-catch blocks from the Taskflow runtime, resulting in a leaner binary and potentially faster execution. However, Taskflow will no longer catch or report runtime exceptions.</para>
+<para><simplesect kind="attention"><para>Disabling exception handling means that any exception thrown during execution will be unchecked, which may cause your program to behave unpredictably. Use this option only if your application does not rely on exception safety. </para>
 </simplesect>
 </para>
 </sect1>

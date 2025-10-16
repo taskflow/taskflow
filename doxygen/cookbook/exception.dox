@@ -2,23 +2,75 @@ namespace tf {
 
 /** @page ExceptionHandling Exception Handling
 
-This chapters discusses how to handle exceptions from a submitted taskflow
-so you can properly catch or propagate exceptions in your workload.
+This chapter discusses how to handle exceptions in %Taskflow, so you can correctly catch or propagate exceptions within your workloads.
 
 @tableofcontents
 
+@section UnderstandTheLogicOfExceptionHandlingInTaskflow Understand the Logic of Exception Handling in %Taskflow
+
+Exception handling in Taskflow follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. 
+The logic can be understood in three distinct scenarios, depending on how the task is executed and how the runtime is expected to report errors.
+
+@dotfile images/exception-handling-logic.dot
+
+We start with a brief overview of the three scenarios and then examine different use cases in more detail.
+
+@subsection ExceptionPropagationThroughSharedState Exception Propagation through Shared State
+
+When you launch tasks using functions like tf::Executor::run or tf::Executor::async,
+any exception thrown within the task is captured and stored in a shared state associated with the returned tf::Future or std::future.
+This exception can later be rethrown when you access the result of the shared state.
+
+@code{.cpp}
+tf::Future<void> fu = executor.run(taskflow);
+try {
+  fu.get(); 
+}
+catch(const std::exception& e) {
+  std::cerr << e.what();
+}
+@endcode
+
+@subsection ImmediateExceptionInBlockingExecutions Immediate Exception in Blocking Executions
+
+If the taskflow is executed in a blocking context, such as through tf::Executor::corun, 
+exceptions are immediately propagated to the caller.
+
+@code{.cpp}
+try {
+  executor.corun(taskflow); 
+}
+catch(const std::exception& e) {
+  std::cerr << e.what();
+}
+@endcode
+
+In this scenario, the calling thread becomes the natural exception handler.
+
+@subsection SilentExceptionSuppression  Silent Exception Suppression
+
+In certain cases (e.g., tf::Executor::silent_async), exceptions are silently caught and discarded
+because there is no associated state or waiting context to report them to.
+This design ensures the runtime can continue executing other tasks safely without interruption.
+
+@code{.cpp}
+executor.silent_dependent_async([](){ 
+  throw std::runtime_error("exception won't be caught");
+});
+@endcode
+
+Use this form only when failure propagation is intentionally unnecessary (e.g., fire-and-forget logging, telemetry).
+
 @section CatchAnExceptionFromARunningTaskflow Catch an Exception from a Running Taskflow
 
-When a task throws an exception, the executor will store that exception in the
-shared state referenced by the tf::Future handle.
-You can catch that exception via calling the @c get method:
+When a task throws an exception, the executor captures it and stores it in the shared state associated with the returned tf::Future 
+(a derived class of std::future).
+You can later catch the exception by calling the @c get method:
 
 @code{.cpp}
 tf::Executor executor;
 tf::Taskflow taskflow;
-
 taskflow.emplace([](){ throw std::runtime_error("exception"); });
-
 try {
   executor.run(taskflow).get();
 }
@@ -31,24 +83,18 @@ catch(const std::runtime_error& e) {
 As tf::Future is derived from @std_future, it inherits all the exception handling
 behaviors defined by the C++ standard.
 
-
-An exception will automatically cancel the execution of its parent taskflow.
-All the subsequent tasks that have dependencies on that exception task will
-not run.
-For instance, the following code defines two tasks, @c A and @c B, where
-@c B runs after @c A.
-When @c A throws an exception, the executor will cancel the execution of the
-taskflow, stopping every tasks that run after @c A.
-In this case, @c B will not run.
+When a task throws an exception, the executor automatically cancels the execution of its parent taskflow.
+All subsequent tasks that depend on the exception-throwing task will be skipped.
+For example, consider a taskflow with two tasks, @c A and @c B, where @c B runs after @c A.
+If @c A throws an exception, the executor cancels the remaining execution of the taskflow, 
+preventing any dependent tasks (including @c B) from running.
 
 @code{.cpp}
 tf::Executor executor;
 tf::Taskflow taskflow;
-
 tf::Task A = taskflow.emplace([](){ throw std::runtime_error("exception on A"); });
 tf::Task B = taskflow.emplace([](){ std::cout << "Task B\n"; });
 A.precede(B);
-
 try {
   executor.run(taskflow).get();
 }
@@ -62,12 +108,10 @@ catch(const std::runtime_error& e) {
 # execution of taskflow is cancelled after an execution is thrown
 @endcode
 
-When multiple tasks throw exceptions simultaneously,
-the executor will only catch one exception and store it in the shared state.
-Other exceptions will be silently ignored.
-For example, the following taskflow may concurrently throw two exceptions from 
-task @c B and task @c C.
-Only one exception, either @c B or @c C, will be propagated.
+When multiple tasks throw exceptions simultaneously, the executor will store only one of these exceptions in the shared state. 
+Other exceptions will still be caught but are silently ignored. 
+For example, in the following taskflow, both task @c B and task @c C may throw exceptions concurrently. 
+Only one exception, either from task B or task C, will be propagated.
   
 @code{.cpp}
 tf::Executor executor;
@@ -93,8 +137,7 @@ try {
   executor.run(taskflow).get();
 }
 catch(const std::runtime_error& e) {
-  // caught either B's or C's exception
-  std::cout << e.what() << std::endl;
+  std::cerr << e.what();  // exception of either B or C is caught
 }
 @endcode
 
@@ -123,8 +166,8 @@ taskflow.emplace([](tf::Subflow& sf) {
   try {
     sf.join();
   }
-  catch(const std::runtime_error& re) {
-    std::cout << "exception thrown during subflow joining: " << re.what() << '\n';
+  catch(const std::runtime_error& e) {
+    std::cerr << "exception thrown during subflow joining: " << e.what();
   }
 });
 
@@ -166,9 +209,9 @@ try
 {
   executor.run(taskflow).get();
 }
-catch (const std::runtime_error& re)
+catch (const std::runtime_error& e)
 {
-  std::cout << "exception thrown from running the taskflow: " << re.what() << '\n';
+  std::cerr << "exception thrown from running the taskflow: " << e.what();
 }
 @endcode
 
@@ -180,8 +223,8 @@ exception thrown from running the taskflow: exception on A
 
 @section CatchAnExceptionFromAnAsyncTask Catch an Exception from an Async Task
 
-Similar to @std_future, tf::Executor::async will store the exception in the shared
-state referenced by the returned @std_future handle.
+Similar to std::future, tf::Executor::async stores any exception in the shared state 
+referenced by the returned std::future handle.
 
 @code{.cpp}
 tf::Executor executor;
@@ -190,7 +233,7 @@ try {
   fu.get();
 }
 catch(const std::runtime_error& e) {
-  std::cerr << e.what() << std::endl;
+  std::cerr << e.what();
 }
 @endcode
 
@@ -219,8 +262,8 @@ taskflow.emplace([&](tf::Runtime& rt){
 try {
   taskflow.get();
 }
-catch(const std::runtime_error& re) {
-  std::cout << re.what() << std::endl;
+catch(const std::runtime_error& e) {
+  std::cerr << e.what();
 }
 @endcode
 
@@ -241,8 +284,8 @@ taskflow1.emplace([](){
 taskflow2.emplace([&](){
   try {
     executor.corun(taskflow1);
-  } catch(const std::runtime_error& re) {
-    std::cout << re.what() << std::endl;
+  } catch(const std::runtime_error& e) {
+    std::cerr << e.what();
   }
 }); 
 executor.run(taskflow2).get();
@@ -261,8 +304,8 @@ taskflow1.emplace([](){
 taskflow2.emplace([&](tf::Runtime& rt){
   try {
     rt.corun(taskflow1);
-  } catch(const std::runtime_error& re) {
-    std::cout << re.what() << std::endl;
+  } catch(const std::runtime_error& e) {
+    std::cerr << e.what();
   }
 }); 
 executor.run(taskflow2).get();
@@ -287,8 +330,8 @@ taskflow2.emplace([&](tf::Runtime& rt){
 try {
   executor.run(taskflow2).get();
 }
-catch(const std::runtime_error& re) {
-  std::cout << re.what() << std::endl;
+catch(const std::runtime_error& e) {
+  std::cerr << e.what();
 }
 @endcode
 
@@ -298,20 +341,22 @@ Then, the exception will be propagated to `taskflow2`.
 
 @section TurnOffExceptionHandling Turn Off Exception Handling
 
-In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. %Taskflow allows you to disable exception handling entirely at compile time. 
-To do this, simply define the macro `TF_DISABLE_EXCEPTION_HANDLING` when compiling your program:
+In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints.
+%Taskflow allows you to disable exception handling entirely at compile time. 
+To do this, define the macro `TF_DISABLE_EXCEPTION_HANDLING` when compiling your %Taskflow program:
 
 @code{.cpp}
+# disable exception handling 
 ~$ g++ -DTF_DISABLE_EXCEPTION_HANDLING your_taskflow_prog.cpp
 @endcode
 
 Disabling exception handling removes all try-catch blocks from the %Taskflow runtime, resulting in a leaner binary and potentially faster execution. 
-However, please note that this also means %Taskflow will not catch or report runtime exceptions. 
+However, %Taskflow will no longer catch or report runtime exceptions.
 
 @attention
-Disabling exception handling means that %Taskflow will not catch or report runtime exceptions.
-Any exception thrown during execution will propagate unchecked and may cause your program to behave abnormally.
-Use this option only if you are confident that your application does not rely on exception safety.
+Disabling exception handling means that any exception thrown during execution will be unchecked,
+which may cause your program to behave unpredictably.
+Use this option only if your application does not rely on exception safety.
 
 */
 

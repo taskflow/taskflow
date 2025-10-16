@@ -128,7 +128,7 @@ tf::Executor executor;  // create an executor
   // resulting in undefined behavior
 @endcode
 
-Similarly, you should avoid touching a taskflow while it is running.
+Similarly, you should avoid touching a taskflow while it is running:
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -209,16 +209,14 @@ executor.run(taskflow).wait();
 tf::Taskflow moved_taskflow(std::move(taskflow));  
 @endcode
 
-@section ExecuteATaskflowFromAnInternalWorker Execute a Taskflow from an Internal Worker
+@section ExecuteATaskflowFromAnInternalWorker Execute a Taskflow from an Internal Worker Cooperatively
 
-Each run variant of tf::Executor returns a tf::Future object which allows you 
-to wait for the result to complete.
-When calling `tf::Future::wait`, the caller blocks without doing anything until
-the associated state is written to be ready.
-This design, however, can introduce deadlock problem especially when you need to run 
-multiple taskflows from the internal workers of an executor.
-For example, the code below creates a taskflow of 1000 tasks
-with each task running a taskflow of 500 tasks in a blocking fashion:
+Each run variant of tf::Executor returns a tf::Future object that allows you to wait for the associated execution to complete.
+When `tf::Future::wait` is called, the caller blocks until the underlying state becomes ready.
+However, this blocking design can lead to potential deadlocks, 
+particularly when multiple taskflows are launched from within the internal workers of the same executor.
+For example, the following code creates a taskflow of 1,000 tasks, 
+where each task runs another taskflow of 500 tasks in a blocking manner, leading to a potential deadlock problem:
 
 @code{.cpp}
 tf::Executor executor(2);
@@ -238,12 +236,10 @@ for(size_t n=0; n<1000; n++) {
 executor.run(taskflow).wait();
 @endcode
 
-
-To avoid this problem,
-the executor has a method, tf::Executor::corun, to execute
-a taskflow from a worker of that executor.
-The worker will not block but corun the taskflow with other tasks
-in its work-stealing loop.
+To avoid this deadlock issue, tf::Executor provides a cooperative execution method, tf::Executor::corun,
+which allows a worker to execute a taskflow @em cooperatively with other workers within the same executor.
+Specifically, instead of blocking, the calling worker cooperatively runs the taskflow alongside other tasks 
+in the executor's work-stealing loop.
 
 @code{.cpp}
 tf::Executor executor(2);
@@ -257,8 +253,7 @@ for(size_t n=0; n<1000; n++) {
     others[n].emplace([&](){ counter++; });
   }
   taskflow.emplace([&executor, &tf=others[n]](){
-    // the caller worker will not block but corun these
-    // taskflows through its work-stealing loop
+    // calling worker coruns the taskflow cooperatively with other workers
     executor.corun(tf);
   });
 }
@@ -266,11 +261,11 @@ executor.run(taskflow).wait();
 @endcode
 
 
-Similar to tf::Executor::corun, the method tf::Executor::corun_until
-is another variant that keeps the calling worker in the work-stealing loop 
-until the given predicate becomes true. 
-You can use this method to prevent blocking a worker from doing useful things,
-such as being blocked when submitting an outstanding task (e.g., a GPU operation).
+Similar to tf::Executor::corun, tf::Executor::corun_until provides a more general mechanism for cooperative execution. 
+It allows the calling worker to execute tasks alongside other workers until the specified condition becomes true. 
+This function is particularly useful when implementing custom synchronization or pooling patterns,
+where the worker should continue making progress on other available tasks 
+while periodically checking for a termination condition.
 
 @code{.cpp}
 taskflow.emplace([&](){
@@ -288,15 +283,15 @@ from a worker of the calling executor or an exception will be thrown.
 @section ThreadSafetyOfExecution Thread Safety of Executor
 
 All `run_*` methods of tf::Executor are @em thread-safe.
-You can safely invoke these methods from multiple threads to run different taskflows concurrently.
+You can safely call these methods from multiple threads to execute different taskflows concurrently.
 However, the execution order of the submitted taskflows is non-deterministic and determined by the runtime scheduler.
 
 @code{.cpp}
 tf::Executor executor;
+std::array<tf::Taskflow, 10> taskflows;
 for(int i=0; i<10; ++i) {
   std::thread([i, &](){
-    // ... modify my taskflow at i
-    executor.run(taskflows[i]);  // run my taskflow at i
+    executor.run(taskflows[i]);  // thread i runs taskflow i
   }).detach();
 }
 executor.wait_for_all();
@@ -311,17 +306,13 @@ If the calling thread is not a worker of the executor, the method returns -1.
 This functionality is particularly useful for establishing a one-to-one mapping between worker threads and application-specific data structures.
 
 @code{.cpp}
-std::vector<int> worker_vectors[8];       // one vector per worker
-
+std::vector<int> data[8];                 // worker-specific data vector
 tf::Taskflow taskflow;
 tf::Executor executor(8);                 // an executor of eight workers
-
-assert(executor.this_worker_id() == -1);  // master thread is not a worker
-
+assert(executor.this_worker_id() == -1);  // calling thread is not a worker of the executor
 taskflow.emplace([&](){
   int id = executor.this_worker_id();     // in the range [0, 8)
-  auto& vec = worker_vectors[worker_id];
-  // ...
+  auto& vec = data[id];                   // worker id process data[id]
 });
 @endcode
 
