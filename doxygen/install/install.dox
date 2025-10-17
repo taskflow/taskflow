@@ -27,7 +27,7 @@ To use %Taskflow, you only need a compiler that supports C++17:
 Simply download the source and copy the headers under the directory @c taskflow/
 to your project.
 
-@code{.bash}
+@code{.shell-session}
 ~$ git clone https://github.com/taskflow/taskflow.git
 ~$ cd taskflow/
 ~$ cp -r taskflow myproject/include/
@@ -40,7 +40,7 @@ where to find the %Taskflow header files and link it through the system thread l
 (usually [POSIX threads](http://man7.org/linux/man-pages/man7/pthreads.7.html) in Linux-like systems).
 Take gcc for an example:
 
-@code{.bash}
+@code{.shell-session}
 ~$ g++ simple.cpp -std=c++17 -I myproject/include/ -O2 -pthread -o simple
 @endcode
 
@@ -50,7 +50,7 @@ Take gcc for an example:
 %Taskflow uses CMake to build examples and unit tests. 
 We recommend using out-of-source build.
 
-@code{.bash}
+@code{.shell-session}
 ~$ cd path/to/taskflow
 ~$ mkdir build
 ~$ cd build
@@ -78,7 +78,7 @@ When the building completes, you can find the executables for examples and tests
 under the two folders, @c examples/ and @c unittests/.
 You can list a set of available options in the cmake.
 
-@code{.bash}
+@code{.shell-session}
 ~$ cmake -LA
 ...
 TF_BUILD_EXAMPLES:BOOL=ON       # by default, we compile examples
@@ -103,7 +103,7 @@ Currently, our CMake script supports the following options:
 To enable or disable a specific option, use @c -D in the CMake build. 
 For example:
 
-@code{.bash}
+@code{.shell-session}
 ~$ cmake ../ -DTF_BUILD_EXAMPLES=OFF
 @endcode
 
@@ -116,7 +116,7 @@ enable the CMake option @c TF_BUILD_CUDA to @c ON.
 Cmake will automatically detect the existence of @c nvcc 
 and use it to compile and link @c .cu code.
 
-@code{.bash}
+@code{.shell-session}
 ~$ cmake ../ -DTF_BUILD_CUDA=ON
 ~$ make
 @endcode
@@ -133,7 +133,7 @@ To enable a sanitizer, add the sanitizer flag to the CMake variable
 The following example enables thread sanitizer in building %Taskflow code
 to detect data race:
 
-@code{.bash}
+@code{.shell-session}
 # build Taskflow code with thread sanitizer to detect data race
 ~$ cmake ../ -DCMAKE_CXX_FLAGS="-fsanitize=thread -g"
 
@@ -166,7 +166,7 @@ the performance of Taskflow with existing parallel programming libraries.
 To build the benchmark code,
 enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
 
-@code{.bash}
+@code{.shell-session}
 ~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
 ~$ make
 @endcode
@@ -180,7 +180,7 @@ The source of documentation is located in the folder @c taskflow/doxygen
 and the generated html is output to the folder @c taskflow/docs.
 To generate the documentation, you need to first install doxygen:
 
-@code{.bash}
+@code{.shell-session}
 # ubuntu as an example
 ~$ sudo apt-get install doxygen graphviz
 @endcode
@@ -188,7 +188,7 @@ To generate the documentation, you need to first install doxygen:
 Once you have doxygen and dot graph generator installed, clone the m.css project and enter
 the @c m.css/documentation directory:
 
-@code{.bash}
+@code{.shell-session}
 ~$ git clone https://github.com/mosra/m.css.git
 ~$ cd m.css/documentation
 @endcode
@@ -198,7 +198,7 @@ The script @c doxygen.py requires Python 3.6, depends on
 <a href="http://pygments.org/">Pygments</a> for code block highlighting. 
 You can install the dependencies via @c pip or your distribution package manager:
 
-@code{.bash}
+@code{.shell-session}
 # You may need sudo here
 # More details are available at https://mcss.mosra.cz/documentation/doxygen/
 ~$ pip3 install jinja2 Pygments
@@ -206,7 +206,7 @@ You can install the dependencies via @c pip or your distribution package manager
 
 Next, invoke @c doxygen.py and point it to the @c taskflow/doxygen/conf.py:
 
-@code{.bash}
+@code{.shell-session}
 ~$ ./doxygen.py path/to/taskflow/doxygen/conf.py
 @endcode
 

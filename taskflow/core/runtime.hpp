@@ -493,8 +493,8 @@ class NonpreemptiveRuntime {
   /**
   @private
   */
-  explicit NonpreemptiveRuntime(Executor& executor, Worker& worker, Node* parent) :
-    _executor {executor}, _worker {worker}, _parent{parent} {
+  explicit NonpreemptiveRuntime(Executor& executor, Worker& worker) :
+    _executor {executor}, _worker {worker}{
   }
   
   /**
@@ -506,12 +506,6 @@ class NonpreemptiveRuntime {
   @private
   */
   Worker& _worker;
-  
-  /**
-  @private
-  */
-  Node* _parent;
-  
 };
 
 // Procedure: schedule
@@ -536,7 +530,7 @@ inline void NonpreemptiveRuntime::schedule(Task task) {
 // Procedure: _invoke_nonpreemptive_runtime_task
 inline void Executor::_invoke_nonpreemptive_runtime_task(Worker& worker, Node* node) {
   _observer_prologue(worker, node);
-  tf::NonpreemptiveRuntime nprt(*this, worker, node);
+  tf::NonpreemptiveRuntime nprt(*this, worker);
   TF_EXECUTOR_EXCEPTION_HANDLER(worker, node, {
     std::get_if<Node::NonpreemptiveRuntime>(&node->_handle)->work(nprt);
   });

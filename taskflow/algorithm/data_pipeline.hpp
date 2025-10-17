@@ -237,7 +237,7 @@ int main() {
 The pipeline schedules five tokens over four parallel lines in a circular fashion, 
 as depicted below:
 
-@code{.bash}
+@code{.shell-session}
 o -> o -> o
 |    |    |
 v    v    v

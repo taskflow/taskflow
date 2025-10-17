@@ -293,7 +293,7 @@ executor.run(taskflow).wait();
 The above example creates a pipeline graph that schedules five tokens over
 four parallel lines in a circular fashion, as depicted below:
 
-@code{.bash}
+@code{.shell-session}
 o -> o -> o
 |    |    |
 v    v    v
@@ -748,7 +748,7 @@ The above example creates a pipeline graph that schedules five tokens over
 four parallel lines in a circular fashion, first going through three serial pipes
 and then five serial pipes:
 
-@code{.bash}
+@code{.shell-session}
 # initial construction of three serial pipes
 o -> o -> o
 |    |    |
