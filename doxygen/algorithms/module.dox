@@ -59,7 +59,7 @@ int main() {
 Since the four taskflows are launched asynchronously without any dependencies between them,
 we can observe any order of the output message:
 
-@code{.shell-session}
+@code{.bash}
 # one possible output
 Taskflow B
 Taskflow C
@@ -99,7 +99,7 @@ FD.get();
 
 @dotfile images/module_task_2.dot
 
-@code{.shell-session}
+@code{.bash}
 # dependent-async tasks enforce a sequential execution of the four taskflows
 Taskflow A
 Taskflow B

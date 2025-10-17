@@ -177,7 +177,7 @@ Our pipeline algorithm schedules tokens in a @em circular manner, with a factor 
 That is, token @c t will be processed at line <tt>t % num_lines</tt>.
 The following snippet shows one of the possible outputs of this pipeline program:
 
-@code{.shell-session}
+@code{.bash}
 pipe 0: input token = 0
 pipe 1: input buffer[0] = 0
 pipe 2: input buffer[0] = 1
@@ -310,7 +310,7 @@ The taskflow graph of this pipeline example is illustrated as follows:
 
 The following snippet shows one of the possible outputs:
 
-@code{.shell-session}
+@code{.bash}
 initial
 stage 0: input token = 0
 stage 1: input buffer[0] = 0
@@ -471,7 +471,7 @@ The taskflow graph of this pipeline example is illustrated as follows:
 
 The following snippet shows one of the possible outputs:
 
-@code{.shell-session}
+@code{.bash}
 pipeline 1, pipe 0: input token = 0
 pipeline 1, pipe 1: input buffer_1[0] = 0
 pipeline 1, pipe 2: input buffer_1[0] = 1
@@ -619,7 +619,7 @@ The taskflow graph of this pipeline example is illustrated as follows:
 
 The following snippet shows one of the possible outputs:
 
-@code{.shell-session}
+@code{.bash}
 initial
 pipeline 2, pipe 0: input token = 0
 pipeline 2, pipe 1: input buffer_2[0] = 0
@@ -736,7 +736,7 @@ executor.run(taskflow).wait();
 
 The following snippet shows one of the possible outputs:
 
-@code{.shell-session}
+@code{.bash}
 initial
 pipe 0: input token = 0
 pipe 1: input buffer_1[0] = 0

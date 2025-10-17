@@ -9,7 +9,7 @@ namespace tf {
 To build the benchmark code,
 enable the CMake option @c TF_BUILD_BENCHMARKS to @c ON as follows:
 
-@code{.shell-session}
+@code{.bash}
 # under /taskflow/build
 ~$ cmake ../ -DTF_BUILD_BENCHMARKS=ON
 ~$ make
@@ -19,7 +19,7 @@ After you successfully build the benchmark code, you can find all benchmark
 instances in the @c benchmarks/ folder.
 You can run the executable of each instance in the corresponding folder.
 
-@code{.shell-session}
+@code{.bash}
 ~$ cd benchmarks & ls
 bench_black_scholes bench_binary_tree bench_graph_traversal ...
 ~$ ./bench_graph_traversal
@@ -37,7 +37,7 @@ bench_black_scholes bench_binary_tree bench_graph_traversal ...
 
 You can display the help message by giving the option @c --help.
 
-@code{.shell-session}
+@code{.bash}
 ~$ ./bench_graph_traversal --help
 Graph Traversal
 Usage: ./bench_graph_traversal [OPTIONS]
@@ -101,7 +101,7 @@ programming libraries, @OpenMP and @TBB,
 to measure and evaluate the performance of %Taskflow.
 You can select different implementations by passing the option @c -m.
 
-@code{.shell-session}
+@code{.bash}
 ~$ ./bench_graph_traversal -m tf   # run the Taskflow implementation (default)
 ~$ ./bench_graph_traversal -m tbb  # run the TBB implementation
 ~$ ./bench_graph_traversal -m omp  # run the OpenMP implementation
@@ -113,7 +113,7 @@ You can configure the number of threads to run a benchmark instance
 by passing the option @c -t. 
 The default value is one.
 
-@code{.shell-session}
+@code{.bash}
 # run the Taskflow implementation using 4 threads
 ~$ ./bench_graph_traversal -m tf -t 4
 @endcode
@@ -123,7 +123,7 @@ affinity of the running process.
 This allows the OS scheduler to keep process on the same CPU(s) as long as
 practical for performance reason.
 
-@code{.shell-session}
+@code{.bash}
 # affine the process to 4 CPUs, CPU 0, CPU 1, CPU 2, and CPU 3
 ~$ taskset -c 0-3 bench_graph_traversal -t 4  
 @endcode
@@ -135,7 +135,7 @@ at different problem sizes.
 Each problem size corresponds to one iteration.
 You can configure the number of rounds per iteration to average the runtime.
 
-@code{.shell-session}
+@code{.bash}
 # measure the %Taskflow runtime by averaging the results over 10 runs
 ~$ ./bench_graph_traversal -r 10 -m tf
 |V|+|E|     Runtime
