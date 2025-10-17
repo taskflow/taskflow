@@ -1348,4 +1348,185 @@ TEST_CASE("Exception.NestedAlgorithm.4threads" * doctest::timeout(600)) {
   nested_algorithm(4);
 }
 
+// ----------------------------------------------------------------------------
+// probe
+// ----------------------------------------------------------------------------
+
+void probe1(size_t num_threads) {
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+  std::atomic<size_t> arrivals(0);
+  
+  auto [A, B, C, D] = taskflow.emplace(
+    []() {},
+    [&]() { 
+      // wait for two threads to arrive so we avoid premature cancellation
+      ++arrivals; while(arrivals != 2);
+      throw std::runtime_error("oops"); 
+    },
+    [&]() { 
+      // wait for two threads to arrive so we avoid premature cancellation
+      ++arrivals; while(arrivals != 2);
+      throw std::runtime_error("oops"); 
+    },
+    []() {}
+  );
+  A.precede(B, C);  // A runs before B and C
+  D.succeed(B, C);  // D runs after  B and C
+  
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "oops", std::runtime_error);
+
+  REQUIRE((B.exception_ptr() != nullptr) != (C.exception_ptr() != nullptr));
+  REQUIRE(B.has_exception_ptr() != C.has_exception_ptr());
+}
+
+TEST_CASE("Exception.Probe1.2threads") {
+  probe1(2);
+}
+
+TEST_CASE("Exception.Probe1.3threads") {
+  probe1(3);
+}
+
+TEST_CASE("Exception.Probe1.4threads") {
+  probe1(4);
+}
+
+void probe2(size_t num_threads) {
+
+  const size_t N = num_threads;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+
+  std::atomic<size_t> arrivals;
+
+  std::vector<tf::Task> tasks;
+
+  auto S = taskflow.emplace([&](){ arrivals = 0; });
+  auto T = taskflow.emplace([&](){ arrivals = 0; });  // due to exception this never runs
+
+  for(size_t n=0; n<N; ++n) {
+    auto task = taskflow.emplace([&](){
+      // ensure all threads arrive at this task
+      ++arrivals; while(arrivals != num_threads);
+      throw std::runtime_error("oops"); 
+    });
+    S.precede(task);
+    task.succeed(T);
+    tasks.push_back(task);
+  }
+  
+  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "oops", std::runtime_error);
+  REQUIRE(arrivals == num_threads);
+
+  // there must be exactly num_threads-1 exceptions
+  size_t num_exceptions = 0;
+  size_t num_has_exceptions = 0;
+  for(auto task : tasks) {
+    num_exceptions += (task.exception_ptr() != nullptr);
+    num_has_exceptions += task.has_exception_ptr();
+  }
+  REQUIRE(num_exceptions == num_threads - 1);
+  REQUIRE(num_has_exceptions == num_threads - 1);
+}
+
+
+TEST_CASE("Exception.Probe2.2threads") {
+  probe2(2);
+}
+
+TEST_CASE("Exception.Probe2.3threads") {
+  probe2(3);
+}
+
+TEST_CASE("Exception.Probe2.4threads") {
+  probe2(4);
+}
+
+void probe3(size_t num_threads) {
+
+  const size_t N = num_threads;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+
+  std::vector<tf::AsyncTask> tasks;
+
+  for(size_t n=0; n<N; ++n) {
+    auto task = executor.silent_dependent_async([&](){
+      throw std::runtime_error("oops"); 
+    });
+    tasks.push_back(task);
+  }
+
+  executor.wait_for_all();
+  
+  // there must be exactly num_threads exceptions
+  size_t num_exceptions = 0;
+  size_t num_has_exceptions = 0;
+  for(auto task : tasks) {
+    num_exceptions += (task.exception_ptr() != nullptr);
+    num_has_exceptions += task.has_exception_ptr();
+  }
+  REQUIRE(num_exceptions == num_threads);
+  REQUIRE(num_has_exceptions == num_threads);
+}
+
+
+TEST_CASE("Exception.Probe3.2threads") {
+  probe3(2);
+}
+
+TEST_CASE("Exception.Probe3.3threads") {
+  probe3(3);
+}
+
+TEST_CASE("Exception.Probe3.4threads") {
+  probe3(4);
+}
+
+void probe4(size_t num_threads) {
+
+  const size_t N = num_threads;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+
+  std::vector<tf::AsyncTask> tasks;
+
+  for(size_t n=0; n<N; ++n) {
+    auto [task, fu] = executor.dependent_async([&](){
+      throw std::runtime_error("oops"); 
+    });
+    tasks.push_back(task);
+  }
+
+  executor.wait_for_all();
+  
+  // exceptions have been all propagated to the shared state
+  size_t num_exceptions = 0;
+  size_t num_has_exceptions = 0;
+  for(auto task : tasks) {
+    num_exceptions += (task.exception_ptr() != nullptr);
+    num_has_exceptions += task.has_exception_ptr();
+  }
+  REQUIRE(num_exceptions == 0);
+  REQUIRE(num_has_exceptions == 0);
+}
+
+
+TEST_CASE("Exception.Probe4.2threads") {
+  probe4(2);
+}
+
+TEST_CASE("Exception.Probe4.3threads") {
+  probe4(3);
+}
+
+TEST_CASE("Exception.Probe4.4threads") {
+  probe4(4);
+}
+
 

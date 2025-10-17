@@ -8,14 +8,14 @@ This chapter discusses how to handle exceptions in %Taskflow, so you can correct
 
 @section UnderstandTheLogicOfExceptionHandlingInTaskflow Understand the Logic of Exception Handling in %Taskflow
 
-Exception handling in Taskflow follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. 
+Exception handling in %Taskflow follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. 
 The logic can be understood in three distinct scenarios, depending on how the task is executed and how the runtime is expected to report errors.
 
 @dotfile images/exception-handling-logic.dot
 
 We start with a brief overview of the three scenarios and then examine different use cases in more detail.
 
-@subsection ExceptionPropagationThroughSharedState Exception Propagation through Shared State
+@subsection ExceptionPropagationThroughSharedState Scenario 1: Exception Propagation through Shared State
 
 When you launch tasks using functions like tf::Executor::run or tf::Executor::async,
 any exception thrown within the task is captured and stored in a shared state associated with the returned tf::Future or std::future.
@@ -31,7 +31,7 @@ catch(const std::exception& e) {
 }
 @endcode
 
-@subsection ImmediateExceptionInBlockingExecutions Immediate Exception in Blocking Executions
+@subsection ImmediateExceptionInBlockingExecutions Scenario 2: Immediate Exception in Blocking Executions
 
 If the taskflow is executed in a blocking context, such as through tf::Executor::corun, 
 exceptions are immediately propagated to the caller.
@@ -47,7 +47,7 @@ catch(const std::exception& e) {
 
 In this scenario, the calling thread becomes the natural exception handler.
 
-@subsection SilentExceptionSuppression  Silent Exception Suppression
+@subsection SilentExceptionSuppression  Scenario 3: Silent Exception Suppression
 
 In certain cases (e.g., tf::Executor::silent_async), exceptions are silently caught and discarded
 because there is no associated state or waiting context to report them to.
@@ -339,18 +339,58 @@ For the above example, if the exception is not caught with tf::Runtime::corun,
 it will be propagated to its parent task, which is the tf::Runtime object `rt` in this case.
 Then, the exception will be propagated to `taskflow2`.
 
-@section TurnOffExceptionHandling Turn Off Exception Handling
+@section RetrieveTheExceptionPointerOfATask Retrieve the Exception Pointer of a Task
+
+When multiple tasks throw exceptions simultaneously, some exceptions may not be propagated.
+In such cases, %Taskflow silently catches all unpropagated exceptions and stores them within their respective tasks. 
+To inspect these exceptions, you can use tf::Task::exception_ptr to acquire a pointer to the exception stored in the task, if any. 
+If the task executed without throwing an exception, this method returns `nullptr`. 
+For example, in the code below, both tasks `B` and `C` throw exceptions. 
+However, only one of them will be propagated to the try-catch block, 
+while the other will be silently caught and stored within its respective task.
+    
+@code{.cpp}
+tf::Executor executor(2); 
+tf::Taskflow taskflow;
+std::atomic<size_t> arrivals(0);
+
+auto [B, C] = taskflow.emplace(
+  [&]() { 
+    // wait for two threads to arrive so we avoid premature cancellation
+    ++arrivals; while(arrivals != 2);
+    throw std::runtime_error("oops"); 
+  },
+  [&]() { 
+    // wait for two threads to arrive so we avoid premature cancellation
+    ++arrivals; while(arrivals != 2);
+    throw std::runtime_error("oops"); 
+  }
+);
+
+try {
+  executor.run(taskflow).get();
+}
+catch (const std::runtime_error& e) {
+  std::cerr << e.what();
+}
+
+// exactly one holds an exception as another was propagated to the try-catch block
+assert((B.exception_ptr() != nullptr) != (C.exception_ptr() != nullptr));
+@endcode
+
+@section TurnOffExceptionHandling Turn off Exception Handling
 
 In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints.
 %Taskflow allows you to disable exception handling entirely at compile time. 
 To do this, define the macro `TF_DISABLE_EXCEPTION_HANDLING` when compiling your %Taskflow program:
 
-@code{.cpp}
+@code{.bash}
 # disable exception handling 
 ~$ g++ -DTF_DISABLE_EXCEPTION_HANDLING your_taskflow_prog.cpp
 @endcode
 
-Disabling exception handling removes all try-catch blocks from the %Taskflow runtime, resulting in a leaner binary and potentially faster execution. 
+Disabling exception handling removes all try-catch blocks from the %Taskflow runtime, 
+resulting in a leaner binary and potentially faster execution. 
 However, %Taskflow will no longer catch or report runtime exceptions.
 
 @attention

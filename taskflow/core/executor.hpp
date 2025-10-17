@@ -119,10 +119,6 @@ class Executor {
   @endcode
 
   This member function is thread-safe.
-
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   tf::Future<void> run(Taskflow& taskflow);
 
@@ -168,9 +164,6 @@ class Executor {
 
   This member function is thread-safe.
 
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   template<typename C>
   tf::Future<void> run(Taskflow& taskflow, C&& callable);
@@ -220,10 +213,6 @@ class Executor {
   @endcode
 
   This member function is thread-safe.
-
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   tf::Future<void> run_n(Taskflow& taskflow, size_t N);
 
@@ -275,10 +264,6 @@ class Executor {
   @endcode
 
   This member function is thread-safe.
-
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   template<typename C>
   tf::Future<void> run_n(Taskflow& taskflow, size_t N, C&& callable);
@@ -333,10 +318,6 @@ class Executor {
   @endcode
 
   This member function is thread-safe.
-
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   template<typename P>
   tf::Future<void> run_until(Taskflow& taskflow, P&& pred);
@@ -394,10 +375,6 @@ class Executor {
   @endcode
 
   This member function is thread-safe.
-
-  @attention
-  The executor does not own the given taskflow. It is your responsibility to
-  ensure the taskflow remains alive during its execution.
   */
   template<typename P, typename C>
   tf::Future<void> run_until(Taskflow& taskflow, P&& pred, C&& callable);

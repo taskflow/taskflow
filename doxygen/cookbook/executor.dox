@@ -28,7 +28,7 @@ Creating a tf::Executor has non-negligible overhead.
 Unless your application requires multiple executors, we recommend creating a single tf::Executor 
 and reusing it to run multiple taskflows.
 
-@section UnderstandWorkStealingInExecutor Understand Work-stealing in Executor
+@section UnderstandWorkStealingInExecutor Understand Work Stealing in Executor
 
 %Taskflow designs a highly efficient @em work-stealing algorithm to schedule and run tasks in an executor.
 Work-stealing is a dynamic scheduling algorithm widely used in parallel computing to distribute and balance workload 
@@ -44,7 +44,6 @@ The key advantage of work-stealing lies in its *decentralized* nature and effici
 Most of the time, worker threads work on their local queues without contention. 
 Stealing only occurs when a worker becomes idle, minimizing overhead associated with synchronization and task distribution. 
 This decentralized strategy effectively balances the workload, ensuring that idle workers are put to work and that the overall computation progresses efficiently.
-
 That being said, the internal scheduling mechanisms in tf::Executor are not trivial, 
 and it's not easy to explain every detail in just a few sentences. 
 If you're interested in learning more about the technical details, please refer to our paper published in 
@@ -138,8 +137,7 @@ tf::Taskflow taskflow;
 
 // Declare an executor
 tf::Executor executor;
-
-tf::Future<void> future = executor.run(taskflow);  // non-blocking return
+tf::Future<void> future = executor.run(taskflow); 
 
 // alter the taskflow while running leads to undefined behavior 
 taskflow.emplace([](){ std::cout << "Add a new task\n"; });
@@ -212,7 +210,7 @@ tf::Taskflow moved_taskflow(std::move(taskflow));
 @section ExecuteATaskflowFromAnInternalWorker Execute a Taskflow from an Internal Worker Cooperatively
 
 Each run variant of tf::Executor returns a tf::Future object that allows you to wait for the associated execution to complete.
-When `tf::Future::wait` is called, the caller blocks until the underlying state becomes ready.
+When `tf::Future::wait` is called, the caller blocks without making any progress until the underlying state becomes ready.
 However, this blocking design can lead to potential deadlocks, 
 particularly when multiple taskflows are launched from within the internal workers of the same executor.
 For example, the following code creates a taskflow of 1,000 tasks, 
@@ -228,8 +226,8 @@ for(size_t n=0; n<1000; n++) {
     others[n].emplace([&](){});
   }
   taskflow.emplace([&executor, &tf=others[n]](){
-    // blocking the worker can introduce deadlock where
-    // all workers are waiting for their taskflows to finish
+    // Blocking a worker can cause deadlock if all workers are waiting
+    // for their taskflows to complete without making any progress
     executor.run(tf).wait();
   });
 }
@@ -238,8 +236,10 @@ executor.run(taskflow).wait();
 
 To avoid this deadlock issue, tf::Executor provides a cooperative execution method, tf::Executor::corun,
 which allows a worker to execute a taskflow @em cooperatively with other workers within the same executor.
-Specifically, instead of blocking, the calling worker cooperatively runs the taskflow alongside other tasks 
+Specifically, although the worker is blocking until corun finishes, it is @em cooperatively blocked 
+and continues to execute the taskflow alongside other tasks 
 in the executor's work-stealing loop.
+For instance, the following code with tf::Executor::corun is deadlock-free:
 
 @code{.cpp}
 tf::Executor executor(2);
@@ -454,7 +454,7 @@ such as assigning thread-processor affinity before the worker enters the schedul
 and post-processing additional information after the worker leaves the scheduler loop,
 by passing an instance derived from tf::WorkerInterface to the executor.
 The example demonstrates the usage of tf::WorkerInterface to affine
-a worker to a specific CPU core equal to its id on a linux platform:
+a worker to a specific CPU core equal to its id on a Linux platform:
 
 @code{.cpp}
 // affine the given thread to the given core index (linux-specific)
@@ -550,7 +550,7 @@ for(size_t n=0; n<num_workers; n++) {
 @attention
 tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epilogue
 are invoked by each worker simultaneously.
-It is your responsibility to ensure no data race can occur during their invokation.
+It is your responsibility to ensure no data race can occur during their invocation.
 
 */
 

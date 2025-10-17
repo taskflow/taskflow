@@ -3,11 +3,10 @@ namespace tf {
 /** @page release-3-11-0 Release 3.11.0 (Master)
 
 %Taskflow 3.11.0 is the newest developing line to new features and improvements 
-we continue to support.
+are actively introduced and supported.
 It is also where this documentation is generated.
 Many things are considered @em experimental and may change or break from time to time.
-While it may be difficult to be keep all things consistent when introducing new features, 
-we continue to try our best to ensure backward compatibility.
+While maintaining full consistency can be challenging as new features are added, we continually strive to preserve backward compatibility.
 
 @tableofcontents
 
@@ -33,6 +32,8 @@ To use %Taskflow v3.11.0, you need a compiler that supports C++17:
 @attention
 Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
+That being said, we are actively working on migrating %Taskflow to C++20, 
+which is planned for the next major release v4.
 
 @section release-3-11-0_summary Release Summary
 
@@ -50,6 +51,15 @@ and fixes a few bugs related to exception handling. We also revised multiple coo
   + integrate
   + nqueens
   + primes
++ added methods to retrieve the exception pointer of a task
+  + tf::Task::exception_ptr
+  + tf::AsyncTask::exception_ptr
++ added methods to check if a task holds an exception pointer 
+  + tf::Task::has_exception_ptr
+  + tf::AsyncTask::has_exception_ptr
++ added several new unit tests for exception handling (`test_exception.cpp`)
+  + recursive exception propagation
+  + concurrent exception throwing
 + removed code support for SYCL
 + enhanced the performance of atomic notifier via relaxed memory order
 + enforced implicit synchronization at the end of a runtime task's scope for safer usage
@@ -82,8 +92,6 @@ taskflow.emplace([&](tf::Runtime& rt){
 });
 @endcode
 
-There are no breaking changes in this release.
-
 @section release-3-11-0_documentation Documentation
 
 + revised @ref StaticTasking
@@ -93,9 +101,14 @@ There are no breaking changes in this release.
 + revised @ref AsyncTasking
 + revised @ref DependentAsyncTasking
 + revised @ref ExceptionHandling
+  + @ref RetrieveTheExceptionPointerOfATask
 + revised @ref RequestCancellation
 
 @section release-3-11-0_miscellaneous_items Miscellaneous Items
+
++ %Taskflow won the best poster award from 2025 CppCon!
+
+@image html images/taskflow-poster.png width=100%
 
 If you are interested in collaborating with us on applying %Taskflow to your projects, please feel free to reach out to @twhuang!
 

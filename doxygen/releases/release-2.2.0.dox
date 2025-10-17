@@ -2,7 +2,7 @@ namespace tf {
 
 /** @page release-2-2-0 Release 2.2.0 (2019/06/15)
 
-Cpp-Taskflow 2.2.0 is the 3rd release in the 2.x line! 
+%Taskflow 2.2.0 is the 3rd release in the 2.x line! 
 This release includes several new changes such as tf::ExecutorObserverInterface,
 tf::Executor, isolation of taskflow graph and executor, benchmarks, and so forth.
 In particular, this release improve the performance of the work stealing scheduler.
@@ -11,7 +11,7 @@ In particular, this release improve the performance of the work stealing schedul
 
 @section release-2-2-0_download Download
 
-Cpp-Taskflow 2.2.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</a>.
+%Taskflow 2.2.0 can be downloaded from <a href="https://github.com/cpp-taskflow/cpp-taskflow/releases/tag/v2.2.0">here</a>.
 
 @section release-2-2-0_new_features New Features
 
@@ -24,7 +24,7 @@ Cpp-Taskflow 2.2.0 can be downloaded from <a href="https://github.com/cpp-taskfl
 
 In this release, we isolated the executor interface from tf::Taskflow, 
 and merge tf::Framework with tf::Taskflow.
-This change largely improved the modularity and composability of Cpp-Taskflow
+This change largely improved the modularity and composability of %Taskflow
 in creating clean task dependency graphs and execution flows.
 Performance is also better.
 While this introduced some breaks in tf::Taskflow,
@@ -80,7 +80,7 @@ In most situations, you will just need to add an executor to your program
 to run your taskflow graphs.
 
 Again, we apologize this breaking change! 
-I hope you can understand what we did is to make Cpp-Taskflow provide good performance scaling
+I hope you can understand what we did is to make %Taskflow provide good performance scaling
 and user experience.
 
 */

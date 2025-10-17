@@ -69,6 +69,7 @@ size_t dist = distance(5, 20, 5);  // Returns 3, the sequence is [5, 10, 15]
 
 @attention
 It is user's responsibility to ensure the given index range is valid.
+For instance, a range from 0 to 10 with a step size of -2 is invalid.
 */
 template <typename B, typename E, typename S>
 constexpr std::enable_if_t<std::is_integral_v<std::decay_t<B>> && 
@@ -115,6 +116,7 @@ for(auto i=range.begin(); i<range.end(); i+=range.step_size()) {
 
 @attention
 It is user's responsibility to ensure the given range is valid.
+For instance, a range from 0 to 10 with a step size of -2 is invalid.
 */
 template <typename T>
 class IndexRange {
@@ -188,6 +190,11 @@ class IndexRange {
   The number of elements is equivalent to the number of iterations in the range.
   For instance, the range [0, 10) with step size of 2 will iterate five elements,
   0, 2, 4, 6, and 8.
+
+  @code{.cpp}
+  tf::IndexRange<int> range(0, 10, 2);
+  printf("%zu\n", range.size());        // 5 (0, 2, 4, 6, 8)
+  @endcode
   */
   size_t size() const { return distance(_beg, _end, _step_size); }
 
