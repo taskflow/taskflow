@@ -50,69 +50,38 @@ Their lifetime is automatically managed by the executor that created them.
 
 @section LaunchAsynchronousTasksFromARuntime Launch Asynchronous Tasks from a Runtime
 
-You can launch asynchronous tasks from tf::Runtime using
+You can launch asynchronous tasks from a runtime object (tf::Runtime) using
 tf::Runtime::async or tf::Runtime::silent_async.
-The following code creates 100 asynchronous tasks from a runtime
-and joins their executions explicitly using tf::Runtime::corun.
+Unlike creating asynchronous tasks from an executor,
+tasks created from a runtime object belong to that runtime and
+are implicitly joined at the end of the runtime's scope.
+For example, the code below creates 100 asynchronous tasks from a runtime,
+and these 100 tasks are guaranteed to finish before the runtime completes.
 
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
-
 std::atomic<int> counter{0};
 
-taskflow.emplace([&] (tf::Runtime& rt){
+tf::Task A = taskflow.emplace([&] (tf::Runtime& rt){
   for(int i=0; i<100; i++) {
     rt.silent_async([&](){ ++counter; }));
   }
-  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
+});  // implicit join at the end of the runtime's scope
+tf::Task B = taskflow.emplace([](){
   assert(counter == 100);
 });
+A.precede(B);
+
 executor.run(taskflow).wait();
 @endcode
 
-Unlike tf::Subflow::join, you can call tf::Runtime::corun multiple times
-to synchronize the execution of asynchronous tasks between different runs.
-For example, the following code spawn 100 asynchronous tasks twice
-and join each execution to assure the spawned 100 asynchronous tasks have
-properly completed.
-
-@code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-std::atomic<int> counter{0};
-
-taskflow.emplace([&] (tf::Runtime& rt){
-  // spawn 100 asynchronous tasks and join
-  for(int i=0; i<100; i++) {
-    rt.silent_async([&](){ ++counter; }));
-  }
-  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
-  assert(counter == 100);
-  
-  // spawn another 100 asynchronous tasks and join
-  for(int i=0; i<100; i++) {
-    rt.silent_async([&](){ ++counter; }));
-  }
-  rt.corun();  // all of the 100 asynchronous tasks will finish by this join
-  assert(counter == 200);
-});
-executor.run(taskflow).wait();
-@endcode
-
-By default, tf::Runtime does not join like tf::Subflow.
-All pending asynchronous tasks spawned from a tf::Runtime become uncontrollable once their 
-parent runtime goes out of scope.
-It is user's responsibility to explicitly synchronize these tasks using tf::Runtime::corun.
-
-@attention
-Creating asynchronous tasks from a runtime enables efficient implementation of recursive 
-parallel algorithms, such as tf::Taskflow::sort, that require dynamic task creation at runtime.
+Creating asynchronous tasks from a runtime enables efficient implementation of recursive parallel algorithms,
+such as parallel iteration, reduction, and sorting, that require dynamic task creation at runtime.
 
 @section LaunchAsynchronousTasksRecursivelyFromARuntime Launch Asynchronous Tasks Recursively from a Runtime
 
-Asynchronous tasks can take a reference to tf::Runtime, allowing them to recursively launch additional asynchronous tasks.
+Asynchronous tasks can also leverage runtime tasking, allowing them to recursively launch additional asynchronous tasks.
 Combined with tf::Runtime::corun, this enables the implementation of various recursive parallelism patterns, including parallel sort, divide-and-conquer algorithms, and the [fork-join model](https://en.wikipedia.org/wiki/Fork%E2%80%93join_model).
 For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from tf::Runtime:
 

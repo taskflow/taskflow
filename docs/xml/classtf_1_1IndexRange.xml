@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1IndexRange" kind="class" language="C++" prot="public">
     <compoundname>tf::IndexRange</compoundname>
     <includes refid="iterator_8hpp" local="no">taskflow/utility/iterator.hpp</includes>
@@ -278,7 +278,7 @@
         </briefdescription>
         <detaileddescription>
 <para>The number of elements is equivalent to the number of iterations in the range. For instance, the range [0, 10) with step size of 2 will iterate five elements, 0, 2, 4, 6, and 8.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::IndexRange&lt;int&gt;<sp/>range(0,<sp/>10,<sp/>2);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>10,<sp/>2);</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%zu\n&quot;</highlight><highlight class="normal">,<sp/>range.size());<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>5<sp/>(0,<sp/>2,<sp/>4,<sp/>6,<sp/>8)</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -348,13 +348,13 @@ The discrete domain of a range refers to a counter-based sequence indexed from 0
 </parameteritem>
 </parameterlist>
 This class provides functionality for managing a range of indices, where the range is defined by a starting index, an ending index, and a step size. Indices must be an integral type. For example, the range `[0, 10) with a step size 2 represents the five elements, 0, 2, 4, 6, and 8.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::IndexRange&lt;int&gt;<sp/>range(0,<sp/>10,<sp/>2);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range(0,<sp/>10,<sp/>2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=range.begin();<sp/>i&lt;range.end();<sp/>i+=range.step_size())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d<sp/>&quot;</highlight><highlight class="normal">,<sp/>i);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>You can reset the range to a different value using <ref refid="classtf_1_1IndexRange_1a9cf7948f33d491f1bffe03a8d990bf13" kindref="member">tf::IndexRange::reset</ref>. This is particularly useful when the range value is only known at runtime.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::IndexRange&lt;int&gt;<sp/>range;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1IndexRange" kindref="compound">tf::IndexRange&lt;int&gt;</ref><sp/>range;</highlight></codeline>
 <codeline><highlight class="normal">range.<ref refid="classtf_1_1IndexRange_1a9cf7948f33d491f1bffe03a8d990bf13" kindref="member">reset</ref>(0,<sp/>10,<sp/>2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>i=range.<ref refid="classtf_1_1IndexRange_1a2b52381358ab392efa257e185a33d4af" kindref="member">begin</ref>();<sp/>i&lt;range.<ref refid="classtf_1_1IndexRange_1a280096cb4056bc19b86da77d019434e4" kindref="member">end</ref>();<sp/>i+=range.<ref refid="classtf_1_1IndexRange_1aafd4f2d04614e550649cd9b7912e0bf1" kindref="member">step_size</ref>())<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;%d<sp/>&quot;</highlight><highlight class="normal">,<sp/>i);</highlight></codeline>

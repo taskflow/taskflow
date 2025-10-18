@@ -283,53 +283,63 @@ TAB_SIZE               = 4
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                = "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
-                         "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
-                         "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
-                         "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
-                         "std_lambda=<a href=\"https://en.cppreference.com/w/cpp/language/lambda\">lambda</a>" \
-                         "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
-                         "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
-                         "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
-                         "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
-                         "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
-                         "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
-                         "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
-                         "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
-                         "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
-                         "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
-                         "std_variant_get=<a href=\"https://en.cppreference.com/w/cpp/utility/variant/get\">std::get</a>" \
-                         "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
-                         "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
-                         "std_ref=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/ref\">std::ref</a>" \
-                         "Doxygen=<a href=\"https://www.doxygen.nl/index.html\">Doxygen</a>" \
-                         "MCSS=<a href=\"https://mcss.mosra.cz/documentation/doxygen/\">m.css</a>" \
-                         "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
-                         "ChromeTracing=<a href=\"https://www.chromium.org/developers/how-tos/trace-event-profiling-tool\">Chrome Tracing</a>" \
-                         "TFProf=<a href=\"https://taskflow.github.io/tfprof/\">Taskflow Profiler</a>" \
-                         "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
-                         "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>" \
-                         "cudaGraph=<a href=\"https://developer.nvidia.com/blog/cuda-graphs/\">CUDA Graph</a>" \
-                         "NvidiaCUDA=<a href=\"https://developer.nvidia.com/cuda-zone\">Nvidia CUDA</a>" \
-                         "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>" \
-                         "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>" \
-                         "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>" \
-                         "sycl20_spec=<a href=\"https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html\">SYCL 2020 Specification</a>" \
-                         "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>" \
-                         "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>" \
-                         "OpenMP=<a href=\"https://www.openmp.org/\">OpenMP</a>" \
-                         "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>" \
-                         "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>" \
-                         "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>" \
-                         "ProjectWebsite=<a href=\"https://taskflow.github.io/\">Project Website</a>" \
-                         "ProjectGitHub=<a href=\"https://github.com/taskflow/\">Project GitHub</a>" \
-                         "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>" \
-                         "CppCon20Talk=<a href=\"https://www.youtube.com/watch?v=MX15huP5DsM\">2020 CppCon Taskflow Talk</a>" \
-                         "MUCpp20Talk=<a href=\"https://www.youtube.com/watch?v=u8Mc_WgGwVY\">2020 MUC++ Taskflow Talk</a>" \
-                         "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>" \
-                         "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>" \
-                         "CI=<a href=\"https://github.com/taskflow/taskflow/actions\">continuous integration workflows</a>" \
-                         "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>"
+ALIASES  = "std_invoke=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/invoke\">std::invoke</a>" \
+           "std_future=<a href=\"https://en.cppreference.com/w/cpp/thread/future\">std::future</a>" \
+           "std_shared_future=<a href=\"https://en.cppreference.com/w/cpp/thread/shared_future\">std::shared_future</a>" \
+           "std_function=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/function\">std::function</a>" \
+           "std_lambda=<a href=\"https://en.cppreference.com/w/cpp/language/lambda\">lambda</a>" \
+           "std_pair=<a href=\"https://en.cppreference.com/w/cpp/utility/pair\">std::pair</a>" \
+           "std_tuple=<a href=\"https://en.cppreference.com/w/cpp/utility/tuple\">std::tuple</a>" \
+           "std_shared_ptr=<a href=\"https://en.cppreference.com/w/cpp/memory/shared_ptr\">std::shared_ptr</a>" \
+           "std_thread_hardware_concurrency=<a href=\"https://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency\">std::thread::hardware_concurrency</a>" \
+           "std_thread_get_id=<a href=\"https://en.cppreference.com/w/cpp/thread/get_id\">std::thread::get_id</a>" \
+           "std_ostream=<a href=\"https://en.cppreference.com/w/cpp/io/basic_ostream\">std::ostream</a>" \
+           "std_string=<a href=\"https://en.cppreference.com/w/cpp/string/basic_string\">std::string</a>" \
+           "std_min=<a href=\"https://en.cppreference.com/w/cpp/algorithm/min\">std::min</a>" \
+           "std_max=<a href=\"https://en.cppreference.com/w/cpp/algorithm/max\">std::max</a>" \
+           "std_variant=<a href=\"https://en.cppreference.com/w/cpp/utility/variant\">std::variant</a>" \
+           "std_variant_get=<a href=\"https://en.cppreference.com/w/cpp/utility/variant/get\">std::get</a>" \
+           "std_optional=<a href=\"https://en.cppreference.com/w/cpp/utility/optional\">std::optional</a>" \
+           "std_nullopt=<a href=\"https://en.cppreference.com/w/cpp/utility/optional/nullopt\">std::nullopt</a>" \
+           "std_ref=<a href=\"https://en.cppreference.com/w/cpp/utility/functional/ref\">std::ref</a>" \
+           "Doxygen=<a href=\"https://www.doxygen.nl/index.html\">Doxygen</a>" \
+           "MCSS=<a href=\"https://mcss.mosra.cz/documentation/doxygen/\">m.css</a>" \
+           "GraphVizOnline=<a href=\"https://dreampuf.github.io/GraphvizOnline/\">GraphViz Online</a>" \
+           "ChromeTracing=<a href=\"https://www.chromium.org/developers/how-tos/trace-event-profiling-tool\">Chrome Tracing</a>" \
+           "TFProf=<a href=\"https://taskflow.github.io/tfprof/\">Taskflow Profiler</a>" \
+           "CPP17=<a href=\"https://en.wikipedia.org/wiki/C%2B%2B17\">C++17</a>" \
+           "nvcc=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvcc</a>" \
+           "cudaGraph=<a href=\"https://developer.nvidia.com/blog/cuda-graphs/\">CUDA Graph</a>" \
+           "NvidiaCUDA=<a href=\"https://developer.nvidia.com/cuda-zone\">Nvidia CUDA</a>" \
+           "cuBLAS=<a href=\"https://docs.nvidia.com/cuda/cublas/index.html\">cuBLAS</a>" \
+           "cuDNN=<a href=\"https://developer.nvidia.com/cudnn\">cuDNN</a>" \
+           "nvidia_smi=<a href=\"https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html\">nvidia-smi</a>" \
+           "sycl20_spec=<a href=\"https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html\">SYCL 2020 Specification</a>" \
+           "SLOCCount=<a href=\"https://dwheeler.com/sloccount/\">SLOCCount</a>" \
+           "TBB=<a href=\"https://github.com/oneapi-src/oneTBB\">Intel TBB</a>" \
+           "OpenMP=<a href=\"https://www.openmp.org/\">OpenMP</a>" \
+           "StarPU=<a href=\"http://starpu.gforge.inria.fr/\">StarPU</a>" \
+           "OpenTimerGitHub=<a href=\"https://github.com/OpenTimer/OpenTimer\">OpenTimer</a>" \
+           "ContactUs=<a href=\"https://taskflow.github.io/#tag_contact\">contact us</a>" \
+           "ProjectWebsite=<a href=\"https://taskflow.github.io/\">Project Website</a>" \
+           "ProjectGitHub=<a href=\"https://github.com/taskflow/\">Project GitHub</a>" \
+           "ShowcasePresentation=<a href=\"https://taskflow.github.io/showcase/index.html\">showcase presentation</a>" \
+           "CppCon20Talk=<a href=\"https://www.youtube.com/watch?v=MX15huP5DsM\">2020 CppCon Taskflow Talk</a>" \
+           "MUCpp20Talk=<a href=\"https://www.youtube.com/watch?v=u8Mc_WgGwVY\">2020 MUC++ Taskflow Talk</a>" \
+           "IssueTracker=<a href=\"https://github.com/taskflow/taskflow/issues\">issue tracker</a>" \
+           "PullRequest=<a href=\"https://github.com/taskflow/taskflow/pulls\">pull request</a>" \
+           "CI=<a href=\"https://github.com/taskflow/taskflow/actions\">continuous integration workflows</a>" \
+           "twhuang=<a href=\"https://tsung-wei-huang.github.io/\">Dr. Tsung-Wei Huang</a>" \
+    "m_div{1}=@xmlonly<mcss:div xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+    "m_enddiv=@xmlonly</mcss:div>@endxmlonly" \
+    "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+    "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
+    "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
+    "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly" \
+    "m_examplenavigation{2}=@xmlonly<mcss:examplenavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:page=\"\1\" mcss:prefix=\"\2\" />@endxmlonly" \
+    "m_keywords{1}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keywords=\"\1\" />@endxmlonly" \
+    "m_keyword{3}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keyword=\"\1\" mcss:title=\"\2\" mcss:suffix-length=\"\3\" />@endxmlonly" \
+    "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For

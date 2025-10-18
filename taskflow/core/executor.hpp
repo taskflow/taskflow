@@ -47,7 +47,7 @@ executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
 executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
 @endcode
 
-All executor methods are @em thread-safe. 
+Most executor methods are @em thread-safe. 
 For example, you can submit multiple taskflows to an executor concurrently 
 from different threads, while other threads simultaneously create asynchronous tasks.
 

@@ -138,12 +138,6 @@ The figure below shows the execution diagram, where the task with suffix `*_1` r
 
 For more details, please refer to @ref AsyncTasking and @ref fibonacci.
 
-@attention
-While asynchronous tasks spawned from a runtime task are parented to that runtime task, the runtime task does not automatically synchronize their execution or wait for their completion upon destruction.
-To ensure all spawned tasks finish before proceeding, you should explicitly call tf::Runtime::corun to synchronize them.
-This prevents potential issues such as tasks being destroyed prematurely or lost without execution.
-
-
 
 */
 

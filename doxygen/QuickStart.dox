@@ -2,8 +2,7 @@ namespace tf {
 
 /** @mainpage A General-purpose Task-parallel Programming System
 
-%Taskflow helps you quickly write parallel and heterogeneous 
-task programs with <i>high performance</i>
+%Taskflow helps you quickly write task-parallel programs with <i>high performance</i>
 and simultaneous <i>high productivity</i>.
 It is faster, more expressive, fewer lines of code, and easier for drop-in integration
 than many of existing task programming libraries.
@@ -17,9 +16,6 @@ The following program (@c simple.cpp) creates a taskflow of four tasks
 @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C, and @c D
 runs after @c B and @c C.
 When @c A finishes, @c B and @c C can run in parallel.
-
-
-
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>  // Taskflow is header-only

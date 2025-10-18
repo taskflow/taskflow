@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1AsyncTask" kind="class" language="C++" prot="public">
     <compoundname>tf::AsyncTask</compoundname>
     <includes refid="async__task_8hpp" local="no">taskflow/core/async_task.hpp</includes>
@@ -159,7 +159,7 @@
         </briefdescription>
         <detaileddescription>
 <para>An empty dependent-async task is not associated with any task created from the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task;</highlight></codeline>
 <codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1AsyncTask_1ae42c70dc0c5edc6d58f47b346125fca3" kindref="member">empty</ref>());</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -178,7 +178,7 @@
         </briefdescription>
         <detaileddescription>
 <para>Releases the ownership of the managed task, if any. After the call <computeroutput>*this</computeroutput> manages no task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
 <codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1AsyncTask_1ae42c70dc0c5edc6d58f47b346125fca3" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1AsyncTask_1a7c12835577fbdc1bca3190cf92c78088" kindref="member">reset</ref>();</highlight></codeline>
 <codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1AsyncTask_1ae42c70dc0c5edc6d58f47b346125fca3" kindref="member">empty</ref>()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
@@ -198,8 +198,8 @@
 <para>obtains the hashed value of this dependent-async task </para>
         </briefdescription>
         <detaileddescription>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
-<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1AsyncTask_1a826a2ea909094f5a26c2df876de58056" kindref="member">hash_value</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>task.<ref refid="classtf_1_1AsyncTask_1a826a2ea909094f5a26c2df876de58056" kindref="member">hash_value</ref>()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -217,7 +217,7 @@
         </briefdescription>
         <detaileddescription>
 <para>In a multithreaded environment, <computeroutput>use_count</computeroutput> atomically retrieves (with <computeroutput>memory_order_relaxed</computeroutput> load) the number of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> instances that manage the current task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task;</highlight></codeline>
 <codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1AsyncTask_1a6a4a54030f57d1ef05c04ae01825165d" kindref="member">use_count</ref>()<sp/>==<sp/>0);</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
@@ -236,9 +236,9 @@
         </briefdescription>
         <detaileddescription>
 <para>In a multithreaded environment, <computeroutput>is_done</computeroutput> atomically retrieves (with <computeroutput>memory_order_acquire</computeroutput> load) the underlying state bit that indicates the completion of this dependent-async task. If the dependent-async task is empty, returns <computeroutput>true</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(task.<ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">is_done</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
-<codeline><highlight class="normal">std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;dependent-async<sp/>task<sp/>finishes\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;dependent-async<sp/>task<sp/>finishes\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">task.<ref refid="classtf_1_1AsyncTask_1a7c12835577fbdc1bca3190cf92c78088" kindref="member">reset</ref>();</highlight></codeline>
 <codeline><highlight class="normal">assert(task.<ref refid="classtf_1_1AsyncTask_1aefeefa30d7cafdfbb7dc8def542e8e51" kindref="member">is_done</ref>()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
@@ -259,8 +259,8 @@
         </briefdescription>
         <detaileddescription>
 <para>This method retrieves the exception pointer of the task, if any, that was silently caught by the executor. For example, the code below retrieves the exception pointer of a dependent-async task that does not have a shared state to propagate its exception.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::AsyncTask<sp/>task<sp/>=<sp/>executor.silent_dependent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/>std::runtime_error(</highlight><highlight class="stringliteral">&quot;oops&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>task<sp/>=<sp/>executor.silent_dependent_async([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;oops&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">executor.wait_for_all();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -344,11 +344,11 @@
     <detaileddescription>
 <para>A <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is a lightweight handle that retains <emphasis>shared</emphasis> ownership of a dependent asynchronous (dependent-async) task created by an executor. This shared ownership ensures that the dependent-async task remains alive when adding it to the dependency list of another dependent-async task, thus avoiding the classical <ulink url="https://en.wikipedia.org/wiki/ABA_problem">ABA problem</ulink>.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>main<sp/>thread<sp/>retains<sp/>shared<sp/>ownership<sp/>of<sp/>async<sp/>task<sp/>A</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::AsyncTask<sp/>A<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>executor.silent_dependent_async([](){});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>task<sp/>A<sp/>remains<sp/>alive<sp/>(i.e.,<sp/>at<sp/>least<sp/>one<sp/>ref<sp/>count<sp/>by<sp/>the<sp/>main<sp/>thread)<sp/></highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>when<sp/>being<sp/>added<sp/>to<sp/>the<sp/>dependency<sp/>list<sp/>of<sp/>async<sp/>task<sp/>B</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::AsyncTask<sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){},<sp/>A);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>executor.silent_dependent_async([](){},<sp/>A);</highlight></codeline>
 </programlisting></para>
 <para><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> is implemented based on the logic of C++ smart pointer <ref refid="cpp/memory/shared_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref> and is considered cheap to copy or move as long as only a handful of objects own it. When a worker completes an async task, it will remove the task from the executor, decrementing the number of shared owners by one. If that counter reaches zero, the task is destroyed.</para>
 <para><simplesect kind="note"><para>To know more about dependent-async task, please refer to <ref refid="DependentAsyncTasking" kindref="compound">Asynchronous Tasking with Dependencies</ref>. </para>

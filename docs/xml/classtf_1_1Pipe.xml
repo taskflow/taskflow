@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1Pipe" kind="class" language="C++" prot="public">
     <compoundname>tf::Pipe</compoundname>
     <includes refid="pipeline_8hpp" local="no">taskflow/algorithm/pipeline.hpp</includes>
@@ -156,7 +156,7 @@
 </parameteritem>
 </parameterlist>
 The constructor constructs a pipe with the given direction (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref> or <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564adf13a99b035d6f0bce4f44ab18eec8eb" kindref="member">tf::PipeType::PARALLEL</ref>) and the given callable. The callable must take a referenced <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> object in the first argument.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](tf::Pipeflow&amp;){}}</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
 </programlisting></para>
 <para>When creating a pipeline, the direction of the first pipe must be serial (<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">tf::PipeType::SERIAL</ref>). </para>
         </detaileddescription>
@@ -267,7 +267,7 @@ Assigns a new callable to the pipe with universal forwarding. </para>
 </parameteritem>
 </parameterlist>
 A pipe represents a stage of a pipeline. A pipe can be either <emphasis>parallel</emphasis> direction or <emphasis>serial</emphasis> direction (specified by <ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564" kindref="member">tf::PipeType</ref>) and is coupled with a callable to invoke by the pipeline scheduler. The callable must take a referenced <ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref> object in the first argument:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](tf::Pipeflow&amp;){}}</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Pipe_1ad2c372074ba5daacb54811cb48141570" kindref="member">Pipe</ref>{<ref refid="namespacetf_1abb7a11e41fd457f69e7ff45d4c769564a7b804a28d6154ab8007287532037f1d0" kindref="member">PipeType::SERIAL</ref>,<sp/>[](<ref refid="classtf_1_1Pipeflow" kindref="compound">tf::Pipeflow</ref>&amp;){}}</highlight></codeline>
 </programlisting></para>
 <para>The pipeflow object is used to query the statistics of a scheduling token in the pipeline, such as pipe, line, and token numbers. </para>
     </detaileddescription>

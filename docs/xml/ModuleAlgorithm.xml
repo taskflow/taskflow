@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="ModuleAlgorithm" kind="page">
     <compoundname>ModuleAlgorithm</compoundname>
     <title>Module Algorithm</title>
@@ -27,7 +27,7 @@
 </programlisting></para>
 </sect1>
 <sect1 id="ModuleAlgorithm_1WhatIsAModuleTask">
-<title>What is a Module Task</title><para>Similar to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>, but in a more general setting, the template function <ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref> allows you to create a task over a Taskflow graph that can be executed by an executor. This provides a flexible mechanism to encapsulate and reuse complex task logic within your Taskflow applications. The following example demonstrates how to create and launch multiple Taskflow graphs in parallel using asynchronous tasking:</para>
+<title>What is a Module Task</title><para>Similar to <ref refid="ComposableTasking" kindref="compound">Composable Tasking</ref>, but in a more general setting, the template function <ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref> allows you to create a task over a Taskflow graph that can be executed by an executor. This provides a flexible mechanism to encapsulate and reuse complex task logic within your Taskflow applications. The following example demonstrates how to create and launch multiple Taskflow graphs in parallel using asynchronous tasking:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/module.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -46,10 +46,10 @@
 <codeline><highlight class="normal"><sp/><sp/>D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>launch<sp/>the<sp/>four<sp/>taskflows<sp/>using<sp/>asynchronous<sp/>tasking</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(B));</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(C));</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(B));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(C));</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(D));</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>executor.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();<sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
@@ -83,10 +83,10 @@
 <codeline><highlight class="normal">C.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>C\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal">D.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;Taskflow<sp/>D\n&quot;</highlight><highlight class="normal">);<sp/>});<sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TA<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TB<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(B),<sp/>TA);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TC<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(C),<sp/>TB);</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[TD,<sp/>FD]<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">dependent_async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(D),<sp/>TC);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TA<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(A));</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TB<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(B),<sp/>TA);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>TC<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">silent_dependent_async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(C),<sp/>TB);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[TD,<sp/>FD]<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">dependent_async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(D),<sp/>TC);</highlight></codeline>
 <codeline><highlight class="normal">FD.get();</highlight></codeline>
 </programlisting></para>
 <para><dotfile name="module_task_2.dot"></dotfile>
@@ -97,14 +97,14 @@
 <codeline><highlight class="normal">Taskflow<sp/>C</highlight></codeline>
 <codeline><highlight class="normal">Taskflow<sp/>D</highlight></codeline>
 </programlisting></para>
-<para>The module task maker, <ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>, operates similarly to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref>, but provides a more general interface that can be used beyond Taskflow. Specifically, the following two approaches achieve equivalent functionality:</para>
+<para>The module task maker, <ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>, operates similarly to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref>, but provides a more general interface that can be used beyond Taskflow. Specifically, the following two approaches achieve equivalent functionality:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>approach<sp/>1:<sp/>composition<sp/>using<sp/>composed_of</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.<ref refid="classtf_1_1Task_1ab38be520fe700cb4ca1f312308a95585" kindref="member">composed_of</ref>(taskflow2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>approach<sp/>2:<sp/>composition<sp/>using<sp/>make_module_task</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.emplace(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(taskflow2));</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>m1<sp/>=<sp/>taskflow1.emplace(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(taskflow2));</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>Similar to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref>, <ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref> does not assume ownership of the provided taskflow but a soft reference. You are responsible for ensuring that the encapsulated taskflow remains valid throughout its execution.</para>
+<para><simplesect kind="attention"><para>Similar to <ref refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" kindref="member">tf::Taskflow::composed_of</ref>, <ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref> does not assume ownership of the provided taskflow but a soft reference. You are responsible for ensuring that the encapsulated taskflow remains valid throughout its execution.</para>
 </simplesect>
 </para>
 </sect1>
@@ -124,7 +124,7 @@
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">CustomGraph<sp/>target;</highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a68bb6933d40ea4468cc08191a0822f10" kindref="member">tf::make_module_task</ref>(target));</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>(<ref refid="namespacetf_1a6c73f8957e0f60c76614243979e3b112" kindref="member">tf::make_module_task</ref>(target));</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="attention"><para>Users are responsible for ensuring the given custom graph remains valid throughout its execution. The executor does not assume ownership of the custom graph. </para>
 </simplesect>

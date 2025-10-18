@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="release-3-6-0" kind="page">
     <compoundname>release-3-6-0</compoundname>
     <title>Release 3.6.0 (2023/05/07)</title>
@@ -202,8 +202,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/>tf::cudaFlow<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>cf.run(stream);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1a7dcdfb79385a57c4c59b7c9f21e8beb9" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1a1e5140505629afd4b3422399f8080cb0" kindref="member">synchronize</ref>();</highlight></codeline>
@@ -223,7 +223,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal"><sp/><sp/>tf::cudaFlowCapturer<sp/>cf;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>offload<sp/>the<sp/>cudaflow<sp/>asynchronously<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1af19c9b301dc0b0fe2a51a960fa427e83" kindref="member">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>cf.<ref refid="classtf_1_1cudaStreamBase_1a7dcdfb79385a57c4c59b7c9f21e8beb9" kindref="member">run</ref>(stream);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>for<sp/>the<sp/>cudaflow<sp/>completes</highlight><highlight class="normal"></highlight></codeline>
