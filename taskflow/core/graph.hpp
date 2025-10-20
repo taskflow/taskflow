@@ -12,6 +12,7 @@
 #include "../utility/math.hpp"
 #include "../utility/small_vector.hpp"
 #include "../utility/serializer.hpp"
+#include "../utility/latch.hpp"
 #include "../utility/lazy_string.hpp"
 #include "error.hpp"
 #include "declarations.hpp"

@@ -542,6 +542,16 @@ class Executor {
   @endcode
   */
   size_t num_taskflows() const;
+
+  /**
+  @brief queries pointer to the current worker if it belongs to this executor, otherwise returns nullptr
+
+  @code{.cpp}
+  auto w = executor.this_worker();
+  assert(w == nullptr || w->executor() == &executor);
+  @endcode
+  */
+  Worker* this_worker();
   
   /**
   @brief queries the id of the caller thread within this executor
@@ -1050,8 +1060,10 @@ class Executor {
   DefaultNotifier _notifier;
 
 #if __cplusplus >= TF_CPP20
+  std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
 #else
+  Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
@@ -1063,6 +1075,8 @@ class Executor {
 
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
+  std::unordered_map<std::thread::id, size_t> _wids;
+
 
   void _shutdown();
   void _observer_prologue(Worker&, Node*);
@@ -1131,6 +1145,7 @@ class Executor {
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _workers  (N),
   _notifier (N),
+  _latch    (N+1),
   _buffers  (N),
   _worker_interface(std::move(wix)) {
 
@@ -1224,15 +1239,20 @@ inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
 
+inline Worker* Executor::this_worker() {
+  auto itr = _wids.find(std::this_thread::get_id());
+  return itr == _wids.end() ? nullptr : &_workers[itr->second];
+}
+
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto w = pt::this_worker;
-  return (w && w->_executor == this) ? static_cast<int>(w->_id) : -1;
+  auto i = _wids.find(std::this_thread::get_id());
+  return i == _wids.end() ? -1 : static_cast<int>(_workers[i->second]._id);
 }
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
-
+  std::mutex mutex;
   for(size_t id=0; id<N; ++id) {
     _workers[id]._id = id;
     _workers[id]._vtm = id;
@@ -1240,7 +1260,13 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._waiter = &_notifier._waiters[id];
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
-      pt::this_worker = &w;
+      {
+        std::scoped_lock lock(mutex);
+        _wids[std::this_thread::get_id()] = w._id;
+      }
+
+      // synchronize with the main thread to ensure all worker data has been set
+      _latch.arrive_and_wait(); 
 
       // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
@@ -1287,7 +1313,8 @@ inline void Executor::_spawn(size_t N) {
       }
 
     });
-  } 
+  }
+  _latch.arrive_and_wait();
 }
 
 // Function: _corun_until
@@ -2080,7 +2107,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
     std::lock_guard<std::mutex> lock(f._mutex);
     f._topologies.push(t);
     if(f._topologies.size() == 1) {
-      _set_up_topology(pt::this_worker, t.get());
+      _set_up_topology(this_worker(), t.get());
     }
   }
 
@@ -2108,23 +2135,25 @@ void Executor::corun(T& target) {
 
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
   
-  if(pt::this_worker == nullptr || pt::this_worker->_executor != this) {
+  Worker* w = this_worker();
+  if(w == nullptr || w->_executor != this) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
   Node anchor;
-  _corun_graph(*pt::this_worker, &anchor, target.graph().begin(), target.graph().end());
+  _corun_graph(*w, &anchor, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_until
 template <typename P>
 void Executor::corun_until(P&& predicate) {
   
-  if(pt::this_worker == nullptr || pt::this_worker->_executor != this) {
+  Worker* w = this_worker();
+  if(w == nullptr || w->_executor != this) {
     TF_THROW("corun_until must be called by a worker of the executor");
   }
 
-  _corun_until(*pt::this_worker, std::forward<P>(predicate));
+  _corun_until(*w, std::forward<P>(predicate));
 }
 
 // Procedure: _corun_graph
