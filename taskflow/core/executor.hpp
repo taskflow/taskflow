@@ -544,7 +544,7 @@ class Executor {
   size_t num_taskflows() const;
 
   /**
-  @brief queries pointer to the current worker if it belongs to this executor, otherwise returns nullptr
+  @brief queries pointer to the calling worker if it belongs to this executor, otherwise returns `nullptr`
 
   @code{.cpp}
   auto w = executor.this_worker();
@@ -1060,10 +1060,8 @@ class Executor {
   DefaultNotifier _notifier;
 
 #if __cplusplus >= TF_CPP20
-  std::latch _latch;
   std::atomic<size_t> _num_topologies {0};
 #else
-  Latch _latch;
   std::condition_variable _topology_cv;
   std::mutex _topology_mutex;
   size_t _num_topologies {0};
@@ -1075,8 +1073,7 @@ class Executor {
 
   std::shared_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
-  std::unordered_map<std::thread::id, size_t> _wids;
-
+  std::unordered_map<std::thread::id, Worker*> _t2w;
 
   void _shutdown();
   void _observer_prologue(Worker&, Node*);
@@ -1145,7 +1142,6 @@ class Executor {
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
   _workers  (N),
   _notifier (N),
-  _latch    (N+1),
   _buffers  (N),
   _worker_interface(std::move(wix)) {
 
@@ -1240,33 +1236,25 @@ inline size_t Executor::num_taskflows() const {
 }
 
 inline Worker* Executor::this_worker() {
-  auto itr = _wids.find(std::this_thread::get_id());
-  return itr == _wids.end() ? nullptr : &_workers[itr->second];
+  auto itr = _t2w.find(std::this_thread::get_id());
+  return itr == _t2w.end() ? nullptr : itr->second;
 }
 
 // Function: this_worker_id
 inline int Executor::this_worker_id() const {
-  auto i = _wids.find(std::this_thread::get_id());
-  return i == _wids.end() ? -1 : static_cast<int>(_workers[i->second]._id);
+  auto i = _t2w.find(std::this_thread::get_id());
+  return i == _t2w.end() ? -1 : static_cast<int>(i->second->_id);
 }
 
 // Procedure: _spawn
 inline void Executor::_spawn(size_t N) {
-  std::mutex mutex;
+
   for(size_t id=0; id<N; ++id) {
     _workers[id]._id = id;
     _workers[id]._vtm = id;
     _workers[id]._executor = this;
     _workers[id]._waiter = &_notifier._waiters[id];
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
-
-      {
-        std::scoped_lock lock(mutex);
-        _wids[std::this_thread::get_id()] = w._id;
-      }
-
-      // synchronize with the main thread to ensure all worker data has been set
-      _latch.arrive_and_wait(); 
 
       // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
@@ -1313,8 +1301,9 @@ inline void Executor::_spawn(size_t N) {
       }
 
     });
+
+    _t2w.emplace(_workers[id]._thread.get_id(), &_workers[id]);
   }
-  _latch.arrive_and_wait();
 }
 
 // Function: _corun_until
