@@ -123,26 +123,26 @@
 namespace tf {
 
 /**
- @class CachelineAligned
+@class CachelineAligned
 
- @brief class to ensure cacheline-aligned storage for an object.
- 
- @tparam T The type of the stored object.
- 
- This utility class aligns the stored object `data` to twice the size of a cacheline.
- The alignment improves performance by optimizing data access in cache-sensitive scenarios.
- 
- @code{.cpp}
- // create two integers on two separate cachelines to avoid false sharing
- tf::CachelineAligned<int> counter1;
- tf::CachelineAligned<int> counter2;
- 
- // two threads access the two counters without false sharing
- std::thread t1([&]{ counter1.get() = 1; });
- std::thread t2([&]{ counter2.get() = 2; });
- t1.join();
- t2.join();
- @endcode
+@brief class to ensure cacheline-aligned storage for an object.
+
+@tparam T The type of the stored object.
+
+This utility class aligns the stored object `data` to twice the size of a cacheline.
+The alignment improves performance by optimizing data access in cache-sensitive scenarios.
+
+@code{.cpp}
+// create two integers on two separate cachelines to avoid false sharing
+tf::CachelineAligned<int> counter1;
+tf::CachelineAligned<int> counter2;
+
+// two threads access the two counters without false sharing
+std::thread t1([&]{ counter1.get() = 1; });
+std::thread t2([&]{ counter2.get() = 2; });
+t1.join();
+t2.join();
+@endcode
 */
 template <typename T>
 class CachelineAligned {
@@ -168,19 +168,18 @@ class CachelineAligned {
 };
 
 /**
- * @brief retrieves the value of an environment variable
- *
- * This function fetches the value of an environment variable by name.
- * If the variable is not found, it returns an empty string.
- *
- * @param str The name of the environment variable to retrieve.
- * @return The value of the environment variable as a string, or an empty string if not found.
- *
- * @attention The implementation differs between Windows and POSIX platforms:
- *  - On Windows, it uses `_dupenv_s` to fetch the value.
- *  - On POSIX, it uses `std::getenv`.
- *
- */
+@brief retrieves the value of an environment variable
+
+This function fetches the value of an environment variable by name.
+If the variable is not found, it returns an empty string.
+
+@param str The name of the environment variable to retrieve.
+@return The value of the environment variable as a string, or an empty string if not found.
+
+@attention The implementation differs between Windows and POSIX platforms:
+ - On Windows, it uses `_dupenv_s` to fetch the value.
+ - On POSIX, it uses `std::getenv`.
+*/
 inline std::string get_env(const std::string& str) {
 #ifdef _MSC_VER
   char *ptr = nullptr;
@@ -200,18 +199,17 @@ inline std::string get_env(const std::string& str) {
 }
 
 /**
- * @brief checks whether an environment variable is defined
- *
- * This function determines if a specific environment variable exists in the current environment.
- *
- * @param str The name of the environment variable to check.
- * @return `true` if the environment variable exists, `false` otherwise.
- *
- * @attention The implementation differs between Windows and POSIX platforms:
- *  - On Windows, it uses `_dupenv_s` to check for the variable's presence.
- *  - On POSIX, it uses `std::getenv` to check for the variable's presence.
- *
- */
+@brief checks whether an environment variable is defined
+
+This function determines if a specific environment variable exists in the current environment.
+
+@param str The name of the environment variable to check.
+@return `true` if the environment variable exists, `false` otherwise.
+
+@attention The implementation differs between Windows and POSIX platforms:
+ - On Windows, it uses `_dupenv_s` to check for the variable's presence.
+ - On POSIX, it uses `std::getenv` to check for the variable's presence.
+*/
 inline bool has_env(const std::string& str) {
 #ifdef _MSC_VER
   char *ptr = nullptr;
@@ -231,20 +229,20 @@ inline bool has_env(const std::string& str) {
 }
 
 /**
- * @fn pause
- * 
- * This function is used in spin-wait loops to hint the CPU that the current 
- * thread is in a busy-wait state. 
- * It helps reduce power consumption and improves performance on hyper-threaded processors 
- * by preventing the CPU from consuming unnecessary cycles while waiting. 
- * It is particularly useful in low-contention scenarios, where the thread 
- * is likely to quickly acquire the lock or condition it's waiting for, 
- * avoiding an expensive context switch. 
- * On modern x86 processors, this instruction can be invoked using @c __builtin_ia32_pause() 
- * in GCC/Clang or @c _mm_pause() in MSVC. 
- * In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.
- * 
- */
+@fn pause
+
+This function is used in spin-wait loops to hint the CPU that the current 
+thread is in a busy-wait state. 
+It helps reduce power consumption and improves performance on hyper-threaded processors 
+by preventing the CPU from consuming unnecessary cycles while waiting. 
+It is particularly useful in low-contention scenarios, where the thread 
+is likely to quickly acquire the lock or condition it's waiting for, 
+avoiding an expensive context switch. 
+On modern x86 processors, this instruction can be invoked using @c __builtin_ia32_pause() 
+in GCC/Clang or @c _mm_pause() in MSVC. 
+In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.
+
+*/
 inline void pause() {
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
     // x86 and x86_64: Use the PAUSE instruction
@@ -278,29 +276,29 @@ inline void pause(size_t count) {
 }
 
 /**
- * @brief spins until the given predicate becomes true
- * 
- * @tparam P the type of the predicate function or callable.
- * @param predicate the callable that returns a boolean value, which is checked in the loop.
- * 
- * This function repeatedly checks the provided predicate in a spin-wait loop
- * and uses a backoff strategy to minimize CPU waste during the wait. Initially,
- * it uses the `pause()` instruction for the first 100 iterations to hint to the
- * CPU that the thread is waiting, thus reducing power consumption and avoiding
- * unnecessary cycles. After 100 iterations, it switches to yielding the CPU using
- * `std::this_thread::yield()` to allow other threads to run and improve system
- * responsiveness.
- * 
- * The function operates as follows:
- * 1. For the first 100 iterations, it invokes `pause()` to reduce power consumption
- *    during the spin-wait.
- * 2. After 100 iterations, it uses `std::this_thread::yield()` to relinquish the
- *    CPU, allowing other threads to execute.
- * 
- * @attention This function is useful when you need to wait for a condition to be true, but
- *       want to optimize CPU usage during the wait by using a busy-wait approach.
- * 
- */
+@brief spins until the given predicate becomes true
+
+@tparam P the type of the predicate function or callable.
+@param predicate the callable that returns a boolean value, which is checked in the loop.
+
+This function repeatedly checks the provided predicate in a spin-wait loop
+and uses a backoff strategy to minimize CPU waste during the wait. Initially,
+it uses the `pause()` instruction for the first 100 iterations to hint to the
+CPU that the thread is waiting, thus reducing power consumption and avoiding
+unnecessary cycles. After 100 iterations, it switches to yielding the CPU using
+`std::this_thread::yield()` to allow other threads to run and improve system
+responsiveness.
+
+The function operates as follows:
+1. For the first 100 iterations, it invokes `pause()` to reduce power consumption
+   during the spin-wait.
+2. After 100 iterations, it uses `std::this_thread::yield()` to relinquish the
+   CPU, allowing other threads to execute.
+
+@attention This function is useful when you need to wait for a condition to be true, but
+           want to optimize CPU usage during the wait by using a busy-wait approach.
+
+*/
 template <typename P>
 void spin_until(P&& predicate) {
   size_t num_pauses = 0;
