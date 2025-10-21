@@ -13,7 +13,13 @@ namespace tf {
 
 // Procedure: _schedule_async_task
 TF_FORCE_INLINE void Executor::_schedule_async_task(Node* node) {  
-  (pt::this_worker) ? _schedule(*pt::this_worker, node) : _schedule(node);
+  Worker* w = this_worker();
+  if(w) {
+    _schedule(*w, node);
+  }
+  else{
+    _schedule(node);
+  }
 }
 
 // Procedure: _tear_down_async

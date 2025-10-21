@@ -170,11 +170,14 @@ class Taskflow : public FlowBuilder {
 
     For dynamically spawned tasks, such as module tasks, subflow tasks,
     and GPU tasks, you need to run the taskflow first before you can
-    dump the entire graph.
+    dump the entire graph. For subflow tasks the subflow must be retained,
+    otherwise it is cleared when joined and the child tasks not shown in the
+    DOT graph.
 
     @code{.cpp}
     tf::Task parent = taskflow.emplace([](tf::Subflow sf){
       sf.emplace([](){ std::cout << "child\n"; });
+      sf.retain(true);
     });
     taskflow.dump(std::cout);      // this dumps only the parent tasks
     executor.run(taskflow).wait();
@@ -193,7 +196,7 @@ class Taskflow : public FlowBuilder {
 
     /**
     @brief queries the number of tasks in this taskflow
-    
+
     The number of tasks in this taskflow is defined at the first level of hierarchy.
     Tasks that are created dynamically, such as those via tf::Subflow, are not counted.
 
@@ -201,7 +204,7 @@ class Taskflow : public FlowBuilder {
     tf::Taskflow taskflow;
     auto my_task = taskflow.emplace([](){});
     assert(taskflow.num_tasks() == 1);
-    
+
     // reassign my_task to a subflow of four tasks
     my_task.work([](tf::Subflow& sf){
       sf.emplace(
@@ -211,7 +214,7 @@ class Taskflow : public FlowBuilder {
         [](){ std::cout << "Task D\n"; }
       );
     });
-    
+
     // subflow tasks will not be counted
     assert(taskflow.num_tasks() == 1);
     @endcode
@@ -222,7 +225,7 @@ class Taskflow : public FlowBuilder {
     @brief queries if this taskflow is empty (has no tasks)
 
     An empty taskflow has no tasks, i.e., the return of tf::Taskflow::num_tasks is `0`.
-    
+
     @code{.cpp}
     tf::Taskflow taskflow;
     assert(taskflow.empty() == true);
@@ -283,8 +286,8 @@ class Taskflow : public FlowBuilder {
     @param from from task (dependent)
     @param to to task (successor)
 
-    Removing the depencency from task `from` to task `to` is equivalent to 
-    removing `to` from the succcessor list of `from` and 
+    Removing the depencency from task `from` to task `to` is equivalent to
+    removing `to` from the succcessor list of `from` and
     removing `from` from the predecessor list of `to`.
 
     @code{.cpp}
@@ -299,14 +302,14 @@ class Taskflow : public FlowBuilder {
     assert(b.num_predecessors() == 1);
     assert(c.num_predecessors() == 1);
     assert(d.num_predecessors() == 1);
-  
+
     taskflow.remove_dependency(a, b);
     assert(a.num_successors() == 2);
     assert(b.num_predecessors() == 0);
     @endcode
 
-    @attention For performance reason, %Taskflow does not store the graph using linked lists but 
-    vectors with contiguous space. 
+    @attention For performance reason, %Taskflow does not store the graph using linked lists but
+    vectors with contiguous space.
     Therefore, removing tasks or dependencies incurs linear time complexity proportional
     to the size of the graph and the dependency count of a task.
     */
@@ -647,7 +650,7 @@ class Future : public std::future<T>  {
     @return @c true if the execution can be cancelled or
             @c false if the execution has already completed
 
-    When you request a cancellation, the executor will stop scheduling any tasks onwards. 
+    When you request a cancellation, the executor will stop scheduling any tasks onwards.
     Tasks that are already running will continue to finish as their executions are non-preemptive.
     You can call tf::Future::wait to wait for the cancellation to complete.
 
@@ -668,14 +671,14 @@ class Future : public std::future<T>  {
 
     In the above example, we submit a taskflow of four tasks to the executor and then
     issue a cancellation to stop its execution.
-    Since the cancellation is non-deterministic with the executor runtime, 
+    Since the cancellation is non-deterministic with the executor runtime,
     we may still see some tasks complete their executions or none.
 
     */
     bool cancel();
 
   private:
-    
+
     std::weak_ptr<Topology> _topology;
 
     Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
