@@ -75,7 +75,7 @@ class AtomicNotifier {
   public:
   
   struct Waiter {
-    alignas (2*TF_CACHELINE_SIZE) uint32_t epoch;
+    alignas (2*std::hardware_destructive_interference_size) uint32_t epoch;
   };
 
   AtomicNotifier(size_t N) noexcept : _state(0), _waiters(N) {}

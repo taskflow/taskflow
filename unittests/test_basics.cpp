@@ -763,11 +763,15 @@ void worker_id(unsigned w) {
   tf::Taskflow taskflow;
   tf::Executor executor(w);
 
+  REQUIRE(executor.this_worker() == nullptr);
+
   for(int i=0; i<1000; i++) {
     auto A = taskflow.emplace([&](){
       auto id = executor.this_worker_id();
       REQUIRE(id>=0);
       REQUIRE(id< w);
+      REQUIRE(executor.this_worker() != nullptr);
+      REQUIRE(executor.this_worker()->executor() == &executor);
     });
 
     auto B = taskflow.emplace([&](tf::Subflow& sf){

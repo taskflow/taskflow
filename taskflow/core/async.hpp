@@ -25,6 +25,12 @@ TF_FORCE_INLINE void Executor::_schedule_async_task(Node* node) {
 // Procedure: _tear_down_async
 inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache) {
   
+  // node->_topology  |  node->_parent  |  secenario
+  // nullptr          |  nullptr        |  exe.async();
+  // nullptr          |  0x---          |  exe.async([](Runtime rt){ rt.async(); });
+  // 0x---            |  nullptr        |  ?
+  // 0x---            |  0x---          |  tf.emplace([](Runtime& rt){ rt.async(); });
+
   // from executor
   if(auto parent = node->_parent; parent == nullptr) {
     _decrement_topology();

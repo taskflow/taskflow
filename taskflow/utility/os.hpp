@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <string>
 #include <thread>
+#include <new>
 
 #define TF_OS_LINUX 0
 #define TF_OS_DRAGONFLY 0
@@ -118,6 +119,13 @@
   #define TF_CACHELINE_SIZE 64
 #endif
 
+// some platforms do no have these two values defined
+#ifndef __cpp_lib_hardware_interference_size
+namespace std {
+  constexpr std::size_t hardware_constructive_interference_size = TF_CACHELINE_SIZE;
+  constexpr std::size_t hardware_destructive_interference_size = TF_CACHELINE_SIZE;
+}
+#endif
 
 
 namespace tf {
@@ -150,7 +158,7 @@ class CachelineAligned {
   /**
    * @brief The stored object, aligned to twice the cacheline size.
    */
-  alignas (2*TF_CACHELINE_SIZE) T data;
+  alignas (2*std::hardware_destructive_interference_size) T data;
 
   /**
    * @brief accesses the underlying object

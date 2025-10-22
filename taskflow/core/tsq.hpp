@@ -94,8 +94,8 @@ class UnboundedTaskQueue {
 
   // Doubling the alignment by 2 seems to generate the most
   // decent performance.
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
+  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _top;
+  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _bottom;
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 
@@ -362,9 +362,9 @@ class BoundedTaskQueue {
 
   static_assert((BufferSize >= 2) && ((BufferSize & (BufferSize - 1)) == 0));
 
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top {0};
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom {0};
-  alignas(2*TF_CACHELINE_SIZE) std::atomic<T> _buffer[BufferSize];
+  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _top {0};
+  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _bottom {0};
+  alignas(2*std::hardware_destructive_interference_size) std::atomic<T> _buffer[BufferSize];
 
   public:
     
@@ -640,8 +640,8 @@ constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
 //
 //  // Doubling the alignment by 2 seems to generate the most
 //  // decent performance.
-//  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
-//  alignas(2*TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
+//  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _top;
+//  alignas(2*std::hardware_destructive_interference_size) std::atomic<int64_t> _bottom;
 //  std::atomic<Array*> _array;
 //  std::vector<Array*> _garbage;
 //

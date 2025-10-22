@@ -61,6 +61,8 @@ and fixes a few bugs related to exception handling. We also revised multiple coo
   + recursive exception propagation
   + concurrent exception throwing
 + removed code support for SYCL
++ removed `thread_local` to avoid incorrect references caused by Windows DLL boundaries
++ replaced `TF_CACHELINE_SIZE` with std::hardware_destructive_interference_size
 + enhanced the performance of atomic notifier via relaxed memory order
 + enforced implicit synchronization at the end of a runtime task's scope for safer usage
 
@@ -73,9 +75,10 @@ and fixes a few bugs related to exception handling. We also revised multiple coo
 
 + toggled exception block in executor ([#690](https://github.com/taskflow/taskflow/pull/690))
 + fixed missing exception on thread creation failure in executor ([#693](https://github.com/taskflow/taskflow/issues/693))
-+ fixed missing exception on recursive runtime tasking ([#724](https://github.com/taskflow/taskflow/issues/724))
 + fixed segmentation fault caused by empty async dependency ([#700](https://github.com/taskflow/taskflow/issues/700))
 + fixed compilation errors for CUDA 13 ([#721](https://github.com/taskflow/taskflow/pull/721))
++ fixed missing exception on recursive runtime tasking ([#724](https://github.com/taskflow/taskflow/issues/724))
++ fixed memory leak in exception handling for async tasks ([#730](https://github.com/taskflow/taskflow/issues/730))
 
 @section release-3-11-0_breaking_changes Breaking Changes
 

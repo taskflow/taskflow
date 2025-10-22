@@ -5,7 +5,7 @@
   <title>tf::FlowBuilder class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -141,7 +141,7 @@
             </dt>
             <dd>adds adjacent dependency links to a linear list of tasks</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aae3edfa278baa75b08414e083c14c836" class="m-doc">for_each</a>(</span><span class="m-doc-wrap">B first,
               E last,
               C callable,
@@ -149,7 +149,7 @@
             </dt>
             <dd>constructs an STL-styled parallel-for task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a3b132bd902331a11b04b4ad66cf8bf77" class="m-doc">for_each_index</a>(</span><span class="m-doc-wrap">B first,
               E last,
               S step,
@@ -158,14 +158,14 @@
             </dt>
             <dd>constructs an index-based parallel-for task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename R, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a2582a216d54dacca2b7022ea7e89452a" class="m-doc">for_each_by_index</a>(</span><span class="m-doc-wrap">R range,
               C callable,
               P part = P()) -&gt; <a href="classtf_1_1Task.html" class="m-doc">Task</a></span>
             </dt>
             <dd>constructs an index range-based parallel-for task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a97be7ceef6fa4276e3b074c10c13b826" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
               O d_first,
@@ -174,7 +174,7 @@
             </dt>
             <dd>constructs a parallel-transform task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a7ea96d3fa0aa9e3ff337a9f1e37682b0" class="m-doc">transform</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
@@ -184,7 +184,7 @@
             </dt>
             <dd>constructs a parallel-transform task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#afb24798ebf46e253a40b01bffb1da6a7" class="m-doc">reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
@@ -193,7 +193,7 @@
             </dt>
             <dd>constructs an STL-styled parallel-reduction task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename R, typename T, typename L, typename G, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename R, typename T, typename L, typename G, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a3ea810696c4b29824d1aaef15342c825" class="m-doc">reduce_by_index</a>(</span><span class="m-doc-wrap">R range,
               T&amp; init,
               L lop,
@@ -202,7 +202,7 @@
             </dt>
             <dd>constructs an index range-based parallel-reduction task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#aa62d24438c0860e76153ffd129deba41" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; init,
@@ -212,7 +212,7 @@
             </dt>
             <dd>constructs an STL-styled parallel transform-reduce task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;</div>
+              <div class="m-doc-template">template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#adcd90e5b46299f4ccab33caf46edcbc0" class="m-doc">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
               B2 first2,
@@ -278,7 +278,7 @@
             </dt>
             <dd>creates an STL-styled parallel transform-exclusive scan task</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a46a96f5889e6ac87b1ff8d6313b5f471" class="m-doc">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
@@ -287,7 +287,7 @@
             </dt>
             <dd>constructs a task to perform STL-styled find-if algorithm</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;</div>
+              <div class="m-doc-template">template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a95fa2719fa7bbe7d171cf474ddb06726" class="m-doc">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
               T&amp; result,
@@ -354,7 +354,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">C</td>
-                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;void()&gt;</a></td>
+                  <td>callable type constructible from std::function&lt;void()&gt;</td>
                 </tr>
               </tbody>
               <thead>
@@ -390,7 +390,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">C</td>
-                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;void(tf::<wbr />Runtime&amp;)&gt;</a></td>
+                  <td>callable type constructible from std::function&lt;void(tf::Runtime&amp;)&gt;</td>
                 </tr>
               </tbody>
               <thead>
@@ -426,7 +426,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">C</td>
-                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;void(tf::<wbr />Subflow&amp;)&gt;</a></td>
+                  <td>callable type constructible from std::function&lt;void(tf::Subflow&amp;)&gt;</td>
                 </tr>
               </tbody>
               <thead>
@@ -465,7 +465,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">C</td>
-                  <td>callable type constructible from <a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;int()&gt;</a></td>
+                  <td>callable type constructible from std::function&lt;int()&gt;</td>
                 </tr>
               </tbody>
               <thead>
@@ -739,7 +739,7 @@
           <section class="m-doc-details" id="aae3edfa278baa75b08414e083c14c836"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aae3edfa278baa75b08414e083c14c836" class="m-doc-self">for_each</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -766,7 +766,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -804,7 +804,7 @@
           <section class="m-doc-details" id="a3b132bd902331a11b04b4ad66cf8bf77"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename S, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3b132bd902331a11b04b4ad66cf8bf77" class="m-doc-self">for_each_index</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -836,7 +836,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -884,7 +884,7 @@
           <section class="m-doc-details" id="a2582a216d54dacca2b7022ea7e89452a"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename R, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename R, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a2582a216d54dacca2b7022ea7e89452a" class="m-doc-self">for_each_by_index</a>(</span><span class="m-doc-wrap">R range,
               C callable,
@@ -906,7 +906,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -949,7 +949,7 @@
           <section class="m-doc-details" id="a97be7ceef6fa4276e3b074c10c13b826"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename B, typename E, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97be7ceef6fa4276e3b074c10c13b826" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B first1,
               E last1,
@@ -981,7 +981,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1023,7 +1023,7 @@
           <section class="m-doc-details" id="a7ea96d3fa0aa9e3ff337a9f1e37682b0"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename B1, typename E1, typename B2, typename O, typename C, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;C&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7ea96d3fa0aa9e3ff337a9f1e37682b0" class="m-doc-self">transform</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
@@ -1060,7 +1060,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1106,7 +1106,7 @@
           <section class="m-doc-details" id="afb24798ebf46e253a40b01bffb1da6a7"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename O, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#afb24798ebf46e253a40b01bffb1da6a7" class="m-doc-self">reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -1138,7 +1138,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1180,7 +1180,7 @@
           <section class="m-doc-details" id="a3ea810696c4b29824d1aaef15342c825"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename R, typename T, typename L, typename G, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename R, typename T, typename L, typename G, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3ea810696c4b29824d1aaef15342c825" class="m-doc-self">reduce_by_index</a>(</span><span class="m-doc-wrap">R range,
               T&amp; init,
@@ -1212,7 +1212,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1274,7 +1274,7 @@
           <section class="m-doc-details" id="aa62d24438c0860e76153ffd129deba41"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename B, typename E, typename T, typename BOP, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;P&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa62d24438c0860e76153ffd129deba41" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -1311,7 +1311,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1357,7 +1357,7 @@
           <section class="m-doc-details" id="adcd90e5b46299f4ccab33caf46edcbc0"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;
+                template&lt;typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>, std::enable_if_t&lt;!<a href="namespacetf.html#a73c20705fc54763f195a00b6e626e301" class="m-doc">is_<wbr />partitioner_<wbr />v</a>&lt;std::decay_t&lt;BOP_T&gt;&gt;, void&gt;* = nullptr&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adcd90e5b46299f4ccab33caf46edcbc0" class="m-doc-self">transform_reduce</a>(</span><span class="m-doc-wrap">B1 first1,
               E1 last1,
@@ -1399,7 +1399,7 @@
                 </tr>
                 <tr>
                   <td>P</td>
-                  <td>partitioner type (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioner type (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
               <thead>
@@ -1894,7 +1894,7 @@
           <section class="m-doc-details" id="a46a96f5889e6ac87b1ff8d6313b5f471"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a46a96f5889e6ac87b1ff8d6313b5f471" class="m-doc-self">find_if</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -1951,7 +1951,7 @@
                 </tr>
                 <tr>
                   <td>part</td>
-                  <td>partitioning algorithm (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioning algorithm (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
             </table>
@@ -1973,7 +1973,7 @@
           <section class="m-doc-details" id="a95fa2719fa7bbe7d171cf474ddb06726"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">DefaultPartitioner</a>&gt;
+                template&lt;typename B, typename E, typename T, typename UOP, typename P = <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">DefaultPartitioner</a>&gt;
               </div>
               <span class="m-doc-wrap-bumper"><a href="classtf_1_1Task.html" class="m-doc">Task</a> tf::<wbr />FlowBuilder::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a95fa2719fa7bbe7d171cf474ddb06726" class="m-doc-self">find_if_not</a>(</span><span class="m-doc-wrap">B first,
               E last,
@@ -2030,7 +2030,7 @@
                 </tr>
                 <tr>
                   <td>part</td>
-                  <td>partitioning algorithm (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioning algorithm (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
             </table>
@@ -2109,7 +2109,7 @@
                 </tr>
                 <tr>
                   <td>part</td>
-                  <td>partitioning algorithm (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioning algorithm (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
             </table>
@@ -2191,7 +2191,7 @@
                 </tr>
                 <tr>
                   <td>part</td>
-                  <td>partitioning algorithm (default <a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
+                  <td>partitioning algorithm (default <a href="namespacetf.html#a66b72776c788898aee9e132b0ea9b405" class="m-doc">tf::<wbr />DefaultPartitioner</a>)</td>
                 </tr>
               </tbody>
             </table>
@@ -2345,7 +2345,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

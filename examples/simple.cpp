@@ -12,6 +12,8 @@
 //
 #include <taskflow/taskflow.hpp>  // the only include you need
 
+#include <new>
+
 int main(){
 
   tf::Executor executor;

@@ -546,9 +546,17 @@ class Executor {
   /**
   @brief queries pointer to the calling worker if it belongs to this executor, otherwise returns `nullptr`
 
+  Returns a pointer to the per-worker storage associated with this executor. 
+  If the calling thread is not a worker of this executor, the function returns `nullptr`.
+
   @code{.cpp}
   auto w = executor.this_worker();
-  assert(w == nullptr || w->executor() == &executor);
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+  executor.async([&](){
+    assert(executor.this_worker() != nullptr);
+    assert(executor.this_worker()->executor() == &executor);
+  });
   @endcode
   */
   Worker* this_worker();
@@ -1087,6 +1095,7 @@ class Executor {
   void _tear_down_topology(Worker&, Topology*);
   void _tear_down_async(Worker&, Node*, Node*&);
   void _tear_down_dependent_async(Worker&, Node*, Node*&);
+  void _tear_down_nonasync(Worker&, Node*, Node*&);
   void _tear_down_invoke(Worker&, Node*, Node*&);
   void _increment_topology();
   void _decrement_topology();
@@ -1613,6 +1622,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 
   // if the work has been cancelled, there is no need to continue
+  // Here, we do tear_down_invoke since async tasks may also get cancelled where
+  // we need to recycle the node.
   if(node->_is_cancelled()) {
     _tear_down_invoke(worker, node, cache);
     TF_INVOKE_CONTINUATION();
@@ -1759,15 +1770,15 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
   }
-  
+
+
   // clean up the node after execution
-  _tear_down_invoke(worker, node, cache);
+  _tear_down_nonasync(worker, node, cache);
   TF_INVOKE_CONTINUATION();
 }
 
-// Procedure: _tear_down_invoke
-inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache) {
-  
+// Procedure: _tear_down_nonasync
+inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cache) {
   // we must check parent first before subtracting the join counter,
   // or it can introduce data race
   if(auto parent = node->_parent; parent == nullptr) {
@@ -1784,6 +1795,24 @@ inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache
         _update_cache(worker, cache, parent);
       }
     }
+  }
+}
+
+// Procedure: _tear_down_invoke
+inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache) {
+  
+  switch(node->_handle.index()) {
+    case Node::ASYNC:
+      _tear_down_async(worker, node, cache);
+    break;
+
+    case Node::DEPENDENT_ASYNC:
+      _tear_down_dependent_async(worker, node, cache);
+    break;
+
+    default:
+      _tear_down_nonasync(worker, node, cache);
+    break;
   }
 }
 

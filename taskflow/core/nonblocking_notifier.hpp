@@ -67,7 +67,7 @@ class NonblockingNotifierV1 {
   public:
 
   struct Waiter {
-    alignas (2*TF_CACHELINE_SIZE) std::atomic<Waiter*> next;
+    alignas (2*std::hardware_destructive_interference_size) std::atomic<Waiter*> next;
     uint64_t epoch;
     enum : unsigned {
       kNotSignaled = 0,
@@ -336,7 +336,7 @@ class NonblockingNotifierV2 {
   public:
   
   struct Waiter {
-    alignas (2*TF_CACHELINE_SIZE) std::atomic<uint64_t> next{kStackMask};
+    alignas (2*std::hardware_destructive_interference_size) std::atomic<uint64_t> next{kStackMask};
     uint64_t epoch{0};
     enum : unsigned {
       kNotSignaled = 0,
@@ -445,10 +445,6 @@ class NonblockingNotifierV2 {
         _notify<false>();
       }
     }
-  }
-
-  size_t size() const {
-    return _waiters.size();
   }
 
   private:
