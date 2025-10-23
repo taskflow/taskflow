@@ -1,0 +1,11 @@
+#include "path_to_executables.hpp"
+
+const char *pathToCancelExec()
+{
+   return "$<TARGET_FILE:cancel>";
+}
+
+const char *pathToFibonacciExec()
+{
+   return "$<TARGET_FILE:fibonacci>";
+}
