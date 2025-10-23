@@ -1265,4 +1265,117 @@ TEST_CASE("SilentDependentAsync.MixedAlgorithms.8threads" * doctest::timeout(300
   mixed_algorithms_with_silent_dependent_async(8);
 }
 
+// ------------------------------------------------------------------------------------------------
+// silent dependent async from runtime
+// ------------------------------------------------------------------------------------------------
+
+void silent_dependent_async_from_runtime(unsigned num_threads) {
+
+  int counter = 0;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+
+  taskflow.emplace([&](tf::Runtime& rt){
+    tf::AsyncTask prev = rt.silent_dependent_async([&](){ 
+      REQUIRE(counter == 0); 
+      ++counter; 
+    });
+    for(size_t i=1; i<=1000; ++i) {
+      if(i&1) {
+        tf::AsyncTask curr = rt.silent_dependent_async([&, i](tf::Runtime&){ 
+          REQUIRE(counter == i); 
+          ++counter; 
+        }, prev);
+        prev = curr;
+      }
+      else {
+        tf::AsyncTask curr = rt.silent_dependent_async([&, i](){ 
+          REQUIRE(counter == i); 
+          ++counter; 
+        }, prev);
+        prev = curr;
+      }
+    } 
+  });
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(counter == 1001);
+}
+
+TEST_CASE("SilentDependentAsync.FromRuntime.1thread") {
+  silent_dependent_async_from_runtime(1);
+}
+
+TEST_CASE("SilentDependentAsync.FromRuntime.2threads") {
+  silent_dependent_async_from_runtime(2);
+}
+
+TEST_CASE("SilentDependentAsync.FromRuntime.3threads") {
+  silent_dependent_async_from_runtime(3);
+}
+
+TEST_CASE("SilentDependentAsync.FromRuntime.4threads") {
+  silent_dependent_async_from_runtime(4);
+}
+
+// ------------------------------------------------------------------------------------------------
+// dependent async from runtime
+// ------------------------------------------------------------------------------------------------
+
+void dependent_async_from_runtime(unsigned num_threads) {
+
+  int counter = 0;
+
+  tf::Executor executor(num_threads);
+  tf::Taskflow taskflow;
+
+  taskflow.emplace([&](tf::Runtime& rt){
+    auto [prev, fu1] = rt.dependent_async([&](){ 
+      REQUIRE(counter == 0); 
+      ++counter; 
+    });
+    for(size_t i=1; i<=1000; ++i) {
+      if(i & 1) {
+        auto [curr, fu2] = rt.dependent_async([&, i](tf::Runtime&){ 
+          REQUIRE(counter == i); 
+          ++counter; 
+        }, prev);
+        prev = curr;
+      }
+      else {
+        auto [curr, fu2] = rt.dependent_async([&, i](){ 
+          REQUIRE(counter == i); 
+          ++counter; 
+        }, prev);
+        prev = curr;
+      }
+    } 
+  });
+
+  executor.run(taskflow).wait();
+  
+  REQUIRE(counter == 1001);
+}
+
+TEST_CASE("DependentAsync.FromRuntime.1thread") {
+  dependent_async_from_runtime(1);
+}
+
+TEST_CASE("DependentAsync.FromRuntime.2threads") {
+  dependent_async_from_runtime(2);
+}
+
+TEST_CASE("DependentAsync.FromRuntime.3threads") {
+  dependent_async_from_runtime(3);
+}
+
+TEST_CASE("DependentAsync.FromRuntime.4threads") {
+  dependent_async_from_runtime(4);
+}
+
+
+
+
 

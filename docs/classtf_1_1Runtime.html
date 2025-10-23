@@ -74,7 +74,6 @@
 <span class="n">tf</span><span class="o">::</span><span class="n">Task</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
 <span class="w">  </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">counter</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
 <span class="p">});</span>
-
 <span class="n">A</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">B</span><span class="p">);</span>
 
 <span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>A runtime object is associated with the worker and the executor that runs its parent task.</p><aside class="m-note m-info"><h4>Note</h4><p>To understand how Taskflow schedules a runtime task, please refer to <a href="RuntimeTasking.html" class="m-doc">Runtime Tasking</a>.</p></aside>
@@ -115,6 +114,62 @@
               F&amp;&amp; f)</span>
             </dt>
             <dd>runs the given function asynchronously without returning any future object</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... Tasks, std::enable_if_t&lt;all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a1b89026b619e145c7e2c5c223a0adfc7" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
+            </dt>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#abc1a77a8896529a8dea6f86997ea10e5" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
+            </dt>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a3e5e2347c6ec2f29be72aaaf4c75391e" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              I first,
+              I last) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
+            </dt>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a29472635df52420e3be81ae19976a687" class="m-doc">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              I first,
+              I last) -&gt; <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></span>
+            </dt>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename... Tasks, std::enable_if_t&lt;all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks) -&gt; auto</span>
+            </dt>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a033e68b47cecca58c59ee550274ceb6f" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks) -&gt; auto</span>
+            </dt>
+            <dd>runs the given function asynchronously when the given predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a7cd6502c12443a04f39d6ec139adff42" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              I first,
+              I last) -&gt; auto</span>
+            </dt>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5386a0f3a4460f8a471d76be2ea36f11" class="m-doc">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              I first,
+              I last) -&gt; auto</span>
+            </dt>
+            <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#aba54a7cacffb54f5eb133730d256a7c4" class="m-doc">corun</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -332,6 +387,498 @@
 <p>Similar to <a href="#a0ce29efa2106c8c5a1432e4a55ab2e05" class="m-doc">tf::<wbr />Runtime::<wbr />silent_async</a>, but takes a parameter of type <a href="classtf_1_1TaskParams.html" class="m-doc">tf::<wbr />TaskParams</a> to initialize the created asynchronous task.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
 <span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_async</span><span class="p">(</span><span class="s">&quot;my task&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){});</span>
 <span class="p">});</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a1b89026b619e145c7e2c5c223a0adfc7"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... Tasks, std::enable_if_t&lt;all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1b89026b619e145c7e2c5c223a0adfc7" class="m-doc-self">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>Tasks</td>
+                  <td>task types convertible to <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>tasks</td>
+                  <td>asynchronous tasks on which this execution depends</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This member function is more efficient than <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and is encouraged to use when you do not want a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">);</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="abc1a77a8896529a8dea6f86997ea10e5"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abc1a77a8896529a8dea6f86997ea10e5" class="m-doc-self">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>Tasks</td>
+                  <td>task types convertible to <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>params</td>
+                  <td>task parameters</td>
+                </tr>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>tasks</td>
+                  <td>asynchronous tasks on which this execution depends</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This member function is more efficient than <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and is encouraged to use when you do not want a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. Assigned task names will appear in the observers of the executor.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;C&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre><p>This member function is thread-safe.</p>
+          </div></section>
+          <section class="m-doc-details" id="a3e5e2347c6ec2f29be72aaaf4c75391e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3e5e2347c6ec2f29be72aaaf4c75391e" class="m-doc-self">silent_dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              I first,
+              I last)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>I</td>
+                  <td>iterator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This member function is more efficient than <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and is encouraged to use when you do not want a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>.</p><pre class="m-code"><span class="n">Taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">wait_for_all</span><span class="p">();</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a29472635df52420e3be81ae19976a687"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a29472635df52420e3be81ae19976a687" class="m-doc-self">silent_dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              I first,
+              I last)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>I</td>
+                  <td>iterator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>params</td>
+                  <td>tasks parameters</td>
+                </tr>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>This member function is more efficient than <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and is encouraged to use when you do not want a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. Assigned task names will appear in the observers of the executor.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;C&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a42e87733508e3610d34728a38e975177"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename... Tasks, std::enable_if_t&lt;all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a42e87733508e3610d34728a38e975177" class="m-doc-self">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>Tasks</td>
+                  <td>task types convertible to <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>tasks</td>
+                  <td>asynchronous tasks on which this execution depends</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a pair of a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that holds the result of the execution</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. <a href="classtf_1_1Task.html" class="m-doc">Task</a> <code>C</code> returns a pair of its <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">fuC</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="p">[](){</span><span class="w"> </span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="n">fuC</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w">  </span><span class="c1">// C finishes, which in turns means both A and B finish</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>You can mix the use of <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handles returned by <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and <a href="#a1b89026b619e145c7e2c5c223a0adfc7" class="m-doc">tf::<wbr />Runtime::<wbr />silent_dependent_async</a> when specifying task dependencies.</p>
+          </div></section>
+          <section class="m-doc-details" id="a033e68b47cecca58c59ee550274ceb6f"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P, typename F, typename... Tasks, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; all_same_v&lt;<a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>, std::decay_t&lt;Tasks&gt;...&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a033e68b47cecca58c59ee550274ceb6f" class="m-doc-self">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              Tasks &amp;&amp; ... tasks)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">P</td>
+                  <td>task parameters type</td>
+                </tr>
+                <tr>
+                  <td>F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>Tasks</td>
+                  <td>task types convertible to <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>params</td>
+                  <td>task parameters</td>
+                </tr>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>tasks</td>
+                  <td>asynchronous tasks on which this execution depends</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a pair of a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that holds the result of the execution</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The example below creates three named asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. <a href="classtf_1_1Task.html" class="m-doc">Task</a> <code>C</code> returns a pair of its <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">fuC</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;C&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">[](){</span><span class="w"> </span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">fuC</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// C finishes, which in turns means both A and B finish</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>You can mix the use of <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handles returned by <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and <a href="#a1b89026b619e145c7e2c5c223a0adfc7" class="m-doc">tf::<wbr />Runtime::<wbr />silent_dependent_async</a> when specifying task dependencies.</p>
+          </div></section>
+          <section class="m-doc-details" id="a7cd6502c12443a04f39d6ec139adff42"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename F, typename I, std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7cd6502c12443a04f39d6ec139adff42" class="m-doc-self">dependent_async</a>(</span><span class="m-doc-wrap">F&amp;&amp; func,
+              I first,
+              I last)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>I</td>
+                  <td>iterator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a pair of a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that holds the result of the execution</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The example below creates three asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. <a href="classtf_1_1Task.html" class="m-doc">Task</a> <code>C</code> returns a pair of its <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">fuC</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="p">[](){</span><span class="w"> </span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="n">array</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">fuC</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// C finishes, which in turns means both A and B finish</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>You can mix the use of <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handles returned by <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and rt::Runtime::silent_dependent_async when specifying task dependencies.</p>
+          </div></section>
+          <section class="m-doc-details" id="a5386a0f3a4460f8a471d76be2ea36f11"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename P, typename F, typename I, std::enable_if_t&lt;<a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c" class="m-doc">is_<wbr />task_<wbr />params_<wbr />v</a>&lt;P&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;I&gt;, <a href="classtf_1_1AsyncTask.html" class="m-doc">AsyncTask</a>&gt;, void&gt;* = nullptr&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">auto tf::<wbr />Runtime::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5386a0f3a4460f8a471d76be2ea36f11" class="m-doc-self">dependent_async</a>(</span><span class="m-doc-wrap">P&amp;&amp; params,
+              F&amp;&amp; func,
+              I first,
+              I last)</span></span>
+            </h3>
+            <p>runs the given function asynchronously when the given range of predecessors finish</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Template parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">P</td>
+                  <td>task parameters type</td>
+                </tr>
+                <tr>
+                  <td>F</td>
+                  <td>callable type</td>
+                </tr>
+                <tr>
+                  <td>I</td>
+                  <td>iterator type</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>params</td>
+                  <td>task parameters</td>
+                </tr>
+                <tr>
+                  <td>func</td>
+                  <td>callable object</td>
+                </tr>
+                <tr>
+                  <td>first</td>
+                  <td>iterator to the beginning (inclusive)</td>
+                </tr>
+                <tr>
+                  <td>last</td>
+                  <td>iterator to the end (exclusive)</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>a pair of a <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a <a href="https://en.cppreference.com/w/cpp/thread/future">std::<wbr />future</a> that holds the result of the execution</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>The example below creates three named asynchronous tasks, <code>A</code>, <code>B</code>, and <code>C</code>, in which task <code>C</code> runs after task <code>A</code> and task <code>B</code>. <a href="classtf_1_1Task.html" class="m-doc">Task</a> <code>C</code> returns a pair of its <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Runtime</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="p">){</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">array</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}),</span>
+<span class="w">    </span><span class="n">rt</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="p">[</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">fuC</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">dependent_async</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;C&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">[](){</span><span class="w"> </span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C runs after A and B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span><span class="w"> </span>
+<span class="w">    </span><span class="n">array</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">fuC</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// C finishes, which in turns means both A and B finish</span>
+<span class="p">});</span><span class="w">  </span><span class="c1">// implicit synchronization of all tasks at the end of runtime&#39;s scope</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>You can mix the use of <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handles returned by <a href="#a42e87733508e3610d34728a38e975177" class="m-doc">tf::<wbr />Runtime::<wbr />dependent_async</a> and <a href="#a1b89026b619e145c7e2c5c223a0adfc7" class="m-doc">tf::<wbr />Runtime::<wbr />silent_dependent_async</a> when specifying task dependencies.</p>
           </div></section>
           <section class="m-doc-details" id="aba54a7cacffb54f5eb133730d256a7c4"><div>
             <h3>

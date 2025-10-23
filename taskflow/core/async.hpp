@@ -51,16 +51,16 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
 // ----------------------------------------------------------------------------
 
 // Function: async
+template <typename F>
+auto Executor::async(F&& f) {
+  return async(DefaultTaskParams{}, std::forward<F>(f));
+}
+
+// Function: async
 template <typename P, typename F>
 auto Executor::async(P&& params, F&& f) {
   _increment_topology();
   return _async(std::forward<P>(params), std::forward<F>(f), nullptr, nullptr);
-}
-
-// Function: async
-template <typename F>
-auto Executor::async(F&& f) {
-  return async(DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: _async
@@ -115,16 +115,16 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, Node* parent) {
 // ----------------------------------------------------------------------------
 
 // Function: silent_async
+template <typename F>
+void Executor::silent_async(F&& f) {
+  silent_async(DefaultTaskParams{}, std::forward<F>(f));
+}
+
+// Function: silent_async
 template <typename P, typename F>
 void Executor::silent_async(P&& params, F&& f) {
   _increment_topology();
   _silent_async(std::forward<P>(params), std::forward<F>(f), nullptr, nullptr);
-}
-
-// Function: silent_async
-template <typename F>
-void Executor::silent_async(F&& f) {
-  silent_async(DefaultTaskParams{}, std::forward<F>(f));
 }
 
 // Function: _silent_async
@@ -189,13 +189,24 @@ template <typename P, typename F, typename I,
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
-
   _increment_topology();
+  return _silent_dependent_async(
+    std::forward<P>(params), std::forward<F>(func), first, last, nullptr, nullptr
+  );
+}
+
+// Function: silent_dependent_async
+template <typename P, typename F, typename I,
+  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
+>
+auto Executor::_silent_dependent_async(
+  P&& params, F&& func, I first, I last, Topology* tpg, Node* parent
+) {
 
   size_t num_predecessors = std::distance(first, last);
   
   AsyncTask task(animate(
-    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_predecessors,
+    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   ));
   
@@ -246,8 +257,15 @@ template <typename P, typename F, typename I,
   std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
 auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
-  
   _increment_topology();
+  return _dependent_async(std::forward<P>(params), std::forward<F>(func), first, last, nullptr, nullptr);
+}
+
+// Function: dependent_async
+template <typename P, typename F, typename I,
+  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
+>
+auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology* tpg, Node* parent) {
     
   size_t num_predecessors = std::distance(first, last);
   
@@ -258,7 +276,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), nullptr, nullptr, num_predecessors,
+      NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
@@ -289,7 +307,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), nullptr, nullptr, num_predecessors,
+      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=make_moc(std::move(p))] () mutable { p.object(); }
     ));
@@ -372,12 +390,30 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
     }
   }
   
+  // node->_topology  |  node->_parent  |  secenario
+  // nullptr          |  nullptr        |  exe.async();
+  // nullptr          |  0x---          |  exe.async([](Runtime rt){ rt.async(); });
+  // 0x---            |  nullptr        |  ?
+  // 0x---            |  0x---          |  tf.emplace([](Runtime& rt){ rt.async(); });
+
+  // from executor
+  if(auto parent = node->_parent; parent == nullptr) {
+    _decrement_topology();
+  }
+  // from runtime
+  else {
+    auto state = parent->_nstate;
+    if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      if(state & NSTATE::PREEMPTED) {
+        _update_cache(worker, cache, parent);
+      }
+    }
+  }
+  
   // now the executor no longer needs to retain ownership
   if(handle->use_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
     recycle(node);
   }
-
-  _decrement_topology();
 }
 
 

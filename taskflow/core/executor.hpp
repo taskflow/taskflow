@@ -914,8 +914,8 @@ class Executor {
   fuC.get();  // C finishes, which in turns means both A and B finish
   @endcode
 
-  You can mixed the use of tf::AsyncTask handles 
-  returned by Executor::dependent_async and Executor::silent_dependent_async
+  You can mix the use of tf::AsyncTask handles 
+  returned by tf::Executor::dependent_async and tf::Executor::silent_dependent_async
   when specifying task dependencies.
 
   This member function is thread-safe.
@@ -960,8 +960,8 @@ class Executor {
   assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
   @endcode
 
-  You can mixed the use of tf::AsyncTask handles 
-  returned by Executor::dependent_async and Executor::silent_dependent_async
+  You can mix the use of tf::AsyncTask handles 
+  returned by tf::Executor::dependent_async and tf::Executor::silent_dependent_async
   when specifying task dependencies.
 
   This member function is thread-safe.
@@ -1005,8 +1005,8 @@ class Executor {
   assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
   @endcode
 
-  You can mixed the use of tf::AsyncTask handles 
-  returned by Executor::dependent_async and Executor::silent_dependent_async
+  You can mix the use of tf::AsyncTask handles 
+  returned by tf::Executor::dependent_async and tf::Executor::silent_dependent_async
   when specifying task dependencies.
 
   This member function is thread-safe.
@@ -1054,8 +1054,8 @@ class Executor {
   assert(fuC.get()==1);  // C finishes, which in turns means both A and B finish
   @endcode
 
-  You can mixed the use of tf::AsyncTask handles 
-  returned by Executor::dependent_async and Executor::silent_dependent_async
+  You can mix the use of tf::AsyncTask handles 
+  returned by tf::Executor::dependent_async and tf::Executor::silent_dependent_async
   when specifying task dependencies.
 
   This member function is thread-safe.
@@ -1148,6 +1148,15 @@ class Executor {
   template <typename P, typename F>
   void _silent_async(P&&, F&&, Topology*, Node*);
 
+  template <typename P, typename F, typename I,
+    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
+  auto _dependent_async(P&&, F&&, I, I, Topology*, Node*);
+  
+  template <typename P, typename F, typename I, 
+    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
+  >
+  auto _silent_dependent_async(P&&, F&&, I, I, Topology*, Node*);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT

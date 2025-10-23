@@ -60,6 +60,9 @@ and fixes a few bugs related to exception handling. We also revised multiple coo
 + added several new unit tests for exception handling (`test_exception.cpp`)
   + recursive exception propagation
   + concurrent exception throwing
++ added dependent-async methods to tf::Runtime ([#701](https://github.com/taskflow/taskflow/issues/701))
+  + tf::Runtime::dependent_async
+  + tf::Runtime::silent_dependent_async
 + removed code support for SYCL
 + removed `thread_local` to avoid incorrect references caused by Windows DLL boundaries
 + replaced `TF_CACHELINE_SIZE` with std::hardware_destructive_interference_size

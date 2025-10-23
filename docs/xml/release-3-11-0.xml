@@ -112,6 +112,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem><listitem><para>concurrent exception throwing</para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>added dependent-async methods to <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/701">#701</ulink>)<itemizedlist>
+<listitem><para><ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">tf::Runtime::silent_dependent_async</ref></para>
+</listitem></itemizedlist>
+</para>
 </listitem><listitem><para>removed code support for SYCL</para>
 </listitem><listitem><para>removed <computeroutput>thread_local</computeroutput> to avoid incorrect references caused by Windows DLL boundaries</para>
 </listitem><listitem><para>replaced <computeroutput>TF_CACHELINE_SIZE</computeroutput> with std::hardware_destructive_interference_size</para>

@@ -51,9 +51,27 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>at<sp/>the<sp/>end<sp/>of<sp/>the<sp/>runtime<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>REQUIRE(counter<sp/>==<sp/>1000);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>1000);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+</programlisting></para>
+<para>In addition to <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref> and <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref>, you can create a dynamic task graph from a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> using <ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref> and <ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">tf::Runtime::silent_dependent_async</ref>. For example, the code below creates a linear chain of dependent-async tasks from the execution context of a runtime:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;,<sp/>counter=</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">{0}](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/></highlight><highlight class="keyword">mutable</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/><ref refid="cpp/iterator/prev" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">prev</ref><sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([&amp;](){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>assert(counter<sp/>==<sp/>0);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>++counter;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=1;<sp/>i&lt;=1000;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>curr<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([&amp;,<sp/>i](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;){<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>assert(counter<sp/>==<sp/>i);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++counter;<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/><ref refid="cpp/iterator/prev" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">prev</ref>);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/iterator/prev" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">prev</ref><sp/>=<sp/>curr;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight></codeline>
+<codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>all<sp/>dependent-async<sp/>tasks<sp/>will<sp/>implicitly<sp/>join<sp/>at<sp/>the<sp/>runtime&apos;s<sp/>end<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 </sect1>
@@ -80,7 +98,7 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>at<sp/>the<sp/>end<sp/>of<sp/>the<sp/>runtime<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>REQUIRE(counter<sp/>==<sp/>2000);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>2000);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
 <codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>

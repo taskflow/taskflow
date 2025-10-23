@@ -48,11 +48,37 @@ tf::Task A = taskflow.emplace([&](tf::Runtime& rt){
   // implicit synchronization at the end of the runtime scope
 });
 tf::Task B = taskflow.emplace([&](){
-  REQUIRE(counter == 1000);
+  assert(counter == 1000);
 });
 A.precede(B);
 executor.run(taskflow).wait();
 @endcode
+
+In addition to tf::Runtime::async and tf::Runtime::silent_async,
+you can create a dynamic task graph from a tf::Runtime using tf::Runtime::dependent_async 
+and tf::Runtime::silent_dependent_async.
+For example, the code below creates a linear chain of dependent-async tasks from the 
+execution context of a runtime:
+
+@code{.cpp}
+tf::Executor executor;
+tf::Taskflow taskflow;
+taskflow.emplace([&, counter=int{0}](tf::Runtime& rt) mutable {
+  tf::AsyncTask prev = rt.silent_dependent_async([&](){ 
+    assert(counter == 0); 
+    ++counter; 
+  });
+  for(size_t i=1; i<=1000; ++i) {
+    tf::AsyncTask curr = rt.silent_dependent_async([&, i](tf::Runtime&){ 
+      assert(counter == i); 
+      ++counter; 
+    }, prev);
+    prev = curr;
+  } 
+});  // all dependent-async tasks will implicitly join at the runtime's end scope
+executor.run(taskflow).wait();
+@endcode
+
 
 @section SynchronizeWithCooperativeExecution Synchronize with Cooperative Execution
 
@@ -83,7 +109,7 @@ tf::Task A = taskflow.emplace([&](tf::Runtime& rt){
   // implicit synchronization at the end of the runtime scope
 });
 tf::Task B = taskflow.emplace([&](){
-  REQUIRE(counter == 2000);
+  assert(counter == 2000);
 });
 A.precede(B);
 executor.run(taskflow).wait();

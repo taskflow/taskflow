@@ -1999,7 +1999,7 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">fuC.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para>You can mixed the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
+<para>You can mix the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
 <para>This member function is thread-safe. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2109,7 +2109,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para>You can mixed the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
+<para>You can mix the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
 <para>This member function is thread-safe. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2207,7 +2207,7 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para>You can mixed the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
+<para>You can mix the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
 <para>This member function is thread-safe. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2329,7 +2329,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight></codeline>
 </programlisting></para>
-<para>You can mixed the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
+<para>You can mix the use of <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handles returned by <ref refid="classtf_1_1Executor_1aee02b63d3a91ad5ca5a1c0e71f3e128f" kindref="member">tf::Executor::dependent_async</ref> and <ref refid="classtf_1_1Executor_1a0e2d792f28136b8227b413d0c27d5c7f" kindref="member">tf::Executor::silent_dependent_async</ref> when specifying task dependencies.</para>
 <para>This member function is thread-safe. </para>
         </detaileddescription>
         <inbodydescription>
@@ -2687,7 +2687,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1109" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="534" bodyend="541"/>
+        <location file="taskflow/core/executor.hpp" line="1109" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="975" bodyend="982"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1afa6be6aab23ff4b2a293a2245818916d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -2948,7 +2948,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1123" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="387" bodyend="391"/>
+        <location file="taskflow/core/executor.hpp" line="1123" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="828" bodyend="832"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a7dbf235bdda813dd63e851cbae573bb4" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -2973,7 +2973,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1124" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="394" bodyend="429"/>
+        <location file="taskflow/core/executor.hpp" line="1124" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="835" bodyend="870"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1aa7ccdd2724a8782e04d8a19567912e67" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -2998,7 +2998,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1125" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="432" bodyend="472"/>
+        <location file="taskflow/core/executor.hpp" line="1125" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="873" bodyend="913"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1aeaa72f55f54c0f13202c3b5c0900ba6e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3231,6 +3231,98 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1149" column="8"/>
       </memberdef>
+      <memberdef kind="function" id="classtf_1_1Executor_1a1b8e9646bfacc44442ffb99a9de17703" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename F</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1ad3a41adc2499a9519da3e77dc3e9849c" kindref="member">is_task_params_v</ref>&lt; P &gt; &amp;&amp;!std::is_same_v&lt; std::decay_t&lt; I &gt;, <ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Executor::_dependent_async</definition>
+        <argsstring>(P &amp;&amp;, F &amp;&amp;, I, I, Topology *, Node *)</argsstring>
+        <name>_dependent_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+        </param>
+        <param>
+          <type>F &amp;&amp;</type>
+        </param>
+        <param>
+          <type>I</type>
+        </param>
+        <param>
+          <type>I</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/executor.hpp" line="1154" column="8"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1Executor_1a7c8592d6c77aaef1a49ce0295fa6e658" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename P</type>
+          </param>
+          <param>
+            <type>typename F</type>
+          </param>
+          <param>
+            <type>typename I</type>
+          </param>
+          <param>
+            <type>std::enable_if_t&lt; <ref refid="namespacetf_1ad3a41adc2499a9519da3e77dc3e9849c" kindref="member">is_task_params_v</ref>&lt; P &gt; &amp;&amp;!std::is_same_v&lt; std::decay_t&lt; I &gt;, <ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref> &gt;, void &gt; *</type>
+            <defval>nullptr</defval>
+          </param>
+        </templateparamlist>
+        <type>auto</type>
+        <definition>auto tf::Executor::_silent_dependent_async</definition>
+        <argsstring>(P &amp;&amp;, F &amp;&amp;, I, I, Topology *, Node *)</argsstring>
+        <name>_silent_dependent_async</name>
+        <param>
+          <type>P &amp;&amp;</type>
+        </param>
+        <param>
+          <type>F &amp;&amp;</type>
+        </param>
+        <param>
+          <type>I</type>
+        </param>
+        <param>
+          <type>I</type>
+        </param>
+        <param>
+          <type>Topology *</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/executor.hpp" line="1159" column="8"/>
+      </memberdef>
       </sectiondef>
     <briefdescription>
 <para>class to create an executor </para>
@@ -3267,13 +3359,14 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/executor.hpp" line="63" column="1" bodyfile="taskflow/core/executor.hpp" bodystart="63" bodyend="1151"/>
+    <location file="taskflow/core/executor.hpp" line="63" column="1" bodyfile="taskflow/core/executor.hpp" bodystart="63" bodyend="1160"/>
     <listofallmembers>
       <member refid="classtf_1_1Executor_1ac568bd686aba3bedabe63b42c43d94a8" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_async</name></member>
       <member refid="classtf_1_1Executor_1a193faa77f840c8ab653cf063fba6a6f9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_buffers</name></member>
       <member refid="classtf_1_1Executor_1aec313f2f099ee2fd6cb85a164457f019" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_graph</name></member>
       <member refid="classtf_1_1Executor_1a43cdd198427b7be2827450f6ce8343af" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_until</name></member>
       <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_decrement_topology</name></member>
+      <member refid="classtf_1_1Executor_1a1b8e9646bfacc44442ffb99a9de17703" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_dependent_async</name></member>
       <member refid="classtf_1_1Executor_1a0b4f231e11016194980b14e76262c8a7" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_exploit_task</name></member>
       <member refid="classtf_1_1Executor_1ac5827e67b2b60c16259b45e14c6e97e0" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_explore_task</name></member>
       <member refid="classtf_1_1Executor_1ab85dc42b3e9b18e4b975bd5e9a8c5e72" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_increment_topology</name></member>
@@ -3307,6 +3400,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_topology</name></member>
       <member refid="classtf_1_1Executor_1a918b9de1ca1e20e35bf0d3b610dfa803" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_shutdown</name></member>
       <member refid="classtf_1_1Executor_1aa3b32388be14b03249de29bae34b7b52" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_silent_async</name></member>
+      <member refid="classtf_1_1Executor_1a7c8592d6c77aaef1a49ce0295fa6e658" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_silent_dependent_async</name></member>
       <member refid="classtf_1_1Executor_1a8aee6c0ec55b4bfb3909601203e98514" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_spawn</name></member>
       <member refid="classtf_1_1Executor_1a7aeb0de870c6e28599e9f80486dae736" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_t2w</name></member>
       <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_taskflows</name></member>
