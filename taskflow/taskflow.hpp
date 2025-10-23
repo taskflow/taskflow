@@ -1,5 +1,9 @@
 #pragma once
 
+#if __cplusplus < 202002L
+  #error "C++20 support required. Please compile with -std=c++20 or /std:c++20."
+#endif
+
 // Feature macros for fine-tuning the performance of Taskflow at compile time
 // 
 // Disabled features by default:

@@ -1,5 +1,3 @@
-#if __cplusplus >= TF_CPP20
-
 #pragma once
 
 #include <atomic>
@@ -177,4 +175,3 @@ inline void AtomicNotifier::commit_wait(Waiter* waiter) noexcept {
 
 } // namespace taskflow -------------------------------------------------------
 
-#endif

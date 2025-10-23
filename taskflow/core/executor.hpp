@@ -1072,13 +1072,7 @@ class Executor {
   std::vector<Worker> _workers;
   DefaultNotifier _notifier;
 
-#if __cplusplus >= TF_CPP20
   std::atomic<size_t> _num_topologies {0};
-#else
-  std::condition_variable _topology_cv;
-  std::mutex _topology_mutex;
-  size_t _num_topologies {0};
-#endif
   
   std::list<Taskflow> _taskflows;
 
@@ -1205,11 +1199,7 @@ inline void Executor::_shutdown() {
 
   // shut down the scheduler
   for(size_t i=0; i<_workers.size(); ++i) {
-  #if __cplusplus >= TF_CPP20
     _workers[i]._done.test_and_set(std::memory_order_relaxed);
-  #else
-    _workers[i]._done.store(true, std::memory_order_relaxed);
-  #endif
   }
   
   _notifier.notify_all();
@@ -1230,13 +1220,7 @@ inline size_t Executor::num_workers() const noexcept {
 
 // Function: num_waiters
 inline size_t Executor::num_waiters() const noexcept {
-#if __cplusplus >= TF_CPP20
   return _notifier.num_waiters();
-#else
-  // Unfortunately, nonblocking notifier does not have an easy way to return
-  // the number of workers that are not making stealing attempts.
-  return 0;
-#endif
 }
 
 // Function: num_queues
@@ -1246,11 +1230,7 @@ inline size_t Executor::num_queues() const noexcept {
 
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
-#if __cplusplus >= TF_CPP20
   return _num_topologies.load(std::memory_order_relaxed);
-#else
-  return _num_topologies;
-#endif
 }
 
 // Function: num_taskflows
@@ -1409,11 +1389,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
       }
     }
 
-  #if __cplusplus >= TF_CPP20
     if(w._done.test(std::memory_order_relaxed)) {
-  #else
-    if(w._done.load(std::memory_order_relaxed)) {
-  #endif
       return false;
     } 
 
@@ -1479,11 +1455,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   }
   
   // Condition #3: worker should be alive
-#if __cplusplus >= TF_CPP20
   if(w._done.test(std::memory_order_relaxed)) {
-#else
-  if(w._done.load(std::memory_order_relaxed)) {
-#endif
     _notifier.cancel_wait(w._waiter);
     return false;
   }
@@ -2208,40 +2180,23 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
 
 // Procedure: _increment_topology
 inline void Executor::_increment_topology() {
-#if __cplusplus >= TF_CPP20
   _num_topologies.fetch_add(1, std::memory_order_relaxed);
-#else
-  std::lock_guard<std::mutex> lock(_topology_mutex);
-  ++_num_topologies;
-#endif
 }
 
 // Procedure: _decrement_topology
 inline void Executor::_decrement_topology() {
-#if __cplusplus >= TF_CPP20
   if(_num_topologies.fetch_sub(1, std::memory_order_acq_rel) == 1) {
     _num_topologies.notify_all();
   }
-#else
-  std::lock_guard<std::mutex> lock(_topology_mutex);
-  if(--_num_topologies == 0) {
-    _topology_cv.notify_all();
-  }
-#endif
 }
 
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
-#if __cplusplus >= TF_CPP20
   size_t n = _num_topologies.load(std::memory_order_acquire);
   while(n != 0) {
     _num_topologies.wait(n, std::memory_order_acquire);
     n = _num_topologies.load(std::memory_order_acquire);
   }
-#else
-  std::unique_lock<std::mutex> lock(_topology_mutex);
-  _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
-#endif
 }
 
 // Function: _set_up_topology

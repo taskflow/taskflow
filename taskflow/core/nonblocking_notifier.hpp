@@ -14,6 +14,7 @@
 #include <numeric>
 #include <cassert>
 #include "../utility/os.hpp"
+
 // This file is part of Eigen, a lightweight C++ template library
 // for linear algebra.
 //
