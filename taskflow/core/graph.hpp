@@ -334,6 +334,8 @@ class Node {
   void _rethrow_exception();
   void _remove_successors(Node*);
   void _remove_predecessors(Node*);
+
+  std::atomic<size_t>& _root_join_counter();
 };
 
 // ----------------------------------------------------------------------------
@@ -542,6 +544,12 @@ inline size_t Node::num_weak_dependencies() const {
     n += _edges[i]->_is_conditioner();
   }
   return n;
+}
+
+// Function: _root_join_counter
+// not supposed to be called by async task
+TF_FORCE_INLINE std::atomic<size_t>& Node::_root_join_counter() {
+  return (_parent) ? _parent->_join_counter : _topology->_join_counter; 
 }
 
 // Function: num_strong_dependencies

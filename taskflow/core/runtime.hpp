@@ -225,9 +225,12 @@ class Runtime {
   /**
   @brief corun all tasks spawned by this runtime with other workers
 
-  Coruns all tasks spawned by this runtime cooperatively with other workers 
-  until all these tasks finish.
-    
+  Coruns all tasks spawned by this runtime cooperatively with other workers in
+  the same executor until all these tasks finish.
+  Under cooperative execution, a worker is not preempted. Instead, it continues 
+  participating in the work-stealing loop, executing available tasks alongside 
+  other workers.  
+
   @code{.cpp}
   std::atomic<size_t> counter{0};
   taskflow.emplace([&](tf::Runtime& rt){

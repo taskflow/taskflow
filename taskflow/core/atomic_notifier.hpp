@@ -28,7 +28,7 @@ need to be guarded by a mutex.
 
 In a waiting thread:
 
-@code
+@code{.cpp}
 if (predicate)
   return act();
 Notifier::Waiter& w = waiters[my_index];
@@ -42,7 +42,7 @@ ec.commit_wait(&w);
 
 In a notifying thread:
 
-@code
+@code{.cpp}
 predicate = true;
 ec.notify(true);
 @endcode

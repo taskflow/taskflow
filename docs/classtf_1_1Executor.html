@@ -179,7 +179,7 @@
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               <span class="m-doc-wrap-bumper">void <a href="#a0fc6eb19f168dc4a9cd0a7c6187c1d2d" class="m-doc">corun_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
             </dt>
-            <dd>keeps running the work-stealing loop until the predicate becomes true</dd>
+            <dd>keeps running the work-stealing loop until the predicate returns <code>true</code></dd>
             <dt>
               <span class="m-doc-wrap-bumper">void <a href="#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">wait_for_all</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -791,7 +791,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method runs a target graph which has <code><a href="classtf_1_1Graph.html" class="m-doc">tf::<wbr />Graph</a>&amp; T::graph()</code> defined and waits until the execution completes. Unlike the typical flow of calling <code><a href="#a8d08f0cb79e7b3780087975d13368a96" class="m-doc">tf::<wbr />Executor::<wbr />run</a></code> series plus waiting on the result, this method must be called by an internal worker of this executor. The caller worker will participate in the work-stealing loop of the scheduler, thereby avoiding potential deadlock caused by blocked waiting.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<p>The method coruns a target graph cooperatively with other workers in the same executor and block until the execution completes. Under cooperative execution, a worker is not preempted. Instead, it continues participating in the work-stealing loop, executing available tasks alongside other workers.<br /></p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="o">&gt;</span><span class="w"> </span><span class="n">others</span><span class="p">;</span>
 
@@ -816,7 +816,7 @@
               </div>
               <span class="m-doc-wrap-bumper">void tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0fc6eb19f168dc4a9cd0a7c6187c1d2d" class="m-doc-self">corun_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span></span>
             </h3>
-            <p>keeps running the work-stealing loop until the predicate becomes true</p>
+            <p>keeps running the work-stealing loop until the predicate returns <code>true</code></p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Template parameters</th></tr>
@@ -837,7 +837,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method keeps the caller worker running in the work-stealing loop until the stop predicate becomes true.</p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<p>The method keeps the caller worker running in the work-stealing loop until the stop predicate becomes true.</p><p>The method keeps the calling worker running available tasks cooperatively with other workers in the same executor and block until the predicate return <code>true</code>. Under cooperative execution, a worker is not preempted. Instead, it continues participating in the work-stealing loop, executing available tasks alongside other workers.<br /></p><pre class="m-code"><span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">sleep</span><span class="p">(</span><span class="mi">100</span><span class="n">s</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">corun_until</span><span class="p">([](){</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fu</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">future_status</span><span class="o">::</span><span class="n">ready</span><span class="p">;</span>

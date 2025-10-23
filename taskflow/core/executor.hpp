@@ -417,13 +417,11 @@ class Executor {
   @tparam T target type which has `tf::Graph& T::graph()` defined
   @param target the target task graph object
 
-  The method runs a target graph which has `tf::Graph& T::graph()` defined 
-  and waits until the execution completes.
-  Unlike the typical flow of calling `tf::Executor::run` series 
-  plus waiting on the result, this method must be called by an internal
-  worker of this executor. The caller worker will participate in
-  the work-stealing loop of the scheduler, thereby avoiding potential
-  deadlock caused by blocked waiting.
+  The method coruns a target graph cooperatively with other workers in the same executor
+  and block until the execution completes.
+  Under cooperative execution, a worker is not preempted. Instead, it continues 
+  participating in the work-stealing loop, executing available tasks alongside 
+  other workers.  
   
   @code{.cpp}
   tf::Executor executor(2);
@@ -456,13 +454,20 @@ class Executor {
   void corun(T& target);
 
   /**
-  @brief keeps running the work-stealing loop until the predicate becomes true
+  @brief keeps running the work-stealing loop until the predicate returns `true`
   
   @tparam P predicate type
   @param predicate a boolean predicate to indicate when to stop the loop
 
   The method keeps the caller worker running in the work-stealing loop
   until the stop predicate becomes true.
+
+  The method keeps the calling worker running available tasks cooperatively 
+  with other workers in the same executor and block until the predicate return `true`.
+  Under cooperative execution, a worker is not preempted. Instead, it continues 
+  participating in the work-stealing loop, executing available tasks alongside 
+  other workers.  
+
 
   @code{.cpp}
   taskflow.emplace([&](){
@@ -1244,6 +1249,7 @@ inline size_t Executor::num_taskflows() const {
   return _taskflows.size();
 }
 
+// Function: this_worker
 inline Worker* Executor::this_worker() {
   auto itr = _t2w.find(std::this_thread::get_id());
   return itr == _t2w.end() ? nullptr : itr->second;
@@ -1737,12 +1743,8 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     node->num_predecessors() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
   );
 
-  // acquire the parent flow counter
-  auto& join_counter = (node->_parent) ? node->_parent->_join_counter :
-                       node->_topology->_join_counter;
-
   // Invoke the task based on the corresponding type
-  switch(node->_handle.index()) {
+  switch(auto& rjc = node->_root_join_counter(); node->_handle.index()) {
 
     // condition and multi-condition tasks
     case Node::CONDITION:
@@ -1752,7 +1754,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           auto s = node->_edges[cond]; 
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
-          join_counter.fetch_add(1, std::memory_order_relaxed);
+          rjc.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1763,7 +1765,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     default: {
       for(size_t i=0; i<node->_num_successors; ++i) {
         if(auto s = node->_edges[i]; s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          join_counter.fetch_add(1, std::memory_order_relaxed);
+          rjc.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1800,7 +1802,6 @@ inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cac
 
 // Procedure: _tear_down_invoke
 inline void Executor::_tear_down_invoke(Worker& worker, Node* node, Node*& cache) {
-  
   switch(node->_handle.index()) {
     case Node::ASYNC:
       _tear_down_async(worker, node, cache);
