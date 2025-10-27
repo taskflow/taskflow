@@ -393,9 +393,7 @@ to learn more about Taskflow. To get involved:
   + Find out our technical details at [references][references]
   + Watch our technical talks at YouTube
 
-| [CppCon20 Tech Talk][cppcon20 talk] | [MUC++ Tech Talk](https://www.youtube.com/watch?v=u8Mc_WgGwVY) |
-| :------------: | :-------------: |
-| ![](doxygen/images/cppcon20-thumbnail.jpg) | <img align="right" src="doxygen/images/muc++20-thumbnail.jpg" width="100%"> |
+[![Taskflow Tutorial](https://img.youtube.com/vi/W3yLOUwkmtk/0.jpg)](https://www.youtube.com/watch?v=W3yLOUwkmtk)
 
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
