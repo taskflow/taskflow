@@ -393,7 +393,7 @@ to learn more about Taskflow. To get involved:
   + Find out our technical details at [references][references]
   + Watch our technical talks at YouTube
 
-[![Taskflow Tutorial](https://img.youtube.com/vi/W3yLOUwkmtk/0.jpg)](https://www.youtube.com/watch?v=W3yLOUwkmtk)
+[![Taskflow Tutorials](https://img.youtube.com/vi/u4vaY0cjzos/0.jpg)](https://www.youtube.com/watch?v=u4vaY0cjzos)
 
 We are committed to support trustworthy developments for 
 both academic and industrial research projects in parallel 
