@@ -101,6 +101,7 @@ class ObjectPool {
 
   struct Block {
     std::atomic<LocalHeap*> heap;
+    GlobalHeap* g_heap;
     Blocklist list_node;
     size_t i;
     size_t u;
@@ -626,6 +627,7 @@ T* ObjectPool<T, S>::animate(ArgsT&&... args) {
       s = new Block();
 
       s->heap = &h;
+      s->g_heap = &_gheap;
       s->i = 0;
       s->u = 0;
       s->top = nullptr;
@@ -695,7 +697,7 @@ void ObjectPool<T, S>::recycle(T* mem) {
 
     // the block is in global heap
     if(h == nullptr) {
-      std::lock_guard<std::mutex> glock(_gheap.mutex);
+      std::lock_guard<std::mutex> glock(s->g_heap->mutex);
       if(s->heap == h) {
         sync = true;
         _deallocate(s, mem);
@@ -729,8 +731,8 @@ void ObjectPool<T, S>::recycle(T* mem) {
               h->u = h->u - x->u;
               h->a = h->a - M;
               x->heap = nullptr;
-              std::lock_guard<std::mutex> glock(_gheap.mutex);
-              _blocklist_move_front(&x->list_node, &_gheap.list);
+              std::lock_guard<std::mutex> glock(s->g_heap->mutex);
+              _blocklist_move_front(&x->list_node, &s->g_heap.list);
               break;
             }
           }
