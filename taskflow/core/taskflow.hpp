@@ -455,7 +455,8 @@ inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
 
     // n-level module
     if(p) {
-      os << 'm' << dumper.visited[f];
+      if (p->_name.empty()) os << 'm' << dumper.visited[f];
+      else os << p->name();
     }
     // top-level taskflow graph
     else {
@@ -562,7 +563,8 @@ inline void Taskflow::_dump(
         dumper.stack.push({n, module});
       }
 
-      os << " [m" << dumper.visited[module] << "]\"];\n";
+      if(n->_name.empty()) os << " [m" << dumper.visited[module] << "]";
+      os << "\"];\n";
 
       //for(const auto s : n->_successors) {
       for(size_t i=0; i<n->_num_successors; ++i) {
