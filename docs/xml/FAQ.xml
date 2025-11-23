@@ -29,7 +29,7 @@
         <reference>FAQ_1GeneralQuestion5</reference>
     </tocsect>
       <tocsect>
-        <name>Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</name>
+        <name>Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?</name>
         <reference>FAQ_1GeneralQuestion6</reference>
     </tocsect>
       <tocsect>
@@ -141,7 +141,7 @@
 </sect2>
 <sect2 id="FAQ_1GeneralQuestion2">
 <title>Q2: How do I use Taskflow in my projects?</title>
-<para>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++17 compiler. To use Taskflow, simply drop the folder <computeroutput>taskflow/</computeroutput> to your project and include taskflow.hpp.</para>
+<para>Taskflow is a header-only library with zero dependencies. The only thing you need is a C++20 compiler. To use Taskflow, simply drop the folder <computeroutput>taskflow/</computeroutput> to your project and include taskflow.hpp.</para>
 </sect2>
 <sect2 id="FAQ_1GeneralQuestion3">
 <title>Q3: What is the difference between static tasking and dynamic tasking?</title>
@@ -156,8 +156,8 @@
 <para>The hex value represents the memory address of the task. Each task has a method <ref refid="classtf_1_1Task_1a9057ecd0f3833b717480e914f8568f02" kindref="member">tf::Task::name(const std::string&amp;)</ref> for user to assign a human readable string to ease the debugging process. If a task is not assigned a name or is an internal node, its address value in the memory is used instead.</para>
 </sect2>
 <sect2 id="FAQ_1GeneralQuestion6">
-<title>Q6: Does Taskflow have backward compatibility with C++03/98/11/14?</title>
-<para>Unfortunately, Taskflow is heavily relying on modern C++17&apos;s features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</para>
+<title>Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?</title>
+<para>Unfortunately, Taskflow is heavily relying on modern C++20&apos;s features/idoms/STL and it is very difficult to provide a version that compiles under older C++ versions.</para>
 </sect2>
 <sect2 id="FAQ_1GeneralQuestion7">
 <title>Q7: How does Taskflow schedule tasks?</title>
