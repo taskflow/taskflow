@@ -90,7 +90,7 @@ class Executor {
   */
   explicit Executor(
     size_t N = std::thread::hardware_concurrency(),
-    std::shared_ptr<WorkerInterface> wix = nullptr
+    std::unique_ptr<WorkerInterface> wix = nullptr
   );
 
   /**
@@ -100,7 +100,7 @@ class Executor {
   taskflows to complete and then notifies all worker threads to stop
   and join these threads.
   */
-  ~Executor();
+  virtual ~Executor();
 
   /**
   @brief runs a taskflow once
@@ -1084,7 +1084,7 @@ class Executor {
 
   Freelist<Node*> _buffers;
 
-  std::shared_ptr<WorkerInterface> _worker_interface;
+  std::unique_ptr<WorkerInterface> _worker_interface;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
   std::unordered_map<std::thread::id, Worker*> _t2w;
 
@@ -1162,7 +1162,7 @@ class Executor {
 #ifndef DOXYGEN_GENERATING_OUTPUT
 
 // Constructor
-inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wix) :
+inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wix) :
   _workers  (N),
   _notifier (N),
   _buffers  (N),
@@ -1289,6 +1289,7 @@ inline void Executor::_spawn(size_t N) {
       if(_worker_interface) {
         _worker_interface->scheduler_prologue(w);
       }
+
 
       Node* t = nullptr;
       std::exception_ptr ptr = nullptr;

@@ -108,7 +108,7 @@ executor.wait_for_all();        // execution 1 -> execution 2 -> execution 3
 A running taskflow must remain alive during its execution.
 It is your responsibility to ensure a taskflow not being destructed
 when it is running.
-For example, the code below can result undefined behavior.
+For example, the code below can result in undefined behavior.
 
 @code{.cpp}
 tf::Executor executor;  // create an executor
@@ -117,10 +117,10 @@ tf::Executor executor;  // create an executor
 {
   tf::Taskflow taskflow;
   
-  // add tasks to the taskflow
+  // adds tasks to the taskflow
   // ... 
 
-  // run the taskflow
+  // runs the taskflow once
   executor.run(taskflow);
 
 } // leaving the scope will destroy taskflow while it is running, 
@@ -262,10 +262,9 @@ executor.run(taskflow).wait();
 
 
 Similar to tf::Executor::corun, tf::Executor::corun_until provides a more general mechanism for cooperative execution. 
-It allows the calling worker to execute tasks alongside other workers until the specified condition becomes true. 
-This function is particularly useful when implementing custom synchronization or pooling patterns,
-where the worker should continue making progress on other available tasks 
-while periodically checking for a termination condition.
+It allows the calling worker to run tasks cooperatively with other workers until a specified condition becomes true.
+This function is especially useful for implementing custom synchronization or polling conditions, 
+where the worker continues making progress by executing available tasks in the executor while periodically checking for the termination condition.
 
 @code{.cpp}
 taskflow.emplace([&](){
@@ -520,7 +519,7 @@ via tf::WorkerInterface is given below:
 
 @code{.cpp}
 for(size_t n=0; n<num_workers; n++) {
-  create_thread([](Worker& worker)
+  create_thread([](Worker& worker){
 
     // pre-processing executor-specific worker information
     // ...
@@ -543,14 +542,14 @@ for(size_t n=0; n<num_workers; n++) {
     // leaves the scheduling loop and joins this worker thread
     // Here, WorkerInterface::scheduler_epilogue is invoked, if any
     worker_interface->scheduler_epilogue(worker, exception_ptr);
-  );
+  });
 }
 @endcode
 
 @attention
 tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epilogue
 are invoked by each worker simultaneously.
-It is your responsibility to ensure no data race can occur during their invocation.
+It is your responsibility to ensure that no data race can occur during their invocation.
 
 */
 

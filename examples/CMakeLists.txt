@@ -13,6 +13,7 @@ list(APPEND TF_EXAMPLES
   switch_case
   do_while_loop
   while_loop
+  for_loop
   if_else
   nested_if_else
   visualization 
