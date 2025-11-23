@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page release-3-11-0 Release 3.11.0 (Master)
+/** @page release-3-11-0 Release 3.11.0 (2025/11/24)
 
 %Taskflow 3.11.0 is the newest developing line to new features and improvements 
 are actively introduced and supported.
@@ -10,10 +10,14 @@ While maintaining full consistency can be challenging as new features are added,
 
 @tableofcontents
 
+@section release-3-11-0_summary Release Summary
+
+This release improves scheduling performance through optimized memory ordering in the notification algorithm 
+and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.
+
 @section release-3-11-0_download Download
 
-To download the newest version of %Taskflow, please clone the master branch 
-from <a href="https://github.com/taskflow/taskflow">%Taskflow's GitHub</a>.
+%Taskflow 3.11.0 can be downloaded from <a href="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</a>.
 
 @section release-3-11-0_system_requirements System Requirements
 
@@ -34,11 +38,6 @@ Although %Taskflow supports primarily C++17, you can enable C++20 compilation
 through `-std=c++20` to achieve better performance due to new C++20 features.
 That being said, we are actively working on migrating %Taskflow to C++20, 
 which is planned for the next major release v4.
-
-@section release-3-11-0_summary Release Summary
-
-This release improves scheduling performance through optimized memory ordering in the notification algorithm 
-and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.
 
 @section release-3-11-0_new_features New Features
 

@@ -2,8 +2,12 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-3-11-0" kind="page">
     <compoundname>release-3-11-0</compoundname>
-    <title>Release 3.11.0 (Master)</title>
+    <title>Release 3.11.0 (2025/11/24)</title>
     <tableofcontents>
+      <tocsect>
+        <name>Release Summary</name>
+        <reference>release-3-11-0_1release-3-11-0_summary</reference>
+    </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-3-11-0_1release-3-11-0_download</reference>
@@ -11,10 +15,6 @@
       <tocsect>
         <name>System Requirements</name>
         <reference>release-3-11-0_1release-3-11-0_system_requirements</reference>
-    </tocsect>
-      <tocsect>
-        <name>Release Summary</name>
-        <reference>release-3-11-0_1release-3-11-0_summary</reference>
     </tocsect>
       <tocsect>
         <name>New Features</name>
@@ -51,9 +51,13 @@
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 3.11.0 is the newest developing line to new features and improvements are actively introduced and supported. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While maintaining full consistency can be challenging as new features are added, we continually strive to preserve backward compatibility.</para>
+<sect1 id="release-3-11-0_1release-3-11-0_summary">
+<title>Release Summary</title>
+<para>This release improves scheduling performance through optimized memory ordering in the notification algorithm and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.</para>
+</sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_download">
 <title>Download</title>
-<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<para>Taskflow 3.11.0 can be downloaded from <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</ulink>.</para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_system_requirements">
 <title>System Requirements</title>
@@ -78,10 +82,6 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <para><simplesect kind="attention"><para>Although Taskflow supports primarily C++17, you can enable C++20 compilation through <computeroutput>-std=c++20</computeroutput> to achieve better performance due to new C++20 features. That being said, we are actively working on migrating Taskflow to C++20, which is planned for the next major release v4.</para>
 </simplesect>
 </para>
-</sect1>
-<sect1 id="release-3-11-0_1release-3-11-0_summary">
-<title>Release Summary</title>
-<para>This release improves scheduling performance through optimized memory ordering in the notification algorithm and fixes a few bugs related to exception handling. We also revised multiple cookbook pages to enhance readability.</para>
 </sect1>
 <sect1 id="release-3-11-0_1release-3-11-0_new_features">
 <title>New Features</title>

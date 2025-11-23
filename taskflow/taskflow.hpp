@@ -50,7 +50,7 @@ and a patch number:
   + TF_VERSION / 100 % 1000 is the minor version
   + TF_VERSION / 100000 is the major version
 */
-#define TF_VERSION 301000
+#define TF_VERSION 301100
 
 /**
 @def TF_MAJOR_VERSION
