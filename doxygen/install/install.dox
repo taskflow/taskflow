@@ -9,15 +9,15 @@ We will also go through the building process of unit tests and examples.
 
 @section BAISupportedCompilers Supported Compilers
 
-To use %Taskflow, you only need a compiler that supports C++17:
+To use %Taskflow v4.0.0, you need a compiler that supports C++20:
 
-@li GNU C++ Compiler at least v8.4 with -std=c++17
-@li Clang C++ Compiler at least v6.0 with -std=c++17
-@li Microsoft Visual Studio at least v15.7 (MSVC++ 19.14)
-@li AppleClang Xcode Version at least v12.0 with -std=c++17
-@li Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
-@li Intel C++ Compiler (icpc) at least v19.0.1 with -std=c++17
-@li Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+@li GNU C++ Compiler at least v11.0 with -std=c++20
+@li Clang C++ Compiler at least v12.0 with -std=c++20
+@li Microsoft Visual Studio at least v19.29 (VS 2019) with /std:c++20
+@li Apple Clang (Xcode) at least v13.0 with -std=c++20
+@li NVIDIA CUDA Toolkit and Compiler (nvcc) at least v12.0 with host compiler supporting C++20
+@li Intel oneAPI DPC++/C++ Compiler at least v2022.0 with -std=c++20
+
 
 %Taskflow works on Linux, Windows, and Mac OS X.
 
@@ -33,7 +33,7 @@ to your project.
 ~$ cp -r taskflow myproject/include/
 @endcode
 
-%Taskflow is written in C++17 and is built on top of 
+%Taskflow is written in C++20 and is built on top of 
 C++ standardized threading libraries to improve portability.
 To compile a %Taskflow program, say <tt>simple.cpp</tt>, you need to tell the compiler
 where to find the %Taskflow header files and link it through the system thread library
