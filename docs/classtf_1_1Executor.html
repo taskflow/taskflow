@@ -87,12 +87,12 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#a8cdd8e086d667b0cc95a9b2d826e266d" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs the executor with <code>N</code> worker threads</dd>
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a5a511b0cc23b264826373d3dabcef670" class="m-doc">~Executor</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper"><a href="#a70929e271983b13c069e78eba30dc602" class="m-doc">~Executor</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-warning">virtual</span></span>
             </dt>
             <dd>destructs the executor</dd>
           </dl>
@@ -308,10 +308,10 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a23b4c858279616d79612dccd9a715365"><div>
+          <section class="m-doc-details" id="a8cdd8e086d667b0cc95a9b2d826e266d"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a23b4c858279616d79612dccd9a715365" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8cdd8e086d667b0cc95a9b2d826e266d" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs the executor with <code>N</code> worker threads</p>
             <table class="m-table m-fullwidth m-flat">
@@ -331,9 +331,9 @@
             </table>
 <p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>.</p><p>Users can alter the worker behavior, such as changing thread affinity, via deriving an instance from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a>.</p><aside class="m-note m-warning"><h4>Attention</h4><p>An exception will be thrown if executor construction fails.</p></aside>
           </div></section>
-          <section class="m-doc-details" id="a5a511b0cc23b264826373d3dabcef670"><div>
+          <section class="m-doc-details" id="a70929e271983b13c069e78eba30dc602"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5a511b0cc23b264826373d3dabcef670" class="m-doc-self">~Executor</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a70929e271983b13c069e78eba30dc602" class="m-doc-self">~Executor</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">virtual</span></span></span>
             </h3>
             <p>destructs the executor</p>
 <p>The destructor calls <a href="#ab9aa252f70e9a40020a1e5a89d485b85" class="m-doc">Executor::<wbr />wait_for_all</a> to wait for all submitted taskflows to complete and then notifies all worker threads to stop and join these threads.</p>

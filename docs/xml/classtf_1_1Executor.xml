@@ -191,9 +191,9 @@
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1085" column="12" bodyfile="taskflow/core/executor.hpp" bodystart="1085" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Executor_1a9b123d06eb807bf275ba761938624afc" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1WorkerInterface" kindref="compound">WorkerInterface</ref> &gt;</type>
-        <definition>std::shared_ptr&lt;WorkerInterface&gt; tf::Executor::_worker_interface</definition>
+      <memberdef kind="variable" id="classtf_1_1Executor_1a08eacde3ef22105c10747dda25bfdb42" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; <ref refid="classtf_1_1WorkerInterface" kindref="compound">WorkerInterface</ref> &gt;</type>
+        <definition>std::unique_ptr&lt;WorkerInterface&gt; tf::Executor::_worker_interface</definition>
         <argsstring></argsstring>
         <name>_worker_interface</name>
         <briefdescription>
@@ -232,10 +232,10 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1a8cdd8e086d667b0cc95a9b2d826e266d" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Executor::Executor</definition>
-        <argsstring>(size_t N=std::thread::hardware_concurrency(), std::shared_ptr&lt; WorkerInterface &gt; wix=nullptr)</argsstring>
+        <argsstring>(size_t N=std::thread::hardware_concurrency(), std::unique_ptr&lt; WorkerInterface &gt; wix=nullptr)</argsstring>
         <name>Executor</name>
         <param>
           <type>size_t</type>
@@ -243,7 +243,7 @@
           <defval><ref refid="cpp/thread/thread/hardware_concurrency" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread::hardware_concurrency</ref>()</defval>
         </param>
         <param>
-          <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; <ref refid="classtf_1_1WorkerInterface" kindref="compound">WorkerInterface</ref> &gt;</type>
+          <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; <ref refid="classtf_1_1WorkerInterface" kindref="compound">WorkerInterface</ref> &gt;</type>
           <declname>wix</declname>
           <defval>nullptr</defval>
         </param>
@@ -278,9 +278,9 @@ The constructor spawns <computeroutput>N</computeroutput> worker threads to run 
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="91" column="12"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1a70929e271983b13c069e78eba30dc602" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type></type>
-        <definition>tf::Executor::~Executor</definition>
+        <definition>virtual tf::Executor::~Executor</definition>
         <argsstring>()</argsstring>
         <name>~Executor</name>
         <briefdescription>
@@ -291,7 +291,7 @@ The constructor spawns <computeroutput>N</computeroutput> worker threads to run 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="103" column="3"/>
+        <location file="taskflow/core/executor.hpp" line="103" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt; void &gt;</type>
@@ -3414,7 +3414,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1a8be5571fa0df99784aacb26b01d0f4b4" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_topology_mutex</name></member>
       <member refid="classtf_1_1Executor_1a4b2c977a4a054b54c5a563c804accdf0" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_update_cache</name></member>
       <member refid="classtf_1_1Executor_1a57f5105dc812d83f259ec8cab7c96228" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_wait_for_task</name></member>
-      <member refid="classtf_1_1Executor_1a9b123d06eb807bf275ba761938624afc" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_worker_interface</name></member>
+      <member refid="classtf_1_1Executor_1a08eacde3ef22105c10747dda25bfdb42" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_worker_interface</name></member>
       <member refid="classtf_1_1Executor_1ad93162f032d463cc845fbca4fc0d960e" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_workers</name></member>
       <member refid="classtf_1_1Executor_1ab016b9124e80f55ad92e01579c060f08" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>Algorithm</name></member>
       <member refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>async</name></member>
@@ -3425,7 +3425,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1a4428cc5d1102ecb0eb51e0b977e08857" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>dependent_async</name></member>
       <member refid="classtf_1_1Executor_1a01e51e564f5def845506bcf6b4bb1664" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>dependent_async</name></member>
       <member refid="classtf_1_1Executor_1a962d7fb7213a804ee4a2e7b79455efdc" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>dependent_async</name></member>
-      <member refid="classtf_1_1Executor_1a23b4c858279616d79612dccd9a715365" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>Executor</name></member>
+      <member refid="classtf_1_1Executor_1a8cdd8e086d667b0cc95a9b2d826e266d" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>Executor</name></member>
       <member refid="classtf_1_1Executor_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>make_observer</name></member>
       <member refid="classtf_1_1Executor_1a5336d73e2623282058a4f84a0423fac3" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>NonpreemptiveRuntime</name></member>
@@ -3459,7 +3459,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
       <member refid="classtf_1_1Executor_1a4f388dd1dc6e949d04a6beec1d146f89" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>this_worker</name></member>
       <member refid="classtf_1_1Executor_1a6487d589cb1f6b078b69fd3bb1082345" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>this_worker_id</name></member>
       <member refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>wait_for_all</name></member>
-      <member refid="classtf_1_1Executor_1a5a511b0cc23b264826373d3dabcef670" prot="public" virt="non-virtual"><scope>tf::Executor</scope><name>~Executor</name></member>
+      <member refid="classtf_1_1Executor_1a70929e271983b13c069e78eba30dc602" prot="public" virt="virtual"><scope>tf::Executor</scope><name>~Executor</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>
