@@ -367,20 +367,16 @@ executor.run(taskflow).wait();
 
 # Supported Compilers
 
-To use Taskflow, you only need a compiler that supports C++17:
+To use Taskflow v4.0.0, you need a compiler that supports C++20:
 
-+ GNU C++ Compiler at least v8.4 with -std=c++17
-+ Clang C++ Compiler at least v6.0 with -std=c++17
-+ Microsoft Visual Studio at least v19.14 with /std:c++17
-+ AppleClang Xcode Version at least v12.0 with -std=c++17
-+ Nvidia CUDA Toolkit and Compiler (nvcc) at least v11.1 with -std=c++17
-+ Intel C++ Compiler at least v19.0.1 with -std=c++17
-+ Intel DPC++ Clang Compiler at least v13.0.0 with -std=c++17 and SYCL20
+@li GNU C++ Compiler at least v11.0 with -std=c++20
+@li Clang C++ Compiler at least v12.0 with -std=c++20
+@li Microsoft Visual Studio at least v19.29 (VS 2019) with /std:c++20
+@li Apple Clang (Xcode) at least v13.0 with -std=c++20
+@li NVIDIA CUDA Toolkit and Compiler (nvcc) at least v12.0 with host compiler supporting C++20
+@li Intel oneAPI DPC++/C++ Compiler at least v2022.0 with -std=c++20
 
 Taskflow works on Linux, Windows, and Mac OS X.
-
-Although Taskflow supports primarily C++17, you can enable C++20 compilation
-through `-std=c++20` (or `/std:c++20` for MSVC) to achieve better performance due to new C++20 features.
 
 # Learn More about Taskflow
 

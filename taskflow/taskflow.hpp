@@ -42,7 +42,7 @@
 /**
 @def TF_VERSION 
 
-@brief version of the %Taskflow (currently 3.11.0)
+@brief version of the %Taskflow (currently 4.0.0)
 
 The version system is made of a major version number, a minor version number,
 and a patch number:
@@ -50,7 +50,7 @@ and a patch number:
   + TF_VERSION / 100 % 1000 is the minor version
   + TF_VERSION / 100000 is the major version
 */
-#define TF_VERSION 301100
+#define TF_VERSION 400000
 
 /**
 @def TF_MAJOR_VERSION
@@ -92,7 +92,7 @@ namespace detail { }
 Release notes are available here: https://taskflow.github.io/taskflow/Releases.html
 */
 constexpr const char* version() {
-  return "3.11.0";
+  return "4.0.0";
 }
 
 
