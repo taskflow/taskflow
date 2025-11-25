@@ -369,12 +369,12 @@ executor.run(taskflow).wait();
 
 To use Taskflow v4.0.0, you need a compiler that supports C++20:
 
-@li GNU C++ Compiler at least v11.0 with -std=c++20
-@li Clang C++ Compiler at least v12.0 with -std=c++20
-@li Microsoft Visual Studio at least v19.29 (VS 2019) with /std:c++20
-@li Apple Clang (Xcode) at least v13.0 with -std=c++20
-@li NVIDIA CUDA Toolkit and Compiler (nvcc) at least v12.0 with host compiler supporting C++20
-@li Intel oneAPI DPC++/C++ Compiler at least v2022.0 with -std=c++20
+  + GNU C++ Compiler at least v11.0 with -std=c++20
+  + Clang C++ Compiler at least v12.0 with -std=c++20
+  + Microsoft Visual Studio at least v19.29 (VS 2019) with /std:c++20
+  + Apple Clang (Xcode) at least v13.0 with -std=c++20
+  + NVIDIA CUDA Toolkit and Compiler (nvcc) at least v12.0 with host compiler supporting C++20
+  + Intel oneAPI DPC++/C++ Compiler at least v2022.0 with -std=c++20
 
 Taskflow works on Linux, Windows, and Mac OS X.
 

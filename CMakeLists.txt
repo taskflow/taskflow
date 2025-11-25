@@ -8,14 +8,12 @@
 # -DCMAKE_CXX_FLAGS="-fsanitize=address  -fsanitize=leak -g"
 #
 # To enable different c++ standards:
-# -DCMAKE_CXX_STANDARD=17
 # -DCMAKE_CXX_STANDARD=20
 # -DCMAKE_CXX_STANDARD=23
 #
 # To turn on/off taskflow macros:
 # -DTF_DISABLE_EXCEPTION_HANDLING
 # -DTF_ENABLE_ATOMIC_NOTIFIER         // default choice under C++20
-# -DTF_ENABLE_NONBLOCKING_NOTIFIER    // default choice under C++17
 #
 # To build different targets:
 # -DTF_BUILD_BENCHMARKS=OFF/ON        // default OFF
@@ -61,29 +59,33 @@ include(GNUInstallDirs)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Atomic/CheckAtomic.cmake)
 
 # Compiler vendors
-## g++
+## g++ >= 11.0
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8.4")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "11.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires g++ at least v8.4")
+    message(FATAL_ERROR "\nTaskflow requires GNU g++ at least v11.0 with -std=c++20")
   endif()
-## clang++
+## clang++ >= 12.0
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "12.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires clang++ at least v6.0")
-  endif() 
-## AppleClang
+    message(FATAL_ERROR "\nTaskflow requires Clang at least v12.0 with -std=c++20")
+  endif()
+## AppleClang >= 13.0
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "12.0")
-    message(FATAL_ERROR "\nTaskflow requires AppleClang at least v12.0")
-  endif()
-## microsoft visual c++
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  if(NOT MSVC_VERSION GREATER_EQUAL 1914)
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "13.0")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires MSVC++ at least v19.14") 
+    message(FATAL_ERROR "\nTaskflow requires AppleClang at least v13.0 with -std=c++20")
   endif()
+## MSVC >= 19.29 (VS 2019)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  # MSVC_VERSION is an integer like 1929 for 19.29
+  if (MSVC_VERSION LESS 1929)
+    message(STATUS "MSVC_VERSION: ${MSVC_VERSION}")
+    message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
+    message(FATAL_ERROR "\nTaskflow requires Microsoft Visual C++ at least v19.29 (VS 2019) with /std:c++20")
+  endif()
+
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0.1")
     message(STATUS "CMAKE_CXX_COMPILER_VERSION: ${CMAKE_CXX_COMPILER_VERSION}")
@@ -92,11 +94,11 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 else()
   message(FATAL_ERROR "\n\
 Taskflow currently supports the following compilers:\n\
-  - g++ v8.4 or above\n\
-  - clang++ v6.0 or above\n\
-  - MSVC++ v19.14 or above\n\
-  - AppleClang v12.0 or above\n\
-  - Intel v19.0.1 or above\n\
+  - GNU g++ v11.0 or above with -std=c++20\n\
+  - Clang++ v12.0 or above with -std=c++20\n\
+  - MSVC++ v19.14 or above with /std:c++20\n\
+  - AppleClang v13.0 or above with -std=c++20\n\
+  - Intel oneAPI DPC++/C++ (IntelLLVM) v2022.0 or above with -std=c++20\n\
 ")
 endif()
 
@@ -111,9 +113,9 @@ if(TF_BUILD_CUDA)
     message(FATAL_ERROR "\nNo CUDA compiler found")
   endif()
   enable_language(CUDA)
-  if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "11")
+  if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS "12")
     message(STATUS "CMAKE_CUDA_COMPILER_VERSION: ${CMAKE_CUDA_COMPILER_VERSION}")
-    message(FATAL_ERROR "\nTaskflow requires CUDA at least v11")
+    message(FATAL_ERROR "\nTaskflow requires CUDA at least v12")
   endif()
   
   ## configure cuBLAS
