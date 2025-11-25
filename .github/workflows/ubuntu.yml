@@ -3,60 +3,6 @@ name: Ubuntu
 on: [push, pull_request]
 
 jobs:
-  debug-test-cpp17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_PROFILER=ON -DCMAKE_CXX_STANDARD=17
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
-  
-  release-test-cpp17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
-  
-  leak-test-cpp17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=address -fsanitize=leak -g" -DCMAKE_CXX_STANDARD=17
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
-  
-  #undefined-test:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #  - uses: actions/checkout@v3
-  #  - name: cmake
-  #    run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=undefined -g"
-  #  - name: build
-  #    run: cmake --build build --parallel 10
-  #  - name: test
-  #    run: cd build ; ctest -j 10 --output-on-failure
-  
-  tsan-test-cpp17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: cmake
-      run: cmake -S . -B build -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" -DCMAKE_CXX_STANDARD=17
-    - name: build
-      run: cmake --build build --parallel 10
-    - name: test
-      run: cd build ; ctest --output-on-failure
 
 ###############################################################################
 # C++ 20 standard test:
