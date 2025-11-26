@@ -2126,7 +2126,8 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
   }
 
   // create a topology for this run
-  auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
+  //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
+  std::shared_ptr<Topology> t = std::make_shared<DerivedTopology<P, C>>(f, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);
@@ -2289,7 +2290,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->_pred()) {
+  if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->predicate()) {
     //assert(tpg->_join_counter == 0);
     std::lock_guard<std::mutex> lock(f._mutex);
     _set_up_topology(&worker, tpg);
@@ -2298,9 +2299,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
   else {
 
     // invoke the callback after each run
-    if(tpg->_call != nullptr) {
-      tpg->_call();
-    }
+    //if(tpg->_call != nullptr) {
+      tpg->callback();
+    //}
 
     // If there is another run (interleave between lock)
     if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {

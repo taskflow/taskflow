@@ -34,7 +34,6 @@ project(Taskflow VERSION 4.0.0 LANGUAGES CXX)
 option(TF_BUILD_BENCHMARKS "Enables builds of benchmarks" OFF)
 option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
-#option(TF_BUILD_SYCL "Enables builds of sycl code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
 
@@ -128,31 +127,6 @@ if(TF_BUILD_CUDA)
 endif()
 
 # -----------------------------------------------------------------------------
-# find ComputeCpp
-# https://developer.codeplay.com/products/computecpp/ce/guides/integration-guide
-# -----------------------------------------------------------------------------
-# Users can specify:
-# 1. -DComputeCpp_DIR=/path/to/ComputeCpp/
-# 2. -DCOMPUTECPP_BITCODE=ptx64 (default spir64)
-# For example:
-# cmake ../ -DTF_BUILD_SYCL=ON 
-#           -DCOMPUTECPP_BITCODE=ptx64 
-#           -DComputeCpp_DIR=$COMPUTECPP_HOME
-#if(TF_BUILD_SYCL)
-#  message(STATUS "Configuring ComputeCpp for SYCL ...")
-#  message(STATUS "You may specify '-DComputeCpp_DIR=/path/to/ComputeCpp/'")
-#  message(STATUS "You may specify '-DCOMPUTECPP_BITCODE=ptx64' for Nvidia devices")
-#  list(APPEND CMAKE_MODULE_PATH ${TF_CMAKE_DIR}/ComputeCpp/Modules/)
-#  if(NOT ComputeCpp_DIR)
-#    message(FATAL_ERROR "Please specify -DComputeCpp_DIR=/path/to/ComputeCpp/")
-#  endif()
-#  find_package(ComputeCpp REQUIRED)
-#  message(STATUS "ComputeCpp_DIR: " ${ComputeCpp_DIR})
-#  message(STATUS "ComputeCpp_INCLUDE_DIRS: " ${ComputeCpp_INCLUDE_DIRS})
-#  include_directories(${ComputeCpp_INCLUDE_DIRS})
-#endif()
-
-# -----------------------------------------------------------------------------
 # default to release build, unless explicitly specified
 # -----------------------------------------------------------------------------
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -202,17 +176,6 @@ if(TF_BUILD_CUDA)
     $<$<AND:$<COMPILE_LANGUAGE:CUDA>,$<CXX_COMPILER_ID:MSVC>>:--extended-lambda -Xcompiler=/W3,/permissive->
   )
 endif(TF_BUILD_CUDA)
-
-# sycl compiler options (currently support only DPC++)
-#if(TF_BUILD_SYCL)
-#  message(STATUS "Configuring SYCL compiler options ...")
-#  message(STATUS "You may specify -DTF_BUILD_SYCL_BITCODE=ptx64 for CUDA devices")
-#  list(APPEND TF_SYCL_OPTIONS -fsycl -fsycl-unnamed-lambda)
-#  if(TF_BUILD_SYCL_BITCODE STREQUAL "ptx64")
-#    message(STATUS "Configuring SYCL compiler options to CUDA ptx64 ...")
-#    list(APPEND TF_SYCL_OPTIONS -fsycl-targets=nvptx64-nvidia-cuda)
-#  endif()
-#endif()
 
 # additional features
 #add_library(features_settings INTERFACE)
@@ -291,8 +254,6 @@ message(STATUS "CMAKE_PREFIX_PATH: " ${CMAKE_PREFIX_PATH})
 message(STATUS "TF_BUILD_BENCHMARKS: " ${TF_BUILD_BENCHMARKS})
 message(STATUS "TF_BUILD_PROFILER: " ${TF_BUILD_PROFILER})
 message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
-#message(STATUS "TF_BUILD_SYCL: " ${TF_BUILD_SYCL})
-#message(STATUS "TF_BUILD_SYCL_BITCODE: " ${TF_BUILD_SYCL_BITCODE})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
