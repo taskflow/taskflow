@@ -260,9 +260,9 @@ void subflow_task(unsigned W) {
   // subflow work throws
   for(int i=0; i<100; i++) {
     taskflow.emplace([](tf::Subflow& sf){
-      throw std::runtime_error("x");
       sf.emplace([](){});
       sf.emplace([](){ throw std::runtime_error("z"); });
+      throw std::runtime_error("x");
     });
   }
   REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
