@@ -288,6 +288,9 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include/> 
 )
+# When building with MSVC compiler disable warnings on variables padding changed
+# for taskflow/core/tsq.hpp and taskflow/utility/mpmc.hpp
+target_compile_options(${PROJECT_NAME} INTERFACE $<$<BOOL:${MSVC}>:/wd4324>)
 
 # -----------------------------------------------------------------------------
 # Example program 
