@@ -14,6 +14,7 @@
 #include <numeric>
 #include <cassert>
 #include "../utility/os.hpp"
+
 // This file is part of Eigen, a lightweight C++ template library
 // for linear algebra.
 //
@@ -67,7 +68,7 @@ class NonblockingNotifierV1 {
   public:
 
   struct Waiter {
-    alignas (2*std::hardware_destructive_interference_size) std::atomic<Waiter*> next;
+    alignas (TF_CACHELINE_SIZE) std::atomic<Waiter*> next;
     uint64_t epoch;
     enum : unsigned {
       kNotSignaled = 0,
@@ -336,7 +337,7 @@ class NonblockingNotifierV2 {
   public:
   
   struct Waiter {
-    alignas (2*std::hardware_destructive_interference_size) std::atomic<uint64_t> next{kStackMask};
+    alignas (TF_CACHELINE_SIZE) std::atomic<uint64_t> next{kStackMask};
     uint64_t epoch{0};
     enum : unsigned {
       kNotSignaled = 0,

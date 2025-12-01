@@ -42,8 +42,9 @@ class Freelist {
   friend class Executor;
 
   public:
-
-  inline constexpr static auto SIZE_LUT = make_freelist_size_lut<128>();
+  
+  // geenrate a static look-up table until 128 threads.
+  inline constexpr static auto SIZE_LUT = make_freelist_size_lut<129>();
 
   static_assert(SIZE_LUT[0] == 1);
   static_assert(SIZE_LUT[1] == 1);

@@ -146,9 +146,9 @@ private:
 
   //static const size_t cacheline_size = 64;
 
-  alignas(2*std::hardware_destructive_interference_size) std::array<Cell, BufferSize> _buffer;
-  alignas(2*std::hardware_destructive_interference_size) std::atomic<uint64_t> _enqueue_pos;
-  alignas(2*std::hardware_destructive_interference_size) std::atomic<uint64_t> _dequeue_pos;
+  alignas(TF_CACHELINE_SIZE) std::array<Cell, BufferSize> _buffer;
+  alignas(TF_CACHELINE_SIZE) std::atomic<uint64_t> _enqueue_pos;
+  alignas(TF_CACHELINE_SIZE) std::atomic<uint64_t> _dequeue_pos;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -286,9 +286,9 @@ private:
 
   //static const size_t cacheline_size = 64;
 
-  alignas(2*std::hardware_destructive_interference_size) std::array<Cell, BufferSize> _buffer;
-  alignas(2*std::hardware_destructive_interference_size) std::atomic<uint64_t> _enqueue_pos;
-  alignas(2*std::hardware_destructive_interference_size) std::atomic<uint64_t> _dequeue_pos;
+  alignas(TF_CACHELINE_SIZE) std::array<Cell, BufferSize> _buffer;
+  alignas(TF_CACHELINE_SIZE) std::atomic<uint64_t> _enqueue_pos;
+  alignas(TF_CACHELINE_SIZE) std::atomic<uint64_t> _dequeue_pos;
 };
 
 /**

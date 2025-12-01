@@ -20,27 +20,27 @@ class Topology {
   
   public:
 
-    Topology(Taskflow&);
+  Topology(Taskflow&);
 
-    virtual ~Topology() = default;
+  virtual ~Topology() = default;
 
-    bool cancelled() const;
+  bool cancelled() const;
 
-    virtual bool predicate() = 0;
-    virtual void callback() = 0;
+  virtual bool predicate() = 0;
+  virtual void on_finish() = 0;
 
   private:
 
-    Taskflow& _taskflow;
+  Taskflow& _taskflow;
 
-    std::promise<void> _promise;
-    
-    std::atomic<size_t> _join_counter {0};
-    std::atomic<ESTATE::underlying_type> _estate {ESTATE::NONE};
+  std::promise<void> _promise;
+  
+  std::atomic<size_t> _join_counter {0};
+  std::atomic<ESTATE::underlying_type> _estate {ESTATE::NONE};
 
-    std::exception_ptr _exception_ptr {nullptr};
+  std::exception_ptr _exception_ptr {nullptr};
 
-    void _carry_out_promise();
+  void _carry_out_promise();
 };
 
 // Constructor
@@ -73,20 +73,23 @@ inline bool Topology::cancelled() const {
 */
 template <typename P, typename C>
 class DerivedTopology : public Topology {
+
+  using PredicateType = std::decay_t<P>;
+  using CallbackType  = std::decay_t<C>;
   
   public:
 
   DerivedTopology(Taskflow& tf, P&& pred, C&& clbk) :
-    Topology::Topology(tf), _pred(std::forward<P>(pred)), _clbk(std::forward<C>(clbk)) {
+    Topology(tf), _pred(std::forward<P>(pred)), _clbk(std::forward<C>(clbk)) {
   }
     
   bool predicate() override final { return _pred(); }
-  void callback() override final { _clbk(); }   
+  void on_finish() override final { _clbk(); }   
 
   private:
 
-  P _pred;       // predicate, of function type, bool()
-  C _clbk;       // callback, of function type, void()
+  PredicateType _pred;       // predicate, of type bool()
+  CallbackType  _clbk;       // callback, of type void()
 };
 
 }  // end of namespace tf. ----------------------------------------------------

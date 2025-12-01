@@ -76,12 +76,19 @@
 <listitem><para>Intel oneAPI DPC++/C++ Compiler at least v2022.0 with -std=c++20</para>
 </listitem>
 </itemizedlist>
+<simplesect kind="attention"><para>If your project does not support C++20, please use Taskflow v3.11.0, which can be downloaded <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</ulink>.</para>
+</simplesect>
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_new_features">
 <title>New Features</title>
 <sect2 id="release-4-0-0_1release-4-0-0_taskflow_core">
 <title>Taskflow Core</title>
+<para><itemizedlist>
+<listitem><para>replaced <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref></computeroutput> in topology with virtual dispatch for better performance</para>
+</listitem><listitem><para>fixed compiler warning in Windows MSVC W4 (<ulink url="https://github.com/taskflow/taskflow/issues/737">#737</ulink>)</para>
+</listitem></itemizedlist>
+</para>
 </sect2>
 <sect2 id="release-4-0-0_1release-4-0-0_utilities">
 <title>Utilities</title>
