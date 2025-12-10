@@ -399,7 +399,7 @@ class cudaTask {
       TF_CHECK_CUDA(cudaGraphChildGraphNodeGetGraph(node, &graph),
         "Failed to extract the node's embedded graph");
       return graph;
-    }()) {}
+    }(), node) {}
 
   private:
 
