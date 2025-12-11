@@ -95,7 +95,7 @@ the partition size for the given partitioner.
 
 In addition to partition size, the application can specify a closure wrapper
 for a partitioner.
-A closure wrapper allows the application to wrapper a partitioned task 
+A closure wrapper allows the application to wrap a partitioned task 
 (i.e., closure) with a custom function object that performs additional tasks.
 For example:
 
@@ -229,7 +229,7 @@ The last partition may be smaller than the chunk size.
 
 In addition to partition size, the application can specify a closure wrapper
 for a guided partitioner.
-A closure wrapper allows the application to wrapper a partitioned task 
+A closure wrapper allows the application to wrap a partitioned task 
 (i.e., closure) with a custom function object that performs additional tasks.
 For example:
 
@@ -406,7 +406,7 @@ without any specific order.
 
 In addition to partition size, the application can specify a closure wrapper
 for a dynamic partitioner.
-A closure wrapper allows the application to wrapper a partitioned task 
+A closure wrapper allows the application to wrap a partitioned task 
 (i.e., closure) with a custom function object that performs additional tasks.
 For example:
 
@@ -530,7 +530,7 @@ executor.run(taskflow).run();
 
 In addition to partition size, the application can specify a closure wrapper
 for a static partitioner.
-A closure wrapper allows the application to wrapper a partitioned task 
+A closure wrapper allows the application to wrap a partitioned task 
 (i.e., closure) with a custom function object that performs additional tasks.
 For example:
 
@@ -652,7 +652,7 @@ By default, @c alpha is <tt>0.01</tt> and @c beta is <tt>0.5</tt>, respectively.
 
 In addition to partition size, the application can specify a closure wrapper
 for a random partitioner.
-A closure wrapper allows the application to wrapper a partitioned task 
+A closure wrapper allows the application to wrap a partitioned task 
 (i.e., closure) with a custom function object that performs additional tasks.
 For example:
 
