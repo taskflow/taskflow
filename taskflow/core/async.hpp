@@ -3,8 +3,6 @@
 #include "executor.hpp"
 #include "runtime.hpp"
 
-// https://hackmd.io/@sysprog/concurrency-atomics
-
 namespace tf {
 
 // ----------------------------------------------------------------------------

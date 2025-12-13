@@ -81,7 +81,6 @@ class Worker {
   size_t _id;
   size_t _vtm;
   Executor* _executor {nullptr};
-  DefaultNotifier::Waiter _waiter;
   std::thread _thread;
   
   std::default_random_engine _rdgen;

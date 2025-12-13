@@ -775,23 +775,27 @@ class NodeIteratorAdaptor {
   // auto operator->() const { return ...; }
 
   // ----- iterator movement -----
-  //NodeIteratorAdaptor& operator++() { ++_it; return *this; }
-  //NodeIteratorAdaptor& operator--() { --_it; return *this; }
-  //NodeIteratorAdaptor& operator+=(auto n) { _it += n; return *this; }
-  //NodeIteratorAdaptor& operator-=(auto n) { _it -= n; return *this; }
-  //NodeIteratorAdaptor operator+(auto n) const { auto tmp = *this; tmp += n; return tmp; }
+  TF_FORCE_INLINE NodeIteratorAdaptor& operator+=(auto n) noexcept {
+    _it += n;
+    return *this;
+  }
 
-  //deref_adapter operator+(difference_type n, deref_adapter it) {
-  //  it += n; return it;
-  //}
+  TF_FORCE_INLINE NodeIteratorAdaptor& operator-=(auto n) noexcept {
+    _it -= n;
+    return *this;
+  }
 
-  //deref_adapter operator-(deref_adapter it, difference_type n) {
-  //    it -= n; return it;
-  //}
+  // ----- iterator arithmetic -----
+  friend TF_FORCE_INLINE auto operator+(NodeIteratorAdaptor it, auto n) noexcept {
+    it += n;
+    return it;
+  }
 
-  //difference_type operator-(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it - b._it;
-  //}
+  friend TF_FORCE_INLINE auto operator-(NodeIteratorAdaptor it, auto n) noexcept {
+    it -= n;
+    return it;
+  }
+
 
   //// ----- comparisons -----
   //bool operator==(const deref_adapter& a, const deref_adapter& b) {
