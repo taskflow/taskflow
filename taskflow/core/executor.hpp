@@ -1543,19 +1543,24 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
-    for(size_t i=0; i<num_nodes; i++) {
-      if(Node* node = itr[i]; worker._wsq.try_push(node) == false) {
-        _buffers.push(node);
-      }
-      _notifier.notify_one();
+    //for(size_t i=0; i<num_nodes; i++) {
+    //  if(Node* node = itr[i]; worker._wsq.try_push(node) == false) {
+    //    _buffers.push(node);
+    //  }
+    //  _notifier.notify_one();
+    //}
+    if(auto n = worker._wsq.try_bulk_push(itr, num_nodes); n != num_nodes) {
+      _buffers.bulk_push(NodeIteratorAdaptor(first + n), num_nodes - n);
     }
+    _notifier.notify_n(num_nodes, _workers.size());
     return;
   }
   
   // caller is not a worker of this executor - go through the centralized queue
-  for(size_t i=0; i<num_nodes; i++) {
-    _buffers.push(itr[i]);
-  }
+  //for(size_t i=0; i<num_nodes; i++) {
+  //  _buffers.push(itr[i]);
+  //}
+  _buffers.bulk_push(itr, num_nodes);
   _notifier.notify_n(num_nodes, _workers.size());
 }
 
@@ -1574,9 +1579,10 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
-  for(size_t i=0; i<num_nodes; i++) {
-    _buffers.push(itr[i]);
-  }
+  //for(size_t i=0; i<num_nodes; i++) {
+  //  _buffers.push(itr[i]);
+  //}
+  _buffers.bulk_push(itr, num_nodes);
   _notifier.notify_n(num_nodes, _workers.size());
 }
   

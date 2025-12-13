@@ -36,8 +36,9 @@ class Freelist {
   template <typename I>
   TF_FORCE_INLINE void bulk_push(I first, size_t N) {
     // assert(N != 0);
-    std::uintptr_t p = reinterpret_cast<uintptr_t>(std::addressof(*first)) >> 16;
-    auto b = (p ^ (N << 6)) % _buckets.size();
+    //std::uintptr_t p = reinterpret_cast<uintptr_t>(std::addressof(*first)) >> 16;
+    //auto b = (p ^ (N << 6)) % _buckets.size();
+    auto b = N % _buckets.size();
     std::scoped_lock lock(_buckets[b].mutex);
     _buckets[b].queue.bulk_push(first, N);
   }
