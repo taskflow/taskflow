@@ -56,21 +56,21 @@ class UnboundedTaskQueue {
 
   struct Array {
 
-    int64_t C;
-    int64_t M;
+    size_t C;
+    size_t M;
     std::atomic<T>* S;
 
-    explicit Array(int64_t c) :
+    explicit Array(size_t c) :
       C {c},
       M {c-1},
-      S {new std::atomic<T>[static_cast<size_t>(C)]} {
+      S {new std::atomic<T>[C]} {
     }
 
     ~Array() {
       delete [] S;
     }
 
-    int64_t capacity() const noexcept {
+    size_t capacity() const noexcept {
       return C;
     }
 
@@ -84,6 +84,15 @@ class UnboundedTaskQueue {
 
     Array* resize(int64_t b, int64_t t) {
       Array* ptr = new Array {2*C};
+      for(int64_t i=t; i!=b; ++i) {
+        ptr->push(i, pop(i));
+      }
+      return ptr;
+    }
+
+    Array* resize(int64_t b, int64_t t, size_t N) {
+      // assert(N>0);
+      Array* ptr = new Array {std::bit_ceil(C + N)};
       for(int64_t i=t; i!=b; ++i) {
         ptr->push(i, pop(i));
       }
@@ -124,24 +133,44 @@ class UnboundedTaskQueue {
   /**
   @brief queries the capacity of the queue
   */
-  int64_t capacity() const noexcept;
+  size_t capacity() const noexcept;
   
   /**
   @brief inserts an item to the queue
 
   @param item the item to push to the queue
   
-  Only the owner thread can insert an item to the queue.
+  This method pushes one item into the queue.
   The operation can trigger the queue to resize its capacity
   if more space is required.
+  
+  Only the owner thread can insert an item to the queue.
   */
   void push(T item);
+  
+  /**
+  @brief tries to insert a batch of items into the queue
+
+  @tparam I input iterator type
+  @param first iterator to the first item in the batch
+  @param N number of items to insert beginning at @p first
+
+  This method pushes up to @p N items from the range `[first, first + N)` into the queue. 
+  The operation can trigger the queue to resize its capacity 
+  if more space is required.
+  
+  Only the owner thread can insert an item to the queue.
+  */
+  template <typename I>
+  void bulk_push(I first, size_t N);
 
   /**
   @brief pops out an item from the queue
 
+  This method pops an item from the queue.
+  If the queue is empty, @c nullptr is returned.
+  
   Only the owner thread can pop out an item from the queue.
-  The return can be a @c nullptr if this operation failed (empty queue).
   */
   T pop();
 
@@ -168,7 +197,8 @@ class UnboundedTaskQueue {
 
   private:
 
-  Array* resize_array(Array* a, int64_t b, int64_t t);
+  Array* _resize_array(Array* a, int64_t b, int64_t t);
+  Array* _resize_array(Array* a, int64_t b, int64_t t, size_t N);
 };
 
 // Constructor
@@ -176,7 +206,7 @@ template <typename T>
 UnboundedTaskQueue<T>::UnboundedTaskQueue(int64_t LogSize) {
   _top.store(0, std::memory_order_relaxed);
   _bottom.store(0, std::memory_order_relaxed);
-  _array.store(new Array{(int64_t{1} << LogSize)}, std::memory_order_relaxed);
+  _array.store(new Array{(size_t{1} << LogSize)}, std::memory_order_relaxed);
   _garbage.reserve(32);
 }
 
@@ -214,8 +244,8 @@ void UnboundedTaskQueue<T>::push(T o) {
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full with one additional item (b-t+1)
-  if TF_UNLIKELY(a->capacity() - 1 < (b - t)) {
-    a = resize_array(a, b, t);
+  if (a->capacity() < static_cast<size_t>(b - t + 1)) [[unlikely]] {
+    a = _resize_array(a, b, t);
   }
 
   a->push(b, o);
@@ -223,6 +253,31 @@ void UnboundedTaskQueue<T>::push(T o) {
 
   // original paper uses relaxed here but tsa complains
   _bottom.store(b + 1, std::memory_order_release);
+}
+
+// Function: bulk_push
+template <typename T>
+template <typename I>
+void UnboundedTaskQueue<T>::bulk_push(I first, size_t N) {
+
+  if(N == 0) return;
+
+  int64_t b = _bottom.load(std::memory_order_relaxed);
+  int64_t t = _top.load(std::memory_order_acquire);
+  Array* a = _array.load(std::memory_order_relaxed);
+
+  // queue is full with N additional items
+  if ( (b - t + N) > a->capacity() ) [[unlikely]] {
+    a = _resize_array(a, b, t, N);
+  }
+
+  for(size_t i=0; i<N; ++i) {
+    a->push(b++, first[i]);
+  }
+  std::atomic_thread_fence(std::memory_order_release);
+
+  // original paper uses relaxed here but tsa complains
+  _bottom.store(b, std::memory_order_release);
 }
 
 // Function: pop
@@ -306,28 +361,27 @@ T UnboundedTaskQueue<T>::steal_with_hint(size_t& num_empty_steals) {
 
 // Function: capacity
 template <typename T>
-int64_t UnboundedTaskQueue<T>::capacity() const noexcept {
+size_t UnboundedTaskQueue<T>::capacity() const noexcept {
   return _array.load(std::memory_order_relaxed)->capacity();
 }
 
 template <typename T>
 typename UnboundedTaskQueue<T>::Array*
-UnboundedTaskQueue<T>::resize_array(Array* a, int64_t b, int64_t t) {
-
-  //Array* tmp = a->resize(b, t);
-  //_garbage.push_back(a);
-  //std::swap(a, tmp);
-  //_array.store(a, std::memory_order_release);
-  //// Note: the original paper using relaxed causes t-san to complain
-  ////_array.store(a, std::memory_order_relaxed);
-  //return a;
-  
-
+UnboundedTaskQueue<T>::_resize_array(Array* a, int64_t b, int64_t t) {
   Array* tmp = a->resize(b, t);
   _garbage.push_back(a);
-  _array.store(tmp, std::memory_order_release);
   // Note: the original paper using relaxed causes t-san to complain
-  //_array.store(a, std::memory_order_relaxed);
+  _array.store(tmp, std::memory_order_release);
+  return tmp;
+}
+
+template <typename T>
+typename UnboundedTaskQueue<T>::Array*
+UnboundedTaskQueue<T>::_resize_array(Array* a, int64_t b, int64_t t, size_t N) {
+  Array* tmp = a->resize(b, t, N);
+  _garbage.push_back(a);
+  // Note: the original paper using relaxed causes t-san to complain
+  _array.store(tmp, std::memory_order_release);
   return tmp;
 }
 
@@ -355,8 +409,8 @@ class BoundedTaskQueue {
   
   static_assert(std::is_pointer_v<T>, "T must be a pointer type");
   
-  constexpr static int64_t BufferSize = int64_t{1} << LogSize;
-  constexpr static int64_t BufferMask = (BufferSize - 1);
+  constexpr static size_t BufferSize = size_t{1} << LogSize;
+  constexpr static size_t BufferMask = (BufferSize - 1);
 
   static_assert((BufferSize >= 2) && ((BufferSize & (BufferSize - 1)) == 0));
 
@@ -405,18 +459,20 @@ class BoundedTaskQueue {
   bool try_push(O&& item);
   
   /**
-  @brief tries to insert an item to the queue or invoke the callable if fails
+  @brief tries to insert a batch of items into the queue
 
-  @tparam O data type 
-  @tparam C callable type
-  @param item the item to perfect-forward to the queue
-  @param on_full callable to invoke when the queue is full (insertion fails)
-  
-  Only the owner thread can insert an item to the queue. 
+  @tparam I input iterator type
+  @param first iterator to the first item in the batch
+  @param N number of items to insert beginning at @p first
+  @return the number of items successfully inserted
 
+  This method attempts to push up to @p N items from the range
+  `[first, first + N)` into the queue. Insertion stops early if the
+  queue becomes full. Only the owner thread may insert items into
+  the queue.
   */
-  template <typename O, typename C>
-  void push(O&& item, C&& on_full);
+  template <typename I>
+  size_t try_bulk_push(I first, size_t N);
   
   /**
   @brief pops out an item from the queue
@@ -472,7 +528,7 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   int64_t t = _top.load(std::memory_order_acquire);
 
   // queue is full with one additional item (b-t+1)
-  if TF_UNLIKELY((b - t) > BufferSize - 1) {
+  if(static_cast<size_t>(b - t + 1) > BufferSize) [[unlikely]] {
     return false;
   }
   
@@ -486,26 +542,30 @@ bool BoundedTaskQueue<T, LogSize>::try_push(O&& o) {
   return true;
 }
 
-// Function: push
+// Function: try_bulk_push
 template <typename T, size_t LogSize>
-template <typename O, typename C>
-void BoundedTaskQueue<T, LogSize>::push(O&& o, C&& on_full) {
+template <typename I>
+size_t BoundedTaskQueue<T, LogSize>::try_bulk_push(I first, size_t N) {
+
+  if(N == 0) return 0;
 
   int64_t b = _bottom.load(std::memory_order_relaxed);
   int64_t t = _top.load(std::memory_order_acquire);
 
-  // queue is full with one additional item (b-t+1)
-  if TF_UNLIKELY((b - t) > BufferSize - 1) {
-    on_full();
-    return;
+  size_t r = BufferSize - (b - t);  // remaining capacity
+  size_t n = std::min(N, r);        // number of pushable elements
+
+  if(n > 0) {
+    // push n elements into the queue
+    for(size_t i=0; i<n; ++i) {
+      _buffer[b++ & BufferMask].store(first[i], std::memory_order_relaxed);
+    }
+    std::atomic_thread_fence(std::memory_order_release);
+    // original paper uses relaxed here but tsa complains
+    _bottom.store(b, std::memory_order_release);
   }
   
-  _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
-
-  std::atomic_thread_fence(std::memory_order_release);
-  
-  // original paper uses relaxed here but tsa complains
-  _bottom.store(b + 1, std::memory_order_release);
+  return n;
 }
 
 // Function: pop
@@ -586,7 +646,7 @@ T BoundedTaskQueue<T, LogSize>::steal_with_hint(size_t& num_empty_steals) {
 // Function: capacity
 template <typename T, size_t LogSize>
 constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
-  return static_cast<size_t>(BufferSize);
+  return BufferSize;
 }
 
 
@@ -694,7 +754,7 @@ constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
 //
 //  private:
 //
-//  Array* resize_array(Array* a, int64_t b, int64_t t);
+//  Array* _resize_array(Array* a, int64_t b, int64_t t);
 //};
 //
 //// Constructor
@@ -747,8 +807,8 @@ constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
 //  Array* a = _array.load(std::memory_order_relaxed);
 //
 //  // queue is full
-//  if TF_UNLIKELY(a->capacity() - 1 < (b - t)) {
-//    a = resize_array(a, b, t);
+//  if (a->capacity() - 1 < (b - t)) [[unlikely]] {
+//    a = _resize_array(a, b, t);
 //  }
 //
 //  a->push(b, o);
@@ -789,7 +849,7 @@ constexpr size_t BoundedTaskQueue<T, LogSize>::capacity() const {
 //
 //template <typename T>
 //typename UnboundedTaskQueue2<T>::Array*
-//UnboundedTaskQueue2<T>::resize_array(Array* a, int64_t b, int64_t t) {
+//UnboundedTaskQueue2<T>::_resize_array(Array* a, int64_t b, int64_t t) {
 //
 //  Array* tmp = a->resize(b, t);
 //  _garbage.push_back(a);

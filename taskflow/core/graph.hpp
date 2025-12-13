@@ -752,6 +752,85 @@ TF_FORCE_INLINE Node* get_node_ptr(T& node) {
 
 }  // end of namespace tf::detail ---------------------------------------------
 
+/**
+@private
+*/
+template <typename I>
+class NodeIteratorAdaptor {
+  
+  public:
+
+  TF_FORCE_INLINE NodeIteratorAdaptor(I it) : _it(it) {}
+
+  // ----- custom dereference -----
+  TF_FORCE_INLINE auto operator*() const noexcept {
+    return detail::get_node_ptr(*_it);
+  }
+
+  TF_FORCE_INLINE auto operator[](auto n) const noexcept {
+    return detail::get_node_ptr(_it[n]);
+  }
+
+  // ----- pointer-like behavior -----
+  // Cannot return a true pointer unless we create a proxy object.
+  // Often omitted unless needed.
+  // auto operator->() const { return ...; }
+
+  // ----- iterator movement -----
+  //deref_adapter& operator++() { ++_it; return *this; }
+  //deref_adapter operator++(int) { auto tmp = *this; ++_it; return tmp; }
+
+  //deref_adapter& operator--() { --_it; return *this; }
+  //deref_adapter operator--(int) { auto tmp = *this; --_it; return tmp; }
+
+  //deref_adapter& operator+=(difference_type n) { _it += n; return *this; }
+  //deref_adapter& operator-=(difference_type n) { _it -= n; return *this; }
+
+  //deref_adapter operator+(deref_adapter it, difference_type n) {
+  //  it += n; return it;
+  //}
+  //deref_adapter operator+(difference_type n, deref_adapter it) {
+  //  it += n; return it;
+  //}
+
+  //deref_adapter operator-(deref_adapter it, difference_type n) {
+  //    it -= n; return it;
+  //}
+
+  //difference_type operator-(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it - b._it;
+  //}
+
+  //// ----- comparisons -----
+  //bool operator==(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it == b._it;
+  //}
+  //bool operator!=(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it != b._it;
+  //}
+  //bool operator<(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it < b._it;
+  //}
+  //bool operator>(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it > b._it;
+  //}
+  //bool operator<=(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it <= b._it;
+  //}
+  //bool operator>=(const deref_adapter& a, const deref_adapter& b) {
+  //  return a._it >= b._it;
+  //}
+
+  //// access original iterator if needed
+  //I base() const { return _it; }
+
+  private:
+
+  I _it;
+};
+
+
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

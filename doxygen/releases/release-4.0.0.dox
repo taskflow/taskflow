@@ -40,6 +40,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 @subsection release-4-0-0_taskflow_core Taskflow Core
 
 + replaced `std::function` in topology with virtual dispatch for better performance
++ replaced `TF_LIKELY/_UNLIKELY` with C++20 attributes
++ enhanced the scheduling performance through bulk insertion
 + fixed compiler warning in Windows MSVC W4 ([#737](https://github.com/taskflow/taskflow/issues/737))
 
 @subsection release-4-0-0_utilities Utilities
