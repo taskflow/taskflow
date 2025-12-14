@@ -50,34 +50,34 @@ void bounded_tsq_owner() {
   REQUIRE(queue.try_push(&dummy2) == true);
 
   size_t num_empty_steals = 1234;
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy1);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == &dummy1);
   REQUIRE(num_empty_steals == 0);
   
   num_empty_steals = 101;
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy2);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == &dummy2);
   REQUIRE(num_empty_steals == 0);
   
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
   REQUIRE(num_empty_steals == 1);
   
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
   REQUIRE(num_empty_steals == 2);
   
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
   REQUIRE(num_empty_steals == 4);
   
   REQUIRE(queue.try_push(&dummy1) == true);
   REQUIRE(queue.try_push(&dummy2) == true);
   REQUIRE(queue.steal() == &dummy1);
   REQUIRE(num_empty_steals == 4);
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == &dummy2);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == &dummy2);
   REQUIRE(num_empty_steals == 0);
   
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
   REQUIRE(num_empty_steals == 1);
   
-  REQUIRE(queue.steal_with_hint(num_empty_steals) == nullptr);
+  REQUIRE(queue.steal_with_feedback(num_empty_steals) == nullptr);
   REQUIRE(num_empty_steals == 2);
 }
 

@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="classtf_1_1cudaGraphCreator" kind="class" language="C++" prot="public">
     <compoundname>tf::cudaGraphCreator</compoundname>
     <includes refid="cuda__graph_8hpp" local="no">taskflow/cuda/cuda_graph.hpp</includes>
-      <sectiondef kind="public-func">
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1cudaGraphCreator_1aa3a254b55ad44889e0c3b43b1fedd32d" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>cudaGraph_t</type>
         <definition>cudaGraph_t tf::cudaGraphCreator::operator()</definition>
         <argsstring>() const</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::cudaGraphCreator::operator()</qualifiedname>
         <briefdescription>
 <para>creates a new CUDA graph </para>
         </briefdescription>
@@ -36,6 +37,7 @@
         <definition>cudaGraph_t tf::cudaGraphCreator::operator()</definition>
         <argsstring>(cudaGraph_t graph) const</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::cudaGraphCreator::operator()</qualifiedname>
         <param>
           <type>cudaGraph_t</type>
           <declname>graph</declname>
@@ -49,7 +51,7 @@
         </inbodydescription>
         <location file="taskflow/cuda/cuda_graph.hpp" line="487" column="15" bodyfile="taskflow/cuda/cuda_graph.hpp" bodystart="487" bodyend="489"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create functors that construct CUDA graphs </para>
     </briefdescription>

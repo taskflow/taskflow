@@ -98,6 +98,8 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
 @class TaskParams
 
 @brief class to create a task parameter object 
+
+tf::TaskParams is primarily used by asynchronous tasking.
 */
 class TaskParams {
 
@@ -756,11 +758,11 @@ TF_FORCE_INLINE Node* get_node_ptr(T& node) {
 @private
 */
 template <typename I>
-class NodeIteratorAdaptor {
+class NodeIteratorAdapter {
   
   public:
 
-  TF_FORCE_INLINE NodeIteratorAdaptor(I it) : _it(it) {}
+  TF_FORCE_INLINE explicit NodeIteratorAdapter(I it) : _it(it) {}
 
   // ----- custom dereference -----
   TF_FORCE_INLINE auto operator*() const noexcept {
@@ -770,28 +772,29 @@ class NodeIteratorAdaptor {
   TF_FORCE_INLINE auto operator[](auto n) const noexcept {
     return detail::get_node_ptr(_it[n]);
   }
+
   // Cannot return a true pointer unless we create a proxy object.
   // Often omitted unless needed.
   // auto operator->() const { return ...; }
 
   // ----- iterator movement -----
-  TF_FORCE_INLINE NodeIteratorAdaptor& operator+=(auto n) noexcept {
+  TF_FORCE_INLINE NodeIteratorAdapter& operator+=(auto n) noexcept {
     _it += n;
     return *this;
   }
 
-  TF_FORCE_INLINE NodeIteratorAdaptor& operator-=(auto n) noexcept {
+  TF_FORCE_INLINE NodeIteratorAdapter& operator-=(auto n) noexcept {
     _it -= n;
     return *this;
   }
 
   // ----- iterator arithmetic -----
-  friend TF_FORCE_INLINE auto operator+(NodeIteratorAdaptor it, auto n) noexcept {
+  friend TF_FORCE_INLINE auto operator+(NodeIteratorAdapter it, auto n) noexcept {
     it += n;
     return it;
   }
 
-  friend TF_FORCE_INLINE auto operator-(NodeIteratorAdaptor it, auto n) noexcept {
+  friend TF_FORCE_INLINE auto operator-(NodeIteratorAdapter it, auto n) noexcept {
     it -= n;
     return it;
   }

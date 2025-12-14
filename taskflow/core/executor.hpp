@@ -1525,9 +1525,8 @@ inline void Executor::_spill(Node* item) {
 template <typename I>
 void Executor::_bulk_spill(I first, size_t N) {
   // assert(N != 0);
-  //std::uintptr_t p = reinterpret_cast<uintptr_t>(std::addressof(*first)) >> 16;
-  //auto b = (p ^ (N << 6)) % _buckets.size();
-  auto b = N % _buffers.size();
+  auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
+  auto b = (p ^ (N << 6)) % _buffers.size();
   std::scoped_lock lock(_buffers[b].mutex);
   _buffers[b].queue.bulk_push(first, N);
 }
@@ -1565,7 +1564,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     return;
   }
 
-  NodeIteratorAdaptor itr(first);
+  NodeIteratorAdapter itr(first);
   
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 
@@ -1579,13 +1578,19 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     //  }
     //  _notifier.notify_one();
     //}
+    //return;
 
-    // TODO: should we notify first before spilling?
     if(auto n = worker._wsq.try_bulk_push(itr, num_nodes); n != num_nodes) {
       _bulk_spill(itr + n, num_nodes - n);
     }
     _notifier.notify_n(num_nodes);
     return;
+    
+    // notify first before spilling to hopefully wake up workers earlier 
+    //auto n = worker._wsq.try_bulk_push(itr, num_nodes);
+    //_notifier.notify_n(n);
+    //_bulk_schedule(first + n, num_nodes - n);
+    //return;
   }
   
   // caller is not a worker of this executor - spill to the centralized queue
@@ -1605,7 +1610,7 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
     return;
   }
   
-  NodeIteratorAdaptor itr(first);
+  NodeIteratorAdapter itr(first);
 
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+  <compounddef id="structtf_1_1Executor_1_1Buffer" kind="struct" language="C++" prot="private">
+    <compoundname>tf::Executor::Buffer</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Buffer_1aa92fb42cc0fc2e8d38bf18fbf9ff2619" prot="public" static="no" mutable="no">
+        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
+        <definition>std::mutex tf::Executor::Buffer::mutex</definition>
+        <argsstring></argsstring>
+        <name>mutex</name>
+        <qualifiedname>tf::Executor::Buffer::mutex</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/executor.hpp" line="1072" column="16" bodyfile="taskflow/core/executor.hpp" bodystart="1072" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structtf_1_1Executor_1_1Buffer_1a7ff61a0dfbb482f98c49e41a2688ad13" prot="public" static="no" mutable="no">
+        <type><ref refid="classtf_1_1UnboundedTaskQueue" kindref="compound">UnboundedTaskQueue</ref>&lt; Node * &gt;</type>
+        <definition>UnboundedTaskQueue&lt;Node*&gt; tf::Executor::Buffer::queue</definition>
+        <argsstring></argsstring>
+        <name>queue</name>
+        <qualifiedname>tf::Executor::Buffer::queue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/executor.hpp" line="1073" column="24" bodyfile="taskflow/core/executor.hpp" bodystart="1073" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::mutex</label>
+      </node>
+      <node id="1">
+        <label>tf::Executor::Buffer</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>mutex</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>queue</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>tf::UnboundedTaskQueue&lt; Node * &gt;</label>
+        <link refid="classtf_1_1UnboundedTaskQueue"/>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/core/executor.hpp" line="1071" column="3" bodyfile="taskflow/core/executor.hpp" bodystart="1071" bodyend="1074"/>
+    <listofallmembers>
+      <member refid="structtf_1_1Executor_1_1Buffer_1aa92fb42cc0fc2e8d38bf18fbf9ff2619" prot="public" virt="non-virtual"><scope>tf::Executor::Buffer</scope><name>mutex</name></member>
+      <member refid="structtf_1_1Executor_1_1Buffer_1a7ff61a0dfbb482f98c49e41a2688ad13" prot="public" virt="non-virtual"><scope>tf::Executor::Buffer</scope><name>queue</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

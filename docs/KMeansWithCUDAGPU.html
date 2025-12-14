@@ -5,7 +5,7 @@
   <title>Learning from Examples &raquo; k-means Clustering with CUDA GPU | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -57,7 +57,7 @@
             <li><a href="#KMeansWithGPUBenchmarking">Benchmarking</a></li>
           </ul>
         </nav>
-<p>Following up on <a href="kmeans.html" class="m-doc">k-means Clustering</a>, this page studies how to accelerate a k-means workload on a GPU using <a href="namespacetf.html#ac76b07f7b7055967f6a2f1dc78b0978a" class="m-doc">tf::<wbr />cudaGraph</a>.</p><section id="DefineTheKMeansKernels"><h2><a href="#DefineTheKMeansKernels">Define the k-means Kernels</a></h2><p>Recall that the k-means algorithm has the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
+<p>Following up on <a href="kmeans.html" class="m-doc">k-means Clustering</a>, this page studies how to accelerate a k-means workload on a GPU using <a href="namespacetf.html#a713c427e4f9841a90dec67045a3babed" class="m-doc">tf::<wbr />cudaGraph</a>.</p><section id="DefineTheKMeansKernels"><h2><a href="#DefineTheKMeansKernels">Define the k-means Kernels</a></h2><p>Recall that the k-means algorithm has the following steps:</p><ul><li>Step 1: initialize k random centroids</li><li>Step 2: for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>Step 3: for every centroid, move the centroid to the average of the points assigned to that centroid</li><li>Step 4: go to Step 2 until converged (no more changes in the last few iterations) or maximum iterations reached</li></ul><p>We observe Step 2 and Step 3 of the algorithm are parallelizable across individual points for use to harness the power of GPU:</p><ol><li>for every data point, find the nearest centroid (L2 distance or other measurements) and assign the point to it</li><li>for every centroid, move the centroid to the average of the points assigned to that centroid.</li></ol><p>At a fine-grained level, we request one GPU thread to work on one point for Step 2 and one GPU thread to work on one centroid for Step 3.</p><pre class="m-code"><span class="c1">// px/py: 2D points</span>
 <span class="c1">// N: number of points</span>
 <span class="c1">// mx/my: centroids</span>
 <span class="c1">// K: number of clusters</span>
@@ -214,118 +214,118 @@
 <span class="w">  </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span>
 
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">h_mx</span><span class="p">,</span><span class="w"> </span><span class="n">h_my</span><span class="p">};</span>
-<span class="p">}</span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the CUDA graph is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 44.700rem; height: 38.300rem;" viewBox="0.00 0.00 447.00 383.00">
-<g transform="scale(1 1) rotate(0) translate(4 379)">
+<span class="p">}</span></pre><p>The first dump before executing the taskflow produces the following diagram. The condition tasks introduces a cycle between itself and <code>update_means</code>. Each time it goes back to <code>update_means</code>, the CUDA graph is reconstructed with captured parameters in the closure and offloaded to the GPU.</p><div class="m-graph"><svg style="width: 41.200rem; height: 38.300rem;" viewBox="0.00 0.00 412.00 383.25">
+<g transform="scale(1 1) rotate(0) translate(4 379.25)">
 <title>Taskflow</title>
 <g class="m-cluster">
 <title>cluster_p0x7ffcc549dd00</title>
-<polygon points="8,-8 8,-367 431,-367 431,-8 8,-8"/>
-<text text-anchor="middle" x="219.5" y="-355" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: K&#45;Means</text>
+<polygon points="8,-8 8,-367.25 396,-367.25 396,-8 8,-8"/>
+<text text-anchor="middle" x="202" y="-353.75" font-family="Helvetica,sans-Serif" font-size="10.00">Taskflow: K&#45;Means</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f740</title>
-<ellipse cx="380" cy="-322" rx="42.94" ry="18"/>
-<text text-anchor="middle" x="380" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_px</text>
+<ellipse cx="55" cy="-322" rx="38.76" ry="18"/>
+<text text-anchor="middle" x="55" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_px</text>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fa10</title>
-<ellipse cx="344" cy="-250" rx="27" ry="18"/>
-<text text-anchor="middle" x="344" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">h2d</text>
+<ellipse cx="80" cy="-250" rx="27" ry="18"/>
+<text text-anchor="middle" x="80" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">h2d</text>
 </g>
 <g class="m-edge">
 <title>p0x112f740&#45;&gt;p0x112fa10</title>
-<path d="M371.29,-304.05C367.02,-295.77 361.8,-285.62 357.08,-276.42"/>
-<polygon points="360.07,-274.6 352.39,-267.31 353.85,-277.8 360.07,-274.6"/>
+<path d="M61.05,-304.05C63.78,-296.4 67.08,-287.16 70.16,-278.56"/>
+<polygon points="73.43,-279.81 73.49,-269.21 66.84,-277.45 73.43,-279.81"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fb00</title>
-<ellipse cx="205" cy="-178" rx="52.28" ry="18"/>
-<text text-anchor="middle" x="205" y="-175.5" font-family="Helvetica,sans-Serif" font-size="10.00">update_means</text>
+<ellipse cx="212" cy="-178" rx="47.19" ry="18"/>
+<text text-anchor="middle" x="212" y="-174.12" font-family="Helvetica,sans-Serif" font-size="10.00">update_means</text>
 </g>
 <g class="m-edge">
 <title>p0x112fa10&#45;&gt;p0x112fb00</title>
-<path d="M323.19,-238.52C301.88,-227.79 268.28,-210.87 242.35,-197.81"/>
-<polygon points="243.68,-194.56 233.18,-193.19 240.54,-200.81 243.68,-194.56"/>
+<path d="M100.62,-238.06C120.55,-227.5 151.16,-211.26 175.25,-198.49"/>
+<polygon points="176.6,-201.74 183.79,-193.96 173.32,-195.55 176.6,-201.74"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f650</title>
-<ellipse cx="276" cy="-322" rx="42.94" ry="18"/>
-<text text-anchor="middle" x="276" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_py</text>
+<ellipse cx="151" cy="-322" rx="38.76" ry="18"/>
+<text text-anchor="middle" x="151" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_py</text>
 </g>
 <g class="m-edge">
 <title>p0x112f650&#45;&gt;p0x112fa10</title>
-<path d="M291.43,-305.12C300.64,-295.64 312.47,-283.46 322.57,-273.06"/>
-<polygon points="325.1,-275.48 329.56,-265.86 320.08,-270.6 325.1,-275.48"/>
+<path d="M135.24,-305.46C125.7,-296.06 113.37,-283.9 102.78,-273.46"/>
+<polygon points="105.4,-271.13 95.82,-266.6 100.49,-276.11 105.4,-271.13"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f560</title>
-<ellipse cx="170" cy="-322" rx="45.15" ry="18"/>
-<text text-anchor="middle" x="170" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_mx</text>
+<ellipse cx="248" cy="-322" rx="40.53" ry="18"/>
+<text text-anchor="middle" x="248" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_mx</text>
 </g>
 <g class="m-edge">
 <title>p0x112f560&#45;&gt;p0x112fa10</title>
-<path d="M202.34,-309.36C230.48,-299.04 272.25,-283.28 308,-268 309.81,-267.23 311.67,-266.41 313.53,-265.58"/>
-<polygon points="315.17,-268.68 322.8,-261.33 312.25,-262.32 315.17,-268.68"/>
+<path d="M217.91,-309.5C191.02,-299.09 150.63,-283.11 116,-268 114.5,-267.34 112.96,-266.66 111.41,-265.97"/>
+<polygon points="113.15,-262.91 102.6,-261.91 110.22,-269.27 113.15,-262.91"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f470</title>
-<ellipse cx="61" cy="-322" rx="45.15" ry="18"/>
-<text text-anchor="middle" x="61" y="-319.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_my</text>
+<ellipse cx="347" cy="-322" rx="40.53" ry="18"/>
+<text text-anchor="middle" x="347" y="-318.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_my</text>
 </g>
 <g class="m-edge">
 <title>p0x112f470&#45;&gt;p0x112fa10</title>
-<path d="M94.86,-309.87C101.81,-307.77 109.11,-305.7 116,-304 200.28,-283.15 225.4,-294.76 308,-268 309.92,-267.38 311.88,-266.67 313.83,-265.92"/>
-<polygon points="315.61,-268.96 323.43,-261.82 312.86,-262.53 315.61,-268.96"/>
+<path d="M316.62,-309.73C310.5,-307.67 304.08,-305.65 298,-304 218.41,-282.43 194.32,-293.8 116,-268 114.44,-267.49 112.86,-266.92 111.28,-266.32"/>
+<polygon points="112.93,-263.22 102.36,-262.55 110.21,-269.67 112.93,-263.22"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f380</title>
-<ellipse cx="257" cy="-250" rx="42.27" ry="18"/>
-<text text-anchor="middle" x="257" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sx</text>
+<ellipse cx="164" cy="-250" rx="38.76" ry="18"/>
+<text text-anchor="middle" x="164" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sx</text>
 </g>
 <g class="m-edge">
 <title>p0x112f380&#45;&gt;p0x112fb00</title>
-<path d="M244.68,-232.41C238.42,-223.99 230.69,-213.58 223.72,-204.2"/>
-<polygon points="226.37,-201.9 217.6,-195.96 220.75,-206.07 226.37,-201.9"/>
+<path d="M175.38,-232.41C180.99,-224.22 187.9,-214.14 194.2,-204.95"/>
+<polygon points="197.08,-206.94 199.85,-196.72 191.31,-202.99 197.08,-206.94"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fbf0</title>
-<ellipse cx="205" cy="-106" rx="27" ry="18"/>
-<text text-anchor="middle" x="205" y="-103.5" font-family="Helvetica,sans-Serif" font-size="10.00">d2h</text>
+<ellipse cx="212" cy="-106" rx="27" ry="18"/>
+<text text-anchor="middle" x="212" y="-102.12" font-family="Helvetica,sans-Serif" font-size="10.00">d2h</text>
 </g>
 <g class="m-edge">
 <title>p0x112fb00&#45;&gt;p0x112fbf0</title>
-<path d="M205,-159.7C205,-151.98 205,-142.71 205,-134.11"/>
-<polygon points="208.5,-134.1 205,-124.1 201.5,-134.1 208.5,-134.1"/>
+<path d="M212,-159.7C212,-152.41 212,-143.73 212,-135.54"/>
+<polygon points="215.5,-135.62 212,-125.62 208.5,-135.62 215.5,-135.62"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f830</title>
-<ellipse cx="154" cy="-250" rx="42.27" ry="18"/>
-<text text-anchor="middle" x="154" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sy</text>
+<ellipse cx="260" cy="-250" rx="38.76" ry="18"/>
+<text text-anchor="middle" x="260" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_sy</text>
 </g>
 <g class="m-edge">
 <title>p0x112f830&#45;&gt;p0x112fb00</title>
-<path d="M166.09,-232.41C172.22,-223.99 179.8,-213.58 186.64,-204.2"/>
-<polygon points="189.59,-206.1 192.65,-195.96 183.93,-201.98 189.59,-206.1"/>
+<path d="M248.62,-232.41C243.01,-224.22 236.1,-214.14 229.8,-204.95"/>
+<polygon points="232.69,-202.99 224.15,-196.72 226.92,-206.94 232.69,-202.99"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112f920</title>
-<ellipse cx="55" cy="-250" rx="38.7" ry="18"/>
-<text text-anchor="middle" x="55" y="-247.5" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
+<ellipse cx="352" cy="-250" rx="35.65" ry="18"/>
+<text text-anchor="middle" x="352" y="-246.12" font-family="Helvetica,sans-Serif" font-size="10.00">allocate_c</text>
 </g>
 <g class="m-edge">
 <title>p0x112f920&#45;&gt;p0x112fb00</title>
-<path d="M81.47,-236.65C104.84,-225.74 139.23,-209.69 165.79,-197.3"/>
-<polygon points="167.61,-200.31 175.19,-192.91 164.65,-193.97 167.61,-200.31"/>
+<path d="M327.29,-236.65C305.86,-225.93 274.51,-210.25 249.9,-197.95"/>
+<polygon points="251.68,-194.93 241.18,-193.59 248.55,-201.19 251.68,-194.93"/>
 </g>
 <g class="m-node m-flat">
 <title>p0x112fce0</title>
-<ellipse cx="205" cy="-34" rx="27" ry="18"/>
-<text text-anchor="middle" x="205" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
+<ellipse cx="212" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="212" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">free</text>
 </g>
 <g class="m-edge">
 <title>p0x112fbf0&#45;&gt;p0x112fce0</title>
-<path d="M205,-87.7C205,-79.98 205,-70.71 205,-62.11"/>
-<polygon points="208.5,-62.1 205,-52.1 201.5,-62.1 208.5,-62.1"/>
+<path d="M212,-87.7C212,-80.41 212,-71.73 212,-63.54"/>
+<polygon points="215.5,-63.62 212,-53.62 208.5,-63.62 215.5,-63.62"/>
 </g>
 </g>
 </svg>
@@ -374,7 +374,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

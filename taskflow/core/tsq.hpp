@@ -183,7 +183,7 @@ class UnboundedTaskQueue {
   T steal();
 
   /**
-  @brief attempts to steal a task with a hint mechanism
+  @brief attempts to steal a task with feedback on the emptiness of the queue
   
   @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
   
@@ -193,7 +193,7 @@ class UnboundedTaskQueue {
   otherwise, `num_empty_steals` is reset to zero.
 
   */
-  T steal_with_hint(size_t& num_empty_steals);
+  T steal_with_feedback(size_t& num_empty_steals);
 
   private:
 
@@ -335,7 +335,7 @@ T UnboundedTaskQueue<T>::steal() {
 
 // Function: steal
 template <typename T>
-T UnboundedTaskQueue<T>::steal_with_hint(size_t& num_empty_steals) {
+T UnboundedTaskQueue<T>::steal_with_feedback(size_t& num_empty_steals) {
   
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
@@ -491,7 +491,7 @@ class BoundedTaskQueue {
   T steal();
 
   /**
-  @brief attempts to steal a task with a hint mechanism
+  @brief attempts to steal a task with feedback on the emptiness of the queue
   
   @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
   
@@ -500,7 +500,7 @@ class BoundedTaskQueue {
   Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
   otherwise, `num_empty_steals` is reset to zero.
   */
-  T steal_with_hint(size_t& num_empty_steals);
+  T steal_with_feedback(size_t& num_empty_steals);
 };
 
 // Function: empty
@@ -621,7 +621,7 @@ T BoundedTaskQueue<T, LogSize>::steal() {
 
 // Function: steal
 template <typename T, size_t LogSize>
-T BoundedTaskQueue<T, LogSize>::steal_with_hint(size_t& num_empty_steals) {
+T BoundedTaskQueue<T, LogSize>::steal_with_feedback(size_t& num_empty_steals) {
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);

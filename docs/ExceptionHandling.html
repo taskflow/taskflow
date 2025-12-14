@@ -5,7 +5,7 @@
   <title>Cookbook &raquo; Exception Handling | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -53,7 +53,7 @@
           <h3>Contents</h3>
           <ul>
             <li>
-              <a href="#UnderstandTheLogicOfExceptionHandlingInTaskflow">Understand the Logic of Exception Handling in %Taskflow</a>
+              <a href="#UnderstandTheLogicOfExceptionHandlingInTaskflow">Understand the Logic of Exception Handling in Taskflow</a>
               <ul>
                 <li><a href="#ExceptionPropagationThroughSharedState">Scenario 1: Exception Propagation through Shared State</a></li>
                 <li><a href="#ImmediateExceptionInBlockingExecutions">Scenario 2: Immediate Exception in Blocking Executions</a></li>
@@ -68,63 +68,63 @@
             <li><a href="#TurnOffExceptionHandling">Turn off Exception Handling</a></li>
           </ul>
         </nav>
-<p>This chapter discusses how to handle exceptions in Taskflow, so you can correctly catch or propagate exceptions within your workloads.</p><section id="UnderstandTheLogicOfExceptionHandlingInTaskflow"><h2><a href="#UnderstandTheLogicOfExceptionHandlingInTaskflow">Understand the Logic of Exception Handling in %Taskflow</a></h2><p>Exception handling in Taskflow follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. The logic can be understood in three distinct scenarios, depending on how the task is executed and how the runtime is expected to report errors.</p><div class="m-graph"><svg style="width: 54.100rem; height: 21.000rem;" viewBox="0.00 0.00 540.51 209.98">
-<g transform="scale(1 1) rotate(0) translate(4 205.98)">
+<p>This chapter discusses how to handle exceptions in Taskflow, so you can correctly catch or propagate exceptions within your workloads.</p><section id="UnderstandTheLogicOfExceptionHandlingInTaskflow"><h2><a href="#UnderstandTheLogicOfExceptionHandlingInTaskflow">Understand the Logic of Exception Handling in Taskflow</a></h2><p>Exception handling in Taskflow follows a simple yet robust design that ensures program robustness without sacrificing much parallel efficiency. The logic can be understood in three distinct scenarios, depending on how the task is executed and how the runtime is expected to report errors.</p><div class="m-graph"><svg style="width: 48.800rem; height: 21.100rem;" viewBox="0.00 0.00 487.60 211.04">
+<g transform="scale(1 1) rotate(0) translate(4 207.04)">
 <title>TaskflowExceptionHandling</title>
 <g class="m-node m-flat">
 <title>ExceptionHandling</title>
-<ellipse cx="288.22" cy="-183.98" rx="98.79" ry="18"/>
-<text text-anchor="middle" x="288.22" y="-181.48" font-family="Helvetica,sans-Serif" font-size="10.00">Exception Handling in Taskflow</text>
+<ellipse cx="258.85" cy="-185.04" rx="90.68" ry="18"/>
+<text text-anchor="middle" x="258.85" y="-181.17" font-family="Helvetica,sans-Serif" font-size="10.00">Exception Handling in Taskflow</text>
 </g>
 <g class="m-node m-flat">
 <title>Scenarios</title>
-<polygon points="288.22,-129.98 164.13,-111.98 288.22,-93.98 412.3,-111.98 288.22,-129.98"/>
-<text text-anchor="middle" x="288.22" y="-109.48" font-family="Helvetica,sans-Serif" font-size="10.00">A task throws an exception</text>
+<polygon points="258.85,-131.04 146.3,-113.04 258.85,-95.04 371.4,-113.04 258.85,-131.04"/>
+<text text-anchor="middle" x="258.85" y="-109.17" font-family="Helvetica,sans-Serif" font-size="10.00">A task throws an exception</text>
 </g>
 <g class="m-edge">
 <title>ExceptionHandling&#45;&gt;Scenarios</title>
-<path d="M288.22,-165.68C288.22,-157.97 288.22,-148.7 288.22,-140.1"/>
-<polygon points="291.72,-140.09 288.22,-130.09 284.72,-140.09 291.72,-140.09"/>
+<path d="M258.85,-166.74C258.85,-159.45 258.85,-150.77 258.85,-142.58"/>
+<polygon points="262.35,-142.66 258.85,-132.66 255.35,-142.66 262.35,-142.66"/>
 </g>
 <g class="m-node m-flat">
 <title>Propagation</title>
-<ellipse cx="91.22" cy="-28.99" rx="91.43" ry="28.98"/>
-<text text-anchor="middle" x="91.22" y="-37.49" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 1:</text>
-<text text-anchor="middle" x="91.22" y="-26.49" font-family="Helvetica,sans-Serif" font-size="10.00"> Exception propagation</text>
-<text text-anchor="middle" x="91.22" y="-15.49" font-family="Helvetica,sans-Serif" font-size="10.00">through Shared State</text>
+<ellipse cx="81.85" cy="-29.52" rx="81.85" ry="29.52"/>
+<text text-anchor="middle" x="81.85" y="-36.9" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 1:</text>
+<text text-anchor="middle" x="81.85" y="-25.65" font-family="Helvetica,sans-Serif" font-size="10.00"> Exception propagation</text>
+<text text-anchor="middle" x="81.85" y="-14.4" font-family="Helvetica,sans-Serif" font-size="10.00">through Shared State</text>
 </g>
 <g class="m-edge">
 <title>Scenarios&#45;&gt;Propagation</title>
-<path d="M257.44,-98.33C230.13,-87.1 189.38,-70.35 155.06,-56.24"/>
-<polygon points="156.15,-52.9 145.57,-52.34 153.49,-59.38 156.15,-52.9"/>
+<path d="M230.8,-99.13C207,-88.16 172.01,-72.05 141.93,-58.19"/>
+<polygon points="143.44,-55.04 132.9,-54.03 140.51,-61.4 143.44,-55.04"/>
 </g>
 <g class="m-node m-flat">
 <title>Immediate</title>
-<ellipse cx="288.22" cy="-28.99" rx="87.86" ry="28.98"/>
-<text text-anchor="middle" x="288.22" y="-37.49" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 2:</text>
-<text text-anchor="middle" x="288.22" y="-26.49" font-family="Helvetica,sans-Serif" font-size="10.00"> Immediate exception</text>
-<text text-anchor="middle" x="288.22" y="-15.49" font-family="Helvetica,sans-Serif" font-size="10.00">in blocking execution</text>
+<ellipse cx="258.85" cy="-29.52" rx="77.6" ry="29.52"/>
+<text text-anchor="middle" x="258.85" y="-36.9" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 2:</text>
+<text text-anchor="middle" x="258.85" y="-25.65" font-family="Helvetica,sans-Serif" font-size="10.00"> Immediate exception</text>
+<text text-anchor="middle" x="258.85" y="-14.4" font-family="Helvetica,sans-Serif" font-size="10.00">in blocking execution</text>
 </g>
 <g class="m-edge">
 <title>Scenarios&#45;&gt;Immediate</title>
-<path d="M288.22,-93.81C288.22,-86.4 288.22,-77.41 288.22,-68.54"/>
-<polygon points="291.72,-68.3 288.22,-58.3 284.72,-68.3 291.72,-68.3"/>
+<path d="M258.85,-94.75C258.85,-87.69 258.85,-79.19 258.85,-70.72"/>
+<polygon points="262.35,-70.85 258.85,-60.85 255.35,-70.85 262.35,-70.85"/>
 </g>
 <g class="m-node m-flat">
 <title>Silent</title>
-<ellipse cx="463.22" cy="-28.99" rx="69.09" ry="28.98"/>
-<text text-anchor="middle" x="463.22" y="-37.49" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 3:</text>
-<text text-anchor="middle" x="463.22" y="-26.49" font-family="Helvetica,sans-Serif" font-size="10.00"> Silent exception</text>
-<text text-anchor="middle" x="463.22" y="-15.49" font-family="Helvetica,sans-Serif" font-size="10.00">suppression</text>
+<ellipse cx="416.85" cy="-29.52" rx="62.76" ry="29.52"/>
+<text text-anchor="middle" x="416.85" y="-36.9" font-family="Helvetica,sans-Serif" font-size="10.00">Scenario 3:</text>
+<text text-anchor="middle" x="416.85" y="-25.65" font-family="Helvetica,sans-Serif" font-size="10.00"> Silent exception</text>
+<text text-anchor="middle" x="416.85" y="-14.4" font-family="Helvetica,sans-Serif" font-size="10.00">suppression</text>
 </g>
 <g class="m-edge">
 <title>Scenarios&#45;&gt;Silent</title>
-<path d="M316.33,-97.97C341.11,-86.5 377.92,-69.47 408.49,-55.32"/>
-<polygon points="410.16,-58.41 417.76,-51.03 407.22,-52.05 410.16,-58.41"/>
+<path d="M284.58,-98.76C306.37,-87.52 338.28,-71.06 365.29,-57.12"/>
+<polygon points="366.75,-60.31 374.03,-52.61 363.54,-54.09 366.75,-60.31"/>
 </g>
 </g>
 </svg>
-</div><p>We start with a brief overview of the three scenarios and then examine different use cases in more detail.</p><section id="ExceptionPropagationThroughSharedState"><h3><a href="#ExceptionPropagationThroughSharedState">Scenario 1: Exception Propagation through Shared State</a></h3><p>When you launch tasks using functions like <a href="classtf_1_1Executor.html#a8d08f0cb79e7b3780087975d13368a96" class="m-doc">tf::<wbr />Executor::<wbr />run</a> or <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, any exception thrown within the task is captured and stored in a shared state associated with the returned <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> or <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>. This exception can later be rethrown when you access the result of the shared state.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
+</div><p>We start with a brief overview of the three scenarios and then examine different use cases in more detail.</p><section id="ExceptionPropagationThroughSharedState"><h3><a href="#ExceptionPropagationThroughSharedState">Scenario 1: Exception Propagation through Shared State</a></h3><p>When you launch tasks using functions like <a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069" class="m-doc">tf::<wbr />Executor::<wbr />run</a> or <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a>, any exception thrown within the task is captured and stored in a shared state associated with the returned <a href="classtf_1_1Future.html" class="m-doc">tf::<wbr />Future</a> or <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>. This exception can later be rethrown when you access the result of the shared state.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Future</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">);</span>
 <span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">();</span><span class="w"> </span>
 <span class="p">}</span>
@@ -155,7 +155,7 @@
 <span class="p">}</span>
 <span class="k">catch</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span></pre><pre class="m-code">~$ exception on A
+<span class="p">}</span></pre><pre class="m-code">~$<span class="w"> </span>exception<span class="w"> </span>on<span class="w"> </span>A
 <span class="c1"># execution of taskflow is cancelled after an execution is thrown</span></pre><p>When multiple tasks throw exceptions simultaneously, the executor will store only one of these exceptions in the shared state. Other exceptions will still be caught but are silently ignored. For example, in the following taskflow, both task <code>B</code> and task <code>C</code> may throw exceptions concurrently. Only one exception, either from task B or task C, will be propagated.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
@@ -202,8 +202,8 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">});</span>
 
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span></pre><p>When an exception is thrown, it will cancel the execution of the parent subflow. All the subsequent tasks that depend on that exception task will not run. The above code example has the following output:</p><pre class="m-code">Task A
-exception thrown during subflow joining: exception on A</pre><p>Uncaught exception will be propagated to the parent level until being explicitly caught. For example, the code below will propagate the exception to the parent of the subflow, which in this case in its taskflow.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">get</span><span class="p">();</span></pre><p>When an exception is thrown, it will cancel the execution of the parent subflow. All the subsequent tasks that depend on that exception task will not run. The above code example has the following output:</p><pre class="m-code">Task<span class="w"> </span>A
+exception<span class="w"> </span>thrown<span class="w"> </span>during<span class="w"> </span>subflow<span class="w"> </span>joining:<span class="w"> </span>exception<span class="w"> </span>on<span class="w"> </span>A</pre><p>Uncaught exception will be propagated to the parent level until being explicitly caught. For example, the code below will propagate the exception to the parent of the subflow, which in this case in its taskflow.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 
 <span class="n">taskflow</span><span class="p">.</span><span class="n">emplace</span><span class="p">([](</span><span class="n">tf</span><span class="o">::</span><span class="n">Subflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">sf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -227,15 +227,15 @@ exception thrown during subflow joining: exception on A</pre><p>Uncaught excepti
 <span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;exception thrown from running the taskflow: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">();</span>
-<span class="p">}</span></pre><pre class="m-code">Task A
-exception thrown from running the taskflow: exception on A</pre></section><section id="CatchAnExceptionFromAnAsyncTask"><h2><a href="#CatchAnExceptionFromAnAsyncTask">Catch an Exception from an Async Task</a></h2><p>Similar to <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a> stores any exception in the shared state referenced by the returned <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> handle.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="p">}</span></pre><pre class="m-code">Task<span class="w"> </span>A
+exception<span class="w"> </span>thrown<span class="w"> </span>from<span class="w"> </span>running<span class="w"> </span>the<span class="w"> </span>taskflow:<span class="w"> </span>exception<span class="w"> </span>on<span class="w"> </span>A</pre></section><section id="CatchAnExceptionFromAnAsyncTask"><h2><a href="#CatchAnExceptionFromAnAsyncTask">Catch an Exception from an Async Task</a></h2><p>Similar to <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a>, <a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7" class="m-doc">tf::<wbr />Executor::<wbr />async</a> stores any exception in the shared state referenced by the returned <a href="http://en.cppreference.com/w/cpp/thread/future.html" class="m-doc-external">std::<wbr />future</a> handle.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;exception&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
 <span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
 <span class="p">}</span>
 <span class="k">catch</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">();</span>
-<span class="p">}</span></pre><p>Running the program will show the exception message on the async task:</p><pre class="m-code">~$ exception</pre><p>On the other hand, since <a href="classtf_1_1Executor.html#a0461cb2c459c9f9473c72af06af9c701" class="m-doc">tf::<wbr />Executor::<wbr />silent_async</a> does not return any future handle, any exception thrown from a silent-async task will be silently caught by the executor and (1) propagated to the its parent task if the parent task exists or (2) ignored if the parent task does not exist.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<span class="p">}</span></pre><p>Running the program will show the exception message on the async task:</p><pre class="m-code">~$<span class="w"> </span>exception</pre><p>On the other hand, since <a href="classtf_1_1Executor.html#a0461cb2c459c9f9473c72af06af9c701" class="m-doc">tf::<wbr />Executor::<wbr />silent_async</a> does not return any future handle, any exception thrown from a silent-async task will be silently caught by the executor and (1) propagated to the its parent task if the parent task exists or (2) ignored if the parent task does not exist.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
 <span class="c1">// exception will be silently ignored</span>
@@ -320,7 +320,7 @@ exception thrown from running the taskflow: exception on A</pre></section><secti
 
 <span class="c1">// exactly one holds an exception as another was propagated to the try-catch block</span>
 <span class="n">assert</span><span class="p">((</span><span class="n">B</span><span class="p">.</span><span class="n">exception_ptr</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="p">(</span><span class="n">C</span><span class="p">.</span><span class="n">exception_ptr</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">));</span></pre></section><section id="TurnOffExceptionHandling"><h2><a href="#TurnOffExceptionHandling">Turn off Exception Handling</a></h2><p>In some applications, exception handling may not be desirable due to performance concerns, coding style preferences, or platform constraints. Taskflow allows you to disable exception handling entirely at compile time. To do this, define the macro <code>TF_DISABLE_EXCEPTION_HANDLING</code> when compiling your Taskflow program:</p><pre class="m-code"><span class="c1"># disable exception handling </span>
-~$ g++ -DTF_DISABLE_EXCEPTION_HANDLING your_taskflow_prog.cpp</pre><p>Disabling exception handling removes all try-catch blocks from the Taskflow runtime, resulting in a leaner binary and potentially faster execution. However, Taskflow will no longer catch or report runtime exceptions.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Disabling exception handling means that any exception thrown during execution will be unchecked, which may cause your program to behave unpredictably. Use this option only if your application does not rely on exception safety.</p></aside></section>
+~$<span class="w"> </span>g++<span class="w"> </span>-DTF_DISABLE_EXCEPTION_HANDLING<span class="w"> </span>your_taskflow_prog.cpp</pre><p>Disabling exception handling removes all try-catch blocks from the Taskflow runtime, resulting in a leaner binary and potentially faster execution. However, Taskflow will no longer catch or report runtime exceptions.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Disabling exception handling means that any exception thrown during execution will be unchecked, which may cause your program to behave unpredictably. Use this option only if your application does not rely on exception safety.</p></aside></section>
       </div>
     </div>
   </div>
@@ -365,7 +365,7 @@ exception thrown from running the taskflow: exception on A</pre></section><secti
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.12.0 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
   <compounddef id="structtf_1_1Timeline" kind="struct" language="C++" prot="private">
     <compoundname>tf::Timeline</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Timeline_1ad2de68d870637ec1fccd98c2c8973c9f" prot="public" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Timeline::uid</definition>
         <argsstring></argsstring>
         <name>uid</name>
+        <qualifiedname>tf::Timeline::uid</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -17,10 +18,11 @@
         <location file="taskflow/core/observer.hpp" line="60" column="10" bodyfile="taskflow/core/observer.hpp" bodystart="60" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" prot="public" static="no" mutable="no">
-        <type><ref refid="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" kindref="member">observer_stamp_t</ref></type>
+        <type><ref refid="namespacetf_1a9c8f07d1c11444ff4dc15c63aa54da8d" kindref="member">observer_stamp_t</ref></type>
         <definition>observer_stamp_t tf::Timeline::origin</definition>
         <argsstring></argsstring>
         <name>origin</name>
+        <qualifiedname>tf::Timeline::origin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -30,10 +32,11 @@
         <location file="taskflow/core/observer.hpp" line="62" column="20" bodyfile="taskflow/core/observer.hpp" bodystart="62" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1Timeline_1a5a942a8ff1ad574d7fc339540be960c4" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt; &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; <ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Segment &gt; &gt; &gt;</type>
         <definition>std::vector&lt;std::vector&lt;std::vector&lt;Segment&gt; &gt; &gt; tf::Timeline::segments</definition>
         <argsstring></argsstring>
         <name>segments</name>
+        <qualifiedname>tf::Timeline::segments</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -42,13 +45,14 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="63" column="15" bodyfile="taskflow/core/observer.hpp" bodystart="63" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Timeline_1a2c5e949150d6ac49dfcb9c0ff51ba519" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Timeline::Timeline</definition>
         <argsstring>()=default</argsstring>
         <name>Timeline</name>
+        <qualifiedname>tf::Timeline::Timeline</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -62,6 +66,7 @@
         <definition>tf::Timeline::Timeline</definition>
         <argsstring>(const Timeline &amp;rhs)=delete</argsstring>
         <name>Timeline</name>
+        <qualifiedname>tf::Timeline::Timeline</qualifiedname>
         <param>
           <type>const Timeline &amp;</type>
           <declname>rhs</declname>
@@ -79,6 +84,7 @@
         <definition>tf::Timeline::Timeline</definition>
         <argsstring>(Timeline &amp;&amp;rhs)=default</argsstring>
         <name>Timeline</name>
+        <qualifiedname>tf::Timeline::Timeline</qualifiedname>
         <param>
           <type>Timeline &amp;&amp;</type>
           <declname>rhs</declname>
@@ -91,11 +97,12 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="68" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1Timeline_1a947baa8607959e2204d7df20a850df86" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1Timeline_1a8fa079b10068fce3e0076cacaca51747" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>Timeline &amp;</type>
-        <definition>Timeline&amp; tf::Timeline::operator=</definition>
+        <definition>Timeline &amp; tf::Timeline::operator=</definition>
         <argsstring>(const Timeline &amp;rhs)=delete</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::Timeline::operator=</qualifiedname>
         <param>
           <type>const Timeline &amp;</type>
           <declname>rhs</declname>
@@ -108,11 +115,12 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="70" column="12"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1Timeline_1a6269eca63f402e4177b0b166be3b44de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>Timeline &amp;</type>
-        <definition>Timeline&amp; tf::Timeline::operator=</definition>
+        <definition>Timeline &amp; tf::Timeline::operator=</definition>
         <argsstring>(Timeline &amp;&amp;rhs)=default</argsstring>
         <name>operator=</name>
+        <qualifiedname>tf::Timeline::operator=</qualifiedname>
         <param>
           <type>Timeline &amp;&amp;</type>
           <declname>rhs</declname>
@@ -135,6 +143,7 @@
         <definition>auto tf::Timeline::save</definition>
         <argsstring>(Archiver &amp;ar) const</argsstring>
         <name>save</name>
+        <qualifiedname>tf::Timeline::save</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -157,6 +166,7 @@
         <definition>auto tf::Timeline::load</definition>
         <argsstring>(Archiver &amp;ar)</argsstring>
         <name>load</name>
+        <qualifiedname>tf::Timeline::load</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -169,33 +179,33 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="79" column="8" bodyfile="taskflow/core/observer.hpp" bodystart="79" bodyend="81"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
+      </node>
+      <node id="3">
+        <label>std::vector&lt; std::vector&lt; std::vector&lt; Segment &gt; &gt; &gt;</label>
+      </node>
       <node id="1">
         <label>tf::Timeline</label>
         <childnode refid="2" relation="usage">
-          <edgelabel>segments</edgelabel>
-        </childnode>
-        <childnode refid="3" relation="usage">
           <edgelabel>origin</edgelabel>
         </childnode>
-      </node>
-      <node id="3">
-        <label>std::chrono::time_point&lt; std::chrono::steady_clock &gt;</label>
-      </node>
-      <node id="2">
-        <label>std::vector&lt; std::vector&lt; std::vector&lt; Segment &gt; &gt; &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>segments</edgelabel>
+        </childnode>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/observer.hpp" line="58" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="58" bodyend="82"/>
     <listofallmembers>
       <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>load</name></member>
-      <member refid="structtf_1_1Timeline_1a947baa8607959e2204d7df20a850df86" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
-      <member refid="structtf_1_1Timeline_1a9f315578cf84dd0ddfa4bff43762eebb" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
+      <member refid="structtf_1_1Timeline_1a8fa079b10068fce3e0076cacaca51747" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
+      <member refid="structtf_1_1Timeline_1a6269eca63f402e4177b0b166be3b44de" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>operator=</name></member>
       <member refid="structtf_1_1Timeline_1ad38c8a527bc603571c53cfce08ccbab7" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>origin</name></member>
       <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>save</name></member>
       <member refid="structtf_1_1Timeline_1a5a942a8ff1ad574d7fc339540be960c4" prot="public" virt="non-virtual"><scope>tf::Timeline</scope><name>segments</name></member>
