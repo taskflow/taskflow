@@ -9,16 +9,17 @@
     <member refid="classtf_1_1AnchorGuard_1a701065f4f4581e0ce52338b66630b168" kind="function"><name>AnchorGuard</name></member>
     <member refid="classtf_1_1AnchorGuard_1a4b708bd22dcd03473f2dd02afc3a6398" kind="function"><name>~AnchorGuard</name></member>
   </compound>
-  <compound refid="structtf_1_1UnboundedTaskQueue_1_1Array" kind="struct"><name>tf::UnboundedTaskQueue::Array</name>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a4aa0afbaf4c1bc0755b6da3ea6df3914" kind="variable"><name>C</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a0b1b87427355534a661de7061042dc20" kind="variable"><name>M</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a1e6b66b7175c0efadeaf586b6d8ddf1e" kind="variable"><name>S</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a6d928f82f712a68167a9bcc0b9a92302" kind="function"><name>Array</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a972575b02a5806c6cf1d521282cdceec" kind="function"><name>~Array</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1abdba46e97c74434105d40b9d5d239049" kind="function"><name>capacity</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a4d703ed34e1b6ab4a23c4ccfa04028f7" kind="function"><name>push</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a72665ccf0d39de3dd5c75d856a5ea68a" kind="function"><name>pop</name></member>
-    <member refid="structtf_1_1UnboundedTaskQueue_1_1Array_1a5effb524e2f639b1f3c2d0ca0a10bf0b" kind="function"><name>resize</name></member>
+  <compound refid="structtf_1_1UnboundedWSQ_1_1Array" kind="struct"><name>tf::UnboundedWSQ::Array</name>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1ae4110b04c80289a4b56b555cb2ee630c" kind="variable"><name>C</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a900cd01a22ba72e30104a17841839e8f" kind="variable"><name>M</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1afdb29ed3cb4bb3bf5bc9be4598fd452c" kind="variable"><name>S</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a47bfa7b8e8fdb6c67c12fce7576ef98f" kind="function"><name>Array</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a6755175063d3b291322a8a9effd191de" kind="function"><name>~Array</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a817da660f8a5049a0dc70900c9584e57" kind="function"><name>capacity</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a78e9a3129e5cfb9ea581d5b8fe63c87e" kind="function"><name>push</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a8c052a0aae02094601f4a8533907a36c" kind="function"><name>pop</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1aa3c27a6ce7db155a5dcc6b2c8885fdb9" kind="function"><name>resize</name></member>
+    <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a11a5c36247670ae123f6f09ae1162eb4" kind="function"><name>resize</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1Async" kind="struct"><name>tf::Node::Async</name>
     <member refid="structtf_1_1Node_1_1Async_1ac83ba983946540c55d31c120e0504734" kind="variable"><name>work</name></member>
@@ -45,22 +46,28 @@
     <member refid="classtf_1_1AsyncTask_1ae2eefe6ee6de4f97dd0b247b053addb1" kind="function"><name>_incref</name></member>
     <member refid="classtf_1_1AsyncTask_1aaee1f8ef1109eb90ad20bac2cba4eaca" kind="function"><name>_decref</name></member>
   </compound>
-  <compound refid="classtf_1_1BoundedTaskQueue" kind="class"><name>tf::BoundedTaskQueue</name>
-    <member refid="classtf_1_1BoundedTaskQueue_1a97122e789b0d024d4e1f98f46665c0d7" kind="variable"><name>BufferSize</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a98cf29c5be602b8951b9b10238c44900" kind="variable"><name>BufferMask</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a51e4f79ae1957cde7b1208b2119246c6" kind="variable"><name>_top</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a4f6a86178138cff2f95243c2cc6b01e4" kind="variable"><name>_bottom</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1ae1871b739c04078d56e2031c6cda8f59" kind="variable"><name>_buffer</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a4160bb42036d75bc60f95cc189792a3d" kind="function"><name>BoundedTaskQueue</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a5811b32810d0e70a1572a8ef594eba7e" kind="function"><name>~BoundedTaskQueue</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1ae64ab051e9ce597482cb602ce967d459" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a76620d4f4a85eae9e4626b9d83c61cb3" kind="function"><name>size</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1ae3c7315f59e60f806225ee9cf8d55229" kind="function"><name>capacity</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1af52edec086b5e1a9c090eff6a6a76dae" kind="function"><name>try_push</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a9b0c93adcdeb0a876869027a211fdf62" kind="function"><name>push</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a2b9e1d2502b489656b89cb505e95e71b" kind="function"><name>pop</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1ad2b4f8d262b0093ce08dea92c00fae1b" kind="function"><name>steal</name></member>
-    <member refid="classtf_1_1BoundedTaskQueue_1a8dfccb6523bc07fe9955ddda5136836a" kind="function"><name>steal_with_hint</name></member>
+  <compound refid="classtf_1_1BoundedWSQ" kind="class"><name>tf::BoundedWSQ</name>
+    <member refid="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" kind="typedef"><name>value_type</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a63964d472c81520b2f3f44fae90f324f" kind="variable"><name>BufferSize</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1af7641cea830576eeb6d47c8ec6141684" kind="variable"><name>BufferMask</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a1f6a90d825290665b5881bad2aa7fa69" kind="variable"><name>_top</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a3800303c7e1eba9ca83890c3efb8c057" kind="variable"><name>_bottom</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1ae078d843d5c720677cbde52f83e43c62" kind="variable"><name>_buffer</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a79b19fbd242f08042854f99f812823e8" kind="function"><name>BoundedWSQ</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a1ba45c443acb96cf6e8cd2496cb38b65" kind="function"><name>~BoundedWSQ</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1af964a4e19b8f9791086d97dd805dfdcf" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a95ca63c53c35d04f3959923dbc3e1576" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a797e7244fd4fd9b8c463b72dd80ab7c7" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a7d7be330e9c1c0e5a2051b7e190bf4c2" kind="function"><name>try_push</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a9713956a1ca117bcde0813205f2669e5" kind="function"><name>try_bulk_push</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a0f3fc5d2f38ca7df06b55afa391f26ce" kind="function"><name>pop</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a57e08d6415b5b586ee32875c91057f35" kind="function"><name>steal</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a87e13fb05bf65caa30aa677f8dd84386" kind="function"><name>steal_with_feedback</name></member>
+    <member refid="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" kind="function"><name>empty_value</name></member>
+  </compound>
+  <compound refid="structtf_1_1Executor_1_1Buffer" kind="struct"><name>tf::Executor::Buffer</name>
+    <member refid="structtf_1_1Executor_1_1Buffer_1aa92fb42cc0fc2e8d38bf18fbf9ff2619" kind="variable"><name>mutex</name></member>
+    <member refid="structtf_1_1Executor_1_1Buffer_1adaafc845fa9d45f65b6e6727b0426e99" kind="variable"><name>queue</name></member>
   </compound>
   <compound refid="classtf_1_1CachelineAligned" kind="class"><name>tf::CachelineAligned</name>
     <member refid="classtf_1_1CachelineAligned_1a6357bbb8e1565d9662f71d77d54000a9" kind="variable"><name>data</name></member>
@@ -372,11 +379,11 @@
     <member refid="classtf_1_1Executor_1ab36f7f886f9a6a9ad67ce919ca39d688" kind="variable"><name>_notifier</name></member>
     <member refid="classtf_1_1Executor_1a7bd9227be27ebae3a10d5c317a6ef5de" kind="variable"><name>_num_topologies</name></member>
     <member refid="classtf_1_1Executor_1a63090414fbad15f5934838d21aa0a28f" kind="variable"><name>_taskflows</name></member>
-    <member refid="classtf_1_1Executor_1a193faa77f840c8ab653cf063fba6a6f9" kind="variable"><name>_buffers</name></member>
-    <member refid="classtf_1_1Executor_1a08eacde3ef22105c10747dda25bfdb42" kind="variable"><name>_worker_interface</name></member>
+    <member refid="classtf_1_1Executor_1a26914ae5df64296dea8a680a6eafa9b7" kind="variable"><name>_buffers</name></member>
+    <member refid="classtf_1_1Executor_1a3c94e706f455f81baaf9d934df742075" kind="variable"><name>_worker_if</name></member>
     <member refid="classtf_1_1Executor_1ad7f083460df992b1186f83ac99481a57" kind="variable"><name>_observers</name></member>
     <member refid="classtf_1_1Executor_1a7aeb0de870c6e28599e9f80486dae736" kind="variable"><name>_t2w</name></member>
-    <member refid="classtf_1_1Executor_1a8cdd8e086d667b0cc95a9b2d826e266d" kind="function"><name>Executor</name></member>
+    <member refid="classtf_1_1Executor_1a03be4eb6f24acc5ee8a79e86f7e90084" kind="function"><name>Executor</name></member>
     <member refid="classtf_1_1Executor_1a70929e271983b13c069e78eba30dc602" kind="function"><name>~Executor</name></member>
     <member refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kind="function"><name>run</name></member>
     <member refid="classtf_1_1Executor_1a4b97752c00b788918cb8396fbb1b3ad0" kind="function"><name>run</name></member>
@@ -423,6 +430,7 @@
     <member refid="classtf_1_1Executor_1ac5827e67b2b60c16259b45e14c6e97e0" kind="function"><name>_explore_task</name></member>
     <member refid="classtf_1_1Executor_1ab8d98f12a62d10ad6cf1a4011a4d0034" kind="function"><name>_schedule</name></member>
     <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a43aed859a9932ffc3db7b2b5857dae70" kind="function"><name>_spill</name></member>
     <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" kind="function"><name>_set_up_topology</name></member>
     <member refid="classtf_1_1Executor_1a76be884d38d1bb8f9b8bba488c901b4b" kind="function"><name>_tear_down_topology</name></member>
     <member refid="classtf_1_1Executor_1a79f99f43c3c92b435b07aa8dad58a705" kind="function"><name>_tear_down_async</name></member>
@@ -452,8 +460,9 @@
     <member refid="classtf_1_1Executor_1aeaa72f55f54c0f13202c3b5c0900ba6e" kind="function"><name>_set_up_graph</name></member>
     <member refid="classtf_1_1Executor_1a43cdd198427b7be2827450f6ce8343af" kind="function"><name>_corun_until</name></member>
     <member refid="classtf_1_1Executor_1aec313f2f099ee2fd6cb85a164457f019" kind="function"><name>_corun_graph</name></member>
-    <member refid="classtf_1_1Executor_1add98fb65f206923eb43a8768e0c717c1" kind="function"><name>_schedule</name></member>
-    <member refid="classtf_1_1Executor_1a604b3442bfedada0f5713c6b174a1c90" kind="function"><name>_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a010a842b8713c6b8e36ae87702130b4b" kind="function"><name>_bulk_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a3fd7f072cb880edc13dd1cb0b8c98c6e" kind="function"><name>_bulk_schedule</name></member>
+    <member refid="classtf_1_1Executor_1a050fd2234fba91c8babb4488dfc863c4" kind="function"><name>_bulk_spill</name></member>
     <member refid="classtf_1_1Executor_1ae3d3436d6e39c5e84d32eb0b7dbeb9ca" kind="function"><name>_schedule_graph_with_parent</name></member>
     <member refid="classtf_1_1Executor_1ac568bd686aba3bedabe63b42c43d94a8" kind="function"><name>_async</name></member>
     <member refid="classtf_1_1Executor_1aa3b32388be14b03249de29bae34b7b52" kind="function"><name>_silent_async</name></member>
@@ -637,6 +646,16 @@
     <member refid="classtf_1_1Node_1a902c0f53df8190373f1424c0f5b13b05" kind="function"><name>_remove_successors</name></member>
     <member refid="classtf_1_1Node_1ae0d5b34ff346a62df2a33b2aa1702314" kind="function"><name>_remove_predecessors</name></member>
     <member refid="classtf_1_1Node_1a9d6261773a82462eb044bd1766e75465" kind="function"><name>_root_join_counter</name></member>
+  </compound>
+  <compound refid="classtf_1_1NodeIteratorAdapter" kind="class"><name>tf::NodeIteratorAdapter</name>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a1a84905ec59aceb49f093420d1d6e12b" kind="variable"><name>_it</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a50688f3c81cadece99bd217a539e2e68" kind="function"><name>NodeIteratorAdapter</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a45ca01fe6c4186aa68a2dff2461a9d7d" kind="function"><name>operator*</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a88a0cd36284a0244c9cc4edde7127ca8" kind="function"><name>operator[]</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1affffe9067419acfb462c7eb45693d2dc" kind="function"><name>operator+=</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a940b2a67c17360495eee8e0106b08e02" kind="function"><name>operator-=</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1a7f354423dc6f2f58fb5389fb540b4344" kind="friend"><name>operator+</name></member>
+    <member refid="classtf_1_1NodeIteratorAdapter_1ad7e25e7282473fb0cad67a640acf2124" kind="friend"><name>operator-</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1NonpreemptiveRuntime" kind="struct"><name>tf::Node::NonpreemptiveRuntime</name>
     <member refid="structtf_1_1Node_1_1NonpreemptiveRuntime_1ac9f3e488c5c2ac8ada182f4bd5f960de" kind="variable"><name>work</name></member>
@@ -1163,21 +1182,25 @@
     <member refid="structtf_1_1Timeline_1a435fff911fa14d75c7000f1a908cee57" kind="function"><name>save</name></member>
     <member refid="structtf_1_1Timeline_1af08d956eca1550dcbe161eb53a11fe46" kind="function"><name>load</name></member>
   </compound>
-  <compound refid="classtf_1_1UnboundedTaskQueue" kind="class"><name>tf::UnboundedTaskQueue</name>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a7d91028a58dff5e905d58aeacdbe17ef" kind="variable"><name>_top</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1ac5998bba9d23eafbf9d98efed82af5e0" kind="variable"><name>_bottom</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a0d29082bff41b8c94e9de565d3c4c970" kind="variable"><name>_array</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a35bad5d9923949883d9c1a22aa89690f" kind="variable"><name>_garbage</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1accc811a0a5d692a3cda366378367d7b6" kind="function"><name>UnboundedTaskQueue</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a72babe096da4ffc72a68b9ff76134e95" kind="function"><name>~UnboundedTaskQueue</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a625c75d38982b8eb5d6e6d6f2aa49dec" kind="function"><name>empty</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1aa701e0781b063a889ee77f71d3b68d3d" kind="function"><name>size</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a54eb8fe122dd783c486c683e7c50c5e5" kind="function"><name>capacity</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a3d077fbe105a2712c1b22696edfbf061" kind="function"><name>push</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a169eee6096445fe32ae0e34cae629c38" kind="function"><name>pop</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a038400d9c48a421d3e27379cf319e2ff" kind="function"><name>steal</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a1e73bc73447fa1d60b0957348c987d38" kind="function"><name>steal_with_hint</name></member>
-    <member refid="classtf_1_1UnboundedTaskQueue_1a7925cbfb4473f5bd4b2dcf52da4985f7" kind="function"><name>resize_array</name></member>
+  <compound refid="classtf_1_1UnboundedWSQ" kind="class"><name>tf::UnboundedWSQ</name>
+    <member refid="classtf_1_1UnboundedWSQ_1a3c9faf5be2fe76fa9ce4d08091002a8a" kind="typedef"><name>value_type</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1aa33a124ca353b8b30b1950cbfd7b53f4" kind="variable"><name>_top</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a683f0ef756ab4c2ed0ad9401e9f2cb4e" kind="variable"><name>_bottom</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a4dba7a29481d772a46dc4b0afee7257c" kind="variable"><name>_array</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1addf03d6cf3e66ee348655f4d626a6f7e" kind="variable"><name>_garbage</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a1b1c03ee3602cb76c94e7840c4272498" kind="function"><name>UnboundedWSQ</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1ac1986b353f71887c197f65dc8eab10db" kind="function"><name>~UnboundedWSQ</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a005abeb0ab8c65d4c98f7eafec46bd9e" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a4b2e37db67ba4b0017d85f10bf43153d" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1aa3d26c3c856d04f11ee242b90d71ea14" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a2aaa261d52e680dcf00af7514868739f" kind="function"><name>push</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a85512e7baa65c368e757128e5c1a6e82" kind="function"><name>bulk_push</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a02e2447359cc9d84f59028b236e3a0e7" kind="function"><name>pop</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a0b91802df36d932ee43b10aedc3abebc" kind="function"><name>steal</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1aa48bbb819409d53df6ead0183add73cf" kind="function"><name>steal_with_feedback</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kind="function"><name>empty_value</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a2638a4e2f830c79b35dad5e860cdcdc2" kind="function"><name>_resize_array</name></member>
+    <member refid="classtf_1_1UnboundedWSQ_1a123d4f33cac5ac2a98b6088d089f390b" kind="function"><name>_resize_array</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1187,10 +1210,9 @@
     <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" kind="variable"><name>_id</name></member>
     <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" kind="variable"><name>_vtm</name></member>
     <member refid="classtf_1_1Worker_1a0884258c54f630a3b31e4d1e208852bb" kind="variable"><name>_executor</name></member>
-    <member refid="classtf_1_1Worker_1a559e98c3b61a201903d70952e39ab14f" kind="variable"><name>_waiter</name></member>
     <member refid="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" kind="variable"><name>_thread</name></member>
     <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" kind="variable"><name>_rdgen</name></member>
-    <member refid="classtf_1_1Worker_1a582ddc7de274ecd0988af3dfb5d0f5bf" kind="variable"><name>_wsq</name></member>
+    <member refid="classtf_1_1Worker_1af5f427bb7d5eeef718bcbece0d961547" kind="variable"><name>_wsq</name></member>
     <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kind="function"><name>id</name></member>
     <member refid="classtf_1_1Worker_1a5e1ec48fd2295d260e8f335ff22b95ae" kind="function"><name>queue_size</name></member>
     <member refid="classtf_1_1Worker_1a0c0505b0ce5b464d4458b5278265429a" kind="function"><name>queue_capacity</name></member>
@@ -1222,8 +1244,6 @@
     <member refid="classtf_1_1WorkerView_1a4b39c214f3cd23c241faa56f4c94042f" kind="function"><name>WorkerView</name></member>
   </compound>
   <compound refid="namespacestd" kind="namespace"><name>std</name>
-    <member refid="os_8hpp_1ae2bb4333c8a8892536b30304bb8af15d" kind="variable"><name>hardware_constructive_interference_size</name></member>
-    <member refid="os_8hpp_1adaaa915a388c2816201447c2a7bfefdb" kind="variable"><name>hardware_destructive_interference_size</name></member>
     <member refid="cpp/atomic/atomic_fetch_sub_1" kind="function"><name>atomic_fetch_and_explicit</name></member>
     <member refid="cpp/atomic/atomic_fetch_xor_1" kind="function"><name>atomic_fetch_xor_explicit</name></member>
     <member refid="cpp/error/set_unexpected_1" kind="function"><name>set_unexpected</name></member>
@@ -2068,11 +2088,11 @@
     <member refid="taskflow_8hpp_1ac79e1d6e02bafb712ca6b8580fc35d0d" kind="define"><name>TF_MINOR_VERSION</name></member>
     <member refid="taskflow_8hpp_1af5d0ce402f403151eb848aceacfe28ec" kind="define"><name>TF_PATCH_VERSION</name></member>
   </compound>
-  <compound refid="tsq_8hpp" kind="file"><name>tsq.hpp</name>
-    <member refid="tsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" kind="define"><name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
-    <member refid="tsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" kind="define"><name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
-  </compound>
   <compound refid="worker_8hpp" kind="file"><name>worker.hpp</name>
+  </compound>
+  <compound refid="wsq_8hpp" kind="file"><name>wsq.hpp</name>
+    <member refid="wsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" kind="define"><name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
+    <member refid="wsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" kind="define"><name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name></member>
   </compound>
   <compound refid="for__each_8hpp" kind="file"><name>for_each.hpp</name>
   </compound>

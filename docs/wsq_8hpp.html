@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>taskflow/core/tsq.hpp file | Taskflow QuickStart</title>
+  <title>taskflow/core/wsq.hpp file | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -46,9 +46,9 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          <span class="m-breadcrumb"><a href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a>/</span><span class="m-breadcrumb"><a href="dir_220cd4d9b8cb38c840b455d5d75c25bb.html">core</a>/</span>tsq.hpp <span class="m-thin">file</span>
+          <span class="m-breadcrumb"><a href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a>/</span><span class="m-breadcrumb"><a href="dir_220cd4d9b8cb38c840b455d5d75c25bb.html">core</a>/</span>wsq.hpp <span class="m-thin">file</span>
         </h1>
-        <p>task queue include file</p>
+        <p>work-stealing queue (wsq) include file</p>
         <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -74,12 +74,12 @@
           <dl class="m-doc">
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
-              class <a href="classtf_1_1UnboundedTaskQueue.html" class="m-doc">tf::UnboundedTaskQueue</a>
+              class <a href="classtf_1_1UnboundedWSQ.html" class="m-doc">tf::UnboundedWSQ</a>
             </dt>
             <dd>class to create a lock-free unbounded work-stealing queue</dd>
             <dt>
-              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="tsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
-              class <a href="classtf_1_1BoundedTaskQueue.html" class="m-doc">tf::BoundedTaskQueue</a>
+              <div class="m-doc-template">template&lt;typename T, size_t LogSize = <a href="wsq_8hpp.html#a603f6f29f0f179ee85ecde7d5311a76e" class="m-doc">TF_<wbr />DEFAULT_<wbr />BOUNDED_<wbr />TASK_<wbr />QUEUE_<wbr />LOG_<wbr />SIZE</a>&gt;</div>
+              class <a href="classtf_1_1BoundedWSQ.html" class="m-doc">tf::BoundedWSQ</a>
             </dt>
             <dd>class to create a lock-free bounded work-stealing queue</dd>
           </dl>

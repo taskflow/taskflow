@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1BoundedWSQ" kind="class" language="C++" prot="public">
+    <compoundname>tf::BoundedWSQ</compoundname>
+    <includes refid="wsq_8hpp" local="no">taskflow/core/wsq.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+      <param>
+        <type>size_t</type>
+        <declname>LogSize</declname>
+        <defname>LogSize</defname>
+        <defval><ref refid="wsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" kindref="member">TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</ref></defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" prot="public" static="no">
+        <type>std::conditional_t&lt; std::is_pointer_v&lt; T &gt;, T, std::optional&lt; T &gt; &gt;</type>
+        <definition>using tf::BoundedWSQ&lt; T, LogSize &gt;::value_type =  std::conditional_t&lt;std::is_pointer_v&lt;T&gt;, T, std::optional&lt;T&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <briefdescription>
+<para>the return type of queue operations </para>
+        </briefdescription>
+        <detaileddescription>
+<para><computeroutput>value_type</computeroutput> represents the type returned by <computeroutput>pop</computeroutput> and <computeroutput>steal</computeroutput> operations. For pointer element types <computeroutput>T</computeroutput>, it is <computeroutput>T</computeroutput> itself and uses <computeroutput>nullptr</computeroutput> to indicate an empty result. For non-pointer types, it is <computeroutput>std::optional&lt;T&gt;</computeroutput>, where <computeroutput>std::nullopt</computeroutput> denotes the absence of a value.</para>
+<para>This design avoids the overhead of <computeroutput>std::optional</computeroutput> for pointer types while providing a uniform empty-result semantics. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="488" column="3" bodyfile="taskflow/core/wsq.hpp" bodystart="488" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classtf_1_1BoundedWSQ_1a63964d472c81520b2f3f44fae90f324f" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static size_t</type>
+        <definition>constexpr static size_t tf::BoundedWSQ&lt; T, LogSize &gt;::BufferSize</definition>
+        <argsstring></argsstring>
+        <name>BufferSize</name>
+        <initializer>= size_t{1} &lt;&lt; LogSize</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="466" column="27" bodyfile="taskflow/core/wsq.hpp" bodystart="466" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedWSQ_1af7641cea830576eeb6d47c8ec6141684" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr static size_t</type>
+        <definition>constexpr static size_t tf::BoundedWSQ&lt; T, LogSize &gt;::BufferMask</definition>
+        <argsstring></argsstring>
+        <name>BufferMask</name>
+        <initializer>= (BufferSize - 1)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="467" column="27" bodyfile="taskflow/core/wsq.hpp" bodystart="467" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1BoundedWSQ_1a1f6a90d825290665b5881bad2aa7fa69" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <definition>std::atomic&lt;int64_t&gt; tf::BoundedWSQ&lt; T, LogSize &gt;::_top</definition>
+        <argsstring></argsstring>
+        <name>_top</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="471" column="23" bodyfile="taskflow/core/wsq.hpp" bodystart="471" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedWSQ_1a3800303c7e1eba9ca83890c3efb8c057" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; int64_t &gt;</type>
+        <definition>std::atomic&lt;int64_t&gt; tf::BoundedWSQ&lt; T, LogSize &gt;::_bottom</definition>
+        <argsstring></argsstring>
+        <name>_bottom</name>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="472" column="23" bodyfile="taskflow/core/wsq.hpp" bodystart="472" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1BoundedWSQ_1ae078d843d5c720677cbde52f83e43c62" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt;</type>
+        <definition>std::atomic&lt;T&gt; tf::BoundedWSQ&lt; T, LogSize &gt;::_buffer[BufferSize]</definition>
+        <argsstring>[BufferSize]</argsstring>
+        <name>_buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="473" column="23" bodyfile="taskflow/core/wsq.hpp" bodystart="473" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a79b19fbd242f08042854f99f812823e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::BoundedWSQ&lt; T, LogSize &gt;::BoundedWSQ</definition>
+        <argsstring>()=default</argsstring>
+        <name>BoundedWSQ</name>
+        <briefdescription>
+<para>constructs the queue with a given capacity </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="493" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a1ba45c443acb96cf6e8cd2496cb38b65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::BoundedWSQ&lt; T, LogSize &gt;::~BoundedWSQ</definition>
+        <argsstring>()=default</argsstring>
+        <name>~BoundedWSQ</name>
+        <briefdescription>
+<para>destructs the queue </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="498" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1af964a4e19b8f9791086d97dd805dfdcf" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::BoundedWSQ&lt; T, LogSize &gt;::empty</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>empty</name>
+        <briefdescription>
+<para>queries if the queue is empty at the time of this call </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="503" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="598" bodyend="602"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a95ca63c53c35d04f3959923dbc3e1576" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t tf::BoundedWSQ&lt; T, LogSize &gt;::size</definition>
+        <argsstring>() const noexcept</argsstring>
+        <name>size</name>
+        <briefdescription>
+<para>queries the number of items at the time of this call </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="508" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="606" bodyend="610"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a797e7244fd4fd9b8c463b72dd80ab7c7" prot="public" static="no" constexpr="yes" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>constexpr size_t</type>
+        <definition>constexpr size_t tf::BoundedWSQ&lt; T, LogSize &gt;::capacity</definition>
+        <argsstring>() const</argsstring>
+        <name>capacity</name>
+        <briefdescription>
+<para>queries the capacity of the queue </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="513" column="20" bodyfile="taskflow/core/wsq.hpp" bodystart="747" bodyend="749"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a7d7be330e9c1c0e5a2051b7e190bf4c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename O</type>
+          </param>
+        </templateparamlist>
+        <type>bool</type>
+        <definition>bool tf::BoundedWSQ&lt; T, LogSize &gt;::try_push</definition>
+        <argsstring>(O &amp;&amp;item)</argsstring>
+        <name>try_push</name>
+        <param>
+          <type>O &amp;&amp;</type>
+          <declname>item</declname>
+        </param>
+        <briefdescription>
+<para>tries to insert an item to the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>O</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>item</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the item to perfect-forward to the queue </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><computeroutput>true</computeroutput> if the insertion succeed or <computeroutput>false</computeroutput> (queue is full)</para>
+</simplesect>
+This method attempts to push one item into the queue. If the operation succeed, it returns <computeroutput>true</computeroutput> or <computeroutput>false</computeroutput> otherwise. Only the owner thread can insert an item to the queue. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="527" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="615" bodyend="633"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a9713956a1ca117bcde0813205f2669e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename I</type>
+          </param>
+        </templateparamlist>
+        <type>size_t</type>
+        <definition>size_t tf::BoundedWSQ&lt; T, LogSize &gt;::try_bulk_push</definition>
+        <argsstring>(I first, size_t N)</argsstring>
+        <name>try_bulk_push</name>
+        <param>
+          <type>I</type>
+          <declname>first</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>N</declname>
+        </param>
+        <briefdescription>
+<para>tries to insert a batch of items into the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>I</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>input iterator type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>first</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>iterator to the first item in the batch </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>N</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of items to insert beginning at <computeroutput>first</computeroutput> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>the number of items successfully inserted</para>
+</simplesect>
+This method attempts to push up to <computeroutput>N</computeroutput> items from the range <computeroutput>[first, first + N)</computeroutput> into the queue. Insertion stops early if the queue becomes full. Only the owner thread can insert items into the queue. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="544" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="638" bodyend="659"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a0f3fc5d2f38ca7df06b55afa391f26ce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" kindref="member">value_type</ref></type>
+        <definition>BoundedWSQ&lt; T, LogSize &gt;::value_type tf::BoundedWSQ&lt; T, LogSize &gt;::pop</definition>
+        <argsstring>()</argsstring>
+        <name>pop</name>
+        <briefdescription>
+<para>pops out an item from the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Only the owner thread can pop out an item from the queue. The return can be an <ref refid="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" kindref="member">empty_value()</ref> if this operation failed (empty queue). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="552" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="664" bodyend="692"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a57e08d6415b5b586ee32875c91057f35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" kindref="member">value_type</ref></type>
+        <definition>BoundedWSQ&lt; T, LogSize &gt;::value_type tf::BoundedWSQ&lt; T, LogSize &gt;::steal</definition>
+        <argsstring>()</argsstring>
+        <name>steal</name>
+        <briefdescription>
+<para>steals an item from the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Any threads can try to steal an item from the queue. The return can be an <ref refid="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" kindref="member">empty_value()</ref> if this operation failed. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="560" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="697" bodyend="716"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a87e13fb05bf65caa30aa677f8dd84386" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" kindref="member">value_type</ref></type>
+        <definition>BoundedWSQ&lt; T, LogSize &gt;::value_type tf::BoundedWSQ&lt; T, LogSize &gt;::steal_with_feedback</definition>
+        <argsstring>(size_t &amp;num_empty_steals)</argsstring>
+        <name>steal_with_feedback</name>
+        <param>
+          <type>size_t &amp;</type>
+          <declname>num_empty_steals</declname>
+        </param>
+        <briefdescription>
+<para>attempts to steal a task with feedback on the emptiness of the queue </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>num_empty_steals</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>a reference to a counter tracking consecutive empty steal attempts</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <computeroutput>num_empty_steals</computeroutput> is incremented; otherwise, <computeroutput>num_empty_steals</computeroutput> is reset to zero. The return can be an <ref refid="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" kindref="member">empty_value()</ref> if this operation failed. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="573" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="721" bodyend="743"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" prot="public" static="yes" constexpr="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>constexpr auto</type>
+        <definition>static constexpr auto tf::BoundedWSQ&lt; T, LogSize &gt;::empty_value</definition>
+        <argsstring>()</argsstring>
+        <name>empty_value</name>
+        <briefdescription>
+<para>returns the empty sentinel value for the queue element type </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function provides a type-appropriate empty value used to indicate that a pop or steal operation failed. For pointer types, the empty value is <computeroutput>nullptr</computeroutput> of type <computeroutput>T</computeroutput>; for non-pointer types, it is <computeroutput>std::nullopt</computeroutput> of type <computeroutput>std::optional&lt;T&gt;</computeroutput>.</para>
+<para>The function is implemented as a <computeroutput>constexpr</computeroutput> helper to avoid additional storage, runtime overhead, or code duplication across queue operations.</para>
+<para><simplesect kind="return"><para>an empty <computeroutput>value_type</computeroutput> representing the absence of an element. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/wsq.hpp" line="587" column="25" bodyfile="taskflow/core/wsq.hpp" bodystart="587" bodyend="593"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>class to create a lock-free bounded work-stealing queue </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>data type </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>LogSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the base-2 logarithm of the queue size</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>.</para>
+<para>The queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</para>
+<para>The queue has a fixed capacity determined at construction time and does not grow dynamically. When the queue is full, push operations may fail or require external handling, depending on the usage policy. </para>
+    </detaileddescription>
+    <location file="taskflow/core/wsq.hpp" line="464" column="1" bodyfile="taskflow/core/wsq.hpp" bodystart="464" bodyend="594"/>
+    <listofallmembers>
+      <member refid="classtf_1_1BoundedWSQ_1a3800303c7e1eba9ca83890c3efb8c057" prot="private" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>_bottom</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1ae078d843d5c720677cbde52f83e43c62" prot="private" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>_buffer</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a1f6a90d825290665b5881bad2aa7fa69" prot="private" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>_top</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a79b19fbd242f08042854f99f812823e8" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>BoundedWSQ</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1af7641cea830576eeb6d47c8ec6141684" prot="private" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>BufferMask</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a63964d472c81520b2f3f44fae90f324f" prot="private" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>BufferSize</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a797e7244fd4fd9b8c463b72dd80ab7c7" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>capacity</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1af964a4e19b8f9791086d97dd805dfdcf" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>empty</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a97bbadef093d7518b88c62bc3de85b47" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>empty_value</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a0f3fc5d2f38ca7df06b55afa391f26ce" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>pop</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a95ca63c53c35d04f3959923dbc3e1576" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>size</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a57e08d6415b5b586ee32875c91057f35" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>steal</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a87e13fb05bf65caa30aa677f8dd84386" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>steal_with_feedback</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a9713956a1ca117bcde0813205f2669e5" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>try_bulk_push</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a7d7be330e9c1c0e5a2051b7e190bf4c2" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>try_push</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a7839a84ecf5e18f3419fb4fd2186d279" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>value_type</name></member>
+      <member refid="classtf_1_1BoundedWSQ_1a1ba45c443acb96cf6e8cd2496cb38b65" prot="public" virt="non-virtual"><scope>tf::BoundedWSQ</scope><name>~BoundedWSQ</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

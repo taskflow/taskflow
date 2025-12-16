@@ -87,8 +87,8 @@
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper"><a href="#a8cdd8e086d667b0cc95a9b2d826e266d" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
+              <span class="m-doc-wrap-bumper"><a href="#a03be4eb6f24acc5ee8a79e86f7e90084" class="m-doc">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wif = nullptr) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
             <dd>constructs the executor with <code>N</code> worker threads</dd>
             <dt>
@@ -188,14 +188,14 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a9d2d464ab2a84ecb3b3ea7747e8e276b" class="m-doc">num_workers</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of worker threads</dd>
-            <dt id="a5205c78ec06ef01de0c7d6a71adad07a">
-              <span class="m-doc-wrap-bumper">auto <a href="#a5205c78ec06ef01de0c7d6a71adad07a" class="m-doc-self">num_waiters</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a5205c78ec06ef01de0c7d6a71adad07a" class="m-doc">num_waiters</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
-            <dd>queries the number of workers that are currently not making any stealing attempts</dd>
+            <dd>queries the number of workers that are in the waiting loop</dd>
             <dt id="a68875600becd2b6593d0e7518896ab2b">
               <span class="m-doc-wrap-bumper">auto <a href="#a68875600becd2b6593d0e7518896ab2b" class="m-doc-self">num_queues</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
-            <dd>queries the number of queues used in the work-stealing loop</dd>
+            <dd>queries the number of work-stealing queues used by the executor</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a6d6c28ed58211e4c27a99571e5bf0b6c" class="m-doc">num_topologies</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
             </dt>
@@ -308,10 +308,10 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a8cdd8e086d667b0cc95a9b2d826e266d"><div>
+          <section class="m-doc-details" id="a03be4eb6f24acc5ee8a79e86f7e90084"><div>
             <h3>
-              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8cdd8e086d667b0cc95a9b2d826e266d" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
-              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wix = nullptr) <span class="m-label m-info">explicit</span> </span></span>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a03be4eb6f24acc5ee8a79e86f7e90084" class="m-doc-self">Executor</a>(</span><span class="m-doc-wrap">size_t N = <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>(),
+              <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;<a href="classtf_1_1WorkerInterface.html" class="m-doc">WorkerInterface</a>&gt; wif = nullptr) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
             <p>constructs the executor with <code>N</code> worker threads</p>
             <table class="m-table m-fullwidth m-flat">
@@ -324,7 +324,7 @@
                   <td>number of workers (default <a href="http://en.cppreference.com/w/cpp/thread/thread/hardware_concurrency.html" class="m-doc-external">std::<wbr />thread::<wbr />hardware_concurrency</a>)</td>
                 </tr>
                 <tr>
-                  <td>wix</td>
+                  <td>wif</td>
                   <td>interface class instance to configure workers&#x27; behaviors</td>
                 </tr>
               </tbody>
@@ -859,8 +859,15 @@
               <span class="m-doc-wrap-bumper">size_t tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9d2d464ab2a84ecb3b3ea7747e8e276b" class="m-doc-self">num_workers</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
             </h3>
             <p>queries the number of worker threads</p>
-<p>Each worker represents one unique thread spawned by an executor upon its construction time.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<p>Each worker represents a unique thread spawned by an executor upon its construction time.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
 <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">num_workers</span><span class="p">();</span><span class="w">    </span><span class="c1">// 4</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a5205c78ec06ef01de0c7d6a71adad07a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a5205c78ec06ef01de0c7d6a71adad07a" class="m-doc-self">num_waiters</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the number of workers that are in the waiting loop</p>
+<p>A worker in the waiting loop has exhausted its local queue and made enough stealing attempts, and is now ready to be preempted and enter the waiting state.</p>
           </div></section>
           <section class="m-doc-details" id="a6d6c28ed58211e4c27a99571e5bf0b6c"><div>
             <h3>

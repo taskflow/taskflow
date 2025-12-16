@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "macros.hpp"
-
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -270,14 +268,14 @@ protected:
 
 public:
   void push_back(const T &Elt) {
-    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
+    if ((this->EndX >= this->CapacityX)) [[unlikely]]
       this->grow();
     ::new ((void*) this->end()) T(Elt);
     this->setEnd(this->end()+1);
   }
 
   void push_back(T &&Elt) {
-    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
+    if ((this->EndX >= this->CapacityX)) [[unlikely]]
       this->grow();
     ::new ((void*) this->end()) T(::std::move(Elt));
     this->setEnd(this->end()+1);
@@ -366,7 +364,7 @@ protected:
   }
 public:
   void push_back(const T &Elt) {
-    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
+    if ((this->EndX >= this->CapacityX)) [[unlikely]]
       this->grow();
     memcpy(this->end(), &Elt, sizeof(T));
     this->setEnd(this->end()+1);
@@ -697,7 +695,7 @@ public:
   }
 
   template <typename... ArgTypes> void emplace_back(ArgTypes &&... Args) {
-    if (TF_UNLIKELY(this->EndX >= this->CapacityX))
+    if ((this->EndX >= this->CapacityX)) [[unlikely]]
       this->grow();
     ::new ((void *)this->end()) T(std::forward<ArgTypes>(Args)...);
     this->setEnd(this->end() + 1);

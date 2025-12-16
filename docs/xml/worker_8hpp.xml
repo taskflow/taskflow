@@ -3,23 +3,23 @@
   <compounddef id="worker_8hpp" kind="file" language="C++">
     <compoundname>worker.hpp</compoundname>
     <includes local="yes">declarations.hpp</includes>
-    <includes refid="tsq_8hpp" local="yes">tsq.hpp</includes>
+    <includes refid="wsq_8hpp" local="yes">wsq.hpp</includes>
     <includes local="yes">atomic_notifier.hpp</includes>
     <includedby refid="observer_8hpp" local="yes">taskflow/core/observer.hpp</includedby>
     <incdepgraph>
       <node id="6">
         <label>atomic_notifier.hpp</label>
       </node>
+      <node id="4">
+        <label>../utility/macros.hpp</label>
+      </node>
       <node id="3">
-        <label>tsq.hpp</label>
-        <link refid="tsq_8hpp"/>
+        <label>wsq.hpp</label>
+        <link refid="wsq_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
         <childnode refid="5" relation="include">
         </childnode>
-      </node>
-      <node id="4">
-        <label>../utility/macros.hpp</label>
       </node>
       <node id="5">
         <label>../utility/traits.hpp</label>

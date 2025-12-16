@@ -1,22 +1,22 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="tsq_8hpp" kind="file" language="C++">
-    <compoundname>tsq.hpp</compoundname>
+  <compounddef id="wsq_8hpp" kind="file" language="C++">
+    <compoundname>wsq.hpp</compoundname>
     <includes local="yes">../utility/macros.hpp</includes>
     <includes local="yes">../utility/traits.hpp</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
     <includedby refid="worker_8hpp" local="yes">taskflow/core/worker.hpp</includedby>
     <incdepgraph>
+      <node id="2">
+        <label>../utility/macros.hpp</label>
+      </node>
       <node id="1">
-        <label>taskflow/core/tsq.hpp</label>
-        <link refid="tsq_8hpp"/>
+        <label>taskflow/core/wsq.hpp</label>
+        <link refid="wsq_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
         <childnode refid="3" relation="include">
         </childnode>
-      </node>
-      <node id="2">
-        <label>../utility/macros.hpp</label>
       </node>
       <node id="3">
         <label>../utility/traits.hpp</label>
@@ -39,14 +39,6 @@
         <childnode refid="8" relation="include">
         </childnode>
       </node>
-      <node id="1">
-        <label>taskflow/core/tsq.hpp</label>
-        <link refid="tsq_8hpp"/>
-        <childnode refid="2" relation="include">
-        </childnode>
-        <childnode refid="17" relation="include">
-        </childnode>
-      </node>
       <node id="6">
         <label>taskflow/core/executor.hpp</label>
         <link refid="executor_8hpp"/>
@@ -58,6 +50,14 @@
       <node id="13">
         <label>taskflow/cuda/algorithm/for_each.hpp</label>
         <link refid="for__each_8hpp"/>
+      </node>
+      <node id="1">
+        <label>taskflow/core/wsq.hpp</label>
+        <link refid="wsq_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
       </node>
       <node id="3">
         <label>taskflow/core/task.hpp</label>
@@ -132,12 +132,12 @@
         </childnode>
       </node>
     </invincdepgraph>
-    <innerclass refid="classtf_1_1UnboundedTaskQueue" prot="public">tf::UnboundedTaskQueue</innerclass>
-    <innerclass refid="structtf_1_1UnboundedTaskQueue_1_1Array" prot="private">tf::UnboundedTaskQueue::Array</innerclass>
-    <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
+    <innerclass refid="classtf_1_1UnboundedWSQ" prot="public">tf::UnboundedWSQ</innerclass>
+    <innerclass refid="structtf_1_1UnboundedWSQ_1_1Array" prot="private">tf::UnboundedWSQ::Array</innerclass>
+    <innerclass refid="classtf_1_1BoundedWSQ" prot="public">tf::BoundedWSQ</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
       <sectiondef kind="define">
-      <memberdef kind="define" id="tsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" prot="public" static="no">
+      <memberdef kind="define" id="wsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" prot="public" static="no">
         <name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name>
         <initializer>8</initializer>
         <briefdescription>
@@ -147,9 +147,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="18" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="18" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="18" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="18" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="define" id="tsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" prot="public" static="no">
+      <memberdef kind="define" id="wsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" prot="public" static="no">
         <name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name>
         <initializer>10</initializer>
         <briefdescription>
@@ -159,14 +159,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/tsq.hpp" line="28" column="11" bodyfile="taskflow/core/tsq.hpp" bodystart="28" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="28" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="28" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
-<para>task queue include file </para>
+<para>work-stealing queue (wsq) include file </para>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/tsq.hpp"/>
+    <location file="taskflow/core/wsq.hpp"/>
   </compounddef>
 </doxygen>

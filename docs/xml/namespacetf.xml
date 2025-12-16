@@ -20,8 +20,9 @@
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1AnchorGuard" prot="private">tf::AnchorGuard</innerclass>
     <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
-    <innerclass refid="classtf_1_1UnboundedTaskQueue" prot="public">tf::UnboundedTaskQueue</innerclass>
-    <innerclass refid="classtf_1_1BoundedTaskQueue" prot="public">tf::BoundedTaskQueue</innerclass>
+    <innerclass refid="classtf_1_1NodeIteratorAdapter" prot="private">tf::NodeIteratorAdapter</innerclass>
+    <innerclass refid="classtf_1_1UnboundedWSQ" prot="public">tf::UnboundedWSQ</innerclass>
+    <innerclass refid="classtf_1_1BoundedWSQ" prot="public">tf::BoundedWSQ</innerclass>
     <innerclass refid="classtf_1_1FlowBuilder" prot="public">tf::FlowBuilder</innerclass>
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Worker" prot="public">tf::Worker</innerclass>
@@ -388,7 +389,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="133" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="133" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="135" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="135" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1aea3945d9b15c96a72540ea4fe61947e7" prot="public" static="no" constexpr="yes" mutable="no">
         <templateparamlist>
@@ -447,7 +448,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="728" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="728" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="730" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="730" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -625,7 +626,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="1027" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1027" bodyend="1029"/>
+        <location file="taskflow/utility/small_vector.hpp" line="1025" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1025" bodyend="1027"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1451,7 +1452,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="191" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="191" bodyend="207"/>
+        <location file="taskflow/utility/os.hpp" line="182" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="182" bodyend="198"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1488,7 +1489,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="221" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="221" bodyend="237"/>
+        <location file="taskflow/utility/os.hpp" line="212" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="212" bodyend="228"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1502,7 +1503,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="254" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="254" bodyend="277"/>
+        <location file="taskflow/utility/os.hpp" line="245" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="245" bodyend="268"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae9b372cf6337d0fd563fecc59a1915cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1520,7 +1521,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="282" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="282" bodyend="284"/>
+        <location file="taskflow/utility/os.hpp" line="273" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="273" bodyend="275"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1570,7 +1571,7 @@ This function repeatedly checks the provided predicate in a spin-wait loop and u
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="311" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="311" bodyend="316"/>
+        <location file="taskflow/utility/os.hpp" line="302" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="302" bodyend="307"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5643bf94c64370ee721692e3e6d9dc80" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1791,7 +1792,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="356" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="356" bodyend="362"/>
+        <location file="taskflow/core/graph.hpp" line="358" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="358" bodyend="364"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1808,7 +1809,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="367" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="367" bodyend="373"/>
+        <location file="taskflow/core/graph.hpp" line="369" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="369" bodyend="375"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a97960776f3c78e18e68c79c336ba4f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1863,7 +1864,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="246" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="246" bodyend="252"/>
+        <location file="taskflow/core/worker.hpp" line="245" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="245" bodyend="251"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -3294,6 +3295,6 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/utility/small_vector.hpp" line="22" column="1"/>
+    <location file="taskflow/utility/small_vector.hpp" line="20" column="1"/>
   </compounddef>
 </doxygen>

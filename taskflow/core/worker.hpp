@@ -1,7 +1,7 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "tsq.hpp"
+#include "wsq.hpp"
 #include "atomic_notifier.hpp"
 
 
@@ -44,49 +44,48 @@ class Worker {
 
   public:
 
-    /**
-    @brief queries the worker id associated with its parent executor
+  /**
+  @brief queries the worker id associated with its parent executor
 
-    A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
-    where @c N is the number of workers spawned at the construction
-    time of the executor.
-    */
-    inline size_t id() const { return _id; }
+  A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
+  where @c N is the number of workers spawned at the construction
+  time of the executor.
+  */
+  inline size_t id() const { return _id; }
 
-    /**
-    @brief queries the size of the queue (i.e., number of enqueued tasks to
-           run) associated with the worker
-    */
-    inline size_t queue_size() const { return _wsq.size(); }
-    
-    /**
-    @brief queries the current capacity of the queue
-    */
-    inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
-    
-    /**
-    @brief acquires the associated executor
-    */
-    inline Executor* executor() { return _executor; }
+  /**
+  @brief queries the size of the queue (i.e., number of enqueued tasks to
+         run) associated with the worker
+  */
+  inline size_t queue_size() const { return _wsq.size(); }
+  
+  /**
+  @brief queries the current capacity of the queue
+  */
+  inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
+  
+  /**
+  @brief acquires the associated executor
+  */
+  inline Executor* executor() { return _executor; }
 
-    /**
-    @brief acquires the associated thread
-    */
-    std::thread& thread() { return _thread; }
+  /**
+  @brief acquires the associated thread
+  */
+  std::thread& thread() { return _thread; }
 
   private:
   
-    std::atomic_flag _done = ATOMIC_FLAG_INIT; 
+  std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 
-    size_t _id;
-    size_t _vtm;
-    Executor* _executor {nullptr};
-    DefaultNotifier::Waiter _waiter;
-    std::thread _thread;
-    
-    std::default_random_engine _rdgen;
+  size_t _id;
+  size_t _vtm;
+  Executor* _executor {nullptr};
+  std::thread _thread;
+  
+  std::default_random_engine _rdgen;
 
-    BoundedTaskQueue<Node*> _wsq;
+  BoundedWSQ<Node*> _wsq;
 };
 
 // ----------------------------------------------------------------------------
@@ -109,32 +108,32 @@ class WorkerView {
 
   public:
 
-    /**
-    @brief queries the worker id associated with its parent executor
+  /**
+  @brief queries the worker id associated with its parent executor
 
-    A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
-    where @c N is the number of workers spawned at the construction
-    time of the executor.
-    */
-    size_t id() const;
+  A worker id is a unsigned integer in the range <tt>[0, N)</tt>,
+  where @c N is the number of workers spawned at the construction
+  time of the executor.
+  */
+  size_t id() const;
 
-    /**
-    @brief queries the size of the queue (i.e., number of pending tasks to
-           run) associated with the worker
-    */
-    size_t queue_size() const;
+  /**
+  @brief queries the size of the queue (i.e., number of pending tasks to
+         run) associated with the worker
+  */
+  size_t queue_size() const;
 
-    /**
-    @brief queries the current capacity of the queue
-    */
-    size_t queue_capacity() const;
+  /**
+  @brief queries the current capacity of the queue
+  */
+  size_t queue_capacity() const;
 
   private:
 
-    WorkerView(const Worker&);
-    WorkerView(const WorkerView&) = default;
+  WorkerView(const Worker&);
+  WorkerView(const WorkerView&) = default;
 
-    const Worker& _worker;
+  const Worker& _worker;
 
 };
 

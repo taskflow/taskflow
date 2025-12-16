@@ -15,7 +15,7 @@ std::chrono::microseconds measure_time_taskflow(size_t, size_t);
 std::chrono::microseconds measure_time_omp(size_t, size_t);
 std::chrono::microseconds measure_time_tbb(size_t, size_t);
 
-inline std::vector<unsigned long long int> answers{0,1,0,0,2,10,4,40,92,352,724,2680,14200,73712,365596,2279184,14772512,95815104,666090624};
+inline std::vector<int> answers{0,1,0,0,2,10,4,40,92,352,724,2680,14200,73712,365596,2279184,14772512,95815104,666090624};
 
 inline auto queens_ok(int n, char* a) -> bool {
 

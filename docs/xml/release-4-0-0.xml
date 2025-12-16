@@ -86,7 +86,11 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>replaced <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref></computeroutput> in topology with virtual dispatch for better performance</para>
+</listitem><listitem><para>replaced <computeroutput>TF_LIKELY/_UNLIKELY</computeroutput> with C++20 attributes</para>
+</listitem><listitem><para>enhanced the scheduling performance through bulk insertion</para>
+</listitem><listitem><para>modified the work-stealing queue to support non-pointer type</para>
 </listitem><listitem><para>fixed compiler warning in Windows MSVC W4 (<ulink url="https://github.com/taskflow/taskflow/issues/737">#737</ulink>)</para>
+</listitem><listitem><para>added embarrassing parallelism benchmark</para>
 </listitem></itemizedlist>
 </para>
 </sect2>

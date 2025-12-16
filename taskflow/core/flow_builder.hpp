@@ -1547,7 +1547,7 @@ inline Executor& Subflow::executor() noexcept {
 // Function: retain
 inline void Subflow::retain(bool flag) noexcept {
   // default value is not to retain 
-  if TF_LIKELY(flag == true) {
+  if(flag == true) {
     _parent->_nstate |= NSTATE::RETAIN_SUBFLOW;
   }
   else {

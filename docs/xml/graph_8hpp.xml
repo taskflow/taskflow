@@ -15,26 +15,18 @@
     <includes refid="semaphore_8hpp" local="yes">semaphore.hpp</includes>
     <includes local="yes">environment.hpp</includes>
     <includes local="yes">topology.hpp</includes>
-    <includes refid="tsq_8hpp" local="yes">tsq.hpp</includes>
+    <includes refid="wsq_8hpp" local="yes">wsq.hpp</includes>
     <includedby refid="task_8hpp" local="yes">taskflow/core/task.hpp</includedby>
     <includedby refid="async__task_8hpp" local="yes">taskflow/core/async_task.hpp</includedby>
     <incdepgraph>
       <node id="14">
         <label>atomic</label>
       </node>
-      <node id="22">
+      <node id="21">
         <label>iterator</label>
       </node>
-      <node id="31">
+      <node id="30">
         <label>topology.hpp</label>
-      </node>
-      <node id="32">
-        <label>tsq.hpp</label>
-        <link refid="tsq_8hpp"/>
-        <childnode refid="2" relation="include">
-        </childnode>
-        <childnode refid="3" relation="include">
-        </childnode>
       </node>
       <node id="16">
         <label>../utility/small_vector.hpp</label>
@@ -43,11 +35,11 @@
         </childnode>
         <childnode refid="18" relation="include">
         </childnode>
-        <childnode refid="19" relation="include">
-        </childnode>
         <childnode refid="5" relation="include">
         </childnode>
         <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
         </childnode>
         <childnode refid="20" relation="include">
         </childnode>
@@ -55,10 +47,8 @@
         </childnode>
         <childnode refid="22" relation="include">
         </childnode>
-        <childnode refid="23" relation="include">
-        </childnode>
       </node>
-      <node id="19">
+      <node id="18">
         <label>cassert</label>
       </node>
       <node id="10">
@@ -67,10 +57,10 @@
       <node id="2">
         <label>../utility/macros.hpp</label>
       </node>
-      <node id="25">
+      <node id="24">
         <label>../utility/lazy_string.hpp</label>
       </node>
-      <node id="26">
+      <node id="25">
         <label>error.hpp</label>
       </node>
       <node id="13">
@@ -79,6 +69,14 @@
         <childnode refid="14" relation="include">
         </childnode>
         <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="31">
+        <label>wsq.hpp</label>
+        <link refid="wsq_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
         </childnode>
       </node>
       <node id="3">
@@ -113,6 +111,8 @@
         </childnode>
         <childnode refid="16" relation="include">
         </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
         <childnode refid="24" relation="include">
         </childnode>
         <childnode refid="25" relation="include">
@@ -121,19 +121,17 @@
         </childnode>
         <childnode refid="27" relation="include">
         </childnode>
-        <childnode refid="28" relation="include">
+        <childnode refid="29" relation="include">
         </childnode>
         <childnode refid="30" relation="include">
         </childnode>
         <childnode refid="31" relation="include">
         </childnode>
-        <childnode refid="32" relation="include">
-        </childnode>
       </node>
       <node id="9">
         <label>cstdio</label>
       </node>
-      <node id="24">
+      <node id="23">
         <label>../utility/serializer.hpp</label>
       </node>
       <node id="12">
@@ -145,26 +143,26 @@
       <node id="5">
         <label>cstddef</label>
       </node>
-      <node id="27">
+      <node id="26">
         <label>declarations.hpp</label>
       </node>
-      <node id="28">
+      <node id="27">
         <label>semaphore.hpp</label>
         <link refid="semaphore_8hpp"/>
-        <childnode refid="29" relation="include">
+        <childnode refid="28" relation="include">
         </childnode>
-        <childnode refid="27" relation="include">
+        <childnode refid="26" relation="include">
         </childnode>
         <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="29">
+      <node id="28">
         <label>mutex</label>
       </node>
       <node id="15">
         <label>chrono</label>
       </node>
-      <node id="30">
+      <node id="29">
         <label>environment.hpp</label>
       </node>
       <node id="11">
@@ -181,19 +179,16 @@
       <node id="6">
         <label>type_traits</label>
       </node>
-      <node id="18">
+      <node id="17">
         <label>algorithm</label>
       </node>
-      <node id="20">
+      <node id="19">
         <label>cstring</label>
       </node>
-      <node id="17">
-        <label>macros.hpp</label>
-      </node>
-      <node id="23">
+      <node id="22">
         <label>memory</label>
       </node>
-      <node id="21">
+      <node id="20">
         <label>initializer_list</label>
       </node>
     </incdepgraph>
@@ -309,6 +304,7 @@
     <innerclass refid="structtf_1_1Node_1_1Semaphores" prot="private">tf::Node::Semaphores</innerclass>
     <innerclass refid="classtf_1_1AnchorGuard" prot="private">tf::AnchorGuard</innerclass>
     <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
+    <innerclass refid="classtf_1_1NodeIteratorAdapter" prot="private">tf::NodeIteratorAdapter</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
     <innernamespace refid="namespacetf_1_1detail">tf::detail</innernamespace>
     <briefdescription>

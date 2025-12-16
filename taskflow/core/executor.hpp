@@ -3,7 +3,6 @@
 #include "observer.hpp"
 #include "taskflow.hpp"
 #include "async_task.hpp"
-#include "freelist.hpp"
 
 /**
 @file executor.hpp
@@ -74,7 +73,7 @@ class Executor {
   @brief constructs the executor with @c N worker threads
 
   @param N number of workers (default std::thread::hardware_concurrency)
-  @param wix interface class instance to configure workers' behaviors
+  @param wif interface class instance to configure workers' behaviors
 
   The constructor spawns @c N worker threads to run tasks in a
   work-stealing loop. The number of workers must be greater than zero
@@ -90,7 +89,7 @@ class Executor {
   */
   explicit Executor(
     size_t N = std::thread::hardware_concurrency(),
-    std::unique_ptr<WorkerInterface> wix = nullptr
+    std::unique_ptr<WorkerInterface> wif = nullptr
   );
 
   /**
@@ -503,8 +502,7 @@ class Executor {
   /**
   @brief queries the number of worker threads
 
-  Each worker represents one unique thread spawned by an executor
-  upon its construction time.
+  Each worker represents a unique thread spawned by an executor upon its construction time.
 
   @code{.cpp}
   tf::Executor executor(4);
@@ -514,12 +512,15 @@ class Executor {
   size_t num_workers() const noexcept;
   
   /**
-  @brief queries the number of workers that are currently not making any stealing attempts
+  @brief queries the number of workers that are in the waiting loop
+
+  A worker in the waiting loop has exhausted its local queue and made enough stealing attempts,
+  and is now ready to be preempted and enter the waiting state.
   */
   size_t num_waiters() const noexcept;
   
   /**
-  @brief queries the number of queues used in the work-stealing loop
+  @brief queries the number of work-stealing queues used by the executor
   */
   size_t num_queues() const noexcept;
 
@@ -1066,7 +1067,12 @@ class Executor {
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   private:
-    
+  
+  struct Buffer {
+    std::mutex mutex;
+    UnboundedWSQ<Node*> queue;
+  };  
+
   std::mutex _taskflows_mutex;
   
   std::vector<Worker> _workers;
@@ -1076,9 +1082,9 @@ class Executor {
   
   std::list<Taskflow> _taskflows;
 
-  Freelist<Node*> _buffers;
+  std::vector<Buffer> _buffers;
 
-  std::unique_ptr<WorkerInterface> _worker_interface;
+  std::unique_ptr<WorkerInterface> _worker_if;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
   std::unordered_map<std::thread::id, Worker*> _t2w;
 
@@ -1090,6 +1096,7 @@ class Executor {
   bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
+  void _spill(Node*);
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*);
   void _tear_down_async(Worker&, Node*, Node*&);
@@ -1128,10 +1135,13 @@ class Executor {
   void _corun_graph(Worker&, Node*, I, I);
 
   template <typename I>
-  void _schedule(Worker&, I, I);
+  void _bulk_schedule(Worker&, I, size_t);
 
   template <typename I>
-  void _schedule(I, I);
+  void _bulk_schedule(I, size_t);
+
+  template <typename I>
+  void _bulk_spill(I, size_t);
 
   template <typename I>
   void _schedule_graph_with_parent(Worker&, I, I, Node*);
@@ -1156,10 +1166,11 @@ class Executor {
 #ifndef DOXYGEN_GENERATING_OUTPUT
 
 // Constructor
-inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wix) :
+inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wif) :
   _workers  (N),
-  _buffers  (N),
-  _worker_interface(std::move(wix)) {
+  _notifier (N),                
+  _buffers  (std::bit_width(N)), // Empirically, we find that log2(N) performs best.
+  _worker_if(std::move(wif)) {
 
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
@@ -1264,8 +1275,8 @@ inline void Executor::_spawn(size_t N) {
       );
 
       // before entering the work-stealing loop, call the scheduler prologue
-      if(_worker_interface) {
-        _worker_interface->scheduler_prologue(w);
+      if(_worker_if) {
+        _worker_if->scheduler_prologue(w);
       }
 
 
@@ -1299,8 +1310,8 @@ inline void Executor::_spawn(size_t N) {
 #endif
       
       // call the user-specified epilogue function
-      if(_worker_interface) {
-        _worker_interface->scheduler_epilogue(w, ptr);
+      if(_worker_if) {
+        _worker_if->scheduler_epilogue(w, ptr);
       }
 
     });
@@ -1332,8 +1343,9 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       explore:
 
-      t = (vtm < _workers.size()) ? _workers[vtm]._wsq.steal() : 
-                                    _buffers.steal(vtm - _workers.size());
+      t = (vtm < _workers.size()) 
+        ? _workers[vtm]._wsq.steal()
+        : _buffers[vtm-_workers.size()].queue.steal();
 
       if(t) {
         _invoke(w, t);
@@ -1372,7 +1384,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
     t = (vtm < _workers.size())
       ? _workers[vtm]._wsq.steal()
-      : _buffers.steal(vtm - _workers.size());
+      : _buffers[vtm - _workers.size()].queue.steal();
 
     if(t) {
       w._vtm = vtm;
@@ -1421,13 +1433,13 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   }
 
   // Entering the 2PC guard as all queues should be empty after many stealing attempts.
-  _notifier.prepare_wait(w._waiter);
+  _notifier.prepare_wait(w._id);
   
   // Condition #1: buffers should be empty
-  for(size_t vtm=0; vtm<_buffers.size(); ++vtm) {
-    if(!_buffers._buckets[vtm].queue.empty()) {
+  for(size_t b=0; b<_buffers.size(); ++b) {
+    if(!_buffers[b].queue.empty()) {
       _notifier.cancel_wait();
-      w._vtm = vtm + _workers.size();
+      w._vtm = b + _workers.size();
       goto explore_task;
     }
   }
@@ -1460,7 +1472,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   }
   
   // Now I really need to relinquish myself to others.
-  _notifier.commit_wait(w._waiter);
+  _notifier.commit_wait(w._id);
   goto explore_task;
 }
 
@@ -1500,6 +1512,25 @@ inline size_t Executor::num_observers() const noexcept {
   return _observers.size();
 }
 
+// Procedure: _spill
+inline void Executor::_spill(Node* item) {
+  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
+  // contention caused by hashing to the same slot.
+  auto b = (reinterpret_cast<uintptr_t>(item) >> 16) % _buffers.size();
+  std::scoped_lock lock(_buffers[b].mutex);
+  _buffers[b].queue.push(item);
+}
+
+// Procedure: _bulk_spill
+template <typename I>
+void Executor::_bulk_spill(I first, size_t N) {
+  // assert(N != 0);
+  auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
+  auto b = (p ^ (N << 6)) % _buffers.size();
+  std::scoped_lock lock(_buffers[b].mutex);
+  _buffers[b].queue.bulk_push(first, N);
+}
+
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
   
@@ -1507,31 +1538,33 @@ inline void Executor::_schedule(Worker& worker, Node* node) {
   // any complicated notification mechanism as the experimental result
   // has shown no significant advantage.
   if(worker._executor == this) {
-    worker._wsq.push(node, [&](){ _buffers.push(node); });
+    if(worker._wsq.try_push(node) == false) {
+      _spill(node);
+    }
     _notifier.notify_one();
     return;
   }
   
-  // caller is not a worker of this executor - go through the centralized queue
-  _buffers.push(node);
+  // caller is not a worker of this executor - spill to the centralized buffer
+  _spill(node);
   _notifier.notify_one();
 }
 
 // Procedure: _schedule
 inline void Executor::_schedule(Node* node) {
-  _buffers.push(node);
+  _spill(node);
   _notifier.notify_one();
 }
 
 // Procedure: _schedule
 template <typename I>
-void Executor::_schedule(Worker& worker, I first, I last) {
+void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
 
-  size_t num_nodes = last - first;
-  
   if(num_nodes == 0) {
     return;
   }
+
+  NodeIteratorAdapter itr(first);
   
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 
@@ -1539,49 +1572,53 @@ void Executor::_schedule(Worker& worker, I first, I last) {
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
-    for(size_t i=0; i<num_nodes; i++) {
-      auto node = detail::get_node_ptr(first[i]);
-      worker._wsq.push(node, [&](){ _buffers.push(node); });
-      _notifier.notify_one();
+    if(auto n = worker._wsq.try_bulk_push(itr, num_nodes); n != num_nodes) {
+      _bulk_spill(itr + n, num_nodes - n);
     }
+    _notifier.notify_n(num_nodes);
     return;
+    
+    // notify first before spilling to hopefully wake up workers earlier 
+    // however, the experiment does not show any benefit for doing this.
+    //auto n = worker._wsq.try_bulk_push(itr, num_nodes);
+    //_notifier.notify_n(n);
+    //_bulk_schedule(first + n, num_nodes - n);
+    //return;
   }
   
-  // caller is not a worker of this executor - go through the centralized queue
-  for(size_t i=0; i<num_nodes; i++) {
-    _buffers.push(detail::get_node_ptr(first[i]));
-  }
-  _notifier.notify_n(num_nodes, _workers.size());
+  // caller is not a worker of this executor - spill to the centralized queue
+  _bulk_spill(itr, num_nodes);
+  _notifier.notify_n(num_nodes);
 }
 
 // Procedure: _schedule
 template <typename I>
-inline void Executor::_schedule(I first, I last) {
+inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   
-  size_t num_nodes = last - first;
-
   if(num_nodes == 0) {
     return;
   }
+  
+  NodeIteratorAdapter itr(first);
 
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
-  for(size_t i=0; i<num_nodes; i++) {
-    _buffers.push(detail::get_node_ptr(first[i]));
-  }
-  _notifier.notify_n(num_nodes, _workers.size());
+  _bulk_spill(itr, num_nodes);
+  _notifier.notify_n(num_nodes);
 }
   
+// Function: _schedule_graph_with_parent
 template <typename I>
 void Executor::_schedule_graph_with_parent(Worker& worker, I beg, I end, Node* parent) {
-  auto send = _set_up_graph(beg, end, parent->_topology, parent);
-  parent->_join_counter.fetch_add(send - beg, std::memory_order_relaxed);
-  _schedule(worker, beg, send);
+  size_t num_srcs = (_set_up_graph(beg, end, parent->_topology, parent) - beg);
+  parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
+  _bulk_schedule(worker, beg, num_srcs);
 }
 
+// Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
     _schedule(worker, cache);
@@ -1620,7 +1657,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     SmallVector<Node*> waiters;
     if(!node->_acquire_all(waiters)) {
-      _schedule(worker, waiters.begin(), waiters.end());
+      _bulk_schedule(worker, waiters.begin(), waiters.size());
       return;
     }
   }
@@ -1710,7 +1747,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
     SmallVector<Node*> waiters;
     node->_release_all(waiters);
-    _schedule(worker, waiters.begin(), waiters.end());
+    _bulk_schedule(worker, waiters.begin(), waiters.size());
   }
 
   // Reset the join counter with strong dependencies to support cycles.
@@ -2200,10 +2237,10 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   // ---- under taskflow lock ----
   auto& g = tpg->_taskflow._graph;
   
-  auto send = _set_up_graph(g.begin(), g.end(), tpg, nullptr);
-  tpg->_join_counter.store(send - g.begin(), std::memory_order_relaxed);
+  size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, nullptr) - g.begin());
+  tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
 
-  w ? _schedule(*w, g.begin(), send) : _schedule(g.begin(), send);
+  w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);
 }
 
 // Function: _set_up_graph

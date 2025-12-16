@@ -88,8 +88,8 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <title>Taskflow Core</title>
 <para><itemizedlist>
 <listitem><para>improved the core scheduling algorithm using a decentralized work-stealing strategy<itemizedlist>
-<listitem><para><ref refid="classtf_1_1BoundedTaskQueue" kindref="compound">tf::BoundedTaskQueue</ref> to optimize per-thread work-stealing latency</para>
-</listitem><listitem><para><ref refid="classtf_1_1UnboundedTaskQueue" kindref="compound">tf::UnboundedTaskQueue</ref> to handle overflowed tasks</para>
+<listitem><para>tf::BoundedTaskQueue to optimize per-thread work-stealing latency</para>
+</listitem><listitem><para>tf::UnboundedTaskQueue to handle overflowed tasks</para>
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>enhanced <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> to support preemptible execution flows</para>
@@ -140,7 +140,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <sect1 id="release-3-9-0_1release-3-9-0_bug_fixes">
 <title>Bug Fixes</title>
 <para><itemizedlist>
-<listitem><para>fixed AppleClang compile error in <ref refid="tsq_8hpp" kindref="compound">tsq.hpp</ref> (<ulink url="https://github.com/taskflow/taskflow/pull/651">#651</ulink>)</para>
+<listitem><para>fixed AppleClang compile error in <ref refid="wsq_8hpp" kindref="compound">wsq.hpp</ref> (<ulink url="https://github.com/taskflow/taskflow/pull/651">#651</ulink>)</para>
 </listitem><listitem><para>fixed wrong range in uuid test (<ulink url="https://github.com/taskflow/taskflow/pull/632/">#632</ulink>)</para>
 </listitem><listitem><para>fixed the exception bug in <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> (<ulink url="https://github.com/taskflow/taskflow/issues/602">#602</ulink>)</para>
 </listitem><listitem><para>fixed the wrong prefix of target when running benchmark.py</para>
