@@ -272,6 +272,7 @@ There are a few restrictions on updating task parameters in an executable CUDA g
     cannot change
   + The source/destination memory must be allocated from the same 
     contexts as the original source/destination memory.
++ The original tf::cudaGraph used to create the tf::cudaGraphExec must be kept alive to be able to update task parameters.
 
 @section IntegrateACUDAGraphIntoTaskflow Integrate a CUDA Graph into Taskflow
 
