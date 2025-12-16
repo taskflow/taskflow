@@ -105,7 +105,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.<ref refid="classtf_1_1cudaTask_1abdd68287ec4dff4216af34d1db44d1b4" kindref="member">precede</ref>(d2h_x,<sp/>d2h_y);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>instantiate<sp/>a<sp/>CUDA<sp/>graph<sp/>executable<sp/>and<sp/>run<sp/>it<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>ecec(cg);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
@@ -194,13 +194,13 @@
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>instantiate<sp/>an<sp/>executable<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>update<sp/>the<sp/>created<sp/>kernel<sp/>task<sp/>with<sp/>different<sp/>parameters</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">exec.kernel(task,<sp/>grid2,<sp/>block2,<sp/>shm2,<sp/>kernel,<sp/>kernel_args_2);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>updated<sp/>executable<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(stream).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
+<codeline><highlight class="normal">stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 </programlisting></para>
 <para>Between successive offloads (i.e., iterative executions of a CUDA graph), you can <emphasis>ONLY</emphasis> update task parameters, such as changing the kernel execution parameters and memory operation parameters. However, you must <emphasis>NOT</emphasis> change the topology of the CUDA graph, such as adding a new task or adding a new dependency. This is the limitation of Nvidia CUDA Graph.</para>
 <para><simplesect kind="attention"><para>There are a few restrictions on updating task parameters in an executable CUDA graph:<itemizedlist>
@@ -214,6 +214,7 @@
 </listitem><listitem><para>The source/destination memory must be allocated from the same contexts as the original source/destination memory.</para>
 </listitem></itemizedlist>
 </para>
+</listitem><listitem><para>The original <ref refid="namespacetf_1ac76b07f7b7055967f6a2f1dc78b0978a" kindref="member">tf::cudaGraph</ref> used to create the <ref refid="namespacetf_1a21efbebd2a9b305f43dde90b7b837dc7" kindref="member">tf::cudaGraphExec</ref> must be kept alive to be able to update task parameters.</para>
 </listitem></itemizedlist>
 </para>
 </simplesect>
@@ -231,7 +232,7 @@
 <codeline><highlight class="normal"><sp/><sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1a1473a15a6023fbc25e1f029f2ff84aec" kindref="member">kernel</ref>(...);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>instantiate<sp/>a<sp/>CUDA<sp/>graph<sp/>executable<sp/>and<sp/>run<sp/>it<sp/>through<sp/>a<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>ecec(cg);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaGraphExecBase" kindref="compound">tf::cudaGraphExec</ref><sp/>exec(cg);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1cudaStreamBase" kindref="compound">tf::cudaStream</ref><sp/>stream;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>stream.<ref refid="classtf_1_1cudaStreamBase_1aadd2d02a691b40305aa3965475dc98d7" kindref="member">run</ref>(exec).<ref refid="classtf_1_1cudaStreamBase_1a685019ae199f86668257f802bd77b2cd" kindref="member">synchronize</ref>();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>

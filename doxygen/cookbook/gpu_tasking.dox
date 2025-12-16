@@ -94,7 +94,7 @@ int main() {
         .precede(d2h_x, d2h_y);
 
   // instantiate a CUDA graph executable and run it through a stream
-  tf::cudaGraphExec ecec(cg);
+  tf::cudaGraphExec exec(cg);
   tf::cudaStream stream;
   stream.run(exec).synchronize();
   
@@ -246,13 +246,13 @@ tf::cudaTask task = cf.kernel(grid1, block1, shm1, kernel, kernel_args_1);
 
 // instantiate an executable graph
 tf::cudaGraphExec exec(cg);
-stream.run(stream).synchronize();
+stream.run(exec).synchronize();
 
 // update the created kernel task with different parameters
 exec.kernel(task, grid2, block2, shm2, kernel, kernel_args_2);
 
 // run the updated executable graph
-stream.run(stream).synchronize();
+stream.run(exec).synchronize();
 @endcode
 
 Between successive offloads (i.e., iterative executions of a CUDA graph),
@@ -272,6 +272,7 @@ There are a few restrictions on updating task parameters in an executable CUDA g
     cannot change
   + The source/destination memory must be allocated from the same 
     contexts as the original source/destination memory.
++ The original tf::cudaGraph used to create the tf::cudaGraphExec must be kept alive to be able to update task parameters.
 
 @section IntegrateACUDAGraphIntoTaskflow Integrate a CUDA Graph into Taskflow
 
@@ -289,7 +290,7 @@ taskflow.emplace([](){
   cg.kernel(...);
   
   // instantiate a CUDA graph executable and run it through a stream
-  tf::cudaGraphExec ecec(cg);
+  tf::cudaGraphExec exec(cg);
   tf::cudaStream stream;
   stream.run(exec).synchronize();
 });
