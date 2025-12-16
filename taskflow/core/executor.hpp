@@ -1070,7 +1070,7 @@ class Executor {
   
   struct Buffer {
     std::mutex mutex;
-    UnboundedTaskQueue<Node*> queue;
+    UnboundedWSQ<Node*> queue;
   };  
 
   std::mutex _taskflows_mutex;
@@ -1572,14 +1572,6 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
-    //for(size_t i=0; i<num_nodes; i++) {
-    //  if(Node* node = itr[i]; worker._wsq.try_push(node) == false) {
-    //    _spill(node);
-    //  }
-    //  _notifier.notify_one();
-    //}
-    //return;
-
     if(auto n = worker._wsq.try_bulk_push(itr, num_nodes); n != num_nodes) {
       _bulk_spill(itr + n, num_nodes - n);
     }
@@ -1587,6 +1579,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     return;
     
     // notify first before spilling to hopefully wake up workers earlier 
+    // however, the experiment does not show any benefit for doing this.
     //auto n = worker._wsq.try_bulk_push(itr, num_nodes);
     //_notifier.notify_n(n);
     //_bulk_schedule(first + n, num_nodes - n);
@@ -1594,10 +1587,6 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   }
   
   // caller is not a worker of this executor - spill to the centralized queue
-  //for(size_t i=0; i<num_nodes; i++) {
-  //  _spill(itr[i]);
-  //}
-  //_notifier.notify_n(num_nodes);
   _bulk_spill(itr, num_nodes);
   _notifier.notify_n(num_nodes);
 }
@@ -1617,10 +1606,6 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
-  //for(size_t i=0; i<num_nodes; i++) {
-  //  _spill(itr[i]);
-  //}
-  //_notifier.notify_n(num_nodes);
   _bulk_spill(itr, num_nodes);
   _notifier.notify_n(num_nodes);
 }

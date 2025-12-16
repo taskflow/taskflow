@@ -1,7 +1,7 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "tsq.hpp"
+#include "wsq.hpp"
 #include "atomic_notifier.hpp"
 
 
@@ -85,7 +85,7 @@ class Worker {
   
   std::default_random_engine _rdgen;
 
-  BoundedTaskQueue<Node*> _wsq;
+  BoundedWSQ<Node*> _wsq;
 };
 
 // ----------------------------------------------------------------------------

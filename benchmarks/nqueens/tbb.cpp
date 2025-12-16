@@ -63,7 +63,9 @@ std::chrono::microseconds measure_time_tbb(size_t num_threads, size_t num_nqueen
   
   auto end = std::chrono::high_resolution_clock::now();
 
-  assert(result == answers[num_queens]);
+  if(result != answers[num_nqueens]) {
+    throw std::runtime_error("incorrect result");
+  }
 
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

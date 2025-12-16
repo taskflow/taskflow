@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.12.0" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="release-4-0-0" kind="page">
     <compoundname>release-4-0-0</compoundname>
     <title>Release 4.0.0 (Master)</title>
@@ -7,58 +7,61 @@
       <tocsect>
         <name>Release Summary</name>
         <reference>release-4-0-0_1release-4-0-0_summary</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Download</name>
         <reference>release-4-0-0_1release-4-0-0_download</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>System Requirements</name>
         <reference>release-4-0-0_1release-4-0-0_system_requirements</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>New Features</name>
         <reference>release-4-0-0_1release-4-0-0_new_features</reference>
-        <tableofcontents>
-          <tocsect>
-            <name>Taskflow Core</name>
-            <reference>release-4-0-0_1release-4-0-0_taskflow_core</reference>
-          </tocsect>
-          <tocsect>
-            <name>Utilities</name>
-            <reference>release-4-0-0_1release-4-0-0_utilities</reference>
-          </tocsect>
-        </tableofcontents>
-      </tocsect>
+    <tableofcontents>
+      <tocsect>
+        <name>Taskflow Core</name>
+        <reference>release-4-0-0_1release-4-0-0_taskflow_core</reference>
+    </tocsect>
+      <tocsect>
+        <name>Utilities</name>
+        <reference>release-4-0-0_1release-4-0-0_utilities</reference>
+    </tocsect>
+    </tableofcontents>
+    </tocsect>
       <tocsect>
         <name>Bug Fixes</name>
         <reference>release-4-0-0_1release-4-0-0_bug_fixes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Breaking Changes</name>
         <reference>release-4-0-0_1release-4-0-0_breaking_changes</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Documentation</name>
         <reference>release-4-0-0_1release-4-0-0_documentation</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Miscellaneous Items</name>
         <reference>release-4-0-0_1release-4-0-0_miscellaneous_items</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow 4.0.0 is the newest developing line to new features and improvements are actively introduced and supported. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While maintaining full consistency can be challenging as new features are added, we continually strive to preserve backward compatibility.</para>
 <sect1 id="release-4-0-0_1release-4-0-0_summary">
-<title>Release Summary</title><para>Starting in v4, Taskflow will adopt the C++20 standard for better performance and code efficiency.</para>
+<title>Release Summary</title>
+<para>Starting in v4, Taskflow will adopt the C++20 standard for better performance and code efficiency.</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_download">
-<title>Download</title><para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
+<title>Download</title>
+<para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_system_requirements">
-<title>System Requirements</title><para>To use Taskflow v4.0.0, you need a compiler that supports C++20:</para>
+<title>System Requirements</title>
+<para>To use Taskflow v4.0.0, you need a compiler that supports C++20:</para>
 <para><itemizedlist>
 <listitem><para>GNU C++ Compiler at least v11.0 with -std=c++20 </para>
 </listitem>
@@ -78,27 +81,35 @@
 Taskflow works on Linux, Windows, and Mac OS X.</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_new_features">
-<title>New Features</title><sect2 id="release-4-0-0_1release-4-0-0_taskflow_core">
-<title>Taskflow Core</title><para><itemizedlist>
-<listitem><para>replaced <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref></computeroutput> in topology with virtual dispatch for better performance</para>
+<title>New Features</title>
+<sect2 id="release-4-0-0_1release-4-0-0_taskflow_core">
+<title>Taskflow Core</title>
+<para><itemizedlist>
+<listitem><para>replaced <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref></computeroutput> in topology with virtual dispatch for better performance</para>
 </listitem><listitem><para>replaced <computeroutput>TF_LIKELY/_UNLIKELY</computeroutput> with C++20 attributes</para>
 </listitem><listitem><para>enhanced the scheduling performance through bulk insertion</para>
+</listitem><listitem><para>modified the work-stealing queue to support non-pointer type</para>
 </listitem><listitem><para>fixed compiler warning in Windows MSVC W4 (<ulink url="https://github.com/taskflow/taskflow/issues/737">#737</ulink>)</para>
 </listitem><listitem><para>added embarrassing parallelism benchmark</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-4-0-0_1release-4-0-0_utilities">
-<title>Utilities</title></sect2>
+<title>Utilities</title>
+</sect2>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_bug_fixes">
-<title>Bug Fixes</title></sect1>
+<title>Bug Fixes</title>
+</sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_breaking_changes">
-<title>Breaking Changes</title></sect1>
+<title>Breaking Changes</title>
+</sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_documentation">
-<title>Documentation</title></sect1>
+<title>Documentation</title>
+</sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_miscellaneous_items">
-<title>Miscellaneous Items</title><para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
+<title>Miscellaneous Items</title>
+<para>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink>! </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/releases/release-4.0.0.dox"/>

@@ -6,14 +6,14 @@
 
 
 // ============================================================================
-// BoundedTaskQueue Test
+// BoundedWSQ Test
 // ============================================================================
 
 // Procedure: test_wsq_owner
 template<size_t LogSize>
 void bounded_tsq_owner() {
 
-  tf::BoundedTaskQueue<void*, LogSize> queue;
+  tf::BoundedWSQ<void*, LogSize> queue;
 
   constexpr size_t N = (1 << LogSize);
 
@@ -81,51 +81,105 @@ void bounded_tsq_owner() {
   REQUIRE(num_empty_steals == 2);
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=2" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=2" * doctest::timeout(300)) {
   bounded_tsq_owner<2>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=3" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=3" * doctest::timeout(300)) {
   bounded_tsq_owner<3>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=4" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=4" * doctest::timeout(300)) {
   bounded_tsq_owner<4>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=5" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=5" * doctest::timeout(300)) {
   bounded_tsq_owner<5>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=6" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=6" * doctest::timeout(300)) {
   bounded_tsq_owner<6>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=7" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=7" * doctest::timeout(300)) {
   bounded_tsq_owner<7>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=8" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=8" * doctest::timeout(300)) {
   bounded_tsq_owner<8>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=9" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=9" * doctest::timeout(300)) {
   bounded_tsq_owner<9>();
 }
 
-TEST_CASE("BoundedTaskQueue.Owner.LogSize=10" * doctest::timeout(300)) {
+TEST_CASE("BoundedWSQ.Owner.LogSize=10" * doctest::timeout(300)) {
   bounded_tsq_owner<10>();
 }
 
 
 // ============================================================================
-// UnboundedTaskQueue Test
+// UnboundedWSQ Test
 // ============================================================================
+
+TEST_CASE("UnboundedWSQ.Resize") {
+  tf::UnboundedWSQ<void*> queue(1);
+  REQUIRE(queue.capacity() == 2);
+  
+  std::vector<void*> data(2048);
+
+  // insert an element
+  queue.bulk_push(data.data(), 1);
+  REQUIRE(queue.size() == 1);
+  REQUIRE(queue.capacity() == 2);
+  
+  // insert 2 elements
+  queue.bulk_push(data.data(), 2);
+  REQUIRE(queue.size() == 3);
+  REQUIRE(queue.capacity() == 4);
+  
+  // insert 10 elements
+  queue.bulk_push(data.data(), 10);
+  REQUIRE(queue.size() == 13);
+  REQUIRE(queue.capacity() == 16);
+  
+  // insert 1200 elements
+  queue.bulk_push(data.data(), 1200);
+  REQUIRE(queue.size() == 1213);
+  REQUIRE(queue.capacity() == 2048);
+  
+  // remove all elements
+  for(size_t i=0; i<1213; ++i) {
+    REQUIRE(queue.size() == 1213 - i);
+    queue.pop();
+  }
+  REQUIRE(queue.empty() == true);
+
+  // insert an element
+  queue.bulk_push(data.data(), 1);
+  REQUIRE(queue.size() == 1);
+  REQUIRE(queue.capacity() == 2048);
+  
+  // insert 2 elements
+  queue.bulk_push(data.data(), 2);
+  REQUIRE(queue.size() == 3);
+  REQUIRE(queue.capacity() == 2048);
+  
+  // insert 10 elements
+  queue.bulk_push(data.data(), 10);
+  REQUIRE(queue.size() == 13);
+  REQUIRE(queue.capacity() == 2048);
+  
+  // insert 1200 elements
+  queue.bulk_push(data.data(), 1200);
+  REQUIRE(queue.size() == 1213);
+  REQUIRE(queue.capacity() == 2048);
+}
 
 // Procedure: unbounded_tsq_owner
 void unbounded_tsq_owner() {
     
-  tf::UnboundedTaskQueue<void*> queue;
+  tf::UnboundedWSQ<void*> queue;
   std::vector<void*> gold;
 
   for(size_t N=1; N<=777777; N=N*2+1) {
@@ -164,13 +218,13 @@ TEST_CASE("UnboundedTSQ.Owner" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// Bounded Task Queue Multiple Consumers Test
+// Bounded Work-stealing Queue Multiple Consumers Test
 // ----------------------------------------------------------------------------
 
 // Procedure: bounded_tsq_n_consumers
 void bounded_tsq_n_consumers(size_t M) {
     
-  tf::BoundedTaskQueue<void*> queue;
+  tf::BoundedWSQ<void*> queue;
 
   std::vector<void*> gold;
   std::atomic<size_t> consumed;
@@ -273,7 +327,7 @@ TEST_CASE("BoundedTSQ.8Consumers" * doctest::timeout(300)) {
 // Procedure: bounded_tsq_n_consumers_bulk_push
 void bounded_tsq_n_consumers_bulk_push(size_t M) {
     
-  tf::BoundedTaskQueue<void*> queue;
+  tf::BoundedWSQ<void*> queue;
 
   std::vector<void*> gold;
   std::atomic<size_t> consumed;
@@ -396,13 +450,55 @@ TEST_CASE("BoundedTSQ.8Consumers.BulkPush" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
+// Testcase: BoundedWSQ ValueType test
+// ----------------------------------------------------------------------------
+
+TEST_CASE("BoundedWSQ.ValueType") { 
+  tf::BoundedWSQ<void*> Q1;
+  tf::BoundedWSQ<int> Q2;
+
+  auto empty1 = Q1.empty_value();
+  auto empty2 = Q2.empty_value();
+
+  static_assert(std::is_same_v<decltype(empty1), void*>);
+  static_assert(std::is_same_v<decltype(empty2), std::optional<int>>);
+
+  REQUIRE(empty1 == nullptr);
+  REQUIRE(empty2 == std::nullopt);
+
+  auto v = Q2.pop();
+  REQUIRE(v == std::nullopt);
+
+  Q2.try_push(1);
+  Q2.try_push(2);
+  Q2.try_push(3);
+  Q2.try_push(4);
+
+  REQUIRE(Q2.pop() == 4);
+  REQUIRE(Q2.pop() == 3);
+  REQUIRE(Q2.pop() == 2);
+  REQUIRE(Q2.pop() == 1);
+  REQUIRE(Q2.pop() == std::nullopt);
+   
+  Q2.try_push(1);
+  Q2.try_push(2);
+  Q2.try_push(3);
+  Q2.try_push(4);
+  REQUIRE(Q2.steal() == 1);
+  REQUIRE(Q2.steal() == 2);
+  REQUIRE(Q2.steal() == 3);
+  REQUIRE(Q2.steal() == 4);
+  REQUIRE(Q2.steal() == std::nullopt);
+}
+
+// ----------------------------------------------------------------------------
 // Testcase: UnboundedTSQ Multiple Consumers Test
 // ----------------------------------------------------------------------------
 
 // Procedure: unbounded_tsq_n_consumers
 void unbounded_tsq_n_consumers(size_t M) {
     
-  tf::UnboundedTaskQueue<void*> queue;
+  tf::UnboundedWSQ<void*> queue;
 
   std::vector<void*> gold;
   std::atomic<size_t> consumed;
@@ -530,7 +626,7 @@ TEST_CASE("UnboundedTSQ.8Consumers" * doctest::timeout(300)) {
 // Procedure: unbounded_tsq_n_consumers_bulk_push
 void unbounded_tsq_n_consumers_bulk_push(size_t M) {
     
-  tf::UnboundedTaskQueue<void*> queue;
+  tf::UnboundedWSQ<void*> queue;
 
   std::vector<void*> gold;
   std::atomic<size_t> consumed;
@@ -647,6 +743,49 @@ TEST_CASE("UnboundedTSQ.7Consumers.BulkPush" * doctest::timeout(300)) {
 
 TEST_CASE("UnboundedTSQ.8Consumers.BulkPush" * doctest::timeout(300)) {
   unbounded_tsq_n_consumers_bulk_push(8);
+}
+
+// ----------------------------------------------------------------------------
+// Testcase: UnboundedWSQ ValueType test
+// ----------------------------------------------------------------------------
+
+TEST_CASE("UnboundedWSQ.ValueType") { 
+
+  tf::UnboundedWSQ<void*> Q1;
+  tf::UnboundedWSQ<int> Q2;
+
+  auto empty1 = Q1.empty_value();
+  auto empty2 = Q2.empty_value();
+
+  static_assert(std::is_same_v<decltype(empty1), void*>);
+  static_assert(std::is_same_v<decltype(empty2), std::optional<int>>);
+
+  REQUIRE(empty1 == nullptr);
+  REQUIRE(empty2 == std::nullopt);
+
+  auto v = Q2.pop();
+  REQUIRE(v == std::nullopt);
+
+  Q2.push(1);
+  Q2.push(2);
+  Q2.push(3);
+  Q2.push(4);
+
+  REQUIRE(Q2.pop() == 4);
+  REQUIRE(Q2.pop() == 3);
+  REQUIRE(Q2.pop() == 2);
+  REQUIRE(Q2.pop() == 1);
+  REQUIRE(Q2.pop() == std::nullopt);
+   
+  Q2.push(1);
+  Q2.push(2);
+  Q2.push(3);
+  Q2.push(4);
+  REQUIRE(Q2.steal() == 1);
+  REQUIRE(Q2.steal() == 2);
+  REQUIRE(Q2.steal() == 3);
+  REQUIRE(Q2.steal() == 4);
+  REQUIRE(Q2.steal() == std::nullopt);
 }
 
 /*

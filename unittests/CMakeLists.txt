@@ -4,7 +4,7 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
   test_utility 
-  test_queue
+  test_wsq
   test_work_stealing 
   #test_serializer 
   test_basics 

@@ -18,7 +18,7 @@
 #include "semaphore.hpp"
 #include "environment.hpp"
 #include "topology.hpp"
-#include "tsq.hpp"
+#include "wsq.hpp"
 
 
 /**
