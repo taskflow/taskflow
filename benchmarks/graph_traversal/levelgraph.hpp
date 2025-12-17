@@ -261,6 +261,18 @@ class LevelGraph {
 
 inline void Node::mark(){
   _visited = true;
+  
+  volatile double sink = 0.0;
+
+  // Mix i so the compiler cannot constant-fold
+  double x = static_cast<double>((_idx * 1315423911u) ^ (_idx >> 3)) + 1.0;
+
+  // Do a small but non-trivial amount of FP work
+  for(int k = 0; k < 32; ++k) {
+    x = std::sin(x) * 1.0000001 + std::cos(x);
+    sink = sink + x;
+  }
+  
   if(_chosen == true){
     _graph.BFS(*this);
   }

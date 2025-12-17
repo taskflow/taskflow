@@ -324,6 +324,10 @@
         <section id="typedef-members">
           <h2><a href="#typedef-members">Typedefs</a></h2>
           <dl class="m-doc">
+            <dt>
+              using <a href="#a87f1f827b104d073078cc6500841b400" class="m-doc">DefaultNotifier</a> = AtomicNotifier
+            </dt>
+            <dd>the default notifier type used by Taskflow</dd>
             <dt id="a8cff4bbd797dde4dfab096c3cc657833">
               using <a href="#a8cff4bbd797dde4dfab096c3cc657833" class="m-doc-self">observer_stamp_t</a> = <a href="http://en.cppreference.com/w/cpp/chrono/time_point.html" class="m-doc-external">std::<wbr />chrono::<wbr />time_point</a>&lt;<a href="http://en.cppreference.com/w/cpp/chrono/steady_clock.html" class="m-doc-external">std::<wbr />chrono::<wbr />steady_clock</a>&gt;
             </dt>
@@ -891,6 +895,13 @@
         </section>
         <section>
           <h2>Typedef documentation</h2>
+          <section class="m-doc-details" id="a87f1f827b104d073078cc6500841b400"><div>
+            <h3>
+              typedef AtomicNotifier tf::<wbr /><a href="#a87f1f827b104d073078cc6500841b400" class="m-doc-self">DefaultNotifier</a>
+            </h3>
+            <p>the default notifier type used by Taskflow</p>
+<p>Taskflow selects the default notifier based on build configuration. By default, a C++20 atomic-based notifier is used. However, on some platforms and compiler versions, the atomic notification may exhibit suboptimal performance due to inefficient or highly contended wake-up mechanisms. These issues have been discussed in GCC bug reports and patch threads related to atomic wait/notify implementations.</p><p>Defining <code>TF_ENABLE_NONBLOCKING_NOTIFIER</code> switches the default to a non-blocking notifier implementation that avoids these atomic notification patterns and can provide more stable scalability under high concurrency.</p><p>See also:</p><ul><li><a href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106772">GCC Bugzilla report on atomic wait/notify behavior</a></li><li><a href="https://gcc.gnu.org/pipermail/gcc-patches/2025-May/685050.html">GCC patch discussions on refactoring and fixing atomic notify/race issues</a></li></ul>
+          </div></section>
           <section class="m-doc-details" id="a66b72776c788898aee9e132b0ea9b405"><div>
             <h3>
               using tf::<wbr /><a href="#a66b72776c788898aee9e132b0ea9b405" class="m-doc-self">DefaultPartitioner</a> = <a href="classtf_1_1GuidedPartitioner.html" class="m-doc">GuidedPartitioner</a>&lt;&gt;

@@ -1,10 +1,5 @@
 #pragma once
 
-// Feature macros for fine-tuning the performance of Taskflow at compile time
-// 
-// Disabled features by default:
-// + TF_ENABLE_TASK_POOL       : enable task pool optimization
-
 #include "core/executor.hpp"
 #include "core/runtime.hpp"
 #include "core/async.hpp"

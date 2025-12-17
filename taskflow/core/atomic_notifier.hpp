@@ -81,10 +81,10 @@ class AtomicNotifier {
 
   void notify_one() noexcept;
   void notify_all() noexcept;
-  void notify_n(size_t n) noexcept;
-  void prepare_wait(size_t w) noexcept;
-  void cancel_wait() noexcept;
-  void commit_wait(size_t w) noexcept;
+  void notify_n(size_t) noexcept;
+  void prepare_wait(size_t) noexcept;
+  void cancel_wait(size_t) noexcept;
+  void commit_wait(size_t) noexcept;
 
   size_t size() const noexcept;
   size_t num_waiters() const noexcept;
@@ -158,7 +158,7 @@ inline void AtomicNotifier::prepare_wait(size_t w) noexcept {
   std::atomic_thread_fence(std::memory_order_seq_cst);
 }
 
-inline void AtomicNotifier::cancel_wait() noexcept {
+inline void AtomicNotifier::cancel_wait(size_t) noexcept {
   _state.fetch_sub(WAITER_INC, std::memory_order_relaxed);
 }
 

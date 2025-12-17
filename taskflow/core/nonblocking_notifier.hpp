@@ -61,7 +61,7 @@ namespace tf {
 // the waiter, or both. But it can't happen that both threads don't see each
 // other changes, which would lead to deadlock.
 
-class NonblockingNotifierV1 {
+class NonblockingNotifier {
 
   friend class Executor;
 
@@ -76,42 +76,46 @@ class NonblockingNotifierV1 {
       kSignaled,
     };
 
-#if __cplusplus >= TF_CPP20
-    std::atomic<unsigned> state {0};
-#else
-    std::mutex mu;
+    mutable std::mutex mu;
     std::condition_variable cv;
     unsigned state;
-#endif
   };
 
-  explicit NonblockingNotifierV1(size_t N) : _state(kStackMask), _waiters(N) {
+  explicit NonblockingNotifier(size_t N) : _state(kStackMask), _waiters(N) {
     assert(_waiters.size() < (1 << kWaiterBits) - 1);
     // Initialize epoch to something close to overflow to test overflow.
     //_state = kStackMask | (kEpochMask - kEpochInc * _waiters.size() * 2);
   }
 
-  ~NonblockingNotifierV1() {
+  ~NonblockingNotifier() {
     // Ensure there are no waiters.
     assert((_state.load() & (kStackMask | kWaiterMask)) == kStackMask);
+  }
+
+  size_t num_waiters() const {
+    size_t n = 0;
+    for(auto& w : _waiters) {
+      std::scoped_lock lock(w.mu);
+      n += (w.state == Waiter::kWaiting);
+    }
+    return n;
   }
 
   // prepare_wait prepares for waiting.
   // After calling this function the thread must re-check the wait predicate
   // and call either cancel_wait or commit_wait passing the same Waiter object.
-  void prepare_wait(Waiter* w) {
-    w->epoch = _state.fetch_add(kWaiterInc, std::memory_order_relaxed);
+  void prepare_wait(size_t wid) {
+    _waiters[wid].epoch = _state.fetch_add(kWaiterInc, std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_seq_cst);
   }
 
   // commit_wait commits waiting.
   // only the waiter itself can call
-  void commit_wait(Waiter* w) {
-#if __cplusplus >= TF_CPP20
-    w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
-#else
+  void commit_wait(size_t wid) {
+
+    auto w = &_waiters[wid];
+
     w->state = Waiter::kNotSignaled;
-#endif
     // Modification epoch of this waiter.
     uint64_t epoch =
         (w->epoch & kEpochMask) +
@@ -144,7 +148,10 @@ class NonblockingNotifierV1 {
   }
 
   // cancel_wait cancels effects of the previous prepare_wait call.
-  void cancel_wait(Waiter* w) {
+  void cancel_wait(size_t wid) {
+    
+    auto w = &_waiters[wid];
+
     uint64_t epoch =
       (w->epoch & kEpochMask) +
       (((w->epoch & kWaiterMask) >> kWaiterShift) << kEpochShift);
@@ -212,35 +219,17 @@ class NonblockingNotifierV1 {
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
-#if __cplusplus >= TF_CPP20
-    unsigned target = Waiter::kNotSignaled;
-    if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
-                                        std::memory_order_relaxed,
-                                        std::memory_order_relaxed)) {
-      w->state.wait(Waiter::kWaiting, std::memory_order_relaxed);
-    }
-#else
     std::unique_lock<std::mutex> lock(w->mu);
     while (w->state != Waiter::kSignaled) {
       w->state = Waiter::kWaiting;
       w->cv.wait(lock);
     }
-#endif
   }
 
   void _unpark(Waiter* waiters) {
     Waiter* next = nullptr;
     for (Waiter* w = waiters; w; w = next) {
       next = w->next.load(std::memory_order_relaxed);
-#if __cplusplus >= TF_CPP20
-      // We only notify if the other is waiting - this is why we use tri-state
-      // variable instead of binary-state variable (i.e., atomic_flag)
-      // Performance is about 0.1% faster
-      if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == 
-         Waiter::kWaiting) {
-        w->state.notify_one();
-      }
-#else
       unsigned state;
       {
         std::unique_lock<std::mutex> lock(w->mu);
@@ -249,7 +238,6 @@ class NonblockingNotifierV1 {
       }
       // Avoid notifying if it wasn't waiting.
       if (state == Waiter::kWaiting) w->cv.notify_one();
-#endif
     }
   }
   
@@ -345,13 +333,9 @@ class NonblockingNotifierV2 {
       kSignaled,
     };
 
-#if __cplusplus >= TF_CPP20
-    std::atomic<unsigned> state {kNotSignaled};
-#else
-    std::mutex mu;
+    mutable std::mutex mu;
     std::condition_variable cv;
     unsigned state {kNotSignaled};
-#endif
   };
 
   explicit NonblockingNotifierV2(size_t N) : _state(kStackMask), _waiters(N) {
@@ -375,19 +359,25 @@ class NonblockingNotifierV2 {
   //    if (_state.compare_exchange_weak(state, newstate, std::memory_order_seq_cst)) return;
   //  }
   //}
+  
+  size_t num_waiters() const {
+    size_t n = 0;
+    for(auto& w : _waiters) {
+      std::scoped_lock lock(w.mu);
+      n += (w.state == Waiter::kWaiting);
+    }
+    return n;
+  }
 
-  void prepare_wait(Waiter*) {
+  void prepare_wait(size_t) {
     _state.fetch_add(kWaiterInc, std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_seq_cst);
   }
 
   // commit_wait commits waiting after prepare_wait.
-  void commit_wait(Waiter* w) {
-#if __cplusplus >= TF_CPP20
-    w->state.store(Waiter::kNotSignaled, std::memory_order_relaxed);
-#else
+  void commit_wait(size_t wid) {
+    auto w = &_waiters[wid];
     w->state = Waiter::kNotSignaled;
-#endif
     const uint64_t me = (w - &_waiters[0]) | w->epoch;
     uint64_t state = _state.load(std::memory_order_seq_cst);
     for (;;) {
@@ -413,7 +403,7 @@ class NonblockingNotifierV2 {
   }
 
   // cancel_wait cancels effects of the previous prepare_wait call.
-  void cancel_wait(Waiter*) {
+  void cancel_wait(size_t) {
     uint64_t state = _state.load(std::memory_order_relaxed);
     for (;;) {
       //_check_state(state, true);
@@ -455,32 +445,17 @@ class NonblockingNotifierV2 {
   std::vector<Waiter> _waiters;
 
   void _park(Waiter* w) {
-#if __cplusplus >= TF_CPP20
-    unsigned target = Waiter::kNotSignaled;
-    if(w->state.compare_exchange_strong(target, Waiter::kWaiting,
-                                        std::memory_order_relaxed,
-                                        std::memory_order_relaxed)) {
-      w->state.wait(Waiter::kWaiting, std::memory_order_relaxed);
-    }
-#else
     std::unique_lock<std::mutex> lock(w->mu);
     while (w->state != Waiter::kSignaled) {
       w->state = Waiter::kWaiting;
       w->cv.wait(lock);
     }
-#endif
   }
 
   void _unpark(Waiter* w) {
     for (Waiter* next; w; w = next) {
       uint64_t wnext = w->next.load(std::memory_order_relaxed) & kStackMask;
       next = (wnext == kStackMask) ? nullptr : &_waiters[static_cast<size_t>(wnext)];
-#if __cplusplus >= TF_CPP20
-      if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == 
-         Waiter::kWaiting) {
-        w->state.notify_one();
-      }
-#else      
       unsigned state;
       {
         std::unique_lock<std::mutex> lock(w->mu);
@@ -489,7 +464,6 @@ class NonblockingNotifierV2 {
       }
       // Avoid notifying if it wasn't waiting.
       if (state == Waiter::kWaiting) w->cv.notify_one();
-#endif
     }
   }
   
