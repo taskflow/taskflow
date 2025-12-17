@@ -2,6 +2,7 @@
 
 #include "declarations.hpp"
 #include "wsq.hpp"
+#include "nonblocking_notifier.hpp"
 #include "atomic_notifier.hpp"
 
 
@@ -14,13 +15,37 @@ namespace tf {
 
 // ----------------------------------------------------------------------------
 // Default Notifier
+// Our experiments show that the performance of atomic notifier is the best.
 // ----------------------------------------------------------------------------
 
 
 /**
-@private
+@typedef DefaultNotifier
+
+@brief the default notifier type used by %Taskflow
+
+%Taskflow selects the default notifier based on build configuration.
+By default, a C++20 atomic-based notifier is used. However, on some
+platforms and compiler versions, the atomic notification may exhibit
+suboptimal performance due to inefficient or highly contended
+wake-up mechanisms. These issues have been discussed in GCC bug
+reports and patch threads related to atomic wait/notify
+implementations.
+
+Defining `TF_ENABLE_NONBLOCKING_NOTIFIER` switches the default to a
+non-blocking notifier implementation that avoids these atomic
+notification patterns and can provide more stable scalability under
+high concurrency.
+
+See also:
+  + [GCC Bugzilla report on atomic wait/notify behavior](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106772)
+  + [GCC patch discussions on refactoring and fixing atomic notify/race issues](https://gcc.gnu.org/pipermail/gcc-patches/2025-May/685050.html)
 */
-using DefaultNotifier = AtomicNotifier; 
+#ifdef TF_ENABLE_NONBLOCKING_NOTIFIER
+  using DefaultNotifier = NonblockingNotifier;
+#else
+  using DefaultNotifier = AtomicNotifier;
+#endif
 
 // ----------------------------------------------------------------------------
 // Class Definition: Worker

@@ -1438,7 +1438,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   // Condition #1: buffers should be empty
   for(size_t b=0; b<_buffers.size(); ++b) {
     if(!_buffers[b].queue.empty()) {
-      _notifier.cancel_wait();
+      _notifier.cancel_wait(w._id);
       w._vtm = b + _workers.size();
       goto explore_task;
     }
@@ -1449,7 +1449,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   // which initializes other worker data structure at the same time
   for(size_t vtm=0; vtm<w._id; ++vtm) {
     if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait();
+      _notifier.cancel_wait(w._id);
       w._vtm = vtm;
       goto explore_task;
     }
@@ -1459,7 +1459,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   // the queue of this worker
   for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
     if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait();
+      _notifier.cancel_wait(w._id);
       w._vtm = vtm;
       goto explore_task;
     }
@@ -1467,7 +1467,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   
   // Condition #3: worker should be alive
   if(w._done.test(std::memory_order_relaxed)) {
-    _notifier.cancel_wait();
+    _notifier.cancel_wait(w._id);
     return false;
   }
   

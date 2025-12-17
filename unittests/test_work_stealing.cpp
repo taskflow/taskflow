@@ -917,8 +917,6 @@ TEST_CASE("WorkStealing.Oversubscription.8threads" * doctest::timeout(300)) {
 // Waiter Test
 // ----------------------------------------------------------------------------
 
-// nonblocking_notifier does not support num_waiters
-
 void waiter(size_t W) {
 
   tf::Executor executor(W);

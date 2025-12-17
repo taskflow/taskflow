@@ -262,18 +262,26 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="typedef">
-      <memberdef kind="typedef" id="namespacetf_1af8633cb190af9c3669002ed342ba9cff" prot="private" static="no">
+      <memberdef kind="typedef" id="namespacetf_1a87f1f827b104d073078cc6500841b400" prot="public" static="no">
         <type>AtomicNotifier</type>
-        <definition>using tf::DefaultNotifier = typedef AtomicNotifier</definition>
+        <definition>tf::DefaultNotifier</definition>
         <argsstring></argsstring>
         <name>DefaultNotifier</name>
         <briefdescription>
+<para>the default notifier type used by Taskflow </para>
         </briefdescription>
         <detaileddescription>
+<para>Taskflow selects the default notifier based on build configuration. By default, a C++20 atomic-based notifier is used. However, on some platforms and compiler versions, the atomic notification may exhibit suboptimal performance due to inefficient or highly contended wake-up mechanisms. These issues have been discussed in GCC bug reports and patch threads related to atomic wait/notify implementations.</para>
+<para>Defining <computeroutput>TF_ENABLE_NONBLOCKING_NOTIFIER</computeroutput> switches the default to a non-blocking notifier implementation that avoids these atomic notification patterns and can provide more stable scalability under high concurrency.</para>
+<para>See also:<itemizedlist>
+<listitem><para><ulink url="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=106772">GCC Bugzilla report on atomic wait/notify behavior</ulink></para>
+</listitem><listitem><para><ulink url="https://gcc.gnu.org/pipermail/gcc-patches/2025-May/685050.html">GCC patch discussions on refactoring and fixing atomic notify/race issues</ulink> </para>
+</listitem></itemizedlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="23" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="23" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="47" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="47" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
         <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
@@ -1864,7 +1872,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="245" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="245" bodyend="251"/>
+        <location file="taskflow/core/worker.hpp" line="270" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="270" bodyend="276"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -3287,7 +3295,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="92" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="92" bodyend="94"/>
+        <location file="taskflow/taskflow.hpp" line="87" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="87" bodyend="89"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
