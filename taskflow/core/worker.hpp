@@ -24,9 +24,8 @@ namespace tf {
 
 @brief the default notifier type used by %Taskflow
 
-%Taskflow selects the default notifier based on build configuration.
-By default, the `NonblockingNotifier` is used. 
-We do not use `AtomicNotifier` since on some platforms and compiler versions,
+By default, %Taskflow uses tf::NonblockingNotifier due to its stable performance on most platforms.
+We do not use tf::AtomicNotifier since on some platforms and compiler versions,
 the atomic notification may exhibit suboptimal performance due to buggy wake-up mechanisms.
 These issues have been discussed in GCC bug reports and patch threads related to atomic wait/notify
 implementations.
