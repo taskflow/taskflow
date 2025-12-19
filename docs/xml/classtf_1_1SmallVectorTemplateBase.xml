@@ -1,8 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1SmallVectorTemplateBase" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorTemplateBase</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorTemplateCommon&lt; T &gt;</basecompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorImpl" prot="public" virt="non-virtual">tf::SmallVectorImpl&lt; Node * &gt;</derivedcompoundref>
+    <derivedcompoundref refid="classtf_1_1SmallVectorImpl" prot="public" virt="non-virtual">tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</derivedcompoundref>
     <templateparamlist>
       <param>
         <type>typename T</type>
@@ -13,12 +15,13 @@
         <defname>isPodLike</defname>
       </param>
     </templateparamlist>
-      <sectiondef kind="protected-func">
+    <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1adc772391e02b84d14f4c5513542b29a9" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::SmallVectorTemplateBase</definition>
         <argsstring>(size_t Size)</argsstring>
         <name>SmallVectorTemplateBase</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::SmallVectorTemplateBase</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -36,6 +39,7 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::grow</definition>
         <argsstring>(size_t MinSize=0)</argsstring>
         <name>grow</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::grow</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>MinSize</declname>
@@ -50,13 +54,14 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="267" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="294" bodyend="316"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="protected-static-func">
+    </sectiondef>
+    <sectiondef kind="protected-static-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a00ebcf9e81eed0b433be97131fd3d1d1" prot="protected" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::destroy_range</definition>
         <argsstring>(T *S, T *E)</argsstring>
         <name>destroy_range</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::destroy_range</qualifiedname>
         <param>
           <type>T *</type>
           <declname>S</declname>
@@ -86,6 +91,7 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_move</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_move</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::uninitialized_move</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -120,6 +126,7 @@
         <definition>static void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::uninitialized_copy</definition>
         <argsstring>(It1 I, It1 E, It2 Dest)</argsstring>
         <name>uninitialized_copy</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::uninitialized_copy</qualifiedname>
         <param>
           <type>It1</type>
           <declname>I</declname>
@@ -141,13 +148,14 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="260" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="260" bodyend="262"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateBase_1a6b7c01c4c054379358315a1aac0d49a7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
         <argsstring>(const T &amp;Elt)</argsstring>
         <name>push_back</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::push_back</qualifiedname>
         <param>
           <type>const T &amp;</type>
           <declname>Elt</declname>
@@ -165,6 +173,7 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::push_back</definition>
         <argsstring>(T &amp;&amp;Elt)</argsstring>
         <name>push_back</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::push_back</qualifiedname>
         <param>
           <type>T &amp;&amp;</type>
           <declname>Elt</declname>
@@ -182,6 +191,7 @@
         <definition>void tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;::pop_back</definition>
         <argsstring>()</argsstring>
         <name>pop_back</name>
+        <qualifiedname>tf::SmallVectorTemplateBase::pop_back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -190,38 +200,48 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="284" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="284" bodyend="287"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
-        </childnode>
-      </node>
       <node id="3">
         <label>tf::SmallVectorBase</label>
+      </node>
+      <node id="4">
+        <label>tf::SmallVectorImpl&lt; Node * &gt;</label>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>tf::SmallVectorImpl&lt; tf::Semaphore * &gt;</label>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
       </node>
       <node id="1">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
         <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </inheritancegraph>
     <collaborationgraph>
-      <node id="2">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="3" relation="public-inheritance">
-        </childnode>
-      </node>
       <node id="3">
         <label>tf::SmallVectorBase</label>
       </node>
       <node id="1">
         <label>tf::SmallVectorTemplateBase&lt; T, isPodLike &gt;</label>
         <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="3" relation="public-inheritance">
         </childnode>
       </node>
     </collaborationgraph>

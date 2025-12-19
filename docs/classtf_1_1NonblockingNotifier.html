@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>tf::NonblockingNotifier class | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="namespacetf.html">tf</a>::<wbr/></span>NonblockingNotifier <span class="m-thin">class</span>
+        </h1>
+        <p>class to create a non-blocking notifier</p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#pub-static-attribs">Public static variables</a></li>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+<p>A non-blocking notifier enables threads to wait for user-defined predicates without blocking locks or protecting the predicate with a mutex. Conceptually, it is similar to a condition variable, but the wait predicate is evaluated optimistically and does not require mutual exclusion.</p><p>A waiting thread follows this pattern:</p><pre class="m-code"><span class="n">wid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this_waiter_id</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">act</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">notifier</span><span class="p">.</span><span class="n">prepare_wait</span><span class="p">(</span><span class="n">wid</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">notifier</span><span class="p">.</span><span class="n">cancel_wait</span><span class="p">(</span><span class="n">wid</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">act</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">notifier</span><span class="p">.</span><span class="n">commit_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span></pre><p>A notifying thread performs:</p><pre class="m-code"><span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="n">notifier</span><span class="p">.</span><span class="n">notify</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span></pre><p>The <code>notify</code> operation is inexpensive when no threads are waiting. The <code>prepare_wait</code> and <code>commit_wait</code> operations are more costly, but they are only executed when the initial predicate check fails.</p><p>The algorithm is driven by two shared variables:</p><ul><li>the user-managed predicate, and</li><li>an internal state variable (<code>state</code>)</li></ul><p>A waiting thread first publishes its intent to wait by updating <code>state</code> and then rechecks the predicate. Conversely, a notifying thread first updates the predicate and then inspects <code>state</code>. Sequentially consistent memory fences between these operations ensure that one of the following outcomes must occur:</p><ul><li>the waiting thread observes the predicate change and does not block,</li><li>the notifying thread observes the waiting state and wakes the waiter, or</li><li>both observations occur.</li></ul><p>It is impossible for both threads to miss each other&#x27;s updates, which guarantees freedom from missed wake-ups and prevents deadlock.</p><p>Reference: <a href="https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/ThreadPool/EventCount.h">https:/<wbr />/<wbr />gitlab.com/<wbr />libeigen/<wbr />eigen/<wbr />-/<wbr />blob/<wbr />master/<wbr />Eigen/<wbr />src/<wbr />ThreadPool/<wbr />EventCount.h</a></p>
+        <section id="pub-static-attribs">
+          <h2><a href="#pub-static-attribs">Public static variables</a></h2>
+          <dl class="m-doc">
+            <dt id="ac66f032d0b82c70478784dd5630a23f6">
+              static const uint64_t <a href="#ac66f032d0b82c70478784dd5630a23f6" class="m-doc-self">STACK_BITS</a>
+            </dt>
+            <dd>Number of bits used to encode the waiter stack index.</dd>
+            <dt id="ab3447efc57c2898b2d0745456536dbf7">
+              static const uint64_t <a href="#ab3447efc57c2898b2d0745456536dbf7" class="m-doc-self">STACK_MASK</a>
+            </dt>
+            <dd>Bit mask for extracting the waiter stack index.</dd>
+            <dt id="aa88e2b5bcf49871f747017dac4bc89f9">
+              static const uint64_t <a href="#aa88e2b5bcf49871f747017dac4bc89f9" class="m-doc-self">PREWAITER_BITS</a>
+            </dt>
+            <dd>Number of bits used to encode the pre-waiter ticket.</dd>
+            <dt id="a01dd5c528dd56976e11d8b470c5574af">
+              static const uint64_t <a href="#a01dd5c528dd56976e11d8b470c5574af" class="m-doc-self">PREWAITER_SHIFT</a>
+            </dt>
+            <dd>Bit shift of the pre-waiter ticket field.</dd>
+            <dt id="a96bdd4d8f43deed455462d7bd7113ecb">
+              static const uint64_t <a href="#a96bdd4d8f43deed455462d7bd7113ecb" class="m-doc-self">PREWAITER_MASK</a>
+            </dt>
+            <dd>Bit mask for extracting the pre-waiter ticket field.</dd>
+            <dt id="a4bf0b454c3110a31fefaff56f6cbf2e2">
+              static const uint64_t <a href="#a4bf0b454c3110a31fefaff56f6cbf2e2" class="m-doc-self">PREWAITER_INC</a>
+            </dt>
+            <dd>Increment value for advancing the pre-waiter ticket.</dd>
+            <dt id="a4e6bdfc8b93ffbb88f4f811f2fb5f54f">
+              static const uint64_t <a href="#a4e6bdfc8b93ffbb88f4f811f2fb5f54f" class="m-doc-self">EPOCH_BITS</a>
+            </dt>
+            <dd>Number of bits used to encode the epoch counter.</dd>
+            <dt id="a36db9cce61b1b84d9739325c506de622">
+              static const uint64_t <a href="#a36db9cce61b1b84d9739325c506de622" class="m-doc-self">EPOCH_SHIFT</a>
+            </dt>
+            <dd>Bit shift of the epoch field.</dd>
+            <dt id="a68b8c94b6c2ef69e54bf27c76277ddc3">
+              static const uint64_t <a href="#a68b8c94b6c2ef69e54bf27c76277ddc3" class="m-doc-self">EPOCH_MASK</a>
+            </dt>
+            <dd>Bit mask for extracting the epoch field.</dd>
+            <dt id="a83ef7436b6dd7586f5fdb1c6145b3239">
+              static const uint64_t <a href="#a83ef7436b6dd7586f5fdb1c6145b3239" class="m-doc-self">EPOCH_INC</a>
+            </dt>
+            <dd>Increment value for advancing the epoch counter.</dd>
+          </dl>
+        </section>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper"><a href="#a1722141a86e24ef029614e4a2191f7e4" class="m-doc">NonblockingNotifier</a>(</span><span class="m-doc-wrap">size_t N) <span class="m-label m-flat m-info">explicit</span> </span>
+            </dt>
+            <dd>constructs a notifier</dd>
+            <dt id="abbc4e00184b6cd86363336bd0a0a83db">
+              <span class="m-doc-wrap-bumper"><a href="#abbc4e00184b6cd86363336bd0a0a83db" class="m-doc-self">~NonblockingNotifier</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>destructs the notifier</dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a016a0e8c8c57df0a9d7f48661369a30a" class="m-doc">num_waiters</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>returns the number of committed waiters</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a62357b230d37301f1ee5759138252358" class="m-doc">capacity</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>returns the maximum number of waiters supported by this notifier</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span>
+            </dt>
+            <dd>prepares the calling thread to enter the waiting set</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span>
+            </dt>
+            <dd>commits a previously prepared wait operation</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span>
+            </dt>
+            <dd>cancels a previously prepared wait operation</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a850c89512193c41536e245b51820c944" class="m-doc">notify_one</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>notifies one waiter from the waiting set</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#abbbb08c0e2cc1a7f941a650538ae48e5" class="m-doc">notify_all</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>notifies all waiter from the waiting set</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">void <a href="#a7d18de3e549c88c36c969f5cccea0508" class="m-doc">notify_n</a>(</span><span class="m-doc-wrap">size_t n)</span>
+            </dt>
+            <dd>notifies up to <code>n</code> waiters from the waiting set</dd>
+            <dt id="ade0d740cf887f826f840bd059135f4a6">
+              <span class="m-doc-wrap-bumper">auto <a href="#ade0d740cf887f826f840bd059135f4a6" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>returns the number of waiters in this notifier</dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="a1722141a86e24ef029614e4a2191f7e4"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"> tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1722141a86e24ef029614e4a2191f7e4" class="m-doc-self">NonblockingNotifier</a>(</span><span class="m-doc-wrap">size_t N) <span class="m-label m-info">explicit</span> </span></span>
+            </h3>
+            <p>constructs a notifier</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">N</td>
+                  <td>number of waiters</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Constructs a notifier that supports up to <code>N</code> waiters. The maximum allowable number of waiters can be acquired by calling <code><a href="#a62357b230d37301f1ee5759138252358" class="m-doc">capacity()</a></code>.</p>
+          </div></section>
+          <section class="m-doc-details" id="a016a0e8c8c57df0a9d7f48661369a30a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a016a0e8c8c57df0a9d7f48661369a30a" class="m-doc-self">num_waiters</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>returns the number of committed waiters</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>The number of committed waiters at the time of the call.</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A committed waiter is a thread that has completed the pre-waiting stage and is fully registered in the waiting set.</p>
+          </div></section>
+          <section class="m-doc-details" id="a62357b230d37301f1ee5759138252358"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a62357b230d37301f1ee5759138252358" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">) const</span></span>
+            </h3>
+            <p>returns the maximum number of waiters supported by this notifier</p>
+<p>The maximum number of waiters supported by this non-blocking notifier is equal to 2^STACK_BITS.</p>
+          </div></section>
+          <section class="m-doc-details" id="a4633df9ff4f8f9b00ff4fb14a0d02237"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc-self">prepare_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span></span>
+            </h3>
+            <p>prepares the calling thread to enter the waiting set</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">wid</td>
+                  <td>identifier of the calling thread, in the range of <code>[0, <a href="#ade0d740cf887f826f840bd059135f4a6" class="m-doc">size()</a>)</code></td>
+                </tr>
+              </tbody>
+            </table>
+<p>This function places the thread into the pre-waiting stage. After calling <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code>, the thread must re-check the wait predicate and then complete the protocol by calling either <code><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_<wbr />wait()</a></code> or <code><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_<wbr />wait()</a></code> with the same waiter identifier.</p><p>A thread in the pre-waiting stage is not yet considered a committed waiter, and its waiting status is considered incomplete. Failing to follow <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code> with exactly one call to <code><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_<wbr />wait()</a></code> or <code><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_<wbr />wait()</a></code> results in undefined behavior.</p>
+          </div></section>
+          <section class="m-doc-details" id="a6f5346994238a16480ab9d50d484ea27"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc-self">commit_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span></span>
+            </h3>
+            <p>commits a previously prepared wait operation</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">wid</td>
+                  <td>identifier of the calling thread, in the range of <code>[0, <a href="#ade0d740cf887f826f840bd059135f4a6" class="m-doc">size()</a>)</code></td>
+                </tr>
+              </tbody>
+            </table>
+<p>This function completes the waiting protocol for a thread that has previously called <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code>. Upon successful completion, the thread becomes a committed waiter and will park until being notified.</p><p>The thread must have re-checked the wait predicate before calling <code><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_<wbr />wait()</a></code>. Once committed, the thread may be awakened by <code><a href="#a850c89512193c41536e245b51820c944" class="m-doc">notify_<wbr />one()</a></code>, <code><a href="#a7d18de3e549c88c36c969f5cccea0508" class="m-doc">notify_<wbr />n()</a></code>, or <code><a href="#abbbb08c0e2cc1a7f941a650538ae48e5" class="m-doc">notify_<wbr />all()</a></code>.</p><p>Each call to <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code> must be followed by exactly one call to either <code><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_<wbr />wait()</a></code> or <code><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_<wbr />wait()</a></code> using the same thread identifier.</p>
+          </div></section>
+          <section class="m-doc-details" id="a3f32e0f7adb305de32f34f7ce6d8c222"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc-self">cancel_wait</a>(</span><span class="m-doc-wrap">size_t wid)</span></span>
+            </h3>
+            <p>cancels a previously prepared wait operation</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">wid</td>
+                  <td>identifier of the calling thread, in the range of <code>[0, <a href="#ade0d740cf887f826f840bd059135f4a6" class="m-doc">size()</a>)</code></td>
+                </tr>
+              </tbody>
+            </table>
+<p>This function aborts the waiting protocol for a thread that has previously called <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code>. After cancellation, the thread does not become a committed waiter and will return to user-side control.</p><p><code><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_<wbr />wait()</a></code> must be called after the wait predicate has been re-checked and found to be false. This allows a thread to safely abandon waiting without blocking or being notified.</p><p>Each call to <code><a href="#a4633df9ff4f8f9b00ff4fb14a0d02237" class="m-doc">prepare_<wbr />wait()</a></code> must be followed by exactly one call to either <code><a href="#a6f5346994238a16480ab9d50d484ea27" class="m-doc">commit_<wbr />wait()</a></code> or <code><a href="#a3f32e0f7adb305de32f34f7ce6d8c222" class="m-doc">cancel_<wbr />wait()</a></code> using the same thread identifier.</p>
+          </div></section>
+          <section class="m-doc-details" id="a850c89512193c41536e245b51820c944"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a850c89512193c41536e245b51820c944" class="m-doc-self">notify_one</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>notifies one waiter from the waiting set</p>
+<p>Wakes up one waiter from the waiting set.</p><p>The function is cheap when no threads are waiting.</p>
+          </div></section>
+          <section class="m-doc-details" id="abbbb08c0e2cc1a7f941a650538ae48e5"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#abbbb08c0e2cc1a7f941a650538ae48e5" class="m-doc-self">notify_all</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>notifies all waiter from the waiting set</p>
+<p>Wakes up all waiters from the waiting set.</p><p>The function is cheap when no threads are waiting.</p>
+          </div></section>
+          <section class="m-doc-details" id="a7d18de3e549c88c36c969f5cccea0508"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">void tf::<wbr />NonblockingNotifier::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7d18de3e549c88c36c969f5cccea0508" class="m-doc-self">notify_n</a>(</span><span class="m-doc-wrap">size_t n)</span></span>
+            </h3>
+            <p>notifies up to <code>n</code> waiters from the waiting set</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">n</td>
+                  <td>maximum number of waiters to notify</td>
+                </tr>
+              </tbody>
+            </table>
+<p>Wakes up at most <code>n</code> waiters from the waiting set. If <code>n</code> is greater than or equal to the maximum number of waiters in this notifier, this function behaves identically to <code><a href="#abbbb08c0e2cc1a7f941a650538ae48e5" class="m-doc">notify_<wbr />all()</a></code>.</p><p>The function is cheap when no threads are waiting.</p>
+          </div></section>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

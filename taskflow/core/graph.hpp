@@ -759,8 +759,10 @@ TF_FORCE_INLINE Node* get_node_ptr(T& node) {
 */
 template <typename I>
 class NodeIteratorAdapter {
-  
+
   public:
+
+  using difference_type = typename std::iterator_traits<I>::difference_type;
 
   TF_FORCE_INLINE explicit NodeIteratorAdapter(I it) : _it(it) {}
 
@@ -769,65 +771,37 @@ class NodeIteratorAdapter {
     return detail::get_node_ptr(*_it);
   }
 
-  TF_FORCE_INLINE auto operator[](auto n) const noexcept {
+  TF_FORCE_INLINE auto operator[](difference_type n) const noexcept {
     return detail::get_node_ptr(_it[n]);
   }
 
-  // Cannot return a true pointer unless we create a proxy object.
-  // Often omitted unless needed.
-  // auto operator->() const { return ...; }
-
   // ----- iterator movement -----
-  TF_FORCE_INLINE NodeIteratorAdapter& operator+=(auto n) noexcept {
+  TF_FORCE_INLINE NodeIteratorAdapter& operator+=(difference_type n) noexcept {
     _it += n;
     return *this;
   }
 
-  TF_FORCE_INLINE NodeIteratorAdapter& operator-=(auto n) noexcept {
+  TF_FORCE_INLINE NodeIteratorAdapter& operator-=(difference_type n) noexcept {
     _it -= n;
     return *this;
   }
 
   // ----- iterator arithmetic -----
-  friend TF_FORCE_INLINE auto operator+(NodeIteratorAdapter it, auto n) noexcept {
+  friend TF_FORCE_INLINE NodeIteratorAdapter
+  operator+(NodeIteratorAdapter it, difference_type n) noexcept {
     it += n;
     return it;
   }
 
-  friend TF_FORCE_INLINE auto operator-(NodeIteratorAdapter it, auto n) noexcept {
+  friend TF_FORCE_INLINE NodeIteratorAdapter
+  operator-(NodeIteratorAdapter it, difference_type n) noexcept {
     it -= n;
     return it;
   }
 
-
-  //// ----- comparisons -----
-  //bool operator==(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it == b._it;
-  //}
-  //bool operator!=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it != b._it;
-  //}
-  //bool operator<(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it < b._it;
-  //}
-  //bool operator>(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it > b._it;
-  //}
-  //bool operator<=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it <= b._it;
-  //}
-  //bool operator>=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it >= b._it;
-  //}
-
-  //// access original iterator if needed
-  //I base() const { return _it; }
-
   private:
-
   I _it;
 };
-
 
 
 

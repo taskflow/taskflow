@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="structtf_1_1UnboundedWSQ_1_1Array" kind="struct" language="C++" prot="private">
     <compoundname>tf::UnboundedWSQ::Array</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1UnboundedWSQ_1_1Array_1ae4110b04c80289a4b56b555cb2ee630c" prot="public" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::UnboundedWSQ&lt; T &gt;::Array::C</definition>
         <argsstring></argsstring>
         <name>C</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::C</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -21,6 +22,7 @@
         <definition>size_t tf::UnboundedWSQ&lt; T &gt;::Array::M</definition>
         <argsstring></argsstring>
         <name>M</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::M</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -30,10 +32,11 @@
         <location file="taskflow/core/wsq.hpp" line="66" column="12" bodyfile="taskflow/core/wsq.hpp" bodystart="66" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1UnboundedWSQ_1_1Array_1afdb29ed3cb4bb3bf5bc9be4598fd452c" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; *</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; T &gt; *</type>
         <definition>std::atomic&lt;T&gt;* tf::UnboundedWSQ&lt; T &gt;::Array::S</definition>
         <argsstring></argsstring>
         <name>S</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::S</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -42,13 +45,14 @@
         </inbodydescription>
         <location file="taskflow/core/wsq.hpp" line="67" column="17" bodyfile="taskflow/core/wsq.hpp" bodystart="67" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1UnboundedWSQ_1_1Array_1a47bfa7b8e8fdb6c67c12fce7576ef98f" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::UnboundedWSQ&lt; T &gt;::Array::Array</definition>
         <argsstring>(size_t c)</argsstring>
         <name>Array</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::Array</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>c</declname>
@@ -66,6 +70,7 @@
         <definition>tf::UnboundedWSQ&lt; T &gt;::Array::~Array</definition>
         <argsstring>()</argsstring>
         <name>~Array</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::~Array</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -79,6 +84,7 @@
         <definition>size_t tf::UnboundedWSQ&lt; T &gt;::Array::capacity</definition>
         <argsstring>() const noexcept</argsstring>
         <name>capacity</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::capacity</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -92,6 +98,7 @@
         <definition>void tf::UnboundedWSQ&lt; T &gt;::Array::push</definition>
         <argsstring>(int64_t i, T o) noexcept</argsstring>
         <name>push</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::push</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>i</declname>
@@ -113,6 +120,7 @@
         <definition>T tf::UnboundedWSQ&lt; T &gt;::Array::pop</definition>
         <argsstring>(int64_t i) noexcept</argsstring>
         <name>pop</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::pop</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>i</declname>
@@ -125,11 +133,12 @@
         </inbodydescription>
         <location file="taskflow/core/wsq.hpp" line="87" column="7" bodyfile="taskflow/core/wsq.hpp" bodystart="87" bodyend="89"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1UnboundedWSQ_1_1Array_1aa3c27a6ce7db155a5dcc6b2c8885fdb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1UnboundedWSQ_1_1Array_1ab6a8cbd70f73c5e0d3a19a42193ad306" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>Array *</type>
-        <definition>Array* tf::UnboundedWSQ&lt; T &gt;::Array::resize</definition>
+        <definition>Array * tf::UnboundedWSQ&lt; T &gt;::Array::resize</definition>
         <argsstring>(int64_t b, int64_t t)</argsstring>
         <name>resize</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::resize</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>b</declname>
@@ -146,11 +155,12 @@
         </inbodydescription>
         <location file="taskflow/core/wsq.hpp" line="91" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="91" bodyend="97"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1UnboundedWSQ_1_1Array_1a11a5c36247670ae123f6f09ae1162eb4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1UnboundedWSQ_1_1Array_1acc43d6196f978d73cc02cbb971bc7cdc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>Array *</type>
-        <definition>Array* tf::UnboundedWSQ&lt; T &gt;::Array::resize</definition>
+        <definition>Array * tf::UnboundedWSQ&lt; T &gt;::Array::resize</definition>
         <argsstring>(int64_t b, int64_t t, size_t N)</argsstring>
         <name>resize</name>
+        <qualifiedname>tf::UnboundedWSQ::Array::resize</qualifiedname>
         <param>
           <type>int64_t</type>
           <declname>b</declname>
@@ -171,20 +181,20 @@
         </inbodydescription>
         <location file="taskflow/core/wsq.hpp" line="99" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="99" bodyend="106"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::atomic&lt; T &gt;</label>
+      </node>
       <node id="1">
         <label>tf::UnboundedWSQ&lt; T &gt;::Array</label>
         <childnode refid="2" relation="usage">
           <edgelabel>S</edgelabel>
         </childnode>
-      </node>
-      <node id="2">
-        <label>std::atomic&lt; T &gt;</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/wsq.hpp" line="63" column="3" bodyfile="taskflow/core/wsq.hpp" bodystart="63" bodyend="108"/>
@@ -195,8 +205,8 @@
       <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a900cd01a22ba72e30104a17841839e8f" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>M</name></member>
       <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a8c052a0aae02094601f4a8533907a36c" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>pop</name></member>
       <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a78e9a3129e5cfb9ea581d5b8fe63c87e" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>push</name></member>
-      <member refid="structtf_1_1UnboundedWSQ_1_1Array_1aa3c27a6ce7db155a5dcc6b2c8885fdb9" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>resize</name></member>
-      <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a11a5c36247670ae123f6f09ae1162eb4" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>resize</name></member>
+      <member refid="structtf_1_1UnboundedWSQ_1_1Array_1ab6a8cbd70f73c5e0d3a19a42193ad306" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>resize</name></member>
+      <member refid="structtf_1_1UnboundedWSQ_1_1Array_1acc43d6196f978d73cc02cbb971bc7cdc" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>resize</name></member>
       <member refid="structtf_1_1UnboundedWSQ_1_1Array_1afdb29ed3cb4bb3bf5bc9be4598fd452c" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>S</name></member>
       <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a6755175063d3b291322a8a9effd191de" prot="public" virt="non-virtual"><scope>tf::UnboundedWSQ::Array</scope><name>~Array</name></member>
     </listofallmembers>

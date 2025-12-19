@@ -18,7 +18,6 @@ namespace tf {
 // Our experiments show that the performance of atomic notifier is the best.
 // ----------------------------------------------------------------------------
 
-
 /**
 @typedef DefaultNotifier
 

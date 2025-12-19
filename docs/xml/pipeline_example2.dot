@@ -1,0 +1,33 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffeaf4d98d8 {
+label="Taskflow";
+p0x1da4f10[shape=box3d, color=blue, label="pipeline_1 [m1]"];
+p0x1da4f10->p0x1da4ff8;
+p0x1da4ff8[shape=box3d, color=blue, label="pipeline_2 [m2]"];
+}
+subgraph cluster_p0x7ffeaf4d9510 {
+label="m2";
+p0x1da4a88[label="cond" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x1da4a88 -> p0x1da4b70 [style=dashed label="0"];
+p0x1da4a88 -> p0x1da4c58 [style=dashed label="1"];
+p0x1da4a88 -> p0x1da4d40 [style=dashed label="2"];
+p0x1da4a88 -> p0x1da4e28 [style=dashed label="3"];
+p0x1da4b70[label="rt-0" shape=component];
+p0x1da4c58[label="rt-1" shape=component];
+p0x1da4d40[label="rt-2" shape=component];
+p0x1da4e28[label="rt-3" shape=component];
+}
+subgraph cluster_p0x7ffeaf4d95b0 {
+label="m1";
+p0x1da4600[label="cond" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x1da4600 -> p0x1da46e8 [style=dashed label="0"];
+p0x1da4600 -> p0x1da47d0 [style=dashed label="1"];
+p0x1da4600 -> p0x1da48b8 [style=dashed label="2"];
+p0x1da4600 -> p0x1da49a0 [style=dashed label="3"];
+p0x1da46e8[label="rt-0" shape=component];
+p0x1da47d0[label="rt-1" shape=component];
+p0x1da48b8[label="rt-2" shape=component];
+p0x1da49a0[label="rt-3" shape=component];
+}
+}
+
