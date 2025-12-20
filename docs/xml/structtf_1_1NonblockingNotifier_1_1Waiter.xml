@@ -1,13 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1NonblockingNotifier_1_1Waiter" kind="struct" language="C++" prot="private">
     <compoundname>tf::NonblockingNotifier::Waiter</compoundname>
-    <sectiondef kind="public-type">
-      <memberdef kind="enum" id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9" prot="public" static="no" strong="no">
+      <sectiondef kind="public-type">
+      <memberdef kind="enum" id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abf" prot="public" static="no" strong="no">
         <type>unsigned</type>
-        <name></name>
-        <qualifiedname>tf::NonblockingNotifier::Waiter</qualifiedname>
-        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a566121296bc7a5748301a76e116ae06c" prot="public">
+        <name>@0</name>
+        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa566121296bc7a5748301a76e116ae06c" prot="public">
           <name>kNotSignaled</name>
           <initializer>= 0</initializer>
           <briefdescription>
@@ -15,14 +14,14 @@
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a8ea7710a14ff4af0da65a984064fa339" prot="public">
+        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa8ea7710a14ff4af0da65a984064fa339" prot="public">
           <name>kWaiting</name>
           <briefdescription>
           </briefdescription>
           <detaileddescription>
           </detaileddescription>
         </enumvalue>
-        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a74ac5587ccd020f0bdd3d1fd34c42f7d" prot="public">
+        <enumvalue id="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa74ac5587ccd020f0bdd3d1fd34c42f7d" prot="public">
           <name>kSignaled</name>
           <briefdescription>
           </briefdescription>
@@ -37,14 +36,13 @@
         </inbodydescription>
         <location file="taskflow/core/nonblocking_notifier.hpp" line="91" column="5" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="91" bodyend="95"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-attrib">
+      </sectiondef>
+      <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1NonblockingNotifier_1_1Waiter_1afe5215b6b7674bf2a8dcdcf0261263aa" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Waiter * &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; Waiter * &gt;</type>
         <definition>std::atomic&lt;Waiter*&gt; tf::NonblockingNotifier::Waiter::next</definition>
         <argsstring></argsstring>
         <name>next</name>
-        <qualifiedname>tf::NonblockingNotifier::Waiter::next</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -58,7 +56,6 @@
         <definition>uint64_t tf::NonblockingNotifier::Waiter::epoch</definition>
         <argsstring></argsstring>
         <name>epoch</name>
-        <qualifiedname>tf::NonblockingNotifier::Waiter::epoch</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -68,11 +65,10 @@
         <location file="taskflow/core/nonblocking_notifier.hpp" line="90" column="14" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="90" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="structtf_1_1NonblockingNotifier_1_1Waiter_1a711c2c573d723d6e62e115dc019b6503" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; unsigned &gt;</type>
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; unsigned &gt;</type>
         <definition>std::atomic&lt;unsigned&gt; tf::NonblockingNotifier::Waiter::state</definition>
         <argsstring></argsstring>
         <name>state</name>
-        <qualifiedname>tf::NonblockingNotifier::Waiter::state</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
@@ -80,19 +76,19 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="96" column="17" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="96" bodyend="96"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="96" column="17" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="96" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="2">
-        <label>std::atomic&lt; Waiter * &gt;</label>
-      </node>
       <node id="3">
         <label>std::atomic&lt; unsigned &gt;</label>
+      </node>
+      <node id="2">
+        <label>std::atomic&lt; Waiter * &gt;</label>
       </node>
       <node id="1">
         <label>tf::NonblockingNotifier::Waiter</label>
@@ -107,9 +103,9 @@
     <location file="taskflow/core/nonblocking_notifier.hpp" line="88" column="3" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="88" bodyend="101"/>
     <listofallmembers>
       <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1af4353d6846d1edf62fc5c323072432b8" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>epoch</name></member>
-      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a566121296bc7a5748301a76e116ae06c" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kNotSignaled</name></member>
-      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a74ac5587ccd020f0bdd3d1fd34c42f7d" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kSignaled</name></member>
-      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab34ad0d536aaf4a64e660f1f327065d9a8ea7710a14ff4af0da65a984064fa339" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kWaiting</name></member>
+      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa566121296bc7a5748301a76e116ae06c" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kNotSignaled</name></member>
+      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa74ac5587ccd020f0bdd3d1fd34c42f7d" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kSignaled</name></member>
+      <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa8ea7710a14ff4af0da65a984064fa339" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>kWaiting</name></member>
       <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1afe5215b6b7674bf2a8dcdcf0261263aa" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>next</name></member>
       <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1a711c2c573d723d6e62e115dc019b6503" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier::Waiter</scope><name>state</name></member>
     </listofallmembers>

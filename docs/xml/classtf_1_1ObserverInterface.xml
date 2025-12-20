@@ -1,17 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1ObserverInterface" kind="class" language="C++" prot="public" abstract="yes">
     <compoundname>tf::ObserverInterface</compoundname>
     <derivedcompoundref refid="classtf_1_1ChromeObserver" prot="public" virt="non-virtual">tf::ChromeObserver</derivedcompoundref>
     <derivedcompoundref refid="classtf_1_1TFProfObserver" prot="public" virt="non-virtual">tf::TFProfObserver</derivedcompoundref>
     <includes refid="observer_8hpp" local="no">taskflow/core/observer.hpp</includes>
-    <sectiondef kind="public-func">
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1ObserverInterface_1adfd71c3af3ae2ea4f41eed26c1b6f604" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type></type>
         <definition>virtual tf::ObserverInterface::~ObserverInterface</definition>
         <argsstring>()=default</argsstring>
         <name>~ObserverInterface</name>
-        <qualifiedname>tf::ObserverInterface::~ObserverInterface</qualifiedname>
         <briefdescription>
 <para>virtual destructor </para>
         </briefdescription>
@@ -26,7 +25,6 @@
         <definition>virtual void tf::ObserverInterface::set_up</definition>
         <argsstring>(size_t num_workers)=0</argsstring>
         <name>set_up</name>
-        <qualifiedname>tf::ObserverInterface::set_up</qualifiedname>
         <reimplementedby refid="classtf_1_1ChromeObserver_1aa8d5d9c3d0de7e7006d27079d8eb3888">set_up</reimplementedby>
         <reimplementedby refid="classtf_1_1TFProfObserver_1aa030d8154dd03aea3b8fa8ce42e1151b">set_up</reimplementedby>
         <param>
@@ -57,7 +55,6 @@
         <definition>virtual void tf::ObserverInterface::on_entry</definition>
         <argsstring>(WorkerView wv, TaskView task_view)=0</argsstring>
         <name>on_entry</name>
-        <qualifiedname>tf::ObserverInterface::on_entry</qualifiedname>
         <reimplementedby refid="classtf_1_1ChromeObserver_1a6fa502ca5ef6bfb9d2168db190125855">on_entry</reimplementedby>
         <reimplementedby refid="classtf_1_1TFProfObserver_1a5debfce27f7e012d22872c134b261c63">on_entry</reimplementedby>
         <param>
@@ -100,7 +97,6 @@
         <definition>virtual void tf::ObserverInterface::on_exit</definition>
         <argsstring>(WorkerView wv, TaskView task_view)=0</argsstring>
         <name>on_exit</name>
-        <qualifiedname>tf::ObserverInterface::on_exit</qualifiedname>
         <reimplementedby refid="classtf_1_1ChromeObserver_1a62ae8c50814d285d29e50a322461a803">on_exit</reimplementedby>
         <reimplementedby refid="classtf_1_1TFProfObserver_1af3a1630b5b1db5341a239a5d4c12c891">on_exit</reimplementedby>
         <param>
@@ -138,7 +134,7 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="196" column="16"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to derive an executor observer </para>
     </briefdescription>
@@ -146,52 +142,52 @@
 <para>The <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> class allows users to define custom methods to monitor the behaviors of an executor. This is particularly useful when you want to inspect the performance of an executor and visualize when each thread participates in the execution of a task. To prevent users from direct access to the internal threads and tasks, <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> provides immutable wrappers, <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> and <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref>, over workers and tasks.</para>
 <para>Please refer to <ref refid="classtf_1_1WorkerView" kindref="compound">tf::WorkerView</ref> and <ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref> for details.</para>
 <para>Example usage:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MyObserver<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>tf::ObserverInterface<sp/>{</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MyObserver<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref><sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>MyObserver(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>std::string&amp;<sp/>name)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;constructing<sp/>observer<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>name<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>MyObserver(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref>&amp;<sp/>name)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;constructing<sp/>observer<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>name<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9" kindref="member">set_up</ref>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_workers)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;setting<sp/>up<sp/>observer<sp/>with<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>num_workers<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>workers\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;setting<sp/>up<sp/>observer<sp/>with<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>num_workers<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>workers\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" kindref="member">on_entry</ref>(WorkerView<sp/>w,<sp/>tf::TaskView<sp/>tv)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::ostringstream<sp/>oss;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc" kindref="member">on_entry</ref>(WorkerView<sp/>w,<sp/><ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref><sp/>tv)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostringstream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostringstream</ref><sp/>oss;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>oss<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;worker<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>w.id()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>ready<sp/>to<sp/>run<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>tv.name()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>oss.str();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>oss.str();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" kindref="member">on_exit</ref>(WorkerView<sp/>w,<sp/>tf::TaskView<sp/>tv)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::ostringstream<sp/>oss;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754" kindref="member">on_exit</ref>(WorkerView<sp/>w,<sp/><ref refid="classtf_1_1TaskView" kindref="compound">tf::TaskView</ref><sp/>tv)<sp/></highlight><highlight class="keyword">override</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">final</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostringstream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostringstream</ref><sp/>oss;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>oss<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;worker<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>w.id()<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>finished<sp/>running<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>tv.name()<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>oss.str();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>oss.str();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
-<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>insert<sp/>tasks<sp/>into<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">std::shared_ptr&lt;MyObserver&gt;<sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;MyObserver&gt;(</highlight><highlight class="stringliteral">&quot;MyObserver&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;MyObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kindref="member">make_observer</ref>&lt;MyObserver&gt;(</highlight><highlight class="stringliteral">&quot;MyObserver&quot;</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>
+      <node id="1">
+        <label>tf::ObserverInterface</label>
+        <link refid="classtf_1_1ObserverInterface"/>
+      </node>
       <node id="2">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
         <childnode refid="1" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="1">
-        <label>tf::ObserverInterface</label>
-        <link refid="classtf_1_1ObserverInterface"/>
       </node>
       <node id="3">
         <label>tf::TFProfObserver</label>

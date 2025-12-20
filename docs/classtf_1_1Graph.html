@@ -5,7 +5,7 @@
   <title>tf::Graph class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -68,13 +68,17 @@
             <dt id="a1cd3bae8cabb45810b25cdbdd4e89006">
               <span class="m-doc-wrap-bumper"><a href="#a1cd3bae8cabb45810b25cdbdd4e89006" class="m-doc-self">Graph</a>(</span><span class="m-doc-wrap">) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs a graph object</dd>
+            <dd>constructs the graph object</dd>
+            <dt id="a493acc70cca8c0a09d7c407d28c59ee2">
+              <span class="m-doc-wrap-bumper"><a href="#a493acc70cca8c0a09d7c407d28c59ee2" class="m-doc-self">~Graph</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>destroys the graph object</dd>
             <dt id="ade95936f49af81b9834e09e807033e61">
               <span class="m-doc-wrap-bumper"><a href="#ade95936f49af81b9834e09e807033e61" class="m-doc-self">Graph</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;) <span class="m-label m-flat m-danger">deleted</span></span>
             </dt>
             <dd>disabled copy constructor</dd>
-            <dt id="a551bba43984da111cfe54090be6fe5be">
-              <span class="m-doc-wrap-bumper"><a href="#a551bba43984da111cfe54090be6fe5be" class="m-doc-self">Graph</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a5fcaca536e67632ff6dd3cf2c0284cfd">
+              <span class="m-doc-wrap-bumper"><a href="#a5fcaca536e67632ff6dd3cf2c0284cfd" class="m-doc-self">Graph</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;&amp;)</span>
             </dt>
             <dd>constructs a graph using move semantics</dd>
           </dl>
@@ -82,14 +86,42 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a0b722dc90ae9a01b35c3ece6b2221688">
-              <span class="m-doc-wrap-bumper">auto <a href="#a0b722dc90ae9a01b35c3ece6b2221688" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
+            <dt id="a945eb240dd5d6840e282c525a1ea74e4">
+              <span class="m-doc-wrap-bumper">auto <a href="#a945eb240dd5d6840e282c525a1ea74e4" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; <span class="m-label m-flat m-danger">deleted</span></span>
             </dt>
             <dd>disabled copy assignment operator</dd>
-            <dt id="a794d41e15821786de362c12eeef9ea7d">
-              <span class="m-doc-wrap-bumper">auto <a href="#a794d41e15821786de362c12eeef9ea7d" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;&amp;) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a9104e2edd9e02c64d0102378f81ed9a9">
+              <span class="m-doc-wrap-bumper">auto <a href="#a9104e2edd9e02c64d0102378f81ed9a9" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;&amp;) -&gt; <a href="classtf_1_1Graph.html" class="m-doc">Graph</a>&amp;</span>
             </dt>
             <dd>assigns a graph using move semantics</dd>
+            <dt id="a8213e42bf3f7460757db411181d78c4c">
+              <span class="m-doc-wrap-bumper">void <a href="#a8213e42bf3f7460757db411181d78c4c" class="m-doc-self">clear</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>clears the graph</dd>
+            <dt id="a790710289553897fa88672d9104d8ed1">
+              <span class="m-doc-wrap-bumper">auto <a href="#a790710289553897fa88672d9104d8ed1" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t</span>
+            </dt>
+            <dd>returns the number of nodes in the graph</dd>
+            <dt id="a30750e1be2657e491854791cd3afff06">
+              <span class="m-doc-wrap-bumper">auto <a href="#a30750e1be2657e491854791cd3afff06" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool</span>
+            </dt>
+            <dd>queries the emptiness of the graph</dd>
+            <dt id="ab142035bb84c99bdfb1567d7f1837ce0">
+              <span class="m-doc-wrap-bumper">auto <a href="#ab142035bb84c99bdfb1567d7f1837ce0" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap">) -&gt; auto</span>
+            </dt>
+            <dd>returns an iterator to the first node of this graph</dd>
+            <dt id="a55cb9bcb9a1152943b7bcb2a7549fe81">
+              <span class="m-doc-wrap-bumper">auto <a href="#a55cb9bcb9a1152943b7bcb2a7549fe81" class="m-doc-self">end</a>(</span><span class="m-doc-wrap">) -&gt; auto</span>
+            </dt>
+            <dd>returns an iterator past the last element of this graph</dd>
+            <dt id="a9f605aa3d6eb845ff60452ed63bc577e">
+              <span class="m-doc-wrap-bumper">auto <a href="#a9f605aa3d6eb845ff60452ed63bc577e" class="m-doc-self">begin</a>(</span><span class="m-doc-wrap">) const -&gt; auto</span>
+            </dt>
+            <dd>returns an iterator to the first node of this graph</dd>
+            <dt id="a2b7600f1d304c53a72d3af08c300ff4a">
+              <span class="m-doc-wrap-bumper">auto <a href="#a2b7600f1d304c53a72d3af08c300ff4a" class="m-doc-self">end</a>(</span><span class="m-doc-wrap">) const -&gt; auto</span>
+            </dt>
+            <dd>returns an iterator past the last element of this graph</dd>
           </dl>
         </section>
       </div>
@@ -136,7 +168,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2025.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>
