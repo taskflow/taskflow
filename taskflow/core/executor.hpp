@@ -1564,30 +1564,28 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     return;
   }
 
-  NodeIteratorAdapter itr(first);
-  
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
   if(worker._executor == this) {
-    if(auto n = worker._wsq.try_bulk_push(itr, num_nodes); n != num_nodes) {
-      _bulk_spill(itr + n, num_nodes - n);
+    if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
+      _bulk_spill(first + n, num_nodes - n);
     }
     _notifier.notify_n(num_nodes);
     return;
     
     // notify first before spilling to hopefully wake up workers earlier 
     // however, the experiment does not show any benefit for doing this.
-    //auto n = worker._wsq.try_bulk_push(itr, num_nodes);
+    //auto n = worker._wsq.try_bulk_push(first, num_nodes);
     //_notifier.notify_n(n);
     //_bulk_schedule(first + n, num_nodes - n);
     //return;
   }
   
   // caller is not a worker of this executor - spill to the centralized queue
-  _bulk_spill(itr, num_nodes);
+  _bulk_spill(first, num_nodes);
   _notifier.notify_n(num_nodes);
 }
 
@@ -1599,14 +1597,12 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
     return;
   }
   
-  NodeIteratorAdapter itr(first);
-
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
   // This is because when a node v is inserted into the queue, v can run and finish 
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
-  _bulk_spill(itr, num_nodes);
+  _bulk_spill(first, num_nodes);
   _notifier.notify_n(num_nodes);
 }
   
@@ -2250,7 +2246,7 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent) {
   auto send = first;
   for(; first != last; ++first) {
 
-    auto node = first->get();
+    auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
     node->_nstate = NSTATE::NONE;

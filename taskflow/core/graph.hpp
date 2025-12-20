@@ -44,7 +44,7 @@ class to interact with the executor through taskflow composition.
 
 A graph object is move-only.
 */
-class Graph : public std::vector<std::unique_ptr<Node>> {
+class Graph {
 
   friend class Node;
   friend class FlowBuilder;
@@ -55,9 +55,14 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
   public:
 
   /**
-  @brief constructs a graph object
+  @brief constructs the graph object
   */
   Graph() = default;
+
+  /**
+  @brief destroys the graph object
+  */
+  ~Graph();
 
   /**
   @brief disabled copy constructor
@@ -67,7 +72,7 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
   /**
   @brief constructs a graph using move semantics
   */
-  Graph(Graph&&) = default;
+  Graph(Graph&&);
 
   /**
   @brief disabled copy assignment operator
@@ -77,9 +82,46 @@ class Graph : public std::vector<std::unique_ptr<Node>> {
   /**
   @brief assigns a graph using move semantics
   */
-  Graph& operator = (Graph&&) = default;
+  Graph& operator = (Graph&&);
+
+  /**
+  @brief clears the graph
+  */
+  void clear();
+
+  /**
+  @brief returns the number of nodes in the graph
+  */
+  size_t size() const;
+  
+  /**
+  @brief queries the emptiness of the graph
+  */
+  bool empty() const;
+  
+  /**
+  @brief returns an iterator to the first node of this graph
+  */
+  auto begin();
+
+  /**
+  @brief returns an iterator past the last element of this graph
+  */
+  auto end();
+
+  /**
+  @brief returns an iterator to the first node of this graph
+  */
+  auto begin() const;
+  
+  /**
+  @brief returns an iterator past the last element of this graph
+  */
+  auto end() const;
 
   private:
+
+  std::vector<Node*> _nodes;
 
   void _erase(Node*);
   
@@ -665,11 +707,76 @@ class AnchorGuard {
 // Graph definition
 // ----------------------------------------------------------------------------
 
+// Destructor
+inline Graph::~Graph() {
+  clear();
+}
+
+// Move constructor
+inline Graph::Graph(Graph&& other) :
+  _nodes {std::move(other._nodes)} {
+}
+
+// Move assignment
+inline Graph& Graph::operator = (Graph&& other) {
+  clear();
+  _nodes = std::move(other._nodes);
+  return *this;
+}
+
+// Procedure: clear
+inline void Graph::clear() {
+  for(auto node : _nodes) {
+    recycle(node);
+  }
+  _nodes.clear();
+}
+
+// Function: size
+inline size_t Graph::size() const {
+  return _nodes.size();
+}
+
+// Function: empty
+inline bool Graph::empty() const {
+  return _nodes.empty();
+}
+
+// Function: begin
+inline auto Graph::begin() {
+  return _nodes.begin();
+}
+
+// Function: end
+inline auto Graph::end() {
+  return _nodes.end();
+}
+
+// Function: begin
+inline auto Graph::begin() const {
+  return _nodes.begin();
+}
+
+// Function: end
+inline auto Graph::end() const {
+  return _nodes.end();
+}
+
 // Function: erase
 inline void Graph::_erase(Node* node) {
-  erase(
-    std::remove_if(begin(), end(), [&](auto& p){ return p.get() == node; }),
-    end()
+  //erase(
+  //  std::remove_if(begin(), end(), [&](auto& p){ return p.get() == node; }),
+  //  end()
+  //);
+  _nodes.erase(
+    std::remove_if(_nodes.begin(), _nodes.end(), [&](auto& p){ 
+      if(p == node) {
+        recycle(p);
+        return true;
+      }
+      return false; 
+    }),
+    _nodes.end()
   );
 }
 
@@ -678,8 +785,8 @@ inline void Graph::_erase(Node* node) {
 */
 template <typename ...ArgsT>
 Node* Graph::_emplace_back(ArgsT&&... args) {
-  push_back(std::make_unique<Node>(std::forward<ArgsT>(args)...));
-  return back().get();
+  _nodes.push_back(animate(std::forward<ArgsT>(args)...));
+  return _nodes.back();
 }
 
 // ----------------------------------------------------------------------------
@@ -728,108 +835,6 @@ struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
  */
 template <typename T>
 constexpr bool has_graph_v = has_graph<T>::value;
-
-// ----------------------------------------------------------------------------
-// detailed helper functions
-// ----------------------------------------------------------------------------
-
-namespace detail {
-
-/**
-@private
-*/
-template <typename T>
-TF_FORCE_INLINE Node* get_node_ptr(T& node) {
-  using U = std::decay_t<T>;
-  if constexpr (std::is_same_v<U, Node*>) {
-    return node;
-  } 
-  else if constexpr (std::is_same_v<U, std::unique_ptr<Node>>) {
-    return node.get();
-  } 
-  else {
-    static_assert(dependent_false_v<T>, "Unsupported type for get_node_ptr");
-  }
-} 
-
-}  // end of namespace tf::detail ---------------------------------------------
-
-/**
-@private
-*/
-template <typename I>
-class NodeIteratorAdapter {
-  
-  public:
-
-  TF_FORCE_INLINE explicit NodeIteratorAdapter(I it) : _it(it) {}
-
-  // ----- custom dereference -----
-  TF_FORCE_INLINE auto operator*() const noexcept {
-    return detail::get_node_ptr(*_it);
-  }
-
-  TF_FORCE_INLINE auto operator[](auto n) const noexcept {
-    return detail::get_node_ptr(_it[n]);
-  }
-
-  // Cannot return a true pointer unless we create a proxy object.
-  // Often omitted unless needed.
-  // auto operator->() const { return ...; }
-
-  // ----- iterator movement -----
-  TF_FORCE_INLINE NodeIteratorAdapter& operator+=(auto n) noexcept {
-    _it += n;
-    return *this;
-  }
-
-  TF_FORCE_INLINE NodeIteratorAdapter& operator-=(auto n) noexcept {
-    _it -= n;
-    return *this;
-  }
-
-  // ----- iterator arithmetic -----
-  friend TF_FORCE_INLINE auto operator+(NodeIteratorAdapter it, auto n) noexcept {
-    it += n;
-    return it;
-  }
-
-  friend TF_FORCE_INLINE auto operator-(NodeIteratorAdapter it, auto n) noexcept {
-    it -= n;
-    return it;
-  }
-
-
-  //// ----- comparisons -----
-  //bool operator==(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it == b._it;
-  //}
-  //bool operator!=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it != b._it;
-  //}
-  //bool operator<(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it < b._it;
-  //}
-  //bool operator>(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it > b._it;
-  //}
-  //bool operator<=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it <= b._it;
-  //}
-  //bool operator>=(const deref_adapter& a, const deref_adapter& b) {
-  //  return a._it >= b._it;
-  //}
-
-  //// access original iterator if needed
-  //I base() const { return _it; }
-
-  private:
-
-  I _it;
-};
-
-
-
 
 }  // end of namespace tf. ----------------------------------------------------
 

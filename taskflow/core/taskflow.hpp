@@ -410,7 +410,7 @@ inline Graph& Taskflow::graph() {
 template <typename V>
 void Taskflow::for_each_task(V&& visitor) const {
   for(auto itr = _graph.begin(); itr != _graph.end(); ++itr) {
-    visitor(Task(itr->get()));
+    visitor(Task(*itr));
   }
 }
 
@@ -543,7 +543,7 @@ inline void Taskflow::_dump(
 
   for(auto itr = graph->begin(); itr != graph->end(); ++itr) {
 
-    Node* n = itr->get();
+    Node* n = *itr;
 
     // regular task
     if(n->_handle.index() != Node::MODULE) {

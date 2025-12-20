@@ -1119,7 +1119,7 @@ template <typename V>
 void Task::for_each_subflow_task(V&& visitor) const {
   if(auto ptr = std::get_if<Node::Subflow>(&_node->_handle); ptr) {
     for(auto itr = ptr->subgraph.begin(); itr != ptr->subgraph.end(); ++itr) {
-      visitor(Task(itr->get()));
+      visitor(Task(*itr));
     }
   }
 }

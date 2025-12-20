@@ -8,6 +8,7 @@
     <includes local="no">thread</includes>
     <includes local="no">new</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
+    <includedby refid="nonblocking__notifier_8hpp" local="yes">taskflow/core/nonblocking_notifier.hpp</includedby>
     <incdepgraph>
       <node id="4">
         <label>string</label>
@@ -50,6 +51,12 @@
         <label>taskflow/cuda/algorithm/transform.hpp</label>
         <link refid="transform_8hpp"/>
       </node>
+      <node id="17">
+        <label>taskflow/core/nonblocking_notifier.hpp</label>
+        <link refid="nonblocking__notifier_8hpp"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+      </node>
       <node id="7">
         <label>taskflow/core/runtime.hpp</label>
         <link refid="runtime_8hpp_source"/>
@@ -86,6 +93,8 @@
         <label>taskflow/utility/os.hpp</label>
         <link refid="os_8hpp"/>
         <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
         </childnode>
       </node>
       <node id="2">
@@ -133,6 +142,12 @@
       <node id="10">
         <label>taskflow/algorithm/data_pipeline.hpp</label>
         <link refid="data__pipeline_8hpp_source"/>
+      </node>
+      <node id="18">
+        <label>taskflow/core/worker.hpp</label>
+        <link refid="worker_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
       </node>
       <node id="5">
         <label>taskflow/core/taskflow.hpp</label>

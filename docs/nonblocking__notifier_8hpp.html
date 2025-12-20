@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Taskflow QuickStart</title>
+  <title>taskflow/core/nonblocking_notifier.hpp file | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
@@ -31,7 +31,7 @@
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="3">
             <li><a href="annotated.html">Classes</a></li>
-            <li><a href="files.html" id="m-navbar-current">Files</a></li>
+            <li><a href="files.html">Files</a></li>
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
             </svg></a></li>
@@ -45,63 +45,38 @@
   <div class="m-container m-container-inflatable">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <h1>Files</h1>
-        <ul class="m-doc">
-          <li class="m-doc-collapsible">
-            <a href="#" onclick="return toggle(this)">dir</a> <a href="dir_88dad41ea55ca2177e141d32a93e931c.html" class="m-doc">taskflow</a> <span class="m-doc">root taskflow include dir</span>
-            <ul class="m-doc">
-              <li class="m-doc-collapsible collapsed">
-                <a href="#" onclick="return toggle(this)">dir</a> <a href="dir_04c130fdbeeccfa0338db9f77a5dc2c3.html" class="m-doc">algorithm</a> <span class="m-doc">taskflow algorithms include dir</span>
-                <ul class="m-doc">
-                  <li>file <a href="partitioner_8hpp.html" class="m-doc">partitioner.hpp</a> <span class="m-doc">partitioner include file</span></li>
-                  <li>file <a href="pipeline_8hpp.html" class="m-doc">pipeline.hpp</a> <span class="m-doc">pipeline include file</span></li>
-                </ul>
-              </li>
-              <li class="m-doc-collapsible collapsed">
-                <a href="#" onclick="return toggle(this)">dir</a> <a href="dir_220cd4d9b8cb38c840b455d5d75c25bb.html" class="m-doc">core</a> <span class="m-doc">taskflow core include dir</span>
-                <ul class="m-doc">
-                  <li>file <a href="async__task_8hpp.html" class="m-doc">async_task.hpp</a> <span class="m-doc">asynchronous task include file</span></li>
-                  <li>file <a href="executor_8hpp.html" class="m-doc">executor.hpp</a> <span class="m-doc">executor include file</span></li>
-                  <li>file <a href="flow__builder_8hpp.html" class="m-doc">flow_builder.hpp</a> <span class="m-doc">flow builder include file</span></li>
-                  <li>file <a href="graph_8hpp.html" class="m-doc">graph.hpp</a> <span class="m-doc">graph include file</span></li>
-                  <li>file <a href="nonblocking__notifier_8hpp.html" class="m-doc">nonblocking_notifier.hpp</a> <span class="m-doc">non-blocking notifier include file</span></li>
-                  <li>file <a href="observer_8hpp.html" class="m-doc">observer.hpp</a> <span class="m-doc">observer include file</span></li>
-                  <li>file <a href="semaphore_8hpp.html" class="m-doc">semaphore.hpp</a> <span class="m-doc">semaphore include file</span></li>
-                  <li>file <a href="task_8hpp.html" class="m-doc">task.hpp</a> <span class="m-doc">task include file</span></li>
-                  <li>file <a href="core_2taskflow_8hpp.html" class="m-doc">taskflow.hpp</a> <span class="m-doc">taskflow include file</span></li>
-                  <li>file <a href="worker_8hpp.html" class="m-doc">worker.hpp</a> <span class="m-doc">worker include file</span></li>
-                  <li>file <a href="wsq_8hpp.html" class="m-doc">wsq.hpp</a> <span class="m-doc">work-stealing queue (wsq) include file</span></li>
-                </ul>
-              </li>
-              <li class="m-doc-collapsible collapsed">
-                <a href="#" onclick="return toggle(this)">dir</a> <a href="dir_638d51f8e6f20ea8c720cc8c006296ba.html" class="m-doc">cuda</a> <span class="m-doc">taskflow CUDA include dir</span>
-                <ul class="m-doc">
-                  <li>file <a href="cuda__device_8hpp.html" class="m-doc">cuda_device.hpp</a> <span class="m-doc">CUDA device utilities include file.</span></li>
-                  <li>file <a href="cuda__memory_8hpp.html" class="m-doc">cuda_memory.hpp</a> <span class="m-doc">CUDA memory utilities include file.</span></li>
-                  <li>file <a href="cuda__stream_8hpp.html" class="m-doc">cuda_stream.hpp</a> <span class="m-doc">CUDA stream utilities include file.</span></li>
-                  <li>file <a href="cudaflow_8hpp.html" class="m-doc">cudaflow.hpp</a> <span class="m-doc">cudaFlow include file</span></li>
-                </ul>
-              </li>
-              <li>file <a href="taskflow_8hpp.html" class="m-doc">taskflow.hpp</a> <span class="m-doc">main taskflow include file</span></li>
-            </ul>
-          </li>
-        </ul>
-        <script>
-        function toggle(e) {
-            e.parentElement.className = e.parentElement.className == 'm-doc-collapsible' ?
-                'm-doc-expansible' : 'm-doc-collapsible';
-            return false;
-        }
-        /* Collapse all nodes marked as such. Doing it via JS instead of
-           directly in markup so disabling it doesn't harm usability. The list
-           is somehow regenerated on every iteration and shrinks as I change
-           the classes. It's not documented anywhere and I'm not sure if this
-           is the same across browsers, so I am going backwards in that list to
-           be sure. */
-        var collapsed = document.getElementsByClassName("collapsed");
-        for(var i = collapsed.length - 1; i >= 0; --i)
-            collapsed[i].className = 'm-doc-expansible';
-        </script>
+        <h1>
+          <span class="m-breadcrumb"><a href="dir_88dad41ea55ca2177e141d32a93e931c.html">taskflow</a>/</span><span class="m-breadcrumb"><a href="dir_220cd4d9b8cb38c840b455d5d75c25bb.html">core</a>/</span>nonblocking_notifier.hpp <span class="m-thin">file</span>
+        </h1>
+        <p>non-blocking notifier include file</p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#namespaces">Namespaces</a></li>
+                <li><a href="#nested-classes">Classes</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
+          <dl class="m-doc">
+            <dt>namespace <a href="namespacetf.html" class="m-doc">tf</a></dt>
+            <dd>taskflow namespace</dd>
+          </dl>
+        </section>
+        <section id="nested-classes">
+          <h2><a href="#nested-classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>
+              class <a href="classtf_1_1NonblockingNotifier.html" class="m-doc">tf::NonblockingNotifier</a>
+            </dt>
+            <dd>class to create a non-blocking notifier</dd>
+          </dl>
+        </section>
       </div>
     </div>
   </div>

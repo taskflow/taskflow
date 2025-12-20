@@ -526,11 +526,20 @@
     <member refid="classtf_1_1Graph_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1Graph_1af043dd6f6a359602805d9c7dd7539cca" kind="friend"><name>Taskflow</name></member>
     <member refid="classtf_1_1Graph_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1Graph_1ac5e4c434ae03bf37c5a275f9fdc9f97d" kind="variable"><name>_nodes</name></member>
     <member refid="classtf_1_1Graph_1a1cd3bae8cabb45810b25cdbdd4e89006" kind="function"><name>Graph</name></member>
+    <member refid="classtf_1_1Graph_1a493acc70cca8c0a09d7c407d28c59ee2" kind="function"><name>~Graph</name></member>
     <member refid="classtf_1_1Graph_1ade95936f49af81b9834e09e807033e61" kind="function"><name>Graph</name></member>
-    <member refid="classtf_1_1Graph_1a551bba43984da111cfe54090be6fe5be" kind="function"><name>Graph</name></member>
+    <member refid="classtf_1_1Graph_1a5fcaca536e67632ff6dd3cf2c0284cfd" kind="function"><name>Graph</name></member>
     <member refid="classtf_1_1Graph_1a945eb240dd5d6840e282c525a1ea74e4" kind="function"><name>operator=</name></member>
-    <member refid="classtf_1_1Graph_1a897011d7e0321d362f79ca6e23530295" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1Graph_1a9104e2edd9e02c64d0102378f81ed9a9" kind="function"><name>operator=</name></member>
+    <member refid="classtf_1_1Graph_1a8213e42bf3f7460757db411181d78c4c" kind="function"><name>clear</name></member>
+    <member refid="classtf_1_1Graph_1a790710289553897fa88672d9104d8ed1" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1Graph_1a30750e1be2657e491854791cd3afff06" kind="function"><name>empty</name></member>
+    <member refid="classtf_1_1Graph_1ab142035bb84c99bdfb1567d7f1837ce0" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1Graph_1a55cb9bcb9a1152943b7bcb2a7549fe81" kind="function"><name>end</name></member>
+    <member refid="classtf_1_1Graph_1a9f605aa3d6eb845ff60452ed63bc577e" kind="function"><name>begin</name></member>
+    <member refid="classtf_1_1Graph_1a2b7600f1d304c53a72d3af08c300ff4a" kind="function"><name>end</name></member>
     <member refid="classtf_1_1Graph_1a6b50ab0846fe1720edc2dcc5147ba16b" kind="function"><name>_erase</name></member>
     <member refid="classtf_1_1Graph_1a7e19ca35c105d72e35f86740e6e3d34e" kind="function"><name>_emplace_back</name></member>
     <member refid="classtf_1_1Graph_1a4f4256f012b5b05fbaf3125d76faa9b6" kind="function"><name>_emplace_back</name></member>
@@ -647,15 +656,34 @@
     <member refid="classtf_1_1Node_1ae0d5b34ff346a62df2a33b2aa1702314" kind="function"><name>_remove_predecessors</name></member>
     <member refid="classtf_1_1Node_1a9d6261773a82462eb044bd1766e75465" kind="function"><name>_root_join_counter</name></member>
   </compound>
-  <compound refid="classtf_1_1NodeIteratorAdapter" kind="class"><name>tf::NodeIteratorAdapter</name>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a1a84905ec59aceb49f093420d1d6e12b" kind="variable"><name>_it</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a50688f3c81cadece99bd217a539e2e68" kind="function"><name>NodeIteratorAdapter</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a45ca01fe6c4186aa68a2dff2461a9d7d" kind="function"><name>operator*</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a88a0cd36284a0244c9cc4edde7127ca8" kind="function"><name>operator[]</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1affffe9067419acfb462c7eb45693d2dc" kind="function"><name>operator+=</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a940b2a67c17360495eee8e0106b08e02" kind="function"><name>operator-=</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1a7f354423dc6f2f58fb5389fb540b4344" kind="friend"><name>operator+</name></member>
-    <member refid="classtf_1_1NodeIteratorAdapter_1ad7e25e7282473fb0cad67a640acf2124" kind="friend"><name>operator-</name></member>
+  <compound refid="classtf_1_1NonblockingNotifier" kind="class"><name>tf::NonblockingNotifier</name>
+    <member refid="classtf_1_1NonblockingNotifier_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1ac66f032d0b82c70478784dd5630a23f6" kind="variable"><name>STACK_BITS</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1ab3447efc57c2898b2d0745456536dbf7" kind="variable"><name>STACK_MASK</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1aa88e2b5bcf49871f747017dac4bc89f9" kind="variable"><name>PREWAITER_BITS</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a01dd5c528dd56976e11d8b470c5574af" kind="variable"><name>PREWAITER_SHIFT</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a96bdd4d8f43deed455462d7bd7113ecb" kind="variable"><name>PREWAITER_MASK</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a4bf0b454c3110a31fefaff56f6cbf2e2" kind="variable"><name>PREWAITER_INC</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a4e6bdfc8b93ffbb88f4f811f2fb5f54f" kind="variable"><name>EPOCH_BITS</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a36db9cce61b1b84d9739325c506de622" kind="variable"><name>EPOCH_SHIFT</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a68b8c94b6c2ef69e54bf27c76277ddc3" kind="variable"><name>EPOCH_MASK</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a83ef7436b6dd7586f5fdb1c6145b3239" kind="variable"><name>EPOCH_INC</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a72718f52b891c3f069b63ace57d410f7" kind="variable"><name>_state</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a67a9e13ab7b33a0678b7ac3ff0830faf" kind="variable"><name>_waiters</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a1722141a86e24ef029614e4a2191f7e4" kind="function"><name>NonblockingNotifier</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1abbc4e00184b6cd86363336bd0a0a83db" kind="function"><name>~NonblockingNotifier</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a016a0e8c8c57df0a9d7f48661369a30a" kind="function"><name>num_waiters</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a62357b230d37301f1ee5759138252358" kind="function"><name>capacity</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a4633df9ff4f8f9b00ff4fb14a0d02237" kind="function"><name>prepare_wait</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a6f5346994238a16480ab9d50d484ea27" kind="function"><name>commit_wait</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a3f32e0f7adb305de32f34f7ce6d8c222" kind="function"><name>cancel_wait</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a850c89512193c41536e245b51820c944" kind="function"><name>notify_one</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" kind="function"><name>notify_all</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a7d18de3e549c88c36c969f5cccea0508" kind="function"><name>notify_n</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1ade0d740cf887f826f840bd059135f4a6" kind="function"><name>size</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a8291ddeeedd58ba43687cf21dd363ac1" kind="function"><name>_park</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1acc75a1d7c7b15407702cc9cba1afd853" kind="function"><name>_unpark</name></member>
+    <member refid="classtf_1_1NonblockingNotifier_1a402f198065d0089b6b875504e689c707" kind="function"><name>_notify</name></member>
   </compound>
   <compound refid="structtf_1_1Node_1_1NonpreemptiveRuntime" kind="struct"><name>tf::Node::NonpreemptiveRuntime</name>
     <member refid="structtf_1_1Node_1_1NonpreemptiveRuntime_1ac9f3e488c5c2ac8ada182f4bd5f960de" kind="variable"><name>work</name></member>
@@ -1201,6 +1229,15 @@
     <member refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kind="function"><name>empty_value</name></member>
     <member refid="classtf_1_1UnboundedWSQ_1a2638a4e2f830c79b35dad5e860cdcdc2" kind="function"><name>_resize_array</name></member>
     <member refid="classtf_1_1UnboundedWSQ_1a123d4f33cac5ac2a98b6088d089f390b" kind="function"><name>_resize_array</name></member>
+  </compound>
+  <compound refid="structtf_1_1NonblockingNotifier_1_1Waiter" kind="struct"><name>tf::NonblockingNotifier::Waiter</name>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abf" kind="enum"><name>@0</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa566121296bc7a5748301a76e116ae06c" kind="enumvalue"><name>kNotSignaled</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa8ea7710a14ff4af0da65a984064fa339" kind="enumvalue"><name>kWaiting</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1ab21d582501441b97011d9db3f8225abfa74ac5587ccd020f0bdd3d1fd34c42f7d" kind="enumvalue"><name>kSignaled</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1afe5215b6b7674bf2a8dcdcf0261263aa" kind="variable"><name>next</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1af4353d6846d1edf62fc5c323072432b8" kind="variable"><name>epoch</name></member>
+    <member refid="structtf_1_1NonblockingNotifier_1_1Waiter_1a711c2c573d723d6e62e115dc019b6503" kind="variable"><name>state</name></member>
   </compound>
   <compound refid="classtf_1_1Worker" kind="class"><name>tf::Worker</name>
     <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
@@ -1888,7 +1925,6 @@
   </compound>
   <compound refid="namespacetf_1_1detail" kind="namespace"><name>tf::detail</name>
     <member refid="small__vector_8hpp_1af7219c0a48eb7108171068b23dd93c92" kind="function"><name>NextCapacity</name></member>
-    <member refid="graph_8hpp_1a161a286a50a96357a744b6f0c6bc1911" kind="function"><name>get_node_ptr</name></member>
     <member refid="for__each_8hpp_1ad562902469d10ccdd9da04f51f380799" kind="function"><name>cuda_for_each_kernel</name></member>
     <member refid="for__each_8hpp_1a73f2b10b07792d223ebc1bdc98f7126e" kind="function"><name>cuda_for_each_index_kernel</name></member>
     <member refid="transform_8hpp_1aaca64a4a5dbfc6e7857c53b94afa8f13" kind="function"><name>cuda_transform_kernel</name></member>
@@ -2071,6 +2107,8 @@
   <compound refid="flow__builder_8hpp" kind="file"><name>flow_builder.hpp</name>
   </compound>
   <compound refid="graph_8hpp" kind="file"><name>graph.hpp</name>
+  </compound>
+  <compound refid="nonblocking__notifier_8hpp" kind="file"><name>nonblocking_notifier.hpp</name>
   </compound>
   <compound refid="observer_8hpp" kind="file"><name>observer.hpp</name>
   </compound>
