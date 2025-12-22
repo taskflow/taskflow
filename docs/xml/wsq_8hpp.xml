@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="wsq_8hpp" kind="file" language="C++">
     <compoundname>wsq.hpp</compoundname>
     <includes local="yes">../utility/macros.hpp</includes>
@@ -10,6 +10,9 @@
       <node id="2">
         <label>../utility/macros.hpp</label>
       </node>
+      <node id="3">
+        <label>../utility/traits.hpp</label>
+      </node>
       <node id="1">
         <label>taskflow/core/wsq.hpp</label>
         <link refid="wsq_8hpp"/>
@@ -18,38 +21,81 @@
         <childnode refid="3" relation="include">
         </childnode>
       </node>
-      <node id="3">
-        <label>../utility/traits.hpp</label>
-      </node>
     </incdepgraph>
     <invincdepgraph>
-      <node id="15">
-        <label>taskflow/core/observer.hpp</label>
-        <link refid="observer_8hpp"/>
+      <node id="9">
+        <label>taskflow/algorithm/data_pipeline.hpp</label>
+        <link refid="data__pipeline_8hpp_source"/>
+      </node>
+      <node id="7">
+        <label>taskflow/algorithm/module.hpp</label>
+        <link refid="module_8hpp_source"/>
+      </node>
+      <node id="8">
+        <label>taskflow/algorithm/pipeline.hpp</label>
+        <link refid="pipeline_8hpp"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>taskflow/core/async_task.hpp</label>
+        <link refid="async__task_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>taskflow/core/executor.hpp</label>
+        <link refid="executor_8hpp"/>
+        <childnode refid="5" relation="include">
+        </childnode>
         <childnode refid="6" relation="include">
         </childnode>
       </node>
       <node id="14">
-        <label>taskflow/cuda/algorithm/transform.hpp</label>
-        <link refid="transform_8hpp"/>
+        <label>taskflow/core/flow_builder.hpp</label>
+        <link refid="flow__builder_8hpp"/>
+        <childnode refid="15" relation="include">
+        </childnode>
       </node>
-      <node id="7">
+      <node id="2">
+        <label>taskflow/core/graph.hpp</label>
+        <link refid="graph_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>taskflow/core/observer.hpp</label>
+        <link refid="observer_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
         <label>taskflow/core/runtime.hpp</label>
         <link refid="runtime_8hpp_source"/>
-        <childnode refid="8" relation="include">
-        </childnode>
-      </node>
-      <node id="6">
-        <label>taskflow/core/executor.hpp</label>
-        <link refid="executor_8hpp"/>
-        <childnode refid="7" relation="include">
-        </childnode>
-        <childnode refid="8" relation="include">
+        <childnode refid="6" relation="include">
         </childnode>
       </node>
       <node id="13">
-        <label>taskflow/cuda/algorithm/for_each.hpp</label>
-        <link refid="for__each_8hpp"/>
+        <label>taskflow/core/task.hpp</label>
+        <link refid="task_8hpp"/>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>taskflow/core/taskflow.hpp</label>
+        <link refid="core_2taskflow_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>taskflow/core/worker.hpp</label>
+        <link refid="worker_8hpp"/>
+        <childnode refid="16" relation="include">
+        </childnode>
       </node>
       <node id="1">
         <label>taskflow/core/wsq.hpp</label>
@@ -59,76 +105,30 @@
         <childnode refid="17" relation="include">
         </childnode>
       </node>
-      <node id="3">
-        <label>taskflow/core/task.hpp</label>
-        <link refid="task_8hpp"/>
-        <childnode refid="4" relation="include">
-        </childnode>
-        <childnode refid="15" relation="include">
-        </childnode>
-      </node>
-      <node id="9">
-        <label>taskflow/algorithm/pipeline.hpp</label>
-        <link refid="pipeline_8hpp"/>
-        <childnode refid="10" relation="include">
-        </childnode>
-      </node>
-      <node id="2">
-        <label>taskflow/core/graph.hpp</label>
-        <link refid="graph_8hpp"/>
-        <childnode refid="3" relation="include">
-        </childnode>
-        <childnode refid="16" relation="include">
-        </childnode>
-      </node>
-      <node id="4">
-        <label>taskflow/core/flow_builder.hpp</label>
-        <link refid="flow__builder_8hpp"/>
-        <childnode refid="5" relation="include">
-        </childnode>
+      <node id="11">
+        <label>taskflow/cuda/algorithm/for_each.hpp</label>
+        <link refid="for__each_8hpp"/>
       </node>
       <node id="12">
+        <label>taskflow/cuda/algorithm/transform.hpp</label>
+        <link refid="transform_8hpp"/>
+      </node>
+      <node id="10">
         <label>taskflow/cuda/cudaflow.hpp</label>
         <link refid="cudaflow_8hpp"/>
-        <childnode refid="13" relation="include">
-        </childnode>
-        <childnode refid="14" relation="include">
-        </childnode>
-      </node>
-      <node id="11">
-        <label>taskflow/algorithm/module.hpp</label>
-        <link refid="module_8hpp_source"/>
-      </node>
-      <node id="8">
-        <label>taskflow/taskflow.hpp</label>
-        <link refid="taskflow_8hpp"/>
-        <childnode refid="9" relation="include">
-        </childnode>
         <childnode refid="11" relation="include">
         </childnode>
         <childnode refid="12" relation="include">
         </childnode>
       </node>
-      <node id="16">
-        <label>taskflow/core/async_task.hpp</label>
-        <link refid="async__task_8hpp"/>
-        <childnode refid="6" relation="include">
+      <node id="6">
+        <label>taskflow/taskflow.hpp</label>
+        <link refid="taskflow_8hpp"/>
+        <childnode refid="7" relation="include">
         </childnode>
-      </node>
-      <node id="10">
-        <label>taskflow/algorithm/data_pipeline.hpp</label>
-        <link refid="data__pipeline_8hpp_source"/>
-      </node>
-      <node id="17">
-        <label>taskflow/core/worker.hpp</label>
-        <link refid="worker_8hpp"/>
-        <childnode refid="15" relation="include">
+        <childnode refid="8" relation="include">
         </childnode>
-      </node>
-      <node id="5">
-        <label>taskflow/core/taskflow.hpp</label>
-        <link refid="core_2taskflow_8hpp"/>
-        <childnode refid="6" relation="include">
+        <childnode refid="10" relation="include">
         </childnode>
       </node>
     </invincdepgraph>
@@ -136,18 +136,18 @@
     <innerclass refid="structtf_1_1UnboundedWSQ_1_1Array" prot="private">tf::UnboundedWSQ::Array</innerclass>
     <innerclass refid="classtf_1_1BoundedWSQ" prot="public">tf::BoundedWSQ</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
-      <sectiondef kind="define">
+    <sectiondef kind="define">
       <memberdef kind="define" id="wsq_8hpp_1a603f6f29f0f179ee85ecde7d5311a76e" prot="public" static="no">
         <name>TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE</name>
         <initializer>8</initializer>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>This macro defines the default size of the bounded task queue in Log2. Bounded task queue is used by each worker. </para>
+<para>This macro defines the default size of the bounded task queue in Log2. Bounded task queue is used by each worker. By default, the value is set to 8, allowing the queue to hold 256 tasks. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="18" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="18" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="19" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="19" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="wsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" prot="public" static="no">
         <name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name>
@@ -155,13 +155,13 @@
         <briefdescription>
         </briefdescription>
         <detaileddescription>
-<para>This macro defines the default size of the unbounded task queue in Log2. Unbounded task queue is used by the executor. </para>
+<para>This macro defines the default size of the unbounded task queue in Log2. Unbounded task queue is used by the executor as an overflow region. By default, the value is set to 10, allowing the queue to hold 1024 tasks initially. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="28" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="28" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="30" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="30" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>work-stealing queue (wsq) include file </para>
     </briefdescription>

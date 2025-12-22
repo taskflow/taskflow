@@ -14,6 +14,7 @@
   
   This macro defines the default size of the bounded task queue in Log2. 
   Bounded task queue is used by each worker.
+  By default, the value is set to 8, allowing the queue to hold 256 tasks.
   */
   #define TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE 8
 #endif
@@ -23,7 +24,8 @@
   @def TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE
   
   This macro defines the default size of the unbounded task queue in Log2.
-  Unbounded task queue is used by the executor.
+  Unbounded task queue is used by the executor as an overflow region.
+  By default, the value is set to 10, allowing the queue to hold 1024 tasks initially.
   */
   #define TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE 10
 #endif
@@ -52,6 +54,8 @@ from the opposite end of the queue. The implementation is designed to
 operate correctly under weak memory models and uses atomic operations
 with carefully chosen memory orderings to ensure correctness and
 scalability.
+
+@dotfile images/unbounded_wsq.dot
 
 Unlike bounded queues, this queue automatically grows its internal
 storage as needed, allowing it to accommodate an arbitrary number of
@@ -121,6 +125,11 @@ class UnboundedWSQ {
   For pointer element types `T`, it is `T` itself and uses `nullptr` to
   indicate an empty result. For non-pointer types, it is `std::optional<T>`,
   where `std::nullopt` denotes the absence of a value.
+
+  @code{.cpp}
+  static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
+  static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
+  @endcode
   
   This design avoids the overhead of `std::optional` for pointer types
   while providing a uniform empty-result semantics.
@@ -456,9 +465,11 @@ operate correctly under weak memory models and uses atomic operations
 with carefully chosen memory orderings to ensure correctness and
 scalability.
 
+@dotfile images/bounded_wsq.dot
+
 The queue has a fixed capacity determined at construction time and
 does not grow dynamically. When the queue is full, push operations
-may fail or require external handling, depending on the usage policy.
+may fail or require external handling.
 */
 template <typename T, size_t LogSize = TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE>
 class BoundedWSQ {
@@ -481,6 +492,11 @@ class BoundedWSQ {
   For pointer element types `T`, it is `T` itself and uses `nullptr` to
   indicate an empty result. For non-pointer types, it is `std::optional<T>`,
   where `std::nullopt` denotes the absence of a value.
+  
+  @code{.cpp}
+  static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
+  static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
+  @endcode
   
   This design avoids the overhead of `std::optional` for pointer types
   while providing a uniform empty-result semantics.
