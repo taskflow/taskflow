@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1NonpreemptiveRuntime" kind="class" language="C++" prot="private">
     <compoundname>tf::NonpreemptiveRuntime</compoundname>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1NonpreemptiveRuntime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::NonpreemptiveRuntime::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -17,15 +18,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="926" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="926" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="926" column="16" bodyfile="taskflow/core/runtime.hpp" bodystart="926" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1NonpreemptiveRuntime_1a0dd3cfafc2db805af18f8cbfda9c45c5" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
         <definition>Executor&amp; tf::NonpreemptiveRuntime::_executor</definition>
         <argsstring></argsstring>
         <name>_executor</name>
+        <qualifiedname>tf::NonpreemptiveRuntime::_executor</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -39,6 +41,7 @@
         <definition>Worker&amp; tf::NonpreemptiveRuntime::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
+        <qualifiedname>tf::NonpreemptiveRuntime::_worker</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -47,13 +50,14 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="952" column="10" bodyfile="taskflow/core/runtime.hpp" bodystart="952" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
+    </sectiondef>
+    <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1NonpreemptiveRuntime_1abea061d5e44c7e06a5a39b1f8832f033" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::NonpreemptiveRuntime::schedule</definition>
         <argsstring>(Task task)</argsstring>
         <name>schedule</name>
+        <qualifiedname>tf::NonpreemptiveRuntime::schedule</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
           <declname>task</declname>
@@ -71,6 +75,7 @@
         <definition>tf::NonpreemptiveRuntime::NonpreemptiveRuntime</definition>
         <argsstring>(Executor &amp;executor, Worker &amp;worker)</argsstring>
         <name>NonpreemptiveRuntime</name>
+        <qualifiedname>tf::NonpreemptiveRuntime::NonpreemptiveRuntime</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
           <declname>executor</declname>
@@ -87,7 +92,7 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="940" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="940" bodyend="942"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>currently for internal use only </para>
     </briefdescription>

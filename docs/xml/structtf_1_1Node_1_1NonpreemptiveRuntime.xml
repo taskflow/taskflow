@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="structtf_1_1Node_1_1NonpreemptiveRuntime" kind="struct" language="C++" prot="private">
     <compoundname>tf::Node::NonpreemptiveRuntime</compoundname>
-      <sectiondef kind="public-attrib">
+    <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1Node_1_1NonpreemptiveRuntime_1ac9f3e488c5c2ac8ada182f4bd5f960de" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(tf::NonpreemptiveRuntime &amp;)&gt;</type>
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void(tf::NonpreemptiveRuntime &amp;)&gt;</type>
         <definition>std::function&lt;void(tf::NonpreemptiveRuntime&amp;)&gt; tf::Node::NonpreemptiveRuntime::work</definition>
         <argsstring></argsstring>
         <name>work</name>
+        <qualifiedname>tf::Node::NonpreemptiveRuntime::work</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -16,8 +17,8 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="232" column="19" bodyfile="taskflow/core/graph.hpp" bodystart="232" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1Node_1_1NonpreemptiveRuntime_1abac5838684437251416637033121fcff" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -28,6 +29,7 @@
         <definition>tf::Node::NonpreemptiveRuntime::NonpreemptiveRuntime</definition>
         <argsstring>(C &amp;&amp;)</argsstring>
         <name>NonpreemptiveRuntime</name>
+        <qualifiedname>tf::Node::NonpreemptiveRuntime::NonpreemptiveRuntime</qualifiedname>
         <param>
           <type>C &amp;&amp;</type>
           <defname>c</defname>
@@ -40,20 +42,20 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="230" column="5" bodyfile="taskflow/core/graph.hpp" bodystart="439" bodyend="440"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
+      <node id="2">
+        <label>std::function&lt; void(tf::NonpreemptiveRuntime &amp;)&gt;</label>
+      </node>
       <node id="1">
         <label>tf::Node::NonpreemptiveRuntime</label>
         <childnode refid="2" relation="usage">
           <edgelabel>work</edgelabel>
         </childnode>
-      </node>
-      <node id="2">
-        <label>std::function&lt; void(tf::NonpreemptiveRuntime &amp;)&gt;</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/graph.hpp" line="227" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="227" bodyend="233"/>

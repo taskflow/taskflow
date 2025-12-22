@@ -39,45 +39,45 @@ wid = this_waiter_id();
 if (predicate) {
   return act();
 }
-
-notifier.prepare_wait(wid);
-
+notifier.prepare_wait(wid);    // enter the two-phase wait protocol
 if (predicate) {
   notifier.cancel_wait(wid);
   return act();
 }
-
-notifier.commit_wait(&w);
+notifier.commit_wait(&w);      // park (e.g., preempted by OS until notified)
 @endcode
 
 A notifying thread performs:
 
 @code{.cpp}
+wid = this_notifier_id;
 predicate = true;
-notifier.notify(true);
+notifier.notify_one(wid);
 @endcode
 
 The `notify` operation is inexpensive when no threads are waiting.
 The `prepare_wait` and `commit_wait` operations are more costly, but
 they are only executed when the initial predicate check fails.
+The flow diagram for notifier and waiter is shown below:
 
-The algorithm is driven by two shared variables:
-  - the user-managed predicate, and
-  - an internal state variable (`state`)
+@dotfile images/nonblocking_notifier.dot
 
-A waiting thread first publishes its intent to wait by updating
-`state` and then rechecks the predicate. Conversely, a notifying
-thread first updates the predicate and then inspects `state`.
-Sequentially consistent memory fences between these operations ensure
-that one of the following outcomes must occur:
-  - the waiting thread observes the predicate change and does not
-    block,
-  - the notifying thread observes the waiting state and wakes the
-    waiter, or
-  - both observations occur.
 
-It is impossible for both threads to miss each other's updates, which
-guarantees freedom from missed wake-ups and prevents deadlock. 
+The synchronization algorithm relies on two shared variables: 
+a user-defined predicate and an internal state variable. 
+To avoid lost wake-ups, the protocol follows a two-phase @em update-then-check pattern. 
+A waiting thread publishes its intent to wait by updating the state before rechecking the predicate. 
+Conversely, a notifying thread updates the predicate before inspecting the state. 
+This interaction is governed by a memory barrier of sequential consistency that guarantees at least one thread will observe the other's progress. 
+Consequently, the waiter either detects the work and stays active, or the notifier detects the waiter and issues a wakeup.
+It is impossible for both threads to miss each other's updates.
+  
+The state has the following layout, which consists of the following three parts:
+  + `STACK_BITS` is a stack of committed waiters
+  + `PREWAITER_BITS` is the count of waiters in the pre-waiting stage
+  + `EPOCH_BITS` is the modification counter
+
+@dotfile images/nonblocking_notifier_state_layout.dot
 
 Reference: https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/ThreadPool/EventCount.h
 */
@@ -88,6 +88,7 @@ class NonblockingNotifier {
   struct Waiter {
     alignas (TF_CACHELINE_SIZE) std::atomic<Waiter*> next;
     uint64_t epoch;
+
     enum : unsigned {
       kNotSignaled = 0,
       kWaiting,
@@ -139,12 +140,13 @@ class NonblockingNotifier {
   static const uint64_t EPOCH_INC = 1ull << EPOCH_SHIFT;
 
   /**
-  @brief constructs a notifier
+  @brief constructs a notifier with `N` waiters
 
   @param N number of waiters
 
   Constructs a notifier that supports up to `N` waiters. 
-  The maximum allowable number of waiters can be acquired by calling `capacity()`.
+  The maximum allowable number of waiters can be acquired by calling `capacity()`,
+  which is equal to 2<sup>STACK_BITS</sup>.
   */
   explicit NonblockingNotifier(size_t N) : _state(STACK_MASK), _waiters(N) {
     assert(_waiters.size() < (1 << PREWAITER_BITS) - 1);
@@ -163,10 +165,10 @@ class NonblockingNotifier {
   /**
   @brief returns the number of committed waiters
   
-  @return The number of committed waiters at the time of the call.
+  @return the number of committed waiters at the time of the call.
   
   A committed waiter is a thread that has completed the pre-waiting stage
-  and is fully registered in the waiting set.
+  and is fully registered in the waiting set via commit_wait().
   */
   size_t num_waiters() const {
     size_t n = 0;
@@ -182,7 +184,7 @@ class NonblockingNotifier {
   @brief returns the maximum number of waiters supported by this notifier
   
   The maximum number of waiters supported by this non-blocking notifier is
-  equal to 2^STACK_BITS.
+  equal to 2<sup>STACK_BITS</sup>.
   */
   size_t capacity() const {
     return 1 << STACK_BITS;
@@ -191,7 +193,8 @@ class NonblockingNotifier {
   /**
   @brief prepares the calling thread to enter the waiting set
   
-  @param wid identifier of the calling thread, in the range of `[0, size())`
+  @param wid identifier of the calling thread in the range of `[0, N)`, 
+         where `N` represents the number of waiters used to construct this notifier
   
   This function places the thread into the pre-waiting stage. After calling
   `prepare_wait()`, the thread must re-check the wait predicate and then
@@ -211,7 +214,8 @@ class NonblockingNotifier {
   /**
   @brief commits a previously prepared wait operation
   
-  @param wid identifier of the calling thread, in the range of `[0, size())`
+  @param wid identifier of the calling thread in the range of `[0, N)`, 
+         where `N` represents the number of waiters used to construct this notifier
   
   This function completes the waiting protocol for a thread that has
   previously called `prepare_wait()`. Upon successful completion, the
@@ -328,7 +332,8 @@ class NonblockingNotifier {
   /**
   @brief cancels a previously prepared wait operation
   
-  @param wid identifier of the calling thread, in the range of `[0, size())`
+  @param wid identifier of the calling thread in the range of `[0, N)`, 
+         where `N` represents the number of waiters used to construct this notifier
   
   This function aborts the waiting protocol for a thread that has
   previously called `prepare_wait()`. After cancellation, the thread
@@ -371,7 +376,7 @@ class NonblockingNotifier {
   /**
   @brief notifies one waiter from the waiting set
 
-  Wakes up one waiter from the waiting set. 
+  Wakes up one waiter from the waiting set, including those in the pre-waiting stage.
 
   The function is cheap when no threads are waiting.
   */
@@ -382,7 +387,7 @@ class NonblockingNotifier {
   /**
   @brief notifies all waiter from the waiting set
 
-  Wakes up all waiters from the waiting set.
+  Wakes up all waiters from the waiting set, including those in the pre-waiting stage.
   
   The function is cheap when no threads are waiting.
   */
@@ -413,7 +418,11 @@ class NonblockingNotifier {
   }
   
   /**
-  @brief returns the number of waiters in this notifier
+  @brief returns the number of waiters supported by this notifier
+
+  @return the number of waiters supported by this notifier
+
+  The size of a notifier is equal to the number used to construct that notifier.
   */
   size_t size() const {
     return _waiters.size();
