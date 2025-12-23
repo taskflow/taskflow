@@ -316,9 +316,12 @@ class NonblockingNotifier {
       assert((state & PREWAITER_MASK) != 0);
       uint64_t newstate = state - PREWAITER_INC + EPOCH_INC;
       newstate = (newstate & ~STACK_MASK) | wid;
+
+      // stack is empty -> this waiter is at the top of the stack, pointing to nothing
       if ((state & STACK_MASK) == STACK_MASK) {
         w->next.store(nullptr, std::memory_order_relaxed);
       }
+      // stack is non-empty -> this waiter is at the top of the stack, pointing to the origin top
       else {
         w->next.store(&_waiters[state & STACK_MASK], std::memory_order_relaxed);
       }
@@ -381,7 +384,7 @@ class NonblockingNotifier {
   The function is cheap when no threads are waiting.
   */
   void notify_one() {
-    _notify<false>();
+    _notify(false);
   }
   
   /**
@@ -392,7 +395,7 @@ class NonblockingNotifier {
   The function is cheap when no threads are waiting.
   */
   void notify_all() {
-    _notify<true>();
+    _notify(true);
   }
   
   /**
@@ -408,11 +411,11 @@ class NonblockingNotifier {
   */
   void notify_n(size_t n) {
     if(n >= _waiters.size()) {
-      _notify<true>();
+      _notify(true);
     }
     else {
       for(size_t k=0; k<n; ++k) {
-        _notify<false>();
+        _notify(false);
       }
     }
   }
@@ -475,8 +478,7 @@ class NonblockingNotifier {
   
   // notify wakes one or all waiting threads.
   // Must be called after changing the associated wait predicate.
-  template <bool all>
-  void _notify() {
+  void _notify(bool all) {
     std::atomic_thread_fence(std::memory_order_seq_cst);
     uint64_t state = _state.load(std::memory_order_acquire);
     for (;;) {
@@ -486,7 +488,7 @@ class NonblockingNotifier {
       }
       uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
       uint64_t newstate;
-      if constexpr (all) {
+      if (all) {
         // Reset prewait counter and empty wait list.
         newstate = (state & EPOCH_MASK) + (EPOCH_INC * num_prewaiters) + STACK_MASK;
       } else if (num_prewaiters) {
@@ -508,10 +510,10 @@ class NonblockingNotifier {
       }
       if (_state.compare_exchange_weak(state, newstate,
                                       std::memory_order_acquire)) {
-        if constexpr (!all) { if(num_prewaiters) return; }  // unblocked pre-wait thread
+        if(!all && num_prewaiters) return; // unblocked pre-wait thread
         if ((state & STACK_MASK) == STACK_MASK) return;
         Waiter* w = &_waiters[state & STACK_MASK];
-        if constexpr (!all) {
+        if(!all) {
           w->next.store(nullptr, std::memory_order_relaxed);
         }
         _unpark(w);
