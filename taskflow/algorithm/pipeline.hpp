@@ -231,15 +231,13 @@ class Pipe {
 
 @tparam Ps pipe types
 
-A pipeline is a composable graph object for users to create a
-<i>pipeline scheduling framework</i> using a module task in a taskflow.
-Unlike the conventional pipeline programming frameworks (e.g., Intel TBB),
-%Taskflow's pipeline algorithm does not provide any data abstraction,
-which often restricts users from optimizing data layouts in their applications,
-but a flexible framework for users to customize their application data
-atop our pipeline scheduling.
-The following code creates a pipeline of four parallel lines to schedule
-tokens through three serial pipes:
+A tf::Pipeline is a composable graph object that allows users to parallelize an application
+using pipeline parallelism.
+Unlike conventional pipeline programming frameworks (e.g., Intel TBB),
+tf::Pipeline does not provide any data abstraction but a task-parallel framework
+for users to customize their data layout when leveraging pipeline parallelism.
+The following code creates a pipeline with four parallel lines that schedule
+five tokens through three pipes of a serial-parallel-serial direction:
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -264,7 +262,7 @@ tf::Pipeline pipeline(num_lines,
       buffer[pf.line()][pf.pipe()] = pf.token();
     }
   }},
-  tf::Pipe{tf::PipeType::SERIAL, [&buffer] (tf::Pipeflow& pf) {
+  tf::Pipe{tf::PipeType::PARALLEL, [&buffer] (tf::Pipeflow& pf) {
     // propagate the previous result to this pipe by adding one
     buffer[pf.line()][pf.pipe()] = buffer[pf.line()][pf.pipe()-1] + 1;
   }},
@@ -290,21 +288,10 @@ task.precede(stop);
 executor.run(taskflow).wait();
 @endcode
 
-The above example creates a pipeline graph that schedules five tokens over
-four parallel lines in a circular fashion, as depicted below:
+The five tokens will be scheduled across four parallel lines in a circular fashion,
+as depicted below:
 
-@code{.bash}
-o -> o -> o
-|    |    |
-v    v    v
-o -> o -> o
-|    |    |
-v    v    v
-o -> o -> o
-|    |    |
-v    v    v
-o -> o -> o
-@endcode
+@dotfile images/pipeline_our_structure.dot
 
 At each pipe stage, the program propagates the result to the next pipe
 by adding one to the result stored in a custom data storage, @c buffer.
@@ -379,7 +366,7 @@ class Pipeline {
   The Function returns the number of pipes given by the user
   upon the construction of the pipeline.
   */
-  constexpr size_t num_pipes() const noexcept;
+  constexpr size_t num_pipes() const;
 
   /**
   @brief resets the pipeline

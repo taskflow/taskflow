@@ -8,13 +8,11 @@
 [![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
 [![Cite](image/cite-tpds.svg)][TPDS22]
 
-Taskflow helps you quickly write parallel and heterogeneous task programs in modern C++
+Taskflow helps you quickly write task-parallel programs using modern C++
 
 # Why Taskflow?
 
-Taskflow is faster, more expressive, and easier for drop-in integration
-than many of existing task programming frameworks
-in handling complex parallel workloads.
+Taskflow is faster, more expressive, and easier to integrate than many existing task programming frameworks when handling complex parallel workloads.
 
 ![](image/performance.png)
 

@@ -17,7 +17,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="232" column="11"/>
+        <location file="taskflow/core/worker.hpp" line="288" column="11"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -42,11 +42,11 @@
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The method is called by the constructor of an executor. </para>
+The method is called by the scheduler before entering the work-stealing loop. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="240" column="16"/>
+        <location file="taskflow/core/worker.hpp" line="296" column="16"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
         <type>void</type>
@@ -83,11 +83,11 @@ The method is called by the constructor of an executor. </para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-The method is called by the constructor of an executor. </para>
+The method is called by the scheduler after leaving the work-stealing loop. Any uncaught exception during the worker&apos;s execution will be propagated through the given exception pointer. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="249" column="16"/>
+        <location file="taskflow/core/worker.hpp" line="307" column="16"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -97,9 +97,6 @@ The method is called by the constructor of an executor. </para>
 <para>The <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> class allows users to customize worker properties when creating an executor. Examples include binding workers to specific CPU cores or invoking custom methods before and after a worker enters or leaves the work-stealing loop. When you create an executor, it spawns a set of workers to execute tasks with the following logic:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;num_workers;<sp/>n++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>create_thread([](Worker&amp;<sp/>worker)</highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>pre-processing<sp/>executor-specific<sp/>worker<sp/>information</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>enter<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_prologue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
@@ -122,11 +119,63 @@ The method is called by the constructor of an executor. </para>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para><ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">tf::WorkerInterface::scheduler_prologue</ref> and tf::WorkerInterface::scheduler_eiplogue are invoked by each worker simultaneously. </para>
+<para>The example below demonstrates the usage of <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref> to affine a worker to a specific CPU core equal to its id on a Linux platform:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="comment">//<sp/>affine<sp/>the<sp/>given<sp/>thread<sp/>to<sp/>the<sp/>given<sp/>core<sp/>index<sp/>(linux-specific)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>affine(std::thread&amp;<sp/>thread,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>core_id)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>cpu_set_t<sp/>cpuset;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>CPU_ZERO(&amp;cpuset);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>CPU_SET(core_id,<sp/>&amp;cpuset);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>pthread_t<sp/>native_handle<sp/>=<sp/>thread.native_handle();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>pthread_setaffinity_np(native_handle,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(cpu_set_t),<sp/>&amp;cpuset)<sp/>==<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">CustomWorkerBehavior<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>tf::WorkerInterface<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>call<sp/>before<sp/>the<sp/>worker<sp/>enters<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">scheduler_prologue</ref>(tf::Worker&amp;<sp/>w)</highlight><highlight class="keyword"><sp/>override<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;worker<sp/>%lu<sp/>prepares<sp/>to<sp/>enter<sp/>the<sp/>work-stealing<sp/>loop\n&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>now<sp/>affine<sp/>the<sp/>worker<sp/>to<sp/>a<sp/>particular<sp/>CPU<sp/>core<sp/>equal<sp/>to<sp/>its<sp/>id</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(affine(w.<ref refid="classtf_1_1Worker_1a6158f91db3b980e3072cc0329cbe3c14" kindref="member">thread</ref>(),<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>()))<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;successfully<sp/>affines<sp/>worker<sp/>%lu<sp/>to<sp/>CPU<sp/>core<sp/>%lu\n&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>(),<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;failed<sp/>to<sp/>affine<sp/>worker<sp/>%lu<sp/>to<sp/>CPU<sp/>core<sp/>%lu\n&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>(),<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>to<sp/>call<sp/>after<sp/>the<sp/>worker<sp/>leaves<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" kindref="member">scheduler_epilogue</ref>(tf::Worker&amp;<sp/>w,<sp/>std::exception_ptr)</highlight><highlight class="keyword"><sp/>override<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;worker<sp/>%lu<sp/>left<sp/>the<sp/>work-stealing<sp/>loop\n&quot;</highlight><highlight class="normal">,<sp/>w.<ref refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kindref="member">id</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::Executor<sp/>executor(4,<sp/><ref refid="namespacetf_1aa10195f7d5f2f1dd32bb852a9aa560f4" kindref="member">tf::make_worker_interface&lt;CustomWorkerBehavior&gt;</ref>());</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>When running the program, we see the following one possible output:</para>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">worker<sp/>3<sp/>prepares<sp/>to<sp/>enter<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">successfully<sp/>affines<sp/>worker<sp/>3<sp/>to<sp/>CPU<sp/>core<sp/>3</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>3<sp/>left<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>0<sp/>prepares<sp/>to<sp/>enter<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">successfully<sp/>affines<sp/>worker<sp/>0<sp/>to<sp/>CPU<sp/>core<sp/>0</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>0<sp/>left<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>1<sp/>prepares<sp/>to<sp/>enter<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>2<sp/>prepares<sp/>to<sp/>enter<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">successfully<sp/>affines<sp/>worker<sp/>1<sp/>to<sp/>CPU<sp/>core<sp/>1</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>1<sp/>left<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+<codeline><highlight class="normal">successfully<sp/>affines<sp/>worker<sp/>2<sp/>to<sp/>CPU<sp/>core<sp/>2</highlight></codeline>
+<codeline><highlight class="normal">worker<sp/>2<sp/>left<sp/>the<sp/>work-stealing<sp/>loop</highlight></codeline>
+</programlisting></para>
+<para><simplesect kind="attention"><para><ref refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" kindref="member">tf::WorkerInterface::scheduler_prologue</ref> and tf::WorkerInterface::scheduler_epologue are invoked by each worker simultaneously. </para>
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/worker.hpp" line="225" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="225" bodyend="251"/>
+    <location file="taskflow/core/worker.hpp" line="281" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="281" bodyend="309"/>
     <listofallmembers>
       <member refid="classtf_1_1WorkerInterface_1a3e6d68fd4041f433d1b7ca9e5786b57c" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_epilogue</name></member>
       <member refid="classtf_1_1WorkerInterface_1a41c3b931a36bde8eff4aa8d375e8888a" prot="public" virt="pure-virtual"><scope>tf::WorkerInterface</scope><name>scheduler_prologue</name></member>

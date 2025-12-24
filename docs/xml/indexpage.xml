@@ -56,7 +56,7 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow helps you quickly write task-parallel programs with <emphasis>high performance</emphasis> and simultaneous <emphasis>high productivity</emphasis>. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries. The source code is available in our <ulink url="https://github.com/taskflow/">Project GitHub</ulink>.</para>
+<para>Taskflow helps you quickly write high-performance task-parallel programs with high programming productivity. It is faster, more expressive, fewer lines of code, and easier for drop-in integration than many of existing task programming libraries. The source code is available in our <ulink url="https://github.com/taskflow/">Project GitHub</ulink>.</para>
 <sect1 id="index_1ASimpleFirstProgram">
 <title>Start Your First Taskflow Program</title><para>The following program (<computeroutput>simple.cpp</computeroutput>) creates a taskflow of four tasks <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput>, where <computeroutput>A</computeroutput> runs before <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>, and <computeroutput>D</computeroutput> runs after <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput>. When <computeroutput>A</computeroutput> finishes, <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> can run in parallel.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Taskflow<sp/>is<sp/>header-only</highlight><highlight class="normal"></highlight></codeline>
@@ -83,7 +83,7 @@
 </programlisting></para>
 <para><dotfile name="simple.dot"></dotfile>
 </para>
-<para>Taskflow is <emphasis>header-only</emphasis> and there is no wrangle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para>
+<para>Taskflow is <emphasis>header-only</emphasis> and there is no struggle with installation. To compile the program, clone the Taskflow project and tell the compiler to include the headers under <computeroutput>taskflow/</computeroutput>.</para>
 <para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>git<sp/>clone<sp/>https://github.com/taskflow/taskflow.git<sp/><sp/>#<sp/>clone<sp/>it<sp/>only<sp/>once</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>g++<sp/>-std=c++20<sp/>simple.cpp<sp/>-I<sp/>taskflow/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 <codeline><highlight class="normal">~$<sp/>./simple</highlight></codeline>
@@ -236,7 +236,7 @@
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>y[i]<sp/>=<sp/>a*x[i]<sp/>+<sp/>y[i];</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
-<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>CUDA<sp/>Gaph<sp/>task</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>CUDA<sp/>Graph<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">tf::Task<sp/>cudaflow<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;]()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><ref refid="namespacetf_1a713c427e4f9841a90dec67045a3babed" kindref="member">tf::cudaGraph</ref><sp/>cg;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tf::cudaTask<sp/>h2d_x<sp/>=<sp/>cg.<ref refid="classtf_1_1cudaGraphBase_1a02a041d5dd9e1e8958eb43e09331051e" kindref="member">copy</ref>(dx,<sp/>hx.data(),<sp/>N);</highlight></codeline>
@@ -309,35 +309,29 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 </listitem></itemizedlist>
 </para>
 <para>More importantly, we appreciate all Taskflow <ref refid="contributors" kindref="compound">Contributors</ref> and the following organizations for sponsoring the Taskflow project!</para>
-<para><table rows="3" cols="4"><row>
-<entry thead="yes" align='center'><para></para>
-</entry><entry thead="yes" align='center'><para></para>
-</entry><entry thead="yes" align='center'><para></para>
-</entry><entry thead="yes" align='center'><para></para>
+<para><table rows="2" cols="4"><row>
+<entry thead="no"><para><image type="html" name="utah-ece-logo.png"></image>
+ </para>
+</entry><entry thead="no"><para><image type="html" name="nsf.png"></image>
+ </para>
+</entry><entry thead="no"><para><image type="html" name="darpa.png"></image>
+ </para>
+</entry><entry thead="no"><para><image type="html" name="NumFocus.png"></image>
+  </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para><image type="html" name="utah-ece-logo.png"></image>
-  </para>
-</entry><entry thead="no" align='center'><para><image type="html" name="nsf.png"></image>
-  </para>
-</entry><entry thead="no" align='center'><para><image type="html" name="darpa.png"></image>
-  </para>
-</entry><entry thead="no" align='center'><para><image type="html" name="NumFocus.png"></image>
-   </para>
-</entry></row>
-<row>
-<entry thead="no" align='center'><para><image type="html" name="nvidia-logo.png"></image>
-  </para>
-</entry><entry thead="no" align='center'><para><image type="html" name="uw-madison-ece-logo.png"></image>
-  </para>
-</entry><entry thead="no" align='center'><para></para>
-</entry><entry thead="no" align='center'><para></para>
+<entry thead="no"><para><image type="html" name="nvidia-logo.png"></image>
+ </para>
+</entry><entry thead="no"><para><image type="html" name="uw-madison-ece-logo.png"></image>
+ </para>
+</entry><entry thead="no"><para></para>
+</entry><entry thead="no"><para></para>
 </entry></row>
 </table>
 </para>
 </sect1>
 <sect1 id="index_1License">
-<title>License</title><para>Taskflow is open-source under permissive MIT license. You are completely free to use, modify, and redistribute any work on top of Taskflow. The source code is available in <ulink url="https://github.com/taskflow/">Project GitHub</ulink> and is actively maintained by <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> and his research group at the University of Wisconsin at Madison. </para>
+<title>License</title><para>Taskflow is open-source the under permissive MIT license. You are completely free to use, modify, and redistribute any work on top of Taskflow. The source code is available in <ulink url="https://github.com/taskflow/">Project GitHub</ulink> and is actively maintained by <ulink url="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</ulink> and his research group at the University of Wisconsin at Madison. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/QuickStart.dox"/>

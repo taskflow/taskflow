@@ -75,7 +75,7 @@
             </li>
           </ul>
         </nav>
-<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.</p><p>The queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</p><div class="m-graph"><svg style="width: 33.600rem; height: 27.500rem;" viewBox="0.00 0.00 336.07 275.13">
+<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.</p><p>A work-stealing queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</p><div class="m-graph"><svg style="width: 33.600rem; height: 27.500rem;" viewBox="0.00 0.00 336.07 275.13">
 <g transform="scale(1 1) rotate(0) translate(4 271.13)">
 <title>UnboundedWSQ</title>
 <g class="m-node m-flat">
@@ -189,16 +189,16 @@
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a005abeb0ab8c65d4c98f7eafec46bd9e">
-              <span class="m-doc-wrap-bumper">auto <a href="#a005abeb0ab8c65d4c98f7eafec46bd9e" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a005abeb0ab8c65d4c98f7eafec46bd9e" class="m-doc">empty</a>(</span><span class="m-doc-wrap">) const -&gt; bool <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries if the queue is empty at the time of this call</dd>
-            <dt id="a4b2e37db67ba4b0017d85f10bf43153d">
-              <span class="m-doc-wrap-bumper">auto <a href="#a4b2e37db67ba4b0017d85f10bf43153d" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a4b2e37db67ba4b0017d85f10bf43153d" class="m-doc">size</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of items at the time of this call</dd>
-            <dt id="aa3d26c3c856d04f11ee242b90d71ea14">
-              <span class="m-doc-wrap-bumper">auto <a href="#aa3d26c3c856d04f11ee242b90d71ea14" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#aa3d26c3c856d04f11ee242b90d71ea14" class="m-doc">capacity</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the capacity of the queue</dd>
             <dt>
@@ -278,6 +278,50 @@
                 </tr>
               </tbody>
             </table>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a005abeb0ab8c65d4c98f7eafec46bd9e"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">bool tf::<wbr />UnboundedWSQ&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a005abeb0ab8c65d4c98f7eafec46bd9e" class="m-doc-self">empty</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries if the queue is empty at the time of this call</p>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="a4b2e37db67ba4b0017d85f10bf43153d"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />UnboundedWSQ&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a4b2e37db67ba4b0017d85f10bf43153d" class="m-doc-self">size</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the number of items at the time of this call</p>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></pre>
+          </div></section>
+          <section class="m-doc-details" id="aa3d26c3c856d04f11ee242b90d71ea14"><div>
+            <h3>
+              <div class="m-doc-template">
+                template&lt;typename T&gt;
+              </div>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />UnboundedWSQ&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aa3d26c3c856d04f11ee242b90d71ea14" class="m-doc-self">capacity</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>queries the capacity of the queue</p>
+<pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1025</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w">  </span><span class="c1">// insert more than 1024 ints to trigger resizing</span>
+<span class="w">  </span><span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2048</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1025</span><span class="p">);</span></pre>
           </div></section>
           <section class="m-doc-details" id="a2aaa261d52e680dcf00af7514868739f"><div>
             <h3>
@@ -298,7 +342,13 @@
                 </tr>
               </tbody>
             </table>
-<p>This method pushes one item into the queue. The operation can trigger the queue to resize its capacity if more space is required.</p><p>Only the owner thread can insert an item to the queue.</p>
+<p>This method pushes one item into the queue. The operation can trigger the queue to resize its capacity if more space is required.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1025</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="c1">// insert more than 1024 items to trigger resizing</span>
+<span class="w">  </span><span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2048</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1025</span><span class="p">);</span></pre><p>Only the owner thread can insert an item to the queue.</p>
           </div></section>
           <section class="m-doc-details" id="a85512e7baa65c368e757128e5c1a6e82"><div>
             <h3>
@@ -334,7 +384,12 @@
                 </tr>
               </tbody>
             </table>
-<p>This method pushes up to <code>N</code> items from the range <code>[first, first + N)</code> into the queue. The operation can trigger the queue to resize its capacity if more space is required.</p><p>Only the owner thread can insert an item to the queue.</p>
+<p>This method pushes up to <code>N</code> items from the range <code>[first, first + N)</code> into the queue. The operation can trigger the queue to resize its capacity if more space is required. Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="mi">1025</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">bulk_push</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"> </span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2048</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">());</span></pre><p>Only the owner thread can insert an item to the queue.</p>
           </div></section>
           <section class="m-doc-details" id="a02e2447359cc9d84f59028b236e3a0e7"><div>
             <h3>
@@ -344,7 +399,14 @@
               <span class="m-doc-wrap-bumper"><a href="#a9c5d09f751f1c71a57d0e6a87c9df348" class="m-doc">value_<wbr />type</a> tf::<wbr />UnboundedWSQ&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a02e2447359cc9d84f59028b236e3a0e7" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>pops out an item from the queue</p>
-<p>This method pops an item from the queue. If the queue is empty, <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> is returned.</p><p>Only the owner thread can pop out an item from the queue.</p>
+<p>This method pops an item from the queue. If the queue is empty, <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> is returned. The elements popped out from the queue follow a last-in-first-out (LIFO) order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">pop</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">pop</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span></pre><p>Only the owner thread can pop out an item from the queue.</p>
           </div></section>
           <section class="m-doc-details" id="a0b91802df36d932ee43b10aedc3abebc"><div>
             <h3>
@@ -354,7 +416,14 @@
               <span class="m-doc-wrap-bumper"><a href="#a9c5d09f751f1c71a57d0e6a87c9df348" class="m-doc">value_<wbr />type</a> tf::<wbr />UnboundedWSQ&lt;T&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0b91802df36d932ee43b10aedc3abebc" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>steals an item from the queue</p>
-<p>Any threads can try to steal an item from the queue. The return can be an <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> if this operation failed.</p>
+<p>Any threads can try to steal an item from the queue. The return can be an <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> if this operation failed. The elements stolen from the queue follow a first-in-first-out (FIFO) order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal</span><span class="p">().</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span></pre><p>Multiple threads can simultaneously steal items from the queue.</p>
           </div></section>
           <section class="m-doc-details" id="aa48bbb819409d53df6ead0183add73cf"><div>
             <h3>
@@ -375,7 +444,17 @@
                 </tr>
               </tbody>
             </table>
-<p>This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <code>num_empty_steals</code> is incremented; otherwise, <code>num_empty_steals</code> is reset to zero. The return can be an <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> if this operation failed.</p>
+<p>This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <code>num_empty_steals</code> is incremented; otherwise, <code>num_empty_steals</code> is reset to zero. The return can be an <a href="#abd33a82897356247c6cb4745003d4136" class="m-doc">empty_<wbr />value()</a> if this operation failed. The elements stolen from the queue follow a first-in-first-out (FIFO) order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span><span class="w">  </span>
+<span class="kt">size_t</span><span class="w"> </span><span class="nf">num_empty_steals</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal_with_feedback</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal_with_feedback</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal_with_feedback</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">wsq</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">steal_with_feedback</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="p">).</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">num_empty_steals</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// successful steal will reset the feedback to 0</span></pre><p>Multiple threads can simultaneously steal items from the queue.</p>
           </div></section>
         </section>
       </div>

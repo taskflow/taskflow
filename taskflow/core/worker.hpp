@@ -192,9 +192,6 @@ with the following logic:
 for(size_t n=0; n<num_workers; n++) {
   create_thread([](Worker& worker)
 
-    // pre-processing executor-specific worker information
-    // ...
-
     // enter the scheduling loop
     // Here, WorkerInterface::scheduler_prologue is invoked, if any
     worker_interface->scheduler_prologue(worker);
@@ -217,8 +214,67 @@ for(size_t n=0; n<num_workers; n++) {
 }
 @endcode
 
+The example below demonstrates the usage of tf::WorkerInterface to affine
+a worker to a specific CPU core equal to its id on a Linux platform:
+
+@code{.cpp}
+// affine the given thread to the given core index (linux-specific)
+bool affine(std::thread& thread, unsigned int core_id) {
+  cpu_set_t cpuset;
+  CPU_ZERO(&cpuset);
+  CPU_SET(core_id, &cpuset);
+  pthread_t native_handle = thread.native_handle();
+  return pthread_setaffinity_np(native_handle, sizeof(cpu_set_t), &cpuset) == 0;
+}
+
+class CustomWorkerBehavior : public tf::WorkerInterface {
+
+  public:
+  
+  // to call before the worker enters the scheduling loop
+  void scheduler_prologue(tf::Worker& w) override {
+    printf("worker %lu prepares to enter the work-stealing loop\n", w.id());
+    
+    // now affine the worker to a particular CPU core equal to its id
+    if(affine(w.thread(), w.id())) {
+      printf("successfully affines worker %lu to CPU core %lu\n", w.id(), w.id());
+    }
+    else {
+      printf("failed to affine worker %lu to CPU core %lu\n", w.id(), w.id());
+    }
+  }
+
+  // to call after the worker leaves the scheduling loop
+  void scheduler_epilogue(tf::Worker& w, std::exception_ptr) override {
+    printf("worker %lu left the work-stealing loop\n", w.id());
+  }
+};
+
+int main() {
+  tf::Executor executor(4, tf::make_worker_interface<CustomWorkerBehavior>());
+  return 0;
+}
+@endcode
+
+When running the program, we see the following one possible output:
+
+@code{.bash}
+worker 3 prepares to enter the work-stealing loop
+successfully affines worker 3 to CPU core 3
+worker 3 left the work-stealing loop
+worker 0 prepares to enter the work-stealing loop
+successfully affines worker 0 to CPU core 0
+worker 0 left the work-stealing loop
+worker 1 prepares to enter the work-stealing loop
+worker 2 prepares to enter the work-stealing loop
+successfully affines worker 1 to CPU core 1
+worker 1 left the work-stealing loop
+successfully affines worker 2 to CPU core 2
+worker 2 left the work-stealing loop
+@endcode
+
 @attention
-tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_eiplogue 
+tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epologue 
 are invoked by each worker simultaneously.
 
 */
@@ -235,7 +291,7 @@ class WorkerInterface {
   @brief method to call before a worker enters the scheduling loop
   @param worker a reference to the worker
 
-  The method is called by the constructor of an executor.
+  The method is called by the scheduler before entering the work-stealing loop.
   */
   virtual void scheduler_prologue(Worker& worker) = 0;
 
@@ -244,7 +300,9 @@ class WorkerInterface {
   @param worker a reference to the worker
   @param ptr an pointer to the exception thrown by the scheduling loop
 
-  The method is called by the constructor of an executor.
+  The method is called by the scheduler after leaving the work-stealing loop.
+  Any uncaught exception during the worker's execution will be propagated through
+  the given exception pointer.
   */
   virtual void scheduler_epilogue(Worker& worker, std::exception_ptr ptr) = 0;
 

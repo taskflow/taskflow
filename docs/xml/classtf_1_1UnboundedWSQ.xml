@@ -110,15 +110,17 @@
 <parametername>LogSize</parametername>
 </parameternamelist>
 <parameterdescription>
-<para>the base-2 logarithm of the queue size </para>
+<para>the base-2 logarithm of the queue size</para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-</para>
+<programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>1024);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="144" column="12" bodyfile="taskflow/core/wsq.hpp" bodystart="254" bodyend="259"/>
+        <location file="taskflow/core/wsq.hpp" line="149" column="12" bodyfile="taskflow/core/wsq.hpp" bodystart="345" bodyend="350"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1ac1986b353f71887c197f65dc8eab10db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
@@ -133,7 +135,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="149" column="3" bodyfile="taskflow/core/wsq.hpp" bodystart="263" bodyend="268"/>
+        <location file="taskflow/core/wsq.hpp" line="154" column="3" bodyfile="taskflow/core/wsq.hpp" bodystart="354" bodyend="359"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a005abeb0ab8c65d4c98f7eafec46bd9e" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>bool</type>
@@ -145,10 +147,15 @@
 <para>queries if the queue is empty at the time of this call </para>
         </briefdescription>
         <detaileddescription>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.empty()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(1);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.empty()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="154" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="272" bodyend="276"/>
+        <location file="taskflow/core/wsq.hpp" line="166" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="363" bodyend="367"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a4b2e37db67ba4b0017d85f10bf43153d" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
@@ -160,10 +167,15 @@
 <para>queries the number of items at the time of this call </para>
         </briefdescription>
         <detaileddescription>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.size()<sp/>==<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(1);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.size()<sp/>==<sp/>1);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="159" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="280" bodyend="284"/>
+        <location file="taskflow/core/wsq.hpp" line="178" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="371" bodyend="375"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1aa3d26c3c856d04f11ee242b90d71ea14" prot="public" static="no" const="yes" explicit="no" inline="no" noexcept="yes" virt="non-virtual">
         <type>size_t</type>
@@ -175,10 +187,18 @@
 <para>queries the capacity of the queue </para>
         </briefdescription>
         <detaileddescription>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>1024);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1025;<sp/>i++){<sp/><sp/></highlight><highlight class="comment">//<sp/>insert<sp/>more<sp/>than<sp/>1024<sp/>ints<sp/>to<sp/>trigger<sp/>resizing</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>wsq.push(i);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>2048);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.size()<sp/>==<sp/>1025);</highlight></codeline>
+</programlisting> </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="164" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="421" bodyend="423"/>
+        <location file="taskflow/core/wsq.hpp" line="193" column="10" bodyfile="taskflow/core/wsq.hpp" bodystart="512" bodyend="514"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a2aaa261d52e680dcf00af7514868739f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -204,11 +224,19 @@
 </parameteritem>
 </parameterlist>
 This method pushes one item into the queue. The operation can trigger the queue to resize its capacity if more space is required.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>1024);</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1025;<sp/>i++)<sp/>{<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>insert<sp/>more<sp/>than<sp/>1024<sp/>items<sp/>to<sp/>trigger<sp/>resizing</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>wsq.push(i);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>2048);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.size()<sp/>==<sp/>1025);</highlight></codeline>
+</programlisting></para>
 <para>Only the owner thread can insert an item to the queue. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="177" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="288" bodyend="304"/>
+        <location file="taskflow/core/wsq.hpp" line="215" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="379" bodyend="395"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a85512e7baa65c368e757128e5c1a6e82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -259,12 +287,19 @@ This method pushes one item into the queue. The operation can trigger the queue 
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This method pushes up to <computeroutput>N</computeroutput> items from the range <computeroutput>[first, first + N)</computeroutput> into the queue. The operation can trigger the queue to resize its capacity if more space is required.</para>
+This method pushes up to <computeroutput>N</computeroutput> items from the range <computeroutput>[first, first + N)</computeroutput> into the queue. The operation can trigger the queue to resize its capacity if more space is required. Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>1024);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>vec(1025,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">wsq.bulk_push(vec.data(),<sp/>vec.size());<sp/></highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.capacity()<sp/>==<sp/>2048);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.size()<sp/>==<sp/>vec.size());</highlight></codeline>
+</programlisting></para>
 <para>Only the owner thread can insert an item to the queue. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="193" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="309" bodyend="329"/>
+        <location file="taskflow/core/wsq.hpp" line="241" column="8" bodyfile="taskflow/core/wsq.hpp" bodystart="400" bodyend="420"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a02e2447359cc9d84f59028b236e3a0e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1UnboundedWSQ_1a9c5d09f751f1c71a57d0e6a87c9df348" kindref="member">value_type</ref></type>
@@ -276,12 +311,21 @@ This method pushes up to <computeroutput>N</computeroutput> items from the range
 <para>pops out an item from the queue </para>
         </briefdescription>
         <detaileddescription>
-<para>This method pops an item from the queue. If the queue is empty, <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> is returned.</para>
+<para>This method pops an item from the queue. If the queue is empty, <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> is returned. The elements popped out from the queue follow a last-in-first-out (LIFO) order.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">wsq.push(1);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(2);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(3);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.pop().value()<sp/>=<sp/>3);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.pop().value()<sp/>=<sp/>2);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.pop().value()<sp/>=<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.pop()<sp/>==<sp/>std::nullopt);</highlight></codeline>
+</programlisting></para>
 <para>Only the owner thread can pop out an item from the queue. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="203" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="334" bodyend="362"/>
+        <location file="taskflow/core/wsq.hpp" line="263" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="425" bodyend="453"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a0b91802df36d932ee43b10aedc3abebc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1UnboundedWSQ_1a9c5d09f751f1c71a57d0e6a87c9df348" kindref="member">value_type</ref></type>
@@ -293,11 +337,21 @@ This method pushes up to <computeroutput>N</computeroutput> items from the range
 <para>steals an item from the queue </para>
         </briefdescription>
         <detaileddescription>
-<para>Any threads can try to steal an item from the queue. The return can be an <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> if this operation failed. </para>
+<para>Any threads can try to steal an item from the queue. The return can be an <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> if this operation failed. The elements stolen from the queue follow a first-in-first-out (FIFO) order.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal">wsq.push(1);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(2);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(3);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal().value()<sp/>=<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal().value()<sp/>=<sp/>2);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal().value()<sp/>=<sp/>3);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal()<sp/>==<sp/>std::nullopt);</highlight></codeline>
+</programlisting></para>
+<para>Multiple threads can simultaneously steal items from the queue. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="211" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="367" bodyend="388"/>
+        <location file="taskflow/core/wsq.hpp" line="285" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="458" bodyend="479"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1aa48bbb819409d53df6ead0183add73cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1UnboundedWSQ_1a9c5d09f751f1c71a57d0e6a87c9df348" kindref="member">value_type</ref></type>
@@ -322,11 +376,24 @@ This method pushes up to <computeroutput>N</computeroutput> items from the range
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <computeroutput>num_empty_steals</computeroutput> is incremented; otherwise, <computeroutput>num_empty_steals</computeroutput> is reset to zero. The return can be an <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> if this operation failed. </para>
+This function tries to steal a task from the queue. If the steal attempt is successful, the stolen task is returned. Additionally, if the queue is empty, the provided counter <computeroutput>num_empty_steals</computeroutput> is incremented; otherwise, <computeroutput>num_empty_steals</computeroutput> is reset to zero. The return can be an <ref refid="classtf_1_1UnboundedWSQ_1abd33a82897356247c6cb4745003d4136" kindref="member">empty_value()</ref> if this operation failed. The elements stolen from the queue follow a first-in-first-out (FIFO) order.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::UnboundedWSQ&lt;int&gt;<sp/>wsq(10);<sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>num_empty_steals(0);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal_with_feedback(num_empty_steals)<sp/>==<sp/>std::nullopt);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal_with_feedback(num_empty_steals)<sp/>==<sp/>std::nullopt);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal_with_feedback(num_empty_steals)<sp/>==<sp/>std::nullopt);</highlight></codeline>
+<codeline><highlight class="normal">assert(num_empty_steals<sp/>==<sp/>3);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(1);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(2);</highlight></codeline>
+<codeline><highlight class="normal">wsq.push(3);</highlight></codeline>
+<codeline><highlight class="normal">assert(wsq.steal_with_feedback(num_empty_steals).value()<sp/>=<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal">assert(num_empty_steals<sp/>==<sp/>0);<sp/><sp/></highlight><highlight class="comment">//<sp/>successful<sp/>steal<sp/>will<sp/>reset<sp/>the<sp/>feedback<sp/>to<sp/>0</highlight></codeline>
+</programlisting></para>
+<para>Multiple threads can simultaneously steal items from the queue. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="224" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="393" bodyend="417"/>
+        <location file="taskflow/core/wsq.hpp" line="315" column="14" bodyfile="taskflow/core/wsq.hpp" bodystart="484" bodyend="508"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-static-func">
@@ -348,7 +415,7 @@ This function tries to steal a task from the queue. If the steal attempt is succ
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="238" column="25" bodyfile="taskflow/core/wsq.hpp" bodystart="238" bodyend="244"/>
+        <location file="taskflow/core/wsq.hpp" line="329" column="25" bodyfile="taskflow/core/wsq.hpp" bodystart="329" bodyend="335"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="private-func">
@@ -376,7 +443,7 @@ This function tries to steal a task from the queue. If the steal attempt is succ
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="248" column="9" bodyfile="taskflow/core/wsq.hpp" bodystart="427" bodyend="433"/>
+        <location file="taskflow/core/wsq.hpp" line="339" column="9" bodyfile="taskflow/core/wsq.hpp" bodystart="518" bodyend="524"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1UnboundedWSQ_1a123d4f33cac5ac2a98b6088d089f390b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>Array *</type>
@@ -406,7 +473,7 @@ This function tries to steal a task from the queue. If the steal attempt is succ
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="249" column="9" bodyfile="taskflow/core/wsq.hpp" bodystart="437" bodyend="443"/>
+        <location file="taskflow/core/wsq.hpp" line="340" column="9" bodyfile="taskflow/core/wsq.hpp" bodystart="528" bodyend="534"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
@@ -424,12 +491,12 @@ This function tries to steal a task from the queue. If the steal attempt is succ
 </parameterlist>
 </para>
 <para>This class implements the work-stealing queue described in the paper, <ulink url="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</ulink>.</para>
-<para>The queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</para>
+<para>A work-stealing queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</para>
 <para><dotfile name="unbounded_wsq.dot"></dotfile>
 </para>
 <para>Unlike bounded queues, this queue automatically grows its internal storage as needed, allowing it to accommodate an arbitrary number of tasks without a fixed capacity limit. </para>
     </detaileddescription>
-    <location file="taskflow/core/wsq.hpp" line="65" column="1" bodyfile="taskflow/core/wsq.hpp" bodystart="65" bodyend="250"/>
+    <location file="taskflow/core/wsq.hpp" line="65" column="1" bodyfile="taskflow/core/wsq.hpp" bodystart="65" bodyend="341"/>
     <listofallmembers>
       <member refid="classtf_1_1UnboundedWSQ_1a4dba7a29481d772a46dc4b0afee7257c" prot="private" virt="non-virtual"><scope>tf::UnboundedWSQ</scope><name>_array</name></member>
       <member refid="classtf_1_1UnboundedWSQ_1a683f0ef756ab4c2ed0ad9401e9f2cb4e" prot="private" virt="non-virtual"><scope>tf::UnboundedWSQ</scope><name>_bottom</name></member>
