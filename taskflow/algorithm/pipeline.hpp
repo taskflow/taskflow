@@ -472,7 +472,7 @@ size_t Pipeline<Ps...>::num_lines() const noexcept {
 
 // Function: num_pipes
 template <typename... Ps>
-constexpr size_t Pipeline<Ps...>::num_pipes() const noexcept {
+constexpr size_t Pipeline<Ps...>::num_pipes() const {
   return sizeof...(Ps);
 }
 
