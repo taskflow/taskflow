@@ -521,9 +521,6 @@ via tf::WorkerInterface is given below:
 for(size_t n=0; n<num_workers; n++) {
   create_thread([](Worker& worker){
 
-    // pre-processing executor-specific worker information
-    // ...
-
     // enter the scheduling loop
     // Here, WorkerInterface::scheduler_prologue is invoked, if any
     worker_interface->scheduler_prologue(worker);

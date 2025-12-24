@@ -64,9 +64,6 @@
 <p>The <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> class allows users to customize worker properties when creating an executor. Examples include binding workers to specific CPU cores or invoking custom methods before and after a worker enters or leaves the work-stealing loop. When you create an executor, it spawns a set of workers to execute tasks with the following logic:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">create_thread</span><span class="p">([](</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">worker</span><span class="p">)</span>
 
-<span class="w">    </span><span class="c1">// pre-processing executor-specific worker information</span>
-<span class="w">    </span><span class="c1">// ...</span>
-
 <span class="w">    </span><span class="c1">// enter the scheduling loop</span>
 <span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_prologue is invoked, if any</span>
 <span class="w">    </span><span class="n">worker_interface</span><span class="o">-&gt;</span><span class="n">scheduler_prologue</span><span class="p">(</span><span class="n">worker</span><span class="p">);</span>
@@ -86,7 +83,53 @@
 <span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_epilogue is invoked, if any</span>
 <span class="w">    </span><span class="n">worker_interface</span><span class="o">-&gt;</span><span class="n">scheduler_epilogue</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span><span class="w"> </span><span class="n">exception_ptr</span><span class="p">);</span>
 <span class="w">  </span><span class="p">);</span>
-<span class="p">}</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p><a href="#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">tf::<wbr />WorkerInterface::<wbr />scheduler_prologue</a> and tf::WorkerInterface::scheduler_eiplogue are invoked by each worker simultaneously.</p></aside>
+<span class="p">}</span></pre><p>The example below demonstrates the usage of <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> to affine a worker to a specific CPU core equal to its id on a Linux platform:</p><pre class="m-code"><span class="c1">// affine the given thread to the given core index (linux-specific)</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">affine</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="o">&amp;</span><span class="w"> </span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">core_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">cpu_set_t</span><span class="w"> </span><span class="n">cpuset</span><span class="p">;</span>
+<span class="w">  </span><span class="n">CPU_ZERO</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cpuset</span><span class="p">);</span>
+<span class="w">  </span><span class="n">CPU_SET</span><span class="p">(</span><span class="n">core_id</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cpuset</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pthread_t</span><span class="w"> </span><span class="n">native_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">thread</span><span class="p">.</span><span class="n">native_handle</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pthread_setaffinity_np</span><span class="p">(</span><span class="n">native_handle</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">cpu_set_t</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cpuset</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomWorkerBehavior</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">WorkerInterface</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// to call before the worker enters the scheduling loop</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">scheduler_prologue</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;worker %lu prepares to enter the work-stealing loop</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">());</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">// now affine the worker to a particular CPU core equal to its id</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">affine</span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="kr">thread</span><span class="p">(),</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;successfully affines worker %lu to CPU core %lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;failed to affine worker %lu to CPU core %lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// to call after the worker leaves the scheduling loop</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">scheduler_epilogue</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception_ptr</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;worker %lu left the work-stealing loop</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">id</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">tf</span><span class="o">::</span><span class="n">make_worker_interface</span><span class="o">&lt;</span><span class="n">CustomWorkerBehavior</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></pre><p>When running the program, we see the following one possible output:</p><pre class="m-code">worker<span class="w"> </span><span class="m">3</span><span class="w"> </span>prepares<span class="w"> </span>to<span class="w"> </span>enter<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+successfully<span class="w"> </span>affines<span class="w"> </span>worker<span class="w"> </span><span class="m">3</span><span class="w"> </span>to<span class="w"> </span>CPU<span class="w"> </span>core<span class="w"> </span><span class="m">3</span>
+worker<span class="w"> </span><span class="m">3</span><span class="w"> </span>left<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+worker<span class="w"> </span><span class="m">0</span><span class="w"> </span>prepares<span class="w"> </span>to<span class="w"> </span>enter<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+successfully<span class="w"> </span>affines<span class="w"> </span>worker<span class="w"> </span><span class="m">0</span><span class="w"> </span>to<span class="w"> </span>CPU<span class="w"> </span>core<span class="w"> </span><span class="m">0</span>
+worker<span class="w"> </span><span class="m">0</span><span class="w"> </span>left<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+worker<span class="w"> </span><span class="m">1</span><span class="w"> </span>prepares<span class="w"> </span>to<span class="w"> </span>enter<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+worker<span class="w"> </span><span class="m">2</span><span class="w"> </span>prepares<span class="w"> </span>to<span class="w"> </span>enter<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+successfully<span class="w"> </span>affines<span class="w"> </span>worker<span class="w"> </span><span class="m">1</span><span class="w"> </span>to<span class="w"> </span>CPU<span class="w"> </span>core<span class="w"> </span><span class="m">1</span>
+worker<span class="w"> </span><span class="m">1</span><span class="w"> </span>left<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop
+successfully<span class="w"> </span>affines<span class="w"> </span>worker<span class="w"> </span><span class="m">2</span><span class="w"> </span>to<span class="w"> </span>CPU<span class="w"> </span>core<span class="w"> </span><span class="m">2</span>
+worker<span class="w"> </span><span class="m">2</span><span class="w"> </span>left<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop</pre><aside class="m-note m-warning"><h4>Attention</h4><p><a href="#a41c3b931a36bde8eff4aa8d375e8888a" class="m-doc">tf::<wbr />WorkerInterface::<wbr />scheduler_prologue</a> and tf::WorkerInterface::scheduler_epologue are invoked by each worker simultaneously.</p></aside>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -128,7 +171,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method is called by the constructor of an executor.</p>
+<p>The method is called by the scheduler before entering the work-stealing loop.</p>
           </div></section>
           <section class="m-doc-details" id="a3e6d68fd4041f433d1b7ca9e5786b57c"><div>
             <h3>
@@ -151,7 +194,7 @@
                 </tr>
               </tbody>
             </table>
-<p>The method is called by the constructor of an executor.</p>
+<p>The method is called by the scheduler after leaving the work-stealing loop. Any uncaught exception during the worker&#x27;s execution will be propagated through the given exception pointer.</p>
           </div></section>
         </section>
       </div>

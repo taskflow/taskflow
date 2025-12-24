@@ -407,9 +407,6 @@ Issuing multiple runs on the same taskflow will automatically <emphasis>synchron
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n=0;<sp/>n&lt;num_workers;<sp/>n++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>create_thread([](Worker&amp;<sp/>worker){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>pre-processing<sp/>executor-specific<sp/>worker<sp/>information</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>enter<sp/>the<sp/>scheduling<sp/>loop</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Here,<sp/>WorkerInterface::scheduler_prologue<sp/>is<sp/>invoked,<sp/>if<sp/>any</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>worker_interface-&gt;scheduler_prologue(worker);</highlight></codeline>

@@ -317,9 +317,6 @@ successfully<span class="w"> </span>affines<span class="w"> </span>worker<span c
 worker<span class="w"> </span><span class="m">2</span><span class="w"> </span>left<span class="w"> </span>the<span class="w"> </span>work-stealing<span class="w"> </span>loop</pre><p>When you create an executor, it spawns a set of worker threads to run tasks using a work-stealing scheduling algorithm. The execution logic of the scheduler and its interaction with each spawned worker via <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a> is given below:</p><pre class="m-code"><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">&lt;</span><span class="n">num_workers</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">create_thread</span><span class="p">([](</span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="n">worker</span><span class="p">){</span>
 
-<span class="w">    </span><span class="c1">// pre-processing executor-specific worker information</span>
-<span class="w">    </span><span class="c1">// ...</span>
-
 <span class="w">    </span><span class="c1">// enter the scheduling loop</span>
 <span class="w">    </span><span class="c1">// Here, WorkerInterface::scheduler_prologue is invoked, if any</span>
 <span class="w">    </span><span class="n">worker_interface</span><span class="o">-&gt;</span><span class="n">scheduler_prologue</span><span class="p">(</span><span class="n">worker</span><span class="p">);</span>

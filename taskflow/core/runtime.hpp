@@ -918,8 +918,6 @@ inline bool Executor::_invoke_runtime_task_impl(
 
 /**
 @private
-
-@brief currently for internal use only
 */
 class NonpreemptiveRuntime {
 

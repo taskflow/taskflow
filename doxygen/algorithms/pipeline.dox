@@ -23,14 +23,11 @@ for implementing task-parallel pipeline algorithms.
 
 @section UnderstandPipelineScheduling Understand the Pipeline Scheduling Framework
 
-A tf::Pipeline object is a @em composable graph to create a 
-<i>pipeline scheduling framework</i> through a module task in a taskflow
-(see @ref ComposableTasking).
-Unlike the conventional pipeline programming frameworks (e.g., Intel TBB Parallel %Pipeline), 
-%Taskflow's pipeline algorithm does not provide any data abstraction, 
-which often restricts users from optimizing data layouts in their applications, 
-but a flexible framework for users to customize their application data atop 
-an efficient pipeline scheduling framework.
+A tf::Pipeline is a composable graph object that allows users to parallelize an application
+using pipeline parallelism.
+Unlike conventional pipeline programming frameworks (e.g., Intel TBB),
+tf::Pipeline does not provide any data abstraction but a task-parallel framework
+for users to customize their data layout when leveraging pipeline parallelism.
 
 @dotfile images/pipeline_our_structure.dot
 

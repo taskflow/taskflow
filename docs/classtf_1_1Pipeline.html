@@ -73,7 +73,7 @@
             </li>
           </ul>
         </nav>
-<p>A pipeline is a composable graph object for users to create a <em>pipeline scheduling framework</em> using a module task in a taskflow. Unlike the conventional pipeline programming frameworks (e.g., Intel TBB), Taskflow&#x27;s pipeline algorithm does not provide any data abstraction, which often restricts users from optimizing data layouts in their applications, but a flexible framework for users to customize their application data atop our pipeline scheduling. The following code creates a pipeline of four parallel lines to schedule tokens through three serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
+<p>A <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> is a composable graph object that allows users to parallelize an application using pipeline parallelism. Unlike conventional pipeline programming frameworks (e.g., Intel TBB), <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> does not provide any data abstraction but a task-parallel framework for users to customize their data layout when leveraging pipeline parallelism. The following code creates a pipeline with four parallel lines that schedule five tokens through three pipes of a serial-parallel-serial direction:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">;</span>
 <span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
 
 <span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
@@ -95,7 +95,7 @@
 <span class="w">      </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pf</span><span class="p">.</span><span class="n">token</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}},</span>
-<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">SERIAL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="p">{</span><span class="n">tf</span><span class="o">::</span><span class="n">PipeType</span><span class="o">::</span><span class="n">PARALLEL</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// propagate the previous result to this pipe by adding one</span>
 <span class="w">    </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">pf</span><span class="p">.</span><span class="n">line</span><span class="p">()][</span><span class="n">pf</span><span class="p">.</span><span class="n">pipe</span><span class="p">()</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">  </span><span class="p">}},</span>
@@ -118,16 +118,162 @@
 <span class="n">task</span><span class="p">.</span><span class="n">precede</span><span class="p">(</span><span class="n">stop</span><span class="p">);</span>
 
 <span class="c1">// run the pipeline</span>
-<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The above example creates a pipeline graph that schedules five tokens over four parallel lines in a circular fashion, as depicted below:</p><pre class="m-code">o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
-<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
-v<span class="w">    </span>v<span class="w">    </span>v
-o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
-<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
-v<span class="w">    </span>v<span class="w">    </span>v
-o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o
-<span class="p">|</span><span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="p">|</span>
-v<span class="w">    </span>v<span class="w">    </span>v
-o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-&gt;<span class="w"> </span>o</pre><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
+<span class="n">executor</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">taskflow</span><span class="p">).</span><span class="n">wait</span><span class="p">();</span></pre><p>The five tokens will be scheduled across four parallel lines in a circular fashion, as depicted below:</p><div class="m-graph"><svg style="width: 23.800rem; height: 33.300rem;" viewBox="0.00 0.00 238.00 333.00">
+<g transform="scale(1 1) rotate(0) translate(4 329)">
+<title>Taskflow</title>
+<g class="m-cluster">
+<title>cluster0</title>
+<polygon stroke-dasharray="5,2" points="8,-245.75 8,-317 222,-317 222,-245.75 8,-245.75"/>
+<text text-anchor="middle" x="115" y="-303.5" font-family="Helvetica,sans-Serif" font-size="10.00">line 0</text>
+</g>
+<g class="m-cluster">
+<title>cluster1</title>
+<polygon stroke-dasharray="5,2" points="8,-166.5 8,-237.75 222,-237.75 222,-166.5 8,-166.5"/>
+<text text-anchor="middle" x="115" y="-224.25" font-family="Helvetica,sans-Serif" font-size="10.00">line 1</text>
+</g>
+<g class="m-cluster">
+<title>cluster2</title>
+<polygon stroke-dasharray="5,2" points="8,-87.25 8,-158.5 222,-158.5 222,-87.25 8,-87.25"/>
+<text text-anchor="middle" x="115" y="-145" font-family="Helvetica,sans-Serif" font-size="10.00">line 2</text>
+</g>
+<g class="m-cluster">
+<title>cluster3</title>
+<polygon stroke-dasharray="5,2" points="8,-8 8,-79.25 222,-79.25 222,-8 8,-8"/>
+<text text-anchor="middle" x="115" y="-65.75" font-family="Helvetica,sans-Serif" font-size="10.00">line 3</text>
+</g>
+<g class="m-node m-flat">
+<title>p00</title>
+<ellipse cx="43" cy="-271.75" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-267.88" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+</g>
+<g class="m-node m-flat">
+<title>p10</title>
+<ellipse cx="43" cy="-192.5" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-188.62" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p00&#45;&gt;p10</title>
+<path d="M43,-253.61C43,-244.37 43,-232.73 43,-222.16"/>
+<polygon points="46.5,-222.38 43,-212.38 39.5,-222.38 46.5,-222.38"/>
+</g>
+<g class="m-node m-flat">
+<title>p01</title>
+<ellipse cx="115" cy="-271.75" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-267.88" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p00&#45;&gt;p01</title>
+<path d="M70.28,-271.75C72.28,-271.75 74.28,-271.75 76.29,-271.75"/>
+<polygon points="76.24,-275.25 86.24,-271.75 76.24,-268.25 76.24,-275.25"/>
+</g>
+<g class="m-node m-flat">
+<title>p20</title>
+<ellipse cx="43" cy="-113.25" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-109.38" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p10&#45;&gt;p20</title>
+<path d="M43,-174.36C43,-165.12 43,-153.48 43,-142.91"/>
+<polygon points="46.5,-143.13 43,-133.13 39.5,-143.13 46.5,-143.13"/>
+</g>
+<g class="m-node m-flat">
+<title>p11</title>
+<ellipse cx="115" cy="-192.5" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-188.62" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p10&#45;&gt;p11</title>
+<path d="M70.28,-192.5C72.28,-192.5 74.28,-192.5 76.29,-192.5"/>
+<polygon points="76.24,-196 86.24,-192.5 76.24,-189 76.24,-196"/>
+</g>
+<g class="m-node m-flat">
+<title>p30</title>
+<ellipse cx="43" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="43" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;0</text>
+</g>
+<g class="m-edge">
+<title>p20&#45;&gt;p30</title>
+<path d="M43,-95.11C43,-85.87 43,-74.23 43,-63.66"/>
+<polygon points="46.5,-63.88 43,-53.88 39.5,-63.88 46.5,-63.88"/>
+</g>
+<g class="m-node m-flat">
+<title>p21</title>
+<ellipse cx="115" cy="-113.25" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-109.38" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p20&#45;&gt;p21</title>
+<path d="M70.28,-113.25C72.28,-113.25 74.28,-113.25 76.29,-113.25"/>
+<polygon points="76.24,-116.75 86.24,-113.25 76.24,-109.75 76.24,-116.75"/>
+</g>
+<g class="m-node m-flat">
+<title>p31</title>
+<ellipse cx="115" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="115" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;1</text>
+</g>
+<g class="m-edge">
+<title>p30&#45;&gt;p31</title>
+<path d="M70.28,-34C72.28,-34 74.28,-34 76.29,-34"/>
+<polygon points="76.24,-37.5 86.24,-34 76.24,-30.5 76.24,-37.5"/>
+</g>
+<g class="m-node m-flat">
+<title>p02</title>
+<ellipse cx="187" cy="-271.75" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-267.88" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p01&#45;&gt;p02</title>
+<path d="M142.28,-271.75C144.28,-271.75 146.28,-271.75 148.29,-271.75"/>
+<polygon points="148.24,-275.25 158.24,-271.75 148.24,-268.25 148.24,-275.25"/>
+</g>
+<g class="m-node m-flat">
+<title>p12</title>
+<ellipse cx="187" cy="-192.5" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-188.62" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p11&#45;&gt;p12</title>
+<path d="M142.28,-192.5C144.28,-192.5 146.28,-192.5 148.29,-192.5"/>
+<polygon points="148.24,-196 158.24,-192.5 148.24,-189 148.24,-196"/>
+</g>
+<g class="m-node m-flat">
+<title>p22</title>
+<ellipse cx="187" cy="-113.25" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-109.38" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p21&#45;&gt;p22</title>
+<path d="M142.28,-113.25C144.28,-113.25 146.28,-113.25 148.29,-113.25"/>
+<polygon points="148.24,-116.75 158.24,-113.25 148.24,-109.75 148.24,-116.75"/>
+</g>
+<g class="m-node m-flat">
+<title>p32</title>
+<ellipse cx="187" cy="-34" rx="27" ry="18"/>
+<text text-anchor="middle" x="187" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00">pipe&#45;2</text>
+</g>
+<g class="m-edge">
+<title>p31&#45;&gt;p32</title>
+<path d="M142.28,-34C144.28,-34 146.28,-34 148.29,-34"/>
+<polygon points="148.24,-37.5 158.24,-34 148.24,-30.5 148.24,-37.5"/>
+</g>
+<g class="m-edge">
+<title>p02&#45;&gt;p12</title>
+<path d="M187,-253.61C187,-244.37 187,-232.73 187,-222.16"/>
+<polygon points="190.5,-222.38 187,-212.38 183.5,-222.38 190.5,-222.38"/>
+</g>
+<g class="m-edge">
+<title>p12&#45;&gt;p22</title>
+<path d="M187,-174.36C187,-165.12 187,-153.48 187,-142.91"/>
+<polygon points="190.5,-143.13 187,-133.13 183.5,-143.13 190.5,-143.13"/>
+</g>
+<g class="m-edge">
+<title>p22&#45;&gt;p32</title>
+<path d="M187,-95.11C187,-85.87 187,-74.23 187,-63.66"/>
+<polygon points="190.5,-63.88 187,-53.88 183.5,-63.88 190.5,-63.88"/>
+</g>
+</g>
+</svg>
+</div><p>At each pipe stage, the program propagates the result to the next pipe by adding one to the result stored in a custom data storage, <code>buffer</code>. The pipeline scheduler will generate five scheduling tokens and then stop.</p><p>Internally, <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> uses <a href="http://en.cppreference.com/w/cpp/utility/tuple.html" class="m-doc-external">std::<wbr />tuple</a> to store the given sequence of pipes. The definition of each pipe can be different, completely decided by the compiler to optimize the object layout. After a pipeline is constructed, it is not possible to change its pipes. If applications need to change these pipes, please use <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a>.</p>
         <section id="typeless-methods">
           <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
           <dl class="m-doc">
@@ -151,7 +297,7 @@ o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-
             </dt>
             <dd>queries the number of parallel lines</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#adfef0c60f8f8ace267d7cd8548457ff3" class="m-doc">num_pipes</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span> <span class="m-label m-flat m-success">noexcept</span></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#ac407ae206ec00a7cefa3e0425f7c9f3a" class="m-doc">num_pipes</a>(</span><span class="m-doc-wrap">) const -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span> <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>queries the number of pipes</dd>
             <dt>
@@ -232,12 +378,12 @@ o<span class="w"> </span>-&gt;<span class="w"> </span>o<span class="w"> </span>-
             <p>queries the number of parallel lines</p>
 <p>The function returns the number of parallel lines given by the user upon the construction of the pipeline. The number of lines represents the maximum parallelism this pipeline can achieve.</p>
           </div></section>
-          <section class="m-doc-details" id="adfef0c60f8f8ace267d7cd8548457ff3"><div>
+          <section class="m-doc-details" id="ac407ae206ec00a7cefa3e0425f7c9f3a"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename... Ps&gt;
               </div>
-              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#adfef0c60f8f8ace267d7cd8548457ff3" class="m-doc-self">num_pipes</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-primary">constexpr</span> <span class="m-label m-success">noexcept</span></span></span>
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />Pipeline&lt;Ps&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#ac407ae206ec00a7cefa3e0425f7c9f3a" class="m-doc-self">num_pipes</a>(</span><span class="m-doc-wrap">) const <span class="m-label m-primary">constexpr</span> <span class="m-label m-success">noexcept</span></span></span>
             </h3>
             <p>queries the number of pipes</p>
 <p>The Function returns the number of pipes given by the user upon the construction of the pipeline.</p>
