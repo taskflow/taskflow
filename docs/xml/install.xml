@@ -64,7 +64,7 @@ Taskflow works on Linux, Windows, and Mac OS X.</para>
 <codeline><highlight class="normal">~$<sp/>cp<sp/>-r<sp/>taskflow<sp/>myproject/include/</highlight></codeline>
 </programlisting></para>
 <para>Taskflow is written in C++20 and is built on top of C++ standardized threading libraries to improve portability. To compile a Taskflow program, say <computeroutput>simple.cpp</computeroutput>, you need to tell the compiler where to find the Taskflow header files and link it through the system thread library (usually <ulink url="http://man7.org/linux/man-pages/man7/pthreads.7.html">POSIX threads</ulink> in Linux-like systems). Take gcc for an example:</para>
-<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>g++<sp/>simple.cpp<sp/>-std=c++17<sp/>-I<sp/>myproject/include/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
+<para><programlisting filename=".bash"><codeline><highlight class="normal">~$<sp/>g++<sp/>simple.cpp<sp/>-std=c++20<sp/>-I<sp/>myproject/include/<sp/>-O2<sp/>-pthread<sp/>-o<sp/>simple</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="install_1BAIBuildExamplesAndUnitTests">

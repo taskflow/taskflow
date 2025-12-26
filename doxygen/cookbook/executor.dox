@@ -84,36 +84,43 @@ The code below shows several ways to run a taskflow.
 20: executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
 @endcode
 
+Lines 6–8 create a taskflow consisting of three tasks, A, B, and C. Lines 13–14 execute the taskflow once and block until its completion. Line 16 runs the taskflow once and registers a callback that is invoked when the execution finishes. Lines 17–18 execute the taskflow four times and use tf::Executor::wait_for_all to wait for all executions to complete. Line 19 again runs the taskflow four times but invokes a callback at the end of the fourth execution. Finally, line 20 repeatedly runs the taskflow until the specified predicate returns true.
 
-Debrief:
+@section UnderstandTheExecutionOrder Understand the Execution Order
 
-@li Lines 6-8 create a taskflow of three tasks A, B, and C
-@li Lines 13-14 run the taskflow once and wait for completion 
-@li Line 16 runs the taskflow once with a callback to invoke when the execution finishes
-@li Lines 17-18 run the taskflow four times and use tf::Executor::wait_for_all to wait for completion 
-@li Line 19 runs the taskflow four times and invokes a callback at the end of the fourth execution
-@li Line 20 keeps running the taskflow until the predicate returns true
-
-Issuing multiple runs on the same taskflow will automatically @em synchronize
-to a sequential chain of executions in the order of run calls.
+While it is possible to submit the same taskflow to an executor multiple times, these multiple runs will be synchronized to a sequential chain of executions in the order of their submissions.
+For example, the three submissions below will finish in order,
+where execution #1 completes before #2, and execution #2 completes before execution #3:
 
 @code{.cpp}
-executor.run(taskflow);         // execution 1
-executor.run_n(taskflow, 10);   // execution 2
-executor.run(taskflow);         // execution 3
-executor.wait_for_all();        // execution 1 -> execution 2 -> execution 3
+executor.run(taskflow);         // execution #1
+executor.run_n(taskflow, 10);   // execution #2
+executor.run(taskflow);         // execution #3
+executor.wait_for_all();        // execution #1 -> execution #2 -> execution #3
 @endcode
 
-@attention
-A running taskflow must remain alive during its execution.
-It is your responsibility to ensure a taskflow not being destructed
-when it is running.
+However, there is no deterministic order for different taskflows submitted simultaneously.
+For example, the three submissions below may finish in an arbitrary order, 
+since the three taskflows are distinct:
+
+@code{.cpp}
+executor.run(taskflow1);        // execution 1
+executor.run_n(taskflow2, 10);  // execution 2
+executor.run(taskflow3);        // execution 3
+executor.wait_for_all();        // no order guarantee among the three taskflows
+@endcode
+
+@section UnderstandTheOwnership Understand the Ownership
+
+A running taskflow must remain alive for the duration of its execution 
+because the executor does not take ownership of the taskflow. 
+It is your responsibility to ensure that a taskflow is not destroyed while it is still running.
 For example, the code below can result in undefined behavior.
 
 @code{.cpp}
 tf::Executor executor;  // create an executor
 
-// create a taskflow whose lifetime is restricted by the scope
+// create a taskflow whose lifetime is restricted by the block statement
 {
   tf::Taskflow taskflow;
   
@@ -123,11 +130,11 @@ tf::Executor executor;  // create an executor
   // runs the taskflow once
   executor.run(taskflow);
 
-} // leaving the scope will destroy taskflow while it is running, 
+} // leaving the block statement will destroy taskflow while it is running, 
   // resulting in undefined behavior
 @endcode
 
-Similarly, you should avoid touching a taskflow while it is running:
+Similarly, you should avoid modifying a taskflow while it is running:
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -283,7 +290,8 @@ from a worker of the calling executor or an exception will be thrown.
 
 All `run_*` methods of tf::Executor are @em thread-safe.
 You can safely call these methods from multiple threads to execute different taskflows concurrently.
-However, the execution order of the submitted taskflows is non-deterministic and determined by the runtime scheduler.
+For instance, the code below launches ten threads, each executing a different taskflow concurrently 
+on the same executor, and waits for all executions to complete:
 
 @code{.cpp}
 tf::Executor executor;
@@ -308,7 +316,7 @@ This functionality is particularly useful for establishing a one-to-one mapping 
 std::vector<int> data[8];                 // worker-specific data vector
 tf::Taskflow taskflow;
 tf::Executor executor(8);                 // an executor of eight workers
-assert(executor.this_worker_id() == -1);  // calling thread is not a worker of the executor
+assert(executor.this_worker_id() == -1);  // main thread is not a worker
 taskflow.emplace([&](){
   int id = executor.this_worker_id();     // in the range [0, 8)
   auto& vec = data[id];                   // worker id process data[id]
@@ -346,7 +354,7 @@ Both methods provide immutable access to the underlying worker and the running t
 using tf::WorkerView and tf::TaskView.
 You may use them to record timepoints and calculate the elapsed time of a task.
 
-You can associate an executor with one or multiple observers (though one is common)
+You can associate an executor with one or multiple observers
 using tf::Executor::make_observer.
 We use std::shared_ptr to manage the ownership of an observer.
 The executor loops through each observer and invoke the corresponding methods accordingly.
