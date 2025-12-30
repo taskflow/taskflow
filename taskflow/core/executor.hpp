@@ -467,7 +467,6 @@ class Executor {
   participating in the work-stealing loop, executing available tasks alongside 
   other workers.  
 
-
   @code{.cpp}
   taskflow.emplace([&](){
     std::future<void> fu = std::async([](){ std::sleep(100s); });
