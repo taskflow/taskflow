@@ -18,7 +18,7 @@ void wavefront(
             << std::setw(12) << "runtime"
             << std::endl;
 
-  for(int S=32; S<=4096; S += 128) {
+  for(int S=8; S<= (1<<14); S <<= 1) {
 
     M = N = S;
     B = 8;

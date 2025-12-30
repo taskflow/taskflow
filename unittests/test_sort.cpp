@@ -372,9 +372,9 @@ void bubble_sort(unsigned W) {
     });
     auto stop = taskflow.emplace([](){});
  
-    auto even_phase = taskflow.emplace([&](tf::Subflow& sf){
+    auto even_phase = taskflow.emplace([&](tf::Runtime& rt){
       for(size_t i=0; i<data.size(); i+=2) {
-        sf.emplace([&, i](){
+        rt.silent_async([&, i](){
           if(i+1 < data.size() && data[i] > data[i+1]) {
             std::swap(data[i], data[i+1]);
             swapped = true;
@@ -383,9 +383,9 @@ void bubble_sort(unsigned W) {
       }
     });
  
-    auto odd_phase = taskflow.emplace([&](tf::Subflow& sf) {
+    auto odd_phase = taskflow.emplace([&](tf::Runtime& rt) {
       for(size_t i=1; i<data.size(); i+=2) {
-        sf.emplace([&, i](){
+        rt.silent_async([&, i](){
           if(i+1 < data.size() && data[i] > data[i+1]) {
             std::swap(data[i], data[i+1]);
             swapped = true;
@@ -596,9 +596,9 @@ TEST_CASE("SelectionSort.8threads" * doctest::timeout(300)) {
 
 void merge_sort(unsigned W) {
 
-  std::function<void(tf::Subflow& sf, std::vector<int>&, int, int)> spawn;
+  std::function<void(tf::Runtime&, std::vector<int>&, int, int)> spawn;
 
-  spawn = [&] (tf::Subflow& sf, std::vector<int>& data, int beg, int end) mutable {
+  spawn = [&] (tf::Runtime& rt, std::vector<int>& data, int beg, int end) mutable {
 
     if(!(beg < end) || end - beg == 1) {
       return;
@@ -611,44 +611,29 @@ void merge_sort(unsigned W) {
 
     int m = (beg + end + 1) / 2;
 
-    auto SL = sf.emplace([&spawn, &data, beg, m] (tf::Subflow& sf2) {
-      spawn(sf2, data, beg, m);
-    }).name(std::string("[")
-          + std::to_string(beg)
-          + ':'
-          + std::to_string(m)
-          + ')');
+    rt.silent_async([&spawn, &data, beg, m] (tf::Runtime& rtl) {
+      spawn(rtl, data, beg, m);
+    });
 
-    auto SR = sf.emplace([&spawn, &data, m, end] (tf::Subflow& sf2) {
-      spawn(sf2, data, m, end);
-    }).name(std::string("[")
-          + std::to_string(m)
-          + ':'
-          + std::to_string(end)
-          + ')');
+    spawn(rt, data, m, end);
 
-    auto SM = sf.emplace([&data, beg, end, m] () {
-      std::vector<int> tmpl, tmpr;
-      for(int i=beg; i<m; ++i) tmpl.push_back(data[i]);
-      for(int i=m; i<end; ++i) tmpr.push_back(data[i]);
+    rt.corun();
 
-      // merge to data
-      size_t i=0, j=0, k=beg;
-      while(i<tmpl.size() && j<tmpr.size()) {
-        data[k++] = (tmpl[i] < tmpr[j] ? tmpl[i++] : tmpr[j++]);
-      }
+    std::vector<int> tmpl, tmpr;
+    for(int i=beg; i<m; ++i) tmpl.push_back(data[i]);
+    for(int i=m; i<end; ++i) tmpr.push_back(data[i]);
 
-      // remaining SL
-      for(; i<tmpl.size(); ++i) data[k++] = tmpl[i];
+    // merge to data
+    size_t i=0, j=0, k=beg;
+    while(i<tmpl.size() && j<tmpr.size()) {
+      data[k++] = (tmpl[i] < tmpr[j] ? tmpl[i++] : tmpr[j++]);
+    }
 
-      // remaining SR
-      for(; j<tmpr.size(); ++j) data[k++] = tmpr[j];
-    }).name(std::string("merge [")
-          + std::to_string(beg)
-          + ':'
-          + std::to_string(end) + ')');
+    // remaining SL
+    for(; i<tmpl.size(); ++i) data[k++] = tmpl[i];
 
-    SM.succeed(SL, SR);
+    // remaining SR
+    for(; j<tmpr.size(); ++j) data[k++] = tmpr[j];
   };
 
   tf::Executor executor(W);
@@ -664,11 +649,9 @@ void merge_sort(unsigned W) {
 
     auto gold = data;
 
-    taskflow.emplace([&spawn, &data, end](tf::Subflow& sf){
-      spawn(sf, data, 0, end);
-    }).name(std::string("[0")
-          + ":"
-          + std::to_string(end) + ")");
+    taskflow.emplace([&spawn, &data, end](tf::Runtime& rt){
+      spawn(rt, data, 0, end);
+    });
 
     executor.run(taskflow).wait();
 
@@ -717,10 +700,10 @@ void quick_sort(unsigned W) {
 
   using itr_t = std::vector<int>::iterator;
 
-  std::function<void(tf::Subflow& sf, std::vector<int>&, itr_t, itr_t)> spawn;
+  std::function<void(tf::Runtime&, std::vector<int>&, itr_t, itr_t)> spawn;
 
   spawn = [&] (
-    tf::Subflow& sf,
+    tf::Runtime& rt,
     std::vector<int>& data,
     itr_t beg,
     itr_t end
@@ -745,21 +728,11 @@ void quick_sort(unsigned W) {
 
     std::iter_swap(pvt, end-1);
 
-    sf.emplace([&spawn, &data, beg, pvt] (tf::Subflow& sf2) {
-      spawn(sf2, data, beg, pvt);
-    }).name(std::string("[")
-          + std::to_string(beg-data.begin())
-          + ':'
-          + std::to_string(pvt-data.begin())
-          + ')');
+    rt.silent_async([=, &spawn, &data] (tf::Runtime& rt1) {
+      spawn(rt1, data, beg, pvt);
+    });
 
-    sf.emplace([&spawn, &data, pvt, end] (tf::Subflow& sf2) {
-      spawn(sf2, data, pvt+1, end);
-    }).name(std::string("[")
-          + std::to_string(pvt-data.begin())
-          + ':'
-          + std::to_string(end-data.begin())
-          + ')');
+    spawn(rt, data, pvt+1, end);
   };
 
   tf::Executor executor(W);
@@ -775,12 +748,9 @@ void quick_sort(unsigned W) {
 
     auto gold = data;
 
-    taskflow.emplace([&spawn, &data](tf::Subflow& sf){
-      spawn(sf, data, data.begin(), data.end());
-    }).name(std::string("[0")
-          + ":"
-          + std::to_string(end) + ")");
-
+    taskflow.emplace([&spawn, &data](tf::Runtime& rt){
+      spawn(rt, data, data.begin(), data.end());
+    });
     executor.run(taskflow).wait();
 
     std::sort(gold.begin(), gold.end());
