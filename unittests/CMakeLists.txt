@@ -5,9 +5,10 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 list(APPEND TF_UNITTESTS 
   test_utility 
   test_wsq
+  test_basics 
   test_work_stealing 
   #test_serializer 
-  test_basics 
+  test_workers
   test_asyncs
   test_dependent_asyncs
   test_subflows
@@ -24,7 +25,7 @@ list(APPEND TF_UNITTESTS
   test_modules
   test_traversals
   test_runtimes
-  test_workers
+  test_task_group
   test_pipelines
   test_scalable_pipelines
   test_data_pipelines

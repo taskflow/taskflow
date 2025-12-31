@@ -2,8 +2,6 @@
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
-#include <taskflow/algorithm/pipeline.hpp>
-
 
 // --------------------------------------------------------
 // Testcase: Runtime.Schedule.ModuleTask
@@ -160,19 +158,19 @@ size_t fibonacci_swapped(size_t T, size_t N) {
   return res;
 }
 
-TEST_CASE("Runtime.Fibonacci.1thread" * doctest::timeout(250)) {
+TEST_CASE("Runtime.FibonacciSwapped.1thread" * doctest::timeout(250)) {
   REQUIRE(fibonacci_swapped(1, 25) == 75025);
 }
 
-TEST_CASE("Runtime.Fibonacci.2threads" * doctest::timeout(250)) {
+TEST_CASE("Runtime.FibonacciSwapped.2threads" * doctest::timeout(250)) {
   REQUIRE(fibonacci_swapped(2, 25) == 75025);
 }
 
-TEST_CASE("Runtime.Fibonacci.3threads" * doctest::timeout(250)) {
+TEST_CASE("Runtime.FibonacciSwapped.3threads" * doctest::timeout(250)) {
   REQUIRE(fibonacci_swapped(3, 25) == 75025);
 }
 
-TEST_CASE("Runtime.Fibonacci.4threads" * doctest::timeout(250)) {
+TEST_CASE("Runtime.FibonacciSwapped.4threads" * doctest::timeout(250)) {
   REQUIRE(fibonacci_swapped(4, 25) == 75025);
 }
 
@@ -363,6 +361,203 @@ TEST_CASE("Runtime.RecursiveImplicitJoin.8threads" * doctest::timeout(300)) {
   recursive_implicit_join(8);
 }
 
+// --------------------------------------------------------
+// Testcase: MergeSort
+// --------------------------------------------------------
+
+void merge_sort_spawn(tf::Runtime& rt, std::vector<int>& data, int beg, int end) {
+
+  if(!(beg < end) || end - beg == 1) {
+    return;
+  }
+
+  if(end - beg <= 5) {
+    std::sort(data.begin() + beg, data.begin() + end);
+    return;
+  }
+
+  int m = (beg + end + 1) / 2;
+
+  rt.silent_async([&data, beg, m] (tf::Runtime& rtl) {
+    merge_sort_spawn(rtl, data, beg, m);
+  });
+
+  merge_sort_spawn(rt, data, m, end);
+
+  rt.corun();
+
+  std::vector<int> tmpl, tmpr;
+  for(int i=beg; i<m; ++i) tmpl.push_back(data[i]);
+  for(int i=m; i<end; ++i) tmpr.push_back(data[i]);
+
+  // merge to data
+  size_t i=0, j=0, k=beg;
+  while(i<tmpl.size() && j<tmpr.size()) {
+    data[k++] = (tmpl[i] < tmpr[j] ? tmpl[i++] : tmpr[j++]);
+  }
+
+  // remaining SL
+  for(; i<tmpl.size(); ++i) data[k++] = tmpl[i];
+
+  // remaining SR
+  for(; j<tmpr.size(); ++j) data[k++] = tmpr[j];
+  
+}
+
+void merge_sort(unsigned W) {
+
+  tf::Executor executor(W);
+  std::vector<int> data, gold;
+
+  for(int end=10; end <= 10000; end *= 10) {
+
+    data.resize(end);
+    gold.resize(end);
+
+    for(size_t k=0; k<data.size(); ++k) {
+      data[k] = ::rand() % 100;
+      gold[k] = data[k];
+    }
+    
+    executor.async(
+      [&data, end](tf::Runtime& rt){ merge_sort_spawn(rt, data, 0, end); }
+    ).wait();
+
+    std::sort(gold.begin(), gold.end());
+
+    REQUIRE(gold == data);
+  }
+}
+
+TEST_CASE("Runtime.MergeSort.1thread" * doctest::timeout(300)) {
+  merge_sort(1);
+}
+
+TEST_CASE("Runtime.MergeSort.2threads" * doctest::timeout(300)) {
+  merge_sort(2);
+}
+
+TEST_CASE("Runtime.MergeSort.3threads" * doctest::timeout(300)) {
+  merge_sort(3);
+}
+
+TEST_CASE("Runtime.MergeSort.4threads" * doctest::timeout(300)) {
+  merge_sort(4);
+}
+
+TEST_CASE("Runtime.MergeSort.5threads" * doctest::timeout(300)) {
+  merge_sort(5);
+}
+
+TEST_CASE("Runtime.MergeSort.6threads" * doctest::timeout(300)) {
+  merge_sort(6);
+}
+
+TEST_CASE("Runtime.MergeSort.7threads" * doctest::timeout(300)) {
+  merge_sort(7);
+}
+
+TEST_CASE("Runtime.MergeSort.8threads" * doctest::timeout(300)) {
+  merge_sort(8);
+}
+
+// --------------------------------------------------------
+// Testcase: QuickSort
+// --------------------------------------------------------
+
+void quick_sort_spawn(
+  tf::Runtime& rt, 
+  std::vector<int>& data, 
+  std::vector<int>::iterator beg,
+  std::vector<int>::iterator end
+) {
+
+  if(!(beg < end) || std::distance(beg, end) == 1) {
+    return;
+  }
+
+  if(std::distance(beg, end) <= 5) {
+    std::sort(beg, end);
+    return;
+  }
+
+  auto pvt = beg + std::distance(beg, end) / 2;
+
+  std::iter_swap(pvt, end-1);
+
+  pvt = std::partition(beg, end-1, [end] (int item) {
+    return item < *(end - 1);
+  });
+
+  std::iter_swap(pvt, end-1);
+
+  rt.silent_async([=, &data] (tf::Runtime& rt1) {
+    quick_sort_spawn(rt1, data, beg, pvt);
+  });
+
+  quick_sort_spawn(rt, data, pvt+1, end);
+}
+
+void quick_sort(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+  std::vector<int> data, gold;
+
+  taskflow.emplace([&data](tf::Runtime& rt){
+    quick_sort_spawn(rt, data, data.begin(), data.end());
+  });
+
+  for(size_t end=1; end <= 10000; end *= 10) {
+
+    data.resize(end);
+    gold.resize(end);
+
+    for(size_t k=0; k<data.size(); ++k) {
+      data[k] = ::rand()%100;
+      gold[k] = data[k];
+    }
+
+    executor.run(taskflow).wait();
+
+    std::sort(gold.begin(), gold.end());
+
+    REQUIRE(gold == data);
+  }
+  
+}
+
+TEST_CASE("Runtime.QuickSort.1thread" * doctest::timeout(300)) {
+  quick_sort(1);
+}
+
+TEST_CASE("Runtime.QuickSort.2threads" * doctest::timeout(300)) {
+  quick_sort(2);
+}
+
+TEST_CASE("Runtime.QuickSort.3threads" * doctest::timeout(300)) {
+  quick_sort(3);
+}
+
+TEST_CASE("Runtime.QuickSort.4threads" * doctest::timeout(300)) {
+  quick_sort(4);
+}
+
+TEST_CASE("Runtime.QuickSort.5threads" * doctest::timeout(300)) {
+  quick_sort(5);
+}
+
+TEST_CASE("Runtime.QuickSort.6threads" * doctest::timeout(300)) {
+  quick_sort(6);
+}
+
+TEST_CASE("Runtime.QuickSort.7threads" * doctest::timeout(300)) {
+  quick_sort(7);
+}
+
+TEST_CASE("Runtime.QuickSort.8threads" * doctest::timeout(300)) {
+  quick_sort(8);
+}
 
 
 

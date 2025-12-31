@@ -3,6 +3,7 @@
 #include "core/executor.hpp"
 #include "core/runtime.hpp"
 #include "core/async.hpp"
+#include "core/task_group.hpp"
 #include "algorithm/algorithm.hpp"
 
 /**

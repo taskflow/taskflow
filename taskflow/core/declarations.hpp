@@ -14,6 +14,7 @@ class Semaphore;
 class Subflow;
 class Runtime;
 class NonpreemptiveRuntime;
+class TaskGroup;
 class Task;
 class TaskView;
 class Taskflow;

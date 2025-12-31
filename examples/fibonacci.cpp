@@ -1,5 +1,5 @@
-// This example demonstrates how to use Taskflow's subflow and runtime tasking features
-// to create recursive parallelism, using the famous Fibonacci recursion as an example.
+// This example demonstrates how to use Taskflow's recursive tasking features,
+// using the famous Fibonacci recursion as an example.
 #include <taskflow/taskflow.hpp>
 
 tf::Executor& get_executor() {
@@ -7,29 +7,25 @@ tf::Executor& get_executor() {
   return executor;
 }
 
-size_t spawn_async(size_t N, tf::Runtime& rt) {
-
+size_t spawn_async(size_t N) {
+  
   if (N < 2) {
     return N; 
   }
   
   size_t res1, res2;
-
-  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = spawn_async(N-1, rt1); });
   
-  // tail optimization
-  res2 = spawn_async(N-2, rt);
+  // create a task group
+  tf::TaskGroup tg = get_executor().task_group();
+  
+  tg.silent_async([N, &res1](){ res1 = spawn_async(N-1); });
 
-  // use corun to avoid blocking the worker from waiting the two children tasks to finish
-  rt.corun();
+  // tail optimization
+  res2 = spawn_async(N-2);
+
+  tg.corun();
 
   return res1 + res2;
-}
-
-size_t fibonacci_async(size_t N) {
-  size_t res;
-  get_executor().async([N, &res](tf::Runtime& rt){ res = spawn_async(N, rt); }).get();
-  return res;
 }
 
 int main(int argc, char* argv[]) {
@@ -41,8 +37,10 @@ int main(int argc, char* argv[]) {
 
   size_t N = std::atoi(argv[1]);
 
+  auto& executor = get_executor();
+
   auto tbeg = std::chrono::steady_clock::now();
-  printf("fib[%zu] = %zu\n", N, fibonacci_async(N));
+  printf("fib[%zu] = %zu\n", N, executor.async([N](){ return spawn_async(N); }).get());
   auto tend = std::chrono::steady_clock::now();
 
   std::cout << "elapsed time: " 

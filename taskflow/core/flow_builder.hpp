@@ -1517,18 +1517,18 @@ class Subflow : public FlowBuilder {
 
     Executor& _executor;
     Worker& _worker;
-    Node* _parent;
+    Node* _node;
 };
 
 // Constructor
-inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph& graph) :
+inline Subflow::Subflow(Executor& executor, Worker& worker, Node* node, Graph& graph) :
   FlowBuilder {graph}, 
   _executor   {executor}, 
   _worker     {worker}, 
-  _parent     {parent} {
+  _node     {node} {
   
   // need to reset since there could have iterative control flow
-  _parent->_nstate &= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);
+  _node->_nstate &= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);
 
   // clear the graph
   graph.clear();
@@ -1536,7 +1536,7 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* parent, Graph&
 
 // Function: joinable
 inline bool Subflow::joinable() const noexcept {
-  return !(_parent->_nstate & NSTATE::JOINED_SUBFLOW);
+  return !(_node->_nstate & NSTATE::JOINED_SUBFLOW);
 }
 
 // Function: executor
@@ -1548,19 +1548,19 @@ inline Executor& Subflow::executor() noexcept {
 inline void Subflow::retain(bool flag) noexcept {
   // default value is not to retain 
   if(flag == true) {
-    _parent->_nstate |= NSTATE::RETAIN_SUBFLOW;
+    _node->_nstate |= NSTATE::RETAIN_SUBFLOW;
   }
   else {
-    _parent->_nstate &= ~NSTATE::RETAIN_SUBFLOW;
+    _node->_nstate &= ~NSTATE::RETAIN_SUBFLOW;
   }
 
-  //_parent->_nstate = (_parent->_nstate & ~NSTATE::RETAIN_SUBFLOW) | 
-  //                   (-static_cast<int>(flag) & NSTATE::RETAIN_SUBFLOW);
+  //_node->_nstate = (_node->_nstate & ~NSTATE::RETAIN_SUBFLOW) | 
+  //                 (-static_cast<int>(flag) & NSTATE::RETAIN_SUBFLOW);
 }
 
 // Function: retain
 inline bool Subflow::retain() const {
-  return _parent->_nstate & NSTATE::RETAIN_SUBFLOW;
+  return _node->_nstate & NSTATE::RETAIN_SUBFLOW;
 }
 
 }  // end of namespace tf. ---------------------------------------------------

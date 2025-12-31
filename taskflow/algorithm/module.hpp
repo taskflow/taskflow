@@ -17,7 +17,7 @@ auto Algorithm::make_module_task(T&& target) {
       return;
     }
     rt._executor._schedule_graph_with_parent(
-      rt._worker, graph.begin(), graph.end(), rt._parent
+      rt._worker, graph.begin(), graph.end(), rt._node
     );
   };
 }

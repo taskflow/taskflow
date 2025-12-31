@@ -186,6 +186,21 @@ constexpr bool is_task_params_v =
 /**
 @private
 */
+class NodeBase {
+  
+  protected:
+  
+  nstate_t _nstate              {NSTATE::NONE};
+  std::atomic<estate_t> _estate {ESTATE::NONE};
+
+  std::atomic<size_t> _join_counter {0};
+  
+  std::exception_ptr _exception_ptr {nullptr};
+};
+
+/**
+@private
+*/
 class Node {
 
   friend class Graph;
@@ -199,6 +214,7 @@ class Node {
   friend class Runtime;
   friend class NonpreemptiveRuntime;
   friend class AnchorGuard;
+  friend class TaskGroup;
 
 #ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
@@ -370,7 +386,6 @@ class Node {
 
   bool _is_cancelled() const;
   bool _is_conditioner() const;
-  bool _is_preempted() const;
   bool _acquire_all(SmallVector<Node*>&);
   void _release_all(SmallVector<Node*>&);
   void _precede(Node*);
@@ -614,11 +629,6 @@ inline const std::string& Node::name() const {
 inline bool Node::_is_conditioner() const {
   return _handle.index() == Node::CONDITION ||
          _handle.index() == Node::MULTI_CONDITION;
-}
-
-// Function: _is_preempted
-inline bool Node::_is_preempted() const {
-  return _nstate & NSTATE::PREEMPTED;
 }
 
 // Function: _is_cancelled

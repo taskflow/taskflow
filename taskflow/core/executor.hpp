@@ -66,6 +66,7 @@ class Executor {
   friend class Runtime;
   friend class NonpreemptiveRuntime;
   friend class Algorithm;
+  friend class TaskGroup;
 
   public:
 
@@ -1065,6 +1066,12 @@ class Executor {
   >
   auto dependent_async(P&& params, F&& func, I first, I last);
 
+  // ----------------------------------------------------------------------------------------------
+  // Task Group
+  // ----------------------------------------------------------------------------------------------
+
+  TaskGroup task_group();
+
   private:
   
   struct Buffer {
@@ -1639,7 +1646,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     goto invoke_task;
   }
 
-  // if the work has been cancelled, there is no need to continue
+  // If the work has been cancelled, there is no need to continue.
   // Here, we do tear_down_invoke since async tasks may also get cancelled where
   // we need to recycle the node.
   if(node->_is_cancelled()) {
@@ -2333,10 +2340,10 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined");
   }
     
-  _executor._corun_graph(_worker, _parent, _graph.begin(), _graph.end());
+  _executor._corun_graph(_worker, _node, _graph.begin(), _graph.end());
   
   // join here since corun graph may throw exception
-  _parent->_nstate |= NSTATE::JOINED_SUBFLOW;
+  _node->_nstate |= NSTATE::JOINED_SUBFLOW;
 }
 
 #endif
