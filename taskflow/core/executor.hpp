@@ -1132,13 +1132,13 @@ class Executor {
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
   template <typename I>
-  I _set_up_graph(I, I, Topology*, Node*);
+  I _set_up_graph(I, I, Topology*, NodeBase*);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
   
   template <typename I>
-  void _corun_graph(Worker&, Node*, I, I);
+  void _corun_graph(Worker&, Topology*, NodeBase*, I, I);
 
   template <typename I>
   void _bulk_schedule(Worker&, I, size_t);
@@ -1150,23 +1150,23 @@ class Executor {
   void _bulk_spill(I, size_t);
 
   template <typename I>
-  void _schedule_graph_with_parent(Worker&, I, I, Node*);
+  void _schedule_graph_with_parent(Worker&, I, I, Topology*, NodeBase*);
 
   template <typename P, typename F>
-  auto _async(P&&, F&&, Topology*, Node*);
+  auto _async(P&&, F&&, Topology*, NodeBase*);
 
   template <typename P, typename F>
-  void _silent_async(P&&, F&&, Topology*, Node*);
+  void _silent_async(P&&, F&&, Topology*, NodeBase*);
 
   template <typename P, typename F, typename I,
     std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
-  auto _dependent_async(P&&, F&&, I, I, Topology*, Node*);
+  auto _dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
   template <typename P, typename F, typename I, 
     std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
-  auto _silent_dependent_async(P&&, F&&, I, I, Topology*, Node*);
+  auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1614,8 +1614,10 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   
 // Function: _schedule_graph_with_parent
 template <typename I>
-void Executor::_schedule_graph_with_parent(Worker& worker, I beg, I end, Node* parent) {
-  size_t num_srcs = (_set_up_graph(beg, end, parent->_topology, parent) - beg);
+void Executor::_schedule_graph_with_parent(
+  Worker& worker, I beg, I end, Topology* tpg, NodeBase* parent
+) {
+  size_t num_srcs = (_set_up_graph(beg, end, tpg, parent) - beg);
   parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
   _bulk_schedule(worker, beg, num_srcs);
 }
@@ -1813,7 +1815,7 @@ inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cac
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       if(state & NSTATE::PREEMPTED) {
-        _update_cache(worker, cache, parent);
+        _update_cache(worker, cache, static_cast<Node*>(parent));
       }
     }
   }
@@ -1859,7 +1861,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   // or nested tasks can be cancelled properly
   // since exception can come from asynchronous task (with runtime), the node
   // itself can be anchored
-  auto anchor = node;
+  NodeBase* anchor = node;
   while(anchor && (anchor->_estate.load(std::memory_order_relaxed) & ESTATE::ANCHORED) == 0) {
     anchor->_estate.fetch_or(flag, std::memory_order_relaxed);
     anchor = anchor->_parent;
@@ -1923,7 +1925,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      _schedule_graph_with_parent(worker, g.begin(), g.end(), node);
+      _schedule_graph_with_parent(worker, g.begin(), g.end(), node->_topology, node);
       return true;
     }
   }
@@ -1979,7 +1981,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node);
+    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node->_topology, node);
     return true;
   }
 
@@ -2174,8 +2176,8 @@ void Executor::corun(T& target) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
-  Node anchor;
-  _corun_graph(*w, &anchor, target.graph().begin(), target.graph().end());
+  NodeBase anchor;
+  _corun_graph(*w, nullptr, &anchor, target.graph().begin(), target.graph().end());
 }
 
 // Function: corun_until
@@ -2192,7 +2194,7 @@ void Executor::corun_until(P&& predicate) {
 
 // Procedure: _corun_graph
 template <typename I>
-void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
+void Executor::_corun_graph(Worker& w, Topology* tpg, NodeBase* p, I first, I last) {
 
   // empty graph
   if(first == last) {
@@ -2202,7 +2204,7 @@ void Executor::_corun_graph(Worker& w, Node* p, I first, I last) {
   // anchor this parent as the blocking point
   {
     AnchorGuard anchor(p);
-    _schedule_graph_with_parent(w, first, last, p);
+    _schedule_graph_with_parent(w, first, last, tpg, p);
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
     );
@@ -2247,7 +2249,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 
 // Function: _set_up_graph
 template <typename I>
-I Executor::_set_up_graph(I first, I last, Topology* tpg, Node* parent) {
+I Executor::_set_up_graph(I first, I last, Topology* tpg, NodeBase* parent) {
 
   auto send = first;
   for(; first != last; ++first) {
@@ -2340,7 +2342,7 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined");
   }
     
-  _executor._corun_graph(_worker, _node, _graph.begin(), _graph.end());
+  _executor._corun_graph(_worker, _node->_topology, _node, _graph.begin(), _graph.end());
   
   // join here since corun graph may throw exception
   _node->_nstate |= NSTATE::JOINED_SUBFLOW;

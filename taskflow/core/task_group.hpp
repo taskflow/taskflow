@@ -704,7 +704,7 @@ class TaskGroup {
   /**
   @private
   */
-  Node _parent;
+  NodeBase _node_base;
 };
 
 // constructor
@@ -720,27 +720,27 @@ inline Executor& TaskGroup::executor() {
 // Function: corun
 inline void TaskGroup::corun() {
   {
-    AnchorGuard anchor(&_parent);
+    AnchorGuard anchor(&_node_base);
     _executor._corun_until(_worker, [this] () -> bool {
-      return _parent._join_counter.load(std::memory_order_acquire) == 0;
+      return _node_base._join_counter.load(std::memory_order_acquire) == 0;
     });
   }
-  _parent._rethrow_exception();
+  _node_base._rethrow_exception();
 }
 
 // Function: cancel
 inline void TaskGroup::cancel() {
-  _parent._estate.fetch_or(ESTATE::CANCELLED, std::memory_order_relaxed);
+  _node_base._estate.fetch_or(ESTATE::CANCELLED, std::memory_order_relaxed);
 }
 
 // Function: is_cancelled
 inline bool TaskGroup::is_cancelled() { 
-  return _parent._estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED;
+  return _node_base._estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED;
 }
 
 // Function: size
 inline size_t TaskGroup::size() const {
-  return _parent._join_counter.load(std::memory_order_relaxed);
+  return _node_base._join_counter.load(std::memory_order_relaxed);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -756,9 +756,9 @@ void TaskGroup::silent_async(F&& f) {
 // Function: silent_async
 template <typename P, typename F>
 void TaskGroup::silent_async(P&& params, F&& f) {
-  _parent._join_counter.fetch_add(1, std::memory_order_relaxed);
+  _node_base._join_counter.fetch_add(1, std::memory_order_relaxed);
   _executor._silent_async(
-    std::forward<P>(params), std::forward<F>(f), _parent._topology, &_parent
+    std::forward<P>(params), std::forward<F>(f), nullptr, &_node_base
   );
 }
 
@@ -775,9 +775,9 @@ auto TaskGroup::async(F&& f) {
 // Function: async
 template <typename P, typename F>
 auto TaskGroup::async(P&& params, F&& f) {
-  _parent._join_counter.fetch_add(1, std::memory_order_relaxed);
+  _node_base._join_counter.fetch_add(1, std::memory_order_relaxed);
   return _executor._async(
-    std::forward<P>(params), std::forward<F>(f), _parent._topology, &_parent
+    std::forward<P>(params), std::forward<F>(f), nullptr, &_node_base
   );
 }
 
@@ -823,9 +823,9 @@ template <typename P, typename F, typename I,
 tf::AsyncTask TaskGroup::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
-  _parent._join_counter.fetch_add(1, std::memory_order_relaxed);
+  _node_base._join_counter.fetch_add(1, std::memory_order_relaxed);
   return _executor._silent_dependent_async(
-    std::forward<P>(params), std::forward<F>(func), first, last, _parent._topology, &_parent
+    std::forward<P>(params), std::forward<F>(func), first, last, nullptr, &_node_base
   );
 }
 
@@ -865,9 +865,9 @@ template <typename P, typename F, typename I,
   std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
 >
 auto TaskGroup::dependent_async(P&& params, F&& func, I first, I last) {
-  _parent._join_counter.fetch_add(1, std::memory_order_relaxed);
+  _node_base._join_counter.fetch_add(1, std::memory_order_relaxed);
   return _executor._dependent_async(
-    std::forward<P>(params), std::forward<F>(func), first, last, _parent._topology, &_parent
+    std::forward<P>(params), std::forward<F>(func), first, last, nullptr, &_node_base
   );
 }
 

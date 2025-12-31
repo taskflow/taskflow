@@ -508,7 +508,7 @@ inline void Taskflow::_dump(
   }
 
   // subflow join node
-  if(node->_parent && node->_parent->_handle.index() == Node::SUBFLOW &&
+  if(node->_parent && static_cast<Node*>(node->_parent)->_handle.index() == Node::SUBFLOW &&
      node->_num_successors == 0
     ) {
     os << 'p' << node << " -> p" << node->_parent << " [style=dashed color=blue];\n";
