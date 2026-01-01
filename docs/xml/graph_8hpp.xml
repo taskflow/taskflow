@@ -218,13 +218,15 @@
         <link refid="executor_8hpp"/>
         <childnode refid="4" relation="include">
         </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="13">
+      <node id="14">
         <label>taskflow/core/flow_builder.hpp</label>
         <link refid="flow__builder_8hpp"/>
-        <childnode refid="14" relation="include">
+        <childnode refid="15" relation="include">
         </childnode>
       </node>
       <node id="1">
@@ -232,10 +234,10 @@
         <link refid="graph_8hpp"/>
         <childnode refid="2" relation="include">
         </childnode>
-        <childnode refid="12" relation="include">
+        <childnode refid="13" relation="include">
         </childnode>
       </node>
-      <node id="15">
+      <node id="16">
         <label>taskflow/core/observer.hpp</label>
         <link refid="observer_8hpp"/>
         <childnode refid="3" relation="include">
@@ -247,15 +249,21 @@
         <childnode refid="5" relation="include">
         </childnode>
       </node>
-      <node id="12">
+      <node id="13">
         <label>taskflow/core/task.hpp</label>
         <link refid="task_8hpp"/>
-        <childnode refid="13" relation="include">
+        <childnode refid="14" relation="include">
         </childnode>
-        <childnode refid="15" relation="include">
+        <childnode refid="16" relation="include">
         </childnode>
       </node>
-      <node id="14">
+      <node id="12">
+        <label>taskflow/core/task_group.hpp</label>
+        <link refid="task__group_8hpp_source"/>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
         <label>taskflow/core/taskflow.hpp</label>
         <link refid="core_2taskflow_8hpp"/>
         <childnode refid="3" relation="include">
@@ -291,6 +299,7 @@
     <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
     <innerclass refid="classtf_1_1TaskParams" prot="public">tf::TaskParams</innerclass>
     <innerclass refid="classtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
+    <innerclass refid="classtf_1_1NodeBase" prot="private">tf::NodeBase</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Static" prot="private">tf::Node::Static</innerclass>
     <innerclass refid="structtf_1_1Node_1_1Runtime" prot="private">tf::Node::Runtime</innerclass>

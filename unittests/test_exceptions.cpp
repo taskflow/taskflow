@@ -1433,15 +1433,15 @@ void probe2(size_t num_threads) {
 }
 
 
-TEST_CASE("Exception.Probe2.2threads") {
+TEST_CASE("Exception.Probe2.2threads" * doctest::timeout(300)) {
   probe2(2);
 }
 
-TEST_CASE("Exception.Probe2.3threads") {
+TEST_CASE("Exception.Probe2.3threads" * doctest::timeout(300)) {
   probe2(3);
 }
 
-TEST_CASE("Exception.Probe2.4threads") {
+TEST_CASE("Exception.Probe2.4threads" * doctest::timeout(300)) {
   probe2(4);
 }
 
@@ -1475,15 +1475,15 @@ void probe3(size_t num_threads) {
 }
 
 
-TEST_CASE("Exception.Probe3.2threads") {
+TEST_CASE("Exception.Probe3.2threads" * doctest::timeout(300)) {
   probe3(2);
 }
 
-TEST_CASE("Exception.Probe3.3threads") {
+TEST_CASE("Exception.Probe3.3threads" * doctest::timeout(300)) {
   probe3(3);
 }
 
-TEST_CASE("Exception.Probe3.4threads") {
+TEST_CASE("Exception.Probe3.4threads" * doctest::timeout(300)) {
   probe3(4);
 }
 
@@ -1517,16 +1517,43 @@ void probe4(size_t num_threads) {
 }
 
 
-TEST_CASE("Exception.Probe4.2threads") {
+TEST_CASE("Exception.Probe4.2threads" * doctest::timeout(300)) {
   probe4(2);
 }
 
-TEST_CASE("Exception.Probe4.3threads") {
+TEST_CASE("Exception.Probe4.3threads" * doctest::timeout(300)) {
   probe4(3);
 }
 
-TEST_CASE("Exception.Probe4.4threads") {
+TEST_CASE("Exception.Probe4.4threads" * doctest::timeout(300)) {
   probe4(4);
 }
+
+// ----------------------------------------------------------------------------
+// Task Group
+// ----------------------------------------------------------------------------
+
+
+//TEST_CASE("Exception.TaskGroup.Basics" * doctest::timeout(300) {
+//  
+//  tf::Executor executor;
+//  
+//  try {
+//    
+//  } catch(...) {
+//
+//    
+//  }
+//
+//  REQUIRE_THROWS_WITH_AS(executor.run(taskflow).get(), "x", std::runtime_error);
+//  
+//}
+
+
+
+
+
+
+
 
 

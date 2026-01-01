@@ -1,0 +1,438 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1NodeBase" kind="class" language="C++" prot="private">
+    <compoundname>tf::NodeBase</compoundname>
+    <sectiondef kind="friend">
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a6db9d28bd448a131448276ee03de1e6d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Node</definition>
+        <argsstring></argsstring>
+        <name>Node</name>
+        <qualifiedname>tf::NodeBase::Node</qualifiedname>
+        <param>
+          <type>Node</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="191" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="191" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1afab89afd724f1b07b1aaad6bdc61c47a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Graph</definition>
+        <argsstring></argsstring>
+        <name>Graph</name>
+        <qualifiedname>tf::NodeBase::Graph</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="192" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="192" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1aaa7728226b6ce66782e8816b1658dd9a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Task</definition>
+        <argsstring></argsstring>
+        <name>Task</name>
+        <qualifiedname>tf::NodeBase::Task</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="193" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="193" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a842f41f7bc0f1de257dc369a61cc7eaf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class AsyncTask</definition>
+        <argsstring></argsstring>
+        <name>AsyncTask</name>
+        <qualifiedname>tf::NodeBase::AsyncTask</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1AsyncTask" kindref="compound">AsyncTask</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="194" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a0aa0e12e4a0ba023033e808fb2132fdf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class TaskView</definition>
+        <argsstring></argsstring>
+        <name>TaskView</name>
+        <qualifiedname>tf::NodeBase::TaskView</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1TaskView" kindref="compound">TaskView</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="195" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="195" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1af043dd6f6a359602805d9c7dd7539cca" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Taskflow</definition>
+        <argsstring></argsstring>
+        <name>Taskflow</name>
+        <qualifiedname>tf::NodeBase::Taskflow</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="196" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="196" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Executor</definition>
+        <argsstring></argsstring>
+        <name>Executor</name>
+        <qualifiedname>tf::NodeBase::Executor</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="197" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="197" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class FlowBuilder</definition>
+        <argsstring></argsstring>
+        <name>FlowBuilder</name>
+        <qualifiedname>tf::NodeBase::FlowBuilder</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1FlowBuilder" kindref="compound">FlowBuilder</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="198" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="198" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1aa48945297ede77a161defc88033ce8a6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Subflow</definition>
+        <argsstring></argsstring>
+        <name>Subflow</name>
+        <qualifiedname>tf::NodeBase::Subflow</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Subflow" kindref="compound">Subflow</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="199" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="199" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Runtime</definition>
+        <argsstring></argsstring>
+        <name>Runtime</name>
+        <qualifiedname>tf::NodeBase::Runtime</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1Runtime" kindref="compound">Runtime</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="200" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="200" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a5336d73e2623282058a4f84a0423fac3" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class NonpreemptiveRuntime</definition>
+        <argsstring></argsstring>
+        <name>NonpreemptiveRuntime</name>
+        <qualifiedname>tf::NodeBase::NonpreemptiveRuntime</qualifiedname>
+        <param>
+          <type>NonpreemptiveRuntime</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="201" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="201" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a0aead7d7d8a25d0c29cc9419cc4fde65" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class AnchorGuard</definition>
+        <argsstring></argsstring>
+        <name>AnchorGuard</name>
+        <qualifiedname>tf::NodeBase::AnchorGuard</qualifiedname>
+        <param>
+          <type>AnchorGuard</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="202" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="202" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1a39e62aed9b5707246fa08d6b717953c4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class TaskGroup</definition>
+        <argsstring></argsstring>
+        <name>TaskGroup</name>
+        <qualifiedname>tf::NodeBase::TaskGroup</qualifiedname>
+        <param>
+          <type><ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="203" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1ab016b9124e80f55ad92e01579c060f08" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>class</type>
+        <definition>friend class Algorithm</definition>
+        <argsstring></argsstring>
+        <name>Algorithm</name>
+        <qualifiedname>tf::NodeBase::Algorithm</qualifiedname>
+        <param>
+          <type>Algorithm</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="204" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="204" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classtf_1_1NodeBase_1acc49b0ce35ba51593bb95d4ebc3868ea" prot="protected" static="no" mutable="no">
+        <type>nstate_t</type>
+        <definition>nstate_t tf::NodeBase::_nstate</definition>
+        <argsstring></argsstring>
+        <name>_nstate</name>
+        <qualifiedname>tf::NodeBase::_nstate</qualifiedname>
+        <initializer>{NSTATE::NONE}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="208" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="208" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NodeBase_1ad3cd43cef8826beb621ce3ad3ed97b8c" prot="protected" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; estate_t &gt;</type>
+        <definition>std::atomic&lt;estate_t&gt; tf::NodeBase::_estate</definition>
+        <argsstring></argsstring>
+        <name>_estate</name>
+        <qualifiedname>tf::NodeBase::_estate</qualifiedname>
+        <initializer>{ESTATE::NONE}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="209" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="209" bodyend="209"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NodeBase_1aa72cd1cbc5cf9a4d2d9bc4f297f7d6b3" prot="protected" static="no" mutable="no">
+        <type>NodeBase *</type>
+        <definition>NodeBase* tf::NodeBase::_parent</definition>
+        <argsstring></argsstring>
+        <name>_parent</name>
+        <qualifiedname>tf::NodeBase::_parent</qualifiedname>
+        <initializer>{nullptr}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="211" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="211" bodyend="211"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NodeBase_1a37faa5a9626d80a9979c23b55e96da84" prot="protected" static="no" mutable="no">
+        <type><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic</ref>&lt; size_t &gt;</type>
+        <definition>std::atomic&lt;size_t&gt; tf::NodeBase::_join_counter</definition>
+        <argsstring></argsstring>
+        <name>_join_counter</name>
+        <qualifiedname>tf::NodeBase::_join_counter</qualifiedname>
+        <initializer>{0}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="212" column="15" bodyfile="taskflow/core/graph.hpp" bodystart="212" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1NodeBase_1af405c76e47afcf1f14370dfe3daaf3a1" prot="protected" static="no" mutable="no">
+        <type><ref refid="cpp/error/exception_ptr" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::exception_ptr</ref></type>
+        <definition>std::exception_ptr tf::NodeBase::_exception_ptr</definition>
+        <argsstring></argsstring>
+        <name>_exception_ptr</name>
+        <qualifiedname>tf::NodeBase::_exception_ptr</qualifiedname>
+        <initializer>{nullptr}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="214" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="214" bodyend="214"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classtf_1_1NodeBase_1a276070dec14a118867e90a8dc9b6459c" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>tf::NodeBase::NodeBase</definition>
+        <argsstring>()=default</argsstring>
+        <name>NodeBase</name>
+        <qualifiedname>tf::NodeBase::NodeBase</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="216" column="3"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1NodeBase_1ae70de05f37f731650acb43696d5476c7" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::NodeBase::NodeBase</definition>
+        <argsstring>(nstate_t nstate, estate_t estate, NodeBase *parent, size_t join_counter)</argsstring>
+        <name>NodeBase</name>
+        <qualifiedname>tf::NodeBase::NodeBase</qualifiedname>
+        <param>
+          <type>nstate_t</type>
+          <declname>nstate</declname>
+        </param>
+        <param>
+          <type>estate_t</type>
+          <declname>estate</declname>
+        </param>
+        <param>
+          <type>NodeBase *</type>
+          <declname>parent</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>join_counter</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="218" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="218" bodyend="223"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1NodeBase_1a08bdec41eae9b20f8c3376597fe101f6" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::NodeBase::_rethrow_exception</definition>
+        <argsstring>()</argsstring>
+        <name>_rethrow_exception</name>
+        <qualifiedname>tf::NodeBase::_rethrow_exception</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="225" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="225" bodyend="231"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::atomic&lt; estate_t &gt;</label>
+      </node>
+      <node id="3">
+        <label>std::atomic&lt; size_t &gt;</label>
+      </node>
+      <node id="4">
+        <label>std::exception_ptr</label>
+      </node>
+      <node id="1">
+        <label>tf::NodeBase</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>_estate</edgelabel>
+        </childnode>
+        <childnode refid="1" relation="usage">
+          <edgelabel>_parent</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>_join_counter</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>_exception_ptr</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/core/graph.hpp" line="189" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="189" bodyend="232"/>
+    <listofallmembers>
+      <member refid="classtf_1_1NodeBase_1ad3cd43cef8826beb621ce3ad3ed97b8c" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_estate</name></member>
+      <member refid="classtf_1_1NodeBase_1af405c76e47afcf1f14370dfe3daaf3a1" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_exception_ptr</name></member>
+      <member refid="classtf_1_1NodeBase_1a37faa5a9626d80a9979c23b55e96da84" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_join_counter</name></member>
+      <member refid="classtf_1_1NodeBase_1acc49b0ce35ba51593bb95d4ebc3868ea" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_nstate</name></member>
+      <member refid="classtf_1_1NodeBase_1aa72cd1cbc5cf9a4d2d9bc4f297f7d6b3" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_parent</name></member>
+      <member refid="classtf_1_1NodeBase_1a08bdec41eae9b20f8c3376597fe101f6" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_rethrow_exception</name></member>
+      <member refid="classtf_1_1NodeBase_1ab016b9124e80f55ad92e01579c060f08" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Algorithm</name></member>
+      <member refid="classtf_1_1NodeBase_1a0aead7d7d8a25d0c29cc9419cc4fde65" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>AnchorGuard</name></member>
+      <member refid="classtf_1_1NodeBase_1a842f41f7bc0f1de257dc369a61cc7eaf" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>AsyncTask</name></member>
+      <member refid="classtf_1_1NodeBase_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Executor</name></member>
+      <member refid="classtf_1_1NodeBase_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>FlowBuilder</name></member>
+      <member refid="classtf_1_1NodeBase_1afab89afd724f1b07b1aaad6bdc61c47a" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Graph</name></member>
+      <member refid="classtf_1_1NodeBase_1a6db9d28bd448a131448276ee03de1e6d" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Node</name></member>
+      <member refid="classtf_1_1NodeBase_1a276070dec14a118867e90a8dc9b6459c" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classtf_1_1NodeBase_1ae70de05f37f731650acb43696d5476c7" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>NodeBase</name></member>
+      <member refid="classtf_1_1NodeBase_1a5336d73e2623282058a4f84a0423fac3" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>NonpreemptiveRuntime</name></member>
+      <member refid="classtf_1_1NodeBase_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Runtime</name></member>
+      <member refid="classtf_1_1NodeBase_1aa48945297ede77a161defc88033ce8a6" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Subflow</name></member>
+      <member refid="classtf_1_1NodeBase_1aaa7728226b6ce66782e8816b1658dd9a" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Task</name></member>
+      <member refid="classtf_1_1NodeBase_1af043dd6f6a359602805d9c7dd7539cca" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Taskflow</name></member>
+      <member refid="classtf_1_1NodeBase_1a39e62aed9b5707246fa08d6b717953c4" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>TaskGroup</name></member>
+      <member refid="classtf_1_1NodeBase_1a0aa0e12e4a0ba023033e808fb2132fdf" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>TaskView</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

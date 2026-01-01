@@ -16,10 +16,6 @@
         <name>Understand Internal Data Storage</name>
         <reference>DataParallelPipeline_1UnderstandInternalDataStorage</reference>
       </tocsect>
-      <tocsect>
-        <name>Learn More about Taskflow Pipeline</name>
-        <reference>DataParallelPipeline_1DataParallelPipelineLearnMore</reference>
-      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -134,18 +130,7 @@ For the first pipe, the input type should always be <computeroutput>void</comput
 </para>
 </sect1>
 <sect1 id="DataParallelPipeline_1UnderstandInternalDataStorage">
-<title>Understand Internal Data Storage</title><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> uses <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store a type-safe union of all input and output data types extracted from the given data pipes. To avoid false sharing, each line keeps a variant that is aligned with the cacheline size. When invoking a pipe callable, the input data is acquired in reference from the variant using <ulink url="https://en.cppreference.com/w/cpp/utility/variant/get">std::get</ulink>. When returning from a pipe callable, the output data is stored back to the variant using assignment operator.</para>
-</sect1>
-<sect1 id="DataParallelPipeline_1DataParallelPipelineLearnMore">
-<title>Learn More about Taskflow Pipeline</title><para>Visit the following pages to learn more about pipeline:</para>
-<para><orderedlist>
-<listitem><para><ref refid="TaskParallelPipeline" kindref="compound">Task-parallel Pipeline</ref></para>
-</listitem><listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
-</listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
-</listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
-</listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para>
-</listitem></orderedlist>
-</para>
+<title>Understand Internal Data Storage</title><para>By default, <ref refid="classtf_1_1DataPipeline" kindref="compound">tf::DataPipeline</ref> uses <ulink url="https://en.cppreference.com/w/cpp/utility/variant">std::variant</ulink> to store a type-safe union of all input and output data types extracted from the given data pipes. To avoid false sharing, each line keeps a variant that is aligned with the cacheline size. When invoking a pipe callable, the input data is acquired in reference from the variant using <ulink url="https://en.cppreference.com/w/cpp/utility/variant/get">std::get</ulink>. When returning from a pipe callable, the output data is stored back to the variant using assignment operator. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/algorithms/data_pipeline.dox"/>

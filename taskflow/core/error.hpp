@@ -9,6 +9,7 @@
 namespace tf {
 
 // node-specific states
+// 32-bit state encoding [xxxx|xxxx|xxxx|xxxx|xxxx|xxxx|xxxx|xxxx]
 struct NSTATE {
 
   using underlying_type = int;

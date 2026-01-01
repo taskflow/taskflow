@@ -304,6 +304,10 @@
               I last) -&gt; auto</span>
             </dt>
             <dd>runs the given function asynchronously when the given range of predecessors finish</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">auto <a href="#a8858a119b9ad697748293c4bb1408853" class="m-doc">task_group</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1TaskGroup.html" class="m-doc">TaskGroup</a></span>
+            </dt>
+            <dd>creates a task group that executes a collection of asynchronous tasks</dd>
           </dl>
         </section>
         <section>
@@ -1592,6 +1596,44 @@
 <span class="w">  </span><span class="n">array</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">end</span><span class="p">()</span>
 <span class="p">);</span>
 <span class="n">assert</span><span class="p">(</span><span class="n">fuC</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// C finishes, which in turns means both A and B finish</span></pre><p>You can mix the use of <a href="classtf_1_1AsyncTask.html" class="m-doc">tf::<wbr />AsyncTask</a> handles returned by <a href="#aee02b63d3a91ad5ca5a1c0e71f3e128f" class="m-doc">tf::<wbr />Executor::<wbr />dependent_async</a> and <a href="#a0e2d792f28136b8227b413d0c27d5c7f" class="m-doc">tf::<wbr />Executor::<wbr />silent_dependent_async</a> when specifying task dependencies.</p><p>This member function is thread-safe.</p>
+          </div></section>
+          <section class="m-doc-details" id="a8858a119b9ad697748293c4bb1408853"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1TaskGroup.html" class="m-doc">TaskGroup</a> tf::<wbr />Executor::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a8858a119b9ad697748293c4bb1408853" class="m-doc-self">task_group</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>creates a task group that executes a collection of asynchronous tasks</p>
+            <table class="m-table m-fullwidth m-flat">
+              <tfoot>
+                <tr>
+                  <th style="width: 1%">Returns</th>
+                  <td>a <a href="classtf_1_1TaskGroup.html" class="m-doc">tf::<wbr />TaskGroup</a> object associated with the current executor</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>A <a href="classtf_1_1TaskGroup.html" class="m-doc">TaskGroup</a> allows submitting multiple asynchronous tasks to the executor and waiting for their completion collectively using <code><a href="#a8fcd9e0557922bb8194999f0cd433ea8" class="m-doc">corun()</a></code>. Tasks added to the group can execute in parallel and may capture local variables by value or reference, depending on your needs. This can be useful for divide-and-conquer algorithms, parallel loops, or any workflow that requires grouping related tasks.</p><p>Example (computing Fibonacci numbers in parallel):</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+
+<span class="kt">size_t</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// Create a task group from the current executor</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">TaskGroup</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_executor</span><span class="p">().</span><span class="n">task_group</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Submit asynchronous tasks to the group</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res1</span><span class="p">](){</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-2</span><span class="p">);</span><span class="w">  </span><span class="c1">// compute one branch synchronously</span>
+
+<span class="w">  </span><span class="c1">// Wait for all tasks in the group to complete</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span><span class="w"> </span><span class="p">}).</span><span class="n">get</span><span class="p">();</span>
+<span class="p">}</span></pre><p>This member function is thread-safe.</p><aside class="m-note m-warning"><h4>Attention</h4><p>Due to cooperative execution, a task group can only be created by a worker of an executor.</p></aside>
           </div></section>
         </section>
       </div>

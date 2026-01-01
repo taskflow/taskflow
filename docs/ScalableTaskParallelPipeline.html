@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Taskflow Algorithms &raquo; Task-parallel Scalable Pipeline | Taskflow QuickStart</title>
+  <title>Taskflow Algorithms &raquo; Scalable Task-parallel Pipeline | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
@@ -47,7 +47,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <span class="m-breadcrumb"><a href="Algorithms.html">Taskflow Algorithms</a> &raquo;</span>
-          Task-parallel Scalable Pipeline
+          Scalable Task-parallel Pipeline
         </h1>
         <nav class="m-block m-default">
           <h3>Contents</h3>
@@ -56,7 +56,6 @@
             <li><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></li>
             <li><a href="#ResetAPlaceholderScalablePipeline">Reset a Placeholder Scalable Pipeline</a></li>
             <li><a href="#ScalablePipelineUseOtherIteratorTypes">Use Other Iterator Types</a></li>
-            <li><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></li>
           </ul>
         </nav>
 <p>Unlike <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> (see <a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a>) that instantiates all pipes at the construction time, Taskflow provides a scalable alternative called <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> to allow variable assignments of pipes using range iterators. A scalable pipeline is thus more flexible for applications to create a pipeline scheduling framework whose pipeline structure depends on runtime variables.</p><section id="IncludeTheScalablePipelineHeader"><h2><a href="#IncludeTheScalablePipelineHeader">Include the Header</a></h2><p>You need to include the header file, <code>taskflow/algorithm/pipeline.hpp</code>, for creating a scalable pipeline scheduling framework.</p><pre class="m-code"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;taskflow/algorithm/pipeline.hpp&gt;</span></pre></section><section id="CreateAScalablePipelineModuleTask"><h2><a href="#CreateAScalablePipelineModuleTask">Create a Scalable Pipeline Module Task</a></h2><p>Similar to <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a>, <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is a composable graph object to implement a <em>pipeline scheduling framework</em> in a taskflow. The key difference between <a href="classtf_1_1Pipeline.html" class="m-doc">tf::<wbr />Pipeline</a> and <a href="classtf_1_1ScalablePipeline.html" class="m-doc">tf::<wbr />ScalablePipeline</a> is that a scalable pipeline can accept <em>variable</em> assignments of pipes rather than instantiating all pipes at construction or programming time. Users define a linear range of pipes, each of the same callable type, and apply that range to construct a scalable pipeline. Between successive runs, users can reset the pipeline to a different range of pipes. The following code creates a scalable pipeline that uses four parallel lines to schedule tokens through three serial pipes in the given vector, then resetting that pipeline to a new range of five serial pipes:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Taskflow</span><span class="w"> </span><span class="n">taskflow</span><span class="p">(</span><span class="s">&quot;pipeline&quot;</span><span class="p">);</span>
@@ -773,7 +772,7 @@
 
 <span class="c1">// use list to store pipes</span>
 <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipe</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">tf</span><span class="o">::</span><span class="n">Pipeflow</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">list</span><span class="p">;</span>
-<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl2</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></pre></section><section id="ParallelScalablePipelineLearnMore"><h2><a href="#ParallelScalablePipelineLearnMore">Learn More about Taskflow Pipeline</a></h2><p>Visit the following pages to learn more about pipeline:</p><ul><li><a href="TaskParallelPipeline.html" class="m-doc">Task-parallel Pipeline</a></li><li><a href="DataParallelPipeline.html" class="m-doc">Data-parallel Pipeline</a></li><li><a href="TextProcessingPipeline.html" class="m-doc">Text Processing Pipeline</a></li><li><a href="GraphProcessingPipeline.html" class="m-doc">Graph Processing Pipeline</a></li><li><a href="TaskflowProcessingPipeline.html" class="m-doc">Taskflow Processing Pipeline</a></li></ul></section>
+<span class="n">tf</span><span class="o">::</span><span class="n">ScalablePipeline</span><span class="w"> </span><span class="nf">spl2</span><span class="p">(</span><span class="n">num_lines</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">list</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></pre></section>
       </div>
     </div>
   </div>

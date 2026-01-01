@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+  <compounddef id="TaskGroup" kind="page">
+    <compoundname>TaskGroup</compoundname>
+    <title>Task Group</title>
+    <tableofcontents>
+      <tocsect>
+        <name>Create a %Task Group</name>
+        <reference>TaskGroup_1CreateATaskGroup</reference>
+      </tocsect>
+      <tocsect>
+        <name>Submit Asynchronous Tasks with Cooperative Execution</name>
+        <reference>TaskGroup_1SubmitAsynchronousTasksWithCooperativeExecution</reference>
+      </tocsect>
+      <tocsect>
+        <name>Cancel a %Task Group</name>
+        <reference>TaskGroup_1CancelATaskGroup</reference>
+      </tocsect>
+      <tocsect>
+        <name>Implement Recursive Task Parallelism</name>
+        <reference>TaskGroup_1ImplementRecursiveTaskParallelismUsingTaskGroup</reference>
+      </tocsect>
+    </tableofcontents>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>A task group is a lightweight mechanism in Taskflow to spawn and manage a collection of asynchronous tasks cooperatively within a single executor. Task groups allow tasks to be executed recursively, asynchronously, or with dependencies, enabling efficient implementation of recursive parallel algorithms.</para>
+<sect1 id="TaskGroup_1CreateATaskGroup">
+<title>Create a Task Group</title><para>A task group (<ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref>) is created from a worker in an executor using <ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">tf::Executor::task_group()</ref>. Since task groups rely on cooperative execution, they must be created inside a task that is already running on the executor. For example, the code below creates a task group from an asynchronous task:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>tg<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>Internally, a task group is bound to the executor and the worker that creates it. This worker is referred to as the <emphasis>parent worker</emphasis> of the task group and is the only worker allowed to issue cooperative execution (<ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun</ref>) on that task group. Attempting to create a task group from a non-worker thread will result in an exception. This restriction ensures that task groups can safely participate in the executor&apos;s work-stealing loop and enables efficient cooperative execution while preserving the execution context required for recursion.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>tg<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();<sp/></highlight><highlight class="comment">//<sp/>throws</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="TaskGroup_1SubmitAsynchronousTasksWithCooperativeExecution">
+<title>Submit Asynchronous Tasks with Cooperative Execution</title><para><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref> supports submitting asynchronous tasks that execute cooperatively with other workers in the same executor. All tasks submitted to a task group are logically grouped and can be explicitly synchronized using <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref>. The task group provides four categories of asynchronous submission APIs:<itemizedlist>
+<listitem><para><ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">tf::TaskGroup::async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">tf::TaskGroup::silent_async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref></para>
+</listitem><listitem><para><ref refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" kindref="member">tf::TaskGroup::silent_dependent_async</ref></para>
+</listitem></itemizedlist>
+</para>
+<para>Each variant serves a distinct purpose depending on whether you need, including a returned future, dependency ordering between tasks, etc. For instance, the code below creates 100 tasks using <ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">tf::TaskGroup::silent_async</ref> and one task using <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">tf::TaskGroup::async</ref>, followed by a <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref> to cooperatively execute all tasks in the task group until every task has completed:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter{0};</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>100<sp/>silent-async<sp/>tasks<sp/>(without<sp/>future<sp/>return)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">silent_async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>one<sp/>async<sp/>task<sp/>(with<sp/>future<sp/>return)</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>42;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>cooperatively<sp/>run<sp/>all<sp/>tasks<sp/>in<sp/>the<sp/>group</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">corun</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(fu.get()<sp/>==<sp/>42);</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>If you need dependencies among async tasks, use <ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref> or <ref refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" kindref="member">tf::TaskGroup::silent_dependent_async</ref>. For instance, the task group below builds a dynamic task graph of three tasks, A, B, and C, where C runs after A and B.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" kindref="member">silent_dependent_async</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" kindref="member">silent_dependent_async</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>C<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">corun</ref>();</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="TaskGroup_1CancelATaskGroup">
+<title>Cancel a Task Group</title><para>You can mark a task group as cancelled to stop any not-yet-started tasks in the group from running. Tasks that are already running will continue to completion, but no new tasks belonging to the task group will be scheduled after cancellation. The example below demonstrates how <ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">tf::TaskGroup::cancel()</ref> prevents pending tasks in a task group from executing , while allowing already running tasks to complete cooperatively. The first set of tasks deliberately occupies all but one worker thread, ensuring that subsequently spawned tasks remain pending. After invoking <ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">tf::TaskGroup::cancel()</ref>, these pending tasks are never scheduled, even after the blocked workers are released. A final call to <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref> synchronizes with all tasks in the group, guaranteeing safe completion and verifying that cancellation successfully suppresses task execution.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>W<sp/>=<sp/>12;<sp/><sp/></highlight><highlight class="comment">//<sp/>must<sp/>be<sp/>&gt;1<sp/>for<sp/>this<sp/>example<sp/>to<sp/>work</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(W);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;executor,<sp/>W](){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>deliberately<sp/>block<sp/>the<sp/>other<sp/>W-1<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>latch(0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;W-1;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++latch;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(latch<sp/>!=<sp/>0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>wait<sp/>until<sp/>the<sp/>other<sp/>W-1<sp/>workers<sp/>are<sp/>blocked</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal">(latch<sp/>!=<sp/>W-1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>other<sp/>tasks<sp/>which<sp/>should<sp/>never<sp/>run<sp/>after<sp/>cancellation</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">async</ref>([&amp;](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/>std::runtime_error(</highlight><highlight class="stringliteral">&quot;this<sp/>should<sp/>never<sp/>run&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>cancel<sp/>the<sp/>task<sp/>group<sp/>and<sp/>unblock<sp/>the<sp/>other<sp/>W-1<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(tg.<ref refid="classtf_1_1TaskGroup_1aa199904b8123c345df37df4360950fa7" kindref="member">is_cancelled</ref>()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">cancel</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>assert(tg.<ref refid="classtf_1_1TaskGroup_1aa199904b8123c345df37df4360950fa7" kindref="member">is_cancelled</ref>()<sp/>==<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>latch<sp/>=<sp/>0;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">corun</ref>();</highlight></codeline>
+<codeline><highlight class="normal">});</highlight></codeline>
+</programlisting></para>
+<para>Note that cancellation is cooperative: tasks should not assume immediate termination. Users must still call <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref> to synchronize with all spawned tasks and ensure safe completion or cancellation. Failing to do so results in undefined behavior.</para>
+</sect1>
+<sect1 id="TaskGroup_1ImplementRecursiveTaskParallelismUsingTaskGroup">
+<title>Implement Recursive Task Parallelism</title><para><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref> is particularly well suited for implementing recursive task parallelism, where tasks dynamically spawn additional tasks during execution. Because task groups support cooperative execution via <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref>, the worker thread can preserve its execution context across recursive calls. This design makes task groups a powerful choice for parallelizing recursive algorithms, such as divide-and-conquer, tree traversal, and dynamic programming. The example below demonstrates how to implement a parallel Fibonacci algorithm using a task group:</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(N<sp/>&lt;<sp/>2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>N;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>tg<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](){<sp/>res1<sp/>=<sp/>fibonacci(N-1);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res2<sp/>=<sp/>fibonacci(N-2);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>cooperatively<sp/>run<sp/>tasks<sp/>until<sp/>all<sp/>tasks<sp/>spawned<sp/>by<sp/>`tg`<sp/>complete</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">corun</ref>();<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>res1<sp/>+<sp/>res2;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>30,<sp/>res;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fibonacci(30);<sp/>}).get();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+<para>The function <computeroutput>fibonacci</computeroutput> spawns one recursive call as an asynchronous task and computes the other directly. Calling <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref> ensures the asynchronous branch completes before the results are combined, while allowing the current worker to cooperatively execute spawned tasks and preserve its execution context. </para>
+</sect1>
+    </detaileddescription>
+    <location file="doxygen/cookbook/task_group.dox"/>
+  </compounddef>
+</doxygen>

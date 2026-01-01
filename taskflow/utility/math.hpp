@@ -288,46 +288,6 @@ inline T seed() noexcept {
   return std::chrono::system_clock::now().time_since_epoch().count();
 }
 
-/**
- * @brief counts the number of trailing zeros in an integer.
- *
- * This function provides a portable implementation for counting the number of 
- * trailing zeros across different platforms and integer sizes (32-bit and 64-bit).
- *
- * @tparam T integer type (32-bit or 64-bit).
- * @param x non-zero integer to count trailing zeros from
- * @return the number of trailing zeros in @c x
- *
- * @attention
- * The behavior is undefined when @c x is 0.
- */
-template <typename T, typename = std::enable_if_t<std::is_unsigned_v<T>>>
-auto ctz(T x) {
-
-  #if defined(_MSC_VER)
-    unsigned long index;
-    if constexpr (sizeof(T) == 8) {
-      _BitScanForward64(&index, x);
-    } else {
-      _BitScanForward(&index, (unsigned long)x);
-    }
-    return index;
-  #elif defined(__GNUC__) || defined(__clang__)
-    if constexpr (sizeof(T) == 8) {
-      return __builtin_ctzll(x);
-    } else {
-      return __builtin_ctz(x);
-    }
-  #else 
-    size_t r = 0;
-    while ((x & 1) == 0) {
-      x >>= 1;
-      r++;
-    }
-    return r;
-  #endif
-}
-
 // ------------------------------------------------------------------------------------------------
 // coprime
 // ------------------------------------------------------------------------------------------------

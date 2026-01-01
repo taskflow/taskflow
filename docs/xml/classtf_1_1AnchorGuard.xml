@@ -3,31 +3,31 @@
   <compounddef id="classtf_1_1AnchorGuard" kind="class" language="C++" prot="private">
     <compoundname>tf::AnchorGuard</compoundname>
     <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="classtf_1_1AnchorGuard_1a2e223f00fbfb70d36b084a87e54739a4" prot="private" static="no" mutable="no">
-        <type>Node *</type>
-        <definition>Node* tf::AnchorGuard::_node</definition>
+      <memberdef kind="variable" id="classtf_1_1AnchorGuard_1af5d5fb620f459de06889ad3a64a1902b" prot="private" static="no" mutable="no">
+        <type>NodeBase *</type>
+        <definition>NodeBase* tf::AnchorGuard::_node_base</definition>
         <argsstring></argsstring>
-        <name>_node</name>
-        <qualifiedname>tf::AnchorGuard::_node</qualifiedname>
+        <name>_node_base</name>
+        <qualifiedname>tf::AnchorGuard::_node_base</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="702" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="702" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="724" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="724" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1AnchorGuard_1a701065f4f4581e0ce52338b66630b168" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1AnchorGuard_1a626fcefe14938fb047f25ca6c5e0f885" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::AnchorGuard::AnchorGuard</definition>
-        <argsstring>(Node *node)</argsstring>
+        <argsstring>(NodeBase *node_base)</argsstring>
         <name>AnchorGuard</name>
         <qualifiedname>tf::AnchorGuard::AnchorGuard</qualifiedname>
         <param>
-          <type>Node *</type>
-          <declname>node</declname>
+          <type>NodeBase *</type>
+          <declname>node_base</declname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -35,7 +35,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="692" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="692" bodyend="694"/>
+        <location file="taskflow/core/graph.hpp" line="714" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="714" bodyend="716"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1AnchorGuard_1a4b708bd22dcd03473f2dd02afc3a6398" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
@@ -49,17 +49,17 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="696" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="696" bodyend="698"/>
+        <location file="taskflow/core/graph.hpp" line="718" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="718" bodyend="720"/>
       </memberdef>
     </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/core/graph.hpp" line="686" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="686" bodyend="703"/>
+    <location file="taskflow/core/graph.hpp" line="708" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="708" bodyend="725"/>
     <listofallmembers>
-      <member refid="classtf_1_1AnchorGuard_1a2e223f00fbfb70d36b084a87e54739a4" prot="private" virt="non-virtual"><scope>tf::AnchorGuard</scope><name>_node</name></member>
-      <member refid="classtf_1_1AnchorGuard_1a701065f4f4581e0ce52338b66630b168" prot="public" virt="non-virtual"><scope>tf::AnchorGuard</scope><name>AnchorGuard</name></member>
+      <member refid="classtf_1_1AnchorGuard_1af5d5fb620f459de06889ad3a64a1902b" prot="private" virt="non-virtual"><scope>tf::AnchorGuard</scope><name>_node_base</name></member>
+      <member refid="classtf_1_1AnchorGuard_1a626fcefe14938fb047f25ca6c5e0f885" prot="public" virt="non-virtual"><scope>tf::AnchorGuard</scope><name>AnchorGuard</name></member>
       <member refid="classtf_1_1AnchorGuard_1a4b708bd22dcd03473f2dd02afc3a6398" prot="public" virt="non-virtual"><scope>tf::AnchorGuard</scope><name>~AnchorGuard</name></member>
     </listofallmembers>
   </compounddef>

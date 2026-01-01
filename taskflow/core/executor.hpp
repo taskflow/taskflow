@@ -1069,7 +1069,52 @@ class Executor {
   // ----------------------------------------------------------------------------------------------
   // Task Group
   // ----------------------------------------------------------------------------------------------
+  
+  /**
+  @brief creates a task group that executes a collection of asynchronous tasks
+  @return a tf::TaskGroup object associated with the current executor
+ 
+  A TaskGroup allows submitting multiple asynchronous tasks to the executor
+  and waiting for their completion collectively using `corun()`. Tasks added
+  to the group can execute in parallel and may capture local variables by value
+  or reference, depending on your needs. 
+  This can be useful for divide-and-conquer
+  algorithms, parallel loops, or any workflow that requires grouping related tasks.
+  
+  Example (computing Fibonacci numbers in parallel):
 
+  @code{.cpp}
+  tf::Executor executor;
+  
+  size_t fibonacci(size_t N) {
+
+    if (N < 2) return N;
+  
+    size_t res1, res2;
+  
+    // Create a task group from the current executor
+    tf::TaskGroup tg = get_executor().task_group();
+  
+    // Submit asynchronous tasks to the group
+    tg.silent_async([N, &res1](){ res1 = fibonacci(N-1); });
+    res2 = fibonacci(N-2);  // compute one branch synchronously
+  
+    // Wait for all tasks in the group to complete
+    tg.corun();
+  
+    return res1 + res2;
+  }
+  
+  int main() {
+    return executor.async([](){ return fibonacci(30); }).get();
+  }
+  @endcode
+  
+  This member function is thread-safe.
+
+  @attention
+  Due to cooperative execution, a task group can only be created by a worker of an executor.
+  */
   TaskGroup task_group();
 
   private:
@@ -1272,7 +1317,6 @@ inline void Executor::_spawn(size_t N) {
   for(size_t id=0; id<N; ++id) {
     _workers[id]._id = id;
     _workers[id]._vtm = id;
-    _workers[id]._executor = this;
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
       // initialize the random engine and seed for work-stealing loop
@@ -1321,7 +1365,27 @@ inline void Executor::_spawn(size_t N) {
       }
 
     });
-
+    
+    // We avoid using thread-local storage to track the mapping between a thread
+    // and its corresponding worker in an executor. On Windows, thread-local
+    // storage can be unreliable in certain situations (see issue #727).
+    //
+    // Instead, we maintain a per-executor mapping from threads to workers.
+    // This approach has an additional advantage: according to the C++ Standard,
+    // std::thread::id uniquely identifies a thread object. Therefore, once the map
+    // returns a valid worker, we can be certain that the worker belongs to this
+    // executor. This eliminates the need for additional executor validation 
+    // required by using thread-local storage.
+    //
+    // Example:
+    //
+    //   Worker* w = this_worker();
+    //   // Using thread-local storage, we would need additional executor validation:
+    //   if (w == nullptr || w->_executor != this) { /* caller is not a worker of this executor */ }
+    //
+    //   // Using per-executor mapping, it suffices to check:
+    //   if (w == nullptr) { /* caller is not a worker of this executor */ }
+    //
     _t2w.emplace(_workers[id]._thread.get_id(), &_workers[id]);
   }
 }
@@ -1531,6 +1595,8 @@ inline void Executor::_spill(Node* item) {
 template <typename I>
 void Executor::_bulk_spill(I first, size_t N) {
   // assert(N != 0);
+  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
+  // contention caused by hashing to the same slot.
   auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
   auto b = (p ^ (N << 6)) % _buffers.size();
   std::scoped_lock lock(_buffers[b].mutex);
@@ -1539,20 +1605,11 @@ void Executor::_bulk_spill(I first, size_t N) {
 
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
-  
-  // caller is a worker of this executor - starting at v3.5 we do not use
-  // any complicated notification mechanism as the experimental result
-  // has shown no significant advantage.
-  if(worker._executor == this) {
-    if(worker._wsq.try_push(node) == false) {
-      _spill(node);
-    }
-    _notifier.notify_one();
-    return;
+  // starting at v3.5 we do not use any complicated notification mechanism 
+  // as the experimental result has shown no significant advantage.
+  if(worker._wsq.try_push(node) == false) {
+    _spill(node);
   }
-  
-  // caller is not a worker of this executor - spill to the centralized buffer
-  _spill(node);
   _notifier.notify_one();
 }
 
@@ -1575,24 +1632,16 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
-  if(worker._executor == this) {
-    if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
-      _bulk_spill(first + n, num_nodes - n);
-    }
-    _notifier.notify_n(num_nodes);
-    return;
-    
-    // notify first before spilling to hopefully wake up workers earlier 
-    // however, the experiment does not show any benefit for doing this.
-    //auto n = worker._wsq.try_bulk_push(first, num_nodes);
-    //_notifier.notify_n(n);
-    //_bulk_schedule(first + n, num_nodes - n);
-    //return;
+  if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
+    _bulk_spill(first + n, num_nodes - n);
   }
-  
-  // caller is not a worker of this executor - spill to the centralized queue
-  _bulk_spill(first, num_nodes);
   _notifier.notify_n(num_nodes);
+    
+  // notify first before spilling to hopefully wake up workers earlier 
+  // however, the experiment does not show any benefit for doing this.
+  //auto n = worker._wsq.try_bulk_push(first, num_nodes);
+  //_notifier.notify_n(n);
+  //_bulk_schedule(first + n, num_nodes - n);
 }
 
 // Procedure: _schedule
@@ -1814,6 +1863,7 @@ inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cac
     // the node may be deleted
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      // this task is spawned from a preempted parent, so we need to resume it
       if(state & NSTATE::PREEMPTED) {
         _update_cache(worker, cache, static_cast<Node*>(parent));
       }
@@ -2172,7 +2222,7 @@ void Executor::corun(T& target) {
   static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
   
   Worker* w = this_worker();
-  if(w == nullptr || w->_executor != this) {
+  if(w == nullptr) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
@@ -2185,7 +2235,7 @@ template <typename P>
 void Executor::corun_until(P&& predicate) {
   
   Worker* w = this_worker();
-  if(w == nullptr || w->_executor != this) {
+  if(w == nullptr) {
     TF_THROW("corun_until must be called by a worker of the executor");
   }
 

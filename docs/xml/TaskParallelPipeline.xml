@@ -38,10 +38,6 @@
         <name>Reset a Pipeline</name>
         <reference>TaskParallelPipeline_1ResetPipeline</reference>
       </tocsect>
-      <tocsect>
-        <name>Learn More about Taskflow Pipeline</name>
-        <reference>TaskParallelPipeline_1TaskParallelPipelineLearnMore</reference>
-      </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
@@ -726,18 +722,7 @@ The taskflow graph of this pipeline example is illustrated as follows:</para>
 <codeline><highlight class="normal">pipe<sp/>2:<sp/>input<sp/>buffer_1[0]<sp/>=<sp/>5</highlight></codeline>
 <codeline><highlight class="normal">stop</highlight></codeline>
 </programlisting></para>
-<para>The output can be different from run to run, since the second pipe is a parallel type. At the second iteration from the condition task, we reset the pipeline so the token identifier starts from <computeroutput>0</computeroutput> rather than <computeroutput>5</computeroutput>.</para>
-</sect1>
-<sect1 id="TaskParallelPipeline_1TaskParallelPipelineLearnMore">
-<title>Learn More about Taskflow Pipeline</title><para>Visit the following pages to learn more about pipeline:</para>
-<para><itemizedlist>
-<listitem><para><ref refid="TaskParallelScalablePipeline" kindref="compound">Task-parallel Scalable Pipeline</ref></para>
-</listitem><listitem><para><ref refid="DataParallelPipeline" kindref="compound">Data-parallel Pipeline</ref></para>
-</listitem><listitem><para><ref refid="TextProcessingPipeline" kindref="compound">Text Processing Pipeline</ref></para>
-</listitem><listitem><para><ref refid="GraphProcessingPipeline" kindref="compound">Graph Processing Pipeline</ref></para>
-</listitem><listitem><para><ref refid="TaskflowProcessingPipeline" kindref="compound">Taskflow Processing Pipeline</ref> </para>
-</listitem></itemizedlist>
-</para>
+<para>The output can be different from run to run, since the second pipe is a parallel type. At the second iteration from the condition task, we reset the pipeline so the token identifier starts from <computeroutput>0</computeroutput> rather than <computeroutput>5</computeroutput>. </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/algorithms/pipeline.dox"/>

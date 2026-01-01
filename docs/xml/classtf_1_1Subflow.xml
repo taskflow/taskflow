@@ -69,12 +69,12 @@
         </inbodydescription>
         <location file="taskflow/core/flow_builder.hpp" line="1519" column="12" bodyfile="taskflow/core/flow_builder.hpp" bodystart="1519" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Subflow_1a350edd619ad0a3f28c8373b4ee937ebe" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1Subflow_1a3d638a95a304a5142f04bd9e2308a2f0" prot="private" static="no" mutable="no">
         <type>Node *</type>
-        <definition>Node* tf::Subflow::_parent</definition>
+        <definition>Node* tf::Subflow::_node</definition>
         <argsstring></argsstring>
-        <name>_parent</name>
-        <qualifiedname>tf::Subflow::_parent</qualifiedname>
+        <name>_node</name>
+        <qualifiedname>tf::Subflow::_node</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -225,7 +225,7 @@ By default, the runtime automatically clears a spawned subflow once it is joined
         </param>
         <param>
           <type>Node *</type>
-          <defname>parent</defname>
+          <defname>node</defname>
         </param>
         <param>
           <type><ref refid="classtf_1_1Graph" kindref="compound">Graph</ref> &amp;</type>
@@ -349,7 +349,7 @@ By default, the runtime automatically clears a spawned subflow once it is joined
     <listofallmembers>
       <member refid="classtf_1_1Subflow_1a31a68355e05081fed16fff307b6b4e33" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_executor</name></member>
       <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" prot="protected" virt="non-virtual"><scope>tf::Subflow</scope><name>_graph</name></member>
-      <member refid="classtf_1_1Subflow_1a350edd619ad0a3f28c8373b4ee937ebe" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_parent</name></member>
+      <member refid="classtf_1_1Subflow_1a3d638a95a304a5142f04bd9e2308a2f0" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_node</name></member>
       <member refid="classtf_1_1Subflow_1ac04dc0e5d4001c6d3f73ea867387b186" prot="private" virt="non-virtual"><scope>tf::Subflow</scope><name>_worker</name></member>
       <member refid="classtf_1_1FlowBuilder_1ac6f22228d4c2ea2e643c4b0d42c0e92a" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>composed_of</name></member>
       <member refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" prot="public" virt="non-virtual"><scope>tf::Subflow</scope><name>emplace</name></member>

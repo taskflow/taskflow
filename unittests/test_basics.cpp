@@ -771,7 +771,7 @@ void worker_id(unsigned w) {
       REQUIRE(id>=0);
       REQUIRE(id< w);
       REQUIRE(executor.this_worker() != nullptr);
-      REQUIRE(executor.this_worker()->executor() == &executor);
+      //REQUIRE(executor.this_worker()->executor() == &executor);
     });
 
     auto B = taskflow.emplace([&](tf::Subflow& sf){

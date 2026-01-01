@@ -1,33 +1,34 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
-  <compounddef id="flipcoins" kind="page">
-    <compoundname>flipcoins</compoundname>
-    <title>Flip Coins</title>
+  <compounddef id="ExamplesNondeterministicControlFlow" kind="page">
+    <compoundname>ExamplesNondeterministicControlFlow</compoundname>
+    <title>Nondeterministic Control Flow</title>
     <tableofcontents>
       <tocsect>
         <name>Problem Formulation</name>
-        <reference>flipcoins_1FlipCoinsProblemFormulation</reference>
+        <reference>ExamplesNondeterministicControlFlow_1CoinFlippingProblemFormulation</reference>
       </tocsect>
       <tocsect>
-        <name>Probabilistic Conditions</name>
-        <reference>flipcoins_1FlipCoinsProbabilistic</reference>
+        <name>Implementation using Conditional Tasking</name>
+        <reference>ExamplesNondeterministicControlFlow_1CoinFlippingProbabilistic</reference>
       </tocsect>
       <tocsect>
         <name>Ternary Coins</name>
-        <reference>flipcoins_1FlipCoinsTernaryCoins</reference>
+        <reference>ExamplesNondeterministicControlFlow_1CoinFlippingTernaryCoins</reference>
       </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>We study dynamic control flow of non-determinism using conditional tasking. Non-deterministic control flow is a fundamental building block in many optimization and simulation algorithms that rely on stochastic convergence rules or probabilistic pruning.</para>
-<sect1 id="flipcoins_1FlipCoinsProblemFormulation">
-<title>Problem Formulation</title><para>We have a fair binary coin and want to simulate its tosses. We flip the coin for five times. Apparently, the probability for the result to be all heads is 1/32. It is equivalently to say the expected number we need to toss for obtaining five heads is 32.</para>
+<para>This page demonstrates how <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> models <emphasis>nondeterministic control flow</emphasis> using conditional tasking. Nondeterministic control flow is a fundamental abstraction in many optimization, search, and simulation algorithms that rely on randomness, probabilistic pruning, or stochastic convergence. We use a chain of coin-flipping tasks as a concrete example to illustrate how conditional tasks dynamically alter execution paths at runtime.</para>
+<sect1 id="ExamplesNondeterministicControlFlow_1CoinFlippingProblemFormulation">
+<title>Problem Formulation</title><para>Consider a fair binary coin. We repeatedly toss the coin until we observe five consecutive heads. Apparently, the probability of obtaining five heads in a row is 1/32:</para>
 <para><dotfile name="flipcoins_1.dot"></dotfile>
 </para>
+<para>Equivalently, the expected number of tosses required to observe five consecutive heads is 32. Our goal is to model this stochastic process using Taskflow and verify that the observed execution behavior matches the theoretical expectation.</para>
 </sect1>
-<sect1 id="flipcoins_1FlipCoinsProbabilistic">
-<title>Probabilistic Conditions</title><para>We use condition tasks to simulate the five coin tosses. We create five condition tasks each returning a random binary number. If the return is zero (head toss), the execution moves to the next condition task; or it (tail toss) goes back to the first condition task to start over the simulation.</para>
+<sect1 id="ExamplesNondeterministicControlFlow_1CoinFlippingProbabilistic">
+<title>Implementation using Conditional Tasking</title><para>We use condition tasks to simulate the five coin tosses. We create five condition tasks each returning a random binary number. If the return is zero (head toss), the execution moves to the next condition task; or it (tail toss) goes back to the first condition task to restart the simulation. This structure naturally expresses nondeterministic control flow without explicit loops or synchronization:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;<ref refid="taskflow_8hpp" kindref="compound">taskflow/taskflow.hpp</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
@@ -78,12 +79,12 @@
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
-<para>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The taskflow diagram is depicted below.</para>
+<para>Running the taskflow by a fair number of times, the average tosses we have is close to 32. The corresponding taskflow diagram is shown below:</para>
 <para><dotfile name="flipcoins_2.dot"></dotfile>
 </para>
 <para>Although the execution of this taskflow is non-deterministic, its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking (see <ref refid="ConditionalTasking" kindref="compound">Conditional Tasking</ref>). Each path from the root to a leaf represents a result of five heads, and none of them can overlap at the same time (no task race). You must follow the same rule when creating a probabilistic framework using conditional tasking.</para>
 </sect1>
-<sect1 id="flipcoins_1FlipCoinsTernaryCoins">
+<sect1 id="ExamplesNondeterministicControlFlow_1CoinFlippingTernaryCoins">
 <title>Ternary Coins</title><para>We can extend the binary coin example to a ternary case. Each condition task has one successor going back to the beginning and two successors moving to the next task. The expected number of tosses to reach five identical results is 3*3*3*3*3 = 243.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>(<sp/>[&amp;](){<sp/>tosses<sp/>=<sp/>0;<sp/>}<sp/>)</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>.name(</highlight><highlight class="stringliteral">&quot;init&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
@@ -123,9 +124,9 @@
 </programlisting></para>
 <para><dotfile name="flipcoins_3.dot"></dotfile>
 </para>
-<para>Similarly, we can extend the probabilistic condition to any degree. </para>
+<para>This pattern extends naturally to probabilistic conditions of any degree, making conditional tasking a powerful tool for expressing nondeterministic control flow in stochastic algorithms. </para>
 </sect1>
     </detaileddescription>
-    <location file="doxygen/examples/flipcoins.dox"/>
+    <location file="doxygen/examples/nondeterministic_control_flow.dox"/>
   </compounddef>
 </doxygen>

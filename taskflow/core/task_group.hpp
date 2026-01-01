@@ -13,38 +13,45 @@ namespace tf {
 
 @brief class to create a task group from a task
 
-A task group represents the concurrent execution of a group of asynchronous tasks.
+A task group executes a group of asynchronous tasks.
 It enables asynchronous task spawning, cooperative execution among worker threads,
 and naturally supports recursive parallelism.
-Task groups can only be created by an executor worker or an exception will be thrown.
+Due to cooperative execution, a task group can only be created by an executor worker; 
+otherwise an exception will be thrown.
 The code below demonstrates how to use task groups to implement recursive Fibonacci parallelism.
-
+  
 @code{.cpp}
 tf::Executor executor;
 
 size_t fibonacci(size_t N) {
-  
-  if (N < 2) return N; 
-  
+
+  if (N < 2) return N;
+
   size_t res1, res2;
-  
+
+  // Create a task group from the current executor
   tf::TaskGroup tg = get_executor().task_group();
 
+  // Submit asynchronous tasks to the group
   tg.silent_async([N, &res1](){ res1 = fibonacci(N-1); });
-  res2 = fibonacci(N-2);
+  res2 = fibonacci(N-2);  // compute one branch synchronously
 
+  // Wait for all tasks in the group to complete
   tg.corun();
 
   return res1 + res2;
 }
 
 int main() {
-  return executor.async([](){ return fibonacci(30); }).get();
+  size_t N = 30, res;
+  res = executor.async([](){ return fibonacci(30); }).get();
+  std::cout << N << "-th Fibonacci number is " << res << '\n';
+  return 0;
 }
 @endcode
 
 Users must explicitly call tf::TaskGroup::corun() to ensure that all tasks have completed or 
-been properly canceled before leaving a task group's scope.
+been properly canceled before leaving the scope of a task group.
 Failing to do so results in undefined behavior.
 
 @note
@@ -227,7 +234,7 @@ class TaskGroup {
   
   The example below creates three asynchronous tasks, @c A, @c B, and @c C,
   in which task @c C runs after task @c A and task @c B.
-  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  %Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
   that eventually will hold the result of the execution.
 
   @code{.cpp}
@@ -269,7 +276,7 @@ class TaskGroup {
   
   The example below creates three named asynchronous tasks, @c A, @c B, and @c C,
   in which task @c C runs after task @c A and task @c B.
-  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  %Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
   that eventually will hold the result of the execution.
   Assigned task names will appear in the observers of the executor.
 
@@ -312,7 +319,7 @@ class TaskGroup {
   
   The example below creates three asynchronous tasks, @c A, @c B, and @c C,
   in which task @c C runs after task @c A and task @c B.
-  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  %Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
   that eventually will hold the result of the execution.
 
   @code{.cpp}
@@ -357,7 +364,7 @@ class TaskGroup {
   
   The example below creates three named asynchronous tasks, @c A, @c B, and @c C,
   in which task @c C runs after task @c A and task @c B.
-  Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
+  %Task @c C returns a pair of its tf::AsyncTask handle and a std::future<int>
   that eventually will hold the result of the execution.
   Assigned task names will appear in the observers of the executor.
 
@@ -572,23 +579,26 @@ class TaskGroup {
     assert(counter == 200);
   });
   @endcode
+
+  Note that only the parent worker of this task group (the worker who creates it) 
+  can call this corun.
   */
   void corun();
   
   /**
   @brief cancel all tasks in this task group
   
-  Marks the task group as cancelled and prevents any not-yet-started tasks in the group from running.
+  Marks the task group as cancelled to stop any not-yet-started tasks in the group from running.
   Tasks that are already running will continue to completion, but no new tasks belonging to the 
   task group will be scheduled after cancellation.
 
-  This example below demonstrates how `cancel()` prevents pending tasks in a task group from executing ,
+  This example below demonstrates how tf::TaskGroup::cancel() prevents pending tasks in a task group from executing,
   while allowing already running tasks to complete cooperatively. 
   The first set of tasks deliberately occupies all but one worker thread, 
   ensuring that subsequently spawned tasks remain pending. 
-  After invoking `cancel()`, these pending tasks are never scheduled, 
+  After invoking tf::TaskGroup::cancel(), these pending tasks are never scheduled, 
   even after the blocked workers are released. 
-  A final call to `corun()` synchronizes with all tasks in the group, 
+  A final call to tf::TaskGroup::corun() synchronizes with all tasks in the group, 
   guaranteeing safe completion and verifying that cancellation successfully suppresses task execution.
   
   @code{.cpp}
@@ -627,7 +637,7 @@ class TaskGroup {
   @endcode
 
   Note that cancellation is cooperative: tasks should not assume immediate termination.
-  Users must still call `corun()` to synchronize with all spawned tasks and
+  Users must still call tf::TaskGroup::corun() to synchronize with all spawned tasks and
   ensure safe completion or cancellation. 
   Failing to do so results in undefined behavior.
   */
@@ -878,7 +888,7 @@ auto TaskGroup::dependent_async(P&& params, F&& func, I first, I last) {
 // Procedure: task_group
 inline TaskGroup Executor::task_group() {
   Worker* w = this_worker();
-  if(w == nullptr || w->_executor != this) {
+  if(w == nullptr) {
     TF_THROW("task_group can only created by a worker of the executor");
   }
   return TaskGroup(*this, *w);

@@ -45,7 +45,8 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
   else {
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      if(state & NSTATE::PREEMPTED) {
+      // this async is spawned from a preempted parent, so we need to resume it
+      if(state & NSTATE::PREEMPTED) { 
         _update_cache(worker, cache, static_cast<Node*>(parent));
       }
     }
@@ -404,6 +405,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   nullptr         | nullptr       | exe.async();
   -------------------------------------------------------------------------------------------------
   nullptr         | 0x123         | exe.async([](Runtime rt){ rt.async(); });
+                  |               | task_group.async([](){});
   -------------------------------------------------------------------------------------------------
   0x123           | nullptr       | ?
   -------------------------------------------------------------------------------------------------
@@ -419,6 +421,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   else {
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      // this async is spawned from a preempted parent, so we need to resume it
       if(state & NSTATE::PREEMPTED) {
         _update_cache(worker, cache, static_cast<Node*>(parent));
       }

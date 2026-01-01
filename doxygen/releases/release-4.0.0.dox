@@ -1,19 +1,14 @@
 namespace tf {
 
-/** @page release-4-0-0 Release 4.0.0 (Master)
-
-%Taskflow 4.0.0 is the newest developing line to new features and improvements 
-are actively introduced and supported.
-It is also where this documentation is generated.
-Many things are considered @em experimental and may change or break from time to time.
-While maintaining full consistency can be challenging as new features are added, 
-we continually strive to preserve backward compatibility.
+/** @page release-4-0-0 Release 4.0.0 (2026/01/01)
 
 @tableofcontents
 
 @section release-4-0-0_summary Release Summary
 
-Starting in v4, %Taskflow will adopt the C++20 standard for better performance and code efficiency.
+Happy new year! 
+Starting in v4, %Taskflow migrates the codebase to the C++20 standard for improved runtime performance and engineering efficiency.
+This release enhances scheduling efficiency through bulk scheduling, reduced atomic overhead, and a streamlined executor design.It also introduces new features such as tf::TaskGroup to better support recursive task parallelism, along with [Taskflow Academy](https://github.com/taskflow/academy), a new video suite for learning %Taskflow.
 
 @section release-4-0-0_download Download
 
@@ -34,34 +29,48 @@ To use %Taskflow v4.0.0, you need a compiler that supports C++20:
 @attention
 If your project does not support C++20, please use %Taskflow v3.11.0, which can be downloaded <a href="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</a>.
 
-%Taskflow works on Linux, Windows, and Mac OS X.
-
 @section release-4-0-0_new_features New Features
 
 @subsection release-4-0-0_taskflow_core Taskflow Core
 
 + replaced `std::function` in topology with virtual dispatch for better performance
 + replaced `TF_LIKELY/_UNLIKELY` with C++20 attributes
-+ enhanced the scheduling performance through bulk insertion
-+ modified the work-stealing queue to support non-pointer type
-+ fixed compiler warning in Windows MSVC W4 ([#737](https://github.com/taskflow/taskflow/issues/737))
++ extended the work-stealing queue to support the following new features:
+  + non-pointer type with @std_optional
+  + bulk insertion to reduce the overhead of atomic operations
++ enhanced the executor performance with the following changes:
+  + bulk scheduling to reduce the overhead of atomic operations
+  + removed executor pointer from worker
+  + removed redundant executor pointer validation from the hot scheduling path
++ adopted tf::NonblockingNotifier as the default notifier due to its robustness
++ split essential members of tf::Node into tf::NodeBase to improve modularity
 + added embarrassing parallelism benchmark
++ added tf::TaskGroup to enable efficient implementation of recursive parallelism
 
 @subsection release-4-0-0_utilities Utilities
 
++ removed `ctz` as it is duplicate with the C++20 bit manipulation library
+
 @section release-4-0-0_bug_fixes Bug Fixes 
 
++ fixed the compiler warning in Windows MSVC W4 ([#737](https://github.com/taskflow/taskflow/issues/737))
 + fixed the compiler warning in NVCC due to `auto` function argument ([#746](https://github.com/taskflow/taskflow/issues/746))
 + fixed the regression problem caused by notifier ([#749](https://github.com/taskflow/taskflow/issues/746))
 
 @section release-4-0-0_breaking_changes Breaking Changes
 
+Starting in v4, %Taskflow will adopt the C++20 standard for better runtime performance and engineering efficiency.
+If your project does not support C++20, please use %Taskflow v3.11.0, which can be downloaded <a href="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</a>.
+
 @section release-4-0-0_documentation Documentation
 
-+ documented tf::NonblockingNotifier 
++ introduced [Taskflow Academy](https://github.com/taskflow/academy) - a new video suite for learning %Taskflow
++ introduced tf::NonblockingNotifier 
++ introduced @ref TaskGroup
 + revised @ref ExecuteTaskflow
 + revised tf::BoundedWSQ
 + revised tf::UnboundedWSQ
++ revised @ref ExamplesFibonacciNumber
 
 @section release-4-0-0_miscellaneous_items Miscellaneous Items
 

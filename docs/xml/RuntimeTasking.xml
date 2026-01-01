@@ -26,7 +26,7 @@
     <detaileddescription>
 <para>Taskflow allows tasks to interact with the scheduling runtime by taking a <emphasis>runtime object</emphasis> as an argument. This feature is particularly useful for implementing recursive parallel algorithms that create tasks dynamically.</para>
 <sect1 id="RuntimeTasking_1CreateARuntimeTask">
-<title>Create a Runtime Task</title><para>A runtime task is a special type of task that interacts directly with the <ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> scheduling runtime through a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> object. By taking a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp; parameter, a runtime task can dynamically create and manage other tasks during its execution. This capability enables flexible and expressive patterns such as recursive parallelism, cooperative task execution, and dynamic task spawning based on runtime conditions. For example, the code below creates a runtime task and acquires its running executor via <ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">tf::Runtime::executor()</ref>:</para>
+<title>Create a Runtime Task</title><para>A runtime task is a special type of task that interacts directly with the Taskflow scheduling runtime through a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> object. By taking a <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp; parameter, a runtime task can dynamically create and manage other tasks during its execution. This capability enables flexible and expressive patterns such as recursive parallelism, cooperative task execution, and dynamic task spawning based on runtime conditions. For example, the code below creates a runtime task and acquires its running executor via <ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">tf::Runtime::executor()</ref>:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){<sp/><sp/></highlight><highlight class="comment">//<sp/>a<sp/>runtime<sp/>task</highlight><highlight class="normal"></highlight></codeline>
@@ -137,8 +137,7 @@
 </programlisting></para>
 <para>The figure below shows the execution diagram, where the task with suffix <computeroutput>*_1</computeroutput> represents the left child spawned by its parent runtime.</para>
 <para><dotfile name="fibonacci_4_tail_optimized.dot"></dotfile>
-</para>
-<para>For more details, please refer to <ref refid="AsyncTasking" kindref="compound">Asynchronous Tasking</ref> and <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>. </para>
+ </para>
 </sect1>
     </detaileddescription>
     <location file="doxygen/cookbook/runtime_tasking.dox"/>

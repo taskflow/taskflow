@@ -16,65 +16,61 @@
 <para><image type="html" name="roadmap.png"></image>
 </para>
 <sect1 id="release-roadmap_1MilestoneSummary">
-<title>Milestone Summary</title><para>The table below summarizes the milestones of Taskflow we plan to achieve by the end of 2021. Each milestone releases technical items that significantly enhances the capability of Taskflow.</para>
-<para> <table rows="15" cols="2"><row>
+<title>Milestone Summary</title><para>The table below summarizes the milestones (technical goals that significantly enhance the capability of Taskflow) we plan to achieve in the long run:</para>
+<para> <table rows="14" cols="2"><row>
 <entry thead="yes" align='center'><para>Milestone   </para>
 </entry><entry thead="yes" align='center'><para>Release    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Migrated the codebase to C++20   </para>
-</entry><entry thead="no" align='center'><para><ref refid="release-4-0-0" kindref="compound">Release 4.0.0 (Master)</ref>    </para>
-</entry></row>
-<row>
-<entry thead="no" align='center'><para>Designed a custom thread-creation interface   </para>
-</entry><entry thead="no" align='center'><para><ref refid="release-3-9-0" kindref="compound">Release 3.9.0 (2025/01/02)</ref>    </para>
-</entry></row>
-<row>
-<entry thead="no" align='center'><para>Designed a distributed tasking interface with scheduling   </para>
+<entry thead="no" align='center'><para>Design a distributed task graph programming model   </para>
 </entry><entry thead="no" align='center'><para>TBD    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Designed a pipeline scheduling framework with token dependency   </para>
-</entry><entry thead="no" align='center'><para><ref refid="release-3-7-0" kindref="compound">Release 3.7.0 (2024/05/07)</ref>    </para>
+<entry thead="no" align='center'><para>Migrate the codebase to C++20   </para>
+</entry><entry thead="no" align='center'><para><ref refid="release-4-0-0" kindref="compound">Release 4.0.0 (2026/01/01)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Designed a dynamic task graph model   </para>
+<entry thead="no" align='center'><para>Design a TBB-inspired task group programming model   </para>
+</entry><entry thead="no" align='center'><para><ref refid="release-4-0-0" kindref="compound">Release 4.0.0 (2026/01/01)</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Design a video suite (<ulink url="https://github.com/taskflow/academy">Taskflow Academy</ulink>) for leaning Taskflow   </para>
+</entry><entry thead="no" align='center'><para><ref refid="release-4-0-0" kindref="compound">Release 4.0.0 (2026/01/01)</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Design a custom thread-creation interface   </para>
+</entry><entry thead="no" align='center'><para><ref refid="release-3-9-0" kindref="compound">Release 3.9.0 (2025/01/02)</ref>    </para>
+</entry></row>
+<row>
+<entry thead="no" align='center'><para>Design a dynamic task graph programming model   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-6-0" kindref="compound">Release 3.6.0 (2023/05/07)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Designed a pipeline scheduling framework   </para>
+<entry thead="no" align='center'><para>Design a task-parallel pipeline programming framework   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-3-0" kindref="compound">Release 3.3.0 (2022/01/03)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrated thread sanitizer into the CI   </para>
+<entry thead="no" align='center'><para>Integrate thread sanitizer into the CI   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-3-0" kindref="compound">Release 3.3.0 (2022/01/03)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Integrated OpenCL and SYCL to tf::syclFlow   </para>
-</entry><entry thead="no" align='center'><para><ref refid="release-3-1-0" kindref="compound">Release 3.1.0 (2021/04/14)</ref>    </para>
-</entry></row>
-<row>
-<entry thead="no" align='center'><para>Integrated <ulink url="https://docs.nvidia.com/cuda/cublas/index.html">cuBLAS</ulink> into tf::cudaFlow   </para>
+<entry thead="no" align='center'><para>Support GPU tasking through cudaFlow atop CUDA Graph   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Supported building cudaFlow through stream capture   </para>
+<entry thead="no" align='center'><para>Support profiling large data in tfprof   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Supported profiling large data in tfprof   </para>
+<entry thead="no" align='center'><para>Support cancelling Taskflow   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Supported cancelling Taskflow   </para>
+<entry thead="no" align='center'><para>Support limiting maximum concurrency   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>    </para>
 </entry></row>
 <row>
-<entry thead="no" align='center'><para>Supported limiting maximum concurrency   </para>
-</entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>    </para>
-</entry></row>
-<row>
-<entry thead="no" align='center'><para>Migrated the codebase to C++17   </para>
+<entry thead="no" align='center'><para>Migrate the codebase to C++17   </para>
 </entry><entry thead="no" align='center'><para><ref refid="release-3-0-0" kindref="compound">Release 3.0.0 (2021/01/01)</ref>   </para>
 </entry></row>
 </table>

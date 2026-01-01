@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cookbook &raquo; Task Group | Taskflow QuickStart</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22272e" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
+        <a href="https://taskflow.github.io"><img src="taskflow_logo.png" alt="" />Taskflow</a> <span class="m-breadcrumb">|</span> <a href="index.html" class="m-thin">QuickStart</a>
+      </span>
+      <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
+        <a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+          <path id="m-doc-search-icon-path" d="m6 0c-3.31 0-6 2.69-6 6 0 3.31 2.69 6 6 6 1.49 0 2.85-0.541 3.89-1.44-0.0164 0.338 0.147 0.759 0.5 1.15l3.22 3.79c0.552 0.614 1.45 0.665 2 0.115 0.55-0.55 0.499-1.45-0.115-2l-3.79-3.22c-0.392-0.353-0.812-0.515-1.15-0.5 0.895-1.05 1.44-2.41 1.44-3.89 0-3.31-2.69-6-6-6zm0 1.56a4.44 4.44 0 0 1 4.44 4.44 4.44 4.44 0 0 1-4.44 4.44 4.44 4.44 0 0 1-4.44-4.44 4.44 4.44 0 0 1 4.44-4.44z"/>
+        </svg></a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation"></a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation"></a>
+      </div>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html">Handbook</a></li>
+            <li><a href="namespaces.html">Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html">Classes</a></li>
+            <li><a href="files.html">Files</a></li>
+            <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
+              <use href="#m-doc-search-icon-path" />
+            </svg></a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <span class="m-breadcrumb"><a href="Cookbook.html">Cookbook</a> &raquo;</span>
+          Task Group
+        </h1>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#CreateATaskGroup">Create a Task Group</a></li>
+            <li><a href="#SubmitAsynchronousTasksWithCooperativeExecution">Submit Asynchronous Tasks with Cooperative Execution</a></li>
+            <li><a href="#CancelATaskGroup">Cancel a Task Group</a></li>
+            <li><a href="#ImplementRecursiveTaskParallelismUsingTaskGroup">Implement Recursive Task Parallelism</a></li>
+          </ul>
+        </nav>
+<p>A task group is a lightweight mechanism in Taskflow to spawn and manage a collection of asynchronous tasks cooperatively within a single executor. Task groups allow tasks to be executed recursively, asynchronously, or with dependencies, enabling efficient implementation of recursive parallel algorithms.</p><section id="CreateATaskGroup"><h2><a href="#CreateATaskGroup">Create a Task Group</a></h2><p>A task group (<a href="classtf_1_1TaskGroup.html" class="m-doc">tf::<wbr />TaskGroup</a>) is created from a worker in an executor using <a href="classtf_1_1Executor.html#a8858a119b9ad697748293c4bb1408853" class="m-doc">tf::<wbr />Executor::<wbr />task_group()</a>. Since task groups rely on cooperative execution, they must be created inside a task that is already running on the executor. For example, the code below creates a task group from an asynchronous task:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">executor</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">TaskGroup</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span>
+<span class="p">});</span></pre><p>Internally, a task group is bound to the executor and the worker that creates it. This worker is referred to as the <em>parent worker</em> of the task group and is the only worker allowed to issue cooperative execution (<a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun</a>) on that task group. Attempting to create a task group from a non-worker thread will result in an exception. This restriction ensures that task groups can safely participate in the executor&#x27;s work-stealing loop and enables efficient cooperative execution while preserving the execution context required for recursion.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">TaskGroup</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span><span class="w"> </span><span class="c1">// throws</span></pre></section><section id="SubmitAsynchronousTasksWithCooperativeExecution"><h2><a href="#SubmitAsynchronousTasksWithCooperativeExecution">Submit Asynchronous Tasks with Cooperative Execution</a></h2><p><a href="classtf_1_1TaskGroup.html" class="m-doc">tf::<wbr />TaskGroup</a> supports submitting asynchronous tasks that execute cooperatively with other workers in the same executor. All tasks submitted to a task group are logically grouped and can be explicitly synchronized using <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a>. The task group provides four categories of asynchronous submission APIs:</p><ul><li><a href="classtf_1_1TaskGroup.html#a65915370b458e982e04ebfbd46bb92c6" class="m-doc">tf::<wbr />TaskGroup::<wbr />async</a></li><li><a href="classtf_1_1TaskGroup.html#acf90acfcaf9468adc56bf647208a9e78" class="m-doc">tf::<wbr />TaskGroup::<wbr />silent_async</a></li><li><a href="classtf_1_1TaskGroup.html#af6ff72a4019da86f2234bea66a6abb98" class="m-doc">tf::<wbr />TaskGroup::<wbr />dependent_async</a></li><li><a href="classtf_1_1TaskGroup.html#a4eab3bb447361a2de8680fa7aab18f8c" class="m-doc">tf::<wbr />TaskGroup::<wbr />silent_dependent_async</a></li></ul><p>Each variant serves a distinct purpose depending on whether you need, including a returned future, dependency ordering between tasks, etc. For instance, the code below creates 100 tasks using <a href="classtf_1_1TaskGroup.html#acf90acfcaf9468adc56bf647208a9e78" class="m-doc">tf::<wbr />TaskGroup::<wbr />silent_async</a> and one task using <a href="classtf_1_1TaskGroup.html#a65915370b458e982e04ebfbd46bb92c6" class="m-doc">tf::<wbr />TaskGroup::<wbr />async</a>, followed by a <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a> to cooperatively execute all tasks in the task group until every task has completed:</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">TaskGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// spawn 100 silent-async tasks (without future return)</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// spawn one async task (with future return)</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">fu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tg</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// cooperatively run all tasks in the group</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">counter</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">fu</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">42</span><span class="p">);</span>
+<span class="p">});</span></pre><p>If you need dependencies among async tasks, use <a href="classtf_1_1TaskGroup.html#af6ff72a4019da86f2234bea66a6abb98" class="m-doc">tf::<wbr />TaskGroup::<wbr />dependent_async</a> or <a href="classtf_1_1TaskGroup.html#a4eab3bb447361a2de8680fa7aab18f8c" class="m-doc">tf::<wbr />TaskGroup::<wbr />silent_dependent_async</a>. For instance, the task group below builds a dynamic task graph of three tasks, A, B, and C, where C runs after A and B.</p><pre class="m-code"><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;B</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">AsyncTask</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_dependent_async</span><span class="p">([](){</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+<span class="p">});</span></pre></section><section id="CancelATaskGroup"><h2><a href="#CancelATaskGroup">Cancel a Task Group</a></h2><p>You can mark a task group as cancelled to stop any not-yet-started tasks in the group from running. Tasks that are already running will continue to completion, but no new tasks belonging to the task group will be scheduled after cancellation. The example below demonstrates how <a href="classtf_1_1TaskGroup.html#a2d32e816db51666b721d8b3d538e4066" class="m-doc">tf::<wbr />TaskGroup::<wbr />cancel()</a> prevents pending tasks in a task group from executing , while allowing already running tasks to complete cooperatively. The first set of tasks deliberately occupies all but one worker thread, ensuring that subsequently spawned tasks remain pending. After invoking <a href="classtf_1_1TaskGroup.html#a2d32e816db51666b721d8b3d538e4066" class="m-doc">tf::<wbr />TaskGroup::<wbr />cancel()</a>, these pending tasks are never scheduled, even after the blocked workers are released. A final call to <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a> synchronizes with all tasks in the group, guaranteeing safe completion and verifying that cancellation successfully suppresses task execution.</p><pre class="m-code"><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">W</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w">  </span><span class="c1">// must be &gt;1 for this example to work</span>
+<span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="nf">executor</span><span class="p">(</span><span class="n">W</span><span class="p">);</span>
+
+<span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="n">executor</span><span class="p">,</span><span class="w"> </span><span class="n">W</span><span class="p">](){</span>
+
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// deliberately block the other W-1 workers</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">latch</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">W</span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tg</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span>
+<span class="w">      </span><span class="o">++</span><span class="n">latch</span><span class="p">;</span>
+<span class="w">      </span><span class="k">while</span><span class="p">(</span><span class="n">latch</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// wait until the other W-1 workers are blocked</span>
+<span class="w">  </span><span class="k">while</span><span class="p">(</span><span class="n">latch</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">W</span><span class="mi">-1</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// spawn other tasks which should never run after cancellation</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tg</span><span class="p">.</span><span class="n">async</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](){</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;this should never run&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// cancel the task group and unblock the other W-1 workers</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">tg</span><span class="p">.</span><span class="n">is_cancelled</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">cancel</span><span class="p">();</span>
+<span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">tg</span><span class="p">.</span><span class="n">is_cancelled</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">  </span><span class="n">latch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span>
+<span class="p">});</span></pre><p>Note that cancellation is cooperative: tasks should not assume immediate termination. Users must still call <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a> to synchronize with all spawned tasks and ensure safe completion or cancellation. Failing to do so results in undefined behavior.</p></section><section id="ImplementRecursiveTaskParallelismUsingTaskGroup"><h2><a href="#ImplementRecursiveTaskParallelismUsingTaskGroup">Implement Recursive Task Parallelism</a></h2><p><a href="classtf_1_1TaskGroup.html" class="m-doc">tf::<wbr />TaskGroup</a> is particularly well suited for implementing recursive task parallelism, where tasks dynamically spawn additional tasks during execution. Because task groups support cooperative execution via <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a>, the worker thread can preserve its execution context across recursive calls. This design makes task groups a powerful choice for parallelizing recursive algorithms, such as divide-and-conquer, tree traversal, and dynamic programming. The example below demonstrates how to implement a parallel Fibonacci algorithm using a task group:</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">Executor</span><span class="w"> </span><span class="n">executor</span><span class="p">;</span>
+
+<span class="kt">size_t</span><span class="w"> </span><span class="nf">fibonacci</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">res1</span><span class="p">,</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="w">  </span><span class="n">tf</span><span class="o">::</span><span class="n">TaskGroup</span><span class="w"> </span><span class="n">tg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">task_group</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">silent_async</span><span class="p">([</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res1</span><span class="p">](){</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="n">N</span><span class="mi">-2</span><span class="p">);</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="c1">// cooperatively run tasks until all tasks spawned by `tg` complete</span>
+<span class="w">  </span><span class="n">tg</span><span class="p">.</span><span class="n">corun</span><span class="p">();</span><span class="w"> </span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">res2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+<span class="w">  </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">async</span><span class="p">([](){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">fibonacci</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span><span class="w"> </span><span class="p">}).</span><span class="n">get</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;-th Fibonacci number is &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></pre><p>The function <code>fibonacci</code> spawns one recursive call as an asynchronous task and computes the other directly. Calling <a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc" class="m-doc">tf::<wbr />TaskGroup::<wbr />corun()</a> ensures the asynchronous branch completes before the results are combined, while allowing the current worker to cooperatively execute spawned tasks and preserve its execution context.</p></section>
+      </div>
+    </div>
+  </div>
+</article></main>
+<div class="m-doc-search" id="search">
+  <a href="#!" onclick="return hideSearch()"></a>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-m-8 m-push-m-2">
+        <div class="m-doc-search-header m-text m-small">
+          <div><span class="m-label m-default">Tab</span> / <span class="m-label m-default">T</span> to search, <span class="m-label m-default">Esc</span> to close</div>
+          <div id="search-symbolcount">&hellip;</div>
+        </div>
+        <div class="m-doc-search-content">
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
+          <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
+          <div id="search-help" class="m-text m-dim m-text-center">
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+            <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
+          </div>
+          <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
+          <ul id="search-results"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="search-v2.js"></script>
+<script src="searchdata-v2.js" async="async"></script>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

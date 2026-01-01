@@ -105,7 +105,7 @@ Lines 8-14 are the main block to enable subflow tasking at task B. The runtime w
 <para>The code above computes the fifth Fibonacci number using recursive subflow. Calling <ref refid="classtf_1_1Subflow_1a59fcac1323e70d920088dd37bd0be245" kindref="member">tf::Subflow::join</ref> <emphasis>immediately</emphasis> materializes the subflow by executing all associated tasks to recursively compute Fibonacci numbers. The taskflow graph is shown below:</para>
 <para><dotfile name="fibonacci_7.dot"></dotfile>
 </para>
-<para><simplesect kind="attention"><para>Using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to implement recursive parallelism like finding Fibonacci numbers may not be as efficient as <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> due to additional task graph overhead. For more details, readers can refer to <ref refid="fibonacci" kindref="compound">Fibonacci Number</ref>.</para>
+<para><simplesect kind="attention"><para>Using <ref refid="classtf_1_1Subflow" kindref="compound">tf::Subflow</ref> to implement recursive parallelism like finding Fibonacci numbers may not be as efficient as <ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref> due to additional task graph overhead. For more details, readers can refer to <ref refid="ExamplesFibonacciNumber" kindref="compound">Fibonacci Number</ref></para>
 </simplesect>
 </para>
 </sect1>

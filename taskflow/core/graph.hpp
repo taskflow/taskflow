@@ -215,17 +215,11 @@ class NodeBase {
 
   NodeBase() = default;
 
-  NodeBase(
-    nstate_t nstate,
-    estate_t estate,
-    NodeBase* parent, 
-    size_t join_counter
-  ) :
+  NodeBase(nstate_t nstate, estate_t estate, NodeBase* parent, size_t join_counter) :
     _nstate {nstate}, 
     _estate {estate},
     _parent {parent},
     _join_counter {join_counter} {
-      
   }
   
   void _rethrow_exception() {
@@ -403,37 +397,19 @@ class Node : public NodeBase {
 
   private:
   
-  //nstate_t _nstate              {NSTATE::NONE};
-  //std::atomic<estate_t> _estate {ESTATE::NONE};
-
   std::string _name;
   
   void* _data {nullptr};
   
   Topology* _topology {nullptr};
-  //Node* _parent {nullptr};
 
   size_t _num_successors {0};
   SmallVector<Node*, 4> _edges;
 
-  //std::atomic<size_t> _join_counter {0};
-  
   handle_t _handle;
   
   std::unique_ptr<Semaphores> _semaphores;
   
-  //std::exception_ptr _exception_ptr {nullptr};
-  
-/*
-  nstate_t _nstate              {NSTATE::NONE};
-  std::atomic<estate_t> _estate {ESTATE::NONE};
-
-  std::atomic<size_t> _join_counter {0};
-
-  NodeBase* _parent {nullptr};
-  
-  std::exception_ptr _exception_ptr {nullptr};
-*/
   bool _is_cancelled() const;
   bool _is_conditioner() const;
   bool _acquire_all(SmallVector<Node*>&);

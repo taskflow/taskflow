@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page fibonacci Fibonacci Number
+/** @page ExamplesFibonacciNumber Fibonacci Number
 
 We study the classic problem, <em>Fibonacci Number</em>, 
 to demonstrate the use of recursive task parallelism.
@@ -9,21 +9,21 @@ to demonstrate the use of recursive task parallelism.
 
 @section FibonacciNumberProblem Problem Formulation
 
-In mathematics, the Fibonacci numbers, commonly denoted @c F(n), form a sequence
+In mathematics, the Fibonacci numbers, commonly denoted as @c fibonacci(n), form a sequence
 such that each number is the sum of the two preceding ones, starting from 0 and 1.
 
 <tt>0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...</tt>
 
-A common solution for computing fibonacci numbers is @em recursion.
+A common solution for computing fibonacci numbers is @em recursion:
 
 @code{.cpp}
-int fib(int n) {
+int fibonacci(int n) {
   if(n < 2) return n;
-  return fib(n-1) + fib(n-2);
+  return fibonacci(n-1) + fibonacci(n-2);
 }
 @endcode
 
-@section RecursiveFibonacciParallelism Recursive Fibonacci Parallelism
+@section RecursiveFibonacciParallelismUsingRuntimeTasking Recursive Fibonacci Parallelism using Runtime Tasking
 
 We use @ref RuntimeTasking and @ref AsyncTasking to recursively compute Fibonacci numbers in parallel. 
 A runtime task tasks a reference to tf::Runtime as its argument, 
@@ -41,8 +41,7 @@ size_t fibonacci(size_t N, tf::Runtime& rt) {
   rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
   rt.silent_async([N, &res2](tf::Runtime& rt2){ res2 = fibonacci(N-2, rt2); });
 
-  // use corun to avoid blocking the worker from waiting the two children tasks 
-  // to finish
+  // cooperatively run tasks until all tasks spawned by `rt` complete
   rt.corun();
 
   return res1 + res2;
@@ -52,7 +51,7 @@ int main() {
 
   tf::Executor executor;
   
-  size_t N = 5, res;
+  size_t N = 30, res;
   executor.silent_async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); });
   executor.wait_for_all();
 
@@ -71,7 +70,7 @@ The figure below shows the execution diagram, where the suffixes *_1 and *_2 rep
 @dotfile images/fibonacci_4.dot
 
 
-@section TailRecursionOptimization Tail Recursion Optimization
+@subsection TailRecursionOptimization Tail Recursion Optimization
 
 In recursive parallelism, especially for problems like Fibonacci computation, 
 spawning both recursive branches as asynchronous tasks can lead to excessive task creation and stack growth, which may degrade performance and overwhelm the runtime scheduler. Additionally, when both child tasks are launched asynchronously, the parent task must wait for both to finish, potentially blocking a worker thread and reducing parallel throughput.
@@ -89,8 +88,7 @@ size_t fibonacci(size_t N, tf::Runtime& rt) {
   // tail optimization for the right child
   res2 = fibonacci(N-2, rt);
 
-  // use corun to avoid blocking the worker from waiting the two children tasks 
-  // to finish
+  // cooperatively run tasks until all tasks spawned by `rt` complete
   rt.corun();
 
   return res1 + res2;
@@ -102,7 +100,7 @@ As we can see, the right child is optimized out through tail recursion optimizat
 
 @dotfile images/fibonacci_4_tail_optimized.dot
 
-@section FibonacciNumberBenchmarking Benchmarking
+@subsection FibonacciNumberBenchmarking Benchmarking
 
 Based on the discussion above, we compare the runtime of recursive Fibonacci parallelism
 (1) with tail recursion optimization and (2) without it, across different Fibonacci numbers.
@@ -121,6 +119,37 @@ As `N` increases, the performance gap between the two versions widens significan
 With tail recursion optimization, the program avoids spawning another async task, thereby reducing scheduling overhead and stack pressure. 
 This leads to better CPU utilization and lower task management cost. 
 For example, at `N = 40`, tail recursion optimization reduces the runtime by over 40%.
+
+@section RecursiveFibonacciParallelismUsingTaskGroup Recursive Fibonacci Parallelism using %Task Group
+
+Similar to tf::Runtime, tf::TaskGroup provides a lightweight and structured mechanism
+for expressing recursive parallelism directly within a running task (see @ref TaskGroup).
+The example below demonstrates how to parallelize Fibonacci using a task group:
+
+@code{.cpp}
+tf::Executor executor;
+
+size_t fibonacci(size_t N) {
+  if(N < 2) return N;
+
+  size_t res1, res2;
+  tf::TaskGroup tg = executor.task_group();
+
+  tg.silent_async([N, &res1](){ res1 = fibonacci(N-1); });
+  res2 = fibonacci(N-2);
+  
+  // cooperatively run tasks until all tasks spawned by `tg` complete
+  tg.corun(); 
+  return res1 + res2;
+}
+
+int main() {
+  size_t N = 30, res;
+  res = executor.async([](){ return fibonacci(30); }).get();
+  std::cout << N << "-th Fibonacci number is " << res << '\n';
+  return 0;
+}
+@endcode
 
 */
 

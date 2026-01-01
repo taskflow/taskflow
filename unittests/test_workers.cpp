@@ -80,3 +80,65 @@ TEST_CASE("WorkerInterface.Basics.7threads" * doctest::timeout(300)) {
 TEST_CASE("WorkerInterface.Basics.8threads" * doctest::timeout(300)) {
   worker_interface_basics(8);
 }
+
+// --------------------------------------------------------------------------------------
+// this worker
+// --------------------------------------------------------------------------------------
+
+TEST_CASE("Worker.Identifier" * doctest::timeout(300)) {
+  
+  tf::Executor executor1, executor2, executor3, executor4;
+  
+  for(size_t i=0; i<1000; ++i) {
+    executor1.async([&](){
+      REQUIRE(executor1.this_worker() != nullptr);
+      REQUIRE(executor2.this_worker() == nullptr);
+      REQUIRE(executor3.this_worker() == nullptr);
+      REQUIRE(executor4.this_worker() == nullptr);
+      REQUIRE(executor1.this_worker_id() != -1);
+      REQUIRE(executor2.this_worker_id() == -1);
+      REQUIRE(executor3.this_worker_id() == -1);
+      REQUIRE(executor4.this_worker_id() == -1);
+    });
+
+    executor2.silent_async([&](){
+      REQUIRE(executor1.this_worker() == nullptr);
+      REQUIRE(executor2.this_worker() != nullptr);
+      REQUIRE(executor3.this_worker() == nullptr);
+      REQUIRE(executor4.this_worker() == nullptr);
+      REQUIRE(executor1.this_worker_id() == -1);
+      REQUIRE(executor2.this_worker_id() != -1);
+      REQUIRE(executor3.this_worker_id() == -1);
+      REQUIRE(executor4.this_worker_id() == -1);
+    });
+
+    executor3.dependent_async([&](){
+      REQUIRE(executor1.this_worker() == nullptr);
+      REQUIRE(executor2.this_worker() == nullptr);
+      REQUIRE(executor3.this_worker() != nullptr);
+      REQUIRE(executor4.this_worker() == nullptr);
+      REQUIRE(executor1.this_worker_id() == -1);
+      REQUIRE(executor2.this_worker_id() == -1);
+      REQUIRE(executor3.this_worker_id() != -1);
+      REQUIRE(executor4.this_worker_id() == -1);
+    });
+    
+    executor4.dependent_async([&](){
+      REQUIRE(executor1.this_worker() == nullptr);
+      REQUIRE(executor2.this_worker() == nullptr);
+      REQUIRE(executor3.this_worker() == nullptr);
+      REQUIRE(executor4.this_worker() != nullptr);
+      REQUIRE(executor1.this_worker_id() == -1);
+      REQUIRE(executor2.this_worker_id() == -1);
+      REQUIRE(executor3.this_worker_id() == -1);
+      REQUIRE(executor4.this_worker_id() != -1);
+    });
+  }
+  
+  executor1.wait_for_all();
+  executor2.wait_for_all();
+  executor3.wait_for_all();
+  executor4.wait_for_all();
+}
+
+

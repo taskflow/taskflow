@@ -2,7 +2,7 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="release-4-0-0" kind="page">
     <compoundname>release-4-0-0</compoundname>
-    <title>Release 4.0.0 (Master)</title>
+    <title>Release 4.0.0 (2026/01/01)</title>
     <tableofcontents>
       <tocsect>
         <name>Release Summary</name>
@@ -50,9 +50,8 @@
     <briefdescription>
     </briefdescription>
     <detaileddescription>
-<para>Taskflow 4.0.0 is the newest developing line to new features and improvements are actively introduced and supported. It is also where this documentation is generated. Many things are considered <emphasis>experimental</emphasis> and may change or break from time to time. While maintaining full consistency can be challenging as new features are added, we continually strive to preserve backward compatibility.</para>
 <sect1 id="release-4-0-0_1release-4-0-0_summary">
-<title>Release Summary</title><para>Starting in v4, Taskflow will adopt the C++20 standard for better performance and code efficiency.</para>
+<title>Release Summary</title><para>Happy new year! Starting in v4, Taskflow migrates the codebase to the C++20 standard for improved runtime performance and engineering efficiency. This release enhances scheduling efficiency through bulk scheduling, reduced atomic overhead, and a streamlined executor design.It also introduces new features such as <ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref> to better support recursive task parallelism, along with <ulink url="https://github.com/taskflow/academy">Taskflow Academy</ulink>, a new video suite for learning Taskflow.</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_download">
 <title>Download</title><para>To download the newest version of Taskflow, please clone the master branch from <ulink url="https://github.com/taskflow/taskflow">Taskflow&apos;s GitHub</ulink>.</para>
@@ -75,38 +74,58 @@
 </itemizedlist>
 <simplesect kind="attention"><para>If your project does not support C++20, please use Taskflow v3.11.0, which can be downloaded <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</ulink>.</para>
 </simplesect>
-Taskflow works on Linux, Windows, and Mac OS X.</para>
+</para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_new_features">
 <title>New Features</title><sect2 id="release-4-0-0_1release-4-0-0_taskflow_core">
 <title>Taskflow Core</title><para><itemizedlist>
 <listitem><para>replaced <computeroutput><ref refid="cpp/utility/functional/function" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref></computeroutput> in topology with virtual dispatch for better performance</para>
 </listitem><listitem><para>replaced <computeroutput>TF_LIKELY/_UNLIKELY</computeroutput> with C++20 attributes</para>
-</listitem><listitem><para>enhanced the scheduling performance through bulk insertion</para>
-</listitem><listitem><para>modified the work-stealing queue to support non-pointer type</para>
-</listitem><listitem><para>fixed compiler warning in Windows MSVC W4 (<ulink url="https://github.com/taskflow/taskflow/issues/737">#737</ulink>)</para>
+</listitem><listitem><para>extended the work-stealing queue to support the following new features:<itemizedlist>
+<listitem><para>non-pointer type with <ulink url="https://en.cppreference.com/w/cpp/utility/optional">std::optional</ulink></para>
+</listitem><listitem><para>bulk insertion to reduce the overhead of atomic operations</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>enhanced the executor performance with the following changes:<itemizedlist>
+<listitem><para>bulk scheduling to reduce the overhead of atomic operations</para>
+</listitem><listitem><para>removed executor pointer from worker</para>
+</listitem><listitem><para>removed redundant executor pointer validation from the hot scheduling path</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>adopted <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref> as the default notifier due to its robustness</para>
+</listitem><listitem><para>split essential members of tf::Node into tf::NodeBase to improve modularity</para>
 </listitem><listitem><para>added embarrassing parallelism benchmark</para>
+</listitem><listitem><para>added <ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref> to enable efficient implementation of recursive parallelism</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 <sect2 id="release-4-0-0_1release-4-0-0_utilities">
-<title>Utilities</title></sect2>
+<title>Utilities</title><para><itemizedlist>
+<listitem><para>removed <computeroutput>ctz</computeroutput> as it is duplicate with the C++20 bit manipulation library</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_bug_fixes">
 <title>Bug Fixes</title><para><itemizedlist>
-<listitem><para>fixed the compiler warning in NVCC due to <computeroutput>auto</computeroutput> function argument (<ulink url="https://github.com/taskflow/taskflow/issues/746">#746</ulink>)</para>
+<listitem><para>fixed the compiler warning in Windows MSVC W4 (<ulink url="https://github.com/taskflow/taskflow/issues/737">#737</ulink>)</para>
+</listitem><listitem><para>fixed the compiler warning in NVCC due to <computeroutput>auto</computeroutput> function argument (<ulink url="https://github.com/taskflow/taskflow/issues/746">#746</ulink>)</para>
 </listitem><listitem><para>fixed the regression problem caused by notifier (<ulink url="https://github.com/taskflow/taskflow/issues/746">#749</ulink>)</para>
 </listitem></itemizedlist>
 </para>
 </sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_breaking_changes">
-<title>Breaking Changes</title></sect1>
+<title>Breaking Changes</title><para>Starting in v4, Taskflow will adopt the C++20 standard for better runtime performance and engineering efficiency. If your project does not support C++20, please use Taskflow v3.11.0, which can be downloaded <ulink url="https://github.com/taskflow/taskflow/releases/tag/v3.11.0">here</ulink>.</para>
+</sect1>
 <sect1 id="release-4-0-0_1release-4-0-0_documentation">
 <title>Documentation</title><para><itemizedlist>
-<listitem><para>documented <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref></para>
+<listitem><para>introduced <ulink url="https://github.com/taskflow/academy">Taskflow Academy</ulink> - a new video suite for learning Taskflow</para>
+</listitem><listitem><para>introduced <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref></para>
+</listitem><listitem><para>introduced <ref refid="TaskGroup" kindref="compound">Task Group</ref></para>
 </listitem><listitem><para>revised <ref refid="ExecuteTaskflow" kindref="compound">Executor</ref></para>
 </listitem><listitem><para>revised <ref refid="classtf_1_1BoundedWSQ" kindref="compound">tf::BoundedWSQ</ref></para>
 </listitem><listitem><para>revised <ref refid="classtf_1_1UnboundedWSQ" kindref="compound">tf::UnboundedWSQ</ref></para>
+</listitem><listitem><para>revised <ref refid="ExamplesFibonacciNumber" kindref="compound">Fibonacci Number</ref></para>
 </listitem></itemizedlist>
 </para>
 </sect1>

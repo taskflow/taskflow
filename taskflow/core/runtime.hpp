@@ -40,8 +40,6 @@ A.precede(B);
 executor.run(taskflow).wait();
 @endcode
 
-A runtime object is associated with the worker and the executor that runs its parent task.
-
 @note
 To understand how %Taskflow schedules a runtime task, please refer to @ref RuntimeTasking.
 
@@ -583,6 +581,7 @@ class Runtime {
   });
   @endcode
 
+  Only the parent worker of this runtime is allowed to call this corun.
   */
   void corun();
 

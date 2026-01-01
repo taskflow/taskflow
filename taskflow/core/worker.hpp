@@ -80,11 +80,6 @@ class Worker {
   @brief queries the current capacity of the queue
   */
   inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
-  
-  /**
-  @brief acquires the associated executor
-  */
-  inline Executor* executor() { return _executor; }
 
   /**
   @brief acquires the associated thread
@@ -97,7 +92,6 @@ class Worker {
 
   size_t _id;
   size_t _vtm;
-  Executor* _executor {nullptr};
   std::thread _thread;
   
   std::default_random_engine _rdgen;

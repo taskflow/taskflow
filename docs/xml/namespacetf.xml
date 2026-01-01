@@ -54,6 +54,7 @@
     <innerclass refid="structtf_1_1IsPartitioner" prot="private">tf::IsPartitioner</innerclass>
     <innerclass refid="structtf_1_1IsPod" prot="private">tf::IsPod</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
+    <innerclass refid="classtf_1_1NodeBase" prot="private">tf::NodeBase</innerclass>
     <innerclass refid="classtf_1_1NonblockingNotifier" prot="public">tf::NonblockingNotifier</innerclass>
     <innerclass refid="classtf_1_1NonpreemptiveRuntime" prot="private">tf::NonpreemptiveRuntime</innerclass>
     <innerclass refid="classtf_1_1ObserverInterface" prot="public">tf::ObserverInterface</innerclass>
@@ -80,6 +81,7 @@
     <innerclass refid="classtf_1_1Subflow" prot="public">tf::Subflow</innerclass>
     <innerclass refid="classtf_1_1Task" prot="public">tf::Task</innerclass>
     <innerclass refid="classtf_1_1Taskflow" prot="public">tf::Taskflow</innerclass>
+    <innerclass refid="classtf_1_1TaskGroup" prot="public">tf::TaskGroup</innerclass>
     <innerclass refid="classtf_1_1TaskParams" prot="public">tf::TaskParams</innerclass>
     <innerclass refid="classtf_1_1TaskView" prot="public">tf::TaskView</innerclass>
     <innerclass refid="classtf_1_1TFProfManager" prot="private">tf::TFProfManager</innerclass>
@@ -468,7 +470,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="837" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="837" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="859" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="859" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type><ref refid="cpp/container/array" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -1341,58 +1343,6 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </inbodydescription>
         <location file="taskflow/utility/math.hpp" line="287" column="10" bodyfile="taskflow/utility/math.hpp" bodystart="287" bodyend="289"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a0b8e46604b2d40f0a7f2cc4796003d49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename T</type>
-          </param>
-          <param>
-            <type>typename</type>
-            <defval>std::enable_if_t&lt;std::is_unsigned_v&lt;T&gt;&gt;</defval>
-          </param>
-        </templateparamlist>
-        <type>auto</type>
-        <definition>auto tf::ctz</definition>
-        <argsstring>(T x)</argsstring>
-        <name>ctz</name>
-        <qualifiedname>tf::ctz</qualifiedname>
-        <param>
-          <type>T</type>
-          <declname>x</declname>
-        </param>
-        <briefdescription>
-<para>counts the number of trailing zeros in an integer. </para>
-        </briefdescription>
-        <detaileddescription>
-<para>This function provides a portable implementation for counting the number of trailing zeros across different platforms and integer sizes (32-bit and 64-bit).</para>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>T</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>integer type (32-bit or 64-bit). </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>x</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>non-zero integer to count trailing zeros from </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<simplesect kind="return"><para>the number of trailing zeros in <computeroutput>x</computeroutput> </para>
-</simplesect>
-<simplesect kind="attention"><para>The behavior is undefined when <computeroutput>x</computeroutput> is 0. </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="305" column="6" bodyfile="taskflow/utility/math.hpp" bodystart="305" bodyend="329"/>
-      </memberdef>
       <memberdef kind="function" id="namespacetf_1a15c9131faea47635a65e6caf21b6f868" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::coprime</definition>
@@ -1423,7 +1373,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="344" column="18" bodyfile="taskflow/utility/math.hpp" bodystart="344" bodyend="354"/>
+        <location file="taskflow/utility/math.hpp" line="304" column="18" bodyfile="taskflow/utility/math.hpp" bodystart="304" bodyend="314"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5233c743d9f9f17fd27373aef11fa752" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1458,7 +1408,7 @@ Example usage: <programlisting><codeline><highlight class="keyword">struct<sp/><
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="366" column="22" bodyfile="taskflow/utility/math.hpp" bodystart="366" bodyend="373"/>
+        <location file="taskflow/utility/math.hpp" line="326" column="22" bodyfile="taskflow/utility/math.hpp" bodystart="326" bodyend="333"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abbef08f01c467fd4f746c3247af892bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
@@ -1843,7 +1793,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="400" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="400" bodyend="406"/>
+        <location file="taskflow/core/graph.hpp" line="441" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="441" bodyend="447"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1861,7 +1811,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="411" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="411" bodyend="417"/>
+        <location file="taskflow/core/graph.hpp" line="452" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="452" bodyend="458"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aa10195f7d5f2f1dd32bb852a9aa560f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1917,7 +1867,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="320" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="320" bodyend="326"/>
+        <location file="taskflow/core/worker.hpp" line="314" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="314" bodyend="320"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a18c45bc96e6725943e0a4396fa59b524" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -3393,7 +3343,7 @@ The method calls <computeroutput>cudaMemsetAsync</computeroutput> with the given
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="87" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="87" bodyend="89"/>
+        <location file="taskflow/taskflow.hpp" line="88" column="22" bodyfile="taskflow/taskflow.hpp" bodystart="88" bodyend="90"/>
       </memberdef>
     </sectiondef>
     <briefdescription>

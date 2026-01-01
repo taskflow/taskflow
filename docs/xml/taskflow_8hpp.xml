@@ -5,6 +5,7 @@
     <includes refid="executor_8hpp" local="yes">core/executor.hpp</includes>
     <includes refid="runtime_8hpp" local="yes">core/runtime.hpp</includes>
     <includes local="yes">core/async.hpp</includes>
+    <includes refid="task__group_8hpp" local="yes">core/task_group.hpp</includes>
     <includes local="yes">algorithm/algorithm.hpp</includes>
     <includedby refid="module_8hpp" local="yes">taskflow/algorithm/module.hpp</includedby>
     <includedby refid="pipeline_8hpp" local="yes">taskflow/algorithm/pipeline.hpp</includedby>
@@ -144,6 +145,12 @@
         <childnode refid="5" relation="include">
         </childnode>
       </node>
+      <node id="50">
+        <label>core/task_group.hpp</label>
+        <link refid="task__group_8hpp_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
       <node id="44">
         <label>taskflow.hpp</label>
         <link refid="core_2taskflow_8hpp"/>
@@ -180,6 +187,8 @@
         <childnode refid="49" relation="include">
         </childnode>
         <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
         </childnode>
       </node>
       <node id="8">
@@ -235,7 +244,7 @@
       <node id="21">
         <label>algorithm</label>
       </node>
-      <node id="50">
+      <node id="51">
         <label>algorithm/algorithm.hpp</label>
       </node>
       <node id="18">
@@ -378,7 +387,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="46" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="46" bodyend="-1"/>
+        <location file="taskflow/taskflow.hpp" line="47" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="47" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="taskflow_8hpp_1ac543189162351f11cc56cbc81e609e21" prot="public" static="no">
         <name>TF_MAJOR_VERSION</name>
@@ -390,7 +399,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="53" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="53" bodyend="-1"/>
+        <location file="taskflow/taskflow.hpp" line="54" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="54" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="taskflow_8hpp_1ac79e1d6e02bafb712ca6b8580fc35d0d" prot="public" static="no">
         <name>TF_MINOR_VERSION</name>
@@ -402,7 +411,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="60" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="60" bodyend="-1"/>
+        <location file="taskflow/taskflow.hpp" line="61" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="61" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="taskflow_8hpp_1af5d0ce402f403151eb848aceacfe28ec" prot="public" static="no">
         <name>TF_PATCH_VERSION</name>
@@ -414,7 +423,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/taskflow.hpp" line="67" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="67" bodyend="-1"/>
+        <location file="taskflow/taskflow.hpp" line="68" column="9" bodyfile="taskflow/taskflow.hpp" bodystart="68" bodyend="-1"/>
       </memberdef>
     </sectiondef>
     <briefdescription>

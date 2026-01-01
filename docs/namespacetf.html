@@ -230,7 +230,7 @@
             <dt>
               class <a href="classtf_1_1Runtime.html" class="m-doc">Runtime</a>
             </dt>
-            <dd>class to include a runtime object in a task</dd>
+            <dd>class to create a runtime task</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename P&gt;</div>
               class <a href="classtf_1_1ScalablePipeline.html" class="m-doc">ScalablePipeline</a>
@@ -262,6 +262,10 @@
               class <a href="classtf_1_1Taskflow.html" class="m-doc">Taskflow</a>
             </dt>
             <dd>class to create a taskflow object</dd>
+            <dt>
+              class <a href="classtf_1_1TaskGroup.html" class="m-doc">TaskGroup</a>
+            </dt>
+            <dd>class to create a task group from a task</dd>
             <dt>
               class <a href="classtf_1_1TaskParams.html" class="m-doc">TaskParams</a>
             </dt>
@@ -433,11 +437,6 @@
               <span class="m-doc-wrap-bumper">auto <a href="#a3f8e89aebc29d42259157723c874954d" class="m-doc">seed</a>(</span><span class="m-doc-wrap">) -&gt; T <span class="m-label m-flat m-success">noexcept</span></span>
             </dt>
             <dd>generates a random seed based on the current system clock</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename T, typename = std::enable_if_t&lt;std::is_unsigned_v&lt;T&gt;&gt;&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a0b8e46604b2d40f0a7f2cc4796003d49" class="m-doc">ctz</a>(</span><span class="m-doc-wrap">T x) -&gt; auto</span>
-            </dt>
-            <dd>counts the number of trailing zeros in an integer.</dd>
             <dt>
               <span class="m-doc-wrap-bumper">auto <a href="#a15c9131faea47635a65e6caf21b6f868" class="m-doc">coprime</a>(</span><span class="m-doc-wrap">size_t N) -&gt; size_t <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
@@ -1319,42 +1318,6 @@
               </tfoot>
             </table>
 <p>This function returns a seed value derived from the number of clock ticks since the epoch as measured by the system clock. The seed can be used to initialize random number generators.</p>
-          </div></section>
-          <section class="m-doc-details" id="a0b8e46604b2d40f0a7f2cc4796003d49"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename T, typename = std::enable_if_t&lt;std::is_unsigned_v&lt;T&gt;&gt;&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">auto tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0b8e46604b2d40f0a7f2cc4796003d49" class="m-doc-self">ctz</a>(</span><span class="m-doc-wrap">T x)</span></span>
-            </h3>
-            <p>counts the number of trailing zeros in an integer.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">T</td>
-                  <td>integer type (32-bit or 64-bit).</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>x</td>
-                  <td>non-zero integer to count trailing zeros from</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Returns</th>
-                  <td>the number of trailing zeros in <code>x</code></td>
-                </tr>
-              </tfoot>
-            </table>
-<p>This function provides a portable implementation for counting the number of trailing zeros across different platforms and integer sizes (32-bit and 64-bit).</p><aside class="m-note m-warning"><h4>Attention</h4><p>The behavior is undefined when <code>x</code> is 0.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a15c9131faea47635a65e6caf21b6f868"><div>
             <h3>

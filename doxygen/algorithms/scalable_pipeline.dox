@@ -1,6 +1,6 @@
 namespace tf {
 
-/** @page TaskParallelScalablePipeline Task-parallel Scalable Pipeline
+/** @page ScalableTaskParallelPipeline Scalable Task-parallel Pipeline
 
 @tableofcontents
 
@@ -209,17 +209,6 @@ tf::ScalablePipeline spl1(num_lines, vector.begin(), vector.end());
 std::list<tf::Pipe<std::function<void(tf::Pipeflow&)>>> list;
 tf::ScalablePipeline spl2(num_lines, list.begin(), list.end());
 @endcode
-
-@section ParallelScalablePipelineLearnMore Learn More about Taskflow Pipeline
-
-Visit the following pages to learn more about pipeline:
-
-+ @ref TaskParallelPipeline
-+ @ref DataParallelPipeline
-+ @ref TextProcessingPipeline
-+ @ref GraphProcessingPipeline
-+ @ref TaskflowProcessingPipeline
-
 
 */
 
