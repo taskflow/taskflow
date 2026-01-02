@@ -1,9 +1,7 @@
-// The skynet benchmark as described here:
-// https://github.com/atemerev/skynet
 #include <taskflow/taskflow.hpp>
 #include "skynet.hpp"
 
-size_t skynet_one_tf(tf::Runtime& rt, size_t BaseNum, size_t Depth, size_t MaxDepth) {
+size_t skynet_one_tf(tf::Executor& exe, size_t BaseNum, size_t Depth, size_t MaxDepth) {
 
   if (Depth == MaxDepth) {
     return BaseNum;
@@ -16,12 +14,14 @@ size_t skynet_one_tf(tf::Runtime& rt, size_t BaseNum, size_t Depth, size_t MaxDe
 
   std::array<size_t, 10> results;
 
+  auto tg = exe.task_group();
+
   for (size_t i = 0; i < 10; ++i) {
-    rt.silent_async([=, &results](tf::Runtime& s) {
-      results[i] = skynet_one_tf(s, BaseNum + depthOffset * i, Depth + 1, MaxDepth);
+    tg.silent_async([=, &results, &exe]() {
+      results[i] = skynet_one_tf(exe, BaseNum + depthOffset * i, Depth + 1, MaxDepth);
     });
   }
-  rt.corun_all();
+  tg.corun();
 
   size_t count = 0;
   for (size_t idx = 0; idx < 10; ++idx) {
@@ -32,7 +32,7 @@ size_t skynet_one_tf(tf::Runtime& rt, size_t BaseNum, size_t Depth, size_t MaxDe
 
 void skynet(size_t num_threads, size_t MaxDepth) {
   static tf::Executor executor(num_threads);
-  executor.async([=](tf::Runtime& rt) { skynet_one_tf(rt, 0, 0, MaxDepth); }).wait();
+  executor.async([&, MaxDepth]() { skynet_one_tf(executor, 0, 0, MaxDepth); }).wait();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t MaxDepth) {

@@ -6,13 +6,15 @@
 #include <taskflow/taskflow.hpp>
 #include "nqueens.hpp"
 
-auto spawn_async(int j, std::vector<char>&a, tf::Runtime& rt) -> int {
+int nqueens(int j, std::vector<char>&a, tf::Executor& executor) {
 
   int N = a.size();
 
   if (N == j) {
     return 1;
   }
+
+  auto tg = executor.task_group();
 
   std::vector<std::vector<char>> buf;
   buf.resize(N, std::vector<char>(N));
@@ -28,39 +30,29 @@ auto spawn_async(int j, std::vector<char>&a, tf::Runtime& rt) -> int {
     buf[i][j] = i;
 
     if (queens_ok(j + 1, buf[i].data())) {
-      rt.silent_async([&parts, &buf, i, j](tf::Runtime& rt1) {
-        parts[i] = spawn_async(j + 1, buf[i], rt1);
+      tg.silent_async([&parts, &buf, i, j, &executor]() {
+        parts[i] = nqueens(j + 1, buf[i], executor);
       });
     } else {
       parts[i] = 0;
     }
   }
 
-  rt.corun();
+  tg.corun();
 
   return std::accumulate(parts.begin(), parts.end(), 0L);
 }
 
-
-
-int nqueens_taskflow(int i, size_t num_threads, std::vector<char>& buf) {
-
-  int output;
+int nqueens(int i, size_t num_threads, std::vector<char>& buf) {
   static tf::Executor executor(num_threads);
-
-  executor.async([i, &buf, &output](tf::Runtime& rt){
-    output = spawn_async(i, buf, rt);
-  }).get();
-
-  return output;
+  return executor.async([i, &buf](){ return nqueens(i, buf, executor); }).get();
 }
-
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t num_nqueens) {
   std::vector<char> buf(num_nqueens);
 
   auto beg = std::chrono::high_resolution_clock::now();
-  auto result = nqueens_taskflow(0, num_threads, buf);
+  auto result = nqueens(0, num_threads, buf);
   auto end = std::chrono::high_resolution_clock::now();
 
   if(result != answers[num_nqueens]) {

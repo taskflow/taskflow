@@ -7,13 +7,8 @@
 #include "integrate.hpp"
 
 
-tf::Executor& get_executor() {
-  static tf::Executor executor;
-  return executor;
-}
-
 // integrate computation 
-auto spawn_async(double x1, double y1, double x2, double y2, double area, tf::Runtime& rt) {
+auto spawn_async(double x1, double y1, double x2, double y2, double area, tf::Executor& exe) {
   double half = (x2 - x1) / 2.0;
   double x0 = x1 + half;
   double y0 = fn(x0);
@@ -26,29 +21,26 @@ auto spawn_async(double x1, double y1, double x2, double y2, double area, tf::Ru
     return area_x1x2;
   }
 
-  rt.silent_async([x1,y1,x0,y0,&area_x1x0](tf::Runtime& rt1){
-    area_x1x0 = spawn_async(x1, y1, x0, y0, area_x1x0, rt1);
+  auto tg = exe.task_group();
+
+  tg.silent_async([x1, y1, x0, y0, &area_x1x0, &exe](){
+    area_x1x0 = spawn_async(x1, y1, x0, y0, area_x1x0, exe);
   });
   
-  area_x0x2 = spawn_async(x0, y0, x2, y2, area_x0x2, rt);
+  area_x0x2 = spawn_async(x0, y0, x2, y2, area_x0x2, exe);
 
   // use corun to avoid blocking the worker from waiting the two children tasks to finish
-  rt.corun();
+  tg.corun();
 
   return area_x1x0 + area_x0x2;
 }
 
 
 auto integrate_taskflow(size_t num_threads, double x1, double y1, double x2, double y2) {
-
-  double area = 0.0;
   static tf::Executor executor(num_threads);
-
-  executor.async([x1, y1, x2, y2, &area](tf::Runtime& rt){
-    area = spawn_async(x1, y1, x2, y2, 0.0, rt);
+  return executor.async([x1, y1, x2, y2](){
+    return spawn_async(x1, y1, x2, y2, 0.0, executor);
   }).get();
-
-  return area;
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t max_value) {

@@ -1,45 +1,35 @@
 #include <taskflow/taskflow.hpp>
 #include "fibonacci.hpp"
 
-tf::Executor& get_executor() {
-  static tf::Executor executor;
-  return executor;
-}
-
 // fibonacci computation 
-size_t spawn_async(size_t num_fibonacci, tf::Runtime& rt) {
+size_t fibonacci(size_t n, tf::Executor& executor) {
 
-  if (num_fibonacci < 2) {
-    return num_fibonacci; 
+  if (n < 2) {
+    return n; 
   }
   
   size_t res1, res2;
 
-  rt.silent_async([num_fibonacci, &res1](tf::Runtime& rt1){
-    res1 = spawn_async(num_fibonacci-1, rt1);
-  });
+  tf::TaskGroup tg = executor.task_group();
 
-  res2 = spawn_async(num_fibonacci-2, rt);
+  tg.silent_async([n, &res1, &executor](){ res1 = fibonacci(n-1, executor); });
 
-  // use corun to avoid blocking the worker from waiting the two children tasks to finish
-  rt.corun();
+  res2 = fibonacci(n-2, executor);
+
+  tg.corun();
 
   return res1 + res2;
 }
 
 
-size_t fibonacci_taskflow(size_t num_threads, size_t num_fibonacci) {
-  size_t res;
+size_t fibonacci_taskflow(size_t num_threads, size_t n) {
   static tf::Executor executor(num_threads);
-  get_executor().async([num_fibonacci, &res](tf::Runtime& rt){
-    res = spawn_async(num_fibonacci, rt);
-  }).get();
-  return res;
+  return executor.async([n](){ return fibonacci(n, executor); }).get();
 }
 
-std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t num_fibonacci) {
+std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t n) {
   auto beg = std::chrono::high_resolution_clock::now();
-  fibonacci_taskflow(num_threads, num_fibonacci);
+  fibonacci_taskflow(num_threads, n);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
