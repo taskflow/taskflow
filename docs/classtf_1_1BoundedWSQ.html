@@ -5,7 +5,7 @@
   <title>tf::BoundedWSQ class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -79,81 +79,81 @@
             </li>
           </ul>
         </nav>
-<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.</p><p>A work-stealing queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</p><div class="m-graph"><svg style="width: 36.200rem; height: 27.000rem;" viewBox="0.00 0.00 362.49 269.53">
-<g transform="scale(1 1) rotate(0) translate(4 265.53)">
+<p>This class implements the work-stealing queue described in the paper, <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">Correct and Efficient Work-Stealing for Weak Memory Models</a>.</p><p>A work-stealing queue supports a single owner thread that performs push and pop operations, while multiple concurrent thief threads may steal tasks from the opposite end of the queue. The implementation is designed to operate correctly under weak memory models and uses atomic operations with carefully chosen memory orderings to ensure correctness and scalability.</p><div class="m-graph"><svg style="width: 40.300rem; height: 26.800rem;" viewBox="0.00 0.00 403.18 267.64">
+<g transform="scale(1 1) rotate(0) translate(4 263.64)">
 <title>BoundedWSQ</title>
 <g class="m-node m-flat">
 <title>Owner</title>
-<polygon points="144.88,-261.53 64.38,-261.53 64.38,-225.53 144.88,-225.53 144.88,-261.53"/>
-<text text-anchor="middle" x="104.63" y="-245.28" font-family="Helvetica,sans-Serif" font-size="10.00"> Owner Thread</text>
-<text text-anchor="middle" x="104.63" y="-234.03" font-family="Helvetica,sans-Serif" font-size="10.00">(single) </text>
+<polygon points="154.18,-259.64 66.18,-259.64 66.18,-223.64 154.18,-223.64 154.18,-259.64"/>
+<text text-anchor="middle" x="110.18" y="-244.64" font-family="Helvetica,sans-Serif" font-size="10.00"> Owner Thread</text>
+<text text-anchor="middle" x="110.18" y="-233.64" font-family="Helvetica,sans-Serif" font-size="10.00">(single) </text>
 </g>
 <g class="m-node m-flat">
 <title>Push</title>
-<ellipse cx="60.63" cy="-166.96" rx="60.63" ry="21.57"/>
-<text text-anchor="middle" x="60.63" y="-168.71" font-family="Helvetica,sans-Serif" font-size="10.00"> try_push()</text>
-<text text-anchor="middle" x="60.63" y="-157.46" font-family="Helvetica,sans-Serif" font-size="10.00">try_bulk_push() </text>
+<ellipse cx="67.18" cy="-165.42" rx="67.35" ry="21.43"/>
+<text text-anchor="middle" x="67.18" y="-168.42" font-family="Helvetica,sans-Serif" font-size="10.00"> try_push()</text>
+<text text-anchor="middle" x="67.18" y="-157.42" font-family="Helvetica,sans-Serif" font-size="10.00">try_bulk_push() </text>
 </g>
 <g class="m-edge">
 <title>Owner&#45;&gt;Push</title>
-<path d="M94.43,-225.24C89.66,-217.15 83.83,-207.28 78.37,-198.02"/>
-<polygon points="81.52,-196.48 73.43,-189.64 75.49,-200.03 81.52,-196.48"/>
+<path d="M100.2,-223.42C95.35,-215.05 89.39,-204.76 83.87,-195.24"/>
+<polygon points="86.81,-193.33 78.77,-186.43 80.75,-196.84 86.81,-193.33"/>
 </g>
 <g class="m-node m-flat">
 <title>Pop</title>
-<ellipse cx="166.63" cy="-166.96" rx="27" ry="18"/>
-<text text-anchor="middle" x="166.63" y="-163.09" font-family="Helvetica,sans-Serif" font-size="10.00"> pop() </text>
+<ellipse cx="181.18" cy="-165.42" rx="28.01" ry="18"/>
+<text text-anchor="middle" x="181.18" y="-162.92" font-family="Helvetica,sans-Serif" font-size="10.00"> pop() </text>
 </g>
 <g class="m-edge">
 <title>Owner&#45;&gt;Pop</title>
-<path d="M119.01,-225.24C127.29,-215.29 137.8,-202.64 146.84,-191.77"/>
-<polygon points="149.34,-194.23 153.05,-184.31 143.96,-189.76 149.34,-194.23"/>
+<path d="M126.64,-223.42C136.49,-213.13 149.12,-199.93 159.75,-188.82"/>
+<polygon points="162.34,-191.18 166.72,-181.53 157.28,-186.34 162.34,-191.18"/>
 </g>
 <g class="m-node m-flat">
 <title>Thieves</title>
-<polygon points="322.13,-261.53 243.13,-261.53 243.13,-225.53 322.13,-225.53 322.13,-261.53"/>
-<text text-anchor="middle" x="282.63" y="-245.28" font-family="Helvetica,sans-Serif" font-size="10.00"> Thief Threads</text>
-<text text-anchor="middle" x="282.63" y="-234.03" font-family="Helvetica,sans-Serif" font-size="10.00">(multiple) </text>
+<polygon points="358.18,-259.64 272.18,-259.64 272.18,-223.64 358.18,-223.64 358.18,-259.64"/>
+<text text-anchor="middle" x="315.18" y="-244.64" font-family="Helvetica,sans-Serif" font-size="10.00"> Thief Threads</text>
+<text text-anchor="middle" x="315.18" y="-233.64" font-family="Helvetica,sans-Serif" font-size="10.00">(multiple) </text>
 </g>
 <g class="m-node m-flat">
 <title>Steal</title>
-<ellipse cx="282.63" cy="-166.96" rx="28.99" ry="18"/>
-<text text-anchor="middle" x="282.63" y="-163.09" font-family="Helvetica,sans-Serif" font-size="10.00"> steal() </text>
+<ellipse cx="315.18" cy="-165.42" rx="31.58" ry="18"/>
+<text text-anchor="middle" x="315.18" y="-162.92" font-family="Helvetica,sans-Serif" font-size="10.00"> steal() </text>
 </g>
 <g class="m-edge">
 <title>Thieves&#45;&gt;Steal</title>
-<path d="M282.63,-225.24C282.63,-216.83 282.63,-206.49 282.63,-196.92"/>
-<polygon points="286.13,-196.94 282.63,-186.94 279.13,-196.94 286.13,-196.94"/>
+<path d="M315.18,-223.42C315.18,-214.62 315.18,-203.69 315.18,-193.77"/>
+<polygon points="318.68,-193.54 315.18,-183.54 311.68,-193.54 318.68,-193.54"/>
 </g>
 <g class="m-node m-flat">
 <title>Queue</title>
-<polygon points="93.13,-6.15 93.13,-97.65 238.13,-97.65 238.13,-6.15 93.13,-6.15"/>
-<text text-anchor="middle" x="165.63" y="-84.15" font-family="Helvetica,sans-Serif" font-size="10.00">Head (Top)</text>
-<text text-anchor="middle" x="165.63" y="-72.9" font-family="Helvetica,sans-Serif" font-size="10.00">steal index</text>
-<polyline points="93.13,-67.15 238.13,-67.15"/>
-<text text-anchor="middle" x="165.63" y="-53.65" font-family="Helvetica,sans-Serif" font-size="10.00">Tasks Buffer</text>
-<text text-anchor="middle" x="165.63" y="-42.4" font-family="Helvetica,sans-Serif" font-size="10.00">[Fixed Capacity = 2^LogSize]</text>
-<polyline points="93.13,-36.65 238.13,-36.65"/>
-<text text-anchor="middle" x="165.63" y="-23.15" font-family="Helvetica,sans-Serif" font-size="10.00">Tail (Bottom)</text>
-<text text-anchor="middle" x="165.63" y="-11.9" font-family="Helvetica,sans-Serif" font-size="10.00">push / pop index</text>
+<polygon points="102.68,-6.71 102.68,-96.71 263.68,-96.71 263.68,-6.71 102.68,-6.71"/>
+<text text-anchor="middle" x="183.18" y="-84.71" font-family="Helvetica,sans-Serif" font-size="10.00">Head (Top)</text>
+<text text-anchor="middle" x="183.18" y="-73.71" font-family="Helvetica,sans-Serif" font-size="10.00">steal index</text>
+<polyline points="102.68,-66.71 263.68,-66.71 "/>
+<text text-anchor="middle" x="183.18" y="-54.71" font-family="Helvetica,sans-Serif" font-size="10.00">Tasks Buffer</text>
+<text text-anchor="middle" x="183.18" y="-43.71" font-family="Helvetica,sans-Serif" font-size="10.00">[Fixed Capacity = 2^LogSize]</text>
+<polyline points="102.68,-36.71 263.68,-36.71 "/>
+<text text-anchor="middle" x="183.18" y="-24.71" font-family="Helvetica,sans-Serif" font-size="10.00">Tail (Bottom)</text>
+<text text-anchor="middle" x="183.18" y="-13.71" font-family="Helvetica,sans-Serif" font-size="10.00">push / pop index</text>
 </g>
 <g class="m-edge">
 <title>Push&#45;&gt;Queue:tail</title>
-<path d="M56.62,-145.25C50.53,-108.56 43.34,-34.86 80.95,-23.02"/>
-<polygon points="81.24,-26.51 90.64,-21.61 80.24,-19.59 81.24,-26.51"/>
-<text text-anchor="middle" x="94.91" y="-117.9" font-family="Helvetica,sans-Serif" font-size="10.00"> append at bottom </text>
+<path d="M63.59,-143.98C58.21,-107.44 52.44,-33.76 91.02,-23.03"/>
+<polygon points="91.71,-26.47 101.18,-21.71 90.81,-19.52 91.71,-26.47"/>
+<text text-anchor="middle" x="109.18" y="-118.21" font-family="Helvetica,sans-Serif" font-size="10.00"> append at bottom </text>
 </g>
 <g class="m-edge">
 <title>Pop&#45;&gt;Queue:tail</title>
-<path d="M161.88,-149.02C160.01,-138.49 159.74,-125.27 166.88,-116.15 187.02,-90.43 218.07,-123.92 238.13,-98.15 263.26,-65.89 266.85,-35.26 238.13,-6.15 233.89,-1.85 195.23,1.1 176.17,-1.1"/>
-<polygon points="175.13,2.25 167.05,-4.6 177.64,-4.28 175.13,2.25"/>
-<text text-anchor="middle" x="213.76" y="-117.9" font-family="Helvetica,sans-Serif" font-size="10.00"> remove from bottom </text>
+<path d="M177.51,-147.5C176.27,-137.02 176.75,-123.95 184.18,-115.21 207.64,-87.61 241.06,-125.51 263.68,-97.21 288.78,-65.78 291.94,-35.33 263.68,-6.71 258.76,-1.74 212.39,1.54 192.34,-1.54"/>
+<polygon points="190.83,1.62 183.18,-5.71 193.73,-4.75 190.83,1.62"/>
+<text text-anchor="middle" x="238.68" y="-118.21" font-family="Helvetica,sans-Serif" font-size="10.00"> remove from bottom </text>
 </g>
 <g class="m-edge">
 <title>Steal&#45;&gt;Queue:head</title>
-<path d="M281.24,-148.65C278.64,-127.52 271.21,-93.5 250.18,-84.59"/>
-<polygon points="251.11,-81.2 240.62,-82.69 249.75,-88.07 251.11,-81.2"/>
-<text text-anchor="middle" x="315.86" y="-117.9" font-family="Helvetica,sans-Serif" font-size="10.00"> remove from top </text>
+<path d="M312.64,-147.28C308.51,-125.9 298.35,-91.17 275.13,-83.32"/>
+<polygon points="275.61,-79.85 265.18,-81.71 274.49,-86.76 275.61,-79.85"/>
+<text text-anchor="middle" x="350.68" y="-118.21" font-family="Helvetica,sans-Serif" font-size="10.00"> remove from top </text>
 </g>
 </g>
 </svg>
@@ -162,7 +162,7 @@
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
             <dt>
-              using <a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_type</a> = std::conditional_t&lt;std::is_pointer_v&lt;T&gt;, T, std::optional&lt;T&gt;&gt;
+              using <a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_type</a> = std::conditional_t&lt;std::is_pointer_v&lt;T&gt;, T, std::optional&lt;T&gt;&gt;
             </dt>
             <dd>the return type of queue operations</dd>
           </dl>
@@ -216,30 +216,30 @@
             </dt>
             <dd>tries to insert a batch of items into the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a0f3fc5d2f38ca7df06b55afa391f26ce" class="m-doc">pop</a>(</span><span class="m-doc-wrap">) -&gt; <a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a0f3fc5d2f38ca7df06b55afa391f26ce" class="m-doc">pop</a>(</span><span class="m-doc-wrap">) -&gt; <a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a></span>
             </dt>
             <dd>pops out an item from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a57e08d6415b5b586ee32875c91057f35" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; <a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a57e08d6415b5b586ee32875c91057f35" class="m-doc">steal</a>(</span><span class="m-doc-wrap">) -&gt; <a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a></span>
             </dt>
             <dd>steals an item from the queue</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a87e13fb05bf65caa30aa677f8dd84386" class="m-doc">steal_with_feedback</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals) -&gt; <a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a></span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a87e13fb05bf65caa30aa677f8dd84386" class="m-doc">steal_with_feedback</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals) -&gt; <a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a></span>
             </dt>
             <dd>attempts to steal a task with feedback on the emptiness of the queue</dd>
           </dl>
         </section>
         <section>
           <h2>Typedef documentation</h2>
-          <section class="m-doc-details" id="a93634b5dd3eb31cdf654ab208b366f17"><div>
+          <section class="m-doc-details" id="a7839a84ecf5e18f3419fb4fd2186d279"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T, size_t LogSize&gt;
               </div>
-              using tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc-self">value_type</a> = std::conditional_t&lt;std::is_pointer_v&lt;T&gt;, T, std::optional&lt;T&gt;&gt;
+              using tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /><a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc-self">value_type</a> = std::conditional_t&lt;std::is_pointer_v&lt;T&gt;, T, std::optional&lt;T&gt;&gt;
             </h3>
             <p>the return type of queue operations</p>
-<p><code><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a></code> represents the type returned by <code>pop</code> and <code>steal</code> operations. For pointer element types <code>T</code>, it is <code>T</code> itself and uses <code>nullptr</code> to indicate an empty result. For non-pointer types, it is <code>std::optional&lt;T&gt;</code>, where <code>std::nullopt</code> denotes the absence of a value.</p><pre class="m-code"><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">value_type</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+<p><code>value_type</code> represents the type returned by <code>pop</code> and <code>steal</code> operations. For pointer element types <code>T</code>, it is <code>T</code> itself and uses <code>nullptr</code> to indicate an empty result. For non-pointer types, it is <code>std::optional&lt;T&gt;</code>, where <code>std::nullopt</code> denotes the absence of a value.</p><pre class="m-code"><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">value_type</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
 <span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">tf</span><span class="o">::</span><span class="n">UnboundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">*&gt;::</span><span class="n">value_type</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span></pre><p>This design avoids the overhead of <code>std::optional</code> for pointer types while providing a uniform empty-result semantics.</p>
           </div></section>
         </section>
@@ -257,7 +257,7 @@
               <tfoot>
                 <tr>
                   <th style="width: 1%">Returns</th>
-                  <td>an empty <code><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a></code> representing the absence of an element.</td>
+                  <td>an empty <code>value_type</code> representing the absence of an element.</td>
                 </tr>
               </tfoot>
             </table>
@@ -405,7 +405,7 @@
               <div class="m-doc-template">
                 template&lt;typename T, size_t LogSize&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0f3fc5d2f38ca7df06b55afa391f26ce" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a0f3fc5d2f38ca7df06b55afa391f26ce" class="m-doc-self">pop</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>pops out an item from the queue</p>
 <p>The method pops an item out of the queue based on a last-in-first-out (LIFO) order. The return can be an <a href="#a97bbadef093d7518b88c62bc3de85b47" class="m-doc">empty_<wbr />value()</a> if this operation failed (empty queue).</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">BoundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">;</span><span class="w">  </span>
@@ -422,7 +422,7 @@
               <div class="m-doc-template">
                 template&lt;typename T, size_t LogSize&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a57e08d6415b5b586ee32875c91057f35" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a57e08d6415b5b586ee32875c91057f35" class="m-doc-self">steal</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>steals an item from the queue</p>
 <p>Any threads can try to steal an item from the queue. The return can be an <a href="#a97bbadef093d7518b88c62bc3de85b47" class="m-doc">empty_<wbr />value()</a> if this operation failed. The elements stolen from the queue follow a first-in-first-out (FIFO) order.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">BoundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">;</span><span class="w">  </span>
@@ -439,7 +439,7 @@
               <div class="m-doc-template">
                 template&lt;typename T, size_t LogSize&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="#a93634b5dd3eb31cdf654ab208b366f17" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a87e13fb05bf65caa30aa677f8dd84386" class="m-doc-self">steal_with_feedback</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="#a7839a84ecf5e18f3419fb4fd2186d279" class="m-doc">value_<wbr />type</a> tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a87e13fb05bf65caa30aa677f8dd84386" class="m-doc-self">steal_with_feedback</a>(</span><span class="m-doc-wrap">size_t&amp; num_empty_steals)</span></span>
             </h3>
             <p>attempts to steal a task with feedback on the emptiness of the queue</p>
             <table class="m-table m-fullwidth m-flat">
@@ -510,7 +510,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

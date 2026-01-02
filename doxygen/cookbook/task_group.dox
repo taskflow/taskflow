@@ -58,7 +58,7 @@ cooperatively execute all tasks in the task group until every task has completed
 
 @code{.cpp}
 executor.async([&](){
-  tf::TaskGroup = executor.task_group();
+  tf::TaskGroup tg = executor.task_group();
 
   std::atomic<int> counter{0};
   

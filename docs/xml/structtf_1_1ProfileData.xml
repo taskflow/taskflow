@@ -1,14 +1,13 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="structtf_1_1ProfileData" kind="struct" language="C++" prot="private">
     <compoundname>tf::ProfileData</compoundname>
-    <sectiondef kind="public-attrib">
+      <sectiondef kind="public-attrib">
       <memberdef kind="variable" id="structtf_1_1ProfileData_1a4fb1f988a4e0697b8ce09cf53d82b559" prot="public" static="no" mutable="no">
-        <type><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Timeline &gt;</type>
+        <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Timeline &gt;</type>
         <definition>std::vector&lt;Timeline&gt; tf::ProfileData::timelines</definition>
         <argsstring></argsstring>
         <name>timelines</name>
-        <qualifiedname>tf::ProfileData::timelines</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -17,14 +16,13 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="89" column="15" bodyfile="taskflow/core/observer.hpp" bodystart="89" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="structtf_1_1ProfileData_1aeb9f598e4887c2c6a609558af270e8ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::ProfileData::ProfileData</definition>
         <argsstring>()=default</argsstring>
         <name>ProfileData</name>
-        <qualifiedname>tf::ProfileData::ProfileData</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -38,7 +36,6 @@
         <definition>tf::ProfileData::ProfileData</definition>
         <argsstring>(const ProfileData &amp;rhs)=delete</argsstring>
         <name>ProfileData</name>
-        <qualifiedname>tf::ProfileData::ProfileData</qualifiedname>
         <param>
           <type>const ProfileData &amp;</type>
           <declname>rhs</declname>
@@ -56,7 +53,6 @@
         <definition>tf::ProfileData::ProfileData</definition>
         <argsstring>(ProfileData &amp;&amp;rhs)=default</argsstring>
         <name>ProfileData</name>
-        <qualifiedname>tf::ProfileData::ProfileData</qualifiedname>
         <param>
           <type>ProfileData &amp;&amp;</type>
           <declname>rhs</declname>
@@ -69,12 +65,11 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="94" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1ProfileData_1af672702d08f195eb7f525e3f8b97386e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1ProfileData_1a78c6fcf63302872220bd75ef82cd1a55" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>ProfileData &amp;</type>
-        <definition>ProfileData &amp; tf::ProfileData::operator=</definition>
+        <definition>ProfileData&amp; tf::ProfileData::operator=</definition>
         <argsstring>(const ProfileData &amp;rhs)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::ProfileData::operator=</qualifiedname>
         <param>
           <type>const ProfileData &amp;</type>
           <declname>rhs</declname>
@@ -87,12 +82,11 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="96" column="15"/>
       </memberdef>
-      <memberdef kind="function" id="structtf_1_1ProfileData_1ae129cf4bbc4bbe156b1ff2aa64e8d902" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="structtf_1_1ProfileData_1a12535e834bc6e429f3815c90162e1c57" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>ProfileData &amp;</type>
-        <definition>ProfileData &amp; tf::ProfileData::operator=</definition>
+        <definition>ProfileData&amp; tf::ProfileData::operator=</definition>
         <argsstring>(ProfileData &amp;&amp;)=default</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::ProfileData::operator=</qualifiedname>
         <param>
           <type>ProfileData &amp;&amp;</type>
         </param>
@@ -114,7 +108,6 @@
         <definition>auto tf::ProfileData::save</definition>
         <argsstring>(Archiver &amp;ar) const</argsstring>
         <name>save</name>
-        <qualifiedname>tf::ProfileData::save</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -137,7 +130,6 @@
         <definition>auto tf::ProfileData::load</definition>
         <argsstring>(Archiver &amp;ar)</argsstring>
         <name>load</name>
-        <qualifiedname>tf::ProfileData::load</qualifiedname>
         <param>
           <type>Archiver &amp;</type>
           <declname>ar</declname>
@@ -150,27 +142,27 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="105" column="8" bodyfile="taskflow/core/observer.hpp" bodystart="105" bodyend="107"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <collaborationgraph>
-      <node id="2">
-        <label>std::vector&lt; Timeline &gt;</label>
-      </node>
       <node id="1">
         <label>tf::ProfileData</label>
         <childnode refid="2" relation="usage">
           <edgelabel>timelines</edgelabel>
         </childnode>
       </node>
+      <node id="2">
+        <label>std::vector&lt; Timeline &gt;</label>
+      </node>
     </collaborationgraph>
     <location file="taskflow/core/observer.hpp" line="87" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="87" bodyend="108"/>
     <listofallmembers>
       <member refid="structtf_1_1ProfileData_1a8ba1ef7e916c4b827707a48c886381c4" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>load</name></member>
-      <member refid="structtf_1_1ProfileData_1af672702d08f195eb7f525e3f8b97386e" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>operator=</name></member>
-      <member refid="structtf_1_1ProfileData_1ae129cf4bbc4bbe156b1ff2aa64e8d902" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>operator=</name></member>
+      <member refid="structtf_1_1ProfileData_1a78c6fcf63302872220bd75ef82cd1a55" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>operator=</name></member>
+      <member refid="structtf_1_1ProfileData_1a12535e834bc6e429f3815c90162e1c57" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>operator=</name></member>
       <member refid="structtf_1_1ProfileData_1aeb9f598e4887c2c6a609558af270e8ab" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>ProfileData</name></member>
       <member refid="structtf_1_1ProfileData_1a5b3df6d0b86817aeb0cd2ae65d3f6647" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>ProfileData</name></member>
       <member refid="structtf_1_1ProfileData_1aca16c42f4ae3056bddcc1f14b9216958" prot="public" virt="non-virtual"><scope>tf::ProfileData</scope><name>ProfileData</name></member>
