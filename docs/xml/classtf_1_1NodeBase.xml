@@ -179,13 +179,13 @@
         </inbodydescription>
         <location file="taskflow/core/graph.hpp" line="201" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="201" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="friend" id="classtf_1_1NodeBase_1a0aead7d7d8a25d0c29cc9419cc4fde65" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="friend" id="classtf_1_1NodeBase_1aac17ed5eb23771ac3ca6091250d90361" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
-        <definition>friend class AnchorGuard</definition>
+        <definition>friend class ExplicitAnchorGuard</definition>
         <argsstring></argsstring>
-        <name>AnchorGuard</name>
+        <name>ExplicitAnchorGuard</name>
         <param>
-          <type>AnchorGuard</type>
+          <type>ExplicitAnchorGuard</type>
         </param>
         <briefdescription>
         </briefdescription>
@@ -354,7 +354,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="225" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="225" bodyend="231"/>
+        <location file="taskflow/core/graph.hpp" line="225" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="225" bodyend="232"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -387,7 +387,7 @@
         <label>std::atomic&lt; size_t &gt;</label>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/graph.hpp" line="189" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="189" bodyend="232"/>
+    <location file="taskflow/core/graph.hpp" line="189" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="189" bodyend="233"/>
     <listofallmembers>
       <member refid="classtf_1_1NodeBase_1ad3cd43cef8826beb621ce3ad3ed97b8c" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_estate</name></member>
       <member refid="classtf_1_1NodeBase_1af405c76e47afcf1f14370dfe3daaf3a1" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_exception_ptr</name></member>
@@ -396,9 +396,9 @@
       <member refid="classtf_1_1NodeBase_1aa72cd1cbc5cf9a4d2d9bc4f297f7d6b3" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_parent</name></member>
       <member refid="classtf_1_1NodeBase_1a08bdec41eae9b20f8c3376597fe101f6" prot="protected" virt="non-virtual"><scope>tf::NodeBase</scope><name>_rethrow_exception</name></member>
       <member refid="classtf_1_1NodeBase_1ab016b9124e80f55ad92e01579c060f08" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Algorithm</name></member>
-      <member refid="classtf_1_1NodeBase_1a0aead7d7d8a25d0c29cc9419cc4fde65" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>AnchorGuard</name></member>
       <member refid="classtf_1_1NodeBase_1a842f41f7bc0f1de257dc369a61cc7eaf" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>AsyncTask</name></member>
       <member refid="classtf_1_1NodeBase_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Executor</name></member>
+      <member refid="classtf_1_1NodeBase_1aac17ed5eb23771ac3ca6091250d90361" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>ExplicitAnchorGuard</name></member>
       <member refid="classtf_1_1NodeBase_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1NodeBase_1afab89afd724f1b07b1aaad6bdc61c47a" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Graph</name></member>
       <member refid="classtf_1_1NodeBase_1a6db9d28bd448a131448276ee03de1e6d" prot="private" virt="non-virtual"><scope>tf::NodeBase</scope><name>Node</name></member>

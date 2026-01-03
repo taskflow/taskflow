@@ -9,7 +9,7 @@ enabling efficient implementation of recursive parallel algorithms.
 
 @tableofcontents
 
-@section CreateATaskGroup Create a %Task Group
+@section CreateATaskGroup Create a Task Group
 
 A task group (tf::TaskGroup) is created from a worker in an executor using tf::Executor::task_group().
 Since task groups rely on cooperative execution, they must be created inside a task that is already running on the executor.
@@ -93,7 +93,7 @@ executor.async([&](){
 });
 @endcode
 
-@section CancelATaskGroup Cancel a %Task Group
+@section CancelATaskGroup Cancel a Task Group
   
 You can mark a task group as cancelled to stop any not-yet-started tasks in the group from running.
 Tasks that are already running will continue to completion, but no new tasks belonging to the 

@@ -719,7 +719,10 @@ class TaskGroup {
 
 // constructor
 inline TaskGroup::TaskGroup(Executor& executor, Worker& worker) : 
-  _executor {executor}, _worker {worker} {
+  _executor  {executor}, 
+  _worker    {worker}, 
+  //_node_base {NSTATE::NONE, ESTATE::ANCHORED, nullptr, 0} {
+  _node_base {NSTATE::IMPLICITLY_ANCHORED, ESTATE::NONE, nullptr, 0} {
 }
 
 // Function: executor
@@ -730,7 +733,7 @@ inline Executor& TaskGroup::executor() {
 // Function: corun
 inline void TaskGroup::corun() {
   {
-    AnchorGuard anchor(&_node_base);
+    ExplicitAnchorGuard anchor(&_node_base);
     _executor._corun_until(_worker, [this] () -> bool {
       return _node_base._join_counter.load(std::memory_order_acquire) == 0;
     });

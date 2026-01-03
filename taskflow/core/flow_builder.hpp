@@ -1525,7 +1525,7 @@ inline Subflow::Subflow(Executor& executor, Worker& worker, Node* node, Graph& g
   FlowBuilder {graph}, 
   _executor   {executor}, 
   _worker     {worker}, 
-  _node     {node} {
+  _node       {node} {
   
   // need to reset since there could have iterative control flow
   _node->_nstate &= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);

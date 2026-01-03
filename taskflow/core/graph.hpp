@@ -199,7 +199,7 @@ class NodeBase {
   friend class Subflow;
   friend class Runtime;
   friend class NonpreemptiveRuntime;
-  friend class AnchorGuard;
+  friend class ExplicitAnchorGuard;
   friend class TaskGroup;
   friend class Algorithm;
   
@@ -226,6 +226,7 @@ class NodeBase {
     if(_exception_ptr) {
       auto e = _exception_ptr;
       _exception_ptr = nullptr;
+      _estate.fetch_and(~(ESTATE::EXCEPTION | ESTATE::CAUGHT), std::memory_order_relaxed);
       std::rethrow_exception(e);
     }
   }
@@ -246,7 +247,7 @@ class Node : public NodeBase {
   friend class Subflow;
   friend class Runtime;
   friend class NonpreemptiveRuntime;
-  friend class AnchorGuard;
+  friend class ExplicitAnchorGuard;
   friend class TaskGroup;
   friend class Algorithm;
 
@@ -410,7 +411,7 @@ class Node : public NodeBase {
   
   std::unique_ptr<Semaphores> _semaphores;
   
-  bool _is_cancelled() const;
+  bool _is_parent_cancelled() const;
   bool _is_conditioner() const;
   bool _acquire_all(SmallVector<Node*>&);
   void _release_all(SmallVector<Node*>&);
@@ -651,12 +652,11 @@ inline bool Node::_is_conditioner() const {
          _handle.index() == Node::MULTI_CONDITION;
 }
 
-// Function: _is_cancelled
-// we currently only support cancellation of taskflow (no async task)
-inline bool Node::_is_cancelled() const {
-  return (_topology && (_topology->_estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED)) 
+// Function: _is_parent_cancelled
+inline bool Node::_is_parent_cancelled() const {
+  return (_topology && (_topology->_estate.load(std::memory_order_relaxed) & (ESTATE::CANCELLED | ESTATE::EXCEPTION))) 
          ||
-         (_parent && (_parent->_estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED));
+         (_parent && (_parent->_estate.load(std::memory_order_relaxed) & (ESTATE::CANCELLED | ESTATE::EXCEPTION)));
 }
 
 // Procedure: _set_up_join_counter
@@ -699,24 +699,26 @@ inline void Node::_release_all(SmallVector<Node*>& nodes) {
 
 
 // ----------------------------------------------------------------------------
-// AnchorGuard
+// ExplicitAnchorGuard
 // ----------------------------------------------------------------------------
 
 /**
 @private
 */
-class AnchorGuard {
+class ExplicitAnchorGuard {
 
   public:
   
   // anchor is at estate as it may be accessed by multiple threads (e.g., corun's
   // parent with tear_down_async's parent).
-  AnchorGuard(NodeBase* node_base) : _node_base{node_base} { 
-    _node_base->_estate.fetch_or(ESTATE::ANCHORED, std::memory_order_relaxed);
+  ExplicitAnchorGuard(NodeBase* node_base) : _node_base{node_base} { 
+    //_node_base->_estate.fetch_or(ESTATE::ANCHORED, std::memory_order_relaxed);
+    _node_base->_nstate |= NSTATE::EXPLICITLY_ANCHORED;
   }
 
-  ~AnchorGuard() {
-    _node_base->_estate.fetch_and(~ESTATE::ANCHORED, std::memory_order_relaxed);
+  ~ExplicitAnchorGuard() {
+    //_node_base->_estate.fetch_and(~ESTATE::ANCHORED, std::memory_order_relaxed);
+    _node_base->_nstate &= ~NSTATE::EXPLICITLY_ANCHORED;
   }
   
   private:
