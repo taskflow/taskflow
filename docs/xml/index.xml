@@ -4,11 +4,6 @@
     <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1a9a0cc87ce9dddb50a069894039b11b40" kind="variable"><name>max_size</name></member>
     <member refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType_1abde3bae69eb61511b27006a99d7417f3" kind="variable"><name>buff</name></member>
   </compound>
-  <compound refid="classtf_1_1AnchorGuard" kind="class"><name>tf::AnchorGuard</name>
-    <member refid="classtf_1_1AnchorGuard_1af5d5fb620f459de06889ad3a64a1902b" kind="variable"><name>_node_base</name></member>
-    <member refid="classtf_1_1AnchorGuard_1a626fcefe14938fb047f25ca6c5e0f885" kind="function"><name>AnchorGuard</name></member>
-    <member refid="classtf_1_1AnchorGuard_1a4b708bd22dcd03473f2dd02afc3a6398" kind="function"><name>~AnchorGuard</name></member>
-  </compound>
   <compound refid="structtf_1_1UnboundedWSQ_1_1Array" kind="struct"><name>tf::UnboundedWSQ::Array</name>
     <member refid="structtf_1_1UnboundedWSQ_1_1Array_1ae4110b04c80289a4b56b555cb2ee630c" kind="variable"><name>C</name></member>
     <member refid="structtf_1_1UnboundedWSQ_1_1Array_1a900cd01a22ba72e30104a17841839e8f" kind="variable"><name>M</name></member>
@@ -471,6 +466,11 @@
     <member refid="classtf_1_1Executor_1a4d32fabf933478b102076dac83ca104c" kind="function"><name>_dependent_async</name></member>
     <member refid="classtf_1_1Executor_1a81bc7960b9eedefc81809315d08baa61" kind="function"><name>_silent_dependent_async</name></member>
   </compound>
+  <compound refid="classtf_1_1ExplicitAnchorGuard" kind="class"><name>tf::ExplicitAnchorGuard</name>
+    <member refid="classtf_1_1ExplicitAnchorGuard_1a1d953def08a247355d4c3305fd59bfe2" kind="variable"><name>_node_base</name></member>
+    <member refid="classtf_1_1ExplicitAnchorGuard_1a3d7b367176717373ed6d055e6882c194" kind="function"><name>ExplicitAnchorGuard</name></member>
+    <member refid="classtf_1_1ExplicitAnchorGuard_1abcaca960ea6fb7fa5d9c12b56b6b38c3" kind="function"><name>~ExplicitAnchorGuard</name></member>
+  </compound>
   <compound refid="classtf_1_1FlowBuilder" kind="class"><name>tf::FlowBuilder</name>
     <member refid="classtf_1_1FlowBuilder_1a763b2f90bc53f92d680a635fe28e858e" kind="friend"><name>Executor</name></member>
     <member refid="classtf_1_1FlowBuilder_1a9404a57d9d37a4d49d20b686e4e5f68f" kind="variable"><name>_graph</name></member>
@@ -613,7 +613,7 @@
     <member refid="classtf_1_1Node_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1Node_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
     <member refid="classtf_1_1Node_1a5336d73e2623282058a4f84a0423fac3" kind="friend"><name>NonpreemptiveRuntime</name></member>
-    <member refid="classtf_1_1Node_1a0aead7d7d8a25d0c29cc9419cc4fde65" kind="friend"><name>AnchorGuard</name></member>
+    <member refid="classtf_1_1Node_1aac17ed5eb23771ac3ca6091250d90361" kind="friend"><name>ExplicitAnchorGuard</name></member>
     <member refid="classtf_1_1Node_1a39e62aed9b5707246fa08d6b717953c4" kind="friend"><name>TaskGroup</name></member>
     <member refid="classtf_1_1Node_1ab016b9124e80f55ad92e01579c060f08" kind="friend"><name>Algorithm</name></member>
     <member refid="classtf_1_1Node_1a421d0da10e52e8bd1036676efc63579e" kind="variable"><name>PLACEHOLDER</name></member>
@@ -643,7 +643,7 @@
     <member refid="classtf_1_1Node_1a0214bc98366d4c24a1cae941cdffe119" kind="function"><name>name</name></member>
     <member refid="classtf_1_1Node_1a6c078066537332ea2322a677852bdb27" kind="function"><name>Node</name></member>
     <member refid="classtf_1_1Node_1a34c0eba8a0413d1dc1c625b4d5dc28b6" kind="function"><name>Node</name></member>
-    <member refid="classtf_1_1Node_1a4207c300c6ac0c564deef65c73e1ee96" kind="function"><name>_is_cancelled</name></member>
+    <member refid="classtf_1_1Node_1a309f7e7ee3c8e66498cbeca705c41572" kind="function"><name>_is_parent_cancelled</name></member>
     <member refid="classtf_1_1Node_1aed1c802d5794f881f9c47089003ef62c" kind="function"><name>_is_conditioner</name></member>
     <member refid="classtf_1_1Node_1ac5778a60afb44cd54eb0247a04b38a91" kind="function"><name>_acquire_all</name></member>
     <member refid="classtf_1_1Node_1a13650c237625a05df57f248ab2e47349" kind="function"><name>_release_all</name></member>
@@ -665,7 +665,7 @@
     <member refid="classtf_1_1NodeBase_1aa48945297ede77a161defc88033ce8a6" kind="friend"><name>Subflow</name></member>
     <member refid="classtf_1_1NodeBase_1af3d14e26ba8af9e6cc5a32aad8446de7" kind="friend"><name>Runtime</name></member>
     <member refid="classtf_1_1NodeBase_1a5336d73e2623282058a4f84a0423fac3" kind="friend"><name>NonpreemptiveRuntime</name></member>
-    <member refid="classtf_1_1NodeBase_1a0aead7d7d8a25d0c29cc9419cc4fde65" kind="friend"><name>AnchorGuard</name></member>
+    <member refid="classtf_1_1NodeBase_1aac17ed5eb23771ac3ca6091250d90361" kind="friend"><name>ExplicitAnchorGuard</name></member>
     <member refid="classtf_1_1NodeBase_1a39e62aed9b5707246fa08d6b717953c4" kind="friend"><name>TaskGroup</name></member>
     <member refid="classtf_1_1NodeBase_1ab016b9124e80f55ad92e01579c060f08" kind="friend"><name>Algorithm</name></member>
     <member refid="classtf_1_1NodeBase_1acc49b0ce35ba51593bb95d4ebc3868ea" kind="variable"><name>_nstate</name></member>

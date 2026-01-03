@@ -591,7 +591,7 @@ class Runtime {
   void corun_all();
 
   /**
-  @brief queries if this runtime task has been cancelled (e.g., due to an exception)
+  @brief queries if this runtime task has been cancelled
   */
   bool is_cancelled();
 
@@ -653,7 +653,7 @@ inline void Runtime::schedule(Task task) {
 // Function: corun
 inline void Runtime::corun() {
   {
-    AnchorGuard anchor(_node);
+    ExplicitAnchorGuard anchor(_node);
     _executor._corun_until(_worker, [this] () -> bool {
       return _node->_join_counter.load(std::memory_order_acquire) == 1;
     });
@@ -667,7 +667,7 @@ inline void Runtime::corun_all() {
 }
 
 inline bool Runtime::is_cancelled() { 
-  return _node->_is_cancelled(); 
+  return _node->_is_parent_cancelled(); 
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -818,7 +818,8 @@ inline bool Executor::_invoke_runtime_task_impl(
 
     Runtime rt(*this, worker, node);
 
-    node->_nstate |= NSTATE::PREEMPTED;
+    node->_nstate |= (NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
+
     node->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
@@ -829,8 +830,9 @@ inline bool Executor::_invoke_runtime_task_impl(
     
     // Last one to leave the runtime; no need to preempt this runtime.
     if(node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      node->_nstate &= ~NSTATE::PREEMPTED;
+      node->_nstate &= ~(NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
     }
+    // There are still child tasks running; need to preempt this runtime.
     // Here, we cannot let caller check the state from node->_nstate due to data race,
     // but return a stateless boolean to indicate preemption.
     // Ex: if preempted, another task may finish real quck and insert this parent task
@@ -842,7 +844,7 @@ inline bool Executor::_invoke_runtime_task_impl(
   }
   // second time - previously preempted
   else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
+    node->_nstate &= ~(NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
   }
   return false;
 }
@@ -857,7 +859,7 @@ inline bool Executor::_invoke_runtime_task_impl(
   // first time
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     
-    node->_nstate |= NSTATE::PREEMPTED;
+    node->_nstate |= (NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
     node->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
@@ -868,7 +870,7 @@ inline bool Executor::_invoke_runtime_task_impl(
     
     // Last one to leave this runtime; no need to preempt this runtime
     if(node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      node->_nstate &= ~NSTATE::PREEMPTED;
+      node->_nstate &= ~(NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
     }
     // Here, we cannot let caller check the state from node->_nstate due to data race,
     // but return a stateless boolean to indicate preemption.
@@ -881,7 +883,7 @@ inline bool Executor::_invoke_runtime_task_impl(
   }
   // second time - previously preempted
   else {
-    node->_nstate &= ~NSTATE::PREEMPTED;
+    node->_nstate &= ~(NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
   }
 
   // clean up outstanding work (e.g., exception)

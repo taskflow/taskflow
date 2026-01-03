@@ -55,7 +55,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 + fixed the compiler warning in Windows MSVC W4 ([#737](https://github.com/taskflow/taskflow/issues/737))
 + fixed the compiler warning in NVCC due to `auto` function argument ([#746](https://github.com/taskflow/taskflow/issues/746))
-+ fixed the regression problem caused by notifier ([#749](https://github.com/taskflow/taskflow/issues/746))
++ fixed the regression problem caused by notifier ([#746](https://github.com/taskflow/taskflow/issues/746))
++ fixed the bug of uncaught exception from tf::Runtime::silent_async with corun ([#748](https://github.com/taskflow/taskflow/issues/748))
 
 @section release-4-0-0_breaking_changes Breaking Changes
 

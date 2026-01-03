@@ -217,8 +217,8 @@ Taskflow supports GPU tasking for you to accelerate a wide range of scientific c
 ```cpp
 __global__ void saxpy(size_t N, float alpha, float* dx, float* dy) {
   int i = blockIdx.x*blockDim.x + threadIdx.x;
-  if (i < n) {
-    y[i] = a*x[i] + y[i];
+  if (i < N) {
+    y[i] = alpha*x[i] + y[i];
   }
 }
   
