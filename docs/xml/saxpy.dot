@@ -1,0 +1,12 @@
+digraph Taskflow {
+rankdir="LR";
+p0x7f2870401a50[label="h2d_x"];
+p0x7f2870401a50 -> p0x7f2870402bc0;
+p0x7f2870401eb0[label="h2d_y"];
+p0x7f2870401eb0 -> p0x7f2870402bc0;
+p0x7f2870402310[label="d2h_x"];
+p0x7f2870402780[label="d2h_y"];
+p0x7f2870402bc0[label="saxpy" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7f2870402bc0 -> p0x7f2870402310;
+p0x7f2870402bc0 -> p0x7f2870402780;
+}
