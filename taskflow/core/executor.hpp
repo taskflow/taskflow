@@ -1862,26 +1862,26 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   // Finds the anchor and mark the entire path with exception, 
   // so recursive tasks can be cancelled properly.
   // Since exception can come from asynchronous task (with runtime), the node itself can be anchored.
-  NodeBase* explicit_anchor = node;
-  NodeBase* implicit_anchor = nullptr;
+  NodeBase* ea = node;     // explicit anchor
+  NodeBase* ia = nullptr;  // implicit anchor
   
-  while(explicit_anchor && (explicit_anchor->_nstate & NSTATE::EXPLICITLY_ANCHORED) == 0) {
-    explicit_anchor->_estate.fetch_or(ESTATE::EXCEPTION, std::memory_order_relaxed);
-    // we only want the inner-most implicit anchor
-    if(implicit_anchor == nullptr && (explicit_anchor->_nstate & NSTATE::IMPLICITLY_ANCHORED)) {
-      implicit_anchor = explicit_anchor;
+  while(ea && (ea->_estate.load(std::memory_order_relaxed) & ESTATE::EXPLICITLY_ANCHORED) == 0) {
+    ea->_estate.fetch_or(ESTATE::EXCEPTION, std::memory_order_relaxed);
+    // e only want the inner-most implicit anchor
+    if(ia == nullptr && (ea->_nstate & NSTATE::IMPLICITLY_ANCHORED)) {
+      ia = ea;
     }
-    explicit_anchor = explicit_anchor->_parent;
+    ea = ea->_parent;
   }
   
   // flag used to ensure execution is caught in a thread-safe manner
   constexpr static auto flag = ESTATE::EXCEPTION | ESTATE::CAUGHT;
 
   // The exception occurs under a blocking call (e.g., corun, join).
-  if(explicit_anchor) {
+  if(ea) {
     // multiple tasks may throw, and we only take the first thrown exception
-    if((explicit_anchor->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
-      explicit_anchor->_exception_ptr = std::current_exception();
+    if((ea->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
+      ea->_exception_ptr = std::current_exception();
       return;
     }
   }
@@ -1894,9 +1894,9 @@ inline void Executor::_process_exception(Worker&, Node* node) {
     }
   }
   // Implicit anchor has the lowest priority
-  else if(implicit_anchor){
-    if((implicit_anchor->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
-      implicit_anchor->_exception_ptr = std::current_exception();
+  else if(ia){
+    if((ia->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
+      ia->_exception_ptr = std::current_exception();
       return;
     }
   }

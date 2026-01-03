@@ -82,8 +82,7 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, NodeBase* parent) {
     auto fu{p.get_future()};
     
     _schedule_async_task(animate(
-      //NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, 0, 
-      NSTATE::EXPLICITLY_ANCHORED, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0, 
+      NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, std::forward<P>(params), tpg, parent, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
@@ -285,8 +284,7 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
     auto fu{p.get_future()};
 
     AsyncTask task(animate(
-      //NSTATE::NONE, ESTATE::ANCHORED, std::forward<P>(params), tpg, parent, num_predecessors,
-      NSTATE::EXPLICITLY_ANCHORED, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
+      NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
         if(!reentered) {

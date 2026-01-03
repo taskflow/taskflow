@@ -721,7 +721,6 @@ class TaskGroup {
 inline TaskGroup::TaskGroup(Executor& executor, Worker& worker) : 
   _executor  {executor}, 
   _worker    {worker}, 
-  //_node_base {NSTATE::NONE, ESTATE::ANCHORED, nullptr, 0} {
   _node_base {NSTATE::IMPLICITLY_ANCHORED, ESTATE::NONE, nullptr, 0} {
 }
 

@@ -22,11 +22,10 @@ struct NSTATE {
   constexpr static underlying_type JOINED_SUBFLOW    = 0x80000000;
 
   // exception state bits
-  constexpr static underlying_type EXPLICITLY_ANCHORED = 0x01000000;
-  constexpr static underlying_type IMPLICITLY_ANCHORED = 0x02000000;
+  constexpr static underlying_type IMPLICITLY_ANCHORED = 0x01000000;
 
   // mask to isolate state bits - non-state bits store # weak dependents
-  constexpr static underlying_type MASK           = 0xFFFF0000;
+  constexpr static underlying_type MASK              = 0xFFFF0000;
 };
 
 using nstate_t = NSTATE::underlying_type;
@@ -36,11 +35,16 @@ struct ESTATE {
   
   using underlying_type = int;  
   
-  constexpr static underlying_type NONE      = 0x00000000; 
-  constexpr static underlying_type EXCEPTION = 0x10000000;
-  constexpr static underlying_type CAUGHT    = 0x20000000;
-  constexpr static underlying_type CANCELLED = 0x40000000;
-  //constexpr static underlying_type ANCHORED  = 0x40000000;  
+  constexpr static underlying_type NONE                = 0x00000000; 
+  constexpr static underlying_type EXCEPTION           = 0x10000000;
+  constexpr static underlying_type CAUGHT              = 0x20000000;
+  constexpr static underlying_type CANCELLED           = 0x40000000;
+
+  // Explicit anchor needs to be in estate other it can cause data race
+  // due to the read/write on creating an AnchorGuard in corun with the nstate read
+  // in tear_down_async. You know, when calling corun, all async tasks may have already
+  // finished and trigger the the tear_down_async.
+  constexpr static underlying_type EXPLICITLY_ANCHORED = 0x80000000;
 };
 
 using estate_t = ESTATE::underlying_type;

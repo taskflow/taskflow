@@ -709,16 +709,14 @@ class ExplicitAnchorGuard {
 
   public:
   
-  // anchor is at estate as it may be accessed by multiple threads (e.g., corun's
-  // parent with tear_down_async's parent).
+  // Explicit anchor must sit in estate as it may be accessed by multiple threads 
+  // (e.g., corun's parent with tear_down_async's parent).
   ExplicitAnchorGuard(NodeBase* node_base) : _node_base{node_base} { 
-    //_node_base->_estate.fetch_or(ESTATE::ANCHORED, std::memory_order_relaxed);
-    _node_base->_nstate |= NSTATE::EXPLICITLY_ANCHORED;
+    _node_base->_estate.fetch_or(ESTATE::EXPLICITLY_ANCHORED, std::memory_order_relaxed);
   }
 
   ~ExplicitAnchorGuard() {
-    //_node_base->_estate.fetch_and(~ESTATE::ANCHORED, std::memory_order_relaxed);
-    _node_base->_nstate &= ~NSTATE::EXPLICITLY_ANCHORED;
+    _node_base->_estate.fetch_and(~ESTATE::EXPLICITLY_ANCHORED, std::memory_order_relaxed);
   }
   
   private:

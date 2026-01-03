@@ -819,6 +819,7 @@ inline bool Executor::_invoke_runtime_task_impl(
     Runtime rt(*this, worker, node);
 
     node->_nstate |= (NSTATE::PREEMPTED | NSTATE::IMPLICITLY_ANCHORED);
+
     node->_join_counter.fetch_add(1, std::memory_order_release);
 
     _observer_prologue(worker, node);
