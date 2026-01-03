@@ -282,7 +282,7 @@ template <typename T> struct is_std_compare<std::less<T>> : std::true_type { };
 template <typename T> struct is_std_compare<std::greater<T>> : std::true_type { };
 
 template <typename T>
-constexpr static bool is_std_compare_v = is_std_compare<T>::value;
+constexpr bool is_std_compare_v = is_std_compare<T>::value;
 
 // ----------------------------------------------------------------------------
 // check if all types are the same
