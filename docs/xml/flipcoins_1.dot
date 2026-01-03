@@ -1,0 +1,12 @@
+digraph G {
+rankdir=LR
+a[label="1/2 (H)"];
+b[label="1/4 (HH)"];
+c[label="1/8 (HHH)"];
+d[label="1/16 (HHHH)"];
+e[label="1/32 (HHHHH)"];
+a->b;
+b->c;
+c->d;
+d->e;
+}
