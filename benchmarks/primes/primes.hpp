@@ -16,7 +16,7 @@ std::chrono::microseconds measure_time_omp(size_t, size_t);
 std::chrono::microseconds measure_time_tbb(size_t, size_t);
 
 
-inline constexpr size_t primes_limit = 10000000;
+inline constexpr size_t primes_limit = 100000000;
 inline constexpr size_t primes_chunk = 10;
 
 /**

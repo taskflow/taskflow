@@ -46,12 +46,14 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + split essential members of tf::Node into tf::NodeBase to improve modularity
 + split anchor nodes to implicit and explicit types to improve exception handling
 + added embarrassing parallelism benchmark
++ added merge sort benchmark
 + added tf::TaskGroup to enable efficient implementation of recursive parallelism
 + revised the following benchmarks with tf::TaskGroup for recursive parallelism
   + integrate
   + skynet
   + fibonacci
   + nqueens
++ enhanced the scheduling performance of dependent-async tasks with state merging
 
 @subsection release-4-0-0_utilities Utilities
 

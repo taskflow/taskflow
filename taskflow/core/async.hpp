@@ -350,43 +350,39 @@ inline void Executor::_process_dependent_async(
     return;
   }
 
-  auto& state = std::get_if<Node::DependentAsync>(&(task._node->_handle))->state;
+  auto& state = task._node->_estate;
+  auto target = state.load(std::memory_order_acquire);
 
-  while (true) {
-
-    auto target = ASTATE::UNFINISHED;
-
-    // Try to acquire the lock
-    if (state.compare_exchange_strong(target, ASTATE::LOCKED, 
-                                      std::memory_order_acq_rel,
-                                      std::memory_order_acquire)) {
+  while (!(target & ESTATE::FINISHED)) {
+    // can only go from unlock and unfinished to locked
+    target &= ~ESTATE::LOCKED;
+    if(state.compare_exchange_weak(target, target | ESTATE::LOCKED, 
+                                   std::memory_order_acq_rel,
+                                   std::memory_order_acquire)) {
       task._node->_edges.push_back(node);
-      state.store(ASTATE::UNFINISHED, std::memory_order_release);
-      break;
+      state.fetch_and(~ESTATE::LOCKED, std::memory_order_release);
+      return;
     }
-
-    // If already finished, decrement the join counter
-    if (target == ASTATE::FINISHED) {
-      num_predecessors = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
-      break;
-    }
-
-    // If locked by another worker, retry
   }
+  
+  num_predecessors = node->_join_counter.fetch_sub(1, std::memory_order_acq_rel) - 1;
 }
 
 // Procedure: _tear_down_dependent_async
 inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Node*& cache) {
 
   auto handle = std::get_if<Node::DependentAsync>(&(node->_handle));
+  auto target = node->_estate.load(std::memory_order_acquire);
 
-  // this async task comes from Executor
-  auto target = ASTATE::UNFINISHED;
-
-  while(!handle->state.compare_exchange_weak(target, ASTATE::FINISHED,
-                                             std::memory_order_acq_rel,
-                                             std::memory_order_relaxed)) {
-    target = ASTATE::UNFINISHED;
+  while(true) {
+    // We can only go from unlocked and unfinished to finished. 
+    // Only this function can set the state to FINISHED.
+    target &= ~ESTATE::LOCKED;
+    if(node->_estate.compare_exchange_weak(target, target | ESTATE::FINISHED, 
+                                           std::memory_order_acq_rel,
+                                           std::memory_order_acquire)) {
+      break;
+    }
   }
   
   // spawn successors whenever their dependencies are resolved

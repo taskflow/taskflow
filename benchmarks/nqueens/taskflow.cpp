@@ -43,16 +43,18 @@ int nqueens(int j, std::vector<char>&a, tf::Executor& executor) {
   return std::accumulate(parts.begin(), parts.end(), 0L);
 }
 
-int nqueens(int i, size_t num_threads, std::vector<char>& buf) {
-  static tf::Executor executor(num_threads);
-  return executor.async([i, &buf](){ return nqueens(i, buf, executor); }).get();
+int nqueens(tf::Executor& executor, int i, std::vector<char>& buf) {
+  return executor.async([i, &buf, &executor](){ return nqueens(i, buf, executor); }).get();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t num_nqueens) {
+  
+  static tf::Executor executor(num_threads);
+
   std::vector<char> buf(num_nqueens);
 
   auto beg = std::chrono::high_resolution_clock::now();
-  auto result = nqueens(0, num_threads, buf);
+  auto result = nqueens(executor, 0, buf);
   auto end = std::chrono::high_resolution_clock::now();
 
   if(result != answers[num_nqueens]) {

@@ -2,9 +2,7 @@
 #include "async_task.hpp"
 
 // async_task computing
-void async_task_taskflow(unsigned num_threads, size_t num_tasks) {
-
-  static tf::Executor executor(num_threads);
+void async_task_taskflow(tf::Executor& executor, size_t num_tasks) {
 
   std::atomic<size_t> counter(0);
 
@@ -20,8 +18,9 @@ void async_task_taskflow(unsigned num_threads, size_t num_tasks) {
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads, size_t num_tasks) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  async_task_taskflow(num_threads, num_tasks);
+  async_task_taskflow(executor, num_tasks);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

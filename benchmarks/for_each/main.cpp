@@ -1,7 +1,7 @@
 #include "for_each.hpp"
 #include <CLI11.hpp>
 
-void reduce_sum(
+void for_each(
   const std::string& model,
   const unsigned num_threads,
   const unsigned num_rounds
@@ -43,7 +43,7 @@ void reduce_sum(
 
 int main(int argc, char* argv[]) {
 
-  CLI::App app{"MatrixMultiplication"};
+  CLI::App app{"MergeSort"};
 
   unsigned num_threads {1};
   app.add_option("-t,--num_threads", num_threads, "number of threads (default=1)");
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
             << "num_rounds=" << num_rounds << ' '
             << std::endl;
 
-  reduce_sum(model, num_threads, num_rounds);
+  for_each(model, num_threads, num_rounds);
 
   return 0;
 }

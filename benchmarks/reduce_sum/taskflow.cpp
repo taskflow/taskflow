@@ -2,9 +2,8 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/reduce.hpp>
 
-void reduce_sum_taskflow(unsigned num_threads) {
+void reduce_sum_taskflow(tf::Executor& executor) {
 
-  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   double result = 0.0;
@@ -27,8 +26,9 @@ void reduce_sum_taskflow(unsigned num_threads) {
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  reduce_sum_taskflow(num_threads);
+  reduce_sum_taskflow(executor);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

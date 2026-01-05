@@ -1,9 +1,8 @@
 #include "dnn.hpp"
-#include <taskflow/taskflow.hpp>
 
-void run_taskflow(MNIST& D, unsigned num_threads) {
 
-  static tf::Executor executor(num_threads);
+void run_taskflow(MNIST& D, tf::Executor& executor) {
+
   tf::Taskflow taskflow;
 
   std::vector<tf::Task> forward_tasks;
@@ -12,8 +11,8 @@ void run_taskflow(MNIST& D, unsigned num_threads) {
   std::vector<tf::Task> shuffle_tasks;
 
   // Number of parallel shuffle
-  const auto num_storage = num_threads;
-  const auto num_par_shf = std::min(num_storage, D.epoch);
+  const size_t num_storage = executor.num_workers();
+  const size_t num_par_shf = std::min(num_storage, size_t(D.epoch));
 
   std::vector<Eigen::MatrixXf> mats(num_par_shf, D.images);
   std::vector<Eigen::VectorXi> vecs(num_par_shf, D.labels);

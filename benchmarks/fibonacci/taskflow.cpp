@@ -22,14 +22,14 @@ size_t fibonacci(size_t n, tf::Executor& executor) {
 }
 
 
-size_t fibonacci_taskflow(size_t num_threads, size_t n) {
-  static tf::Executor executor(num_threads);
-  return executor.async([n](){ return fibonacci(n, executor); }).get();
+size_t fibonacci_taskflow(tf::Executor& executor, size_t n) {
+  return executor.async([n, &executor](){ return fibonacci(n, executor); }).get();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t n) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  fibonacci_taskflow(num_threads, n);
+  fibonacci_taskflow(executor, n);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

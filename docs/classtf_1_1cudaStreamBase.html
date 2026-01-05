@@ -5,7 +5,7 @@
   <title>tf::cudaStreamBase class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -78,7 +78,7 @@
             </li>
           </ul>
         </nav>
-<p>The <code><a href="namespacetf.html#af19c9b301dc0b0fe2a51a960fa427e83" class="m-doc">cudaStream</a></code> class encapsulates a <code>cudaStream_t</code> using <code><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a></code>, ensuring that CUDA events are properly created and destroyed with a unique ownership.</p>
+<p>The <code>cudaStream</code> class encapsulates a <code>cudaStream_t</code> using <code><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a></code>, ensuring that CUDA events are properly created and destroyed with a unique ownership.</p>
         <section id="pub-types">
           <h2><a href="#pub-types">Public types</a></h2>
           <dl class="m-doc">
@@ -95,22 +95,22 @@
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper"><a href="#a53917d60c2fc050ecf15a30433a87f08" class="m-doc">cudaStreamBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd>constructs a <code><a href="namespacetf.html#af19c9b301dc0b0fe2a51a960fa427e83" class="m-doc">cudaStream</a></code> object by passing the given arguments to the stream creator</dd>
+            <dd>constructs a <code>cudaStream</code> object by passing the given arguments to the stream creator</dd>
             <dt id="a065ca0411b2e5adfc580bea6fc56d90d">
               <span class="m-doc-wrap-bumper"><a href="#a065ca0411b2e5adfc580bea6fc56d90d" class="m-doc-self">cudaStreamBase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs a <code><a href="namespacetf.html#af19c9b301dc0b0fe2a51a960fa427e83" class="m-doc">cudaStream</a></code> from the given rhs using move semantics</dd>
+            <dd>constructs a <code>cudaStream</code> from the given rhs using move semantics</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="a9e91156a44ea3b7e0d8817c1efbace78">
-              <span class="m-doc-wrap-bumper">auto <a href="#a9e91156a44ea3b7e0d8817c1efbace78" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="a0414bc0e15a5b1f85ee9c9abf39b2bd7">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0414bc0e15a5b1f85ee9c9abf39b2bd7" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>assign the rhs to <code>*this</code> using move semantics</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">auto <a href="#a1e5140505629afd4b3422399f8080cb0" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a685019ae199f86668257f802bd77b2cd" class="m-doc">synchronize</a>(</span><span class="m-doc-wrap">) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
             </dt>
             <dd>synchronizes the associated stream</dd>
             <dt>
@@ -131,7 +131,7 @@
             <dd>waits on an event</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename C, typename D&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a7dcdfb79385a57c4c59b7c9f21e8beb9" class="m-doc">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#aadd2d02a691b40305aa3965475dc98d7" class="m-doc">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec) -&gt; <a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp;</span>
             </dt>
             <dd>runs the given executable CUDA graph</dd>
             <dt>
@@ -163,7 +163,7 @@
               </div>
               <span class="m-doc-wrap-bumper"> tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a53917d60c2fc050ecf15a30433a87f08" class="m-doc-self">cudaStreamBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
-            <p>constructs a <code><a href="namespacetf.html#af19c9b301dc0b0fe2a51a960fa427e83" class="m-doc">cudaStream</a></code> object by passing the given arguments to the stream creator</p>
+            <p>constructs a <code>cudaStream</code> object by passing the given arguments to the stream creator</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -175,14 +175,14 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a <code><a href="namespacetf.html#af19c9b301dc0b0fe2a51a960fa427e83" class="m-doc">cudaStream</a></code> object by passing the given arguments to the stream creator</p>
+<p>Constructs a <code>cudaStream</code> object by passing the given arguments to the stream creator</p>
           </div></section>
-          <section class="m-doc-details" id="a1e5140505629afd4b3422399f8080cb0"><div>
+          <section class="m-doc-details" id="a685019ae199f86668257f802bd77b2cd"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a1e5140505629afd4b3422399f8080cb0" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a685019ae199f86668257f802bd77b2cd" class="m-doc-self">synchronize</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>synchronizes the associated stream</p>
 <p>Equivalently calling <code>cudaStreamSynchronize</code> to block until this stream has completed all operations.</p>
@@ -227,13 +227,13 @@
             <p>waits on an event</p>
 <p>Equivalently calling <code>cudaStreamWaitEvent</code> to make all future work submitted to stream wait for all work captured in event.</p>
           </div></section>
-          <section class="m-doc-details" id="a7dcdfb79385a57c4c59b7c9f21e8beb9"><div>
+          <section class="m-doc-details" id="aadd2d02a691b40305aa3965475dc98d7"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename Creator, typename Deleter&gt;
                 template&lt;typename C, typename D&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7dcdfb79385a57c4c59b7c9f21e8beb9" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="classtf_1_1cudaStreamBase.html" class="m-doc">cudaStreamBase</a>&amp; tf::<wbr />cudaStreamBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aadd2d02a691b40305aa3965475dc98d7" class="m-doc-self">run</a>(</span><span class="m-doc-wrap">const <a href="classtf_1_1cudaGraphExecBase.html" class="m-doc">cudaGraphExecBase</a>&lt;C, D&gt;&amp; exec)</span></span>
             </h3>
             <p>runs the given executable CUDA graph</p>
             <table class="m-table m-fullwidth m-flat">
@@ -243,7 +243,7 @@
               <tbody>
                 <tr>
                   <td style="width: 1%">exec</td>
-                  <td>the given <code><a href="namespacetf.html#a2be50e6880ead1d49a3fec2fc4bb893e" class="m-doc">cudaGraphExec</a></code></td>
+                  <td>the given <code>cudaGraphExec</code></td>
                 </tr>
               </tbody>
             </table>
@@ -313,7 +313,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

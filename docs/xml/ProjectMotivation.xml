@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="ProjectMotivation" kind="page">
     <compoundname>ProjectMotivation</compoundname>
     <title>Project Motivation</title>
@@ -7,54 +7,59 @@
       <tocsect>
         <name>The Era of Multicore</name>
         <reference>ProjectMotivation_1TheEraOfMulticore</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Heterogeneous Computing</name>
         <reference>ProjectMotivation_1C0HeterogeneousComputing</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Loop-level Parallelism</name>
         <reference>ProjectMotivation_1LoopLevelParallelism</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Task-based Parallelism</name>
         <reference>ProjectMotivation_1TaskBasedParallelism</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>The Project Mantra</name>
         <reference>ProjectMotivation_1TheProjectMantra</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow addresses a long-standing problem, <emphasis>how can we make it easier for C++ developers to quickly write parallel and heterogeneous programs with high performance scalability and simultaneous high productivity?</emphasis></para>
 <sect1 id="ProjectMotivation_1TheEraOfMulticore">
-<title>The Era of Multicore</title><para>In the past, we embrace <emphasis>free</emphasis> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</para>
+<title>The Era of Multicore</title>
+<para>In the past, we embrace <emphasis>free</emphasis> performance scaling on our software thanks to advances in manufacturing technologies and micro-architectural innovations. Approximately for every 1.5 year we can speed up our programs by simply switching to new hardware and compiler vendors that brings 2x more transistors, faster clock rates, and higher instruction-level parallelism. However, this paradigm was challenged by the power wall and increasing difficulties in exploiting instruction-level parallelism. The boost to computing performance has stemmed from changes to multicore chip designs.</para>
 <para><image type="html" name="era_multicore.jpg" width="60%"></image>
 </para>
 <para>The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) shows the evolution of computer architectures is moving toward multicore designs. Today, multicore processors and multiprocessor systems are common in many electronic products such as mobiles, laptops, desktops, and servers. In order to keep up with the performance scaling, it is becoming necessary for software developers to write parallel programs that utilize the number of available cores.</para>
 </sect1>
 <sect1 id="ProjectMotivation_1C0HeterogeneousComputing">
-<title>Heterogeneous Computing</title><para>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</para>
+<title>Heterogeneous Computing</title>
+<para>With the influence of artificial intelligence (AI) through new and merged workloads, heterogeneous computing becomes demanding and will continue to be heard for years to come. We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of scientific computing problems.</para>
 <para><image type="html" name="CPU-vs-TPU-vs-GPU.png" width="60%"></image>
 </para>
 <para>The question is: <emphasis>How are we going to program these beasts?</emphasis> Writing a high-performance sequential program is hard. Parallel programming is harder. Parallel programming of heterogeneous devices is extremely challenging if we care about performance and power efficiency. Programming models need to deal with productivity versus performance.</para>
 </sect1>
 <sect1 id="ProjectMotivation_1LoopLevelParallelism">
-<title>Loop-level Parallelism</title><para>The most basic and simplest concept of parallel programming is <emphasis>loop-level parallelism</emphasis>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</para>
+<title>Loop-level Parallelism</title>
+<para>The most basic and simplest concept of parallel programming is <emphasis>loop-level parallelism</emphasis>, exploiting parallelism that exists among the iterations of a loop. The program typically partitions a loop of iterations into a set of of blocks, either fixed or dynamic, and run each block in parallel. Below the figure illustrates this pattern.</para>
 <para><image type="html" name="loop-level-parallelism.jpeg" width="50%"></image>
 </para>
 <para>The main advantage of the loop-based approach is its simplicity in speeding up a regular workload in line with Amdahl&apos;s Law. Programmers only need to discover independence of each iteration within a loop and, once possible, the parallel decomposition strategy can be easily implemented. Many existing libraries have built-in support to write a parallel-for loop.</para>
 </sect1>
 <sect1 id="ProjectMotivation_1TaskBasedParallelism">
-<title>Task-based Parallelism</title><para>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <emphasis>task-based</emphasis> model.</para>
-<para><dotfile name="task-level-parallelism.dot"></dotfile>
+<title>Task-based Parallelism</title>
+<para>The traditional loop-level parallelism is simple but hardly allows users to exploit parallelism in more irregular applications such as graph algorithms, incremental flows, recursion, and dynamically-allocated data structures. To address these challenges, parallel programming and libraries are evolving from the tradition loop-based parallelism to the <emphasis>task-based</emphasis> model.</para>
+<para><dotfile name="/home/thuang295/Code/taskflow/doxygen/images/task-level-parallelism.dot"></dotfile>
 </para>
 <para>The above figure shows an example <emphasis>task dependency graph</emphasis>. Each node in the graph represents a task unit at function level and each edge indicates the task dependency between a pair of tasks. Task-based model offers a powerful means to express both regular and irregular parallelism in a top-down manner, and provides transparent scaling to large number of cores. In fact, it has been proven, both by the research community and the evolution of parallel programming standards, task-based approach scales the best with future processor generations and architectures.</para>
 </sect1>
 <sect1 id="ProjectMotivation_1TheProjectMantra">
-<title>The Project Mantra</title><para>The goal of Taskflow is simple - <emphasis>We help developers quickly write parallel programs with high performance scalability and simultaneous high productivity</emphasis>. We want developers to write simple and effective parallel code, specifically with the following objectives:</para>
+<title>The Project Mantra</title>
+<para>The goal of Taskflow is simple - <emphasis>We help developers quickly write parallel programs with high performance scalability and simultaneous high productivity</emphasis>. We want developers to write simple and effective parallel code, specifically with the following objectives:</para>
 <para><itemizedlist>
 <listitem><para>Expressiveness </para>
 </listitem>

@@ -15,17 +15,17 @@ struct NSTATE {
   using underlying_type = int;
   
   // scheduler state bits
-  constexpr static underlying_type NONE              = 0x00000000;  
-  constexpr static underlying_type CONDITIONED       = 0x10000000;  
-  constexpr static underlying_type PREEMPTED         = 0x20000000;  
-  constexpr static underlying_type RETAIN_SUBFLOW    = 0x40000000;
-  constexpr static underlying_type JOINED_SUBFLOW    = 0x80000000;
+  constexpr static underlying_type NONE                = 0x00000000;  
+  constexpr static underlying_type CONDITIONED         = 0x10000000;  
+  constexpr static underlying_type PREEMPTED           = 0x20000000;  
+  constexpr static underlying_type RETAIN_SUBFLOW      = 0x40000000;
+  constexpr static underlying_type JOINED_SUBFLOW      = 0x80000000;
 
   // exception state bits
   constexpr static underlying_type IMPLICITLY_ANCHORED = 0x01000000;
 
   // mask to isolate state bits - non-state bits store # weak dependents
-  constexpr static underlying_type MASK              = 0xFFFF0000;
+  constexpr static underlying_type MASK                = 0xFF000000;
 };
 
 using nstate_t = NSTATE::underlying_type;
@@ -36,30 +36,29 @@ struct ESTATE {
   using underlying_type = int;  
   
   constexpr static underlying_type NONE                = 0x00000000; 
+  
+  // Exception state:
+  // Explicit anchor needs to be in estate other it can cause data race
+  // due to the read/write on creating an AnchorGuard in corun with the nstate read
+  // in tear_down_async. When calling corun, all async tasks may have already
+  // finished and trigger tear_down_async, causing data race on reading/writing
+  // the parent node's nstate.
   constexpr static underlying_type EXCEPTION           = 0x10000000;
   constexpr static underlying_type CAUGHT              = 0x20000000;
   constexpr static underlying_type CANCELLED           = 0x40000000;
-
-  // Explicit anchor needs to be in estate other it can cause data race
-  // due to the read/write on creating an AnchorGuard in corun with the nstate read
-  // in tear_down_async. You know, when calling corun, all async tasks may have already
-  // finished and trigger the the tear_down_async.
   constexpr static underlying_type EXPLICITLY_ANCHORED = 0x80000000;
+  
+  // Async task state
+  //constexpr static underlying_type UNFINISHED = 0x00000000;
+  constexpr static underlying_type LOCKED              = 0x01000000;
+  constexpr static underlying_type FINISHED            = 0x02000000;
+  
+  // mask to isolate state bits - non-state bits store # weak dependents
+  constexpr static underlying_type MASK                = 0xFF000000;
 };
 
 using estate_t = ESTATE::underlying_type;
 
-// async-specific states
-struct ASTATE {
-  
-  using underlying_type = int;
-
-  constexpr static underlying_type UNFINISHED = 0;
-  constexpr static underlying_type LOCKED     = 1;
-  constexpr static underlying_type FINISHED   = 2;
-};
-
-using astate_t = ASTATE::underlying_type;
 
 // Procedure: throw_re
 // Throws runtime error under a given error code.

@@ -6,7 +6,7 @@
 
 struct TF {
 
-  TF(LevelGraph& graph, unsigned num_threads) : executor(num_threads) {
+  TF(LevelGraph& graph, tf::Executor& exe) : executor(exe) {
 
     tasks.resize(graph.level());
     for(size_t i=0; i<tasks.size(); ++i) {
@@ -33,21 +33,24 @@ struct TF {
     executor.run(taskflow).get();
   }
 
-  tf::Executor executor;
+  tf::Executor& executor;
   tf::Taskflow taskflow;
   std::vector<std::vector<tf::Task>> tasks;
 
 };
 
-void traverse_level_graph_taskflow(LevelGraph& graph, unsigned num_threads){
-  TF tf(graph, num_threads);
+void traverse_level_graph_taskflow(LevelGraph& graph, tf::Executor& executor){
+  TF tf(graph, executor);
   tf.run();
 }
 
 std::chrono::microseconds measure_time_taskflow(LevelGraph& graph, unsigned num_threads){
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  traverse_level_graph_taskflow(graph, num_threads);
+  traverse_level_graph_taskflow(graph, executor);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
+
+
 

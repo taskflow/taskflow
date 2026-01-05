@@ -1950,7 +1950,10 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     node->_nstate &= ~NSTATE::PREEMPTED;
   }
 
-  // the subflow has finished or joined
+  // The subflow has finished or joined.
+  // By default, we clear the subflow storage as applications can perform recursive
+  // subflow tasking which accumulates a huge amount of memory overhead, hampering 
+  // the performance.
   if((node->_nstate & NSTATE::RETAIN_SUBFLOW) == 0) {
     g.clear();
   }

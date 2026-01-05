@@ -71,10 +71,9 @@ struct FilterFinal {
 
 // graph_pipeline_taskflow_1_pipe
 std::chrono::microseconds graph_pipeline_taskflow_1_pipe(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -92,10 +91,9 @@ std::chrono::microseconds graph_pipeline_taskflow_1_pipe(
 
 // graph_pipeline_taskflow_2_pipes
 std::chrono::microseconds graph_pipeline_taskflow_2_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -113,10 +111,9 @@ std::chrono::microseconds graph_pipeline_taskflow_2_pipes(
 
 // graph_pipeline_taskflow_3_pipes
 std::chrono::microseconds graph_pipeline_taskflow_3_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -135,10 +132,9 @@ std::chrono::microseconds graph_pipeline_taskflow_3_pipes(
 
 // graph_pipeline_taskflow_4_pipes
 std::chrono::microseconds graph_pipeline_taskflow_4_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -158,10 +154,9 @@ std::chrono::microseconds graph_pipeline_taskflow_4_pipes(
 
 // graph_pipeline_taskflow_5_pipes
 std::chrono::microseconds graph_pipeline_taskflow_5_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -182,10 +177,9 @@ std::chrono::microseconds graph_pipeline_taskflow_5_pipes(
 
 // graph_pipeline_taskflow_6_pipes
 std::chrono::microseconds graph_pipeline_taskflow_6_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -207,10 +201,9 @@ std::chrono::microseconds graph_pipeline_taskflow_6_pipes(
 
 // graph_pipeline_taskflow_7_pipes
 std::chrono::microseconds graph_pipeline_taskflow_7_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -233,12 +226,11 @@ std::chrono::microseconds graph_pipeline_taskflow_7_pipes(
 
 // graph_pipeline_taskflow_8_pipes
 std::chrono::microseconds graph_pipeline_taskflow_8_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
   //std::ofstream outputfile;
   //outputfile.open("./tf_result.txt", std::ofstream::app);
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -265,10 +257,9 @@ std::chrono::microseconds graph_pipeline_taskflow_8_pipes(
 
 // graph_pipeline_taskflow_9_pipes
 std::chrono::microseconds graph_pipeline_taskflow_9_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -293,10 +284,9 @@ std::chrono::microseconds graph_pipeline_taskflow_9_pipes(
 
 // graph_pipeline_taskflow_10_pipes
 std::chrono::microseconds graph_pipeline_taskflow_10_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -323,10 +313,9 @@ std::chrono::microseconds graph_pipeline_taskflow_10_pipes(
 
 // graph_pipeline_taskflow_11_pipes
 std::chrono::microseconds graph_pipeline_taskflow_11_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -353,10 +342,9 @@ std::chrono::microseconds graph_pipeline_taskflow_11_pipes(
 
 // graph_pipeline_taskflow_12_pipes
 std::chrono::microseconds graph_pipeline_taskflow_12_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -384,10 +372,9 @@ std::chrono::microseconds graph_pipeline_taskflow_12_pipes(
 
 // graph_pipeline_taskflow_13_pipes
 std::chrono::microseconds graph_pipeline_taskflow_13_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -416,10 +403,9 @@ std::chrono::microseconds graph_pipeline_taskflow_13_pipes(
 
 // graph_pipeline_taskflow_14_pipes
 std::chrono::microseconds graph_pipeline_taskflow_14_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -449,10 +435,9 @@ std::chrono::microseconds graph_pipeline_taskflow_14_pipes(
 
 // graph_pipeline_taskflow_15_pipes
 std::chrono::microseconds graph_pipeline_taskflow_15_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -483,10 +468,9 @@ std::chrono::microseconds graph_pipeline_taskflow_15_pipes(
 
 // graph_pipeline_taskflow_16_pipes
 std::chrono::microseconds graph_pipeline_taskflow_16_pipes(
-  LevelGraph& graph, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, unsigned num_lines, tf::Executor& executor) {
 
   tf::Taskflow taskflow;
-  static tf::Executor executor(num_threads);
 
   std::vector<int> mybuffer(num_lines);
 
@@ -522,73 +506,76 @@ std::chrono::microseconds graph_pipeline_taskflow_16_pipes(
 }
 
 std::chrono::microseconds measure_time_taskflow(
-  LevelGraph& graph, size_t pipes, unsigned num_lines, unsigned num_threads) {
+  LevelGraph& graph, size_t pipes, unsigned num_lines, unsigned num_threads
+) {
+  
+  static tf::Executor executor(num_threads);
 
   std::chrono::microseconds elapsed;
 
   switch(pipes) {
     case 1:
-      elapsed = graph_pipeline_taskflow_1_pipe(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_1_pipe(graph, num_lines, executor);
     break;
 
     case 2:
-      elapsed = graph_pipeline_taskflow_2_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_2_pipes(graph, num_lines, executor);
     break;
 
     case 3:
-      elapsed = graph_pipeline_taskflow_3_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_3_pipes(graph, num_lines, executor);
     break;
 
     case 4:
-      elapsed = graph_pipeline_taskflow_4_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_4_pipes(graph, num_lines, executor);
     break;
 
     case 5:
-      elapsed = graph_pipeline_taskflow_5_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_5_pipes(graph, num_lines, executor);
     break;
 
     case 6:
-      elapsed = graph_pipeline_taskflow_6_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_6_pipes(graph, num_lines, executor);
     break;
 
     case 7:
-      elapsed = graph_pipeline_taskflow_7_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_7_pipes(graph, num_lines, executor);
     break;
 
     case 8:
-      elapsed = graph_pipeline_taskflow_8_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_8_pipes(graph, num_lines, executor);
     break;
 
     case 9:
-      elapsed = graph_pipeline_taskflow_9_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_9_pipes(graph, num_lines, executor);
     break;
 
     case 10:
-      elapsed = graph_pipeline_taskflow_10_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_10_pipes(graph, num_lines, executor);
     break;
 
     case 11:
-      elapsed = graph_pipeline_taskflow_11_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_11_pipes(graph, num_lines, executor);
     break;
 
     case 12:
-      elapsed = graph_pipeline_taskflow_12_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_12_pipes(graph, num_lines, executor);
     break;
 
     case 13:
-      elapsed = graph_pipeline_taskflow_13_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_13_pipes(graph, num_lines, executor);
     break;
 
     case 14:
-      elapsed = graph_pipeline_taskflow_14_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_14_pipes(graph, num_lines, executor);
     break;
 
     case 15:
-      elapsed = graph_pipeline_taskflow_15_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_15_pipes(graph, num_lines, executor);
     break;
 
     case 16:
-      elapsed = graph_pipeline_taskflow_16_pipes(graph, num_lines, num_threads);
+      elapsed = graph_pipeline_taskflow_16_pipes(graph, num_lines, executor);
     break;
 
     default:

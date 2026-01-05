@@ -18,16 +18,7 @@ enable the option `TF_BUILD_BENCHMARKS` in cmake build:
 
 After you successfully compile all benchmark sources,
 executables will be available in the respective folder of an application.
-Currently, we provide the following applications:
-
-  + [Graph Traveral](./graph_traversal): traverses a direct acyclic graph
-  + [Wavefront](./wavefront): propagates computations in a two-dimensional (2D) grid
-  + [Linear Chain](./linear_chain): computes a linear chain of tasks
-  + [Binary Tree](./binary_tree): traverse a complete binary tree
-  + [Matrix Multiplication](./matrix_multiplication): multiplies two matrices
-  + [MNIST](./mnist): trains a neural network-based image classfier on the MNIST dataset
-
-We have provided a python wrapper [benchmarks.py](./benchmarks.py) to help
+To facilitate the evaluation, we have provided a python wrapper [benchmarks.py](./benchmarks.py) to help
 configure the benchmark of each application,
 including thread count, rounds to average, tasking methods, and plot.
 

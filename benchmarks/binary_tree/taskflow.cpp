@@ -2,13 +2,12 @@
 #include <taskflow/taskflow.hpp>
 
 // binary_tree_taskflow
-void binary_tree_taskflow(size_t num_layers, unsigned num_threads) {
+void binary_tree_taskflow(size_t num_layers, tf::Executor& executor) {
 
   std::atomic<size_t> counter {0};
 
   std::vector<tf::Task> tasks(1 << num_layers);
 
-  static tf::Executor executor(num_threads);
   tf::Taskflow taskflow;
 
   for(unsigned i=1; i<tasks.size(); i++) {
@@ -33,8 +32,9 @@ std::chrono::microseconds measure_time_taskflow(
   size_t num_layers,
   unsigned num_threads
 ) {
+  static tf::Executor executor(num_threads); 
   auto beg = std::chrono::high_resolution_clock::now();
-  binary_tree_taskflow(num_layers, num_threads);
+  binary_tree_taskflow(num_layers, executor);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

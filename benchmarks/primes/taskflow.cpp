@@ -3,9 +3,7 @@
 #include <ranges>
 #include <taskflow/algorithm/reduce.hpp>
 
-size_t primes_taskflow(size_t num_threads, size_t value) {
-
-  static tf::Executor executor(num_threads);
+size_t primes_taskflow(tf::Executor& executor, size_t value) {
 
   tf::Taskflow taskflow;
 
@@ -32,8 +30,9 @@ size_t primes_taskflow(size_t num_threads, size_t value) {
 
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t value) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  primes_taskflow(num_threads, value);
+  primes_taskflow(executor, value);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }
