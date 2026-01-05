@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1TaskGroup" kind="class" language="C++" prot="public">
     <compoundname>tf::TaskGroup</compoundname>
     <includes refid="task__group_8hpp" local="no">taskflow/core/task_group.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1TaskGroup_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::TaskGroup::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -19,16 +18,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/task_group.hpp" line="63" column="16" bodyfile="taskflow/core/task_group.hpp" bodystart="63" bodyend="-1"/>
+        <location file="taskflow/core/task_group.hpp" line="63" column="3" bodyfile="taskflow/core/task_group.hpp" bodystart="63" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1TaskGroup_1aef7890081c775adf6892c1191dbe6473" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
         <definition>Executor&amp; tf::TaskGroup::_executor</definition>
         <argsstring></argsstring>
         <name>_executor</name>
-        <qualifiedname>tf::TaskGroup::_executor</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -42,7 +40,6 @@
         <definition>Worker&amp; tf::TaskGroup::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
-        <qualifiedname>tf::TaskGroup::_worker</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -56,7 +53,6 @@
         <definition>NodeBase tf::TaskGroup::_node_base</definition>
         <argsstring></argsstring>
         <name>_node_base</name>
-        <qualifiedname>tf::TaskGroup::_node_base</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -65,14 +61,13 @@
         </inbodydescription>
         <location file="taskflow/core/task_group.hpp" line="717" column="12" bodyfile="taskflow/core/task_group.hpp" bodystart="717" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1TaskGroup_1ab4f3fec3f8ec46b65379e7f2a7eb809f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::TaskGroup::TaskGroup</definition>
         <argsstring>(const TaskGroup &amp;)=delete</argsstring>
         <name>TaskGroup</name>
-        <qualifiedname>tf::TaskGroup::TaskGroup</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;</type>
         </param>
@@ -90,7 +85,6 @@
         <definition>tf::TaskGroup::TaskGroup</definition>
         <argsstring>(TaskGroup &amp;&amp;)=delete</argsstring>
         <name>TaskGroup</name>
-        <qualifiedname>tf::TaskGroup::TaskGroup</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;&amp;</type>
         </param>
@@ -103,12 +97,11 @@
         </inbodydescription>
         <location file="taskflow/core/task_group.hpp" line="79" column="3"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskGroup_1a9d366485715a997dfba3635274e0201c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskGroup_1a79d3fa948a82b772df925e94822a0c90" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;</type>
-        <definition>TaskGroup &amp; tf::TaskGroup::operator=</definition>
+        <definition>TaskGroup&amp; tf::TaskGroup::operator=</definition>
         <argsstring>(TaskGroup &amp;&amp;)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::TaskGroup::operator=</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;&amp;</type>
         </param>
@@ -121,12 +114,11 @@
         </inbodydescription>
         <location file="taskflow/core/task_group.hpp" line="84" column="13"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1TaskGroup_1a74e38c5abc67649aed7230f41116889d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1TaskGroup_1a77f8ee98c3a90b061125504f0adbf02a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;</type>
-        <definition>TaskGroup &amp; tf::TaskGroup::operator=</definition>
+        <definition>TaskGroup&amp; tf::TaskGroup::operator=</definition>
         <argsstring>(const TaskGroup &amp;)=delete</argsstring>
         <name>operator=</name>
-        <qualifiedname>tf::TaskGroup::operator=</qualifiedname>
         <param>
           <type>const <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> &amp;</type>
         </param>
@@ -144,14 +136,13 @@
         <definition>Executor &amp; tf::TaskGroup::executor</definition>
         <argsstring>()</argsstring>
         <name>executor</name>
-        <qualifiedname>tf::TaskGroup::executor</qualifiedname>
         <briefdescription>
 <para>obtains the executor that creates this task group </para>
         </briefdescription>
         <detaileddescription>
 <para>The running executor of a task group is the executor that creates the task group.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::TaskGroup<sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(&amp;(tg.<ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>())<sp/>==<sp/>&amp;<ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
@@ -170,7 +161,6 @@
         <definition>auto tf::TaskGroup::async</definition>
         <argsstring>(F &amp;&amp;f)</argsstring>
         <name>async</name>
-        <qualifiedname>tf::TaskGroup::async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>f</declname>
@@ -198,10 +188,10 @@
 </parameteritem>
 </parameterlist>
 This method creates an asynchronous task that executes the given function with the specified arguments. Unlike <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, the task created here is parented to the task group, where applications can issue <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun</ref> to explicitly wait for all asynchronous tasks spawned from the task group to complete. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::atomic&lt;int&gt;<sp/>counter(0);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu1<sp/>=<sp/>tg.async([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter(0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu1<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu2<sp/>=<sp/>tg.async([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fu1.get();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fu2.get();</highlight></codeline>
@@ -234,7 +224,6 @@ This method creates an asynchronous task that executes the given function with t
         <definition>auto tf::TaskGroup::async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;f)</argsstring>
         <name>async</name>
-        <qualifiedname>tf::TaskGroup::async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -282,9 +271,9 @@ This method creates an asynchronous task that executes the given function with t
 </parameteritem>
 </parameterlist>
 Similar to <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">tf::TaskGroup::async</ref>, but takes a parameter of type <ref refid="classtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref> to initialize the asynchronous task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>future<sp/>=<sp/>tg.async(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>10;<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>future<sp/>=<sp/>tg.<ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">async</ref>(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>10;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(future.get()<sp/>==<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
@@ -303,7 +292,6 @@ Similar to <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" 
         <definition>void tf::TaskGroup::silent_async</definition>
         <argsstring>(F &amp;&amp;f)</argsstring>
         <name>silent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>f</declname>
@@ -330,12 +318,12 @@ Similar to <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" 
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This function is more efficient than <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">tf::TaskGroup::async</ref> and is recommended when the result of the asynchronous task does not need to be accessed via a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::atomic&lt;int&gt;<sp/>counter(0);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
+This function is more efficient than <ref refid="classtf_1_1TaskGroup_1a65915370b458e982e04ebfbd46bb92c6" kindref="member">tf::TaskGroup::async</ref> and is recommended when the result of the asynchronous task does not need to be accessed via a <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter(0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_async([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">silent_async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter<sp/>==<sp/>100);</highlight></codeline>
@@ -359,7 +347,6 @@ This function is more efficient than <ref refid="classtf_1_1TaskGroup_1a65915370
         <definition>void tf::TaskGroup::silent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;f)</argsstring>
         <name>silent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -399,9 +386,9 @@ This function is more efficient than <ref refid="classtf_1_1TaskGroup_1a65915370
 </parameteritem>
 </parameterlist>
 Similar to <ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">tf::TaskGroup::silent_async</ref>, but takes a parameter of type <ref refid="classtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref> to initialize the created asynchronous task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tg.silent_async(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">silent_async</ref>(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
@@ -429,7 +416,6 @@ Similar to <ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" 
         <definition>auto tf::TaskGroup::dependent_async</definition>
         <argsstring>(F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>dependent_async</name>
-        <qualifiedname>tf::TaskGroup::dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -479,13 +465,13 @@ Similar to <ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" 
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Task <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>tg.dependent_async(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>A,<sp/>B</highlight></codeline>
@@ -521,7 +507,6 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
         <definition>auto tf::TaskGroup::dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>dependent_async</name>
-        <qualifiedname>tf::TaskGroup::dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -591,14 +576,14 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three named asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Task <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>tg.dependent_async(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>A,<sp/>B</highlight></codeline>
@@ -629,7 +614,6 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         <definition>auto tf::TaskGroup::dependent_async</definition>
         <argsstring>(F &amp;&amp;func, I first, I last)</argsstring>
         <name>dependent_async</name>
-        <qualifiedname>tf::TaskGroup::dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -691,15 +675,15 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Task <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>tg.dependent_async(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>array.begin(),<sp/>array.end()</highlight></codeline>
@@ -733,7 +717,6 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
         <definition>auto tf::TaskGroup::dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, I first, I last)</argsstring>
         <name>dependent_async</name>
-        <qualifiedname>tf::TaskGroup::dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -815,16 +798,16 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three named asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Task <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>tg.dependent_async(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>array.begin(),<sp/>array.end()</highlight></codeline>
@@ -857,7 +840,6 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         <definition>tf::AsyncTask tf::TaskGroup::silent_dependent_async</definition>
         <argsstring>(F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>silent_dependent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -907,11 +889,11 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();<sp/><sp/></highlight><highlight class="comment">//<sp/>corun<sp/>until<sp/>all<sp/>dependent-async<sp/>tasks<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
@@ -942,7 +924,6 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>tf::AsyncTask tf::TaskGroup::silent_dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>silent_dependent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -1004,12 +985,12 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.silent_dependent_async(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();<sp/><sp/></highlight><highlight class="comment">//<sp/>corun<sp/>until<sp/>all<sp/>dependent-async<sp/>tasks<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
@@ -1036,7 +1017,6 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>tf::AsyncTask tf::TaskGroup::silent_dependent_async</definition>
         <argsstring>(F &amp;&amp;func, I first, I last)</argsstring>
         <name>silent_dependent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -1098,14 +1078,14 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.silent_dependent_async(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();<sp/><sp/></highlight><highlight class="comment">//<sp/>corun<sp/>until<sp/>all<sp/>dependent-async<sp/>tasks<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
@@ -1135,7 +1115,6 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>tf::AsyncTask tf::TaskGroup::silent_dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, I first, I last)</argsstring>
         <name>silent_dependent_async</name>
-        <qualifiedname>tf::TaskGroup::silent_dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -1209,14 +1188,14 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af6ff72a4019da86f2234bea66a6abb98" kindref="member">tf::TaskGroup::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_dependent_async(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.silent_dependent_async(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.corun();<sp/><sp/></highlight><highlight class="comment">//<sp/>corun<sp/>until<sp/>all<sp/>dependent-async<sp/>tasks<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/></highlight></codeline>
@@ -1231,16 +1210,15 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>void tf::TaskGroup::corun</definition>
         <argsstring>()</argsstring>
         <name>corun</name>
-        <qualifiedname>tf::TaskGroup::corun</qualifiedname>
         <briefdescription>
 <para>corun all tasks spawned by this task group with other workers </para>
         </briefdescription>
         <detaileddescription>
 <para>Coruns all tasks spawned by this task group cooperatively with other workers in the same executor until all these tasks finish. Under cooperative execution, a worker is not preempted. Instead, it continues participating in the work-stealing loop, executing available tasks alongside other workers. <linebreak/>
 </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::atomic&lt;size_t&gt;<sp/>counter{0};</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>counter{0};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>100<sp/>async<sp/>tasks<sp/>and<sp/>wait</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_async([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
@@ -1267,7 +1245,6 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>void tf::TaskGroup::cancel</definition>
         <argsstring>()</argsstring>
         <name>cancel</name>
-        <qualifiedname>tf::TaskGroup::cancel</qualifiedname>
         <briefdescription>
 <para>cancel all tasks in this task group </para>
         </briefdescription>
@@ -1275,14 +1252,14 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <para>Marks the task group as cancelled to stop any not-yet-started tasks in the group from running. Tasks that are already running will continue to completion, but no new tasks belonging to the task group will be scheduled after cancellation.</para>
 <para>This example below demonstrates how <ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">tf::TaskGroup::cancel()</ref> prevents pending tasks in a task group from executing, while allowing already running tasks to complete cooperatively. The first set of tasks deliberately occupies all but one worker thread, ensuring that subsequently spawned tasks remain pending. After invoking <ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">tf::TaskGroup::cancel()</ref>, these pending tasks are never scheduled, even after the blocked workers are released. A final call to <ref refid="classtf_1_1TaskGroup_1a1f481dc466e3107a08346d1a124677bc" kindref="member">tf::TaskGroup::corun()</ref> synchronizes with all tasks in the group, guaranteeing safe completion and verifying that cancellation successfully suppresses task execution.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>W<sp/>=<sp/>12;<sp/><sp/></highlight><highlight class="comment">//<sp/>must<sp/>be<sp/>&gt;1<sp/>for<sp/>this<sp/>example<sp/>to<sp/>work</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>(W);</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>(W);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.async([&amp;<ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>,<sp/>W](){</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;<ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>,<sp/>W](){</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>deliberately<sp/>block<sp/>the<sp/>other<sp/>W-1<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::atomic&lt;size_t&gt;<sp/>latch(0);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>latch(0);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;W-1;<sp/>++i)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.async([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>++latch;</highlight></codeline>
@@ -1295,7 +1272,7 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>other<sp/>tasks<sp/>which<sp/>should<sp/>never<sp/>run<sp/>after<sp/>cancellation</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>++i)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.async([&amp;](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/>std::runtime_error(</highlight><highlight class="stringliteral">&quot;this<sp/>should<sp/>never<sp/>run&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.async([&amp;](){<sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal"><sp/><ref refid="cpp/error/runtime_error" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::runtime_error</ref>(</highlight><highlight class="stringliteral">&quot;this<sp/>should<sp/>never<sp/>run&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>cancel<sp/>the<sp/>task<sp/>group<sp/>and<sp/>unblock<sp/>the<sp/>other<sp/>W-1<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
@@ -1318,7 +1295,6 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
         <definition>bool tf::TaskGroup::is_cancelled</definition>
         <argsstring>()</argsstring>
         <name>is_cancelled</name>
-        <qualifiedname>tf::TaskGroup::is_cancelled</qualifiedname>
         <briefdescription>
 <para>queries if the task group has been cancelled </para>
         </briefdescription>
@@ -1326,8 +1302,8 @@ This member function is more efficient than <ref refid="classtf_1_1TaskGroup_1af
 <para><simplesect kind="return"><para><computeroutput>true</computeroutput> if the task group has been marked as cancelled or <computeroutput>false</computeroutput> otherwise</para>
 </simplesect>
 This method returns <computeroutput>true</computeroutput> if the task group has been marked as cancelled via a call to <computeroutput><ref refid="classtf_1_1TaskGroup_1a2d32e816db51666b721d8b3d538e4066" kindref="member">cancel()</ref></computeroutput>, and <computeroutput>false</computeroutput> otherwise.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(tg.is_cancelled()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.cancel(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(tg.is_cancelled()<sp/>==<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
@@ -1344,7 +1320,6 @@ This method returns <computeroutput>true</computeroutput> if the task group has 
         <definition>size_t tf::TaskGroup::size</definition>
         <argsstring>() const</argsstring>
         <name>size</name>
-        <qualifiedname>tf::TaskGroup::size</qualifiedname>
         <briefdescription>
 <para>queries the number of tasks currently in this task group </para>
         </briefdescription>
@@ -1352,8 +1327,8 @@ This method returns <computeroutput>true</computeroutput> if the task group has 
 <para><simplesect kind="return"><para>the number of tasks currently in this task group</para>
 </simplesect>
 This method returns the number of tasks that belong to the task group at the time of the call. The returned value represents a snapshot and may become outdated immediately, as tasks can be concurrently spawned, started, completed, or canceled while this method is executing. As a result, the value returned by <computeroutput><ref refid="classtf_1_1TaskGroup_1a2ff79bbacb724a4e99f3a65030bbd402" kindref="member">size()</ref></computeroutput> should be used for informational or diagnostic purposes only and must not be relied upon for synchronization or correctness.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.silent_async([&amp;](){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.task_group();</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a0461cb2c459c9f9473c72af06af9c701" kindref="member">silent_async</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>tg<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8858a119b9ad697748293c4bb1408853" kindref="member">task_group</ref>();</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(tg.size()<sp/>==<sp/>0);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>++i)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>tg.silent_async([](){});</highlight></codeline>
@@ -1367,14 +1342,13 @@ This method returns the number of tasks that belong to the task group at the tim
         </inbodydescription>
         <location file="taskflow/core/task_group.hpp" line="695" column="10" bodyfile="taskflow/core/task_group.hpp" bodystart="754" bodyend="756"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1TaskGroup_1a3ee9ebc9cbe8d10c511590d8a5b568c4" prot="private" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::TaskGroup::TaskGroup</definition>
         <argsstring>(Executor &amp;, Worker &amp;)</argsstring>
         <name>TaskGroup</name>
-        <qualifiedname>tf::TaskGroup::TaskGroup</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
           <defname>executor</defname>
@@ -1391,13 +1365,13 @@ This method returns the number of tasks that belong to the task group at the tim
         </inbodydescription>
         <location file="taskflow/core/task_group.hpp" line="702" column="12" bodyfile="taskflow/core/task_group.hpp" bodystart="721" bodyend="725"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a task group from a task </para>
     </briefdescription>
     <detaileddescription>
 <para>A task group executes a group of asynchronous tasks. It enables asynchronous task spawning, cooperative execution among worker threads, and naturally supports recursive parallelism. Due to cooperative execution, a task group can only be created by an executor worker; otherwise an exception will be thrown. The code below demonstrates how to use task groups to implement recursive Fibonacci parallelism.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>fibonacci(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
@@ -1406,7 +1380,7 @@ This method returns the number of tasks that belong to the task group at the tim
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>res1,<sp/>res2;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>task<sp/>group<sp/>from<sp/>the<sp/>current<sp/>executor</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>tf::TaskGroup<sp/>tg<sp/>=<sp/>get_executor().task_group();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref><sp/>tg<sp/>=<sp/>get_executor().task_group();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>Submit<sp/>asynchronous<sp/>tasks<sp/>to<sp/>the<sp/>group</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>tg.<ref refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" kindref="member">silent_async</ref>([N,<sp/>&amp;res1](){<sp/>res1<sp/>=<sp/>fibonacci(N-1);<sp/>});</highlight></codeline>
@@ -1420,8 +1394,8 @@ This method returns the number of tasks that belong to the task group at the tim
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main()<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>N<sp/>=<sp/>30,<sp/>res;</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.async([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fibonacci(30);<sp/>}).get();</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>res<sp/>=<sp/><ref refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">async</ref>([](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>fibonacci(30);<sp/>}).get();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/>N<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;-th<sp/>Fibonacci<sp/>number<sp/>is<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>res<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
@@ -1446,8 +1420,8 @@ This method returns the number of tasks that belong to the task group at the tim
       <member refid="classtf_1_1TaskGroup_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::TaskGroup</scope><name>Executor</name></member>
       <member refid="classtf_1_1TaskGroup_1ac39e984ac576ff1e959059abd7b57aa5" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>executor</name></member>
       <member refid="classtf_1_1TaskGroup_1aa199904b8123c345df37df4360950fa7" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>is_cancelled</name></member>
-      <member refid="classtf_1_1TaskGroup_1a9d366485715a997dfba3635274e0201c" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>operator=</name></member>
-      <member refid="classtf_1_1TaskGroup_1a74e38c5abc67649aed7230f41116889d" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>operator=</name></member>
+      <member refid="classtf_1_1TaskGroup_1a79d3fa948a82b772df925e94822a0c90" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>operator=</name></member>
+      <member refid="classtf_1_1TaskGroup_1a77f8ee98c3a90b061125504f0adbf02a" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>operator=</name></member>
       <member refid="classtf_1_1TaskGroup_1acf90acfcaf9468adc56bf647208a9e78" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>silent_async</name></member>
       <member refid="classtf_1_1TaskGroup_1ac3284167c1e67bed2590d075eead9741" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>silent_async</name></member>
       <member refid="classtf_1_1TaskGroup_1a4eab3bb447361a2de8680fa7aab18f8c" prot="public" virt="non-virtual"><scope>tf::TaskGroup</scope><name>silent_dependent_async</name></member>

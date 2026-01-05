@@ -2,9 +2,9 @@
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/for_each.hpp>
 
-void for_each_taskflow(size_t num_threads) {
+void for_each_taskflow(tf::Executor& executor) {
 
-  static tf::Executor executor(num_threads);
+
   tf::Taskflow taskflow;
 
   tf::IndexRange<size_t> range(0, vec.size(), 1);
@@ -26,8 +26,9 @@ void for_each_taskflow(size_t num_threads) {
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  for_each_taskflow(num_threads);
+  for_each_taskflow(executor);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

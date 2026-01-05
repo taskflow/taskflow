@@ -1,18 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1ChromeObserver" kind="class" language="C++" prot="public">
     <compoundname>tf::ChromeObserver</compoundname>
     <basecompoundref refid="classtf_1_1ObserverInterface" prot="public" virt="non-virtual">tf::ObserverInterface</basecompoundref>
     <includes refid="observer_8hpp" local="no">taskflow/core/observer.hpp</includes>
     <innerclass refid="structtf_1_1ChromeObserver_1_1Segment" prot="private">tf::ChromeObserver::Segment</innerclass>
     <innerclass refid="structtf_1_1ChromeObserver_1_1Timeline" prot="private">tf::ChromeObserver::Timeline</innerclass>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1ChromeObserver_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::ChromeObserver::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -22,16 +21,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/observer.hpp" line="231" column="16" bodyfile="taskflow/core/observer.hpp" bodystart="231" bodyend="-1"/>
+        <location file="taskflow/core/observer.hpp" line="231" column="3" bodyfile="taskflow/core/observer.hpp" bodystart="231" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1ChromeObserver_1aee57a7a03bb4af2aadd2fdefbebd9e7b" prot="private" static="no" mutable="no">
         <type>Timeline</type>
         <definition>Timeline tf::ChromeObserver::_timeline</definition>
         <argsstring></argsstring>
         <name>_timeline</name>
-        <qualifiedname>tf::ChromeObserver::_timeline</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -40,16 +38,15 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="284" column="14" bodyfile="taskflow/core/observer.hpp" bodystart="284" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1ChromeObserver_1a5df3852d8525cabafee696d5f77b3fd7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::ChromeObserver::dump</definition>
         <argsstring>(std::ostream &amp;ostream) const</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::ChromeObserver::dump</qualifiedname>
         <param>
-          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
+          <type><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ostream</ref> &amp;</type>
           <declname>ostream</declname>
         </param>
         <briefdescription>
@@ -62,11 +59,10 @@
         <location file="taskflow/core/observer.hpp" line="261" column="10" bodyfile="taskflow/core/observer.hpp" bodystart="337" bodyend="391"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1ChromeObserver_1a414d60cee91db1d3924636fcea5f4ea7" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
+        <type><ref refid="cpp/string/basic_string" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::string</ref></type>
         <definition>std::string tf::ChromeObserver::dump</definition>
         <argsstring>() const</argsstring>
         <name>dump</name>
-        <qualifiedname>tf::ChromeObserver::dump</qualifiedname>
         <briefdescription>
 <para>dumps the timelines into a <ulink url="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</ulink> format </para>
         </briefdescription>
@@ -81,7 +77,6 @@
         <definition>void tf::ChromeObserver::clear</definition>
         <argsstring>()</argsstring>
         <name>clear</name>
-        <qualifiedname>tf::ChromeObserver::clear</qualifiedname>
         <briefdescription>
 <para>clears the timeline data </para>
         </briefdescription>
@@ -96,7 +91,6 @@
         <definition>size_t tf::ChromeObserver::num_tasks</definition>
         <argsstring>() const</argsstring>
         <name>num_tasks</name>
-        <qualifiedname>tf::ChromeObserver::num_tasks</qualifiedname>
         <briefdescription>
 <para>queries the number of tasks observed </para>
         </briefdescription>
@@ -106,14 +100,13 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="276" column="19" bodyfile="taskflow/core/observer.hpp" bodystart="401" bodyend="408"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1ChromeObserver_1aa8d5d9c3d0de7e7006d27079d8eb3888" prot="private" static="no" const="no" explicit="no" inline="yes" final="yes" virt="virtual">
         <type>void</type>
         <definition>void tf::ChromeObserver::set_up</definition>
         <argsstring>(size_t num_workers) override final</argsstring>
         <name>set_up</name>
-        <qualifiedname>tf::ChromeObserver::set_up</qualifiedname>
         <reimplements refid="classtf_1_1ObserverInterface_1a41e6e62f12bf9d9dc4fa74632f6825d9">set_up</reimplements>
         <param>
           <type>size_t</type>
@@ -143,7 +136,6 @@
         <definition>void tf::ChromeObserver::on_entry</definition>
         <argsstring>(WorkerView w, TaskView task_view) override final</argsstring>
         <name>on_entry</name>
-        <qualifiedname>tf::ChromeObserver::on_entry</qualifiedname>
         <reimplements refid="classtf_1_1ObserverInterface_1a8225fcacb03089677a1efc4b16b734cc">on_entry</reimplements>
         <param>
           <type><ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref></type>
@@ -185,7 +177,6 @@
         <definition>void tf::ChromeObserver::on_exit</definition>
         <argsstring>(WorkerView w, TaskView task_view) override final</argsstring>
         <name>on_exit</name>
-        <qualifiedname>tf::ChromeObserver::on_exit</qualifiedname>
         <reimplements refid="classtf_1_1ObserverInterface_1aa22f5378154653f08d9a58326bda4754">on_exit</reimplements>
         <param>
           <type><ref refid="classtf_1_1WorkerView" kindref="compound">WorkerView</ref></type>
@@ -222,50 +213,50 @@
         </inbodydescription>
         <location file="taskflow/core/observer.hpp" line="282" column="17" bodyfile="taskflow/core/observer.hpp" bodystart="312" bodyend="324"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create an observer based on Chrome tracing format </para>
     </briefdescription>
     <detaileddescription>
 <para>A <ref refid="classtf_1_1ChromeObserver" kindref="compound">tf::ChromeObserver</ref> inherits <ref refid="classtf_1_1ObserverInterface" kindref="compound">tf::ObserverInterface</ref> and defines methods to dump the observed thread activities into a format that can be visualized through <ulink url="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chrome Tracing</ulink>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">tf::Executor<sp/>executor;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>insert<sp/>tasks<sp/>into<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>...</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>custom<sp/>observer</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">std::shared_ptr&lt;tf::ChromeObserver&gt;<sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1aff77def96ae740d648dd84e571237c83" kindref="member">make_observer</ref>&lt;tf::ChromeObserver&gt;();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr&lt;tf::ChromeObserver&gt;</ref><sp/>observer<sp/>=<sp/>executor.<ref refid="classtf_1_1Executor_1ab5a793a0f2ce41cd49ca45e9f0a6962c" kindref="member">make_observer</ref>&lt;<ref refid="classtf_1_1ChromeObserver" kindref="compound">tf::ChromeObserver</ref>&gt;();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>run<sp/>the<sp/>taskflow</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a519777f5783981d534e9e53b99712069" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal">executor.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>dump<sp/>the<sp/>thread<sp/>activities<sp/>to<sp/>a<sp/>chrome-tracing<sp/>format.</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">observer-&gt;dump(std::cout);</highlight></codeline>
+<codeline><highlight class="normal">observer-&gt;dump(<ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref>);</highlight></codeline>
 </programlisting> </para>
     </detaileddescription>
     <inheritancegraph>
+      <node id="2">
+        <label>tf::ObserverInterface</label>
+        <link refid="classtf_1_1ObserverInterface"/>
+      </node>
       <node id="1">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="2">
-        <label>tf::ObserverInterface</label>
-        <link refid="classtf_1_1ObserverInterface"/>
       </node>
     </inheritancegraph>
     <collaborationgraph>
+      <node id="2">
+        <label>tf::ObserverInterface</label>
+        <link refid="classtf_1_1ObserverInterface"/>
+      </node>
       <node id="1">
         <label>tf::ChromeObserver</label>
         <link refid="classtf_1_1ChromeObserver"/>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
-      </node>
-      <node id="2">
-        <label>tf::ObserverInterface</label>
-        <link refid="classtf_1_1ObserverInterface"/>
       </node>
     </collaborationgraph>
     <location file="taskflow/core/observer.hpp" line="229" column="1" bodyfile="taskflow/core/observer.hpp" bodystart="229" bodyend="285"/>

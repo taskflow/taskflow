@@ -3,9 +3,7 @@
 #include <taskflow/algorithm/for_each.hpp>
 
 // matrix_multiplication_taskflow
-void matrix_multiplication_taskflow(unsigned num_threads) {
-
-  static tf::Executor executor(num_threads);
+void matrix_multiplication_taskflow(tf::Executor& executor) {
 
   tf::Taskflow taskflow;
 
@@ -45,8 +43,9 @@ void matrix_multiplication_taskflow(unsigned num_threads) {
 }
 
 std::chrono::microseconds measure_time_taskflow(unsigned num_threads) {
+  tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  matrix_multiplication_taskflow(num_threads);
+  matrix_multiplication_taskflow(executor);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

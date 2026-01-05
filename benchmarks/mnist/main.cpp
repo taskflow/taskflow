@@ -8,9 +8,10 @@ std::chrono::milliseconds measure_time_taskflow(
   unsigned num_epochs,
   unsigned num_threads
 ) {
+  static tf::Executor executor(num_threads);
   auto dnn {build_dnn(num_epochs)};
   auto t1 = std::chrono::high_resolution_clock::now();
-  run_taskflow(dnn, num_threads);
+  run_taskflow(dnn, executor);
   auto t2 = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 }

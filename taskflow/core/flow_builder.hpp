@@ -1504,6 +1504,9 @@ class Subflow : public FlowBuilder {
     /**
     @brief queries if the subflow will be retained after it is joined
     @return `true` if the subflow will be retained after it is joined; `false` otherwise
+
+    By default, the runtime automatically clears a spawned subflow once it is joined.
+    Users can disable this before by explicitly calling tf::Subflow::retain.
     */
     bool retain() const;
 

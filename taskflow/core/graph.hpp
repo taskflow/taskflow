@@ -346,7 +346,6 @@ class Node : public NodeBase {
     > work;
    
     std::atomic<size_t> use_count {1};
-    std::atomic<ASTATE::underlying_type> state {ASTATE::UNFINISHED};
   };
 
   using handle_t = std::variant<

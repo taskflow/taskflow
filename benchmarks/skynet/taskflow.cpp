@@ -30,14 +30,14 @@ size_t skynet_one_tf(tf::Executor& exe, size_t BaseNum, size_t Depth, size_t Max
   return count;
 }
 
-void skynet(size_t num_threads, size_t MaxDepth) {
-  static tf::Executor executor(num_threads);
+void skynet(tf::Executor& executor, size_t MaxDepth) {
   executor.async([&, MaxDepth]() { skynet_one_tf(executor, 0, 0, MaxDepth); }).wait();
 }
 
 std::chrono::microseconds measure_time_taskflow(size_t num_threads, size_t MaxDepth) {
+  static tf::Executor executor(num_threads);
   auto beg = std::chrono::high_resolution_clock::now();
-  skynet(num_threads, MaxDepth);
+  skynet(executor, MaxDepth);
   auto end = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 }

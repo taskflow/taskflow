@@ -4,6 +4,7 @@
 #include <experimental/filesystem>
 #include <fstream>
 #include <random>
+#include <taskflow/taskflow.hpp>
 
 #define EIGEN_DONT_PARALLELIZE 1
 
@@ -351,7 +352,7 @@ inline auto build_dnn(unsigned epoch) {
 }
 
 void run_tbb(MNIST&, unsigned);
-void run_taskflow(MNIST&, unsigned);
+void run_taskflow(MNIST&, tf::Executor&);
 void run_omp(MNIST&, unsigned);
 void run_sequential(MNIST&, unsigned);
 
