@@ -41,6 +41,7 @@ option(TF_BUILD_PROFILER "Enables builds of profiler" OFF)
 option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
+option(TF_BUILD_MODULES "Enables C++ modules" OFF)
 
 # project-specific variables
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
@@ -261,6 +262,7 @@ message(STATUS "TF_BUILD_PROFILER: " ${TF_BUILD_PROFILER})
 message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
+message(STATUS "TF_BUILD_MODULES: " ${TF_BUILD_MODULES})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
@@ -298,6 +300,13 @@ target_compile_options(${PROJECT_NAME} INTERFACE $<$<BOOL:${MSVC}>:/wd4324>)
 if(TF_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif(TF_BUILD_EXAMPLES)
+
+# -----------------------------------------------------------------------------
+# Build modules
+# -----------------------------------------------------------------------------
+if(TF_BUILD_MODULES)
+  add_subdirectory(modules)
+endif(TF_BUILD_MODULES)
 
 # -----------------------------------------------------------------------------
 # Unittest
