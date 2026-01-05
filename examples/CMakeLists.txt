@@ -66,6 +66,13 @@ if(TF_BUILD_SYCL)
   add_subdirectory(sycl)
 endif()
 
+# -----------------------------------------------------------------------------
+# modules examples
+# -----------------------------------------------------------------------------
+if(TF_BUILD_MODULE)
+  add_subdirectory(modules)
+endif()
+
 
 #### TensorFrame Project
 ##set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TF_EXAMPLE_DIR}/tensorframe)
