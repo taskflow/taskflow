@@ -1456,7 +1456,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
     return true;
   }
 
-  // Entering the 2PC guard as all queues should be empty after many stealing attempts.
+  // Entering the 2PC guard as all queues are likely empty after many stealing attempts.
   _notifier.prepare_wait(w._id);
   
   // Condition #1: buffers should be empty
@@ -1470,19 +1470,11 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   
   // Condition #2: worker queues should be empty
   // Note: We need to use index-based looping to avoid data race with _spawan
-  // which initializes other worker data structure at the same time
-  for(size_t vtm=0; vtm<w._id; ++vtm) {
-    if(!_workers[vtm]._wsq.empty()) {
-      _notifier.cancel_wait(w._id);
-      w._vtm = vtm;
-      goto explore_task;
-    }
-  }
-  
-  // due to the property of the work-stealing queue, we don't need to check
-  // the queue of this worker
-  for(size_t vtm=w._id+1; vtm<_workers.size(); vtm++) {
-    if(!_workers[vtm]._wsq.empty()) {
+  // which initializes other worker data structure at the same time.
+  // Also, due to the property of a work-stealing queue, we don't need to check 
+  // this worker's work-stealing queue.
+  for(size_t k=0; k<_workers.size()-1; ++k) {
+    if(size_t vtm = k + (k >= w._id); !_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(w._id);
       w._vtm = vtm;
       goto explore_task;
