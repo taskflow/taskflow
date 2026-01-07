@@ -37,11 +37,11 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
   -------------------------------------------------------------------------------------------------
   */
 
-  // from executor
+  // no parent context (e.g., from executor)
   if(auto parent = node->_parent; parent == nullptr) {
     _decrement_topology();
   }
-  // from runtime or task group
+  // has parent context (e.g., from runtime, from task group)
   else {
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
@@ -409,11 +409,11 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   -------------------------------------------------------------------------------------------------
   */
 
-  // from executor
+  // no parent context (e.g., from executor)
   if(auto parent = node->_parent; parent == nullptr) {
     _decrement_topology();
   }
-  // from runtime or task group
+  // has parent context (e.g., from runtime, from task group)
   else {
     auto state = parent->_nstate;
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
