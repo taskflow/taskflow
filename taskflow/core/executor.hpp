@@ -1320,7 +1320,7 @@ inline void Executor::_spawn(size_t N) {
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
       // initialize the random engine and seed for work-stealing loop
-      w._rdgen.seed(std::hash<std::thread::id>()(std::this_thread::get_id()));
+      w._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_if) {
