@@ -12,6 +12,7 @@
     <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_011_01_4" prot="private">tf::SmallVectorStorage&lt; T, 1 &gt;</innerclass>
     <innerclass refid="structtf_1_1SmallVectorStorage_3_01T_00_010_01_4" prot="private">tf::SmallVectorStorage&lt; T, 0 &gt;</innerclass>
     <innerclass refid="classtf_1_1SmallVector" prot="public">tf::SmallVector</innerclass>
+    <innerclass refid="classtf_1_1Xorshift" prot="public">tf::Xorshift</innerclass>
     <innerclass refid="classtf_1_1CachelineAligned" prot="public">tf::CachelineAligned</innerclass>
     <innerclass refid="classtf_1_1IndexRange" prot="public">tf::IndexRange</innerclass>
     <innerclass refid="classtf_1_1Graph" prot="public">tf::Graph</innerclass>
@@ -610,7 +611,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
-      <memberdef kind="function" id="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1af51f956cee377b335f4e0504cee4189a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
@@ -622,7 +623,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
           </param>
         </templateparamlist>
         <type>size_t</type>
-        <definition>static size_t tf::capacity_in_bytes</definition>
+        <definition>size_t tf::capacity_in_bytes</definition>
         <argsstring>(const SmallVector&lt; T, N &gt; &amp;X)</argsstring>
         <name>capacity_in_bytes</name>
         <param>
@@ -635,7 +636,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="1025" column="22" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1025" bodyend="1027"/>
+        <location file="taskflow/utility/small_vector.hpp" line="1034" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="1034" bodyend="1036"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1410,7 +1411,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="182" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="182" bodyend="198"/>
+        <location file="taskflow/utility/os.hpp" line="200" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="200" bodyend="216"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1447,7 +1448,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="212" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="212" bodyend="228"/>
+        <location file="taskflow/utility/os.hpp" line="230" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="230" bodyend="246"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -1461,75 +1462,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="245" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="245" bodyend="268"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1ae9b372cf6337d0fd563fecc59a1915cc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::pause</definition>
-        <argsstring>(size_t count)</argsstring>
-        <name>pause</name>
-        <param>
-          <type>size_t</type>
-          <declname>count</declname>
-        </param>
-        <briefdescription>
-<para>pause CPU for a specified number of iterations </para>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="273" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="273" bodyend="275"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <templateparamlist>
-          <param>
-            <type>typename P</type>
-          </param>
-        </templateparamlist>
-        <type>void</type>
-        <definition>void tf::spin_until</definition>
-        <argsstring>(P &amp;&amp;predicate)</argsstring>
-        <name>spin_until</name>
-        <param>
-          <type>P &amp;&amp;</type>
-          <declname>predicate</declname>
-        </param>
-        <briefdescription>
-<para>spins until the given predicate becomes true </para>
-        </briefdescription>
-        <detaileddescription>
-<para><parameterlist kind="templateparam"><parameteritem>
-<parameternamelist>
-<parametername>P</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>the type of the predicate function or callable. </para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-<parameterlist kind="param"><parameteritem>
-<parameternamelist>
-<parametername>predicate</parametername>
-</parameternamelist>
-<parameterdescription>
-<para>the callable that returns a boolean value, which is checked in the loop.</para>
-</parameterdescription>
-</parameteritem>
-</parameterlist>
-This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <computeroutput><ref refid="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" kindref="member">pause()</ref></computeroutput> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <computeroutput><ref refid="cpp/thread/yield" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::yield()</ref></computeroutput> to allow other threads to run and improve system responsiveness.</para>
-<para>The function operates as follows:<orderedlist>
-<listitem><para>For the first 100 iterations, it invokes <computeroutput><ref refid="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" kindref="member">pause()</ref></computeroutput> to reduce power consumption during the spin-wait.</para>
-</listitem><listitem><para>After 100 iterations, it uses <computeroutput><ref refid="cpp/thread/yield" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::this_thread::yield()</ref></computeroutput> to relinquish the CPU, allowing other threads to execute.</para>
-</listitem></orderedlist>
-</para>
-<para><simplesect kind="attention"><para>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach. </para>
-</simplesect>
-</para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="302" column="6" bodyfile="taskflow/utility/os.hpp" bodystart="302" bodyend="307"/>
+        <location file="taskflow/utility/os.hpp" line="263" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="263" bodyend="263"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5643bf94c64370ee721692e3e6d9dc80" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1822,7 +1755,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="314" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="314" bodyend="320"/>
+        <location file="taskflow/core/worker.hpp" line="317" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="317" bodyend="323"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

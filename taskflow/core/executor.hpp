@@ -1316,13 +1316,11 @@ inline void Executor::_spawn(size_t N) {
 
   for(size_t id=0; id<N; ++id) {
     _workers[id]._id = id;
-    _workers[id]._vtm = id;
+    _workers[id]._sticky_victim = id;
     _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
 
       // initialize the random engine and seed for work-stealing loop
-      w._rdgen.seed(static_cast<std::default_random_engine::result_type>(
-        std::hash<std::thread::id>()(std::this_thread::get_id()))
-      );
+      w._rdgen.seed(std::hash<std::thread::id>()(std::this_thread::get_id()));
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(_worker_if) {
@@ -1394,12 +1392,11 @@ inline void Executor::_spawn(size_t N) {
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
 
   //assert(!t);
-  
-  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
-  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
+  const size_t MAX_VICTIM = num_queues();
+  const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
 
   size_t num_steals = 0;
-  size_t vtm = w._vtm;
+  size_t vtm = w._sticky_victim;
 
   // Make the worker steal immediately from the assigned victim.
   while(true) {
@@ -1411,7 +1408,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
       : _buffers[vtm - _workers.size()].queue.steal();
 
     if(t) {
-      w._vtm = vtm;
+      w._sticky_victim = vtm;
       break;
     }
 
@@ -1429,7 +1426,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     } 
 
     // Randomely generate a next victim.
-    vtm = udist(w._rdgen); //w._rdvtm();
+    vtm = w._rdgen() % MAX_VICTIM;
   } 
   return true;
 }
@@ -1463,7 +1460,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t b=0; b<_buffers.size(); ++b) {
     if(!_buffers[b].queue.empty()) {
       _notifier.cancel_wait(w._id);
-      w._vtm = b + _workers.size();
+      w._sticky_victim = b + _workers.size();
       goto explore_task;
     }
   }
@@ -1476,7 +1473,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   for(size_t k=0; k<_workers.size()-1; ++k) {
     if(size_t vtm = k + (k >= w._id); !_workers[vtm]._wsq.empty()) {
       _notifier.cancel_wait(w._id);
-      w._vtm = vtm;
+      w._sticky_victim = vtm;
       goto explore_task;
     }
   }
@@ -2193,10 +2190,9 @@ void Executor::corun_until(P&& predicate) {
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
-  const size_t MAX_STEALS = ((num_queues() + 1) << 1);
+  const size_t MAX_VICTIM = num_queues();
+  const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
     
-  std::uniform_int_distribution<size_t> udist(0, num_queues()-1);
-  
   exploit:
 
   while(!stop_predicate()) {
@@ -2208,7 +2204,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
     }
     else {
       size_t num_steals = 0;
-      size_t vtm = w._vtm;
+      size_t vtm = w._sticky_victim;
 
       explore:
 
@@ -2218,14 +2214,14 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       if(t) {
         _invoke(w, t);
-        w._vtm = vtm;
+        w._sticky_victim = vtm;
         goto exploit;
       }
       else if(!stop_predicate()) {
         if(++num_steals > MAX_STEALS) {
           std::this_thread::yield();
         }
-        vtm = udist(w._rdgen);
+        vtm = w._rdgen() % MAX_VICTIM;
         goto explore;
       }
       else {

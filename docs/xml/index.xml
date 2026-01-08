@@ -1293,9 +1293,9 @@
     <member refid="classtf_1_1Worker_1a0f36eeb628ab3803180651682f5821f3" kind="friend"><name>WorkerView</name></member>
     <member refid="classtf_1_1Worker_1a361cd42c80b06adc52aafe360069828e" kind="variable"><name>_done</name></member>
     <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" kind="variable"><name>_id</name></member>
-    <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" kind="variable"><name>_vtm</name></member>
+    <member refid="classtf_1_1Worker_1a2c103b8ad8877aa9d509b337bbabe744" kind="variable"><name>_sticky_victim</name></member>
+    <member refid="classtf_1_1Worker_1a0d7f11220232c03d9b0599d4515ecb1d" kind="variable"><name>_rdgen</name></member>
     <member refid="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" kind="variable"><name>_thread</name></member>
-    <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" kind="variable"><name>_rdgen</name></member>
     <member refid="classtf_1_1Worker_1af5f427bb7d5eeef718bcbece0d961547" kind="variable"><name>_wsq</name></member>
     <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" kind="function"><name>id</name></member>
     <member refid="classtf_1_1Worker_1a5e1ec48fd2295d260e8f335ff22b95ae" kind="function"><name>queue_size</name></member>
@@ -1325,6 +1325,13 @@
     <member refid="classtf_1_1WorkerView_1aed408a9cbf65b0598fa27cd75d9b915e" kind="function"><name>queue_capacity</name></member>
     <member refid="classtf_1_1WorkerView_1af5023cb4d6b24fab8992310741952bea" kind="function"><name>WorkerView</name></member>
     <member refid="classtf_1_1WorkerView_1a4b39c214f3cd23c241faa56f4c94042f" kind="function"><name>WorkerView</name></member>
+  </compound>
+  <compound refid="classtf_1_1Xorshift" kind="class"><name>tf::Xorshift</name>
+    <member refid="classtf_1_1Xorshift_1abb644cc294c50eae2ade277e37206c50" kind="variable"><name>_state</name></member>
+    <member refid="classtf_1_1Xorshift_1a9753af25d9a8262c67c55914f8e82ce5" kind="function"><name>Xorshift</name></member>
+    <member refid="classtf_1_1Xorshift_1a6eeccbfe1882564147e5509f446536e0" kind="function"><name>Xorshift</name></member>
+    <member refid="classtf_1_1Xorshift_1a0293e3b3ab3f10d6160830024f065ec4" kind="function"><name>seed</name></member>
+    <member refid="classtf_1_1Xorshift_1a4223131b53cb370d4f5b302adbeb2265" kind="function"><name>operator()</name></member>
   </compound>
   <compound refid="namespacestd" kind="namespace"><name>std</name>
     <member refid="cpp/atomic/atomic_fetch_sub_1" kind="function"><name>atomic_fetch_and_explicit</name></member>
@@ -1889,7 +1896,7 @@
     <member refid="namespacetf_1a00ca2fc2de0e679a7d9b8039340343df" kind="variable"><name>is_condition_task_v</name></member>
     <member refid="namespacetf_1a78c40dc8776735b0f2c27cd446481aff" kind="variable"><name>is_multi_condition_task_v</name></member>
     <member refid="namespacetf_1a73c20705fc54763f195a00b6e626e301" kind="variable"><name>is_partitioner_v</name></member>
-    <member refid="namespacetf_1aea9fe5c87d4439816239b5af6ebeec55" kind="function"><name>capacity_in_bytes</name></member>
+    <member refid="namespacetf_1af51f956cee377b335f4e0504cee4189a" kind="function"><name>capacity_in_bytes</name></member>
     <member refid="namespacetf_1ae9682c3db0662fdf6d688a8b095c19ea" kind="function"><name>next_pow2</name></member>
     <member refid="namespacetf_1a8d48a5014f34a9f97aae5269c2367e38" kind="function"><name>is_pow2</name></member>
     <member refid="namespacetf_1a8845f13b039ef9820087c9f467f6c734" kind="function"><name>floor_log2</name></member>
@@ -1907,8 +1914,6 @@
     <member refid="namespacetf_1abbef08f01c467fd4f746c3247af892bc" kind="function"><name>get_env</name></member>
     <member refid="namespacetf_1adc9815b9f96b796675ba939078d25413" kind="function"><name>has_env</name></member>
     <member refid="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" kind="function"><name>pause</name></member>
-    <member refid="namespacetf_1ae9b372cf6337d0fd563fecc59a1915cc" kind="function"><name>pause</name></member>
-    <member refid="namespacetf_1a3abe09ef55c4f46e64ba88bff175c4f6" kind="function"><name>spin_until</name></member>
     <member refid="namespacetf_1a5643bf94c64370ee721692e3e6d9dc80" kind="function"><name>is_index_range_invalid</name></member>
     <member refid="namespacetf_1a02a73acf6a05a3a4c673068daaad866f" kind="function"><name>distance</name></member>
     <member refid="namespacetf_1a7f414301de196737b08e62431691feba" kind="function"><name>animate</name></member>
@@ -2216,6 +2221,7 @@
     <member refid="os_8hpp_1ae8d8a6de7c7ab584218e6b78e7b55060" kind="define"><name>TF_OS_SOLARIS</name></member>
     <member refid="os_8hpp_1a592a193c49c31e6688dc1019d02269b4" kind="define"><name>TF_OS_UNIX</name></member>
     <member refid="os_8hpp_1ade30f1836b6fb593039f13b67a20cec9" kind="define"><name>TF_OS_UNKNOWN</name></member>
+    <member refid="os_8hpp_1a8a9e072a4ae2c5a6ed084bc4aaa4e8b7" kind="define"><name>TF_CPU_PAUSE</name></member>
     <member refid="os_8hpp_1a2f7ab3bdbd7b17f081cbb69422b3bf0b" kind="define"><name>TF_CACHELINE_SIZE</name></member>
   </compound>
   <compound refid="small__vector_8hpp" kind="file"><name>small_vector.hpp</name>

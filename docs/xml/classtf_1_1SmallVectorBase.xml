@@ -92,8 +92,8 @@
         <location file="taskflow/utility/small_vector.hpp" line="63" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="63" bodyend="85"/>
       </memberdef>
       </sectiondef>
-      <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorBase::size_in_bytes</definition>
         <argsstring>() const</argsstring>
@@ -105,9 +105,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="89" column="10" bodyfile="taskflow/utility/small_vector.hpp" bodystart="89" bodyend="91"/>
+        <location file="taskflow/utility/small_vector.hpp" line="92" column="10" bodyfile="taskflow/utility/small_vector.hpp" bodystart="92" bodyend="94"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="private" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
         <definition>size_t tf::SmallVectorBase::capacity_in_bytes</definition>
         <argsstring>() const</argsstring>
@@ -119,8 +119,10 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="94" column="10" bodyfile="taskflow/utility/small_vector.hpp" bodystart="94" bodyend="96"/>
+        <location file="taskflow/utility/small_vector.hpp" line="100" column="10" bodyfile="taskflow/utility/small_vector.hpp" bodystart="100" bodyend="102"/>
       </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::SmallVectorBase::empty</definition>
@@ -132,22 +134,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="98" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="98" bodyend="98"/>
+        <location file="taskflow/utility/small_vector.hpp" line="104" column="8" bodyfile="taskflow/utility/small_vector.hpp" bodystart="104" bodyend="104"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="taskflow/utility/small_vector.hpp" line="53" column="1" bodyfile="taskflow/utility/small_vector.hpp" bodystart="53" bodyend="99"/>
+    <location file="taskflow/utility/small_vector.hpp" line="53" column="1" bodyfile="taskflow/utility/small_vector.hpp" bodystart="53" bodyend="105"/>
     <listofallmembers>
       <member refid="classtf_1_1SmallVectorBase_1a5d08aaf8e30cf35422fd5fc00a08365e" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>BeginX</name></member>
-      <member refid="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>capacity_in_bytes</name></member>
+      <member refid="classtf_1_1SmallVectorBase_1a11236e318bfb73ce440e6f29985b08f3" prot="private" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>capacity_in_bytes</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a13c5c546448248a63e004725258f1ea3" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>CapacityX</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a538b6a18b5dfe80f650a2ada367a2050" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>empty</name></member>
       <member refid="classtf_1_1SmallVectorBase_1ac1a0459890042d10254b7be5dd7c1752" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>EndX</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a39b8b0b14783568a42fc606dee073096" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>grow_pod</name></member>
-      <member refid="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="public" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>size_in_bytes</name></member>
+      <member refid="classtf_1_1SmallVectorBase_1ab2a8fa067f915dc2b67c6e0c33527081" prot="private" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>size_in_bytes</name></member>
       <member refid="classtf_1_1SmallVectorBase_1a326c733a440cd9a1197bed0f75892152" prot="protected" virt="non-virtual"><scope>tf::SmallVectorBase</scope><name>SmallVectorBase</name></member>
     </listofallmembers>
   </compounddef>

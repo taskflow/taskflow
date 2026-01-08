@@ -91,10 +91,13 @@ class Worker {
   std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 
   size_t _id;
-  size_t _vtm;
-  std::thread _thread;
+  size_t _sticky_victim;
   
-  std::default_random_engine _rdgen;
+  Xorshift<uint32_t> _rdgen; 
+  
+  std::thread _thread;
+
+  //std::default_random_engine _rdgen;
 
   BoundedWSQ<Node*> _wsq;
 };

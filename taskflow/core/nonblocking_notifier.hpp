@@ -149,7 +149,10 @@ class NonblockingNotifier {
   which is equal to 2<sup>STACK_BITS</sup>.
   */
   explicit NonblockingNotifier(size_t N) : _state(STACK_MASK), _waiters(N) {
-    assert(_waiters.size() < (1 << PREWAITER_BITS) - 1);
+    if(_waiters.size() >= ((1 << PREWAITER_BITS) - 1)) {
+      TF_THROW("nonblocking waiter supports only up to ", (1<<PREWAITER_BITS)-1, " waiters");
+    }
+    //assert(_waiters.size() < (1 << PREWAITER_BITS) - 1);
     // Initialize epoch to something close to overflow to test overflow.
     //_state = STACK_MASK | (EPOCH_MASK - EPOCH_INC * _waiters.size() * 2);
   }

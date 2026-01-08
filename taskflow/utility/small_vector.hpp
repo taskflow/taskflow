@@ -86,11 +86,17 @@ protected:
 
 public:
   /// This returns size()*sizeof(T).
+  /**
+  @private
+  */
   size_t size_in_bytes() const {
     return size_t((char*)EndX - (char*)BeginX);
   }
 
   /// capacity_in_bytes - This returns capacity()*sizeof(T).
+  /**
+  @private
+  */
   size_t capacity_in_bytes() const {
     return size_t((char*)CapacityX - (char*)BeginX);
   }
@@ -1021,6 +1027,9 @@ public:
   }
 };
 
+/**
+@private
+*/
 template<typename T, unsigned N>
 inline size_t capacity_in_bytes(const SmallVector<T, N> &X) {
   return X.capacity_in_bytes();

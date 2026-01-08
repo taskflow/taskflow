@@ -74,6 +74,11 @@
             <dd>class to define a vector optimized for small array</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T&gt;</div>
+              class <a href="classtf_1_1Xorshift.html" class="m-doc">Xorshift</a>
+            </dt>
+            <dd>class to create a fast xorshift-based pseudo-random number generator</dd>
+            <dt>
+              <div class="m-doc-template">template&lt;typename T&gt;</div>
               class <a href="classtf_1_1CachelineAligned.html" class="m-doc">CachelineAligned</a>
             </dt>
             <dd>class to ensure cacheline-aligned storage for an object.</dd>
@@ -458,15 +463,6 @@
               <span class="m-doc-wrap-bumper">void <a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd></dd>
-            <dt id="ae9b372cf6337d0fd563fecc59a1915cc">
-              <span class="m-doc-wrap-bumper">void <a href="#ae9b372cf6337d0fd563fecc59a1915cc" class="m-doc-self">pause</a>(</span><span class="m-doc-wrap">size_t count)</span>
-            </dt>
-            <dd>pause CPU for a specified number of iterations</dd>
-            <dt>
-              <div class="m-doc-template">template&lt;typename P&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#a3abe09ef55c4f46e64ba88bff175c4f6" class="m-doc">spin_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span>
-            </dt>
-            <dd>spins until the given predicate becomes true</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a5643bf94c64370ee721692e3e6d9dc80" class="m-doc">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
@@ -1423,36 +1419,6 @@
               <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc-self">pause</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
 <p>This function is used in spin-wait loops to hint the CPU that the current thread is in a busy-wait state. It helps reduce power consumption and improves performance on hyper-threaded processors by preventing the CPU from consuming unnecessary cycles while waiting. It is particularly useful in low-contention scenarios, where the thread is likely to quickly acquire the lock or condition it&#x27;s waiting for, avoiding an expensive context switch. On modern x86 processors, this instruction can be invoked using <code>__builtin_ia32_pause()</code> in GCC/Clang or <code>_mm_pause()</code> in MSVC. In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.</p>
-          </div></section>
-          <section class="m-doc-details" id="a3abe09ef55c4f46e64ba88bff175c4f6"><div>
-            <h3>
-              <div class="m-doc-template">
-                template&lt;typename P&gt;
-              </div>
-              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3abe09ef55c4f46e64ba88bff175c4f6" class="m-doc-self">spin_until</a>(</span><span class="m-doc-wrap">P&amp;&amp; predicate)</span></span>
-            </h3>
-            <p>spins until the given predicate becomes true</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">P</td>
-                  <td>the type of the predicate function or callable.</td>
-                </tr>
-              </tbody>
-              <thead>
-                <tr><th colspan="2">Parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>predicate</td>
-                  <td>the callable that returns a boolean value, which is checked in the loop.</td>
-                </tr>
-              </tbody>
-            </table>
-<p>This function repeatedly checks the provided predicate in a spin-wait loop and uses a backoff strategy to minimize CPU waste during the wait. Initially, it uses the <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> instruction for the first 100 iterations to hint to the CPU that the thread is waiting, thus reducing power consumption and avoiding unnecessary cycles. After 100 iterations, it switches to yielding the CPU using <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to allow other threads to run and improve system responsiveness.</p><p>The function operates as follows:</p><ol><li>For the first 100 iterations, it invokes <code><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause()</a></code> to reduce power consumption during the spin-wait.</li><li>After 100 iterations, it uses <code><a href="http://en.cppreference.com/w/cpp/thread/yield.html" class="m-doc-external">std::<wbr />this_thread::<wbr />yield()</a></code> to relinquish the CPU, allowing other threads to execute.</li></ol><aside class="m-note m-warning"><h4>Attention</h4><p>This function is useful when you need to wait for a condition to be true, but want to optimize CPU usage during the wait by using a busy-wait approach.</p></aside>
           </div></section>
           <section class="m-doc-details" id="a5643bf94c64370ee721692e3e6d9dc80"><div>
             <h3>

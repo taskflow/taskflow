@@ -722,5 +722,190 @@ TEST_CASE("FloorLog2") {
   REQUIRE(tf::floor_log2(std::numeric_limits<uint64_t>::max()) == 63);
 }
 
+// ----------------------------------------------------------------------------
+// xorshift
+// ----------------------------------------------------------------------------
 
+TEST_CASE("Xorshift.Zero") {
+  {
+    tf::Xorshift<uint32_t> rng(0);
+    for(int i = 0; i < 10; ++i) {
+      assert(rng() == 0);
+    }
+  }
 
+  { 
+    tf::Xorshift<uint64_t> rng(0);
+    for(int i = 0; i < 10; ++i) {
+      assert(rng() == 0);
+    }
+  }
+}
+
+TEST_CASE("Xorshift.Determinism") {
+  {
+    tf::Xorshift<uint32_t> rng1(42);
+    tf::Xorshift<uint32_t> rng2(42);
+    for(int i = 0; i < 10; ++i) {
+      REQUIRE(rng1() == rng2());
+    }
+  }
+  {
+    tf::Xorshift<uint64_t> rng1(42);
+    tf::Xorshift<uint64_t> rng2(42);
+    for(int i = 0; i < 10; ++i) {
+      REQUIRE(rng1() == rng2());
+    }
+  }
+}
+
+template <typename T>
+void xorshift_uniformity(size_t bits) {
+
+  const size_t MASK = (1<<bits) - 1;
+  const size_t N = 1000000;
+
+  tf::Xorshift<T> rng(0xC0FFEE4U);
+  uint64_t sum = 0;
+  
+  for(size_t i = 0; i < N; ++i) {
+    sum += (rng() & MASK); 
+  }
+  double avg = static_cast<double>(sum) / N;
+  double expected = ((1<<bits) - 1) / 2.0; 
+
+  //std::cout << expected << " vs " << avg << " : delta = " 
+  //          << std::abs(expected - avg)/expected*100 << "%\n";
+  
+  // Allow 1% tolerance
+  REQUIRE((avg > expected * 0.99));
+  REQUIRE((avg < expected * 1.01));
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.16bits") {
+  xorshift_uniformity<uint32_t>(16);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.15bits") {
+  xorshift_uniformity<uint32_t>(15);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.14bits") {
+  xorshift_uniformity<uint32_t>(14);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.13bits") {
+  xorshift_uniformity<uint32_t>(13);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.12bits") {
+  xorshift_uniformity<uint32_t>(12);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.11bits") {
+  xorshift_uniformity<uint32_t>(11);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.10bits") {
+  xorshift_uniformity<uint32_t>(10);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.9bits") {
+  xorshift_uniformity<uint32_t>(9);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.8bits") {
+  xorshift_uniformity<uint32_t>(8);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.7bits") {
+  xorshift_uniformity<uint32_t>(7);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.6bits") {
+  xorshift_uniformity<uint32_t>(6);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.5bits") {
+  xorshift_uniformity<uint32_t>(5);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.4bits") {
+  xorshift_uniformity<uint32_t>(4);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.3bits") {
+  xorshift_uniformity<uint32_t>(3);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.2bits") {
+  xorshift_uniformity<uint32_t>(2);
+}
+
+TEST_CASE("Xorshift.uint32.Uniformity.1bits") {
+  xorshift_uniformity<uint32_t>(1);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.16bits") {
+  xorshift_uniformity<uint64_t>(16);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.15bits") {
+  xorshift_uniformity<uint64_t>(15);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.14bits") {
+  xorshift_uniformity<uint64_t>(14);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.13bits") {
+  xorshift_uniformity<uint64_t>(13);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.12bits") {
+  xorshift_uniformity<uint64_t>(12);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.11bits") {
+  xorshift_uniformity<uint64_t>(11);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.10bits") {
+  xorshift_uniformity<uint64_t>(10);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.9bits") {
+  xorshift_uniformity<uint64_t>(9);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.8bits") {
+  xorshift_uniformity<uint64_t>(8);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.7bits") {
+  xorshift_uniformity<uint64_t>(7);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.6bits") {
+  xorshift_uniformity<uint64_t>(6);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.5bits") {
+  xorshift_uniformity<uint64_t>(5);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.4bits") {
+  xorshift_uniformity<uint64_t>(4);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.3bits") {
+  xorshift_uniformity<uint64_t>(3);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.2bits") {
+  xorshift_uniformity<uint64_t>(2);
+}
+
+TEST_CASE("Xorshift.uint64.Uniformity.1bits") {
+  xorshift_uniformity<uint64_t>(1);
+}

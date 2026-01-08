@@ -81,11 +81,11 @@
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="93" column="10" bodyfile="taskflow/core/worker.hpp" bodystart="93" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" prot="private" static="no" mutable="no">
+      <memberdef kind="variable" id="classtf_1_1Worker_1a2c103b8ad8877aa9d509b337bbabe744" prot="private" static="no" mutable="no">
         <type>size_t</type>
-        <definition>size_t tf::Worker::_vtm</definition>
+        <definition>size_t tf::Worker::_sticky_victim</definition>
         <argsstring></argsstring>
-        <name>_vtm</name>
+        <name>_sticky_victim</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -93,6 +93,19 @@
         <inbodydescription>
         </inbodydescription>
         <location file="taskflow/core/worker.hpp" line="94" column="10" bodyfile="taskflow/core/worker.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Worker_1a0d7f11220232c03d9b0599d4515ecb1d" prot="private" static="no" mutable="no">
+        <type><ref refid="classtf_1_1Xorshift" kindref="compound">Xorshift</ref>&lt; uint32_t &gt;</type>
+        <definition>Xorshift&lt;uint32_t&gt; tf::Worker::_rdgen</definition>
+        <argsstring></argsstring>
+        <name>_rdgen</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/worker.hpp" line="96" column="12" bodyfile="taskflow/core/worker.hpp" bodystart="96" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/thread/thread" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::thread</ref></type>
@@ -105,20 +118,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="95" column="15" bodyfile="taskflow/core/worker.hpp" bodystart="95" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="variable" id="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" static="no" mutable="no">
-        <type><ref refid="cpp/numeric/random" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::default_random_engine</ref></type>
-        <definition>std::default_random_engine tf::Worker::_rdgen</definition>
-        <argsstring></argsstring>
-        <name>_rdgen</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="97" column="30" bodyfile="taskflow/core/worker.hpp" bodystart="97" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="98" column="15" bodyfile="taskflow/core/worker.hpp" bodystart="98" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Worker_1af5f427bb7d5eeef718bcbece0d961547" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1BoundedWSQ" kindref="compound">BoundedWSQ</ref>&lt; Node * &gt;</type>
@@ -131,7 +131,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="99" column="14" bodyfile="taskflow/core/worker.hpp" bodystart="99" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="102" column="14" bodyfile="taskflow/core/worker.hpp" bodystart="102" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -199,13 +199,13 @@
     <detaileddescription>
 <para>The class is primarily used by the executor to perform work-stealing algorithm. Users can access a worker object and alter its property (e.g., changing the thread affinity in a POSIX-like system) using <ref refid="classtf_1_1WorkerInterface" kindref="compound">tf::WorkerInterface</ref>. </para>
     </detaileddescription>
-    <location file="taskflow/core/worker.hpp" line="56" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="56" bodyend="100"/>
+    <location file="taskflow/core/worker.hpp" line="56" column="1" bodyfile="taskflow/core/worker.hpp" bodystart="56" bodyend="103"/>
     <listofallmembers>
       <member refid="classtf_1_1Worker_1a361cd42c80b06adc52aafe360069828e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_done</name></member>
       <member refid="classtf_1_1Worker_1ab21837ab13c416c19d133fc2a73f031c" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_id</name></member>
-      <member refid="classtf_1_1Worker_1a753b13866ccf3badaebf5e92af0bf63f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_rdgen</name></member>
+      <member refid="classtf_1_1Worker_1a0d7f11220232c03d9b0599d4515ecb1d" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_rdgen</name></member>
+      <member refid="classtf_1_1Worker_1a2c103b8ad8877aa9d509b337bbabe744" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_sticky_victim</name></member>
       <member refid="classtf_1_1Worker_1a23ecb42bb5da7483e269427ccbd84d4f" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_thread</name></member>
-      <member refid="classtf_1_1Worker_1a59a04a39db3d147221eed60da75a9744" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_vtm</name></member>
       <member refid="classtf_1_1Worker_1af5f427bb7d5eeef718bcbece0d961547" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>_wsq</name></member>
       <member refid="classtf_1_1Worker_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Worker</scope><name>Executor</name></member>
       <member refid="classtf_1_1Worker_1a0180ea51cc46551157eaae451b50c7d8" prot="public" virt="non-virtual"><scope>tf::Worker</scope><name>id</name></member>
