@@ -34,7 +34,7 @@ See also:
   + [GCC patch discussions on refactoring and fixing atomic notify/race issues](https://gcc.gnu.org/pipermail/gcc-patches/2025-May/685050.html)
 */
 #ifdef TF_ENABLE_ATOMIC_NOTIFIER
-  using DefaultNotifier = AtomicNotifier
+  using DefaultNotifier = AtomicNotifier;
 #else
   using DefaultNotifier = NonblockingNotifier;
 #endif
