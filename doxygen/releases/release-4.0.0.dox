@@ -43,8 +43,11 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
   + removed executor pointer from worker
   + removed redundant executor pointer validation from the hot scheduling path
 + adopted tf::NonblockingNotifier as the default notifier due to its robustness
+  + split notify_one and notify_all to two separate, optimized implementation
+  + added notify_n to improve the performance
 + split essential members of tf::Node into tf::NodeBase to improve modularity
 + split anchor nodes to implicit and explicit types to improve exception handling
++ added unit test for tf::NonblockingNotifier
 + added embarrassing parallelism benchmark
 + added merge sort benchmark
 + added tf::TaskGroup to enable efficient implementation of recursive parallelism

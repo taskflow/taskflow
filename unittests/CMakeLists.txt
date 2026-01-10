@@ -6,6 +6,7 @@ list(APPEND TF_UNITTESTS
   test_utility 
   test_wsq
   test_basics 
+  test_notifiers
   test_work_stealing 
   #test_serializer 
   test_workers

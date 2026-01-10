@@ -387,7 +387,44 @@ class NonblockingNotifier {
   The function is cheap when no threads are waiting.
   */
   void notify_one() {
-    _notify(false);
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    uint64_t state = _state.load(std::memory_order_acquire);
+    for (;;) {
+      // Easy case: no waiters.
+      if ((state & STACK_MASK) == STACK_MASK && (state & PREWAITER_MASK) == 0) {
+        return;
+      }
+      uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
+      uint64_t newstate;
+      if (num_prewaiters) {
+        // There is a thread in pre-wait state, unblock it.
+        newstate = state + EPOCH_INC - PREWAITER_INC;
+      } 
+      else {
+        // Pop a waiter from list and unpark it.
+        Waiter* w = &_waiters[state & STACK_MASK];
+        Waiter* wnext = w->next.load(std::memory_order_relaxed);
+        uint64_t next = STACK_MASK;
+        //if (wnext != nullptr) next = wnext - &_waiters[0];
+        if (wnext != nullptr) {
+          next = static_cast<uint64_t>(wnext - &_waiters[0]);
+        }
+        // Note: we don't add EPOCH_INC here. ABA problem on the lock-free stack
+        // can't happen because a waiter is re-pushed onto the stack only after
+        // it was in the pre-wait state which inevitably leads to epoch increment.
+        newstate = (state & EPOCH_MASK) + next;
+      }
+      if (_state.compare_exchange_weak(state, newstate, std::memory_order_acquire)) {
+        if(num_prewaiters) {
+          return; // unblocked pre-wait thread
+        }
+        // if there is no pre-waiters, the stack must have something 
+        Waiter* w = &_waiters[state & STACK_MASK];
+        w->next.store(nullptr, std::memory_order_relaxed);
+        _unpark(w);
+        return;
+      }
+    }
   }
   
   /**
@@ -398,7 +435,28 @@ class NonblockingNotifier {
   The function is cheap when no threads are waiting.
   */
   void notify_all() {
-    _notify(true);
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    uint64_t state = _state.load(std::memory_order_acquire);
+    for (;;) {
+
+      // Easy case: no waiters.
+      if ((state & STACK_MASK) == STACK_MASK && (state & PREWAITER_MASK) == 0) {
+        return;
+      }
+      uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
+
+      // Reset prewait counter and empty wait list.
+      uint64_t newstate = (state & EPOCH_MASK) + (EPOCH_INC * num_prewaiters) + STACK_MASK;
+
+      if (_state.compare_exchange_weak(state, newstate, std::memory_order_acquire)) {
+        if ((state & STACK_MASK) == STACK_MASK) {
+          return;
+        }
+        Waiter* w = &_waiters[state & STACK_MASK];
+        _unpark(w);
+        return;
+      }
+    }
   }
   
   /**
@@ -412,15 +470,70 @@ class NonblockingNotifier {
   
   The function is cheap when no threads are waiting.
   */
-  void notify_n(size_t n) {
-    if(n >= _waiters.size()) {
-      _notify(true);
+  void notify_n(size_t N) {
+
+    // trivial case
+    if(N == 0) {
+      return;
     }
-    else {
-      for(size_t k=0; k<n; ++k) {
-        _notify(false);
+    
+    // if the target N is bigger than the waiter size, notify all waiters
+    if(N >= _waiters.size()) {
+      notify_all();
+      return;
+    }
+
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    uint64_t state = _state.load(std::memory_order_acquire);
+    do {
+      // Easy case: no waiters.
+      if ((state & STACK_MASK) == STACK_MASK && (state & PREWAITER_MASK) == 0) {
+        return;
       }
-    }
+      uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
+      uint64_t newstate;
+      size_t   newN;
+      
+      // unblock waiters from pre-waiting list first.
+      if(num_prewaiters) {
+        size_t to_unblock = (N < num_prewaiters) ? N : num_prewaiters;
+        newstate = state + (EPOCH_INC * to_unblock) - (PREWAITER_INC * to_unblock);
+        newN = N - to_unblock;
+      }
+      // pop one waiter from the stack
+      else {
+        Waiter* w = &_waiters[state & STACK_MASK];
+        Waiter* wnext = w->next.load(std::memory_order_relaxed);
+        uint64_t next = STACK_MASK;
+        //if (wnext != nullptr) next = wnext - &_waiters[0];
+        if (wnext != nullptr) {
+          next = static_cast<uint64_t>(wnext - &_waiters[0]);
+        }
+        // Note: we don't add EPOCH_INC here. ABA problem on the lock-free stack
+        // can't happen because a waiter is re-pushed onto the stack only after
+        // it was in the pre-wait state which inevitably leads to epoch increment.
+        newstate = (state & EPOCH_MASK) + next;
+        newN = N - 1;
+      }
+
+      if (_state.compare_exchange_weak(state, newstate, std::memory_order_acquire)) {
+        N = newN;
+        if(num_prewaiters == 0) {
+          Waiter* w = &_waiters[state & STACK_MASK];
+          w->next.store(nullptr, std::memory_order_relaxed);
+          _unpark(w);
+        }
+      }
+    } while(N > 0);
+
+    //if(n >= _waiters.size()) {
+    //  notify_all();
+    //}
+    //else {
+    //  for(size_t k=0; k<n; ++k) {
+    //    notify_one();
+    //  }
+    //}
   }
   
   /**
@@ -460,14 +573,12 @@ class NonblockingNotifier {
     Waiter* next = nullptr;
     for (Waiter* w = waiters; w; w = next) {
       next = w->next.load(std::memory_order_relaxed);
-
       // We only notify if the other is waiting - this is why we use tri-state
       // variable instead of binary-state variable (i.e., atomic_flag)
       // Performance is about 0.1% faster
       if(w->state.exchange(Waiter::kSignaled, std::memory_order_relaxed) == Waiter::kWaiting) {
         w->state.notify_one();
       }
-
       //unsigned state;
       //{
       //  std::unique_lock<std::mutex> lock(w->mu);
@@ -481,49 +592,48 @@ class NonblockingNotifier {
   
   // notify wakes one or all waiting threads.
   // Must be called after changing the associated wait predicate.
-  void _notify(bool all) {
-    std::atomic_thread_fence(std::memory_order_seq_cst);
-    uint64_t state = _state.load(std::memory_order_acquire);
-    for (;;) {
-      // Easy case: no waiters.
-      if ((state & STACK_MASK) == STACK_MASK && (state & PREWAITER_MASK) == 0) {
-        return;
-      }
-      uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
-      uint64_t newstate;
-      if (all) {
-        // Reset prewait counter and empty wait list.
-        newstate = (state & EPOCH_MASK) + (EPOCH_INC * num_prewaiters) + STACK_MASK;
-      } else if (num_prewaiters) {
-        // There is a thread in pre-wait state, unblock it.
-        newstate = state + EPOCH_INC - PREWAITER_INC;
-      } else {
-        // Pop a waiter from list and unpark it.
-        Waiter* w = &_waiters[state & STACK_MASK];
-        Waiter* wnext = w->next.load(std::memory_order_relaxed);
-        uint64_t next = STACK_MASK;
-        //if (wnext != nullptr) next = wnext - &_waiters[0];
-        if (wnext != nullptr) {
-          next = static_cast<uint64_t>(wnext - &_waiters[0]);
-        }
-        // Note: we don't add EPOCH_INC here. ABA problem on the lock-free stack
-        // can't happen because a waiter is re-pushed onto the stack only after
-        // it was in the pre-wait state which inevitably leads to epoch increment.
-        newstate = (state & EPOCH_MASK) + next;
-      }
-      if (_state.compare_exchange_weak(state, newstate,
-                                      std::memory_order_acquire)) {
-        if(!all && num_prewaiters) return; // unblocked pre-wait thread
-        if ((state & STACK_MASK) == STACK_MASK) return;
-        Waiter* w = &_waiters[state & STACK_MASK];
-        if(!all) {
-          w->next.store(nullptr, std::memory_order_relaxed);
-        }
-        _unpark(w);
-        return;
-      }
-    }
-  }
+  //void _notify(bool all) {
+  //  std::atomic_thread_fence(std::memory_order_seq_cst);
+  //  uint64_t state = _state.load(std::memory_order_acquire);
+  //  for (;;) {
+  //    // Easy case: no waiters.
+  //    if ((state & STACK_MASK) == STACK_MASK && (state & PREWAITER_MASK) == 0) {
+  //      return;
+  //    }
+  //    uint64_t num_prewaiters = (state & PREWAITER_MASK) >> PREWAITER_SHIFT;
+  //    uint64_t newstate;
+  //    if (all) {
+  //      // Reset prewait counter and empty wait list.
+  //      newstate = (state & EPOCH_MASK) + (EPOCH_INC * num_prewaiters) + STACK_MASK;
+  //    } else if (num_prewaiters) {
+  //      // There is a thread in pre-wait state, unblock it.
+  //      newstate = state + EPOCH_INC - PREWAITER_INC;
+  //    } else {
+  //      // Pop a waiter from list and unpark it.
+  //      Waiter* w = &_waiters[state & STACK_MASK];
+  //      Waiter* wnext = w->next.load(std::memory_order_relaxed);
+  //      uint64_t next = STACK_MASK;
+  //      //if (wnext != nullptr) next = wnext - &_waiters[0];
+  //      if (wnext != nullptr) {
+  //        next = static_cast<uint64_t>(wnext - &_waiters[0]);
+  //      }
+  //      // Note: we don't add EPOCH_INC here. ABA problem on the lock-free stack
+  //      // can't happen because a waiter is re-pushed onto the stack only after
+  //      // it was in the pre-wait state which inevitably leads to epoch increment.
+  //      newstate = (state & EPOCH_MASK) + next;
+  //    }
+  //    if (_state.compare_exchange_weak(state, newstate, std::memory_order_acquire)) {
+  //      if(!all && num_prewaiters) return; // unblocked pre-wait thread
+  //      if ((state & STACK_MASK) == STACK_MASK) return;
+  //      Waiter* w = &_waiters[state & STACK_MASK];
+  //      if(!all) {
+  //        w->next.store(nullptr, std::memory_order_relaxed);
+  //      }
+  //      _unpark(w);
+  //      return;
+  //    }
+  //  }
+  //}
 };
 
 
