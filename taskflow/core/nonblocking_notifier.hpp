@@ -460,12 +460,12 @@ class NonblockingNotifier {
   }
   
   /**
-  @brief notifies up to `n` waiters from the waiting set
+  @brief notifies up to `N` waiters from the waiting set
   
-  @param n maximum number of waiters to notify
+  @param N maximum number of waiters to notify
   
-  Wakes up at most @p n waiters from the waiting set.
-  If @p n is greater than or equal to the maximum number of waiters in this notifier,
+  Wakes up at most @p N waiters from the waiting set.
+  If @p N is greater than or equal to the maximum number of waiters in this notifier,
   this function behaves identically to `notify_all()`.
   
   The function is cheap when no threads are waiting.

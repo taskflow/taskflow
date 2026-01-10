@@ -97,9 +97,14 @@
 </listitem><listitem><para>removed redundant executor pointer validation from the hot scheduling path</para>
 </listitem></itemizedlist>
 </para>
-</listitem><listitem><para>adopted <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref> as the default notifier due to its robustness</para>
+</listitem><listitem><para>adopted <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref> as the default notifier due to its robustness<itemizedlist>
+<listitem><para>split notify_one and notify_all to two separate, optimized implementation</para>
+</listitem><listitem><para>added notify_n to improve the performance</para>
+</listitem></itemizedlist>
+</para>
 </listitem><listitem><para>split essential members of tf::Node into tf::NodeBase to improve modularity</para>
 </listitem><listitem><para>split anchor nodes to implicit and explicit types to improve exception handling</para>
+</listitem><listitem><para>added unit test for <ref refid="classtf_1_1NonblockingNotifier" kindref="compound">tf::NonblockingNotifier</ref></para>
 </listitem><listitem><para>added embarrassing parallelism benchmark</para>
 </listitem><listitem><para>added merge sort benchmark</para>
 </listitem><listitem><para>added <ref refid="classtf_1_1TaskGroup" kindref="compound">tf::TaskGroup</ref> to enable efficient implementation of recursive parallelism</para>

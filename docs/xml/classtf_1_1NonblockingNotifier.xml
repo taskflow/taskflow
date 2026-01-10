@@ -186,7 +186,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="439" column="15" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="439" bodyend="-1"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="552" column="15" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="552" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1NonblockingNotifier_1a67a9e13ab7b33a0678b7ac3ff0830faf" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector</ref>&lt; Waiter &gt;</type>
@@ -199,7 +199,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="440" column="15" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="440" bodyend="-1"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="553" column="15" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="553" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
@@ -329,7 +329,7 @@ This function places the thread into the pre-waiting stage. After calling <compu
 </parameteritem>
 </parameterlist>
 This function completes the waiting protocol for a thread that has previously called <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a4633df9ff4f8f9b00ff4fb14a0d02237" kindref="member">prepare_wait()</ref></computeroutput>. Upon successful completion, the thread becomes a committed waiter and will park until being notified.</para>
-<para>The thread must have re-checked the wait predicate before calling <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a6f5346994238a16480ab9d50d484ea27" kindref="member">commit_wait()</ref></computeroutput>. Once committed, the thread may be awakened by <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a850c89512193c41536e245b51820c944" kindref="member">notify_one()</ref></computeroutput>, <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a7d18de3e549c88c36c969f5cccea0508" kindref="member">notify_n()</ref></computeroutput>, or <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" kindref="member">notify_all()</ref></computeroutput>.</para>
+<para>The thread must have re-checked the wait predicate before calling <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a6f5346994238a16480ab9d50d484ea27" kindref="member">commit_wait()</ref></computeroutput>. Once committed, the thread may be awakened by <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a850c89512193c41536e245b51820c944" kindref="member">notify_one()</ref></computeroutput>, <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1ab9de53843dba7802d380be32dbb1aced" kindref="member">notify_n()</ref></computeroutput>, or <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" kindref="member">notify_all()</ref></computeroutput>.</para>
 <para>Each call to <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a4633df9ff4f8f9b00ff4fb14a0d02237" kindref="member">prepare_wait()</ref></computeroutput> must be followed by exactly one call to either <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a6f5346994238a16480ab9d50d484ea27" kindref="member">commit_wait()</ref></computeroutput> or <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1a3f32e0f7adb305de32f34f7ce6d8c222" kindref="member">cancel_wait()</ref></computeroutput> using the same thread identifier. </para>
         </detaileddescription>
         <inbodydescription>
@@ -380,7 +380,7 @@ This function aborts the waiting protocol for a thread that has previously calle
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="389" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="389" bodyend="391"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="389" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="389" bodyend="428"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -396,36 +396,36 @@ This function aborts the waiting protocol for a thread that has previously calle
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="400" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="400" bodyend="402"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="437" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="437" bodyend="460"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1a7d18de3e549c88c36c969f5cccea0508" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1ab9de53843dba7802d380be32dbb1aced" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::NonblockingNotifier::notify_n</definition>
-        <argsstring>(size_t n)</argsstring>
+        <argsstring>(size_t N)</argsstring>
         <name>notify_n</name>
         <param>
           <type>size_t</type>
-          <declname>n</declname>
+          <declname>N</declname>
         </param>
         <briefdescription>
-<para>notifies up to <computeroutput>n</computeroutput> waiters from the waiting set </para>
+<para>notifies up to <computeroutput>N</computeroutput> waiters from the waiting set </para>
         </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
 <parameternamelist>
-<parametername>n</parametername>
+<parametername>N</parametername>
 </parameternamelist>
 <parameterdescription>
 <para>maximum number of waiters to notify</para>
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-Wakes up at most <computeroutput>n</computeroutput> waiters from the waiting set. If <computeroutput>n</computeroutput> is greater than or equal to the maximum number of waiters in this notifier, this function behaves identically to <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" kindref="member">notify_all()</ref></computeroutput>.</para>
+Wakes up at most <computeroutput>N</computeroutput> waiters from the waiting set. If <computeroutput>N</computeroutput> is greater than or equal to the maximum number of waiters in this notifier, this function behaves identically to <computeroutput><ref refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" kindref="member">notify_all()</ref></computeroutput>.</para>
 <para>The function is cheap when no threads are waiting. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="415" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="415" bodyend="424"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="473" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="473" bodyend="537"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1ade0d740cf887f826f840bd059135f4a6" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
@@ -442,7 +442,7 @@ The size of a notifier is equal to the number used to construct that notifier. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="433" column="10" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="433" bodyend="435"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="546" column="10" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="546" bodyend="548"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -461,7 +461,7 @@ The size of a notifier is equal to the number used to construct that notifier. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="445" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="445" bodyend="456"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="558" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="558" bodyend="569"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1acc75a1d7c7b15407702cc9cba1afd853" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
@@ -478,24 +478,7 @@ The size of a notifier is equal to the number used to construct that notifier. <
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="459" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="459" bodyend="480"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1NonblockingNotifier_1a4ead3b8ba9d74e8f245346678b83237c" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>void tf::NonblockingNotifier::_notify</definition>
-        <argsstring>(bool all)</argsstring>
-        <name>_notify</name>
-        <param>
-          <type>bool</type>
-          <declname>all</declname>
-        </param>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/nonblocking_notifier.hpp" line="484" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="484" bodyend="526"/>
+        <location file="taskflow/core/nonblocking_notifier.hpp" line="572" column="8" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="572" bodyend="591"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -534,9 +517,8 @@ The size of a notifier is equal to the number used to construct that notifier. <
 </para>
 <para>Reference: <ulink url="https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/ThreadPool/EventCount.h">https://gitlab.com/libeigen/eigen/-/blob/master/Eigen/src/ThreadPool/EventCount.h</ulink> </para>
     </detaileddescription>
-    <location file="taskflow/core/nonblocking_notifier.hpp" line="84" column="1" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="84" bodyend="527"/>
+    <location file="taskflow/core/nonblocking_notifier.hpp" line="84" column="1" bodyfile="taskflow/core/nonblocking_notifier.hpp" bodystart="84" bodyend="637"/>
     <listofallmembers>
-      <member refid="classtf_1_1NonblockingNotifier_1a4ead3b8ba9d74e8f245346678b83237c" prot="private" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>_notify</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a8291ddeeedd58ba43687cf21dd363ac1" prot="private" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>_park</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a72718f52b891c3f069b63ace57d410f7" prot="private" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>_state</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1acc75a1d7c7b15407702cc9cba1afd853" prot="private" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>_unpark</name></member>
@@ -551,7 +533,7 @@ The size of a notifier is equal to the number used to construct that notifier. <
       <member refid="classtf_1_1NonblockingNotifier_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>Executor</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a1722141a86e24ef029614e4a2191f7e4" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>NonblockingNotifier</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1abbbb08c0e2cc1a7f941a650538ae48e5" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>notify_all</name></member>
-      <member refid="classtf_1_1NonblockingNotifier_1a7d18de3e549c88c36c969f5cccea0508" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>notify_n</name></member>
+      <member refid="classtf_1_1NonblockingNotifier_1ab9de53843dba7802d380be32dbb1aced" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>notify_n</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a850c89512193c41536e245b51820c944" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>notify_one</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a016a0e8c8c57df0a9d7f48661369a30a" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>num_waiters</name></member>
       <member refid="classtf_1_1NonblockingNotifier_1a4633df9ff4f8f9b00ff4fb14a0d02237" prot="public" virt="non-virtual"><scope>tf::NonblockingNotifier</scope><name>prepare_wait</name></member>
