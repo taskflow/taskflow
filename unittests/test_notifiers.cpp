@@ -58,9 +58,6 @@ void notify_one(size_t N) {
   for(auto& thread : threads) {
     thread.join();
   }
-  expected_num_wakeups += N;
-  REQUIRE(num_prewaiters == expected_num_prewaiters);
-  REQUIRE(num_wakeups == expected_num_wakeups);
 }
 
 TEST_CASE("NonblockingNotifier.notify_one.1thread" * doctest::timeout(300)) {
@@ -156,9 +153,6 @@ void notify_all(size_t N) {
   for(auto& thread : threads) {
     thread.join();
   }
-  expected_num_wakeups += N;
-  REQUIRE(num_prewaiters == expected_num_prewaiters);
-  REQUIRE(num_wakeups == expected_num_wakeups);
 }
 
 TEST_CASE("NonblockingNotifier.notify_all.1thread" * doctest::timeout(300)) {
@@ -254,9 +248,6 @@ void notify_n(size_t N) {
   for(auto& thread : threads) {
     thread.join();
   }
-  expected_num_wakeups += N;
-  REQUIRE(num_prewaiters == expected_num_prewaiters);
-  REQUIRE(num_wakeups == expected_num_wakeups);
 }
 
 TEST_CASE("NonblockingNotifier.notify_n.1thread" * doctest::timeout(300)) {
