@@ -289,3 +289,88 @@ TEST_CASE("NonblockingNotifier.notify_n.15threads" * doctest::timeout(300)) {
 TEST_CASE("NonblockingNotifier.notify_n.31threads" * doctest::timeout(300)) {
   notify_n<tf::NonblockingNotifier>(31);
 }
+
+
+// ----------------------------------------------------------------------------
+// NonblockingNotifier: notify_before_commit_rounds
+//   - In each round, all threads call prepare_wait()
+//   - Main thread calls notify_all() while they are between prepare and commit
+//   - Then threads commit_wait(); they must NOT block (no lost wakeup)
+//   - At end: completed == R*N and num_waiters() == 0
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void notify_before_commit_rounds(size_t N) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);   
+
+  std::atomic<size_t> armed(0);
+  std::atomic<size_t> completed(0);
+  std::atomic<size_t> round(0);
+  std::atomic<bool> stop(false);
+
+  std::vector<std::thread> threads;
+  threads.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    threads.emplace_back([&, i]() {
+
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        while(round.load(std::memory_order_acquire) == local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        if(stop.load(std::memory_order_relaxed)) {
+          break;
+        }
+
+        notifier.prepare_wait(i);
+        armed.fetch_add(1, std::memory_order_relaxed);
+
+        while(armed.load(std::memory_order_acquire) < (local_round + 1) * N &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        notifier.commit_wait(i);
+        completed.fetch_add(1, std::memory_order_relaxed);
+
+        local_round++;
+      }
+    });
+  }
+
+  for(size_t r = 0; r < R; ++r) {
+    round.fetch_add(1, std::memory_order_release);
+
+    while(armed.load(std::memory_order_acquire) != (r + 1) * N) {
+      std::this_thread::yield();
+    }
+
+    notifier.notify_all();
+  }
+
+  stop.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : threads) t.join();
+
+  REQUIRE(completed.load() == R * N);
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+TEST_CASE("NonblockingNotifier.notify_before_commit_rounds.15threads" * doctest::timeout(300)) {
+  notify_before_commit_rounds<tf::NonblockingNotifier>(15);
+}
+
+TEST_CASE("NonblockingNotifier.notify_before_commit_rounds.31threads" * doctest::timeout(300)) {
+  notify_before_commit_rounds<tf::NonblockingNotifier>(31);
+}
