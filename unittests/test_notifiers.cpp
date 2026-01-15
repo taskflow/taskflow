@@ -289,4 +289,3 @@ TEST_CASE("NonblockingNotifier.notify_n.15threads" * doctest::timeout(300)) {
 TEST_CASE("NonblockingNotifier.notify_n.31threads" * doctest::timeout(300)) {
   notify_n<tf::NonblockingNotifier>(31);
 }
-
