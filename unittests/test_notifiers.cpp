@@ -292,15 +292,19 @@ TEST_CASE("NonblockingNotifier.notify_n.31threads" * doctest::timeout(300)) {
 
 
 // ----------------------------------------------------------------------------
-// NonblockingNotifier: notify_before_commit_rounds
+// NonblockingNotifier: notify_all_before_commit_rounds
 //   - In each round, all threads call prepare_wait()
 //   - Main thread calls notify_all() while they are between prepare and commit
 //   - Then threads commit_wait(); they must NOT block (no lost wakeup)
 //   - At end: completed == R*N and num_waiters() == 0
 // ----------------------------------------------------------------------------
 
+// consider notify_one and notify_n variants as well
+// try mixing the three func together
+// try permutatutions within the functions
+
 template <typename T>
-void notify_before_commit_rounds(size_t N) {
+void notify_all_before_commit_rounds(size_t N) {
 
   T notifier(N);
   REQUIRE(notifier.size() == N);
@@ -323,8 +327,7 @@ void notify_before_commit_rounds(size_t N) {
 
       while(!stop.load(std::memory_order_relaxed)) {
 
-        while(round.load(std::memory_order_acquire) == local_round &&
-              !stop.load(std::memory_order_relaxed)) {
+        while(round.load(std::memory_order_acquire) == local_round &&!stop.load(std::memory_order_relaxed)) {
           std::this_thread::yield();
         }
 
@@ -335,8 +338,7 @@ void notify_before_commit_rounds(size_t N) {
         notifier.prepare_wait(i);
         armed.fetch_add(1, std::memory_order_relaxed);
 
-        while(armed.load(std::memory_order_acquire) < (local_round + 1) * N &&
-              !stop.load(std::memory_order_relaxed)) {
+        while(armed.load(std::memory_order_acquire) < (local_round + 1) * N && !stop.load(std::memory_order_relaxed)) {
           std::this_thread::yield();
         }
 
@@ -366,11 +368,132 @@ void notify_before_commit_rounds(size_t N) {
   REQUIRE(completed.load() == R * N);
   REQUIRE(notifier.num_waiters() == 0);
 }
-
-TEST_CASE("NonblockingNotifier.notify_before_commit_rounds.15threads" * doctest::timeout(300)) {
-  notify_before_commit_rounds<tf::NonblockingNotifier>(15);
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.1threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(1);
+}
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.2threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(2);
+}
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.4threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.notify_before_commit_rounds.5threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(5);
+}
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.8threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(8);
+}
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.15threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(15);
+}
+TEST_CASE("NonblockingNotifier.notify_all_before_commit_rounds.31threads" * doctest::timeout(300)) {
+  notify_all_before_commit_rounds<tf::NonblockingNotifier>(31);
 }
 
-TEST_CASE("NonblockingNotifier.notify_before_commit_rounds.31threads" * doctest::timeout(300)) {
-  notify_before_commit_rounds<tf::NonblockingNotifier>(31);
+// ----------------------------------------------------------------------------
+// NonblockingNotifier: notify_one_before_commit_rounds
+//   - When all threads are in prepare_wait() and commit_wait(), one notify must ensure:
+//     - atleast one thread wakes up immediately 
+//     - it does not park
+//     - it does not wait for another notify
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void notify_one_before_commit_rounds(size_t N) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> armed(0);
+  std::atomic<size_t> committed(0);
+  std::atomic<bool> stop(false);
+
+  std::vector<std::thread> threads;
+  threads.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    threads.emplace_back([&, i]() {
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        while(round.load(std::memory_order_acquire) <= local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        notifier.prepare_wait(i);
+        armed.fetch_add(1, std::memory_order_release);
+
+        // Everyone commits; some may park, that is allowed.
+        notifier.commit_wait(i);
+        committed.fetch_add(1, std::memory_order_release);
+
+        local_round++;
+      }
+    });
+  }
+
+  for(size_t r = 0; r < R; ++r) {
+
+    armed.store(0, std::memory_order_relaxed);
+    committed.store(0, std::memory_order_relaxed);
+
+    round.store(r + 1, std::memory_order_release);
+
+    // Wait until all threads are between prepare and commit
+    while(armed.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    notifier.notify_one();
+
+    for(size_t spins = 0; spins < 1000000; ++spins) {
+      if(committed.load(std::memory_order_acquire) >= 1) break;
+      std::this_thread::yield();
+    }
+    REQUIRE(committed.load(std::memory_order_acquire) >= 1);
+
+    notifier.notify_all();
+
+    while(committed.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+  }
+
+  stop.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : threads) t.join();
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.1threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(1);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.2threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(2);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.4threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.5threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(5);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.8threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(8);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.15threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(15);
+}
+TEST_CASE("NonblockingNotifier.notify_one_before_commit_rounds.31threads" * doctest::timeout(300)) {
+  notify_one_before_commit_rounds<tf::NonblockingNotifier>(31);
 }
