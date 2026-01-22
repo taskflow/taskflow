@@ -550,10 +550,10 @@ Node::Node(
   Args&&... args
 ) :
   NodeBase(nstate, estate, parent, join_counter),
-  _name         {params.name},
-  _data         {params.data},
-  _topology     {topology},
-  _handle       {std::forward<Args>(args)...} {
+  _name     {params.name},
+  _data     {params.data},
+  _topology {topology},
+  _handle   {std::forward<Args>(args)...} {
 }
 
 // Constructor
@@ -568,8 +568,8 @@ Node::Node(
   Args&&... args
 ) :
   NodeBase(nstate, estate, parent, join_counter),
-  _topology     {topology},
-  _handle       {std::forward<Args>(args)...} {
+  _topology {topology},
+  _handle   {std::forward<Args>(args)...} {
 }
 
 // Procedure: _precede

@@ -3217,6 +3217,41 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1195" column="8"/>
       </memberdef>
+      <memberdef kind="function" id="classtf_1_1Executor_1af3a8ec07b5ca933a6f534180b387809f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>size_t</type>
+            <declname>N</declname>
+            <defname>N</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void tf::Executor::_bulk_update_cache</definition>
+        <argsstring>(Worker &amp;, Node *&amp;, Node *, std::array&lt; Node *, N &gt; &amp;, size_t &amp;)</argsstring>
+        <name>_bulk_update_cache</name>
+        <param>
+          <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
+        </param>
+        <param>
+          <type>Node *&amp;</type>
+        </param>
+        <param>
+          <type>Node *</type>
+        </param>
+        <param>
+          <type><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; Node *, N &gt; &amp;</type>
+        </param>
+        <param>
+          <type>size_t &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/executor.hpp" line="1198" column="8"/>
+      </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a1a31b533e681afad517f8e4475ac5ac7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -3248,7 +3283,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1198" column="8"/>
+        <location file="taskflow/core/executor.hpp" line="1201" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a124748acd29feed958b27b900380ec04" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3281,7 +3316,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1201" column="8"/>
+        <location file="taskflow/core/executor.hpp" line="1204" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a98c8b93d35b802364ec731f5a4f7a25b" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3314,7 +3349,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1204" column="8"/>
+        <location file="taskflow/core/executor.hpp" line="1207" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a4d32fabf933478b102076dac83ca104c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3360,7 +3395,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1209" column="8"/>
+        <location file="taskflow/core/executor.hpp" line="1212" column="8"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a81bc7960b9eedefc81809315d08baa61" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -3406,7 +3441,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="1214" column="8"/>
+        <location file="taskflow/core/executor.hpp" line="1217" column="8"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -3444,13 +3479,14 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/core/executor.hpp" line="62" column="1" bodyfile="taskflow/core/executor.hpp" bodystart="62" bodyend="1215"/>
+    <location file="taskflow/core/executor.hpp" line="62" column="1" bodyfile="taskflow/core/executor.hpp" bodystart="62" bodyend="1218"/>
     <listofallmembers>
       <member refid="classtf_1_1Executor_1a124748acd29feed958b27b900380ec04" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_async</name></member>
       <member refid="classtf_1_1Executor_1a26914ae5df64296dea8a680a6eafa9b7" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_buffers</name></member>
       <member refid="classtf_1_1Executor_1a010a842b8713c6b8e36ae87702130b4b" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_bulk_schedule</name></member>
       <member refid="classtf_1_1Executor_1a3fd7f072cb880edc13dd1cb0b8c98c6e" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_bulk_schedule</name></member>
       <member refid="classtf_1_1Executor_1a050fd2234fba91c8babb4488dfc863c4" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_bulk_spill</name></member>
+      <member refid="classtf_1_1Executor_1af3a8ec07b5ca933a6f534180b387809f" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_bulk_update_cache</name></member>
       <member refid="classtf_1_1Executor_1ac71a4feb42deac5f40eb0f62903b3545" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_graph</name></member>
       <member refid="classtf_1_1Executor_1a43cdd198427b7be2827450f6ce8343af" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_corun_until</name></member>
       <member refid="classtf_1_1Executor_1a8728f22f6d177fad84ce667e02a7a3b9" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_decrement_topology</name></member>

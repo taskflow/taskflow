@@ -1194,6 +1194,9 @@ class Executor {
   template <typename I>
   void _bulk_spill(I, size_t);
 
+  template <size_t N>
+  void _bulk_update_cache(Worker&, Node*&, Node*, std::array<Node*, N>&, size_t&);
+
   template <typename I>
   void _schedule_graph_with_parent(Worker&, I, I, Topology*, NodeBase*);
 
@@ -1621,6 +1624,21 @@ TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node*
   }
   cache = node;
 }
+
+// Function: _bulk_update_cache
+template <size_t N>
+TF_FORCE_INLINE void Executor::_bulk_update_cache(
+  Worker& worker, Node*& cache, Node* node, std::array<Node*, N>& array, size_t& n
+) {
+  if(cache) {
+    array[n++] = cache;
+    if(n == N) {
+      _bulk_schedule(worker, array, n);
+      n = 0;
+    }
+  }
+  cache = node;
+}
   
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
@@ -1785,7 +1803,6 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     }
     break;
   }
-
 
   // clean up the node after execution
   _tear_down_nonasync(worker, node, cache);

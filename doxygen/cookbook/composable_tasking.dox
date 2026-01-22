@@ -9,63 +9,63 @@ This chapter describes how to create a large parallel graph through composition 
 
 @section ComposeATaskflow Compose a Taskflow
 
-A powerful feature of tf::Taskflow is its @em composable interface.
+A powerful feature of %Taskflow is its @em composable interface.
 You can break down a large parallel workload into smaller pieces
 each designed to run a specific task dependency graph.
 This largely facilitates the @em modularity of writing a parallel task program.
 
 @code{.cpp}
- 1: // f1 has three independent tasks
- 2: tf::Taskflow f1;
- 3: f1.name("F1");
- 4: tf::Task f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
- 5: tf::Task f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
- 6: tf::Task f1C = f1.emplace([&](){ std::cout << "F1 TaskC\n"; });
- 7: 
- 8: f1A.name("f1A");
- 9: f1B.name("f1B");
-10: f1C.name("f1C");
-11: f1A.precede(f1C);
-12: f1B.precede(f1C);
-13:
-14: // f2A ---
-15: //        |----> f2C ----> f1_module_task ----> f2D
-16: // f2B --- 
-17: tf::Taskflow f2;
-18: f2.name("F2");
-19: tf::Task f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
-20: tf::Task f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
-21: tf::Task f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
-22: tf::Task f2D = f2.emplace([&](){ std::cout << "  F2 TaskD\n"; });
-23: 
-24: f2A.name("f2A");
-25: f2B.name("f2B");
-26: f2C.name("f2C");
-27: f2D.name("f2D");
-28:
-29: f2A.precede(f2C);
-30: f2B.precede(f2C);
-31:
-32: tf::Task f1_module_task = f2.composed_of(f1).name("module");
-33: f2C.precede(f1_module_task);
-34: f1_module_task.precede(f2D);
-35:
-36: f2.dump(std::cout);
+// f1 has three independent tasks
+tf::Taskflow f1;
+f1.name("F1");
+tf::Task f1A = f1.emplace([&](){ std::cout << "F1 TaskA\n"; });
+tf::Task f1B = f1.emplace([&](){ std::cout << "F1 TaskB\n"; });
+tf::Task f1C = f1.emplace([&](){ std::cout << "F1 TaskC\n"; });
+
+f1A.name("f1A");
+f1B.name("f1B");
+f1C.name("f1C");
+f1A.precede(f1C);
+f1B.precede(f1C);
+
+// f2A ---
+//        |----> f2C ----> f1_module_task ----> f2D
+// f2B --- 
+tf::Taskflow f2;
+f2.name("F2");
+tf::Task f2A = f2.emplace([&](){ std::cout << "  F2 TaskA\n"; });
+tf::Task f2B = f2.emplace([&](){ std::cout << "  F2 TaskB\n"; });
+tf::Task f2C = f2.emplace([&](){ std::cout << "  F2 TaskC\n"; });
+tf::Task f2D = f2.emplace([&](){ std::cout << "  F2 TaskD\n"; });
+
+f2A.name("f2A");
+f2B.name("f2B");
+f2C.name("f2C");
+f2D.name("f2D");
+
+f2A.precede(f2C);
+f2B.precede(f2C);
+
+tf::Task f1_module_task = f2.composed_of(f1).name("module");
+f2C.precede(f1_module_task);
+f1_module_task.precede(f2D);
+
+f2.dump(std::cout);
 @endcode
 
 <!-- @image html images/composition_static_1.svg width=40% -->
 @dotfile images/composition_static_1.dot
 
-Debrief:
+The above example first constructs a taskflow consisting of three tasks, `f1A`, `f1B`, and `f1C`, 
+where `f1A` and `f1B` execute before `f1C`. 
+It then creates a second taskflow with four tasks, `f2A`, `f2B`, `f2C`, and `f2D`. 
+The first taskflow is encapsulated as a module task using Taskflow::composed_of, 
+allowing it to be embedded within the second taskflow. 
+Dependencies are then established so that `f2C` must complete before the module task begins, 
+and the module task must finish before `f2D` executes, 
+thereby integrating the two taskflows into a single execution graph with well-defined ordering constraints.
 
-@li Lines 1-12 create a taskflow of three tasks f1A, f1B, and f1C with f1A and f1B preceding f1C
-@li Lines 17-30 create a taskflow of four tasks f2A, f2B, f2C, and f2D 
-@li Line 32 creates a module task from taskflow f1 through the method Taskflow::composed_of
-@li Line 33 enforces task f2C to run before the module task 
-@li Line 34 enforces the module task to run before task f2D
-
-
-@section CreateAModuleTaskFromATaskflow Create a Module Task from a %Taskflow
+@section CreateAModuleTaskFromATaskflow Create a Module Task from a Taskflow
 
 The task created from Taskflow::composed_of is a @em module task
 that runs on a pre-defined taskflow.
@@ -93,7 +93,7 @@ To become a module task,
 your class `T` must define the method `T::graph()` that returns a reference to the tf::Graph object
 managed by `T`.
 The following example defines a custom graph object that can be assembled in a taskflow
-throw composition:
+through composition:
 
 @code{.cpp}
  1: struct CustomGraph {
@@ -112,18 +112,12 @@ throw composition:
 14: tf::Task comp = taskflow.composed_of(obj);
 @endcode
 
-Debrief:
-+ Lines 1-11 define a custom graph interface to participate in taskflow composition
-+ Line 2 defines the graph object using tf::Graph
-+ Lines 3-8 defines the constructor that constructs the task graph using tf::FlowBuilder
-+ Line 10 defines the required method for taskflow composition
-+ Lines 13-14 creates a module task for the declared graph object in the taskflow
-
-The composition method tf::Taskflow::composed_of requires the target to define
-the `graph()` method that returns a reference to a tf::Graph object
-defined by the target.
-At runtime, the executor will schedule tasks in that graph
-using the same work-stealing algorithm as other taskflows.
+The above code defines a custom graph that can participate in taskflow composition. 
+The graph object is represented using tf::Graph, and its constructor builds the internal task graph 
+through tf::FlowBuilder. 
+To support composition, the graph implements the required interface method (`Graph& graph()`)
+that exposes its internal structure to the %Taskflow runtime. 
+With this interface in place, the custom graph can then be instantiated as a module task within a larger taskflow, enabling it to be seamlessly composed and scheduled alongside other tasks.
 
 @attention
 Users are responsible for ensuring the given target remains valid throughout its execution.

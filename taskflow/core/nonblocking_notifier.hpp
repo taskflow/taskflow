@@ -171,7 +171,7 @@ class NonblockingNotifier {
   @return the number of committed waiters at the time of the call.
   
   A committed waiter is a thread that has completed the pre-waiting stage
-  and is fully registered in the waiting set via commit_wait().
+  and is fully registered in the waiting set via `commit_wait()`.
   */
   size_t num_waiters() const {
     size_t n = 0;
