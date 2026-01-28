@@ -1630,6 +1630,7 @@ template <size_t N>
 TF_FORCE_INLINE void Executor::_bulk_update_cache(
   Worker& worker, Node*& cache, Node* node, std::array<Node*, N>& array, size_t& n
 ) {
+  // experimental results show no benefit of using bulk_update_cache
   if(cache) {
     array[n++] = cache;
     if(n == N) {
