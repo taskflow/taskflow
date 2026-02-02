@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Xorshift" kind="class" language="C++" prot="public">
     <compoundname>tf::Xorshift</compoundname>
     <includes refid="math_8hpp" local="no">taskflow/utility/math.hpp</includes>
@@ -8,48 +8,51 @@
         <type>typename T</type>
       </param>
     </templateparamlist>
-      <sectiondef kind="private-attrib">
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Xorshift_1abb644cc294c50eae2ade277e37206c50" prot="private" static="no" mutable="no">
         <type>T</type>
         <definition>T tf::Xorshift&lt; T &gt;::_state</definition>
         <argsstring></argsstring>
         <name>_state</name>
+        <qualifiedname>tf::Xorshift::_state</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="428" column="5" bodyfile="taskflow/utility/math.hpp" bodystart="428" bodyend="-1"/>
+        <location file="taskflow/utility/math.hpp" line="390" column="5" bodyfile="taskflow/utility/math.hpp" bodystart="390" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Xorshift_1a9753af25d9a8262c67c55914f8e82ce5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Xorshift&lt; T &gt;::Xorshift</definition>
         <argsstring>()=default</argsstring>
         <name>Xorshift</name>
+        <qualifiedname>tf::Xorshift::Xorshift</qualifiedname>
         <briefdescription>
-<para>constructs an uninitialized <ref refid="classtf_1_1Xorshift" kindref="compound">Xorshift</ref> generator </para>
+<para>constructs an uninitialized xor-shift generator </para>
         </briefdescription>
         <detaileddescription>
-<para>The internal state is not initialized. The user must call <computeroutput><ref refid="classtf_1_1Xorshift_1a0293e3b3ab3f10d6160830024f065ec4" kindref="member">seed()</ref></computeroutput> with a non-zero value before generating numbers. </para>
+<para>The internal state is not initialized. The user must call <computeroutput><ref refid="namespacetf_1a3f8e89aebc29d42259157723c874954d" kindref="member">seed()</ref></computeroutput> with a non-zero value before generating numbers. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="370" column="3"/>
+        <location file="taskflow/utility/math.hpp" line="332" column="3"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Xorshift_1a6eeccbfe1882564147e5509f446536e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Xorshift&lt; T &gt;::Xorshift</definition>
         <argsstring>(T value)</argsstring>
         <name>Xorshift</name>
+        <qualifiedname>tf::Xorshift::Xorshift</qualifiedname>
         <param>
           <type>T</type>
           <declname>value</declname>
         </param>
         <briefdescription>
-<para>constructs a <ref refid="classtf_1_1Xorshift" kindref="compound">Xorshift</ref> generator with the given seed </para>
+<para>constructs a xor-shift generator with the given seed </para>
         </briefdescription>
         <detaileddescription>
 <para><parameterlist kind="param"><parameteritem>
@@ -65,13 +68,14 @@ The seed value must be non-zero. </para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="379" column="3" bodyfile="taskflow/utility/math.hpp" bodystart="379" bodyend="379"/>
+        <location file="taskflow/utility/math.hpp" line="341" column="3" bodyfile="taskflow/utility/math.hpp" bodystart="341" bodyend="341"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Xorshift_1a0293e3b3ab3f10d6160830024f065ec4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>void</type>
         <definition>void tf::Xorshift&lt; T &gt;::seed</definition>
         <argsstring>(T value)</argsstring>
         <name>seed</name>
+        <qualifiedname>tf::Xorshift::seed</qualifiedname>
         <param>
           <type>T</type>
           <declname>value</declname>
@@ -93,13 +97,14 @@ The seed value must be non-zero. A zero seed results in a degenerated generator 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="389" column="8" bodyfile="taskflow/utility/math.hpp" bodystart="389" bodyend="391"/>
+        <location file="taskflow/utility/math.hpp" line="351" column="8" bodyfile="taskflow/utility/math.hpp" bodystart="351" bodyend="353"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Xorshift_1a4223131b53cb370d4f5b302adbeb2265" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>T</type>
         <definition>T tf::Xorshift&lt; T &gt;::operator()</definition>
         <argsstring>()</argsstring>
         <name>operator()</name>
+        <qualifiedname>tf::Xorshift::operator()</qualifiedname>
         <briefdescription>
 <para>generates the next pseudo-random value </para>
         </briefdescription>
@@ -113,9 +118,9 @@ For 32-bit state, this function implements the Xorshift32 algorithm. For 64-bit 
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/math.hpp" line="406" column="5" bodyfile="taskflow/utility/math.hpp" bodystart="406" bodyend="424"/>
+        <location file="taskflow/utility/math.hpp" line="368" column="5" bodyfile="taskflow/utility/math.hpp" bodystart="368" bodyend="386"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a fast xorshift-based pseudo-random number generator </para>
     </briefdescription>
@@ -134,7 +139,7 @@ This class implements a lightweight xorshift pseudo-random number generator suit
 </simplesect>
 </para>
     </detaileddescription>
-    <location file="taskflow/utility/math.hpp" line="359" column="1" bodyfile="taskflow/utility/math.hpp" bodystart="359" bodyend="429"/>
+    <location file="taskflow/utility/math.hpp" line="321" column="1" bodyfile="taskflow/utility/math.hpp" bodystart="321" bodyend="391"/>
     <listofallmembers>
       <member refid="classtf_1_1Xorshift_1abb644cc294c50eae2ade277e37206c50" prot="private" virt="non-virtual"><scope>tf::Xorshift</scope><name>_state</name></member>
       <member refid="classtf_1_1Xorshift_1a4223131b53cb370d4f5b302adbeb2265" prot="public" virt="non-virtual"><scope>tf::Xorshift</scope><name>operator()</name></member>

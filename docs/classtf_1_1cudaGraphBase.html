@@ -5,7 +5,7 @@
   <title>tf::cudaGraphBase class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -95,18 +95,18 @@
               <div class="m-doc-template">template&lt;typename... ArgsT&gt;</div>
               <span class="m-doc-wrap-bumper"><a href="#a7ac97676bc2fbba66aa7c2f8853b387c" class="m-doc">cudaGraphBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-flat m-info">explicit</span> </span>
             </dt>
-            <dd>constructs a <code>cudaGraph</code> object by passing the given arguments to the executable CUDA graph creator</dd>
+            <dd>constructs a <code><a href="namespacetf.html#a713c427e4f9841a90dec67045a3babed" class="m-doc">cudaGraph</a></code> object by passing the given arguments to the executable CUDA graph creator</dd>
             <dt id="a395a6f47f4c4566475082f842cc61e70">
               <span class="m-doc-wrap-bumper"><a href="#a395a6f47f4c4566475082f842cc61e70" class="m-doc-self">cudaGraphBase</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>&amp;&amp;) <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
-            <dd>constructs a <code>cudaGraph</code> from the given rhs using move semantics</dd>
+            <dd>constructs a <code><a href="namespacetf.html#a713c427e4f9841a90dec67045a3babed" class="m-doc">cudaGraph</a></code> from the given rhs using move semantics</dd>
           </dl>
         </section>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
-            <dt id="ac3d3b39adda7bb93a9799f5669bc0662">
-              <span class="m-doc-wrap-bumper">auto <a href="#ac3d3b39adda7bb93a9799f5669bc0662" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
+            <dt id="add84e6029241ccf460537f7f4183d41e">
+              <span class="m-doc-wrap-bumper">auto <a href="#add84e6029241ccf460537f7f4183d41e" class="m-doc-self">operator=</a>(</span><span class="m-doc-wrap"><a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>&amp;&amp;) -&gt; <a href="classtf_1_1cudaGraphBase.html" class="m-doc">cudaGraphBase</a>&amp; <span class="m-label m-flat m-info">defaulted</span></span>
             </dt>
             <dd>assign the rhs to <code>*this</code> using move semantics</dd>
             <dt id="ad53731e3a0415df2ae86f7121969851a">
@@ -225,7 +225,7 @@
               </div>
               <span class="m-doc-wrap-bumper"> tf::<wbr />cudaGraphBase&lt;Creator, Deleter&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a7ac97676bc2fbba66aa7c2f8853b387c" class="m-doc-self">cudaGraphBase</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) <span class="m-label m-info">explicit</span> </span></span>
             </h3>
-            <p>constructs a <code>cudaGraph</code> object by passing the given arguments to the executable CUDA graph creator</p>
+            <p>constructs a <code><a href="namespacetf.html#a713c427e4f9841a90dec67045a3babed" class="m-doc">cudaGraph</a></code> object by passing the given arguments to the executable CUDA graph creator</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -237,7 +237,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Constructs a <code>cudaGraph</code> object by passing the given arguments to the executable CUDA graph creator</p>
+<p>Constructs a <code><a href="namespacetf.html#a713c427e4f9841a90dec67045a3babed" class="m-doc">cudaGraph</a></code> object by passing the given arguments to the executable CUDA graph creator</p>
           </div></section>
           <section class="m-doc-details" id="abd73a9268b80e74803f241ee10a842b6"><div>
             <h3>
@@ -303,7 +303,7 @@
               <tbody>
                 <tr>
                   <td>callable</td>
-                  <td>a callable object with neither arguments nor return (i.e., constructible from <code>std::function&lt;void()&gt;</code>)</td>
+                  <td>a callable object with neither arguments nor return (i.e., constructible from <code><a href="http://en.cppreference.com/w/cpp/utility/functional/function.html" class="m-doc-external">std::<wbr />function&lt;void()&gt;</a></code>)</td>
                 </tr>
                 <tr>
                   <td>user_data</td>
@@ -936,7 +936,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

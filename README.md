@@ -1,12 +1,12 @@
-# Taskflow <img align="right" width="10%" src="image/taskflow_logo.png">
+# Taskflow <img align="right" width="10%" src="images/taskflow_logo.png">
 
 <!--[![Linux Build Status](https://travis-ci.com/taskflow/taskflow.svg?branch=master)](https://travis-ci.com/taskflow/taskflow)-->
 [![Ubuntu](https://github.com/taskflow/taskflow/workflows/Ubuntu/badge.svg)](https://github.com/taskflow/taskflow/actions?query=workflow%3AUbuntu)
 [![macOS](https://github.com/taskflow/taskflow/workflows/macOS/badge.svg)](https://github.com/taskflow/taskflow/actions?query=workflow%3AmacOS)
 [![Windows](https://github.com/taskflow/taskflow/workflows/Windows/badge.svg)](https://github.com/taskflow/taskflow/actions?query=workflow%3AWindows)
-[![Wiki](image/api-doc.svg)][documentation]
-[![TFProf](image/tfprof.svg)](https://taskflow.github.io/tfprof/)
-[![Cite](image/cite-tpds.svg)][TPDS22]
+[![Wiki](images/api-doc.svg)][documentation]
+[![TFProf](images/tfprof.svg)](https://taskflow.github.io/tfprof/)
+[![Cite](images/cite-tpds.svg)][TPDS22]
 
 Taskflow helps you quickly write task-parallel programs using modern C++
 
@@ -14,7 +14,7 @@ Taskflow helps you quickly write task-parallel programs using modern C++
 
 Taskflow is faster, more expressive, and easier to integrate than many existing task programming frameworks when handling complex parallel workloads.
 
-![](image/performance.png)
+![](images/performance.png)
 
 Taskflow lets you quickly implement task decomposition strategies
 that incorporate both regular and irregular compute patterns,
@@ -22,7 +22,7 @@ together with an efficient *work-stealing* scheduler to optimize your multithrea
 
 | [Static Tasking](#start-your-first-taskflow-program) | [Subflow Tasking](#create-a-subflow-graph) |
 | :------------: | :-------------: |
-| ![](image/static_graph.svg) | <img align="right" src="image/dynamic_graph.svg" width="100%"> |
+| ![](images/static_graph.svg) | <img align="right" src="images/dynamic_graph.svg" width="100%"> |
 
 Taskflow supports conditional tasking for you to make rapid control-flow decisions
 across dependent tasks to implement cycles and conditions that were otherwise difficult to do
@@ -30,7 +30,7 @@ with existing tools.
 
 | [Conditional Tasking](#integrate-control-flow-to-a-task-graph) |
 | :-----------------: |
-| ![](image/condition.svg) |
+| ![](images/condition.svg) |
 
 Taskflow is composable. You can create large parallel graphs through
 composition of modular and reusable blocks that are easier to optimize
@@ -38,7 +38,7 @@ at an individual scope.
 
 | [Taskflow Composition](#compose-task-graphs) |
 | :---------------: |
-|![](image/framework.svg)|
+|![](images/framework.svg)|
 
 Taskflow supports heterogeneous tasking for you to
 accelerate a wide range of scientific computing applications
@@ -46,14 +46,14 @@ by harnessing the power of CPU-GPU collaborative computing.
 
 | [Concurrent CPU-GPU Tasking](#offload-a-task-to-a-gpu) |
 | :-----------------: |
-| ![](image/cudaflow.svg) |
+| ![](images/cudaflow.svg) |
 
 
 Taskflow provides visualization and tooling needed for profiling Taskflow programs.
 
 | [Taskflow Profiler](https://taskflow.github.io/tfprof) |
 | :-----------------: |
-| ![](image/tfprof.png) |
+| ![](images/tfprof.png) |
 
 We are committed to support trustworthy developments for both academic and industrial research projects
 in parallel computing. Check out [Who is Using Taskflow](https://taskflow.github.io/#tag_users) and what our users say:
@@ -69,7 +69,7 @@ See a quick poster presentation below and
 visit the [documentation][documentation] to learn more about Taskflow.
 Technical details can be referred to our [IEEE TPDS paper][TPDS22].
 
-![](image/taskflow-poster.png)
+![](images/taskflow-poster.png)
 
 # Start Your First Taskflow Program
 

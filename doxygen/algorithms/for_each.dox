@@ -127,10 +127,10 @@ for(auto i=first; i<last; i++) {
 }
 @endcode
 
-tf::Taskflow::for_each(B first, E last, C callable, P&& part) 
+tf::Taskflow::for_each(B first, E last, C callable, P part) 
 simultaneously applies the callable to the object obtained by dereferencing every iterator 
 in the range <tt>[first, last)</tt>.
-It is user's responsibility for ensuring the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. 
+It is user's responsibility for ensuring that the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. 
 
 @code{.cpp}
 std::vector<int> vec = {1, 2, 3, 4, 5};
