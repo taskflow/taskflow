@@ -24,7 +24,7 @@ void no_missing_notify_all(size_t N) {
   size_t R = 20 * (N + 1);
   if(N >= 31) R = 1 * (N + 1);   
 
-  std::atomic<size_t> armed(0);
+  std::atomic<size_t> prepared(0);
   std::atomic<size_t> completed(0);
   std::atomic<size_t> round(0);
   std::atomic<bool> stop(false);
@@ -48,9 +48,9 @@ void no_missing_notify_all(size_t N) {
         }
 
         notifier.prepare_wait(i);
-        armed.fetch_add(1, std::memory_order_relaxed);
+        prepared.fetch_add(1, std::memory_order_relaxed);
 
-        while(armed.load(std::memory_order_acquire) < (local_round + 1) * N && !stop.load(std::memory_order_relaxed)) {
+        while(prepared.load(std::memory_order_acquire) < (local_round + 1) * N && !stop.load(std::memory_order_relaxed)) {
           std::this_thread::yield();
         }
 
@@ -65,7 +65,7 @@ void no_missing_notify_all(size_t N) {
   for(size_t r = 0; r < R; ++r) {
     round.fetch_add(1, std::memory_order_release);
 
-    while(armed.load(std::memory_order_acquire) != (r + 1) * N) {
+    while(prepared.load(std::memory_order_acquire) != (r + 1) * N) {
       std::this_thread::yield();
     }
 
@@ -127,7 +127,7 @@ void no_missing_notify_one(size_t N) {
   if(N >= 31) R = 1 * (N + 1);
 
   std::atomic<size_t> round(0);
-  std::atomic<size_t> armed(0);
+  std::atomic<size_t> prepared(0);
   std::atomic<size_t> committed(0);
   std::atomic<bool> stop(false);
 
@@ -148,7 +148,7 @@ void no_missing_notify_one(size_t N) {
         if(stop.load(std::memory_order_relaxed)) break;
 
         notifier.prepare_wait(i);
-        armed.fetch_add(1, std::memory_order_release);
+        prepared.fetch_add(1, std::memory_order_release);
 
         // Everyone commits; some may park, that is allowed.
         notifier.commit_wait(i);
@@ -161,13 +161,13 @@ void no_missing_notify_one(size_t N) {
 
   for(size_t r = 0; r < R; ++r) {
 
-    armed.store(0, std::memory_order_relaxed);
+    prepared.store(0, std::memory_order_relaxed);
     committed.store(0, std::memory_order_relaxed);
 
     round.store(r + 1, std::memory_order_release);
 
     // Wait until all threads are between prepare and commit
-    while(armed.load(std::memory_order_acquire) != N) {
+    while(prepared.load(std::memory_order_acquire) != N) {
       std::this_thread::yield();
     }
 
@@ -239,7 +239,7 @@ void no_missing_notify_n(size_t N, uint32_t seed = 12345) {
   if(N >= 31) R = 1 * (N + 1);
 
   std::atomic<size_t> round(0);
-  std::atomic<size_t> armed(0);
+  std::atomic<size_t> prepared(0);
   std::atomic<size_t> committed(0);
   std::atomic<bool> stop(false);
 
@@ -262,7 +262,7 @@ void no_missing_notify_n(size_t N, uint32_t seed = 12345) {
         }
 
         notifier.prepare_wait(i);
-        armed.fetch_add(1, std::memory_order_release);
+        prepared.fetch_add(1, std::memory_order_release);
 
         notifier.commit_wait(i);
         committed.fetch_add(1, std::memory_order_release);
@@ -276,12 +276,12 @@ void no_missing_notify_n(size_t N, uint32_t seed = 12345) {
   std::uniform_int_distribution<size_t> dist(0, N);
 
   for(size_t r = 0; r < R; ++r) {
-    armed.store(0, std::memory_order_relaxed);
+    prepared.store(0, std::memory_order_relaxed);
     committed.store(0, std::memory_order_relaxed);
 
     round.store(r+1, std::memory_order_release);
 
-    while(armed.load(std::memory_order_acquire) != N) {
+    while(prepared.load(std::memory_order_acquire) != N) {
       std::this_thread::yield();
     }
 
@@ -352,7 +352,7 @@ void no_missing_notify_x(size_t N, uint32_t seed = 12345) {
   if(N >= 31) R = 1 * (N + 1);
 
   std::atomic<size_t> round(0);
-  std::atomic<size_t> armed(0);
+  std::atomic<size_t> prepared(0);
   std::atomic<size_t> committed(0);
   std::atomic<bool> stop(false);
 
@@ -375,7 +375,7 @@ void no_missing_notify_x(size_t N, uint32_t seed = 12345) {
         }
 
         notifier.prepare_wait(i);
-        armed.fetch_add(1, std::memory_order_release);
+        prepared.fetch_add(1, std::memory_order_release);
 
         notifier.commit_wait(i);
         committed.fetch_add(1, std::memory_order_release);
@@ -389,12 +389,12 @@ void no_missing_notify_x(size_t N, uint32_t seed = 12345) {
   std::uniform_int_distribution<size_t> dist(0, N);
 
   for(size_t r = 0; r < R; ++r) {
-    armed.store(0, std::memory_order_relaxed);
+    prepared.store(0, std::memory_order_relaxed);
     committed.store(0, std::memory_order_relaxed);
 
     round.store(r+1, std::memory_order_release);
 
-    while(armed.load(std::memory_order_acquire) != N) {
+    while(prepared.load(std::memory_order_acquire) != N) {
       std::this_thread::yield();
     }
 
@@ -458,5 +458,677 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_x.15threads" * doctest::timeout
 
 TEST_CASE("NonblockingNotifier.no_missing_notify_x.31threads" * doctest::timeout(300)) {
   no_missing_notify_x<tf::NonblockingNotifier>(31);
+}
+// ----------------------------------------------------------------------------
+// NonblockingNotifier: no_missing_cancel_wait
+//   - Verifies that threads can "change their mind" about sleeping after
+//     calling prepare_wait().
+//   - In each round, every thread:
+//      1. Calls prepare_wait(i) to register intent to sleep.
+//      2. Waits for the main thread to publish a per-thread predicate.
+//      3. If predicate is true, calls cancel_wait(i) and proceeds without
+//         becoming a waiter.
+//      4. Otherwise calls commit_wait(i) (may block until a notify).
+//   - The test ensures:
+//      * cancel_wait properly cleans up internal state (no ghost waiters)
+//      * commit_wait + notifications complete the round
+//      * num_waiters() returns to 0 at the end
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void no_missing_cancel_wait(size_t N, uint32_t seed = 12345) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> prepared(0);
+  std::atomic<size_t> canceled(0);
+  std::atomic<size_t> committed(0);
+  std::atomic<bool> stop(false);
+  std::atomic<bool> go(false);  // workers spin on this so they do not read has_work[i] too early
+
+  std::vector<std::atomic<bool>> has_work(N);
+  for(size_t i = 0; i < N; ++i) {
+    has_work[i].store(false, std::memory_order_relaxed);
+  }
+
+  std::vector<std::thread> threads;
+  threads.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    threads.emplace_back([&, i]() {
+
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        // Wait for main to advance the round
+        while(round.load(std::memory_order_acquire) <= local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        if(stop.load(std::memory_order_relaxed)) {
+          break;
+        }
+
+        // Register intent to sleep
+        notifier.prepare_wait(i);
+        prepared.fetch_add(1, std::memory_order_release);
+
+        // Wait until main publishes per-thread predicate
+        while(!go.load(std::memory_order_acquire) &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        if(stop.load(std::memory_order_relaxed)) {
+          break;
+        }
+
+        // Either cancel or commit
+        if(has_work[i].load(std::memory_order_acquire)) {
+          notifier.cancel_wait(i);
+          canceled.fetch_add(1, std::memory_order_release);
+        }
+        else {
+          notifier.commit_wait(i);
+          committed.fetch_add(1, std::memory_order_release);
+        }
+
+        local_round++;
+      }
+    });
+  }
+
+  std::mt19937 rng(seed);
+  std::uniform_int_distribution<int> dice(0, 1);
+
+  for(size_t r = 0; r < R; ++r) {
+
+    // Reset per-round counters/gates
+    prepared.store(0, std::memory_order_relaxed);
+    canceled.store(0, std::memory_order_relaxed);
+    committed.store(0, std::memory_order_relaxed);
+    go.store(false, std::memory_order_release);
+
+    // Reset predicates
+    for(size_t i = 0; i < N; ++i) {
+      has_work[i].store(false, std::memory_order_relaxed);
+    }
+
+    // Start round
+    round.store(r + 1, std::memory_order_release);
+
+    // Wait until every worker has reached prepare_wait(i)
+    while(prepared.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    // publish which threads should cancel
+    size_t expected_cancels = 0;
+    for(size_t i = 0; i < N; ++i) {
+      if(dice(rng)) {
+        has_work[i].store(true, std::memory_order_release);
+        expected_cancels++;
+      }
+    }
+    size_t expected_commits = N - expected_cancels;
+
+    // Let workers proceed to cancel/commit
+    go.store(true, std::memory_order_release);
+
+    // Wait until all cancelers have canceled (committers may still be blocked)
+    while(canceled.load(std::memory_order_acquire) != expected_cancels) {
+      std::this_thread::yield();
+    }
+
+    // Wait until all committers are truly in the waiter set (or there are none)
+    while(notifier.num_waiters() != expected_commits) {
+      std::this_thread::yield();
+    }
+
+    if(expected_commits > 0) {
+      std::uniform_int_distribution<size_t> pickX(0, expected_commits);
+      size_t X = pickX(rng);
+
+      size_t first = expected_commits - X;   // in [0, expected_commits]
+      notifier.notify_n(first);
+
+      for(size_t j = 0; j < X; ++j) {
+        notifier.notify_one();
+      }
+    }
+
+    // ensure the round can always complete
+    notifier.notify_all();
+
+    // Wait until every worker either canceled or returned from commit_wait
+    while((canceled.load(std::memory_order_acquire) +
+           committed.load(std::memory_order_acquire)) != N) {
+      std::this_thread::yield();
+    }
+
+    // After all workers finished, there should be no lingering waiters
+    REQUIRE(notifier.num_waiters() == 0);
+  }
+
+  // Shutdown
+  stop.store(true, std::memory_order_release);
+  go.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : threads) {
+    t.join();
+  }
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.1threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(1);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.2threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(2);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.4threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.5threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(5);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.8threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(8);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.16threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(16);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.31threads"* doctest::timeout(300)){
+  no_missing_cancel_wait<tf::NonblockingNotifier>(31);
+}
+
+
+// ----------------------------------------------------------------------------
+// no_missing_notify_ones
+// - Have N worker threads do: prepare_wait(i) -> (maybe cancel_wait(i)) -> commit_wait(i).
+// - At the same time, have several "notifier threads" repeatedly call notify_one().
+// - This tests that many notify_one calls from different threads do not lose wakeups,
+//   and cancel_wait does not leave ghost waiters.
+// - End check: workers keep making progress each round and num_waiters() == 0.
+// ----------------------------------------------------------------------------
+template <typename T>
+void no_missing_notify_ones(size_t N, size_t M = 4, uint32_t seed = 12345) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> prepared(0);
+  std::atomic<size_t> canceled(0);
+  std::atomic<size_t> committed(0);
+  std::atomic<bool> stop(false);
+  std::atomic<bool> go(false);
+
+  std::vector<std::atomic<bool>> has_work(N);
+  for(size_t i = 0; i < N; ++i) {
+    has_work[i].store(false, std::memory_order_relaxed);
+  }
+
+  // Worker threads
+  std::vector<std::thread> workers;
+  workers.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    workers.emplace_back([&, i]() {
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        while(round.load(std::memory_order_acquire) <= local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        notifier.prepare_wait(i);
+        prepared.fetch_add(1, std::memory_order_release);
+
+        while(!go.load(std::memory_order_acquire) &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        if(has_work[i].load(std::memory_order_acquire)) {
+          notifier.cancel_wait(i);
+          canceled.fetch_add(1, std::memory_order_release);
+        }
+        else {
+          notifier.commit_wait(i);
+          committed.fetch_add(1, std::memory_order_release);
+        }
+
+        local_round++;
+      }
+    });
+  }
+
+  // Notifier threads: hammer notify_one()
+  std::vector<std::thread> notifiers;
+  notifiers.reserve(M);
+
+  for(size_t t = 0; t < M; ++t) {
+    notifiers.emplace_back([&]() {
+      while(!stop.load(std::memory_order_relaxed)) {
+        notifier.notify_one();
+        std::this_thread::yield();
+      }
+    });
+  }
+
+  std::mt19937 rng(seed);
+  std::uniform_int_distribution<int> dice(0, 1);
+
+  for(size_t r = 0; r < R; ++r) {
+
+    prepared.store(0, std::memory_order_relaxed);
+    canceled.store(0, std::memory_order_relaxed);
+    committed.store(0, std::memory_order_relaxed);
+    go.store(false, std::memory_order_release);
+
+    for(size_t i = 0; i < N; ++i) {
+      has_work[i].store(false, std::memory_order_relaxed);
+    }
+
+    round.store(r + 1, std::memory_order_release);
+
+    while(prepared.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    // Publish per-thread work predicate
+    for(size_t i = 0; i < N; ++i) {
+      if(dice(rng)) {
+        has_work[i].store(true, std::memory_order_release);
+      }
+    }
+
+    go.store(true, std::memory_order_release);
+
+    // Round is done when every worker either canceled or returned from commit_wait.
+    while((canceled.load(std::memory_order_acquire) +
+           committed.load(std::memory_order_acquire)) != N) {
+      std::this_thread::yield();
+    }
+
+    //should not leave waiters after all workers finished the round.
+    REQUIRE(notifier.num_waiters() == 0);
+  }
+
+  stop.store(true, std::memory_order_release);
+  go.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : workers) t.join();
+  for(auto& t : notifiers) t.join();
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.1threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(1);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.2threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(2);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.4threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.5threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(5);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.8threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(8);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.16threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(16);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ones.31threads"* doctest::timeout(300)){
+  no_missing_notify_ones<tf::NonblockingNotifier>(31);
+}
+
+
+
+// ----------------------------------------------------------------------------
+// no_missing_notify_ns
+// - Same workers: prepare_wait(i) -> (maybe cancel_wait(i)) -> commit_wait(i).
+// - Several notifier threads repeatedly call notify_n(k) with random k in [0, N].
+// - This tests that concurrent notify_n calls do not break counting/permits,
+//   and workers still wake up and finish rounds.
+// - End check: progress continues and num_waiters() == 0.
+// ----------------------------------------------------------------------------
+template <typename T>
+void no_missing_notify_ns(size_t N, size_t M = 4, uint32_t seed = 12345) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> prepared(0);
+  std::atomic<size_t> canceled(0);
+  std::atomic<size_t> committed(0);
+  std::atomic<bool> stop(false);
+  std::atomic<bool> go(false);
+
+  std::vector<std::atomic<bool>> has_work(N);
+  for(size_t i = 0; i < N; ++i) {
+    has_work[i].store(false, std::memory_order_relaxed);
+  }
+
+  std::vector<std::thread> workers;
+  workers.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    workers.emplace_back([&, i]() {
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        while(round.load(std::memory_order_acquire) <= local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        notifier.prepare_wait(i);
+        prepared.fetch_add(1, std::memory_order_release);
+
+        while(!go.load(std::memory_order_acquire) &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        if(has_work[i].load(std::memory_order_acquire)) {
+          notifier.cancel_wait(i);
+          canceled.fetch_add(1, std::memory_order_release);
+        }
+        else {
+          notifier.commit_wait(i);
+          committed.fetch_add(1, std::memory_order_release);
+        }
+
+        local_round++;
+      }
+    });
+  }
+
+  // Notifier threads: hammer notify_n(k) with random k in [0, N]
+  std::vector<std::thread> notifiers;
+  notifiers.reserve(M);
+
+  for(size_t t = 0; t < M; ++t) {
+    notifiers.emplace_back([&, t]() {
+      std::mt19937 trng(seed + static_cast<uint32_t>(t + 1));
+      std::uniform_int_distribution<size_t> dist(0, N);
+
+      while(!stop.load(std::memory_order_relaxed)) {
+        size_t k = dist(trng);
+        notifier.notify_n(k);
+        std::this_thread::yield();
+      }
+    });
+  }
+
+  std::mt19937 rng(seed);
+  std::uniform_int_distribution<int> dice(0, 1);
+
+  for(size_t r = 0; r < R; ++r) {
+
+    prepared.store(0, std::memory_order_relaxed);
+    canceled.store(0, std::memory_order_relaxed);
+    committed.store(0, std::memory_order_relaxed);
+    go.store(false, std::memory_order_release);
+
+    for(size_t i = 0; i < N; ++i) {
+      has_work[i].store(false, std::memory_order_relaxed);
+    }
+
+    round.store(r + 1, std::memory_order_release);
+
+    while(prepared.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    for(size_t i = 0; i < N; ++i) {
+      if(dice(rng)) {
+        has_work[i].store(true, std::memory_order_release);
+      }
+    }
+
+    go.store(true, std::memory_order_release);
+
+    while((canceled.load(std::memory_order_acquire) +
+           committed.load(std::memory_order_acquire)) != N) {
+      std::this_thread::yield();
+    }
+
+    REQUIRE(notifier.num_waiters() == 0);
+  }
+
+  stop.store(true, std::memory_order_release);
+  go.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : workers) t.join();
+  for(auto& t : notifiers) t.join();
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.1threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(1);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.2threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(2);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.4threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.5threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(5);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.8threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(8);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.16threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(16);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_ns.31threads"* doctest::timeout(300)){
+  no_missing_notify_ns<tf::NonblockingNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// no_missing_notify_alls
+// - Same workers: prepare_wait(i) -> (maybe cancel_wait(i)) -> commit_wait(i).
+// - Several notifier threads repeatedly call notify_all() (sometimes in bursts).
+// - This tests that repeated notify_all calls from different threads do not cause
+//   deadlocks or stuck waiters.
+// - End check: progress continues and num_waiters() == 0.
+// ----------------------------------------------------------------------------
+
+template <typename T>
+void no_missing_notify_alls(size_t N, size_t M = 4, uint32_t seed = 12345) {
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  size_t R = 20 * (N + 1);
+  if(N >= 31) R = 1 * (N + 1);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> prepared(0);
+  std::atomic<size_t> canceled(0);
+  std::atomic<size_t> committed(0);
+  std::atomic<bool> stop(false);
+  std::atomic<bool> go(false);
+
+  std::vector<std::atomic<bool>> has_work(N);
+  for(size_t i = 0; i < N; ++i) {
+    has_work[i].store(false, std::memory_order_relaxed);
+  }
+
+  std::vector<std::thread> workers;
+  workers.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    workers.emplace_back([&, i]() {
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        while(round.load(std::memory_order_acquire) <= local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        notifier.prepare_wait(i);
+        prepared.fetch_add(1, std::memory_order_release);
+
+        while(!go.load(std::memory_order_acquire) &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+        if(stop.load(std::memory_order_relaxed)) break;
+
+        if(has_work[i].load(std::memory_order_acquire)) {
+          notifier.cancel_wait(i);
+          canceled.fetch_add(1, std::memory_order_release);
+        }
+        else {
+          notifier.commit_wait(i);
+          committed.fetch_add(1, std::memory_order_release);
+        }
+
+        local_round++;
+      }
+    });
+  }
+
+  // Notifier threads: hammer notify_all() (some bursts)
+  std::vector<std::thread> notifiers;
+  notifiers.reserve(M);
+
+  for(size_t t = 0; t < M; ++t) {
+    notifiers.emplace_back([&, t]() {
+      std::mt19937 trng(seed + static_cast<uint32_t>(777 + t));
+      std::uniform_int_distribution<int> burst(1, 8);
+
+      while(!stop.load(std::memory_order_relaxed)) {
+        int b = burst(trng);
+        for(int i = 0; i < b; ++i) {
+          notifier.notify_all();
+        }
+        std::this_thread::yield();
+      }
+    });
+  }
+
+  std::mt19937 rng(seed);
+  std::uniform_int_distribution<int> dice(0, 1);
+
+  for(size_t r = 0; r < R; ++r) {
+
+    prepared.store(0, std::memory_order_relaxed);
+    canceled.store(0, std::memory_order_relaxed);
+    committed.store(0, std::memory_order_relaxed);
+    go.store(false, std::memory_order_release);
+
+    for(size_t i = 0; i < N; ++i) {
+      has_work[i].store(false, std::memory_order_relaxed);
+    }
+
+    round.store(r + 1, std::memory_order_release);
+
+    while(prepared.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    for(size_t i = 0; i < N; ++i) {
+      if(dice(rng)) {
+        has_work[i].store(true, std::memory_order_release);
+      }
+    }
+
+    go.store(true, std::memory_order_release);
+
+    while((canceled.load(std::memory_order_acquire) +
+           committed.load(std::memory_order_acquire)) != N) {
+      std::this_thread::yield();
+    }
+
+    REQUIRE(notifier.num_waiters() == 0);
+  }
+
+  stop.store(true, std::memory_order_release);
+  go.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : workers) t.join();
+  for(auto& t : notifiers) t.join();
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.1threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(1);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.2threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(2);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.4threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(4);
+}
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.5threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(5);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.8threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(8);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.16threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(16);
+}
+
+TEST_CASE("NonblockingNotifier.no_missing_notify_alls.31threads"* doctest::timeout(300)){
+  no_missing_notify_alls<tf::NonblockingNotifier>(31);
 }
 
