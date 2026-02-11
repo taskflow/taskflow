@@ -459,6 +459,7 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_x.15threads" * doctest::timeout
 TEST_CASE("NonblockingNotifier.no_missing_notify_x.31threads" * doctest::timeout(300)) {
   no_missing_notify_x<tf::NonblockingNotifier>(31);
 }
+
 // ----------------------------------------------------------------------------
 // NonblockingNotifier: no_missing_cancel_wait
 //   - Verifies that threads can "change their mind" about sleeping after
@@ -640,6 +641,7 @@ TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.2threads"* doctest::timeou
 TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.4threads"* doctest::timeout(300)){
   no_missing_cancel_wait<tf::NonblockingNotifier>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.5threads"* doctest::timeout(300)){
   no_missing_cancel_wait<tf::NonblockingNotifier>(5);
 }
@@ -945,6 +947,7 @@ void no_missing_notify_ns(size_t N, size_t M = 4, uint32_t seed = 12345) {
 
   REQUIRE(notifier.num_waiters() == 0);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.1threads"* doctest::timeout(300)){
   no_missing_notify_ns<tf::NonblockingNotifier>(1);
 }
@@ -956,6 +959,7 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_ns.2threads"* doctest::timeout(
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.4threads"* doctest::timeout(300)){
   no_missing_notify_ns<tf::NonblockingNotifier>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.5threads"* doctest::timeout(300)){
   no_missing_notify_ns<tf::NonblockingNotifier>(5);
 }
@@ -1116,6 +1120,7 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_alls.2threads"* doctest::timeou
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.4threads"* doctest::timeout(300)){
   no_missing_notify_alls<tf::NonblockingNotifier>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.5threads"* doctest::timeout(300)){
   no_missing_notify_alls<tf::NonblockingNotifier>(5);
 }

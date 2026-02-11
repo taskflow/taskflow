@@ -1318,9 +1318,12 @@ inline int Executor::this_worker_id() const {
 inline void Executor::_spawn(size_t N) {
 
   for(size_t id=0; id<N; ++id) {
-    _workers[id]._id = id;
-    _workers[id]._sticky_victim = id;
-    _workers[id]._thread = std::thread([&, &w=_workers[id]] () {
+    _workers[id]._thread = std::thread([&, id] () {
+
+      auto& w = _workers[id];
+
+      w._id = id;
+      w._sticky_victim = id;
 
       // initialize the random engine and seed for work-stealing loop
       w._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
@@ -1329,7 +1332,6 @@ inline void Executor::_spawn(size_t N) {
       if(_worker_if) {
         _worker_if->scheduler_prologue(w);
       }
-
 
       Node* t = nullptr;
       std::exception_ptr ptr = nullptr;

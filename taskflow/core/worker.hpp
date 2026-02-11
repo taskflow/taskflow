@@ -99,6 +99,7 @@ class Worker {
   //std::default_random_engine _rdgen;
 
   BoundedWSQ<Node*> _wsq;
+
 };
 
 // ----------------------------------------------------------------------------
