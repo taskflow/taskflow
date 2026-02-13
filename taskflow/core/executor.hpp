@@ -1776,7 +1776,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   );
 
   // Invoke the task based on the corresponding type
-  switch(auto& rjc = node->_root_join_counter(); node->_handle.index()) {
+  switch(node->_handle.index()) {
 
     // condition and multi-condition tasks
     case Node::CONDITION:
@@ -1786,7 +1786,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           auto s = node->_edges[cond]; 
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
-          rjc.fetch_add(1, std::memory_order_relaxed);
+          node->_parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1797,7 +1797,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     default: {
       for(size_t i=0; i<node->_num_successors; ++i) {
         if(auto s = node->_edges[i]; s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-          rjc.fetch_add(1, std::memory_order_relaxed);
+          node->_parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
           _update_cache(worker, cache, s);
         }
       }
@@ -1812,9 +1812,10 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
 
 // Procedure: _tear_down_nonasync
 inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cache) {
+
   // we must check parent first before subtracting the join counter,
   // or it can introduce data race
-  if(auto parent = node->_parent; parent == nullptr) {
+  if(auto parent = node->_parent; parent == node->_topology) {
     if(node->_topology->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       _tear_down_topology(worker, node->_topology);
     }
@@ -1892,14 +1893,13 @@ inline void Executor::_process_exception(Worker&, Node* node) {
       return;
     }
   }
-  // otherwise, we simply store the exception in the topology and cancel it
-  else if(auto tpg = node->_topology; tpg) {
-    // multiple tasks may throw, and we only take the first thrown exception
-    if((tpg->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
-      tpg->_exception_ptr = std::current_exception();
-      return;
-    }
-  }
+  //else if(auto tpg = node->_topology; tpg) {
+  //  // multiple tasks may throw, and we only take the first thrown exception
+  //  if((tpg->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
+  //    tpg->_exception_ptr = std::current_exception();
+  //    return;
+  //  }
+  //}
   // Implicit anchor has the lowest priority
   else if(ia){
     if((ia->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
@@ -2313,7 +2313,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   // ---- under taskflow lock ----
   auto& g = tpg->_taskflow._graph;
   
-  size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, nullptr) - g.begin());
+  size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, tpg) - g.begin());
   tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
 
   w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);

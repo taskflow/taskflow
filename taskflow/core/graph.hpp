@@ -180,7 +180,7 @@ constexpr bool is_task_params_v =
   std::is_constructible_v<std::string, P>;
 
 // ----------------------------------------------------------------------------
-// Node
+// NodeBase
 // ----------------------------------------------------------------------------
 
 /**
@@ -231,6 +231,99 @@ class NodeBase {
     }
   }
 };
+
+// ----------------------------------------------------------------------------
+// Topology
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+class Topology : public NodeBase {
+
+  friend class Executor;
+  friend class Subflow;
+  friend class Runtime;
+  friend class NonpreemptiveRuntime;
+  friend class Node;
+
+  template <typename T>
+  friend class Future;
+  
+  public:
+
+  Topology(Taskflow&);
+
+  virtual ~Topology() = default;
+
+  bool cancelled() const;
+
+  virtual bool predicate() = 0;
+  virtual void on_finish() = 0;
+
+  private:
+
+  Taskflow& _taskflow;
+
+  std::promise<void> _promise;
+  
+  void _carry_out_promise();
+};
+
+// Constructor
+inline Topology::Topology(Taskflow& tf):
+  NodeBase(NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, nullptr, 0),
+  _taskflow(tf) {
+}
+
+// Procedure
+inline void Topology::_carry_out_promise() {
+  if(_exception_ptr) {
+    auto e = _exception_ptr;
+    _exception_ptr = nullptr;
+    _promise.set_exception(e);
+  }
+  else {
+    _promise.set_value();
+  }
+}
+
+// Function: cancelled
+inline bool Topology::cancelled() const {
+  return _estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED;
+}
+
+// ----------------------------------------------------------------------------
+// DerivedTopology
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+template <typename P, typename C>
+class DerivedTopology : public Topology {
+
+  using PredicateType = std::decay_t<P>;
+  using CallbackType  = std::decay_t<C>;
+  
+  public:
+
+  DerivedTopology(Taskflow& tf, P&& pred, C&& clbk) :
+    Topology(tf), _pred(std::forward<P>(pred)), _clbk(std::forward<C>(clbk)) {
+  }
+    
+  bool predicate() override final { return _pred(); }
+  void on_finish() override final { _clbk(); }   
+
+  private:
+
+  PredicateType _pred;       // predicate, of type bool()
+  CallbackType  _clbk;       // callback, of type void()
+};
+
+// ----------------------------------------------------------------------------
+// Node
+// ----------------------------------------------------------------------------
 
 /**
 @private
@@ -419,8 +512,6 @@ class Node : public NodeBase {
 
   void _remove_successors(Node*);
   void _remove_predecessors(Node*);
-
-  std::atomic<size_t>& _root_join_counter();
 };
 
 // ----------------------------------------------------------------------------
@@ -623,12 +714,6 @@ inline size_t Node::num_weak_dependencies() const {
     n += _edges[i]->_is_conditioner();
   }
   return n;
-}
-
-// Function: _root_join_counter
-// not supposed to be called by async task
-TF_FORCE_INLINE std::atomic<size_t>& Node::_root_join_counter() {
-  return (_parent) ? _parent->_join_counter : _topology->_join_counter; 
 }
 
 // Function: num_strong_dependencies
