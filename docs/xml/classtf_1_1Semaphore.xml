@@ -1,15 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Semaphore" kind="class" language="C++" prot="public">
     <compoundname>tf::Semaphore</compoundname>
     <includes refid="semaphore_8hpp" local="no">taskflow/core/semaphore.hpp</includes>
-    <sectiondef kind="friend">
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Semaphore_1a6db9d28bd448a131448276ee03de1e6d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Node</definition>
         <argsstring></argsstring>
         <name>Node</name>
-        <qualifiedname>tf::Semaphore::Node</qualifiedname>
         <param>
           <type>Node</type>
         </param>
@@ -19,14 +18,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="70" column="16" bodyfile="taskflow/core/semaphore.hpp" bodystart="70" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="70" column="3" bodyfile="taskflow/core/semaphore.hpp" bodystart="70" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Semaphore_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
-        <qualifiedname>tf::Semaphore::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -36,16 +34,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="71" column="16" bodyfile="taskflow/core/semaphore.hpp" bodystart="71" bodyend="-1"/>
+        <location file="taskflow/core/semaphore.hpp" line="71" column="3" bodyfile="taskflow/core/semaphore.hpp" bodystart="71" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Semaphore_1a329424188b5287ca596f1af3f6db58f1" prot="private" static="no" mutable="yes">
-        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
+        <type><ref refid="cpp/thread/mutex" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::mutex</ref></type>
         <definition>std::mutex tf::Semaphore::_mtx</definition>
         <argsstring></argsstring>
         <name>_mtx</name>
-        <qualifiedname>tf::Semaphore::_mtx</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -59,7 +56,6 @@
         <definition>size_t tf::Semaphore::_max_value</definition>
         <argsstring></argsstring>
         <name>_max_value</name>
-        <qualifiedname>tf::Semaphore::_max_value</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
@@ -67,14 +63,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="119" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="119" bodyend="119"/>
+        <location file="taskflow/core/semaphore.hpp" line="119" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="119" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1af749214114dbfccd36adffa337eb44ca" prot="private" static="no" mutable="no">
         <type>size_t</type>
         <definition>size_t tf::Semaphore::_cur_value</definition>
         <argsstring></argsstring>
         <name>_cur_value</name>
-        <qualifiedname>tf::Semaphore::_cur_value</qualifiedname>
         <initializer>{0}</initializer>
         <briefdescription>
         </briefdescription>
@@ -82,14 +77,13 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/semaphore.hpp" line="120" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="120" bodyend="120"/>
+        <location file="taskflow/core/semaphore.hpp" line="120" column="12" bodyfile="taskflow/core/semaphore.hpp" bodystart="120" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Semaphore_1a2c266637822af51b6ea77a47e35ad3fd" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt;</type>
         <definition>SmallVector&lt;Node*&gt; tf::Semaphore::_waiters</definition>
         <argsstring></argsstring>
         <name>_waiters</name>
-        <qualifiedname>tf::Semaphore::_waiters</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -98,14 +92,13 @@
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="122" column="17" bodyfile="taskflow/core/semaphore.hpp" bodystart="122" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Semaphore_1a6c5eda744df63aabf30398142a8c73c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type></type>
         <definition>tf::Semaphore::Semaphore</definition>
         <argsstring>()=default</argsstring>
         <name>Semaphore</name>
-        <qualifiedname>tf::Semaphore::Semaphore</qualifiedname>
         <briefdescription>
 <para>constructs a default semaphore </para>
         </briefdescription>
@@ -121,7 +114,6 @@
         <definition>tf::Semaphore::Semaphore</definition>
         <argsstring>(size_t max_value)</argsstring>
         <name>Semaphore</name>
-        <qualifiedname>tf::Semaphore::Semaphore</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>max_value</declname>
@@ -131,7 +123,7 @@
         </briefdescription>
         <detaileddescription>
 <para>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Semaphore<sp/>semaphore(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>concurrency<sp/>constraint<sp/>of<sp/>4<sp/>workers</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(4);<sp/><sp/></highlight><highlight class="comment">//<sp/>concurrency<sp/>constraint<sp/>of<sp/>4<sp/>workers</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -143,7 +135,6 @@
         <definition>size_t tf::Semaphore::value</definition>
         <argsstring>() const</argsstring>
         <name>value</name>
-        <qualifiedname>tf::Semaphore::value</qualifiedname>
         <briefdescription>
 <para>queries the current counter value </para>
         </briefdescription>
@@ -158,7 +149,6 @@
         <definition>size_t tf::Semaphore::max_value</definition>
         <argsstring>() const</argsstring>
         <name>max_value</name>
-        <qualifiedname>tf::Semaphore::max_value</qualifiedname>
         <briefdescription>
 <para>queries the maximum allowable value of this semaphore </para>
         </briefdescription>
@@ -173,7 +163,6 @@
         <definition>void tf::Semaphore::reset</definition>
         <argsstring>()</argsstring>
         <name>reset</name>
-        <qualifiedname>tf::Semaphore::reset</qualifiedname>
         <briefdescription>
 <para>resets the semaphores to a clean state </para>
         </briefdescription>
@@ -188,7 +177,6 @@
         <definition>void tf::Semaphore::reset</definition>
         <argsstring>(size_t new_max_value)</argsstring>
         <name>reset</name>
-        <qualifiedname>tf::Semaphore::reset</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>new_max_value</declname>
@@ -202,14 +190,13 @@
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="113" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="181" bodyend="185"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-func">
+      </sectiondef>
+      <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Semaphore_1aeb12ad1db7794e13829a0a62549d157b" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
         <definition>bool tf::Semaphore::_try_acquire_or_wait</definition>
         <argsstring>(Node *)</argsstring>
         <name>_try_acquire_or_wait</name>
-        <qualifiedname>tf::Semaphore::_try_acquire_or_wait</qualifiedname>
         <param>
           <type>Node *</type>
           <defname>me</defname>
@@ -227,7 +214,6 @@
         <definition>void tf::Semaphore::_release</definition>
         <argsstring>(SmallVector&lt; Node * &gt; &amp;)</argsstring>
         <name>_release</name>
-        <qualifiedname>tf::Semaphore::_release</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1SmallVector" kindref="compound">SmallVector</ref>&lt; Node * &gt; &amp;</type>
           <defname>dst</defname>
@@ -240,28 +226,28 @@
         </inbodydescription>
         <location file="taskflow/core/semaphore.hpp" line="126" column="10" bodyfile="taskflow/core/semaphore.hpp" bodystart="146" bodyend="164"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
 <para>class to create a semophore object for building a concurrency constraint </para>
     </briefdescription>
     <detaileddescription>
 <para>A semaphore creates a constraint that limits the maximum concurrency, i.e., the number of workers, in a set of tasks. You can let a task acquire/release one or multiple semaphores before/after executing its work. A task can acquire and release a semaphore, or just acquire or just release it. A <ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref> object starts with an initial count. As long as that count is above 0, tasks can acquire the semaphore and do their work. If the count is 0 or less, a task trying to acquire the semaphore will not run but goes to a waiting list of that semaphore. When the semaphore is released by another task, it reschedules all tasks on that waiting list.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/>executor(8);<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>create<sp/>an<sp/>executor<sp/>of<sp/>8<sp/>workers</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal">tf::Semaphore<sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Semaphore" kindref="compound">tf::Semaphore</ref><sp/>semaphore(1);<sp/></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>semaphore<sp/>with<sp/>initial<sp/>count<sp/>1</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">SmallVector&lt;tf::Task&gt;<sp/>tasks<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>}),</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>std::endl;<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>})</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([](){<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;E&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/><ref refid="cpp/io/manip/endl" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::endl</ref>;<sp/>})</highlight></codeline>
 <codeline><highlight class="normal">};</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>&amp;<sp/>task<sp/>:<sp/>tasks)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>each<sp/>task<sp/>acquires<sp/>and<sp/>release<sp/>the<sp/>semaphore</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>task.acquire(semaphore);</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>task.release(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a076ab9c6f3a0346e16cfb5fee7dc4ce8" kindref="member">acquire</ref>(semaphore);</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>task.<ref refid="classtf_1_1Task_1a26709523eb112f2d024f4c0e9d2f0019" kindref="member">release</ref>(semaphore);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">executor.run(taskflow).wait();</highlight></codeline>

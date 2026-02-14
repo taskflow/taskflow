@@ -1114,16 +1114,14 @@ class Executor {
     UnboundedWSQ<Node*> queue;
   };  
   
-  //std::mutex _taskflows_mutex;
-
   std::vector<Worker> _workers;
   std::vector<Buffer> _buffers;
-
-  DefaultNotifier _notifier;
+  
+  // notifier's state variable and num_topologies should sit on different cachelines
+  // or the false sharing can cause serious performance drop
+  alignas(TF_CACHELINE_SIZE) DefaultNotifier _notifier;
   alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _num_topologies {0};
   
-  //std::list<Taskflow> _taskflows;
-
   std::unique_ptr<WorkerInterface> _worker_if;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
   std::unordered_map<std::thread::id, Worker*> _t2w;
@@ -1314,7 +1312,6 @@ inline void Executor::_spawn(size_t N) {
         _worker_if->scheduler_prologue(w);
       }
 
-
       Node* t = nullptr;
       std::exception_ptr ptr = nullptr;
 
@@ -1377,6 +1374,11 @@ inline void Executor::_spawn(size_t N) {
 
 // Function: _explore_task
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
+  
+  // Early pruning does not always give consistent performance gain.
+  //if(_num_topologies.load(std::memory_order_acquire) == 0) {
+  //  return !(w._done.test(std::memory_order_relaxed));
+  //}
 
   //assert(!t);
   const size_t MAX_VICTIM = num_queues();
@@ -2135,7 +2137,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   // create a topology for this run
   //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
-  auto t = std::make_shared<DerivedTopology<P, C>>(&f, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<DerivedTopology<P, C>>(f, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);
@@ -2282,7 +2284,7 @@ void Executor::_schedule_graph_with_parent(
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   // ---- under taskflow lock ----
-  auto& g = tpg->_taskflow->_graph;
+  auto& g = tpg->_taskflow._graph;
   size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, tpg) - g.begin());
   tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
   w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);
@@ -2315,7 +2317,7 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, NodeBase* parent) {
 // Function: _tear_down_topology
 inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& cache) {
 
-  auto &f = *(tpg->_taskflow);
+  auto &f = tpg->_taskflow;
 
   //assert(&tpg == &(f._topologies.front()));
 

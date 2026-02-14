@@ -252,7 +252,7 @@ class Topology : public NodeBase {
   
   public:
 
-  Topology(Taskflow*);
+  Topology(Taskflow&);
 
   virtual ~Topology() = default;
 
@@ -263,7 +263,7 @@ class Topology : public NodeBase {
 
   private:
 
-  Taskflow* _taskflow;
+  Taskflow& _taskflow;
 
   std::promise<void> _promise;
   
@@ -271,7 +271,7 @@ class Topology : public NodeBase {
 };
 
 // Constructor
-inline Topology::Topology(Taskflow* tf):
+inline Topology::Topology(Taskflow& tf):
   NodeBase(NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, nullptr, 0),
   _taskflow(tf) {
 }
@@ -308,7 +308,7 @@ class DerivedTopology : public Topology {
   
   public:
 
-  DerivedTopology(Taskflow* tf, P&& pred, C&& clbk) :
+  DerivedTopology(Taskflow& tf, P&& pred, C&& clbk) :
     Topology(tf), _pred(std::forward<P>(pred)), _clbk(std::forward<C>(clbk)) {
   }
     

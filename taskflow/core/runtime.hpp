@@ -978,23 +978,24 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
     return tf::Future<void>(promise.get_future());
   }
 
+  auto g = std::make_unique<Taskflow>(std::move(f)); 
+
   // create a topology for this run
   //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
-  auto t = std::make_shared<DerivedTopology<P, C>>(nullptr, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<DerivedTopology<P, C>>(*g, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);
 
   // modifying topology needs to be protected under the lock
-  silent_async([&, f=MoC{std::move(f)}, t](tf::Runtime& rt) mutable {
-    t->_taskflow = &f.object;
+  silent_async([g=MoC{std::move(g)}, t](tf::Runtime& rt) mutable {
     t->_parent = rt._node;
     t->_parent->_join_counter.fetch_add(1, std::memory_order_release);
-    std::lock_guard<std::mutex> lock(f.object._mutex);
-    f.object._topologies.push(t);
-    _schedule_graph_with_parent(
+    //std::lock_guard<std::mutex> lock(g.object->_mutex);
+    g.object->_topologies.push(t);
+    rt._executor._schedule_graph_with_parent(
       rt._worker,
-      f.object._graph.begin(), f.object._graph.end(), t.get(), t.get()
+      g.object->_graph.begin(), g.object->_graph.end(), t.get(), t.get()
     );
   });
 
