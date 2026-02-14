@@ -337,6 +337,8 @@ class Taskflow : public FlowBuilder {
   void _dump(std::ostream&, const Graph*) const;
   void _dump(std::ostream&, const Node*, Dumper&) const;
   void _dump(std::ostream&, const Graph*, Dumper&) const;
+
+  size_t _fetch_enqueue(std::shared_ptr<Topology>);
 };
 
 // Constructor
@@ -352,9 +354,6 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 // Move constructor
 inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
   std::scoped_lock<std::mutex> lock(rhs._mutex);
-  //if(rhs._topologies.empty() == false) {
-  //  TF_THROW("can't move a running taskflow");
-  //}
   _name = std::move(rhs._name);
   _graph = std::move(rhs._graph);
   _topologies = std::move(rhs._topologies);
@@ -364,9 +363,6 @@ inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
 inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   if(this != &rhs) {
     std::scoped_lock<std::mutex, std::mutex> lock(_mutex, rhs._mutex);
-    //if(!rhs._topologies.empty() || !_topologies.empty()) {
-    //  TF_THROW("can't move a running taskflow");
-    //}
     _name = std::move(rhs._name);
     _graph = std::move(rhs._graph);
     _topologies = std::move(rhs._topologies);
@@ -374,7 +370,7 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   return *this;
 }
 
-// Procedure:
+// Function:
 inline void Taskflow::clear() {
   _graph.clear();
 }
@@ -412,7 +408,7 @@ void Taskflow::for_each_task(V&& visitor) const {
   }
 }
 
-// Procedure: remove_dependency
+// Function: remove_dependency
 inline void Taskflow::remove_dependency(Task from, Task to) {
   // remove "to" from the succcessor list of "from"
   from._node->_remove_successors(to._node);
@@ -421,7 +417,15 @@ inline void Taskflow::remove_dependency(Task from, Task to) {
   to._node->_remove_predecessors(from._node);
 }
 
-// Procedure: dump
+// Function:
+inline size_t Taskflow::_fetch_enqueue(std::shared_ptr<Topology> tpg) {
+  std::lock_guard<std::mutex> lock(_mutex);
+  auto pre_size = _topologies.size();
+  _topologies.emplace(std::move(tpg));
+  return pre_size;
+}
+
+// Function: dump
 inline std::string Taskflow::dump() const {
   std::ostringstream oss;
   dump(oss);
@@ -435,7 +439,7 @@ inline void Taskflow::dump(std::ostream& os) const {
   os << "}\n";
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
 
   Dumper dumper;
@@ -470,7 +474,7 @@ inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
   }
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(
   std::ostream& os, const Node* node, Dumper& dumper
 ) const {
@@ -534,7 +538,7 @@ inline void Taskflow::_dump(
   }
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(
   std::ostream& os, const Graph* graph, Dumper& dumper
 ) const {

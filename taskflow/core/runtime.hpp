@@ -991,12 +991,11 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
   silent_async([g=MoC{std::move(g)}, t](tf::Runtime& rt) mutable {
     t->_parent = rt._node;
     t->_parent->_join_counter.fetch_add(1, std::memory_order_release);
-    //std::lock_guard<std::mutex> lock(g.object->_mutex);
-    g.object->_topologies.push(t);
-    rt._executor._schedule_graph_with_parent(
-      rt._worker,
-      g.object->_graph.begin(), g.object->_graph.end(), t.get(), t.get()
-    );
+    if(g.object->_fetch_enqueue(t) == 0) {
+      rt._executor._schedule_graph_with_parent(
+        rt._worker, g.object->_graph.begin(), g.object->_graph.end(), t.get(), t.get()
+      );
+    }
   });
 
   return future;

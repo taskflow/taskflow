@@ -290,7 +290,7 @@ inline void Topology::_carry_out_promise() {
 
 // Function: cancelled
 inline bool Topology::cancelled() const {
-  return _estate.load(std::memory_order_relaxed) & ESTATE::CANCELLED;
+  return _estate.load(std::memory_order_relaxed) & (ESTATE::CANCELLED | ESTATE::EXCEPTION);
 }
 
 // ----------------------------------------------------------------------------
