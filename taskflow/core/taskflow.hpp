@@ -351,9 +351,10 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 
 // Move constructor
 inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
-
   std::scoped_lock<std::mutex> lock(rhs._mutex);
-
+  //if(rhs._topologies.empty() == false) {
+  //  TF_THROW("can't move a running taskflow");
+  //}
   _name = std::move(rhs._name);
   _graph = std::move(rhs._graph);
   _topologies = std::move(rhs._topologies);
@@ -363,6 +364,9 @@ inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
 inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   if(this != &rhs) {
     std::scoped_lock<std::mutex, std::mutex> lock(_mutex, rhs._mutex);
+    //if(!rhs._topologies.empty() || !_topologies.empty()) {
+    //  TF_THROW("can't move a running taskflow");
+    //}
     _name = std::move(rhs._name);
     _graph = std::move(rhs._graph);
     _topologies = std::move(rhs._topologies);
