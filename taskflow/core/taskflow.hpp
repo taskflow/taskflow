@@ -333,7 +333,6 @@ class Taskflow : public FlowBuilder {
   Graph _graph;
 
   std::queue<std::shared_ptr<Topology>> _topologies;
-  std::optional<std::list<Taskflow>::iterator> _satellite;
 
   void _dump(std::ostream&, const Graph*) const;
   void _dump(std::ostream&, const Node*, Dumper&) const;
@@ -358,9 +357,6 @@ inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
   _name = std::move(rhs._name);
   _graph = std::move(rhs._graph);
   _topologies = std::move(rhs._topologies);
-  _satellite = rhs._satellite;
-
-  rhs._satellite.reset();
 }
 
 // Move assignment
@@ -370,8 +366,6 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
     _name = std::move(rhs._name);
     _graph = std::move(rhs._graph);
     _topologies = std::move(rhs._topologies);
-    _satellite = rhs._satellite;
-    rhs._satellite.reset();
   }
   return *this;
 }

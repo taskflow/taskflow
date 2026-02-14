@@ -540,16 +540,6 @@ class Executor {
   size_t num_topologies() const;
 
   /**
-  @brief queries the number of running taskflows with moved ownership
-
-  @code{.cpp}
-  executor.run(std::move(taskflow));
-  std::cout << executor.num_taskflows();  // 0 or 1 (taskflow still running)
-  @endcode
-  */
-  size_t num_taskflows() const;
-
-  /**
   @brief queries pointer to the calling worker if it belongs to this executor, otherwise returns `nullptr`
 
   Returns a pointer to the per-worker storage associated with this executor. 
@@ -1123,17 +1113,16 @@ class Executor {
     std::mutex mutex;
     UnboundedWSQ<Node*> queue;
   };  
-
-  std::mutex _taskflows_mutex;
   
+  //std::mutex _taskflows_mutex;
+
   std::vector<Worker> _workers;
-  DefaultNotifier _notifier;
-
-  std::atomic<size_t> _num_topologies {0};
-  
-  std::list<Taskflow> _taskflows;
-
   std::vector<Buffer> _buffers;
+
+  DefaultNotifier _notifier;
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _num_topologies {0};
+  
+  //std::list<Taskflow> _taskflows;
 
   std::unique_ptr<WorkerInterface> _worker_if;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -1149,7 +1138,7 @@ class Executor {
   void _schedule(Node*);
   void _spill(Node*);
   void _set_up_topology(Worker*, Topology*);
-  void _tear_down_topology(Worker&, Topology*);
+  void _tear_down_topology(Worker&, Topology*, Node*&);
   void _tear_down_async(Worker&, Node*, Node*&);
   void _tear_down_dependent_async(Worker&, Node*, Node*&);
   void _tear_down_nonasync(Worker&, Node*, Node*&);
@@ -1222,8 +1211,8 @@ class Executor {
 // Constructor
 inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wif) :
   _workers  (N),
-  _notifier (N),                
   _buffers  (std::bit_width(N)), // Empirically, we find that log2(N) performs best.
+  _notifier (N),                
   _worker_if(std::move(wif)) {
 
   if(N == 0) {
@@ -1295,11 +1284,6 @@ inline size_t Executor::num_queues() const noexcept {
 // Function: num_topologies
 inline size_t Executor::num_topologies() const {
   return _num_topologies.load(std::memory_order_relaxed);
-}
-
-// Function: num_taskflows
-inline size_t Executor::num_taskflows() const {
-  return _taskflows.size();
 }
 
 // Function: this_worker
@@ -1606,16 +1590,7 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   _bulk_spill(first, num_nodes);
   _notifier.notify_n(num_nodes);
 }
-  
-// Function: _schedule_graph_with_parent
-template <typename I>
-void Executor::_schedule_graph_with_parent(
-  Worker& worker, I beg, I end, Topology* tpg, NodeBase* parent
-) {
-  size_t num_srcs = (_set_up_graph(beg, end, tpg, parent) - beg);
-  parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
-  _bulk_schedule(worker, beg, num_srcs);
-}
+
 
 // Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
@@ -1816,8 +1791,8 @@ inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cac
   // we must check parent first before subtracting the join counter,
   // or it can introduce data race
   if(auto parent = node->_parent; parent == node->_topology) {
-    if(node->_topology->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-      _tear_down_topology(worker, node->_topology);
+    if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+      _tear_down_topology(worker, node->_topology, cache);
     }
   }
   else {  
@@ -2160,7 +2135,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
   // create a topology for this run
   //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
-  auto t = std::make_shared<DerivedTopology<P, C>>(f, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<DerivedTopology<P, C>>(&f, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);
@@ -2177,20 +2152,7 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
   return future;
 }
 
-// Function: run_until
-template <typename P, typename C>
-tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred, C&& c) {
 
-  std::list<Taskflow>::iterator itr;
-
-  {
-    std::scoped_lock<std::mutex> lock(_taskflows_mutex);
-    itr = _taskflows.emplace(_taskflows.end(), std::move(f));
-    itr->_satellite = itr;
-  }
-
-  return run_until(*itr, std::forward<P>(pred), std::forward<C>(c));
-}
 
 // Function: corun_until
 template <typename P>
@@ -2306,16 +2268,23 @@ inline void Executor::wait_for_all() {
     n = _num_topologies.load(std::memory_order_acquire);
   }
 }
+  
+// Function: _schedule_graph_with_parent
+template <typename I>
+void Executor::_schedule_graph_with_parent(
+  Worker& worker, I beg, I end, Topology* tpg, NodeBase* parent
+) {
+  size_t num_srcs = (_set_up_graph(beg, end, tpg, parent) - beg);
+  parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
+  _bulk_schedule(worker, beg, num_srcs);
+}
 
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
-
   // ---- under taskflow lock ----
-  auto& g = tpg->_taskflow._graph;
-  
+  auto& g = tpg->_taskflow->_graph;
   size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, tpg) - g.begin());
   tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
-
   w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);
 }
 
@@ -2344,9 +2313,9 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, NodeBase* parent) {
 }
 
 // Function: _tear_down_topology
-inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
+inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& cache) {
 
-  auto &f = tpg->_taskflow;
+  auto &f = *(tpg->_taskflow);
 
   //assert(&tpg == &(f._topologies.front()));
 
@@ -2383,7 +2352,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
       auto fetched_tpg {std::move(f._topologies.front())};
       f._topologies.pop();
-      auto satellite {f._satellite};
 
       lock.unlock();
       
@@ -2393,13 +2361,23 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg) {
 
       _decrement_topology();
 
+      if(auto parent = tpg->_parent; parent) {
+        auto state = parent->_nstate;
+        if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+          // this async is spawned from a preempted parent, so we need to resume it
+          if(state & NSTATE::PREEMPTED) { 
+            _update_cache(worker, cache, static_cast<Node*>(parent));
+          }
+        }
+      }
+
       // remove the taskflow if it is managed by the executor
       // TODO: in the future, we may need to synchronize on wait
       // (which means the following code should the moved before set_value)
-      if(satellite) {
-        std::scoped_lock<std::mutex> satellite_lock(_taskflows_mutex);
-        _taskflows.erase(*satellite);
-      }
+      //if(satellite) {
+      //  std::scoped_lock<std::mutex> satellite_lock(_taskflows_mutex);
+      //  _taskflows.erase(*satellite);
+      //}
     }
   }
 }
