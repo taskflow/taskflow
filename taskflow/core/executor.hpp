@@ -2146,12 +2146,8 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
   tf::Future<void> future(t->_promise.get_future(), t);
 
   // modifying topology needs to be protected under the lock
-  {
-    std::lock_guard<std::mutex> lock(f._mutex);
-    f._topologies.push(t);
-    if(f._topologies.size() == 1) {
-      _set_up_topology(this_worker(), t.get());
-    }
+  if(f._fetch_enqueue(t) == 0) {
+    _set_up_topology(this_worker(), t.get());
   }
 
   return future;
@@ -2325,9 +2321,10 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
   //assert(&tpg == &(f._topologies.front()));
 
   // case 1: we still need to run the topology again
-  if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->predicate()) {
+  //if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->predicate()) {
+  if(!tpg->cancelled() && !tpg->predicate()) {
     //assert(tpg->_join_counter == 0);
-    std::lock_guard<std::mutex> lock(f._mutex);
+    //std::lock_guard<std::mutex> lock(f._mutex);
     _set_up_topology(&worker, tpg);
   }
   // case 2: the final run of this topology
@@ -2340,10 +2337,12 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
     if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {
       //assert(tpg->_join_counter == 0);
 
-      // Set the promise
+      // set the promise and get the next topology
       tpg->_carry_out_promise();
       f._topologies.pop();
       tpg = f._topologies.front().get();
+
+      lock.unlock();
 
       // decrement the topology
       _decrement_topology();
@@ -2360,12 +2359,13 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
 
       lock.unlock();
       
-      // Soon after we carry out the promise, there is no longer any guarantee
-      // for the lifetime of the associated taskflow.
+      // soon after we carry out the promise, the associate taskflow may got destroyed
+      // from the user side, and we should never tough it again
       fetched_tpg->_carry_out_promise();
 
       _decrement_topology();
-
+      
+      // remove the parent that owns the moved taskflow so the storage can be freed
       if(auto parent = tpg->_parent; parent) {
         auto state = parent->_nstate;
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
@@ -2375,14 +2375,6 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
           }
         }
       }
-
-      // remove the taskflow if it is managed by the executor
-      // TODO: in the future, we may need to synchronize on wait
-      // (which means the following code should the moved before set_value)
-      //if(satellite) {
-      //  std::scoped_lock<std::mutex> satellite_lock(_taskflows_mutex);
-      //  _taskflows.erase(*satellite);
-      //}
     }
   }
 }
