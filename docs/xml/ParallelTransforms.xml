@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="ParallelTransforms" kind="page">
     <compoundname>ParallelTransforms</compoundname>
     <title>Parallel Transforms</title>
@@ -7,42 +7,44 @@
       <tocsect>
         <name>Include the Header</name>
         <reference>ParallelTransforms_1ParallelTransformsInclude</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create a Unary Parallel-Transform Task</name>
         <reference>ParallelTransforms_1ParallelTransformsOverARange</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Capture Iterators by Reference</name>
         <reference>ParallelTransforms_1ParallelTransformsCaptureIteratorsByReference</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Create a Binary Parallel-Transform Task</name>
         <reference>ParallelTransforms_1ParallelBinaryTransformsOverARange</reference>
-      </tocsect>
+    </tocsect>
       <tocsect>
         <name>Configure a Partitioner</name>
         <reference>ParallelTransforms_1ParallelTransformsCfigureAPartitioner</reference>
-      </tocsect>
+    </tocsect>
     </tableofcontents>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
 <para>Taskflow provides template functions for constructing tasks to perform parallel transforms over ranges of items.</para>
 <sect1 id="ParallelTransforms_1ParallelTransformsInclude">
-<title>Include the Header</title><para>You need to include the header file, <computeroutput>taskflow/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para>
+<title>Include the Header</title>
+<para>You need to include the header file, <computeroutput>taskflow/algorithm/transform.hpp</computeroutput>, for creating a parallel-transform task.</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="preprocessor">#include<sp/>&lt;taskflow/algorithm/transform.hpp&gt;</highlight></codeline>
 </programlisting></para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelTransformsOverARange">
-<title>Create a Unary Parallel-Transform Task</title><para>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <ref refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)</ref> is equivalent to a parallel execution of the following loop:</para>
+<title>Create a Unary Parallel-Transform Task</title>
+<para>Parallel-transform transforms a range of items, possibly with a different type for the transformed data, and stores the result in another range. The task created by <ref refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kindref="member">tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)</ref> is equivalent to a parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para><ref refid="classtf_1_1FlowBuilder_1a97be7ceef6fa4276e3b074c10c13b826" kindref="member">tf::Taskflow::transform</ref> simultaneously applies the callable <computeroutput>c</computeroutput> to the object obtained by dereferencing every iterator in the range <computeroutput>[first1, last1)</computeroutput> and stores the result in another range beginning at <computeroutput>d_first</computeroutput>. It is user&apos;s responsibility for ensuring the range is valid within the execution of the parallel-transform task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>tgt(src.size());</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>tgt(src.size());</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform(src.begin(),<sp/>src.end(),<sp/>tgt.begin(),<sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i){<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;transforming<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>to<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>+<sp/>1<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>return<sp/>i<sp/>+<sp/>1;</highlight></codeline>
@@ -50,9 +52,10 @@
 </programlisting></para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelTransformsCaptureIteratorsByReference">
-<title>Capture Iterators by Reference</title><para>You can pass iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameter update between dependent tasks. This is especially useful when the range is unknown at the time of creating a parallel-transform task, but needs initialization from another task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src,<sp/>tgt;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last,<sp/>d_first;</highlight></codeline>
+<title>Capture Iterators by Reference</title>
+<para>You can pass iterators by reference using <ulink url="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</ulink> to marshal parameter update between dependent tasks. This is especially useful when the range is unknown at the time of creating a parallel-transform task, but needs initialization from another task.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src,<sp/>tgt;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;::iterator</ref><sp/>first,<sp/>last,<sp/>d_first;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>init<sp/>=<sp/>taskflow.emplace([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>src.resize(1000);</highlight></codeline>
@@ -62,10 +65,10 @@
 <codeline><highlight class="normal"><sp/><sp/>d_first<sp/>=<sp/>tgt.begin();</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>transform<sp/>=<sp/>taskflow.transform(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/utility/functional/ref" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ref</ref>(first),<sp/><ref refid="cpp/utility/functional/ref" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ref</ref>(last),<sp/><ref refid="cpp/utility/functional/ref" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::ref</ref>(d_first),<sp/></highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/><ref refid="cpp/algorithm/transform" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">transform</ref><sp/>=<sp/>taskflow.transform(</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::ref(first),<sp/>std::ref(last),<sp/>std::ref(d_first),<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[&amp;](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i)<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;transforming<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>to<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>+<sp/>1<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;transforming<sp/>item<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;<sp/>to<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>i<sp/>+<sp/>1<sp/>&lt;&lt;<sp/></highlight><highlight class="charliteral">&apos;\n&apos;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>i+1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
@@ -75,15 +78,16 @@
 <para>When <computeroutput>init</computeroutput> finishes, the parallel-transform task <computeroutput>transform</computeroutput> will see <computeroutput>first</computeroutput> pointing to the beginning of <computeroutput>src</computeroutput> and <computeroutput>last</computeroutput> pointing to the end of <computeroutput>src</computeroutput>. Then, it simultaneously transforms these 1000 items by adding one to each element and stores the result in another range starting at <computeroutput>d_first</computeroutput>.</para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelBinaryTransformsOverARange">
-<title>Create a Binary Parallel-Transform Task</title><para>You can use the overload, <ref refid="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)</ref>, to perform parallel transforms on two source ranges pointed by <computeroutput>first1</computeroutput> and <computeroutput>first2</computeroutput> using the binary operator <computeroutput>c</computeroutput> and store the result in another range pointed by <computeroutput>d_first</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para>
+<title>Create a Binary Parallel-Transform Task</title>
+<para>You can use the overload, <ref refid="classtf_1_1FlowBuilder_1a7ea96d3fa0aa9e3ff337a9f1e37682b0" kindref="member">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)</ref>, to perform parallel transforms on two source ranges pointed by <computeroutput>first1</computeroutput> and <computeroutput>first2</computeroutput> using the binary operator <computeroutput>c</computeroutput> and store the result in another range pointed by <computeroutput>d_first</computeroutput>. This method is equivalent to the parallel execution of the following loop:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(first1<sp/>!=<sp/>last1)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>*d_first++<sp/>=<sp/>c(*first1++,<sp/>*first2++);</highlight></codeline>
 <codeline><highlight class="normal">}</highlight></codeline>
 </programlisting></para>
 <para>The following example creates a parallel-transform task that adds two ranges of elements one by one and stores the result in a target range:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src1<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src2<sp/>=<sp/>{5,<sp/>4,<sp/>3,<sp/>2,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>tgt(src1.size());</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src1<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src2<sp/>=<sp/>{5,<sp/>4,<sp/>3,<sp/>2,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>tgt(src1.size());</highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>src1.begin(),<sp/>src1.end(),<sp/>src2.begin(),<sp/>tgt.begin(),<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[](</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>j){<sp/></highlight></codeline>
@@ -93,14 +97,15 @@
 </programlisting></para>
 </sect1>
 <sect1 id="ParallelTransforms_1ParallelTransformsCfigureAPartitioner">
-<title>Configure a Partitioner</title><para>You can configure a partitioner for parallel-transform tasks to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. The following example creates two parallel-transform tasks using two different partitioners, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para>
+<title>Configure a Partitioner</title>
+<para>You can configure a partitioner for parallel-transform tasks to run with different scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning. The following example creates two parallel-transform tasks using two different partitioners, one with the static partitioning algorithm and another one with the guided partitioning algorithm:</para>
 <para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1StaticPartitioner" kindref="compound">tf::StaticPartitioner</ref><sp/>static_partitioner;</highlight></codeline>
 <codeline><highlight class="normal"><ref refid="classtf_1_1GuidedPartitioner" kindref="compound">tf::GuidedPartitioner</ref><sp/>guided_partitioner;</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src1<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src2<sp/>=<sp/>{5,<sp/>4,<sp/>3,<sp/>2,<sp/>1};</highlight></codeline>
-<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>tgt1(src1.size());</highlight></codeline>
-<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>tgt2(src2.size());</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src1<sp/>=<sp/>{1,<sp/>2,<sp/>3,<sp/>4,<sp/>5};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>src2<sp/>=<sp/>{5,<sp/>4,<sp/>3,<sp/>2,<sp/>1};</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>tgt1(src1.size());</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/container/vector" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::vector&lt;int&gt;</ref><sp/>tgt2(src2.size());</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>create<sp/>a<sp/>parallel-transform<sp/>task<sp/>with<sp/>static<sp/>execution<sp/>partitioner</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">taskflow.transform(</highlight></codeline>
@@ -120,7 +125,7 @@
 <codeline><highlight class="normal"><sp/><sp/>guided_partitioner</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 </programlisting></para>
-<para><simplesect kind="attention"><para>By default, parallel-transform tasks use <ref refid="namespacetf_1ace2c5adcd5039483eebb6dbdbb6f33e3" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para>
+<para><simplesect kind="attention"><para>By default, parallel-transform tasks use <ref refid="namespacetf_1a66b72776c788898aee9e132b0ea9b405" kindref="member">tf::DefaultPartitioner</ref> if no partitioner is specified. </para>
 </simplesect>
 </para>
 </sect1>

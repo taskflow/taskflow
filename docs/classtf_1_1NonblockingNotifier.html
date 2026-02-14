@@ -5,7 +5,7 @@
   <title>tf::NonblockingNotifier class | Taskflow QuickStart</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#22272e" />
 </head>
@@ -73,211 +73,211 @@
 <span class="p">}</span>
 <span class="n">notifier</span><span class="p">.</span><span class="n">commit_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="p">);</span><span class="w">      </span><span class="c1">// park (e.g., preempted by OS until notified)</span></pre><p>A notifying thread performs:</p><pre class="m-code"><span class="n">wid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this_notifier_id</span><span class="p">;</span>
 <span class="n">predicate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-<span class="n">notifier</span><span class="p">.</span><span class="n">notify_one</span><span class="p">(</span><span class="n">wid</span><span class="p">);</span></pre><p>The <code>notify</code> operation is inexpensive when no threads are waiting. The <code>prepare_wait</code> and <code>commit_wait</code> operations are more costly, but they are only executed when the initial predicate check fails. The flow diagram for notifier and waiter is shown below:</p><div class="m-graph"><svg style="width: 44.900rem; height: 53.700rem;" viewBox="0.00 0.00 449.00 536.50">
-<g transform="scale(1 1) rotate(0) translate(4 532.5)">
+<span class="n">notifier</span><span class="p">.</span><span class="n">notify_one</span><span class="p">(</span><span class="n">wid</span><span class="p">);</span></pre><p>The <code>notify</code> operation is inexpensive when no threads are waiting. The <code>prepare_wait</code> and <code>commit_wait</code> operations are more costly, but they are only executed when the initial predicate check fails. The flow diagram for notifier and waiter is shown below:</p><div class="m-graph"><svg style="width: 49.000rem; height: 53.300rem;" viewBox="0.00 0.00 490.00 533.00">
+<g transform="scale(1 1) rotate(0) translate(4 529)">
 <title>TwoPhaseProtocol</title>
 <g class="m-cluster">
 <title>cluster_waiter</title>
-<polygon stroke-dasharray="5,2" points="8,-8 8,-520.5 297,-520.5 297,-8 8,-8"/>
-<text text-anchor="middle" x="152.5" y="-507" font-family="Helvetica,sans-Serif" font-size="10.00">Waiting Thread (Consumer)</text>
+<polygon stroke-dasharray="5,2" points="8,-8 8,-517 323,-517 323,-8 8,-8"/>
+<text text-anchor="middle" x="165.5" y="-505" font-family="Helvetica,sans-Serif" font-size="10.00">Waiting Thread (Consumer)</text>
 </g>
 <g class="m-cluster">
 <title>cluster_notifier</title>
-<polygon stroke-dasharray="5,2" points="305,-262.25 305,-520.5 433,-520.5 433,-262.25 305,-262.25"/>
-<text text-anchor="middle" x="369" y="-507" font-family="Helvetica,sans-Serif" font-size="10.00">Notifier Thread (Producer)</text>
+<polygon stroke-dasharray="5,2" points="331,-261 331,-517 474,-517 474,-261 331,-261"/>
+<text text-anchor="middle" x="402.5" y="-505" font-family="Helvetica,sans-Serif" font-size="10.00">Notifier Thread (Producer)</text>
 </g>
 <g class="m-node m-flat">
 <title>Start</title>
-<polygon points="288.88,-493.25 179.12,-493.25 179.12,-457.25 288.88,-457.25 288.88,-493.25"/>
-<text text-anchor="middle" x="234" y="-477" font-family="Helvetica,sans-Serif" font-size="10.00"> A worker thread (wid)</text>
-<text text-anchor="middle" x="234" y="-465.75" font-family="Helvetica,sans-Serif" font-size="10.00">wanting to wait </text>
+<polygon points="314.5,-490 189.5,-490 189.5,-454 314.5,-454 314.5,-490"/>
+<text text-anchor="middle" x="252" y="-475" font-family="Helvetica,sans-Serif" font-size="10.00"> A worker thread (wid)</text>
+<text text-anchor="middle" x="252" y="-464" font-family="Helvetica,sans-Serif" font-size="10.00">wanting to wait </text>
 </g>
 <g class="m-node m-flat">
 <title>Check1</title>
-<polygon points="159,-420.25 98.75,-389.75 159,-359.25 219.25,-389.75 159,-420.25"/>
-<text text-anchor="middle" x="159" y="-391.5" font-family="Helvetica,sans-Serif" font-size="10.00"> Predicate</text>
-<text text-anchor="middle" x="159" y="-380.25" font-family="Helvetica,sans-Serif" font-size="10.00">True? </text>
+<polygon points="176,-417 111,-387 176,-357 241,-387 176,-417"/>
+<text text-anchor="middle" x="176" y="-390" font-family="Helvetica,sans-Serif" font-size="10.00"> Predicate</text>
+<text text-anchor="middle" x="176" y="-379" font-family="Helvetica,sans-Serif" font-size="10.00">True? </text>
 </g>
 <g class="m-edge">
 <title>Start&#45;&gt;Check1</title>
-<path d="M218.46,-456.95C208.77,-446.16 196.06,-432.01 184.87,-419.56"/>
-<polygon points="187.73,-417.5 178.44,-412.4 182.52,-422.18 187.73,-417.5"/>
+<path d="M236.25,-453.8C226.24,-442.87 213.05,-428.47 201.57,-415.92"/>
+<polygon points="204.01,-413.41 194.68,-408.4 198.85,-418.14 204.01,-413.41"/>
 </g>
 <g class="m-node">
 <title>End</title>
-<polygon points="124.75,-52 47.25,-52 47.25,-16 124.75,-16 124.75,-52"/>
-<text text-anchor="middle" x="86" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white"> waiter queue </text>
+<polygon points="137,-52 51,-52 51,-16 137,-16 137,-52"/>
+<text text-anchor="middle" x="94" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white"> waiter queue </text>
 </g>
 <g class="m-node m-flat">
 <title>Act1</title>
-<polygon points="265,-309.12 211,-309.12 211,-273.12 265,-273.12 265,-309.12"/>
-<text text-anchor="middle" x="238" y="-287.25" font-family="Helvetica,sans-Serif" font-size="10.00"> act() </text>
+<polygon points="287,-307.5 233,-307.5 233,-271.5 287,-271.5 287,-307.5"/>
+<text text-anchor="middle" x="260" y="-287" font-family="Helvetica,sans-Serif" font-size="10.00"> act() </text>
 </g>
 <g class="m-edge">
 <title>Check1&#45;&gt;Act1</title>
-<path d="M176.14,-367.78C188.05,-353.21 204.01,-333.7 216.73,-318.14"/>
-<polygon points="219.22,-320.63 222.84,-310.67 213.8,-316.2 219.22,-320.63"/>
-<text text-anchor="middle" x="216.83" y="-331.75" font-family="Helvetica,sans-Serif" font-size="10.00"> Yes </text>
+<path d="M194.23,-365.28C207.13,-350.61 224.49,-330.87 238.14,-315.35"/>
+<polygon points="240.92,-317.49 244.9,-307.67 235.66,-312.87 240.92,-317.49"/>
+<text text-anchor="middle" x="236" y="-331" font-family="Helvetica,sans-Serif" font-size="10.00"> Yes </text>
 </g>
 <g class="m-node m-flat">
 <title>Prepare</title>
-<polygon points="193.25,-309.12 52.75,-309.12 52.75,-273.12 193.25,-273.12 193.25,-309.12"/>
-<text text-anchor="middle" x="123" y="-287.25" font-family="Helvetica,sans-Serif" font-size="10.00"> Phase 1: prepare_wait(wid) </text>
+<polygon points="214.5,-307.5 59.5,-307.5 59.5,-271.5 214.5,-271.5 214.5,-307.5"/>
+<text text-anchor="middle" x="137" y="-287" font-family="Helvetica,sans-Serif" font-size="10.00"> Phase 1: prepare_wait(wid) </text>
 </g>
 <g class="m-edge">
 <title>Check1&#45;&gt;Prepare</title>
-<path d="M149.64,-363.62C144.69,-350.33 138.6,-333.99 133.49,-320.29"/>
-<polygon points="136.78,-319.09 130.01,-310.94 130.22,-321.53 136.78,-319.09"/>
-<text text-anchor="middle" x="150.38" y="-331.75" font-family="Helvetica,sans-Serif" font-size="10.00"> No </text>
+<path d="M165.96,-361.41C160.44,-347.89 153.58,-331.1 147.93,-317.25"/>
+<polygon points="151.08,-315.72 144.06,-307.78 144.6,-318.36 151.08,-315.72"/>
+<text text-anchor="middle" x="166" y="-331" font-family="Helvetica,sans-Serif" font-size="10.00"> No </text>
 </g>
 <g class="m-edge">
 <title>Act1&#45;&gt;Start</title>
-<path d="M237.62,-309.54C236.93,-340.91 235.47,-407.21 234.63,-445.44"/>
-<polygon points="231.14,-445.2 234.42,-455.27 238.14,-445.35 231.14,-445.2"/>
+<path d="M259.24,-307.75C257.85,-339.12 254.89,-405.7 253.22,-443.43"/>
+<polygon points="249.71,-443.55 252.77,-453.69 256.71,-443.86 249.71,-443.55"/>
 </g>
 <g class="m-node m-flat">
 <title>Check2</title>
-<polygon points="123,-233.25 62.75,-202.75 123,-172.25 183.25,-202.75 123,-233.25"/>
-<text text-anchor="middle" x="123" y="-204.5" font-family="Helvetica,sans-Serif" font-size="10.00"> Predicate</text>
-<text text-anchor="middle" x="123" y="-193.25" font-family="Helvetica,sans-Serif" font-size="10.00">True? </text>
+<polygon points="137,-232 72,-202 137,-172 202,-202 137,-232"/>
+<text text-anchor="middle" x="137" y="-205" font-family="Helvetica,sans-Serif" font-size="10.00"> Predicate</text>
+<text text-anchor="middle" x="137" y="-194" font-family="Helvetica,sans-Serif" font-size="10.00">True? </text>
 </g>
 <g class="m-edge">
 <title>Prepare&#45;&gt;Check2</title>
-<path d="M123,-272.65C123,-264.64 123,-254.78 123,-245.04"/>
-<polygon points="126.5,-245.31 123,-235.31 119.5,-245.31 126.5,-245.31"/>
+<path d="M137,-271.2C137,-262.78 137,-252.29 137,-242.09"/>
+<polygon points="140.5,-242.06 137,-232.06 133.5,-242.06 140.5,-242.06"/>
 </g>
 <g class="m-node m-flat">
 <title>Cancel</title>
-<polygon points="269.38,-125 174.62,-125 174.62,-89 269.38,-89 269.38,-125"/>
-<text text-anchor="middle" x="222" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00"> cancel_wait(wid) </text>
+<polygon points="294.5,-125 189.5,-125 189.5,-89 294.5,-89 294.5,-125"/>
+<text text-anchor="middle" x="242" y="-104.5" font-family="Helvetica,sans-Serif" font-size="10.00"> cancel_wait(wid) </text>
 </g>
 <g class="m-edge">
 <title>Check2&#45;&gt;Cancel</title>
-<path d="M143.51,-182.32C158.66,-167.98 179.39,-148.35 195.74,-132.86"/>
-<polygon points="197.89,-135.65 202.74,-126.23 193.08,-130.57 197.89,-135.65"/>
-<text text-anchor="middle" x="194.03" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00"> Yes</text>
+<path d="M158.76,-181.73C175.11,-167.24 197.62,-147.31 215.1,-131.82"/>
+<polygon points="217.58,-134.31 222.74,-125.06 212.94,-129.07 217.58,-134.31"/>
+<text text-anchor="middle" x="210.5" y="-146" font-family="Helvetica,sans-Serif" font-size="10.00"> Yes</text>
 </g>
 <g class="m-node m-flat">
 <title>Commit</title>
-<polygon points="156.25,-125 15.75,-125 15.75,-89 156.25,-89 156.25,-125"/>
-<text text-anchor="middle" x="86" y="-103.12" font-family="Helvetica,sans-Serif" font-size="10.00"> Phase 2: commit_wait(wid) </text>
+<polygon points="171.5,-125 16.5,-125 16.5,-89 171.5,-89 171.5,-125"/>
+<text text-anchor="middle" x="94" y="-104.5" font-family="Helvetica,sans-Serif" font-size="10.00"> Phase 2: commit_wait(wid) </text>
 </g>
 <g class="m-edge">
 <title>Check2&#45;&gt;Commit</title>
-<path d="M113.28,-177.12C108.26,-164.4 102.12,-148.85 96.94,-135.71"/>
-<polygon points="100.34,-134.79 93.41,-126.77 93.82,-137.36 100.34,-134.79"/>
-<text text-anchor="middle" x="112.77" y="-144.75" font-family="Helvetica,sans-Serif" font-size="10.00"> No </text>
+<path d="M125.93,-177.05C119.88,-163.97 112.38,-147.75 106.17,-134.32"/>
+<polygon points="109.29,-132.72 101.91,-125.12 102.93,-135.66 109.29,-132.72"/>
+<text text-anchor="middle" x="124" y="-146" font-family="Helvetica,sans-Serif" font-size="10.00"> No </text>
 </g>
 <g class="m-node m-flat">
 <title>Act2</title>
-<polygon points="269,-52 215,-52 215,-16 269,-16 269,-52"/>
-<text text-anchor="middle" x="242" y="-30.12" font-family="Helvetica,sans-Serif" font-size="10.00"> act() </text>
+<polygon points="292,-52 238,-52 238,-16 292,-16 292,-52"/>
+<text text-anchor="middle" x="265" y="-31.5" font-family="Helvetica,sans-Serif" font-size="10.00"> act() </text>
 </g>
 <g class="m-edge">
 <title>Cancel&#45;&gt;Act2</title>
-<path d="M226.84,-88.81C229.03,-81.05 231.67,-71.68 234.13,-62.95"/>
-<polygon points="237.45,-64.06 236.79,-53.49 230.71,-62.16 237.45,-64.06"/>
+<path d="M247.57,-88.81C250.2,-80.7 253.39,-70.84 256.33,-61.78"/>
+<polygon points="259.73,-62.62 259.48,-52.03 253.07,-60.46 259.73,-62.62"/>
 </g>
 <g class="m-edge">
 <title>Act2&#45;&gt;Start</title>
-<path d="M261.24,-52.29C273.85,-65.58 288,-85.14 288,-106 288,-390.75 288,-390.75 288,-390.75 288,-412.54 274.87,-433.14 261.56,-448.43"/>
-<polygon points="259.07,-445.97 254.83,-455.68 264.2,-450.73 259.07,-445.97"/>
+<path d="M285.5,-52.05C298.92,-65.21 314,-84.73 314,-106 314,-388 314,-388 314,-388 314,-411.19 298.28,-432.07 282.67,-447.08"/>
+<polygon points="280.14,-444.66 275.09,-453.97 284.84,-449.84 280.14,-444.66"/>
 </g>
 <g class="m-edge">
 <title>Commit&#45;&gt;End</title>
-<path d="M86,-88.81C86,-81.23 86,-72.1 86,-63.54"/>
-<polygon points="89.5,-63.54 86,-53.54 82.5,-63.54 89.5,-63.54"/>
+<path d="M94,-88.81C94,-80.79 94,-71.05 94,-62.07"/>
+<polygon points="97.5,-62.03 94,-52.03 90.5,-62.03 97.5,-62.03"/>
 </g>
 <g class="m-node m-flat">
 <title>Notifier</title>
-<polygon points="423.88,-493.25 314.12,-493.25 314.12,-457.25 423.88,-457.25 423.88,-493.25"/>
-<text text-anchor="middle" x="369" y="-477" font-family="Helvetica,sans-Serif" font-size="10.00"> A worker thread (wid)</text>
-<text text-anchor="middle" x="369" y="-465.75" font-family="Helvetica,sans-Serif" font-size="10.00">wanting to notify </text>
+<polygon points="464.5,-490 339.5,-490 339.5,-454 464.5,-454 464.5,-490"/>
+<text text-anchor="middle" x="402" y="-475" font-family="Helvetica,sans-Serif" font-size="10.00"> A worker thread (wid)</text>
+<text text-anchor="middle" x="402" y="-464" font-family="Helvetica,sans-Serif" font-size="10.00">wanting to notify </text>
 </g>
 <g class="m-node m-flat">
 <title>ModifyPredicate</title>
-<polygon points="413.38,-407.75 324.62,-407.75 324.62,-371.75 413.38,-371.75 413.38,-407.75"/>
-<text text-anchor="middle" x="369" y="-385.88" font-family="Helvetica,sans-Serif" font-size="10.00">Predicate = True</text>
+<polygon points="450.5,-405 353.5,-405 353.5,-369 450.5,-369 450.5,-405"/>
+<text text-anchor="middle" x="402" y="-384.5" font-family="Helvetica,sans-Serif" font-size="10.00">Predicate = True</text>
 </g>
 <g class="m-edge">
 <title>Notifier&#45;&gt;ModifyPredicate</title>
-<path d="M369,-456.95C369,-446.09 369,-431.82 369,-419.31"/>
-<polygon points="372.5,-419.54 369,-409.54 365.5,-419.54 372.5,-419.54"/>
+<path d="M402,-453.8C402,-442.67 402,-427.94 402,-415.24"/>
+<polygon points="405.5,-415.18 402,-405.18 398.5,-415.18 405.5,-415.18"/>
 </g>
 <g class="m-node m-flat">
 <title>Notify</title>
-<polygon points="411.5,-312 326.5,-312 326.5,-270.25 411.5,-270.25 411.5,-312"/>
-<text text-anchor="middle" x="369" y="-298.5" font-family="Helvetica,sans-Serif" font-size="10.00"> notify_one(wid)</text>
-<text text-anchor="middle" x="369" y="-287.25" font-family="Helvetica,sans-Serif" font-size="10.00">or</text>
-<text text-anchor="middle" x="369" y="-276" font-family="Helvetica,sans-Serif" font-size="10.00">notify_all(wid)</text>
+<polygon points="449.5,-310 354.5,-310 354.5,-269 449.5,-269 449.5,-310"/>
+<text text-anchor="middle" x="402" y="-298" font-family="Helvetica,sans-Serif" font-size="10.00"> notify_one(wid)</text>
+<text text-anchor="middle" x="402" y="-287" font-family="Helvetica,sans-Serif" font-size="10.00">or</text>
+<text text-anchor="middle" x="402" y="-276" font-family="Helvetica,sans-Serif" font-size="10.00">notify_all(wid)</text>
 </g>
 <g class="m-edge">
 <title>ModifyPredicate&#45;&gt;Notify</title>
-<path d="M369,-371.48C369,-358.24 369,-339.61 369,-323.73"/>
-<polygon points="372.5,-323.77 369,-313.77 365.5,-323.77 372.5,-323.77"/>
+<path d="M402,-368.93C402,-355.5 402,-336.46 402,-320.51"/>
+<polygon points="405.5,-320.06 402,-310.06 398.5,-320.06 405.5,-320.06"/>
 </g>
 </g>
 </svg>
-</div><p>The synchronization algorithm relies on two shared variables: a user-defined predicate and an internal state variable. To avoid lost wake-ups, the protocol follows a two-phase <em>update-then-check</em> pattern. A waiting thread publishes its intent to wait by updating the state before rechecking the predicate. Conversely, a notifying thread updates the predicate before inspecting the state. This interaction is governed by a memory barrier of sequential consistency that guarantees at least one thread will observe the other&#x27;s progress. Consequently, the waiter either detects the work and stays active, or the notifier detects the waiter and issues a wakeup. It is impossible for both threads to miss each other&#x27;s updates.</p><p>The state has the following layout, which consists of the following three parts:</p><ul><li><code>STACK_BITS</code> is a stack of committed waiters</li><li><code>PREWAITER_BITS</code> is the count of waiters in the pre-waiting stage</li><li><code>EPOCH_BITS</code> is the modification counter</li></ul><div class="m-graph"><svg style="width: 57.300rem; height: 18.700rem;" viewBox="0.00 0.00 573.00 186.89">
-<g transform="scale(1 1) rotate(0) translate(4 182.89)">
+</div><p>The synchronization algorithm relies on two shared variables: a user-defined predicate and an internal state variable. To avoid lost wake-ups, the protocol follows a two-phase <em>update-then-check</em> pattern. A waiting thread publishes its intent to wait by updating the state before rechecking the predicate. Conversely, a notifying thread updates the predicate before inspecting the state. This interaction is governed by a memory barrier of sequential consistency that guarantees at least one thread will observe the other&#x27;s progress. Consequently, the waiter either detects the work and stays active, or the notifier detects the waiter and issues a wakeup. It is impossible for both threads to miss each other&#x27;s updates.</p><p>The state has the following layout, which consists of the following three parts:</p><ul><li><code>STACK_BITS</code> is a stack of committed waiters</li><li><code>PREWAITER_BITS</code> is the count of waiters in the pre-waiting stage</li><li><code>EPOCH_BITS</code> is the modification counter</li></ul><div class="m-graph"><svg style="width: 60.600rem; height: 16.300rem;" viewBox="0.00 0.00 606.00 163.36">
+<g transform="scale(1 1) rotate(0) translate(4 159.36)">
 <title>BitStateLayout</title>
 <g class="m-node m-flat">
 <title>State64</title>
-<polygon points="182.5,-65.19 182.5,-129.44 565,-129.44 565,-65.19 182.5,-65.19"/>
-<text text-anchor="middle" x="240.38" y="-115.94" font-family="Helvetica,sans-Serif" font-size="10.00">Epoch (32 bits)</text>
-<text text-anchor="middle" x="240.38" y="-104.69" font-family="Helvetica,sans-Serif" font-size="10.00">[EPOCH_BITS]</text>
-<text text-anchor="middle" x="240.38" y="-93.44" font-family="Helvetica,sans-Serif" font-size="10.00">Shift: 32</text>
-<text text-anchor="middle" x="240.38" y="-82.19" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: EPOCH_MASK</text>
-<text text-anchor="middle" x="240.38" y="-70.94" font-family="Helvetica,sans-Serif" font-size="10.00">Inc: EPOCH_INC</text>
-<polyline points="298.25,-65.19 298.25,-129.44"/>
-<text text-anchor="middle" x="368.12" y="-115.94" font-family="Helvetica,sans-Serif" font-size="10.00">Pre&#45;waiter Count (16 bits)</text>
-<text text-anchor="middle" x="368.12" y="-104.69" font-family="Helvetica,sans-Serif" font-size="10.00">[PREWAITER_BITS]</text>
-<text text-anchor="middle" x="368.12" y="-93.44" font-family="Helvetica,sans-Serif" font-size="10.00">Shift: 16</text>
-<text text-anchor="middle" x="368.12" y="-82.19" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: PREWAITER_MASK</text>
-<text text-anchor="middle" x="368.12" y="-70.94" font-family="Helvetica,sans-Serif" font-size="10.00">Inc: PREWAITER_INC</text>
-<polyline points="438,-65.19 438,-129.44"/>
-<text text-anchor="middle" x="501.5" y="-104.94" font-family="Helvetica,sans-Serif" font-size="10.00">Pre&#45;waiter Stack (16 bits)</text>
-<text text-anchor="middle" x="501.5" y="-93.69" font-family="Helvetica,sans-Serif" font-size="10.00">[STACK_BITS]</text>
-<text text-anchor="middle" x="501.5" y="-82.44" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: STACK_MASK</text>
+<polygon points="200,-51.86 200,-114.86 598,-114.86 598,-51.86 200,-51.86"/>
+<text text-anchor="middle" x="258" y="-102.86" font-family="Helvetica,sans-Serif" font-size="10.00">Epoch (32 bits)</text>
+<text text-anchor="middle" x="258" y="-91.86" font-family="Helvetica,sans-Serif" font-size="10.00">[EPOCH_BITS]</text>
+<text text-anchor="middle" x="258" y="-80.86" font-family="Helvetica,sans-Serif" font-size="10.00">Shift: 32</text>
+<text text-anchor="middle" x="258" y="-69.86" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: EPOCH_MASK</text>
+<text text-anchor="middle" x="258" y="-58.86" font-family="Helvetica,sans-Serif" font-size="10.00">Inc: EPOCH_INC</text>
+<polyline points="316,-51.86 316,-114.86 "/>
+<text text-anchor="middle" x="387" y="-102.86" font-family="Helvetica,sans-Serif" font-size="10.00">Pre&#45;waiter Count (16 bits)</text>
+<text text-anchor="middle" x="387" y="-91.86" font-family="Helvetica,sans-Serif" font-size="10.00">[PREWAITER_BITS]</text>
+<text text-anchor="middle" x="387" y="-80.86" font-family="Helvetica,sans-Serif" font-size="10.00">Shift: 16</text>
+<text text-anchor="middle" x="387" y="-69.86" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: PREWAITER_MASK</text>
+<text text-anchor="middle" x="387" y="-58.86" font-family="Helvetica,sans-Serif" font-size="10.00">Inc: PREWAITER_INC</text>
+<polyline points="458,-51.86 458,-114.86 "/>
+<text text-anchor="middle" x="528" y="-91.86" font-family="Helvetica,sans-Serif" font-size="10.00">Pre&#45;waiter Stack (16 bits)</text>
+<text text-anchor="middle" x="528" y="-80.86" font-family="Helvetica,sans-Serif" font-size="10.00">[STACK_BITS]</text>
+<text text-anchor="middle" x="528" y="-69.86" font-family="Helvetica,sans-Serif" font-size="10.00">Mask: STACK_MASK</text>
 </g>
 <g class="m-node">
 <title>EpochRange</title>
-<polygon points="119.12,-115.32 21.38,-115.32 21.38,-79.32 125.12,-79.32 125.12,-109.32 119.12,-115.32"/>
-<polyline points="119.12,-115.32 119.12,-109.32"/>
-<polyline points="125.12,-109.32 119.12,-109.32"/>
-<text text-anchor="middle" x="73.25" y="-99.07" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [63:32]</text>
-<text text-anchor="middle" x="73.25" y="-87.82" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Modification counter</text>
+<polygon points="134,-155.36 24,-155.36 24,-119.36 140,-119.36 140,-149.36 134,-155.36"/>
+<polyline points="134,-155.36 134,-149.36 "/>
+<polyline points="140,-149.36 134,-149.36 "/>
+<text text-anchor="middle" x="82" y="-140.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [63:32]</text>
+<text text-anchor="middle" x="82" y="-129.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Modification counter</text>
 </g>
 <g class="m-edge">
 <title>EpochRange&#45;&gt;State64:b63_32</title>
-<path stroke-dasharray="5,2" d="M125.46,-97.32C139.97,-97.32 156.01,-97.32 171.42,-97.32"/>
-<polygon points="170.99,-100.82 180.99,-97.32 170.99,-93.82 170.99,-100.82"/>
+<path stroke-dasharray="5,2" d="M140.17,-120.89C148.35,-117.8 156.52,-114.29 164,-110.36 178.12,-102.97 179.9,-90.21 190.16,-85.34"/>
+<polygon points="190.88,-88.76 200,-83.36 189.51,-81.9 190.88,-88.76"/>
 </g>
 <g class="m-node">
 <title>PrewaiterRange</title>
-<polygon points="124.38,-61.32 16.12,-61.32 16.12,-25.32 130.38,-25.32 130.38,-55.32 124.38,-61.32"/>
-<polyline points="124.38,-61.32 124.38,-55.32"/>
-<polyline points="130.38,-55.32 124.38,-55.32"/>
-<text text-anchor="middle" x="73.25" y="-45.07" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [31:16]</text>
-<text text-anchor="middle" x="73.25" y="-33.82" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Pre&#45;waiter ticket count</text>
+<polygon points="139.5,-101.36 18.5,-101.36 18.5,-65.36 145.5,-65.36 145.5,-95.36 139.5,-101.36"/>
+<polyline points="139.5,-101.36 139.5,-95.36 "/>
+<polyline points="145.5,-95.36 139.5,-95.36 "/>
+<text text-anchor="middle" x="82" y="-86.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [31:16]</text>
+<text text-anchor="middle" x="82" y="-75.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Pre&#45;waiter ticket count</text>
 </g>
 <g class="m-edge">
 <title>PrewaiterRange&#45;&gt;State64:b31_16</title>
-<path stroke-dasharray="5,2" d="M130.56,-25.11C212.23,-1.61 355.17,27.43 367.3,-52.72"/>
-<polygon points="363.81,-52.96 368.02,-62.68 370.79,-52.46 363.81,-52.96"/>
+<path stroke-dasharray="5,2" d="M141.97,-65.31C223.47,-41.82 362.94,-7.49 384.24,-40.48"/>
+<polygon points="380.94,-41.67 387,-50.36 387.68,-39.79 380.94,-41.67"/>
 </g>
 <g class="m-node">
 <title>StackRange</title>
-<polygon points="140.5,-169.32 0,-169.32 0,-133.32 146.5,-133.32 146.5,-163.32 140.5,-169.32"/>
-<polyline points="140.5,-169.32 140.5,-163.32"/>
-<polyline points="146.5,-163.32 140.5,-163.32"/>
-<text text-anchor="middle" x="73.25" y="-153.07" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [15:0]</text>
-<text text-anchor="middle" x="73.25" y="-141.82" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Committed waiter stack index</text>
+<polygon points="158,-47.36 0,-47.36 0,-11.36 164,-11.36 164,-41.36 158,-47.36"/>
+<polyline points="158,-47.36 158,-41.36 "/>
+<polyline points="164,-41.36 158,-41.36 "/>
+<text text-anchor="middle" x="82" y="-32.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Bits [15:0]</text>
+<text text-anchor="middle" x="82" y="-21.36" font-family="Helvetica,sans-Serif" font-size="10.00" fill="white">Committed waiter stack index</text>
 </g>
 <g class="m-edge">
 <title>StackRange&#45;&gt;State64:b15_0</title>
-<path stroke-dasharray="5,2" d="M146.73,-162.2C261.72,-177.63 475.48,-198.14 499.32,-141.5"/>
-<polygon points="502.71,-142.41 501.21,-131.93 495.84,-141.06 502.71,-142.41"/>
+<path stroke-dasharray="5,2" d="M164.1,-17.15C286.19,-0.84 505.25,19.56 526.36,-40.47"/>
+<polygon points="522.91,-41.07 528,-50.36 529.81,-39.93 522.91,-41.07"/>
 </g>
 </g>
 </svg>
@@ -569,7 +569,7 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.13.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
+        <p>Taskflow handbook is part of the <a href="https://taskflow.github.io">Taskflow project</a>, copyright © <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>, 2018&ndash;2026.<br />Generated by <a href="https://doxygen.org/">Doxygen</a> 1.9.1 and <a href="https://mcss.mosra.cz/">m.css</a>.</p>
       </div>
     </div>
   </div>

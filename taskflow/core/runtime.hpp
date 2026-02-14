@@ -960,6 +960,47 @@ inline void Executor::_invoke_nonpreemptive_runtime_task(Worker& worker, Node* n
 }
 
 
+// Function: run_until
+template <typename P, typename C>
+tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
+
+  _increment_topology();
+
+  // No need to create a real topology but returns an dummy future for invariant.
+  // Note that here we don't do std::async(std::launch::deferred, [](){}) because
+  // the invariant requires the future to be ready before decrementing the topology,
+  // rather than calling future.get() from the caller.
+  if(f.empty() || p()) {
+    c();
+    std::promise<void> promise;
+    promise.set_value();
+    _decrement_topology();
+    return tf::Future<void>(promise.get_future());
+  }
+
+  auto g = std::make_unique<Taskflow>(std::move(f)); 
+
+  // create a topology for this run
+  //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<DerivedTopology<P, C>>(*g, std::forward<P>(p), std::forward<C>(c));
+
+  // need to create future before the topology got torn down quickly
+  tf::Future<void> future(t->_promise.get_future(), t);
+
+  // modifying topology needs to be protected under the lock
+  silent_async([g=MoC{std::move(g)}, t](tf::Runtime& rt) mutable {
+    t->_parent = rt._node;
+    t->_parent->_join_counter.fetch_add(1, std::memory_order_release);
+    //std::lock_guard<std::mutex> lock(g.object->_mutex);
+    g.object->_topologies.push(t);
+    rt._executor._schedule_graph_with_parent(
+      rt._worker,
+      g.object->_graph.begin(), g.object->_graph.end(), t.get(), t.get()
+    );
+  });
+
+  return future;
+}
 
 }  // end of namespace tf -----------------------------------------------------
 

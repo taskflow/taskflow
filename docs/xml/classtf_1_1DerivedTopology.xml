@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="classtf_1_1DerivedTopology" kind="class" language="C++" prot="private">
+    <compoundname>tf::DerivedTopology</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">tf::Topology</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename P</type>
+      </param>
+      <param>
+        <type>typename C</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classtf_1_1DerivedTopology_1a8a846f57c0493c141ce1ca302df1bf5f" prot="private" static="no">
+        <type>std::decay_t&lt; P &gt;</type>
+        <definition>using tf::DerivedTopology&lt; P, C &gt;::PredicateType =  std::decay_t&lt;P&gt;</definition>
+        <argsstring></argsstring>
+        <name>PredicateType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="306" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="306" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classtf_1_1DerivedTopology_1af23cb13bd3af793b6921117171f13cd9" prot="private" static="no">
+        <type>std::decay_t&lt; C &gt;</type>
+        <definition>using tf::DerivedTopology&lt; P, C &gt;::CallbackType =  std::decay_t&lt;C&gt;</definition>
+        <argsstring></argsstring>
+        <name>CallbackType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="307" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="307" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classtf_1_1DerivedTopology_1a9b3e62f5b0efe2e11dea8d302eb73d38" prot="private" static="no" mutable="no">
+        <type>PredicateType</type>
+        <definition>PredicateType tf::DerivedTopology&lt; P, C &gt;::_pred</definition>
+        <argsstring></argsstring>
+        <name>_pred</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="320" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="320" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1DerivedTopology_1aae04bd4655c65dcefa1612a52c5566b1" prot="private" static="no" mutable="no">
+        <type>CallbackType</type>
+        <definition>CallbackType tf::DerivedTopology&lt; P, C &gt;::_clbk</definition>
+        <argsstring></argsstring>
+        <name>_clbk</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="321" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="321" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classtf_1_1DerivedTopology_1a7e2fe6a01120ff4573d3bb2c8aa90867" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>tf::DerivedTopology&lt; P, C &gt;::DerivedTopology</definition>
+        <argsstring>(Taskflow &amp;tf, P &amp;&amp;pred, C &amp;&amp;clbk)</argsstring>
+        <name>DerivedTopology</name>
+        <param>
+          <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &amp;</type>
+          <declname>tf</declname>
+        </param>
+        <param>
+          <type>P &amp;&amp;</type>
+          <declname>pred</declname>
+        </param>
+        <param>
+          <type>C &amp;&amp;</type>
+          <declname>clbk</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="311" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="311" bodyend="313"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1DerivedTopology_1a34eb2d8801ad14c6a4ac8e4354459608" prot="public" static="no" const="no" explicit="no" inline="yes" final="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool tf::DerivedTopology&lt; P, C &gt;::predicate</definition>
+        <argsstring>() override final</argsstring>
+        <name>predicate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="315" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="315" bodyend="315"/>
+      </memberdef>
+      <memberdef kind="function" id="classtf_1_1DerivedTopology_1a6694cce3dcfbb3e6c87c21a3158d895d" prot="public" static="no" const="no" explicit="no" inline="yes" final="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void tf::DerivedTopology&lt; P, C &gt;::on_finish</definition>
+        <argsstring>() override final</argsstring>
+        <name>on_finish</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="316" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="316" bodyend="316"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>tf::DerivedTopology&lt; P, C &gt;</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>tf::NodeBase</label>
+      </node>
+      <node id="2">
+        <label>tf::Topology</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>tf::DerivedTopology&lt; P, C &gt;</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>tf::NodeBase</label>
+        <childnode refid="4" relation="usage">
+          <edgelabel>_join_counter</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>_exception_ptr</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>_parent</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>_estate</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>tf::Topology</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>std::atomic&lt; estate_t &gt;</label>
+      </node>
+      <node id="5">
+        <label>std::exception_ptr</label>
+      </node>
+      <node id="4">
+        <label>std::atomic&lt; size_t &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="taskflow/core/graph.hpp" line="304" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="304" bodyend="322"/>
+    <listofallmembers>
+      <member refid="classtf_1_1DerivedTopology_1aae04bd4655c65dcefa1612a52c5566b1" prot="private" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_clbk</name></member>
+      <member refid="classtf_1_1NodeBase_1ad3cd43cef8826beb621ce3ad3ed97b8c" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_estate</name></member>
+      <member refid="classtf_1_1NodeBase_1af405c76e47afcf1f14370dfe3daaf3a1" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_exception_ptr</name></member>
+      <member refid="classtf_1_1NodeBase_1a37faa5a9626d80a9979c23b55e96da84" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_join_counter</name></member>
+      <member refid="classtf_1_1NodeBase_1acc49b0ce35ba51593bb95d4ebc3868ea" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_nstate</name></member>
+      <member refid="classtf_1_1NodeBase_1aa72cd1cbc5cf9a4d2d9bc4f297f7d6b3" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_parent</name></member>
+      <member refid="classtf_1_1DerivedTopology_1a9b3e62f5b0efe2e11dea8d302eb73d38" prot="private" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_pred</name></member>
+      <member refid="classtf_1_1NodeBase_1a08bdec41eae9b20f8c3376597fe101f6" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>_rethrow_exception</name></member>
+      <member refid="classtf_1_1DerivedTopology_1af23cb13bd3af793b6921117171f13cd9" prot="private" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>CallbackType</name></member>
+      <member refid="classtf_1_1Topology_1a5f3f05242bb1c9f2a168fc124fccec6f" prot="public" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>cancelled</name></member>
+      <member refid="classtf_1_1DerivedTopology_1a7e2fe6a01120ff4573d3bb2c8aa90867" prot="public" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>DerivedTopology</name></member>
+      <member refid="classtf_1_1NodeBase_1a276070dec14a118867e90a8dc9b6459c" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>NodeBase</name></member>
+      <member refid="classtf_1_1NodeBase_1ae70de05f37f731650acb43696d5476c7" prot="protected" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>NodeBase</name></member>
+      <member refid="classtf_1_1DerivedTopology_1a6694cce3dcfbb3e6c87c21a3158d895d" prot="public" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>on_finish</name></member>
+      <member refid="classtf_1_1DerivedTopology_1a34eb2d8801ad14c6a4ac8e4354459608" prot="public" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>predicate</name></member>
+      <member refid="classtf_1_1DerivedTopology_1a8a846f57c0493c141ce1ca302df1bf5f" prot="private" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>PredicateType</name></member>
+      <member refid="classtf_1_1Topology_1ac82b7deba5e19f9d04d396344d39deb8" prot="public" virt="non-virtual"><scope>tf::DerivedTopology</scope><name>Topology</name></member>
+      <member refid="classtf_1_1Topology_1aa07081af5093f5514db45c4dd7081d40" prot="public" virt="virtual"><scope>tf::DerivedTopology</scope><name>~Topology</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

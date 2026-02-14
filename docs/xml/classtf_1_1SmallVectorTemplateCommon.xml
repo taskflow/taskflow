@@ -1,11 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="classtf_1_1SmallVectorTemplateCommon" kind="class" language="C++" prot="private">
     <compoundname>tf::SmallVectorTemplateCommon</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::SmallVectorBase</basecompoundref>
     <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; T, IsPod&lt; T &gt;::value &gt;</derivedcompoundref>
-    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; Node *, IsPod&lt; Node * &gt;::value &gt;</derivedcompoundref>
-    <derivedcompoundref refid="classtf_1_1SmallVectorTemplateBase" prot="public" virt="non-virtual">tf::SmallVectorTemplateBase&lt; tf::Semaphore *, IsPod&lt; tf::Semaphore * &gt;::value &gt;</derivedcompoundref>
     <innerclass refid="structtf_1_1SmallVectorTemplateCommon_1_1AlignedUnionType" prot="private">tf::SmallVectorTemplateCommon::AlignedUnionType</innerclass>
     <templateparamlist>
       <param>
@@ -16,13 +14,12 @@
         <defval>void</defval>
       </param>
     </templateparamlist>
-    <sectiondef kind="private-type">
+      <sectiondef kind="private-type">
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a858a012ef160a4d227a5c1ddb1f56472" prot="private" static="no">
         <type>AlignedUnionType&lt; T &gt;</type>
         <definition>typedef AlignedUnionType&lt;T&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::U</definition>
         <argsstring></argsstring>
         <name>U</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::U</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -31,14 +28,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="138" column="28" bodyfile="taskflow/utility/small_vector.hpp" bodystart="138" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-type">
+      </sectiondef>
+      <sectiondef kind="public-type">
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a0af2aaae74afd35894e91e96e221f2b4" prot="public" static="no">
         <type>size_t</type>
         <definition>typedef size_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::size_type</definition>
         <argsstring></argsstring>
         <name>size_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::size_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -52,7 +48,6 @@
         <definition>typedef ptrdiff_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::difference_type</definition>
         <argsstring></argsstring>
         <name>difference_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::difference_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -66,7 +61,6 @@
         <definition>typedef T tf::SmallVectorTemplateCommon&lt; T, typename &gt;::value_type</definition>
         <argsstring></argsstring>
         <name>value_type</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::value_type</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -80,7 +74,6 @@
         <definition>typedef T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::iterator</definition>
         <argsstring></argsstring>
         <name>iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -94,7 +87,6 @@
         <definition>typedef const T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_iterator</definition>
         <argsstring></argsstring>
         <name>const_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -104,11 +96,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="168" column="19" bodyfile="taskflow/utility/small_vector.hpp" bodystart="168" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1ae8618ae79998e522734cf4b15fa7956e" prot="public" static="no">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; const_iterator &gt;</type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; const_iterator &gt;</type>
         <definition>typedef std::reverse_iterator&lt;const_iterator&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_reverse_iterator</definition>
         <argsstring></argsstring>
         <name>const_reverse_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_reverse_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -118,11 +109,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="170" column="33" bodyfile="taskflow/utility/small_vector.hpp" bodystart="170" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="classtf_1_1SmallVectorTemplateCommon_1a20b7a8544e963fe20fd8a139bddce658" prot="public" static="no">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; iterator &gt;</type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::reverse_iterator</ref>&lt; iterator &gt;</type>
         <definition>typedef std::reverse_iterator&lt;iterator&gt; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::reverse_iterator</definition>
         <argsstring></argsstring>
         <name>reverse_iterator</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::reverse_iterator</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -136,7 +126,6 @@
         <definition>typedef T&amp; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::reference</definition>
         <argsstring></argsstring>
         <name>reference</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::reference</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -150,7 +139,6 @@
         <definition>typedef const T&amp; tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_reference</definition>
         <argsstring></argsstring>
         <name>const_reference</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_reference</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -164,7 +152,6 @@
         <definition>typedef T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::pointer</definition>
         <argsstring></argsstring>
         <name>pointer</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::pointer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -178,7 +165,6 @@
         <definition>typedef const T* tf::SmallVectorTemplateCommon&lt; T, typename &gt;::const_pointer</definition>
         <argsstring></argsstring>
         <name>const_pointer</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::const_pointer</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -187,8 +173,8 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="176" column="19" bodyfile="taskflow/utility/small_vector.hpp" bodystart="176" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="friend">
+      </sectiondef>
+      <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1SmallVectorTemplateCommon_1a793abe4bcf6dc77d4cc24d207a4958b8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -202,7 +188,6 @@
         <definition>friend struct SmallVectorStorage</definition>
         <argsstring></argsstring>
         <name>SmallVectorStorage</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::SmallVectorStorage</qualifiedname>
         <param>
           <type>SmallVectorStorage</type>
         </param>
@@ -212,16 +197,15 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/small_vector.hpp" line="119" column="29" bodyfile="taskflow/utility/small_vector.hpp" bodystart="119" bodyend="-1"/>
+        <location file="taskflow/utility/small_vector.hpp" line="119" column="15" bodyfile="taskflow/utility/small_vector.hpp" bodystart="119" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="private-attrib">
+      </sectiondef>
+      <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1SmallVectorTemplateCommon_1a5ef73aff6ad53a6b0568fb4ed3530bf2" prot="private" static="no" mutable="no">
         <type>U</type>
         <definition>U tf::SmallVectorTemplateCommon&lt; T, typename &gt;::FirstEl</definition>
         <argsstring></argsstring>
         <name>FirstEl</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::FirstEl</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -230,14 +214,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="140" column="5" bodyfile="taskflow/utility/small_vector.hpp" bodystart="140" bodyend="-1"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="protected-func">
+      </sectiondef>
+      <sectiondef kind="protected-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a4717897cb4e6fea34640801c69469355" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::SmallVectorTemplateCommon&lt; T, typename &gt;::SmallVectorTemplateCommon</definition>
         <argsstring>(size_t Size)</argsstring>
         <name>SmallVectorTemplateCommon</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::SmallVectorTemplateCommon</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>Size</declname>
@@ -255,7 +238,6 @@
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::grow_pod</definition>
         <argsstring>(size_t MinSizeInBytes, size_t TSize)</argsstring>
         <name>grow_pod</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::grow_pod</qualifiedname>
         <param>
           <type>size_t</type>
           <declname>MinSizeInBytes</declname>
@@ -277,7 +259,6 @@
         <definition>bool tf::SmallVectorTemplateCommon&lt; T, typename &gt;::isSmall</definition>
         <argsstring>() const</argsstring>
         <name>isSmall</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::isSmall</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -292,7 +273,6 @@
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::resetToSmall</definition>
         <argsstring>()</argsstring>
         <name>resetToSmall</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::resetToSmall</qualifiedname>
         <briefdescription>
 <para>Put this vector in a state of being small. </para>
         </briefdescription>
@@ -307,7 +287,6 @@
         <definition>void tf::SmallVectorTemplateCommon&lt; T, typename &gt;::setEnd</definition>
         <argsstring>(T *P)</argsstring>
         <name>setEnd</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::setEnd</qualifiedname>
         <param>
           <type>T *</type>
           <declname>P</declname>
@@ -325,7 +304,6 @@
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity_ptr</definition>
         <argsstring>()</argsstring>
         <name>capacity_ptr</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity_ptr</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -339,7 +317,6 @@
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity_ptr</definition>
         <argsstring>() const</argsstring>
         <name>capacity_ptr</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity_ptr</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -348,14 +325,13 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="187" column="18" bodyfile="taskflow/utility/small_vector.hpp" bodystart="187" bodyend="187"/>
       </memberdef>
-    </sectiondef>
-    <sectiondef kind="public-func">
+      </sectiondef>
+      <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a5022deed40c9c9f983230c38d99658f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>iterator</type>
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::begin</definition>
         <argsstring>()</argsstring>
         <name>begin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::begin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -369,7 +345,6 @@
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::begin</definition>
         <argsstring>() const</argsstring>
         <name>begin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::begin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -383,7 +358,6 @@
         <definition>iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::end</definition>
         <argsstring>()</argsstring>
         <name>end</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -397,7 +371,6 @@
         <definition>const_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::end</definition>
         <argsstring>() const</argsstring>
         <name>end</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::end</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -407,11 +380,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="182" column="25" bodyfile="taskflow/utility/small_vector.hpp" bodystart="182" bodyend="182"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a83f50a1376ad1b3c828e89b9fa34b56d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
         <definition>reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rbegin</definition>
         <argsstring>()</argsstring>
         <name>rbegin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rbegin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -421,11 +393,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="192" column="20" bodyfile="taskflow/utility/small_vector.hpp" bodystart="192" bodyend="192"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a96c2d2979402cc76f84a76ff08720933" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
         <definition>const_reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rbegin</definition>
         <argsstring>() const</argsstring>
         <name>rbegin</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rbegin</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -435,11 +406,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="193" column="26" bodyfile="taskflow/utility/small_vector.hpp" bodystart="193" bodyend="193"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1ae26b374c3ca4f75054eb17ec85b26cf0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">reverse_iterator</ref></type>
         <definition>reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rend</definition>
         <argsstring>()</argsstring>
         <name>rend</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rend</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -449,11 +419,10 @@
         <location file="taskflow/utility/small_vector.hpp" line="194" column="20" bodyfile="taskflow/utility/small_vector.hpp" bodystart="194" bodyend="194"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1SmallVectorTemplateCommon_1a411820e49d8ab402ac29c7537cd22049" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
-        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
+        <type><ref refid="cpp/iterator/reverse_iterator" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">const_reverse_iterator</ref></type>
         <definition>const_reverse_iterator tf::SmallVectorTemplateCommon&lt; T, typename &gt;::rend</definition>
         <argsstring>() const</argsstring>
         <name>rend</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::rend</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -467,7 +436,6 @@
         <definition>size_type tf::SmallVectorTemplateCommon&lt; T, typename &gt;::size</definition>
         <argsstring>() const</argsstring>
         <name>size</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -481,7 +449,6 @@
         <definition>size_type tf::SmallVectorTemplateCommon&lt; T, typename &gt;::max_size</definition>
         <argsstring>() const</argsstring>
         <name>max_size</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::max_size</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -495,7 +462,6 @@
         <definition>size_t tf::SmallVectorTemplateCommon&lt; T, typename &gt;::capacity</definition>
         <argsstring>() const</argsstring>
         <name>capacity</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::capacity</qualifiedname>
         <briefdescription>
 <para>Return the total number of elements in the currently allocated buffer. </para>
         </briefdescription>
@@ -510,7 +476,6 @@
         <definition>pointer tf::SmallVectorTemplateCommon&lt; T, typename &gt;::data</definition>
         <argsstring>()</argsstring>
         <name>data</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::data</qualifiedname>
         <briefdescription>
 <para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>
         </briefdescription>
@@ -525,7 +490,6 @@
         <definition>const_pointer tf::SmallVectorTemplateCommon&lt; T, typename &gt;::data</definition>
         <argsstring>() const</argsstring>
         <name>data</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::data</qualifiedname>
         <briefdescription>
 <para>Return a pointer to the vector&apos;s buffer, even if empty(). </para>
         </briefdescription>
@@ -540,7 +504,6 @@
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::operator[]</definition>
         <argsstring>(size_type idx)</argsstring>
         <name>operator[]</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::operator[]</qualifiedname>
         <param>
           <type>size_type</type>
           <declname>idx</declname>
@@ -558,7 +521,6 @@
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::operator[]</definition>
         <argsstring>(size_type idx) const</argsstring>
         <name>operator[]</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::operator[]</qualifiedname>
         <param>
           <type>size_type</type>
           <declname>idx</declname>
@@ -576,7 +538,6 @@
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::front</definition>
         <argsstring>()</argsstring>
         <name>front</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::front</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -590,7 +551,6 @@
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::front</definition>
         <argsstring>() const</argsstring>
         <name>front</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::front</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -604,7 +564,6 @@
         <definition>reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::back</definition>
         <argsstring>()</argsstring>
         <name>back</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -618,7 +577,6 @@
         <definition>const_reference tf::SmallVectorTemplateCommon&lt; T, typename &gt;::back</definition>
         <argsstring>() const</argsstring>
         <name>back</name>
-        <qualifiedname>tf::SmallVectorTemplateCommon::back</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -627,18 +585,15 @@
         </inbodydescription>
         <location file="taskflow/utility/small_vector.hpp" line="233" column="19" bodyfile="taskflow/utility/small_vector.hpp" bodystart="233" bodyend="236"/>
       </memberdef>
-    </sectiondef>
+      </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
     <inheritancegraph>
-      <node id="2">
-        <label>tf::SmallVectorBase</label>
-      </node>
-      <node id="4">
-        <label>tf::SmallVectorTemplateBase&lt; Node *, IsPod&lt; Node * &gt;::value &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
+      <node id="1">
+        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
+        <childnode refid="2" relation="public-inheritance">
         </childnode>
       </node>
       <node id="3">
@@ -646,25 +601,18 @@
         <childnode refid="1" relation="public-inheritance">
         </childnode>
       </node>
-      <node id="5">
-        <label>tf::SmallVectorTemplateBase&lt; tf::Semaphore *, IsPod&lt; tf::Semaphore * &gt;::value &gt;</label>
-        <childnode refid="1" relation="public-inheritance">
-        </childnode>
-      </node>
-      <node id="1">
-        <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
-        <childnode refid="2" relation="public-inheritance">
-        </childnode>
-      </node>
-    </inheritancegraph>
-    <collaborationgraph>
       <node id="2">
         <label>tf::SmallVectorBase</label>
       </node>
+    </inheritancegraph>
+    <collaborationgraph>
       <node id="1">
         <label>tf::SmallVectorTemplateCommon&lt; T, typename &gt;</label>
         <childnode refid="2" relation="public-inheritance">
         </childnode>
+      </node>
+      <node id="2">
+        <label>tf::SmallVectorBase</label>
       </node>
     </collaborationgraph>
     <location file="taskflow/utility/small_vector.hpp" line="116" column="1" bodyfile="taskflow/utility/small_vector.hpp" bodystart="116" bodyend="237"/>

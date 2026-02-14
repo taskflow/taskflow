@@ -39,9 +39,14 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 + added bulk cache update method in executor
 + added more unit tests to `test_notifiers.cpp`
++ optimized executor member variable data layout to reduce false sharing
+  + aligned `num_topologies` to a cache line
+  + aligned `notifier` to a cache line
++ optimized tf::Executor::run(Taskflow&&)` with asynchronous tasking
 
 @subsection release-4-1-0_utilities Utilities
 
++ removed `floor_log2` due to duplication with C++20 `std::bit_width`
 
 @section release-4-1-0_bug_fixes Bug Fixes 
 
