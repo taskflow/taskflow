@@ -2335,38 +2335,42 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
 
     // If there is another run (interleave between lock)
     if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {
-      //assert(tpg->_join_counter == 0);
 
-      // set the promise and get the next topology
-      tpg->_carry_out_promise();
+      auto fetched_tpg {std::move(f._topologies.front())};
+      //assert(fetched_tpg.get() == tpg);
+
       f._topologies.pop();
       tpg = f._topologies.front().get();
 
       lock.unlock();
+      
+      // Soon after we carry out the promise, the associate taskflow may got destroyed
+      // from the user side, and we should never tough it again.
+      fetched_tpg->_carry_out_promise();
 
       // decrement the topology
       _decrement_topology();
 
-      // set up topology needs to be under the lock or it can
-      // introduce memory order error with pop
       _set_up_topology(&worker, tpg);
     }
     else {
       //assert(f._topologies.size() == 1);
 
       auto fetched_tpg {std::move(f._topologies.front())};
+      //assert(fetched_tpg.get() == tpg);
+
       f._topologies.pop();
 
       lock.unlock();
       
-      // soon after we carry out the promise, the associate taskflow may got destroyed
-      // from the user side, and we should never tough it again
+      // Soon after we carry out the promise, the associate taskflow may got destroyed
+      // from the user side, and we should never tough it again.
       fetched_tpg->_carry_out_promise();
 
       _decrement_topology();
       
       // remove the parent that owns the moved taskflow so the storage can be freed
-      if(auto parent = tpg->_parent; parent) {
+      if(auto parent = fetched_tpg->_parent; parent) {
         auto state = parent->_nstate;
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           // this async is spawned from a preempted parent, so we need to resume it
