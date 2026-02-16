@@ -90,7 +90,7 @@ class Executor {
   */
   explicit Executor(
     size_t N = std::thread::hardware_concurrency(),
-    std::unique_ptr<WorkerInterface> wif = nullptr
+    std::shared_ptr<WorkerInterface> wif = nullptr
   );
 
   /**
@@ -100,7 +100,7 @@ class Executor {
   taskflows to complete and then notifies all worker threads to stop
   and join these threads.
   */
-  virtual ~Executor();
+  ~Executor();
 
   /**
   @brief runs a taskflow once
@@ -1122,14 +1122,13 @@ class Executor {
   alignas(TF_CACHELINE_SIZE) DefaultNotifier _notifier;
   alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _num_topologies {0};
   
-  std::unique_ptr<WorkerInterface> _worker_if;
-  std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
   std::unordered_map<std::thread::id, Worker*> _t2w;
+  std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
 
   void _shutdown();
   void _observer_prologue(Worker&, Node*);
   void _observer_epilogue(Worker&, Node*);
-  void _spawn(size_t);
+  void _spawn(size_t, std::shared_ptr<WorkerInterface>&);
   void _exploit_task(Worker&, Node*&);
   bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
@@ -1207,11 +1206,11 @@ class Executor {
 #ifndef DOXYGEN_GENERATING_OUTPUT
 
 // Constructor
-inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wif) :
+inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wif) :
   _workers  (N),
   _buffers  (std::bit_width(N)), // Empirically, we find that log2(N) performs best.
-  _notifier (N),                
-  _worker_if(std::move(wif)) {
+  _notifier (N) {
+  //_worker_if(std::move(wif)) {
 
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
@@ -1222,7 +1221,7 @@ inline Executor::Executor(size_t N, std::unique_ptr<WorkerInterface> wif) :
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
   try {
 #endif
-    _spawn(N);
+    _spawn(N, wif);
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
   }
   catch(...) {
@@ -1297,10 +1296,10 @@ inline int Executor::this_worker_id() const {
 }
 
 // Procedure: _spawn
-inline void Executor::_spawn(size_t N) {
+inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface>& wif) {
 
   for(size_t id=0; id<N; ++id) {
-    _workers[id]._thread = std::thread([&, id] () {
+    _workers[id]._thread = std::thread([&, id, wif] () {
 
       auto& w = _workers[id];
 
@@ -1311,8 +1310,8 @@ inline void Executor::_spawn(size_t N) {
       w._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
 
       // before entering the work-stealing loop, call the scheduler prologue
-      if(_worker_if) {
-        _worker_if->scheduler_prologue(w);
+      if(wif) {
+        wif->scheduler_prologue(w);
       }
 
       Node* t = nullptr;
@@ -1324,8 +1323,7 @@ inline void Executor::_spawn(size_t N) {
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
       try {
 #endif
-
-        // worker loop
+        // work-stealing loop loop
         while(1) {
 
           // drain out the local queue
@@ -1345,8 +1343,8 @@ inline void Executor::_spawn(size_t N) {
 #endif
       
       // call the user-specified epilogue function
-      if(_worker_if) {
-        _worker_if->scheduler_epilogue(w, ptr);
+      if(wif) {
+        wif->scheduler_epilogue(w, ptr);
       }
 
     });
@@ -1855,7 +1853,7 @@ inline void Executor::_process_exception(Worker&, Node* node) {
   
   while(ea && (ea->_estate.load(std::memory_order_relaxed) & ESTATE::EXPLICITLY_ANCHORED) == 0) {
     ea->_estate.fetch_or(ESTATE::EXCEPTION, std::memory_order_relaxed);
-    // e only want the inner-most implicit anchor
+    // we only want the inner-most implicit anchor
     if(ia == nullptr && (ea->_nstate & NSTATE::IMPLICITLY_ANCHORED)) {
       ia = ea;
     }
@@ -2339,7 +2337,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
     // invoke the callback after each run
     tpg->on_finish();
 
-    // If there is another run (interleave between lock)
+    // there is another topologies to run
     if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {
 
       auto fetched_tpg {std::move(f._topologies.front())};
@@ -2377,12 +2375,12 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       
       // remove the parent that owns the moved taskflow so the storage can be freed
       if(auto parent = fetched_tpg->_parent; parent) {
-        auto state = parent->_nstate;
+        //auto state = parent->_nstate;
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           // this async is spawned from a preempted parent, so we need to resume it
-          if(state & NSTATE::PREEMPTED) { 
+          //if(state & NSTATE::PREEMPTED) { 
             _update_cache(worker, cache, static_cast<Node*>(parent));
-          }
+          //}
         }
       }
     }

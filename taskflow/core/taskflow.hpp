@@ -417,7 +417,7 @@ inline void Taskflow::remove_dependency(Task from, Task to) {
   to._node->_remove_predecessors(from._node);
 }
 
-// Function:
+// Function: _fetch_enqueue
 inline size_t Taskflow::_fetch_enqueue(std::shared_ptr<Topology> tpg) {
   std::lock_guard<std::mutex> lock(_mutex);
   auto pre_size = _topologies.size();
@@ -553,19 +553,18 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
-      //auto module = &(std::get_if<Node::Module>(&n->_handle)->module);
-      auto module = &(std::get_if<Node::Module>(&n->_handle)->graph);
+      auto mgraph = &(std::get_if<Node::Module>(&n->_handle)->graph);
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << 'p' << n;
       else os << n->_name;
 
-      if(dumper.visited.find(module) == dumper.visited.end()) {
-        dumper.visited[module] = dumper.id++;
-        dumper.stack.push({n, module});
+      if(dumper.visited.find(mgraph) == dumper.visited.end()) {
+        dumper.visited[mgraph] = dumper.id++;
+        dumper.stack.push({n, mgraph});
       }
 
-      if(n->_name.empty()) os << " [m" << dumper.visited[module] << "]";
+      if(n->_name.empty()) os << " [m" << dumper.visited[mgraph] << "]";
       os << "\"];\n";
 
       //for(const auto s : n->_successors) {
@@ -622,70 +621,70 @@ class Future : public std::future<T>  {
 
   public:
 
-    /**
-    @brief default constructor
-    */
-    Future() = default;
+  /**
+  @brief default constructor
+  */
+  Future() = default;
 
-    /**
-    @brief disabled copy constructor
-    */
-    Future(const Future&) = delete;
+  /**
+  @brief disabled copy constructor
+  */
+  Future(const Future&) = delete;
 
-    /**
-    @brief default move constructor
-    */
-    Future(Future&&) = default;
+  /**
+  @brief default move constructor
+  */
+  Future(Future&&) = default;
 
-    /**
-    @brief disabled copy assignment
-    */
-    Future& operator = (const Future&) = delete;
+  /**
+  @brief disabled copy assignment
+  */
+  Future& operator = (const Future&) = delete;
 
-    /**
-    @brief default move assignment
-    */
-    Future& operator = (Future&&) = default;
+  /**
+  @brief default move assignment
+  */
+  Future& operator = (Future&&) = default;
 
-    /**
-    @brief cancels the execution of the running taskflow associated with
-           this future object
+  /**
+  @brief cancels the execution of the running taskflow associated with
+         this future object
 
-    @return @c true if the execution can be cancelled or
-            @c false if the execution has already completed
+  @return @c true if the execution can be cancelled or
+          @c false if the execution has already completed
 
-    When you request a cancellation, the executor will stop scheduling any tasks onwards.
-    Tasks that are already running will continue to finish as their executions are non-preemptive.
-    You can call tf::Future::wait to wait for the cancellation to complete.
+  When you request a cancellation, the executor will stop scheduling any tasks onwards.
+  Tasks that are already running will continue to finish as their executions are non-preemptive.
+  You can call tf::Future::wait to wait for the cancellation to complete.
 
-    @code{.cpp}
-    // create a taskflow of four tasks and submit it to an executor
-    taskflow.emplace(
-      [](){ std::cout << "Task A\n"; },
-      [](){ std::cout << "Task B\n"; },
-      [](){ std::cout << "Task C\n"; },
-      [](){ std::cout << "Task D\n"; }
-    );
-    auto future = executor.run(taskflow);
+  @code{.cpp}
+  // create a taskflow of four tasks and submit it to an executor
+  taskflow.emplace(
+    [](){ std::cout << "Task A\n"; },
+    [](){ std::cout << "Task B\n"; },
+    [](){ std::cout << "Task C\n"; },
+    [](){ std::cout << "Task D\n"; }
+  );
+  auto future = executor.run(taskflow);
 
-    // cancel the execution of the taskflow and wait until it finishes all running tasks
-    future.cancel();
-    future.wait();
-    @endcode
+  // cancel the execution of the taskflow and wait until it finishes all running tasks
+  future.cancel();
+  future.wait();
+  @endcode
 
-    In the above example, we submit a taskflow of four tasks to the executor and then
-    issue a cancellation to stop its execution.
-    Since the cancellation is non-deterministic with the executor runtime,
-    we may still see some tasks complete their executions or none.
+  In the above example, we submit a taskflow of four tasks to the executor and then
+  issue a cancellation to stop its execution.
+  Since the cancellation is non-deterministic with the executor runtime,
+  we may still see some tasks complete their executions or none.
 
-    */
-    bool cancel();
+  */
+  bool cancel();
 
   private:
 
-    std::weak_ptr<Topology> _topology;
+  std::weak_ptr<Topology> _topology;
 
-    Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
+  Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
 };
 
 template <typename T>
