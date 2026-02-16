@@ -474,7 +474,7 @@
             <dd>calculates the number of iterations in the given index range</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename T, typename... ArgsT&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a97960776f3c78e18e68c79c336ba4f2d" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;T&gt;</span>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args) -&gt; <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt;</span>
             </dt>
             <dd>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></dd>
             <dt>
@@ -1490,12 +1490,12 @@
 <span class="kt">size_t</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Returns 5, the sequence is [10, 8, 6, 4, 2]</span></pre><p>Example 3:</p><pre class="m-code"><span class="c1">// Range: 5 to 20 with step size 5</span>
 <span class="kt">size_t</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span><span class="w">  </span><span class="c1">// Returns 3, the sequence is [5, 10, 15]</span></pre><aside class="m-note m-warning"><h4>Attention</h4><p>It is user&#x27;s responsibility to ensure the given index range is valid. For instance, a range from 0 to 10 with a step size of -2 is invalid.</p></aside>
           </div></section>
-          <section class="m-doc-details" id="a97960776f3c78e18e68c79c336ba4f2d"><div>
+          <section class="m-doc-details" id="a6371ab1b1b0e57db6ca95cb4456ac5d3"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T, typename... ArgsT&gt;
               </div>
-              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/memory/unique_ptr.html" class="m-doc-external">std::<wbr />unique_ptr</a>&lt;T&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a97960776f3c78e18e68c79c336ba4f2d" class="m-doc-self">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
+              <span class="m-doc-wrap-bumper"><a href="http://en.cppreference.com/w/cpp/memory/shared_ptr.html" class="m-doc-external">std::<wbr />shared_ptr</a>&lt;T&gt; tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6371ab1b1b0e57db6ca95cb4456ac5d3" class="m-doc-self">make_worker_interface</a>(</span><span class="m-doc-wrap">ArgsT &amp;&amp; ... args)</span></span>
             </h3>
             <p>helper function to create an instance derived from <a href="classtf_1_1WorkerInterface.html" class="m-doc">tf::<wbr />WorkerInterface</a></p>
             <table class="m-table m-fullwidth m-flat">

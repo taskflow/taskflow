@@ -57,9 +57,6 @@ The taskflow object itself is NOT thread-safe. You should not
 modifying the graph while it is running,
 such as adding new tasks, adding new dependencies, and moving
 the taskflow to another.
-To minimize the overhead of task creation,
-our runtime leverages a global object pool to recycle
-tasks in a thread-safe manner.
 
 Please refer to @ref Cookbook to learn more about each task type
 and how to submit a taskflow to an executor.

@@ -10,13 +10,51 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 // Procedure: _schedule_async_task
-TF_FORCE_INLINE void Executor::_schedule_async_task(Node* node) {  
+template <typename... ArgsT>
+void Executor::_schedule_async_task(ArgsT&&... args) {  
+  // caller is a worker of the executor
   if(auto w = this_worker(); w) {
-    _schedule(*w, node);
+    // We don't do per-worker cache as it can cause bugs in corun that are very difficult to 
+    // track. For example, when a worker invokes an async task and then immediately enter corun,
+    // it becomes very difficult to get the task out of its cache correctly.
+    _schedule(*w, _animate(*w, std::forward<ArgsT>(args)...));
   }
+  // caller is a freelance thread
   else{
-    _schedule(node);
+    _schedule(animate(std::forward<ArgsT>(args)...));
   }
+}
+
+// Procedure: _schedule_dependent_async_task
+template <typename I, typename... ArgsT>
+AsyncTask Executor::_schedule_dependent_async_task(I first, I last, size_t num_predecessors, ArgsT&&... args) {  
+  
+  // caller is a worker of the executor
+  if(auto w = this_worker(); w) {
+    // We need to create an async-task first to acquire an ownership.
+    AsyncTask task(_animate(*w, std::forward<ArgsT>(args)...));
+    for(; first != last; first++) {
+      _process_dependent_async(task._node, *first, num_predecessors);
+    }
+    // We don't do per-worker cache as it can cause bugs in corun that are very difficult to 
+    // track. For example, when a worker invokes an async task and then immediately enter corun,
+    // it becomes very difficult to get the task out of its cache correctly.
+    if(num_predecessors == 0) {
+      _schedule(*w, task._node);
+    }
+    return task;
+  }
+  
+  // caller is a freelance thread
+  AsyncTask task(animate(std::forward<ArgsT>(args)...));  // need to acquire an ownership first
+  for(; first != last; first++) {
+    _process_dependent_async(task._node, *first, num_predecessors);
+  }
+  if(num_predecessors == 0) {
+    _schedule(task._node);
+  }
+  return task;
+  
 }
 
 // Procedure: _tear_down_async
@@ -51,7 +89,7 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
       }
     }
   }
-  recycle(node);
+  _recycle(worker, node);
 }
 
 // ----------------------------------------------------------------------------
@@ -81,7 +119,7 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, NodeBase* parent) {
     std::promise<void> p;
     auto fu{p.get_future()};
     
-    _schedule_async_task(animate(
+    _schedule_async_task(
       NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, std::forward<P>(params), tpg, parent, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=MoC{std::move(p)}, f=std::forward<F>(f)](Runtime& rt, bool reentered) mutable { 
@@ -93,7 +131,7 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, NodeBase* parent) {
           eptr ? p.object.set_exception(eptr) : p.object.set_value();
         }
       }
-    ));
+    );
     return fu;
   }
   // async task with closure: [] () -> auto { return ... }
@@ -101,11 +139,11 @@ auto Executor::_async(P&& params, F&& f, Topology* tpg, NodeBase* parent) {
     using R = std::invoke_result_t<F>;
     std::packaged_task<R()> p(std::forward<F>(f));
     auto fu{p.get_future()};
-    _schedule_async_task(animate(
+    _schedule_async_task(
       NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0, 
       std::in_place_type_t<Node::Async>{}, 
       [p=make_moc(std::move(p))]() mutable { p.object(); }
-    ));
+    );
     return fu;
   }
   else {
@@ -140,10 +178,10 @@ template <typename P, typename F>
 void Executor::_silent_async(P&& params, F&& f, Topology* tpg, NodeBase* parent) {
   // silent task 
   if constexpr (is_runtime_task_v<F> || is_static_task_v<F>) {
-    _schedule_async_task(animate(
+    _schedule_async_task(
       NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, 0,
       std::in_place_type_t<Node::Async>{}, std::forward<F>(f)
-    ));
+    );
   }
   // invalid silent async target
   else {
@@ -210,23 +248,11 @@ template <typename P, typename F, typename I,
 auto Executor::_silent_dependent_async(
   P&& params, F&& func, I first, I last, Topology* tpg, NodeBase* parent
 ) {
-
   size_t num_predecessors = std::distance(first, last);
-  
-  AsyncTask task(animate(
+  return _schedule_dependent_async_task(first, last, num_predecessors,
     NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
-  ));
-  
-  for(; first != last; first++) {
-    _process_dependent_async(task._node, *first, num_predecessors);
-  }
-
-  if(num_predecessors == 0) {
-    _schedule_async_task(task._node);
-  }
-
-  return task;
+  );
 }
 
 // ----------------------------------------------------------------------------
@@ -283,7 +309,7 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
     std::promise<void> p;
     auto fu{p.get_future()};
 
-    AsyncTask task(animate(
+    return std::make_pair(_schedule_dependent_async_task(first, last, num_predecessors,
       NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
@@ -295,17 +321,7 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
           eptr ? p.object.set_exception(eptr) : p.object.set_value();
         }
       }
-    ));
-
-    for(; first != last; first++) {
-      _process_dependent_async(task._node, *first, num_predecessors);
-    }
-
-    if(num_predecessors == 0) {
-      _schedule_async_task(task._node);
-    }
-
-    return std::make_pair(std::move(task), std::move(fu));
+    ), std::move(fu));
   }
   // async without runtime: [] () -> auto { return ... }
   else if constexpr(std::is_invocable_v<F>) {
@@ -314,21 +330,11 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
     std::packaged_task<R()> p(std::forward<F>(func));
     auto fu{p.get_future()};
 
-    AsyncTask task(animate(
+    return std::make_pair(_schedule_dependent_async_task(first, last, num_predecessors,
       NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=make_moc(std::move(p))] () mutable { p.object(); }
-    ));
-
-    for(; first != last; first++) {
-      _process_dependent_async(task._node, *first, num_predecessors);
-    }
-
-    if(num_predecessors == 0) {
-      _schedule_async_task(task._node);
-    }
-
-    return std::make_pair(std::move(task), std::move(fu));
+    ), std::move(fu));
   }
   else {
     static_assert(dependent_false_v<F>, "invalid async callable");
@@ -426,7 +432,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   
   // now the executor no longer needs to retain ownership
   if(handle->use_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-    recycle(node);
+    _recycle(worker, node);
   }
 }
 
