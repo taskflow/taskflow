@@ -1128,7 +1128,7 @@ class Executor {
   void _shutdown();
   void _observer_prologue(Worker&, Node*);
   void _observer_epilogue(Worker&, Node*);
-  void _spawn(size_t, std::shared_ptr<WorkerInterface>&);
+  void _spawn(size_t, std::shared_ptr<WorkerInterface>);
   void _exploit_task(Worker&, Node*&);
   bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
@@ -1149,8 +1149,8 @@ class Executor {
   void _invoke_multi_condition_task(Worker&, Node*, SmallVector<int>&);
   void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
-  void _schedule_async_task(Node*);
   void _update_cache(Worker&, Node*&, Node*);
+  void _recycle(Worker&, Node*);
 
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
@@ -1201,6 +1201,17 @@ class Executor {
     std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
   auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
+  
+  template <typename... ArgsT>
+  void _schedule_async_task(ArgsT&&...);
+  
+  template <typename I, typename... ArgsT>
+  AsyncTask _schedule_dependent_async_task(I, I, size_t, ArgsT&&...);
+
+  template <typename... ArgsT>
+  Node* _animate(Worker&, ArgsT&&...);
+
+
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1210,7 +1221,6 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wif) :
   _workers  (N),
   _buffers  (std::bit_width(N)), // Empirically, we find that log2(N) performs best.
   _notifier (N) {
-  //_worker_if(std::move(wif)) {
 
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
@@ -1221,7 +1231,7 @@ inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wif) :
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
   try {
 #endif
-    _spawn(N, wif);
+    _spawn(N, std::move(wif));
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
   }
   catch(...) {
@@ -1263,6 +1273,30 @@ inline void Executor::_shutdown() {
   }
 }
 
+// Function: animate
+template <typename... ArgsT>
+Node* Executor::_animate(Worker& worker, ArgsT&&... args) {
+  if(worker._pool.empty()) {
+    return animate(std::forward<ArgsT>(args)...); 
+  }
+  else {
+    auto node = worker._pool.back();
+    worker._pool.pop_back();
+    node->reset(std::forward<ArgsT>(args)...);
+    return node;
+  }
+}
+
+// Function: _recycle
+inline void Executor::_recycle(Worker& worker, Node* node) {
+  if(worker._pool.size() >= TF_DEFAULT_PERWORKER_NODEPOOL_SIZE) {
+    recycle(node);
+  }
+  else {
+    worker._pool.push_back(node);
+  }
+}
+
 // Function: num_workers
 inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
@@ -1296,22 +1330,21 @@ inline int Executor::this_worker_id() const {
 }
 
 // Procedure: _spawn
-inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface>& wif) {
+inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
 
   for(size_t id=0; id<N; ++id) {
     _workers[id]._thread = std::thread([&, id, wif] () {
 
-      auto& w = _workers[id];
-
-      w._id = id;
-      w._sticky_victim = id;
-
-      // initialize the random engine and seed for work-stealing loop
-      w._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
+      auto& worker = _workers[id];
+  
+      worker._id = id;
+      worker._sticky_victim = id;
+      worker._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
+      worker._pool.reserve(TF_DEFAULT_PERWORKER_NODEPOOL_SIZE);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(wif) {
-        wif->scheduler_prologue(w);
+        wif->scheduler_prologue(worker);
       }
 
       Node* t = nullptr;
@@ -1323,16 +1356,22 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface>& wif) {
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
       try {
 #endif
-        // work-stealing loop loop
+        // work-stealing loop
         while(1) {
 
-          // drain out the local queue
-          _exploit_task(w, t);
+          // drains out the local queue first
+          _exploit_task(worker, t);
 
-          // steal and wait for tasks
-          if(_wait_for_task(w, t) == false) {
+          // steals and waits for tasks
+          if(_wait_for_task(worker, t) == false) {
             break;
           }
+        }
+
+        // Cleans up worker-specific storage in a multi-threaded fashion, 
+        // as ~Node is not cheap.
+        for(auto node : worker._pool) {
+          recycle(node);
         }
 
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
@@ -1344,7 +1383,7 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface>& wif) {
       
       // call the user-specified epilogue function
       if(wif) {
-        wif->scheduler_epilogue(w, ptr);
+        wif->scheduler_epilogue(worker, ptr);
       }
 
     });
@@ -1456,7 +1495,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   }
   
   // Condition #2: worker queues should be empty
-  // Note: We need to use index-based looping to avoid data race with _spawan
+  // Note: We need to use index-based looping to avoid data race with _spawn
   // which initializes other worker data structure at the same time.
   // Also, due to the property of a work-stealing queue, we don't need to check 
   // this worker's work-stealing queue.
@@ -2137,8 +2176,8 @@ tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
   }
 
   // create a topology for this run
-  //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
-  auto t = std::make_shared<DerivedTopology<P, C>>(f, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
+  //auto t = std::make_shared<DerivedTopology<P, C>>(f, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);
@@ -2320,7 +2359,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
 
   // case 1: we still need to run the topology again
   //if(!tpg->_exception_ptr && !tpg->cancelled() && !tpg->predicate()) {
-  if(!tpg->cancelled() && !tpg->predicate()) {
+  if(!tpg->cancelled() && !tpg->_predicate()) {
     //assert(tpg->_join_counter == 0);
     //std::lock_guard<std::mutex> lock(f._mutex);
     _set_up_topology(&worker, tpg);
@@ -2329,7 +2368,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
   else {
 
     // invoke the callback after each run
-    tpg->on_finish();
+    tpg->_on_finish();
 
     // there is another topologies to run
     if(std::unique_lock<std::mutex> lock(f._mutex); f._topologies.size()>1) {

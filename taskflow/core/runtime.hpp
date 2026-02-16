@@ -981,8 +981,8 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
   auto g = std::make_unique<Taskflow>(std::move(f)); 
 
   // creates a topology for this run
-  //auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
-  auto t = std::make_shared<DerivedTopology<P, C>>(*g, std::forward<P>(p), std::forward<C>(c));
+  auto t = std::make_shared<Topology>(*g, std::forward<P>(p), std::forward<C>(c));
+  //auto t = std::make_shared<DerivedTopology<P, C>>(*g, std::forward<P>(p), std::forward<C>(c));
 
   // need to create future before the topology got torn down quickly
   tf::Future<void> future(t->_promise.get_future(), t);

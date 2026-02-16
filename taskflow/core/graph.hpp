@@ -252,28 +252,30 @@ class Topology : public NodeBase {
   
   public:
 
-  Topology(Taskflow&);
-
-  virtual ~Topology() = default;
+  template <typename Predicate, typename OnFinish>
+  Topology(Taskflow&, Predicate&&, OnFinish&&);
 
   bool cancelled() const;
-
-  virtual bool predicate() = 0;
-  virtual void on_finish() = 0;
 
   private:
 
   Taskflow& _taskflow;
 
   std::promise<void> _promise;
+
+  std::function<bool()> _predicate;
+  std::function<void()> _on_finish;
   
   void _carry_out_promise();
 };
 
 // Constructor
-inline Topology::Topology(Taskflow& tf):
+template <typename Predicate, typename OnFinish>
+Topology::Topology(Taskflow& tf, Predicate&& predicate, OnFinish&& on_finish):
   NodeBase(NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, nullptr, 0),
-  _taskflow(tf) {
+  _taskflow(tf),
+  _predicate(std::forward<Predicate>(predicate)),
+  _on_finish(std::forward<OnFinish> (on_finish)) {
 }
 
 // Procedure
@@ -293,33 +295,6 @@ inline bool Topology::cancelled() const {
   return _estate.load(std::memory_order_relaxed) & (ESTATE::CANCELLED | ESTATE::EXCEPTION);
 }
 
-// ----------------------------------------------------------------------------
-// DerivedTopology
-// ----------------------------------------------------------------------------
-
-/**
-@private
-*/
-template <typename P, typename C>
-class DerivedTopology : public Topology {
-
-  using PredicateType = std::decay_t<P>;
-  using CallbackType  = std::decay_t<C>;
-  
-  public:
-
-  DerivedTopology(Taskflow& tf, P&& pred, C&& clbk) :
-    Topology(tf), _pred(std::forward<P>(pred)), _clbk(std::forward<C>(clbk)) {
-  }
-    
-  bool predicate() override final { return _pred(); }
-  void on_finish() override final { _clbk(); }   
-
-  private:
-
-  PredicateType _pred;       // predicate, of type bool()
-  CallbackType  _clbk;       // callback, of type void()
-};
 
 // ----------------------------------------------------------------------------
 // Node
@@ -487,6 +462,12 @@ class Node : public NodeBase {
   size_t num_weak_dependencies() const;
 
   const std::string& name() const;
+  
+  template <typename T, typename... Args>
+  void reset(nstate_t, estate_t, const TaskParams&, Topology*, NodeBase*, size_t, std::in_place_type_t<T>, Args&&...);
+  
+  template <typename T, typename... Args>
+  void reset(nstate_t, estate_t, const DefaultTaskParams&, Topology*, NodeBase*, size_t, std::in_place_type_t<T>, Args&&...);
 
   private:
   
@@ -514,39 +495,6 @@ class Node : public NodeBase {
   void _remove_predecessors(Node*);
 };
 
-// ----------------------------------------------------------------------------
-// Node Object Pool
-// ----------------------------------------------------------------------------
-
-/**
-@private
-*/
-#ifdef TF_ENABLE_TASK_POOL
-inline ObjectPool<Node> _task_pool;
-#endif
-
-/**
-@private
-*/
-template <typename... ArgsT>
-TF_FORCE_INLINE Node* animate(ArgsT&&... args) {
-#ifdef TF_ENABLE_TASK_POOL
-  return _task_pool.animate(std::forward<ArgsT>(args)...);
-#else
-  return new Node(std::forward<ArgsT>(args)...);
-#endif
-}
-
-/**
-@private
-*/
-TF_FORCE_INLINE void recycle(Node* ptr) {
-#ifdef TF_ENABLE_TASK_POOL
-  _task_pool.recycle(ptr);
-#else
-  delete ptr;
-#endif
-}
 
 // ----------------------------------------------------------------------------
 // Definition for Node::Static
@@ -661,6 +609,58 @@ Node::Node(
   NodeBase(nstate, estate, parent, join_counter),
   _topology {topology},
   _handle   {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <typename T, typename... Args>
+void Node::reset(
+  nstate_t nstate,
+  estate_t estate,
+  const TaskParams& params,
+  Topology* topology, 
+  NodeBase* parent, 
+  size_t join_counter,
+  std::in_place_type_t<T>,
+  Args&&... args
+) {
+  _nstate   = nstate;
+  _estate   = estate;
+  _parent   = parent;
+  _join_counter.store(join_counter, std::memory_order_relaxed);
+  _exception_ptr = nullptr;
+  _name     = params.name;
+  _data     = params.data;
+  _topology = topology;
+  _handle.emplace<T>(std::forward<Args>(args)...);
+  _num_successors = 0;
+  _edges.clear();
+  _semaphores.reset();
+}
+
+// Constructor
+template <typename T, typename... Args>
+void Node::reset(
+  nstate_t nstate,
+  estate_t estate,
+  const DefaultTaskParams&,
+  Topology* topology, 
+  NodeBase* parent, 
+  size_t join_counter,
+  std::in_place_type_t<T>,
+  Args&&... args
+) {
+  _nstate = nstate;
+  _estate = estate;
+  _parent = parent;
+  _join_counter.store(join_counter, std::memory_order_relaxed);
+  _exception_ptr = nullptr;
+  _name.clear();
+  _data = nullptr;
+  _topology = topology;
+  _handle.emplace<T>(std::forward<Args>(args)...);
+  _num_successors = 0;
+  _edges.clear();
+  _semaphores.reset();
 }
 
 // Procedure: _precede
@@ -807,6 +807,40 @@ class ExplicitAnchorGuard {
 
   NodeBase* _node_base;
 };
+
+// ----------------------------------------------------------------------------
+// Node Object Pool
+// ----------------------------------------------------------------------------
+
+/**
+@private
+*/
+#ifdef TF_ENABLE_TASK_POOL
+inline ObjectPool<Node> _node_pool;
+#endif
+
+/**
+@private
+*/
+template <typename... ArgsT>
+TF_FORCE_INLINE Node* animate(ArgsT&&... args) {
+#ifdef TF_ENABLE_TASK_POOL
+  return _node_pool.animate(std::forward<ArgsT>(args)...);
+#else
+  return new Node(std::forward<ArgsT>(args)...);
+#endif
+}
+
+/**
+@private
+*/
+TF_FORCE_INLINE void recycle(Node* ptr) {
+#ifdef TF_ENABLE_TASK_POOL
+  _node_pool.recycle(ptr);
+#else
+  delete ptr;
+#endif
+}
 
 
 // ----------------------------------------------------------------------------
