@@ -1150,7 +1150,6 @@ class Executor {
   void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _update_cache(Worker&, Node*&, Node*);
-  void _recycle(Worker&, Node*);
 
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
@@ -1207,11 +1206,6 @@ class Executor {
   
   template <typename I, typename... ArgsT>
   AsyncTask _schedule_dependent_async_task(I, I, size_t, ArgsT&&...);
-
-  template <typename... ArgsT>
-  Node* _animate(Worker&, ArgsT&&...);
-
-
 };
 
 #ifndef DOXYGEN_GENERATING_OUTPUT
@@ -1273,30 +1267,6 @@ inline void Executor::_shutdown() {
   }
 }
 
-// Function: animate
-template <typename... ArgsT>
-Node* Executor::_animate(Worker& worker, ArgsT&&... args) {
-  if(worker._pool.empty()) {
-    return animate(std::forward<ArgsT>(args)...); 
-  }
-  else {
-    auto node = worker._pool.back();
-    worker._pool.pop_back();
-    node->reset(std::forward<ArgsT>(args)...);
-    return node;
-  }
-}
-
-// Function: _recycle
-inline void Executor::_recycle(Worker& worker, Node* node) {
-  if(worker._pool.size() >= TF_DEFAULT_PERWORKER_NODEPOOL_SIZE) {
-    recycle(node);
-  }
-  else {
-    worker._pool.push_back(node);
-  }
-}
-
 // Function: num_workers
 inline size_t Executor::num_workers() const noexcept {
   return _workers.size();
@@ -1340,7 +1310,6 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
       worker._id = id;
       worker._sticky_victim = id;
       worker._rdgen.seed(static_cast<uint32_t>(std::hash<std::thread::id>()(std::this_thread::get_id())));
-      worker._pool.reserve(TF_DEFAULT_PERWORKER_NODEPOOL_SIZE);
 
       // before entering the work-stealing loop, call the scheduler prologue
       if(wif) {
@@ -1366,12 +1335,6 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
           if(_wait_for_task(worker, t) == false) {
             break;
           }
-        }
-
-        // Cleans up worker-specific storage in a multi-threaded fashion, 
-        // as ~Node is not cheap.
-        for(auto node : worker._pool) {
-          recycle(node);
         }
 
 #ifndef TF_DISABLE_EXCEPTION_HANDLING
