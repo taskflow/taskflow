@@ -17,7 +17,7 @@ void Executor::_schedule_async_task(ArgsT&&... args) {
     // We don't do per-worker cache as it can cause bugs in corun that are very difficult to 
     // track. For example, when a worker invokes an async task and then immediately enter corun,
     // it becomes very difficult to get the task out of its cache correctly.
-    _schedule(*w, _animate(*w, std::forward<ArgsT>(args)...));
+    _schedule(*w, animate(std::forward<ArgsT>(args)...));
   }
   // caller is a freelance thread
   else{
@@ -28,33 +28,29 @@ void Executor::_schedule_async_task(ArgsT&&... args) {
 // Procedure: _schedule_dependent_async_task
 template <typename I, typename... ArgsT>
 AsyncTask Executor::_schedule_dependent_async_task(I first, I last, size_t num_predecessors, ArgsT&&... args) {  
-  
-  // caller is a worker of the executor
-  if(auto w = this_worker(); w) {
-    // We need to create an async-task first to acquire an ownership.
-    AsyncTask task(_animate(*w, std::forward<ArgsT>(args)...));
-    for(; first != last; first++) {
-      _process_dependent_async(task._node, *first, num_predecessors);
-    }
-    // We don't do per-worker cache as it can cause bugs in corun that are very difficult to 
-    // track. For example, when a worker invokes an async task and then immediately enter corun,
-    // it becomes very difficult to get the task out of its cache correctly.
-    if(num_predecessors == 0) {
-      _schedule(*w, task._node);
-    }
-    return task;
-  }
-  
-  // caller is a freelance thread
-  AsyncTask task(animate(std::forward<ArgsT>(args)...));  // need to acquire an ownership first
+    
+  // We need to create an async-task first to acquire an ownership.
+  AsyncTask task(animate(std::forward<ArgsT>(args)...));
+
   for(; first != last; first++) {
     _process_dependent_async(task._node, *first, num_predecessors);
   }
-  if(num_predecessors == 0) {
-    _schedule(task._node);
-  }
-  return task;
   
+  if(num_predecessors == 0) {
+    // caller is a worker of the executor
+    if(auto w = this_worker(); w) {
+      // We don't do per-worker cache as it can cause bugs in corun that are very difficult to 
+      // track. For example, when a worker invokes an async task and then immediately enter corun,
+      // it becomes very difficult to get the task out of its cache correctly.
+      _schedule(*w, task._node);
+    }
+    // caller is a freelance thread
+    else {
+      _schedule(task._node);
+    }
+  }
+  
+  return task;
 }
 
 // Procedure: _tear_down_async
@@ -89,7 +85,7 @@ inline void Executor::_tear_down_async(Worker& worker, Node* node, Node*& cache)
       }
     }
   }
-  _recycle(worker, node);
+  recycle(node);
 }
 
 // ----------------------------------------------------------------------------
@@ -432,7 +428,7 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
   
   // now the executor no longer needs to retain ownership
   if(handle->use_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
-    _recycle(worker, node);
+    recycle(node);
   }
 }
 

@@ -10,16 +10,6 @@
 @brief worker include file
 */
 
-#ifndef TF_DEFAULT_PERWORKER_NODEPOOL_SIZE 
-  /**
-  @def TF_DEFAULT_PERWORKER_NODEPOOL_SIZE
-  
-  This macro defines the capacity of per-worker node pool. 
-  By default, the value is set to 32, allowing each worker to reuse up to 32 tasks.
-  */
-  #define TF_DEFAULT_PERWORKER_NODEPOOL_SIZE 32
-#endif
-
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -104,7 +94,7 @@ class Worker {
   Xorshift<uint32_t> _rdgen; 
   std::thread _thread;
   BoundedWSQ<Node*> _wsq;
-  std::vector<Node*> _pool;
+  //std::vector<Node*> _pool;
 };
 
 // ----------------------------------------------------------------------------
