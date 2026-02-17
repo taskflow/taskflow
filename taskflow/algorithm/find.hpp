@@ -20,6 +20,18 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     E_t end = last;
 
     size_t W = rt.executor().num_workers();
+    
+    // Check if we can compute distance (finite range) or if we have a sentinel (infinite range)
+    // For sentinel-based ranges, we cannot compute distance and must use sequential execution
+    if constexpr (!std::is_same_v<E_t, B_t>) {
+      // Sentinel-based range (infinite range) - use sequential execution
+      part([=, &result]() mutable { 
+        result = std::find_if(beg, end, predicate); 
+      })();
+      return;
+    }
+    
+    // For finite ranges, compute distance and use parallel execution
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
@@ -106,6 +118,18 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
     E_t end = last;
 
     size_t W = rt.executor().num_workers();
+    
+    // Check if we can compute distance (finite range) or if we have a sentinel (infinite range)
+    // For sentinel-based ranges, we cannot compute distance and must use sequential execution
+    if constexpr (!std::is_same_v<E_t, B_t>) {
+      // Sentinel-based range (infinite range) - use sequential execution
+      part([=, &result]() mutable { 
+        result = std::find_if_not(beg, end, predicate); 
+      })();
+      return;
+    }
+    
+    // For finite ranges, compute distance and use parallel execution
     size_t N = std::distance(beg, end);
 
     // only myself - no need to spawn another graph
