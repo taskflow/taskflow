@@ -305,7 +305,6 @@ inline bool Topology::cancelled() const {
 */
 class Node : public NodeBase {
 
-  friend class NodeStack;
   friend class Graph;
   friend class Task;
   friend class AsyncTask;

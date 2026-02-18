@@ -8,7 +8,6 @@ namespace tf {
 
 class Algorithm;
 class Node;
-class NodeStack;
 class Graph;
 class FlowBuilder;
 class Semaphore;
