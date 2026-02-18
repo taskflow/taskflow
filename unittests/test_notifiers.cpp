@@ -459,6 +459,7 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_x.15threads" * doctest::timeout
 TEST_CASE("NonblockingNotifier.no_missing_notify_x.31threads" * doctest::timeout(300)) {
   no_missing_notify_x<tf::NonblockingNotifier>(31);
 }
+
 // ----------------------------------------------------------------------------
 // NonblockingNotifier: no_missing_cancel_wait
 //   - Verifies that threads can "change their mind" about sleeping after
@@ -640,6 +641,7 @@ TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.2threads"* doctest::timeou
 TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.4threads"* doctest::timeout(300)){
   no_missing_cancel_wait<tf::NonblockingNotifier>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.5threads"* doctest::timeout(300)){
   no_missing_cancel_wait<tf::NonblockingNotifier>(5);
 }
@@ -655,7 +657,6 @@ TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.16threads"* doctest::timeo
 TEST_CASE("NonblockingNotifier.no_missing_cancel_wait.31threads"* doctest::timeout(300)){
   no_missing_cancel_wait<tf::NonblockingNotifier>(31);
 }
-
 
 
 // TODO: 02/12 by TW - try to refactor your functions using compile-time switch
@@ -823,67 +824,90 @@ void no_missing_notifications(size_t N, size_t M = 4, uint32_t seed = 12345){
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.1threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(1);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.2threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(2);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.4threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.5threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(5);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.8threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(8);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.16threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(16);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ones.31threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ONE>(31);
 }
 
-// N
+// ------------------------------------------------------------------------------------------------
+// Test: no missing notify_n
+// ------------------------------------------------------------------------------------------------
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.1threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(1);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.2threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(2);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.4threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.5threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(5);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.8threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(8);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.16threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(16);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_ns.31threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::N>(31);
 }
 
-// ALL
+// ------------------------------------------------------------------------------------------------
+// Test: no missing notify_all
+// ------------------------------------------------------------------------------------------------
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.1threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(1);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.2threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(2);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.4threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(4);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.5threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(5);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.8threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(8);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.16threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(16);
 }
+
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.31threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(31);
 }
