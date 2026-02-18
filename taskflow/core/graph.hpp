@@ -305,6 +305,7 @@ inline bool Topology::cancelled() const {
 */
 class Node : public NodeBase {
 
+  friend class NodeStack;
   friend class Graph;
   friend class Task;
   friend class AsyncTask;
@@ -463,12 +464,6 @@ class Node : public NodeBase {
 
   const std::string& name() const;
   
-  template <typename T, typename... Args>
-  void reset(nstate_t, estate_t, const TaskParams&, Topology*, NodeBase*, size_t, std::in_place_type_t<T>, Args&&...);
-  
-  template <typename T, typename... Args>
-  void reset(nstate_t, estate_t, const DefaultTaskParams&, Topology*, NodeBase*, size_t, std::in_place_type_t<T>, Args&&...);
-
   private:
   
   std::string _name;
@@ -483,7 +478,7 @@ class Node : public NodeBase {
   handle_t _handle;
   
   std::unique_ptr<Semaphores> _semaphores;
-  
+
   bool _is_parent_cancelled() const;
   bool _is_conditioner() const;
   bool _acquire_all(SmallVector<Node*>&);
@@ -611,57 +606,57 @@ Node::Node(
   _handle   {std::forward<Args>(args)...} {
 }
 
-// Constructor
-template <typename T, typename... Args>
-void Node::reset(
-  nstate_t nstate,
-  estate_t estate,
-  const TaskParams& params,
-  Topology* topology, 
-  NodeBase* parent, 
-  size_t join_counter,
-  std::in_place_type_t<T>,
-  Args&&... args
-) {
-  _nstate   = nstate;
-  _estate   = estate;
-  _parent   = parent;
-  _join_counter.store(join_counter, std::memory_order_relaxed);
-  _exception_ptr = nullptr;
-  _name     = params.name;
-  _data     = params.data;
-  _topology = topology;
-  _handle.emplace<T>(std::forward<Args>(args)...);
-  _num_successors = 0;
-  _edges.clear();
-  _semaphores.reset();
-}
-
-// Constructor
-template <typename T, typename... Args>
-void Node::reset(
-  nstate_t nstate,
-  estate_t estate,
-  const DefaultTaskParams&,
-  Topology* topology, 
-  NodeBase* parent, 
-  size_t join_counter,
-  std::in_place_type_t<T>,
-  Args&&... args
-) {
-  _nstate = nstate;
-  _estate = estate;
-  _parent = parent;
-  _join_counter.store(join_counter, std::memory_order_relaxed);
-  _exception_ptr = nullptr;
-  _name.clear();
-  _data = nullptr;
-  _topology = topology;
-  _handle.emplace<T>(std::forward<Args>(args)...);
-  _num_successors = 0;
-  _edges.clear();
-  _semaphores.reset();
-}
+//// Constructor
+//template <typename T, typename... Args>
+//void Node::reset(
+//  nstate_t nstate,
+//  estate_t estate,
+//  const TaskParams& params,
+//  Topology* topology, 
+//  NodeBase* parent, 
+//  size_t join_counter,
+//  std::in_place_type_t<T>,
+//  Args&&... args
+//) {
+//  _nstate   = nstate;
+//  _estate   = estate;
+//  _parent   = parent;
+//  _join_counter.store(join_counter, std::memory_order_relaxed);
+//  _exception_ptr = nullptr;
+//  _name     = params.name;
+//  _data     = params.data;
+//  _topology = topology;
+//  _handle.emplace<T>(std::forward<Args>(args)...);
+//  _num_successors = 0;
+//  _edges.clear();
+//  _semaphores.reset();
+//}
+//
+//// Constructor
+//template <typename T, typename... Args>
+//void Node::reset(
+//  nstate_t nstate,
+//  estate_t estate,
+//  const DefaultTaskParams&,
+//  Topology* topology, 
+//  NodeBase* parent, 
+//  size_t join_counter,
+//  std::in_place_type_t<T>,
+//  Args&&... args
+//) {
+//  _nstate = nstate;
+//  _estate = estate;
+//  _parent = parent;
+//  _join_counter.store(join_counter, std::memory_order_relaxed);
+//  _exception_ptr = nullptr;
+//  _name.clear();
+//  _data = nullptr;
+//  _topology = topology;
+//  _handle.emplace<T>(std::forward<Args>(args)...);
+//  _num_successors = 0;
+//  _edges.clear();
+//  _semaphores.reset();
+//}
 
 // Procedure: _precede
 /*
@@ -975,6 +970,7 @@ struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
  */
 template <typename T>
 constexpr bool has_graph_v = has_graph<T>::value;
+
 
 }  // end of namespace tf. ----------------------------------------------------
 

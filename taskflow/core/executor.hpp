@@ -1596,7 +1596,6 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   _notifier.notify_n(num_nodes);
 }
 
-
 // Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
@@ -1987,7 +1986,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   // first entry - not spawned yet
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
     // observe module start
-    _observer_prologue(w, node);
+    //_observer_prologue(w, node);
 
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
@@ -1996,7 +1995,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
   }
 
   // observe module end
-  _observer_epilogue(w, node);
+  //_observer_epilogue(w, node);
 
   // second entry - already spawned
   node->_nstate &= ~NSTATE::PREEMPTED;
