@@ -1983,11 +1983,17 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
 
   // first entry - not spawned yet
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
+    // observe module start
+    _observer_prologue(w, node);
+
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
     _schedule_graph_with_parent(w, graph.begin(), graph.end(), node->_topology, node);
     return true;
   }
+
+  // observe module end
+  _observer_epilogue(w, node);
 
   // second entry - already spawned
   node->_nstate &= ~NSTATE::PREEMPTED;
