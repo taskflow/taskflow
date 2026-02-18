@@ -224,6 +224,7 @@ target_link_libraries(
   default_settings 
   INTERFACE 
   tf::error_settings 
+  #atomic
   #tf::optimize_settings 
   #tf::features_settings
 )
