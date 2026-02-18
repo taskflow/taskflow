@@ -94,7 +94,6 @@ class Worker {
   Xorshift<uint32_t> _rdgen; 
   std::thread _thread;
   BoundedWSQ<Node*> _wsq;
-  //std::vector<Node*> _pool;
 };
 
 // ----------------------------------------------------------------------------
