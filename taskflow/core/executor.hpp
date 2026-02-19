@@ -1133,6 +1133,7 @@ class Executor {
   bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
+  void _schedule_graph_with_parent(Worker&, Graph&, Topology*, NodeBase*);
   void _spill(Node*);
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*, Node*&);
@@ -1150,6 +1151,7 @@ class Executor {
   void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _update_cache(Worker&, Node*&, Node*);
+  void _corun_graph(Worker&, Graph&, Topology*, NodeBase*);
 
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
@@ -1161,14 +1163,10 @@ class Executor {
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&)>&);
   bool _invoke_runtime_task_impl(Worker&, Node*, std::function<void(Runtime&, bool)>&);
 
-  template <typename I>
-  I _set_up_graph(I, I, Topology*, NodeBase*);
+  size_t _set_up_graph(Graph&, Topology*, NodeBase*);
   
   template <typename P>
   void _corun_until(Worker&, P&&);
-  
-  template <typename I>
-  void _corun_graph(Worker&, Topology*, NodeBase*, I, I);
 
   template <typename I>
   void _bulk_schedule(Worker&, I, size_t);
@@ -1181,9 +1179,6 @@ class Executor {
 
   template <size_t N>
   void _bulk_update_cache(Worker&, Node*&, Node*, std::array<Node*, N>&, size_t&);
-
-  template <typename I>
-  void _schedule_graph_with_parent(Worker&, I, I, Topology*, NodeBase*);
 
   template <typename P, typename F>
   auto _async(P&&, F&&, Topology*, NodeBase*);
@@ -1872,13 +1867,6 @@ inline void Executor::_process_exception(Worker&, Node* node) {
       return;
     }
   }
-  //else if(auto tpg = node->_topology; tpg) {
-  //  // multiple tasks may throw, and we only take the first thrown exception
-  //  if((tpg->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
-  //    tpg->_exception_ptr = std::current_exception();
-  //    return;
-  //  }
-  //}
   // Implicit anchor has the lowest priority
   else if(ia){
     if((ia->_estate.fetch_or(flag, std::memory_order_relaxed) & ESTATE::CAUGHT) == 0) {
@@ -1922,13 +1910,13 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
     
     // spawn the subflow if it is joinable and its graph is non-empty
     // implicit join is faster than Subflow::join as it does not involve corun
-    if(sf.joinable() && g.size()) {
+    if(sf.joinable() && !g.empty()) {
 
       // signal the executor to preempt this node
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      _schedule_graph_with_parent(worker, g.begin(), g.end(), node->_topology, node);
+      _schedule_graph_with_parent(worker, g, node->_topology, node);
       return true;
     }
   }
@@ -1990,7 +1978,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
 
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    _schedule_graph_with_parent(w, graph.begin(), graph.end(), node->_topology, node);
+    _schedule_graph_with_parent(w, graph, node->_topology, node);
     return true;
   }
 
@@ -2229,22 +2217,21 @@ void Executor::corun(T& target) {
   }
 
   NodeBase anchor;
-  _corun_graph(*w, nullptr, &anchor, target.graph().begin(), target.graph().end());
+  _corun_graph(*w, target.graph(), nullptr, &anchor);
 }
 
 // Procedure: _corun_graph
-template <typename I>
-void Executor::_corun_graph(Worker& w, Topology* tpg, NodeBase* p, I first, I last) {
+inline void Executor::_corun_graph(Worker& w, Graph& g, Topology* tpg, NodeBase* p) {
 
   // empty graph
-  if(first == last) {
+  if(g.empty()) {
     return;
   }
   
   // anchor this parent as the blocking point
   {
     ExplicitAnchorGuard anchor(p);
-    _schedule_graph_with_parent(w, first, last, tpg, p);
+    _schedule_graph_with_parent(w, g, tpg, p);
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
     );
@@ -2276,29 +2263,29 @@ inline void Executor::wait_for_all() {
 }
   
 // Function: _schedule_graph_with_parent
-template <typename I>
-void Executor::_schedule_graph_with_parent(
-  Worker& worker, I beg, I end, Topology* tpg, NodeBase* parent
+inline void Executor::_schedule_graph_with_parent(
+  Worker& worker, Graph& graph, Topology* tpg, NodeBase* parent
 ) {
-  size_t num_srcs = (_set_up_graph(beg, end, tpg, parent) - beg);
+  size_t num_srcs = _set_up_graph(graph, tpg, parent);
   parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
-  _bulk_schedule(worker, beg, num_srcs);
+  _bulk_schedule(worker, graph.begin(), num_srcs);
 }
 
 // Function: _set_up_topology
 inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   // ---- under taskflow lock ----
   auto& g = tpg->_taskflow._graph;
-  size_t num_srcs = (_set_up_graph(g.begin(), g.end(), tpg, tpg) - g.begin());
+  size_t num_srcs = _set_up_graph(g, tpg, tpg);
   tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
   w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);
 }
 
 // Function: _set_up_graph
-template <typename I>
-I Executor::_set_up_graph(I first, I last, Topology* tpg, NodeBase* parent) {
+size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* parent) {
 
-  auto send = first;
+  auto first = graph.begin();
+  auto last  = graph.end();
+  auto send  = first;
   for(; first != last; ++first) {
 
     auto node = *first;
@@ -2315,7 +2302,7 @@ I Executor::_set_up_graph(I first, I last, Topology* tpg, NodeBase* parent) {
       std::iter_swap(send++, first);
     }
   }
-  return send;
+  return send - graph.begin();
 }
 
 // Function: _tear_down_topology
@@ -2398,7 +2385,7 @@ inline void Subflow::join() {
     TF_THROW("subflow already joined");
   }
     
-  _executor._corun_graph(_worker, _node->_topology, _node, _graph.begin(), _graph.end());
+  _executor._corun_graph(_worker, _graph, _node->_topology, _node);
   
   // join here since corun graph may throw exception
   _node->_nstate |= NSTATE::JOINED_SUBFLOW;
