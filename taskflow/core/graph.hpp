@@ -13,6 +13,7 @@
 #include "../utility/small_vector.hpp"
 #include "../utility/serializer.hpp"
 #include "../utility/lazy_string.hpp"
+#include "../utility/list.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
 #include "semaphore.hpp"
