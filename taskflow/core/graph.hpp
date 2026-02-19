@@ -54,6 +54,28 @@ class Graph {
   friend class Executor;
 
   public:
+  
+  // --- Iterator Subclass ---
+  class Iterator {
+
+    public:
+    using iterator_category = std::forward_iterator_tag;
+
+    explicit Iterator(Node* ptr) : _ptr(ptr) {}
+
+    auto operator*() const { return _ptr; }
+    auto operator*() { return _ptr; }
+    //pointer operator->() { return _ptr; }
+
+    Iterator& operator++();
+    Iterator operator++(int);
+
+    bool operator==(const Iterator& other) const { return _ptr == other._ptr; }
+    bool operator!=(const Iterator& other) const { return _ptr != other._ptr; }
+
+  private:
+    Node* _ptr;
+  };
 
   /**
   @brief constructs the graph object
@@ -93,7 +115,7 @@ class Graph {
   /**
   @brief returns the number of nodes in the graph
   */
-  size_t size() const;
+  //size_t size() const;
   
   /**
   @brief queries the emptiness of the graph
@@ -120,17 +142,23 @@ class Graph {
   */
   auto end() const;
 
+
+
   private:
 
-  std::vector<Node*> _nodes;
+  //std::vector<Node*> _nodes;
+
+  Node* _head {nullptr};
 
   void _erase(Node*);
+
+  size_t _set_up(Topology*, NodeBase*);
   
   /**
   @private
   */
   template <typename ...ArgsT>
-  Node* _emplace_back(ArgsT&&...);
+  Node* _emplace(ArgsT&&...);
 };
 
 // ----------------------------------------------------------------------------
@@ -472,12 +500,14 @@ class Node : public NodeBase {
   
   Topology* _topology {nullptr};
 
-  size_t _num_successors {0};
-  SmallVector<Node*, 4> _edges;
-
   handle_t _handle;
   
+  size_t _num_successors {0};
+  SmallVector<Node*, 4> _edges;
+  
   std::unique_ptr<Semaphores> _semaphores;
+
+  Node* next {nullptr};
 
   bool _is_parent_cancelled() const;
   bool _is_conditioner() const;
@@ -841,6 +871,17 @@ TF_FORCE_INLINE void recycle(Node* ptr) {
 // ----------------------------------------------------------------------------
 // Graph definition
 // ----------------------------------------------------------------------------
+    
+inline Graph::Iterator& Graph::Iterator::operator++() {
+  if (_ptr) _ptr = _ptr->next;
+  return *this;
+}
+
+inline Graph::Iterator Graph::Iterator::operator++(int) {
+  Iterator tmp = *this;
+  ++(*this);
+  return tmp;
+}
 
 // Destructor
 inline Graph::~Graph() {
@@ -849,79 +890,163 @@ inline Graph::~Graph() {
 
 // Move constructor
 inline Graph::Graph(Graph&& other) :
-  _nodes {std::move(other._nodes)} {
+  _head {other._head} {
+  other._head = nullptr;
 }
 
 // Move assignment
 inline Graph& Graph::operator = (Graph&& other) {
   clear();
-  _nodes = std::move(other._nodes);
+  _head = other._head;
+  other._head = nullptr;
   return *this;
 }
 
 // Procedure: clear
 inline void Graph::clear() {
-  for(auto node : _nodes) {
-    recycle(node);
+  while(_head) {
+    auto old_head = _head;
+    _head = _head->next;
+    recycle(old_head);
   }
-  _nodes.clear();
 }
 
 // Function: size
-inline size_t Graph::size() const {
-  return _nodes.size();
-}
+//inline size_t Graph::size() const {
+//  size_t count = 0;
+//  auto curr = _head;
+//  while (curr) {
+//    count++;
+//    curr = curr->next;
+//  }
+//  return count;
+//}
 
 // Function: empty
 inline bool Graph::empty() const {
-  return _nodes.empty();
+  return _head == nullptr;
 }
 
 // Function: begin
 inline auto Graph::begin() {
-  return _nodes.begin();
+  return Iterator(_head);
 }
 
 // Function: end
 inline auto Graph::end() {
-  return _nodes.end();
+  return Iterator(nullptr);
 }
 
 // Function: begin
 inline auto Graph::begin() const {
-  return _nodes.begin();
+  return Iterator(_head);
 }
 
 // Function: end
 inline auto Graph::end() const {
-  return _nodes.end();
+  return Iterator(nullptr);
 }
 
 // Function: erase
-inline void Graph::_erase(Node* node) {
-  //erase(
-  //  std::remove_if(begin(), end(), [&](auto& p){ return p.get() == node; }),
-  //  end()
-  //);
-  _nodes.erase(
-    std::remove_if(_nodes.begin(), _nodes.end(), [&](auto& p){ 
-      if(p == node) {
-        recycle(p);
-        return true;
+inline void Graph::_erase(Node* tgt) {
+
+  if (!_head || !tgt) {
+    return;
+  }
+
+  // Case: Target is the head
+  if (_head == tgt) {
+    _head = _head->next;
+    //tgt->next = nullptr;
+    recycle(tgt);
+    return;
+  }
+
+  // Case: Search for predecessor
+  auto current = _head;
+  while (current->next && current->next != tgt) {
+    current = current->next;
+  }
+
+  // Bridge the gap
+  if (current->next == tgt) {
+    current->next = tgt->next;
+    //tgt->next = nullptr;
+    recycle(tgt);
+  }  
+}
+
+// Function: _set_up
+inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
+
+  if (!_head) {
+    return 0;
+  }
+  
+  size_t num_srcs = 0;
+
+  Node* zeroHead = nullptr; // Head of the "ready" list
+  Node* zeroTail = nullptr; // Tail of the "ready" list
+  Node* restHead = nullptr; // Head of the "busy" list
+  Node* restTail = nullptr; // Tail of the "busy" list
+
+  Node* current = _head;
+
+  while (current) {
+
+    current->_topology = tpg;
+    current->_parent = parent;
+    current->_nstate = NSTATE::NONE;
+    current->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
+    current->_set_up_join_counter();
+    current->_exception_ptr = nullptr;
+
+    auto nextNode = current->next; // Save next pointer before re-linking
+    current->next = nullptr;     // Disconnect the current node
+
+    if (current->num_predecessors() == 0) {
+      ++num_srcs;
+      // Append to the "zero" chain
+      if (!zeroHead) {
+        zeroHead = zeroTail = current;
+      } else {
+        zeroTail->next = current;
+        zeroTail = current;
       }
-      return false; 
-    }),
-    _nodes.end()
-  );
+    } else {
+      // Append to the "rest" chain
+      if (!restHead) {
+        restHead = restTail = current;
+      } else {
+        restTail->next = current;
+        restTail = current;
+      }
+    }
+    current = nextNode;
+  }
+
+  // Stitch the two chains together
+  if (zeroHead) {
+    _head = zeroHead;
+    zeroTail->next = restHead; // Connect end of zeros to start of rest
+  } else {
+    _head = restHead; // No zeros found, head is just the rest
+  }
+  
+  return num_srcs;
 }
 
 /**
 @private
 */
 template <typename ...ArgsT>
-Node* Graph::_emplace_back(ArgsT&&... args) {
-  _nodes.push_back(animate(std::forward<ArgsT>(args)...));
-  return _nodes.back();
+Node* Graph::_emplace(ArgsT&&... args) {
+  //_nodes.push_back(animate(std::forward<ArgsT>(args)...));
+  //return _nodes.back();
+  auto node = animate(std::forward<ArgsT>(args)...); 
+  node->next = _head;
+  _head = node;
+  return _head;
 }
 
 // ----------------------------------------------------------------------------

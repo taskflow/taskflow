@@ -238,7 +238,7 @@ class UnboundedWSQ {
   Only the owner thread can insert an item to the queue.
   */
   template <typename I>
-  void bulk_push(I first, size_t N);
+  void bulk_push(I& first, size_t N);
 
   /**
   @brief pops out an item from the queue
@@ -397,7 +397,7 @@ void UnboundedWSQ<T>::push(T o) {
 // Function: bulk_push
 template <typename T>
 template <typename I>
-void UnboundedWSQ<T>::bulk_push(I first, size_t N) {
+void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
 
   if(N == 0) return;
 
@@ -411,7 +411,7 @@ void UnboundedWSQ<T>::bulk_push(I first, size_t N) {
   }
 
   for(size_t i=0; i<N; ++i) {
-    a->push(b++, first[i]);
+    a->push(b++, *first++);
   }
   std::atomic_thread_fence(std::memory_order_release);
 
@@ -694,7 +694,7 @@ class BoundedWSQ {
   Only the owner thread can insert items into the queue.
   */
   template <typename I>
-  size_t try_bulk_push(I first, size_t N);
+  size_t try_bulk_push(I& first, size_t N);
   
   /**
   @brief pops out an item from the queue
@@ -832,7 +832,7 @@ bool BoundedWSQ<T, LogSize>::try_push(O&& o) {
 // Function: try_bulk_push
 template <typename T, size_t LogSize>
 template <typename I>
-size_t BoundedWSQ<T, LogSize>::try_bulk_push(I first, size_t N) {
+size_t BoundedWSQ<T, LogSize>::try_bulk_push(I& first, size_t N) {
 
   if(N == 0) return 0;
 
@@ -845,7 +845,7 @@ size_t BoundedWSQ<T, LogSize>::try_bulk_push(I first, size_t N) {
   if(n > 0) {
     // push n elements into the queue
     for(size_t i=0; i<n; ++i) {
-      _buffer[b++ & BufferMask].store(first[i], std::memory_order_relaxed);
+      _buffer[b++ & BufferMask].store(*first++, std::memory_order_relaxed);
     }
     std::atomic_thread_fence(std::memory_order_release);
     // original paper uses relaxed here but tsa complains

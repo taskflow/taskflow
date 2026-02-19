@@ -39,7 +39,26 @@ class IntrusiveForwardList {
     T* _ptr;
   };
 
-  IntrusiveForwardList();
+  IntrusiveForwardList() = default;
+
+  IntrusiveForwardList(const IntrusiveForwardList&) = delete;
+  IntrusiveForwardList& operator=(const IntrusiveForwardList&) = delete;
+
+  IntrusiveForwardList(IntrusiveForwardList&& other) noexcept 
+    : _head(other._head) {
+    other._head = nullptr;
+  }
+
+  // 4. Move Assignment
+  IntrusiveForwardList& operator=(IntrusiveForwardList&& other) noexcept {
+    if (this != &other) {
+      // In a real std::forward_list, we might clear() here, 
+      // but since we don't own the nodes, we just overwrite.
+      _head = other._head;
+      other._head = nullptr;
+    }
+    return *this;
+  }
 
   // Element Access
   T& front() { return *_head; }

@@ -374,7 +374,14 @@ inline void Taskflow::clear() {
 
 // Function: num_tasks
 inline size_t Taskflow::num_tasks() const {
-  return _graph.size();
+  //return _graph.size();
+  size_t count = 0;
+  auto curr = _graph._head;
+  while (curr) {
+    count++;
+    curr = curr->next;
+  }
+  return count;
 }
 
 // Function: empty

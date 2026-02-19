@@ -7,6 +7,7 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 class Algorithm;
+class NodeBase;
 class Node;
 class Graph;
 class FlowBuilder;
