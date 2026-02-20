@@ -986,7 +986,7 @@ inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
   
   size_t num_srcs = 0;
   
-  Node* head[2] = {nullptr, nullptr};   // 0 = rest, 1 = zero
+  Node*  head[2] = {nullptr, nullptr};   // 0 = rest, 1 = zero
   Node** tail[2] = {&head[0], &head[1]};
   
   Node* current = _head;
@@ -1003,7 +1003,7 @@ inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
     Node* next = current->next;
     current->next = nullptr;  // detach immediately (important)
   
-    const size_t is_zero = (current->num_predecessors() == 0);
+    size_t is_zero = (current->num_predecessors() == 0);
     num_srcs += is_zero;
   
     *tail[is_zero] = current;
@@ -1017,63 +1017,6 @@ inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
   _head = head[1] ? head[1] : head[0];
   
   return num_srcs;
-  ////////
-/*
-  if (!_head) {
-    return 0;
-  }
-  
-  size_t num_srcs = 0;
-
-  Node* zeroHead = nullptr; // Head of the "ready" list
-  Node* zeroTail = nullptr; // Tail of the "ready" list
-  Node* restHead = nullptr; // Head of the "busy" list
-  Node* restTail = nullptr; // Tail of the "busy" list
-
-  Node* current = _head;
-
-  while (current) {
-
-    current->_topology = tpg;
-    current->_parent = parent;
-    current->_nstate = NSTATE::NONE;
-    current->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
-    current->_set_up_join_counter();
-    current->_exception_ptr = nullptr;
-
-    auto nextNode = current->next; // Save next pointer before re-linking
-    current->next = nullptr;     // Disconnect the current node
-
-    if (current->num_predecessors() == 0) {
-      ++num_srcs;
-      // Append to the "zero" chain
-      if (!zeroHead) {
-        zeroHead = zeroTail = current;
-      } else {
-        zeroTail->next = current;
-        zeroTail = current;
-      }
-    } else {
-      // Append to the "rest" chain
-      if (!restHead) {
-        restHead = restTail = current;
-      } else {
-        restTail->next = current;
-        restTail = current;
-      }
-    }
-    current = nextNode;
-  }
-
-  // Stitch the two chains together
-  if (zeroHead) {
-    _head = zeroHead;
-    zeroTail->next = restHead; // Connect end of zeros to start of rest
-  } else {
-    _head = restHead; // No zeros found, head is just the rest
-  }
-  
-  return num_srcs;*/
 }
 
 /**
