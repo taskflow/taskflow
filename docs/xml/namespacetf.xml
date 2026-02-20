@@ -20,7 +20,6 @@
     <innerclass refid="classtf_1_1DefaultTaskParams" prot="public">tf::DefaultTaskParams</innerclass>
     <innerclass refid="classtf_1_1NodeBase" prot="private">tf::NodeBase</innerclass>
     <innerclass refid="classtf_1_1Topology" prot="private">tf::Topology</innerclass>
-    <innerclass refid="classtf_1_1DerivedTopology" prot="private">tf::DerivedTopology</innerclass>
     <innerclass refid="classtf_1_1Node" prot="private">tf::Node</innerclass>
     <innerclass refid="classtf_1_1ExplicitAnchorGuard" prot="private">tf::ExplicitAnchorGuard</innerclass>
     <innerclass refid="structtf_1_1has__graph" prot="private">tf::has_graph</innerclass>
@@ -285,7 +284,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="38" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="38" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="48" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="48" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
         <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
@@ -460,7 +459,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="943" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="943" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="977" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="977" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -1640,7 +1639,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="532" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="532" bodyend="538"/>
+        <location file="taskflow/core/graph.hpp" line="826" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="826" bodyend="832"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1657,9 +1656,9 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="543" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="543" bodyend="549"/>
+        <location file="taskflow/core/graph.hpp" line="837" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="837" bodyend="843"/>
       </memberdef>
-      <memberdef kind="function" id="namespacetf_1a97960776f3c78e18e68c79c336ba4f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>typename T</type>
@@ -1670,8 +1669,8 @@ The distance of a range represents the number of required iterations to traverse
             <defname>ArgsT</defname>
           </param>
         </templateparamlist>
-        <type><ref refid="cpp/memory/unique_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::unique_ptr</ref>&lt; T &gt;</type>
-        <definition>std::unique_ptr&lt;T&gt; tf::make_worker_interface</definition>
+        <type><ref refid="cpp/memory/shared_ptr" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::shared_ptr</ref>&lt; T &gt;</type>
+        <definition>std::shared_ptr&lt;T&gt; tf::make_worker_interface</definition>
         <argsstring>(ArgsT &amp;&amp;... args)</argsstring>
         <name>make_worker_interface</name>
         <param>
@@ -1712,7 +1711,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="316" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="316" bodyend="322"/>
+        <location file="taskflow/core/worker.hpp" line="322" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="322" bodyend="328"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>

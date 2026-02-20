@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
-  <compounddef id="classtf_1_1Topology" kind="class" language="C++" prot="private" abstract="yes">
+  <compounddef id="classtf_1_1Topology" kind="class" language="C++" prot="private">
     <compoundname>tf::Topology</compoundname>
     <basecompoundref prot="public" virt="non-virtual">tf::NodeBase</basecompoundref>
       <sectiondef kind="friend">
@@ -118,7 +118,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="266" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="266" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="262" column="12" bodyfile="taskflow/core/graph.hpp" bodystart="262" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="classtf_1_1Topology_1a1f59434af79271347f0bf5626f24c0f4" prot="private" static="no" mutable="no">
         <type><ref refid="cpp/thread/promise" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::promise</ref>&lt; void &gt;</type>
@@ -131,18 +131,60 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="268" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="268" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="264" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Topology_1ae2145108d9da6490fd922a094ff5c253" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; bool()&gt;</type>
+        <definition>std::function&lt;bool()&gt; tf::Topology::_predicate</definition>
+        <argsstring></argsstring>
+        <name>_predicate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="266" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="266" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classtf_1_1Topology_1a0ac3bbefd2dcb6cf7b0af53b60f8a319" prot="private" static="no" mutable="no">
+        <type><ref refid="cpp/utility/functional/function" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::function</ref>&lt; void()&gt;</type>
+        <definition>std::function&lt;void()&gt; tf::Topology::_on_finish</definition>
+        <argsstring></argsstring>
+        <name>_on_finish</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/graph.hpp" line="267" column="17" bodyfile="taskflow/core/graph.hpp" bodystart="267" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="public-func">
-      <memberdef kind="function" id="classtf_1_1Topology_1ac82b7deba5e19f9d04d396344d39deb8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Topology_1a44c99a3f4a0ae5d54cf4cb943fd8cf5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename Predicate</type>
+          </param>
+          <param>
+            <type>typename OnFinish</type>
+          </param>
+        </templateparamlist>
         <type></type>
         <definition>tf::Topology::Topology</definition>
-        <argsstring>(Taskflow &amp;)</argsstring>
+        <argsstring>(Taskflow &amp;, Predicate &amp;&amp;, OnFinish &amp;&amp;)</argsstring>
         <name>Topology</name>
         <param>
           <type><ref refid="classtf_1_1Taskflow" kindref="compound">Taskflow</ref> &amp;</type>
           <defname>tf</defname>
+        </param>
+        <param>
+          <type>Predicate &amp;&amp;</type>
+          <defname>predicate</defname>
+        </param>
+        <param>
+          <type>OnFinish &amp;&amp;</type>
+          <defname>on_finish</defname>
         </param>
         <briefdescription>
         </briefdescription>
@@ -150,20 +192,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="255" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="274" bodyend="277"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Topology_1aa07081af5093f5514db45c4dd7081d40" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
-        <type></type>
-        <definition>virtual tf::Topology::~Topology</definition>
-        <argsstring>()=default</argsstring>
-        <name>~Topology</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="257" column="11"/>
+        <location file="taskflow/core/graph.hpp" line="256" column="3" bodyfile="taskflow/core/graph.hpp" bodystart="274" bodyend="279"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Topology_1a5f3f05242bb1c9f2a168fc124fccec6f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -176,33 +205,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="259" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="292" bodyend="294"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Topology_1ad9886124e59a15bf528ec4dbdc172905" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>bool</type>
-        <definition>virtual bool tf::Topology::predicate</definition>
-        <argsstring>()=0</argsstring>
-        <name>predicate</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="261" column="16"/>
-      </memberdef>
-      <memberdef kind="function" id="classtf_1_1Topology_1a505e7642022edc3e569240902e72415e" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
-        <type>void</type>
-        <definition>virtual void tf::Topology::on_finish</definition>
-        <argsstring>()=0</argsstring>
-        <name>on_finish</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="262" column="16"/>
+        <location file="taskflow/core/graph.hpp" line="258" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="294" bodyend="296"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
@@ -217,7 +220,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="270" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="280" bodyend="289"/>
+        <location file="taskflow/core/graph.hpp" line="269" column="8" bodyfile="taskflow/core/graph.hpp" bodystart="282" bodyend="291"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -265,14 +268,16 @@
         <label>std::atomic&lt; size_t &gt;</label>
       </node>
     </collaborationgraph>
-    <location file="taskflow/core/graph.hpp" line="242" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="242" bodyend="271"/>
+    <location file="taskflow/core/graph.hpp" line="242" column="1" bodyfile="taskflow/core/graph.hpp" bodystart="242" bodyend="270"/>
     <listofallmembers>
       <member refid="classtf_1_1Topology_1a74b929600de8118c93fb7c4b02ea8197" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>_carry_out_promise</name></member>
       <member refid="classtf_1_1NodeBase_1ad3cd43cef8826beb621ce3ad3ed97b8c" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_estate</name></member>
       <member refid="classtf_1_1NodeBase_1af405c76e47afcf1f14370dfe3daaf3a1" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_exception_ptr</name></member>
       <member refid="classtf_1_1NodeBase_1a37faa5a9626d80a9979c23b55e96da84" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_join_counter</name></member>
       <member refid="classtf_1_1NodeBase_1acc49b0ce35ba51593bb95d4ebc3868ea" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_nstate</name></member>
+      <member refid="classtf_1_1Topology_1a0ac3bbefd2dcb6cf7b0af53b60f8a319" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>_on_finish</name></member>
       <member refid="classtf_1_1NodeBase_1aa72cd1cbc5cf9a4d2d9bc4f297f7d6b3" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_parent</name></member>
+      <member refid="classtf_1_1Topology_1ae2145108d9da6490fd922a094ff5c253" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>_predicate</name></member>
       <member refid="classtf_1_1Topology_1a1f59434af79271347f0bf5626f24c0f4" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>_promise</name></member>
       <member refid="classtf_1_1NodeBase_1a08bdec41eae9b20f8c3376597fe101f6" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>_rethrow_exception</name></member>
       <member refid="classtf_1_1Topology_1a897e6f0d054ce61dc4f09a7e4e6823a0" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>_taskflow</name></member>
@@ -283,12 +288,9 @@
       <member refid="classtf_1_1NodeBase_1a276070dec14a118867e90a8dc9b6459c" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>NodeBase</name></member>
       <member refid="classtf_1_1NodeBase_1ae70de05f37f731650acb43696d5476c7" prot="protected" virt="non-virtual"><scope>tf::Topology</scope><name>NodeBase</name></member>
       <member refid="classtf_1_1Topology_1a5336d73e2623282058a4f84a0423fac3" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>NonpreemptiveRuntime</name></member>
-      <member refid="classtf_1_1Topology_1a505e7642022edc3e569240902e72415e" prot="public" virt="pure-virtual"><scope>tf::Topology</scope><name>on_finish</name></member>
-      <member refid="classtf_1_1Topology_1ad9886124e59a15bf528ec4dbdc172905" prot="public" virt="pure-virtual"><scope>tf::Topology</scope><name>predicate</name></member>
       <member refid="classtf_1_1Topology_1af3d14e26ba8af9e6cc5a32aad8446de7" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>Runtime</name></member>
       <member refid="classtf_1_1Topology_1aa48945297ede77a161defc88033ce8a6" prot="private" virt="non-virtual"><scope>tf::Topology</scope><name>Subflow</name></member>
-      <member refid="classtf_1_1Topology_1ac82b7deba5e19f9d04d396344d39deb8" prot="public" virt="non-virtual"><scope>tf::Topology</scope><name>Topology</name></member>
-      <member refid="classtf_1_1Topology_1aa07081af5093f5514db45c4dd7081d40" prot="public" virt="virtual"><scope>tf::Topology</scope><name>~Topology</name></member>
+      <member refid="classtf_1_1Topology_1a44c99a3f4a0ae5d54cf4cb943fd8cf5b" prot="public" virt="non-virtual"><scope>tf::Topology</scope><name>Topology</name></member>
     </listofallmembers>
   </compounddef>
 </doxygen>

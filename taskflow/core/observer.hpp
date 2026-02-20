@@ -543,7 +543,7 @@ inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
 
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){
     if(i.count == 0) return;
-	count_w = (std::max)(count_w, std::to_string(i.count).size());
+	  count_w = (std::max)(count_w, std::to_string(i.count).size());
   });
   
   std::for_each(tsum.begin(), tsum.end(), [&](const auto& i){

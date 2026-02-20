@@ -212,6 +212,20 @@
     <innerclass refid="classtf_1_1WorkerView" prot="public">tf::WorkerView</innerclass>
     <innerclass refid="classtf_1_1WorkerInterface" prot="public">tf::WorkerInterface</innerclass>
     <innernamespace refid="namespacetf">tf</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="worker_8hpp_1ac0b13d46627dae23401a9aa1b932856b" prot="public" static="no">
+        <name>TF_DEFAULT_PERWORKER_NODEPOOL_SIZE</name>
+        <initializer>32</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This macro defines the capacity of per-worker node pool. By default, the value is set to 32, allowing each worker to reuse up to 32 tasks. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="taskflow/core/worker.hpp" line="20" column="11" bodyfile="taskflow/core/worker.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
     <briefdescription>
 <para>worker include file </para>
     </briefdescription>

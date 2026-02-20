@@ -57,9 +57,6 @@ The taskflow object itself is NOT thread-safe. You should not
 modifying the graph while it is running,
 such as adding new tasks, adding new dependencies, and moving
 the taskflow to another.
-To minimize the overhead of task creation,
-our runtime leverages a global object pool to recycle
-tasks in a thread-safe manner.
 
 Please refer to @ref Cookbook to learn more about each task type
 and how to submit a taskflow to an executor.
@@ -337,6 +334,8 @@ class Taskflow : public FlowBuilder {
   void _dump(std::ostream&, const Graph*) const;
   void _dump(std::ostream&, const Node*, Dumper&) const;
   void _dump(std::ostream&, const Graph*, Dumper&) const;
+
+  size_t _fetch_enqueue(std::shared_ptr<Topology>);
 };
 
 // Constructor
@@ -352,9 +351,6 @@ inline Taskflow::Taskflow() : FlowBuilder{_graph} {
 // Move constructor
 inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
   std::scoped_lock<std::mutex> lock(rhs._mutex);
-  //if(rhs._topologies.empty() == false) {
-  //  TF_THROW("can't move a running taskflow");
-  //}
   _name = std::move(rhs._name);
   _graph = std::move(rhs._graph);
   _topologies = std::move(rhs._topologies);
@@ -364,9 +360,6 @@ inline Taskflow::Taskflow(Taskflow&& rhs) : FlowBuilder{_graph} {
 inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   if(this != &rhs) {
     std::scoped_lock<std::mutex, std::mutex> lock(_mutex, rhs._mutex);
-    //if(!rhs._topologies.empty() || !_topologies.empty()) {
-    //  TF_THROW("can't move a running taskflow");
-    //}
     _name = std::move(rhs._name);
     _graph = std::move(rhs._graph);
     _topologies = std::move(rhs._topologies);
@@ -374,7 +367,7 @@ inline Taskflow& Taskflow::operator = (Taskflow&& rhs) {
   return *this;
 }
 
-// Procedure:
+// Function:
 inline void Taskflow::clear() {
   _graph.clear();
 }
@@ -412,7 +405,7 @@ void Taskflow::for_each_task(V&& visitor) const {
   }
 }
 
-// Procedure: remove_dependency
+// Function: remove_dependency
 inline void Taskflow::remove_dependency(Task from, Task to) {
   // remove "to" from the succcessor list of "from"
   from._node->_remove_successors(to._node);
@@ -421,7 +414,15 @@ inline void Taskflow::remove_dependency(Task from, Task to) {
   to._node->_remove_predecessors(from._node);
 }
 
-// Procedure: dump
+// Function: _fetch_enqueue
+inline size_t Taskflow::_fetch_enqueue(std::shared_ptr<Topology> tpg) {
+  std::lock_guard<std::mutex> lock(_mutex);
+  auto pre_size = _topologies.size();
+  _topologies.emplace(std::move(tpg));
+  return pre_size;
+}
+
+// Function: dump
 inline std::string Taskflow::dump() const {
   std::ostringstream oss;
   dump(oss);
@@ -435,7 +436,7 @@ inline void Taskflow::dump(std::ostream& os) const {
   os << "}\n";
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
 
   Dumper dumper;
@@ -470,7 +471,7 @@ inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
   }
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(
   std::ostream& os, const Node* node, Dumper& dumper
 ) const {
@@ -534,7 +535,7 @@ inline void Taskflow::_dump(
   }
 }
 
-// Procedure: _dump
+// Function: _dump
 inline void Taskflow::_dump(
   std::ostream& os, const Graph* graph, Dumper& dumper
 ) const {
@@ -549,19 +550,18 @@ inline void Taskflow::_dump(
     }
     // module task
     else {
-      //auto module = &(std::get_if<Node::Module>(&n->_handle)->module);
-      auto module = &(std::get_if<Node::Module>(&n->_handle)->graph);
+      auto mgraph = &(std::get_if<Node::Module>(&n->_handle)->graph);
 
       os << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << 'p' << n;
       else os << n->_name;
 
-      if(dumper.visited.find(module) == dumper.visited.end()) {
-        dumper.visited[module] = dumper.id++;
-        dumper.stack.push({n, module});
+      if(dumper.visited.find(mgraph) == dumper.visited.end()) {
+        dumper.visited[mgraph] = dumper.id++;
+        dumper.stack.push({n, mgraph});
       }
 
-      if(n->_name.empty()) os << " [m" << dumper.visited[module] << "]";
+      if(n->_name.empty()) os << " [m" << dumper.visited[mgraph] << "]";
       os << "\"];\n";
 
       //for(const auto s : n->_successors) {
@@ -618,70 +618,70 @@ class Future : public std::future<T>  {
 
   public:
 
-    /**
-    @brief default constructor
-    */
-    Future() = default;
+  /**
+  @brief default constructor
+  */
+  Future() = default;
 
-    /**
-    @brief disabled copy constructor
-    */
-    Future(const Future&) = delete;
+  /**
+  @brief disabled copy constructor
+  */
+  Future(const Future&) = delete;
 
-    /**
-    @brief default move constructor
-    */
-    Future(Future&&) = default;
+  /**
+  @brief default move constructor
+  */
+  Future(Future&&) = default;
 
-    /**
-    @brief disabled copy assignment
-    */
-    Future& operator = (const Future&) = delete;
+  /**
+  @brief disabled copy assignment
+  */
+  Future& operator = (const Future&) = delete;
 
-    /**
-    @brief default move assignment
-    */
-    Future& operator = (Future&&) = default;
+  /**
+  @brief default move assignment
+  */
+  Future& operator = (Future&&) = default;
 
-    /**
-    @brief cancels the execution of the running taskflow associated with
-           this future object
+  /**
+  @brief cancels the execution of the running taskflow associated with
+         this future object
 
-    @return @c true if the execution can be cancelled or
-            @c false if the execution has already completed
+  @return @c true if the execution can be cancelled or
+          @c false if the execution has already completed
 
-    When you request a cancellation, the executor will stop scheduling any tasks onwards.
-    Tasks that are already running will continue to finish as their executions are non-preemptive.
-    You can call tf::Future::wait to wait for the cancellation to complete.
+  When you request a cancellation, the executor will stop scheduling any tasks onwards.
+  Tasks that are already running will continue to finish as their executions are non-preemptive.
+  You can call tf::Future::wait to wait for the cancellation to complete.
 
-    @code{.cpp}
-    // create a taskflow of four tasks and submit it to an executor
-    taskflow.emplace(
-      [](){ std::cout << "Task A\n"; },
-      [](){ std::cout << "Task B\n"; },
-      [](){ std::cout << "Task C\n"; },
-      [](){ std::cout << "Task D\n"; }
-    );
-    auto future = executor.run(taskflow);
+  @code{.cpp}
+  // create a taskflow of four tasks and submit it to an executor
+  taskflow.emplace(
+    [](){ std::cout << "Task A\n"; },
+    [](){ std::cout << "Task B\n"; },
+    [](){ std::cout << "Task C\n"; },
+    [](){ std::cout << "Task D\n"; }
+  );
+  auto future = executor.run(taskflow);
 
-    // cancel the execution of the taskflow and wait until it finishes all running tasks
-    future.cancel();
-    future.wait();
-    @endcode
+  // cancel the execution of the taskflow and wait until it finishes all running tasks
+  future.cancel();
+  future.wait();
+  @endcode
 
-    In the above example, we submit a taskflow of four tasks to the executor and then
-    issue a cancellation to stop its execution.
-    Since the cancellation is non-deterministic with the executor runtime,
-    we may still see some tasks complete their executions or none.
+  In the above example, we submit a taskflow of four tasks to the executor and then
+  issue a cancellation to stop its execution.
+  Since the cancellation is non-deterministic with the executor runtime,
+  we may still see some tasks complete their executions or none.
 
-    */
-    bool cancel();
+  */
+  bool cancel();
 
   private:
 
-    std::weak_ptr<Topology> _topology;
+  std::weak_ptr<Topology> _topology;
 
-    Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
+  Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
 };
 
 template <typename T>

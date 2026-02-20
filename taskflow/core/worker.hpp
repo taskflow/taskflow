@@ -87,18 +87,14 @@ class Worker {
 
   private:
   
-  std::atomic_flag _done = ATOMIC_FLAG_INIT; 
+  alignas(TF_CACHELINE_SIZE) std::atomic_flag _done = ATOMIC_FLAG_INIT; 
 
   size_t _id;
   size_t _sticky_victim;
-  
   Xorshift<uint32_t> _rdgen; 
-  
   std::thread _thread;
-
-  //std::default_random_engine _rdgen;
-
   BoundedWSQ<Node*> _wsq;
+  //std::vector<Node*> _pool;
 };
 
 // ----------------------------------------------------------------------------
@@ -313,12 +309,12 @@ class WorkerInterface {
 @param args arguments to forward to the constructor of @c T
 */
 template <typename T, typename... ArgsT>
-std::unique_ptr<T> make_worker_interface(ArgsT&&... args) {
+std::shared_ptr<T> make_worker_interface(ArgsT&&... args) {
   static_assert(
     std::is_base_of_v<WorkerInterface, T>,
     "T must be derived from WorkerInterface"
   );
-  return std::make_unique<T>(std::forward<ArgsT>(args)...);
+  return std::make_shared<T>(std::forward<ArgsT>(args)...);
 }
 
 
