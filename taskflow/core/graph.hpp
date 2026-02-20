@@ -115,7 +115,7 @@ class Graph {
   /**
   @brief returns the number of nodes in the graph
   */
-  //size_t size() const;
+  size_t size() const;
   
   /**
   @brief queries the emptiness of the graph
@@ -142,13 +142,12 @@ class Graph {
   */
   auto end() const;
 
-
-
   private:
 
   //std::vector<Node*> _nodes;
 
-  Node* _head {nullptr};
+  Node*  _head {nullptr};
+  size_t _size {0};
 
   void _erase(Node*);
 
@@ -890,15 +889,19 @@ inline Graph::~Graph() {
 
 // Move constructor
 inline Graph::Graph(Graph&& other) :
-  _head {other._head} {
+  _head {other._head},
+  _size {other._size} {
   other._head = nullptr;
+  other._size = 0;
 }
 
 // Move assignment
 inline Graph& Graph::operator = (Graph&& other) {
   clear();
   _head = other._head;
+  _size = other._size;
   other._head = nullptr;
+  other._size = 0;
   return *this;
 }
 
@@ -909,22 +912,18 @@ inline void Graph::clear() {
     _head = _head->next;
     recycle(old_head);
   }
+  _size = 0;
 }
 
 // Function: size
-//inline size_t Graph::size() const {
-//  size_t count = 0;
-//  auto curr = _head;
-//  while (curr) {
-//    count++;
-//    curr = curr->next;
-//  }
-//  return count;
-//}
+inline size_t Graph::size() const {
+  return _size;
+}
 
 // Function: empty
 inline bool Graph::empty() const {
-  return _head == nullptr;
+  // here we don't do _head == nullptr as it can cause data race with set_up
+  return _size == 0;
 }
 
 // Function: begin
@@ -959,6 +958,7 @@ inline void Graph::_erase(Node* tgt) {
     _head = _head->next;
     //tgt->next = nullptr;
     recycle(tgt);
+    --_size;
     return;
   }
 
@@ -973,12 +973,52 @@ inline void Graph::_erase(Node* tgt) {
     current->next = tgt->next;
     //tgt->next = nullptr;
     recycle(tgt);
+    --_size;
   }  
 }
 
 // Function: _set_up
 inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
 
+  if (!_head) {
+    return 0;
+  }
+  
+  size_t num_srcs = 0;
+  
+  Node* head[2] = {nullptr, nullptr};   // 0 = rest, 1 = zero
+  Node** tail[2] = {&head[0], &head[1]};
+  
+  Node* current = _head;
+  
+  while (current) {
+  
+    current->_topology = tpg;
+    current->_parent = parent;
+    current->_nstate = NSTATE::NONE;
+    current->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
+    current->_set_up_join_counter();
+    current->_exception_ptr = nullptr;
+  
+    Node* next = current->next;
+    current->next = nullptr;  // detach immediately (important)
+  
+    const size_t is_zero = (current->num_predecessors() == 0);
+    num_srcs += is_zero;
+  
+    *tail[is_zero] = current;
+    tail [is_zero] = &current->next;
+  
+    current = next;
+  }
+  
+  // stitch zero list before rest list
+  *tail[1] = head[0];
+  _head = head[1] ? head[1] : head[0];
+  
+  return num_srcs;
+  ////////
+/*
   if (!_head) {
     return 0;
   }
@@ -1033,7 +1073,7 @@ inline size_t Graph::_set_up(Topology* tpg, NodeBase* parent) {
     _head = restHead; // No zeros found, head is just the rest
   }
   
-  return num_srcs;
+  return num_srcs;*/
 }
 
 /**
@@ -1046,6 +1086,7 @@ Node* Graph::_emplace(ArgsT&&... args) {
   auto node = animate(std::forward<ArgsT>(args)...); 
   node->next = _head;
   _head = node;
+  ++_size;
   return _head;
 }
 
