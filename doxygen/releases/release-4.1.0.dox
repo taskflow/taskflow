@@ -45,18 +45,16 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + optimized tf::Executor::run(Taskflow&&)` with asynchronous tasking
   + removed satellite field from both taskflow and executor classes
 + optimized the locking cost of topology
-+ optimized the performance of async tasking with the per-worker task pool
 
 @subsection release-4-1-0_utilities Utilities
 
 + removed `floor_log2` due to duplication with C++20 `std::bit_width`
++ removed `cpu_pause` due to platform-dependent implementation
 
 @section release-4-1-0_bug_fixes Bug Fixes 
 
 
 @section release-4-1-0_breaking_changes Breaking Changes
-
-+ removed tf::floor_log2 as std::bit_width exists in C++20 
 
 @section release-4-1-0_documentation Documentation
 

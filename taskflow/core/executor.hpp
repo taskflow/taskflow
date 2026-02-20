@@ -1563,7 +1563,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
   if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
-    _bulk_spill(first + n, num_nodes - n);
+    _bulk_spill(first, num_nodes - n);
   }
   _notifier.notify_n(num_nodes);
     
