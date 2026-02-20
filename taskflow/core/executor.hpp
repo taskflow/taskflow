@@ -2281,7 +2281,7 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
 }
 
 // Function: _set_up_graph
-size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* parent) {
+inline size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* parent) {
 
   auto first = graph.begin();
   auto last  = graph.end();
