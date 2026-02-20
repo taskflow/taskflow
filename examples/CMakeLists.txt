@@ -40,6 +40,7 @@ list(APPEND TF_EXAMPLES
   task_visitor
 )
 
+
 foreach(example IN LISTS TF_EXAMPLES)
   add_executable(${example} ${example}.cpp)
   target_link_libraries(
@@ -99,3 +100,11 @@ endif()
 #target_link_libraries(
 #  visualization_dsl TaskflowDSL tf::default_settings
 #)
+
+
+if(TF_BUILD_PROCESS_EXAMPLE)
+    if(NOT TF_BUILD_EXAMPLES)
+        message(FATAL_ERROR "Process example needs option TF_BUILD_EXAMPLE")
+    endif()
+    add_subdirectory(run_processes)
+endif()
