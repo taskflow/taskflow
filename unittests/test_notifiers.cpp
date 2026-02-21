@@ -911,3 +911,206 @@ TEST_CASE("NonblockingNotifier.no_missing_notify_alls.16threads"* doctest::timeo
 TEST_CASE("NonblockingNotifier.no_missing_notify_alls.31threads"* doctest::timeout(300)){
   no_missing_notifications<tf::NonblockingNotifier, NotificationType::ALL>(31);
 }
+
+
+// ============================================================================
+// AtomicNotifier: reuse the same test helpers
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: no_missing_notify_all
+// ----------------------------------------------------------------------------
+TEST_CASE("AtomicNotifier.no_missing_notify_all.1threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.2threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.4threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.5threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.8threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.15threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(15);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_all.31threads" * doctest::timeout(300)) {
+  no_missing_notify_all<tf::AtomicNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: no_missing_notify_one
+// ----------------------------------------------------------------------------
+TEST_CASE("AtomicNotifier.no_missing_notify_one.1threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.2threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.4threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.5threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.8threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.15threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(15);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_one.31threads" * doctest::timeout(300)) {
+  no_missing_notify_one<tf::AtomicNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: no_missing_notify_n
+// ----------------------------------------------------------------------------
+TEST_CASE("AtomicNotifier.no_missing_notify_n.1threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.2threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.4threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.5threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.8threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.15threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(15);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_n.31threads" * doctest::timeout(300)) {
+  no_missing_notify_n<tf::AtomicNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: mixed notify_one/notify_n/notify_all
+// ----------------------------------------------------------------------------
+TEST_CASE("AtomicNotifier.no_missing_notify_x.1threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.2threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.4threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.5threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.8threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.15threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(15);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_x.31threads" * doctest::timeout(300)) {
+  no_missing_notify_x<tf::AtomicNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: no_missing_cancel_wait
+// ----------------------------------------------------------------------------
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.1threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.2threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.4threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.5threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.8threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.16threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(16);
+}
+TEST_CASE("AtomicNotifier.no_missing_cancel_wait.31threads" * doctest::timeout(300)) {
+  no_missing_cancel_wait<tf::AtomicNotifier>(31);
+}
+
+// ----------------------------------------------------------------------------
+// AtomicNotifier: compile-time switch stress (no_missing_notifications)
+// ----------------------------------------------------------------------------
+
+// ONE
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.1threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.2threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.4threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.5threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.8threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.16threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(16);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ones.31threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ONE>(31);
+}
+
+// N
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.1threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.2threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.4threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.5threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.8threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.16threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(16);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_ns.31threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::N>(31);
+}
+
+// ALL
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.1threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(1);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.2threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(2);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.4threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(4);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.5threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(5);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.8threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(8);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.16threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(16);
+}
+TEST_CASE("AtomicNotifier.no_missing_notify_alls.31threads" * doctest::timeout(300)) {
+  no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(31);
+}
