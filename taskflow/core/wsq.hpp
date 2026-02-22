@@ -224,21 +224,25 @@ class UnboundedWSQ {
   This method pushes up to @p N items from the range `[first, first + N)` into the queue. 
   The operation can trigger the queue to resize its capacity 
   if more space is required.
+  The iterator `first` is updated in place and will point to the next uninserted element after the call.
+
   Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
 
   @code{.cpp}
   tf::UnboundedWSQ<int> wsq(10);  
   assert(wsq.capacity() == 1024);
   std::vector<int> vec(1025, 1);
-  wsq.bulk_push(vec.data(), vec.size()); 
+  auto first = vec.data();
+  wsq.bulk_push(first, vec.size()); 
   assert(wsq.capacity() == 2048);
   assert(wsq.size() == vec.size());
+  assert(std::distance(vec.begin(), first) == 1025);
   @endcode
   
   Only the owner thread can insert an item to the queue.
   */
   template <typename I>
-  void bulk_push(I first, size_t N);
+  void bulk_push(I& first, size_t N);
 
   /**
   @brief pops out an item from the queue
@@ -397,7 +401,7 @@ void UnboundedWSQ<T>::push(T o) {
 // Function: bulk_push
 template <typename T>
 template <typename I>
-void UnboundedWSQ<T>::bulk_push(I first, size_t N) {
+void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
 
   if(N == 0) return;
 
@@ -411,7 +415,7 @@ void UnboundedWSQ<T>::bulk_push(I first, size_t N) {
   }
 
   for(size_t i=0; i<N; ++i) {
-    a->push(b++, first[i]);
+    a->push(b++, *first++);
   }
   std::atomic_thread_fence(std::memory_order_release);
 
@@ -681,20 +685,23 @@ class BoundedWSQ {
   This method attempts to push up to @p N items from the range
   `[first, first + N)` into the queue. Insertion stops early if the
   queue becomes full. 
+  The iterator `first` is updated in place and will point to the next uninserted element after the call.
+
   Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
   
   @code{.cpp}
   tf::BoundedWSQ<int, 10> wsq;  
   static_assert(wsq.capacity() == 1024);
   std::vector<int> vec(1030, 1);
-  assert(wsq.try_bulk_push(vec.data(), vec.size()) == wsq.capacity());
-  assert(wsq.try_bulk_push(vec.data(), vec.size()) == 0);
+  auto first = vec.begin();
+  assert(wsq.try_bulk_push(first, vec.size()) == wsq.capacity());
+  assert(std::distance(vec.begin(), first) == wsq.capacity());
   @endcode
 
   Only the owner thread can insert items into the queue.
   */
   template <typename I>
-  size_t try_bulk_push(I first, size_t N);
+  size_t try_bulk_push(I& first, size_t N);
   
   /**
   @brief pops out an item from the queue
@@ -832,7 +839,7 @@ bool BoundedWSQ<T, LogSize>::try_push(O&& o) {
 // Function: try_bulk_push
 template <typename T, size_t LogSize>
 template <typename I>
-size_t BoundedWSQ<T, LogSize>::try_bulk_push(I first, size_t N) {
+size_t BoundedWSQ<T, LogSize>::try_bulk_push(I& first, size_t N) {
 
   if(N == 0) return 0;
 
@@ -845,7 +852,7 @@ size_t BoundedWSQ<T, LogSize>::try_bulk_push(I first, size_t N) {
   if(n > 0) {
     // push n elements into the queue
     for(size_t i=0; i<n; ++i) {
-      _buffer[b++ & BufferMask].store(first[i], std::memory_order_relaxed);
+      _buffer[b++ & BufferMask].store(*first++, std::memory_order_relaxed);
     }
     std::atomic_thread_fence(std::memory_order_release);
     // original paper uses relaxed here but tsa complains

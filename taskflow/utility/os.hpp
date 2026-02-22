@@ -91,23 +91,6 @@
 #define TF_OS_UNIX 1
 #endif
 
-// ----------------------------------------------------------------------------
-// cpu pause implementation
-// ----------------------------------------------------------------------------
-
-#if defined(_MSC_VER)
-    #include <intrin.h>
-    #define TF_CPU_PAUSE() _mm_pause()
-#elif defined(__i386__) || defined(__x86_64__)
-    #include <immintrin.h>
-    #define TF_CPU_PAUSE() _mm_pause()
-#elif defined(__arm__) || defined(__aarch64__)
-    #define TF_CPU_PAUSE() __asm__ __volatile__("yield" ::: "memory")
-#else
-    #define TF_CPU_PAUSE() std::this_thread::yield()
-#endif
-
-
 //-----------------------------------------------------------------------------
 // Cache line alignment
 //-----------------------------------------------------------------------------
@@ -244,23 +227,6 @@ inline bool has_env(const std::string& str) {
   return ptr ? true : false;
 #endif
 }
-
-/**
-@fn pause
-
-This function is used in spin-wait loops to hint the CPU that the current 
-thread is in a busy-wait state. 
-It helps reduce power consumption and improves performance on hyper-threaded processors 
-by preventing the CPU from consuming unnecessary cycles while waiting. 
-It is particularly useful in low-contention scenarios, where the thread 
-is likely to quickly acquire the lock or condition it's waiting for, 
-avoiding an expensive context switch. 
-On modern x86 processors, this instruction can be invoked using @c __builtin_ia32_pause() 
-in GCC/Clang or @c _mm_pause() in MSVC. 
-In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.
-
-*/
-inline void pause() { TF_CPU_PAUSE(); }
 
 
 }  // end of namespace tf -----------------------------------------------------

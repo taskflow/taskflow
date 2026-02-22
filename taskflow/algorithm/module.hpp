@@ -16,9 +16,7 @@ auto Algorithm::make_module_task(T&& target) {
     if(graph.empty()) {
       return;
     }
-    rt._executor._schedule_graph_with_parent(
-      rt._worker, graph.begin(), graph.end(), rt._node->_topology, rt._node
-    );
+    rt._executor._schedule_graph_with_parent(rt._worker, graph, rt._node->_topology, rt._node);
   };
 }
 

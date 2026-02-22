@@ -129,22 +129,26 @@ TEST_CASE("UnboundedWSQ.Resize") {
   std::vector<void*> data(2048);
 
   // insert an element
-  queue.bulk_push(data.data(), 1);
+  auto first = data.data();
+  queue.bulk_push(first, 1);
   REQUIRE(queue.size() == 1);
   REQUIRE(queue.capacity() == 2);
   
   // insert 2 elements
-  queue.bulk_push(data.data(), 2);
+  first = data.data();
+  queue.bulk_push(first, 2);
   REQUIRE(queue.size() == 3);
   REQUIRE(queue.capacity() == 4);
   
   // insert 10 elements
-  queue.bulk_push(data.data(), 10);
+  first = data.data();
+  queue.bulk_push(first, 10);
   REQUIRE(queue.size() == 13);
   REQUIRE(queue.capacity() == 16);
   
   // insert 1200 elements
-  queue.bulk_push(data.data(), 1200);
+  first = data.data();
+  queue.bulk_push(first, 1200);
   REQUIRE(queue.size() == 1213);
   REQUIRE(queue.capacity() == 2048);
   
@@ -156,22 +160,26 @@ TEST_CASE("UnboundedWSQ.Resize") {
   REQUIRE(queue.empty() == true);
 
   // insert an element
-  queue.bulk_push(data.data(), 1);
+  first = data.data();
+  queue.bulk_push(first, 1);
   REQUIRE(queue.size() == 1);
   REQUIRE(queue.capacity() == 2048);
   
   // insert 2 elements
-  queue.bulk_push(data.data(), 2);
+  first = data.data();
+  queue.bulk_push(first, 2);
   REQUIRE(queue.size() == 3);
   REQUIRE(queue.capacity() == 2048);
   
   // insert 10 elements
-  queue.bulk_push(data.data(), 10);
+  first = data.data();
+  queue.bulk_push(first, 10);
   REQUIRE(queue.size() == 13);
   REQUIRE(queue.capacity() == 2048);
   
   // insert 1200 elements
-  queue.bulk_push(data.data(), 1200);
+  first = data.data();
+  queue.bulk_push(first, 1200);
   REQUIRE(queue.size() == 1213);
   REQUIRE(queue.capacity() == 2048);
 }
@@ -349,8 +357,9 @@ void bounded_tsq_n_consumers_bulk_push(size_t M) {
     size_t capacity = queue.capacity();
     REQUIRE((size == 0 && capacity > 0));
     const size_t num_pushable_elements = std::min(capacity, N);
-
-    REQUIRE(num_pushable_elements == queue.try_bulk_push(gold.data(), N));
+    
+    auto first = gold.data();
+    REQUIRE(num_pushable_elements == queue.try_bulk_push(first, N));
     REQUIRE(queue.size() == num_pushable_elements);
     for(size_t i=0; i<num_pushable_elements; i++) {
       REQUIRE(queue.pop() == gold[num_pushable_elements - i - 1]);
@@ -358,7 +367,8 @@ void bounded_tsq_n_consumers_bulk_push(size_t M) {
     REQUIRE(queue.empty() == true);
 
     // master bulk push and steal
-    REQUIRE(num_pushable_elements == queue.try_bulk_push(gold.data(), N));
+    first = gold.data();
+    REQUIRE(num_pushable_elements == queue.try_bulk_push(first, N));
     REQUIRE(queue.size() == num_pushable_elements);
     for(size_t i=0; i<num_pushable_elements; i++) {
       REQUIRE(queue.steal() == gold[i]);
@@ -383,8 +393,9 @@ void bounded_tsq_n_consumers_bulk_push(size_t M) {
     }
 
     // master thread
+    first = gold.data();
     for(size_t n=0; n<N;) {
-      n += queue.try_bulk_push(gold.data() + n, N-n);
+      n += queue.try_bulk_push(first, N-n);
     }
 
     std::vector<void*> items;
@@ -648,7 +659,8 @@ void unbounded_tsq_n_consumers_bulk_push(size_t M) {
     size_t capacity = queue.capacity();
     REQUIRE((size == 0 && capacity > 0));
 
-    queue.bulk_push(gold.data(), N);
+    auto first = gold.data();
+    queue.bulk_push(first, N);
     REQUIRE(queue.size() == N);
     for(size_t i=0; i<N; i++) {
       REQUIRE(queue.pop() == gold[N - i - 1]);
@@ -656,7 +668,8 @@ void unbounded_tsq_n_consumers_bulk_push(size_t M) {
     REQUIRE(queue.empty() == true);
 
     // master bulk push and steal
-    queue.bulk_push(gold.data(), N);
+    first = gold.data();
+    queue.bulk_push(first, N);
     REQUIRE(queue.size() == N);
     for(size_t i=0; i<N; i++) {
       REQUIRE(queue.steal() == gold[i]);
@@ -680,7 +693,8 @@ void unbounded_tsq_n_consumers_bulk_push(size_t M) {
     }
 
     // master thread
-    queue.bulk_push(gold.data(), N);
+    first = gold.data();
+    queue.bulk_push(first, N);
 
     std::vector<void*> items;
     while(consumed != N) {

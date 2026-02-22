@@ -993,7 +993,7 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
     t->_parent->_join_counter.fetch_add(1, std::memory_order_release);
     if(g.object->_fetch_enqueue(t) == 0) {
       rt._executor._schedule_graph_with_parent(
-        rt._worker, g.object->_graph.begin(), g.object->_graph.end(), t.get(), t.get()
+        rt._worker, g.object->_graph, t.get(), t.get()
       );
     }
   });
