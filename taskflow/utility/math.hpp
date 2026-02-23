@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <numeric>
 
 namespace tf {
 
