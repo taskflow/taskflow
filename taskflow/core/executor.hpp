@@ -1133,7 +1133,7 @@ class Executor {
   bool _explore_task(Worker&, Node*&);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
-  void _schedule_graph_with_parent(Worker&, Graph&, Topology*, NodeBase*);
+  void _schedule_graph(Worker&, Graph&, Topology*, NodeBase*);
   void _spill(Node*);
   void _set_up_topology(Worker*, Topology*);
   void _tear_down_topology(Worker&, Topology*, Node*&);
@@ -1746,7 +1746,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   //   because the user-level call on "invoke" may explicitly schedule 
   //   this task again (e.g., pipeline) which can access the join_counter.
   node->_join_counter.fetch_add(
-    node->num_predecessors() - (node->_nstate & ~NSTATE::MASK), std::memory_order_relaxed
+    node->_nstate & NSTATE::STRONG_DEPENDENCIES_MASK, std::memory_order_relaxed
   );
 
   // Invoke the task based on the corresponding type
@@ -1916,7 +1916,7 @@ inline bool Executor::_invoke_subflow_task(Worker& worker, Node* node) {
       node->_nstate |= NSTATE::PREEMPTED;
 
       // set up and schedule the graph
-      _schedule_graph_with_parent(worker, g, node->_topology, node);
+      _schedule_graph(worker, g, node->_topology, node);
       return true;
     }
   }
@@ -1978,7 +1978,7 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
 
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
-    _schedule_graph_with_parent(w, graph, node->_topology, node);
+    _schedule_graph(w, graph, node->_topology, node);
     return true;
   }
 
@@ -2117,19 +2117,15 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& pred) {
 template <typename P, typename C>
 tf::Future<void> Executor::run_until(Taskflow& f, P&& p, C&& c) {
 
-  _increment_topology();
-
   // No need to create a real topology but returns an dummy future for invariant.
-  // Note that here we don't do std::async(std::launch::deferred, [](){}) because
-  // the invariant requires the future to be ready before decrementing the topology,
-  // rather than calling future.get() from the caller.
   if(f.empty() || p()) {
     c();
     std::promise<void> promise;
     promise.set_value();
-    _decrement_topology();
     return tf::Future<void>(promise.get_future());
   }
+  
+  _increment_topology();
 
   // create a topology for this run
   auto t = std::make_shared<Topology>(f, std::forward<P>(p), std::forward<C>(c));
@@ -2231,7 +2227,7 @@ inline void Executor::_corun_graph(Worker& w, Graph& g, Topology* tpg, NodeBase*
   // anchor this parent as the blocking point
   {
     ExplicitAnchorGuard anchor(p);
-    _schedule_graph_with_parent(w, g, tpg, p);
+    _schedule_graph(w, g, tpg, p);
     _corun_until(w, [p] () -> bool { 
       return p->_join_counter.load(std::memory_order_acquire) == 0; }
     );
@@ -2262,8 +2258,8 @@ inline void Executor::wait_for_all() {
   }
 }
   
-// Function: _schedule_graph_with_parent
-inline void Executor::_schedule_graph_with_parent(
+// Function: _schedule_graph
+inline void Executor::_schedule_graph(
   Worker& worker, Graph& graph, Topology* tpg, NodeBase* parent
 ) {
   size_t num_srcs = _set_up_graph(graph, tpg, parent);
@@ -2317,7 +2313,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
   if(!tpg->cancelled() && !tpg->_predicate()) {
     //assert(tpg->_join_counter == 0);
     //std::lock_guard<std::mutex> lock(f._mutex);
-    _schedule_graph_with_parent(worker, tpg->_taskflow._graph, tpg, tpg);
+    _schedule_graph(worker, tpg->_taskflow._graph, tpg, tpg);
   }
   // case 2: the final run of this topology
   else {
@@ -2343,7 +2339,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       // decrement the topology
       _decrement_topology();
 
-      _set_up_topology(&worker, tpg);
+      _schedule_graph(worker, tpg->_taskflow._graph, tpg, tpg);
     }
     else {
       //assert(f._topologies.size() == 1);

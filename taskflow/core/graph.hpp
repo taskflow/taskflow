@@ -659,13 +659,13 @@ Node::Node(
 
 // Procedure: _precede
 /*
-u successor   layout: s1, s2, s3, p1, p2 (num_successors = 3)
-v predecessor layout: s1, p1, p2
+u edges layout: s1, s2, s3, p1, p2 (num_successors = 3)
+v edges layout: s1, p1, p2
 
 add a new successor: u->v
 u successor   layout: 
   s1, s2, s3, p1, p2, v (push_back v)
-  s1, s2, s3, v, p2, p1 (swap adj[num_successors] with adj[n-1])
+  s1, s2, s3, v, p2, p1 (swap edges[num_successors] with edges[n-1])
 v predecessor layout: 
   s1, p1, p2, u         (push_back u)
 */ 
@@ -739,14 +739,11 @@ inline bool Node::_is_parent_cancelled() const {
 
 // Procedure: _set_up_join_counter
 inline void Node::_set_up_join_counter() {
-  size_t c = 0;
-  //for(auto p : _predecessors) {
+  //assert(_nstate == NSTATE::NONE);
   for(size_t i=_num_successors; i<_edges.size(); i++) {
-    bool is_cond = _edges[i]->_is_conditioner();
-    _nstate = (_nstate + is_cond) | (is_cond * NSTATE::CONDITIONED);  // weak dependency
-    c += !is_cond;  // strong dependency
+    _nstate += !_edges[i]->_is_conditioner();
   }
-  _join_counter.store(c, std::memory_order_relaxed);
+  _join_counter.store(_nstate & NSTATE::STRONG_DEPENDENCIES_MASK, std::memory_order_relaxed);
 }
 
 
