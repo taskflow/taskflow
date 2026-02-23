@@ -964,19 +964,15 @@ inline void Executor::_invoke_nonpreemptive_runtime_task(Worker& worker, Node* n
 template <typename P, typename C>
 tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
 
-  _increment_topology();
-
   // No need to create a real topology but returns an dummy future for invariant.
-  // Note that here we don't do std::async(std::launch::deferred, [](){}) because
-  // the invariant requires the future to be ready before decrementing the topology,
-  // rather than calling future.get() from the caller.
   if(f.empty() || p()) {
     c();
     std::promise<void> promise;
     promise.set_value();
-    _decrement_topology();
     return tf::Future<void>(promise.get_future());
   }
+  
+  _increment_topology();
 
   auto g = std::make_unique<Taskflow>(std::move(f)); 
 
@@ -992,7 +988,7 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
     t->_parent = rt._node;
     t->_parent->_join_counter.fetch_add(1, std::memory_order_release);
     if(g.object->_fetch_enqueue(t) == 0) {
-      rt._executor._schedule_graph_with_parent(
+      rt._executor._schedule_graph(
         rt._worker, g.object->_graph, t.get(), t.get()
       );
     }
