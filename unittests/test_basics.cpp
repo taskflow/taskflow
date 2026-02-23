@@ -50,6 +50,22 @@ TEST_CASE("Type" * doctest::timeout(300)) {
 }
 
 // --------------------------------------------------------
+// Testcase: tf::Future
+// --------------------------------------------------------
+TEST_CASE("Future" * doctest::timeout(300)) {
+  std::promise<void> promise1;
+  promise1.set_value();
+  tf::Future<void> fu1(promise1.get_future());
+  REQUIRE(fu1.valid());
+
+  std::promise<int> promise2;
+  promise2.set_value(1);
+  tf::Future<int> fu2(promise2.get_future());
+  REQUIRE(fu2.valid());
+  REQUIRE(fu2.get() == 1);
+}
+
+// --------------------------------------------------------
 // Testcase: Builder
 // --------------------------------------------------------
 TEST_CASE("Builder" * doctest::timeout(300)) {

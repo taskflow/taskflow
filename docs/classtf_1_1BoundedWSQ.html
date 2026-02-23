@@ -211,7 +211,7 @@
             <dd>tries to insert an item to the queue</dd>
             <dt>
               <div class="m-doc-template">template&lt;typename I&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a9713956a1ca117bcde0813205f2669e5" class="m-doc">try_bulk_push</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">auto <a href="#a10375ce815e0c5c047a4331de787053b" class="m-doc">try_bulk_push</a>(</span><span class="m-doc-wrap">I&amp; first,
               size_t N) -&gt; size_t</span>
             </dt>
             <dd>tries to insert a batch of items into the queue</dd>
@@ -354,13 +354,13 @@
 <span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
 <span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">try_push</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></pre><p>Only the owner thread can insert an item to the queue.</p>
           </div></section>
-          <section class="m-doc-details" id="a9713956a1ca117bcde0813205f2669e5"><div>
+          <section class="m-doc-details" id="a10375ce815e0c5c047a4331de787053b"><div>
             <h3>
               <div class="m-doc-template">
                 template&lt;typename T, size_t LogSize&gt;
                 template&lt;typename I&gt;
               </div>
-              <span class="m-doc-wrap-bumper">size_t tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a9713956a1ca117bcde0813205f2669e5" class="m-doc-self">try_bulk_push</a>(</span><span class="m-doc-wrap">I first,
+              <span class="m-doc-wrap-bumper">size_t tf::<wbr />BoundedWSQ&lt;T, LogSize&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a10375ce815e0c5c047a4331de787053b" class="m-doc-self">try_bulk_push</a>(</span><span class="m-doc-wrap">I&amp; first,
               size_t N)</span></span>
             </h3>
             <p>tries to insert a batch of items into the queue</p>
@@ -394,11 +394,12 @@
                 </tr>
               </tfoot>
             </table>
-<p>This method attempts to push up to <code>N</code> items from the range <code>[first, first + N)</code> into the queue. Insertion stops early if the queue becomes full. Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">BoundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">;</span><span class="w">  </span>
+<p>This method attempts to push up to <code>N</code> items from the range <code>[first, first + N)</code> into the queue. Insertion stops early if the queue becomes full. The iterator <code>first</code> is updated in place and will point to the next uninserted element after the call.</p><p>Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.</p><pre class="m-code"><span class="n">tf</span><span class="o">::</span><span class="n">BoundedWSQ</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="n">wsq</span><span class="p">;</span><span class="w">  </span>
 <span class="k">static_assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span>
 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="mi">1030</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">try_bulk_push</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">());</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">try_bulk_push</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></pre><p>Only the owner thread can insert items into the queue.</p>
+<span class="k">auto</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">wsq</span><span class="p">.</span><span class="n">try_bulk_push</span><span class="p">(</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">.</span><span class="n">size</span><span class="p">())</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">());</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">first</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wsq</span><span class="p">.</span><span class="n">capacity</span><span class="p">());</span></pre><p>Only the owner thread can insert items into the queue.</p>
           </div></section>
           <section class="m-doc-details" id="a0f3fc5d2f38ca7df06b55afa391f26ce"><div>
             <h3>

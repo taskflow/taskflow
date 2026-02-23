@@ -2317,7 +2317,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
   if(!tpg->cancelled() && !tpg->_predicate()) {
     //assert(tpg->_join_counter == 0);
     //std::lock_guard<std::mutex> lock(f._mutex);
-    _set_up_topology(&worker, tpg);
+    _schedule_graph_with_parent(worker, tpg->_taskflow._graph, tpg, tpg);
   }
   // case 2: the final run of this topology
   else {

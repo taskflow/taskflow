@@ -455,10 +455,6 @@
             </dt>
             <dd>checks whether an environment variable is defined</dd>
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc">pause</a>(</span><span class="m-doc-wrap">)</span>
-            </dt>
-            <dd></dd>
-            <dt>
               <div class="m-doc-template">template&lt;typename B, typename E, typename S&gt;</div>
               <span class="m-doc-wrap-bumper">auto <a href="#a5643bf94c64370ee721692e3e6d9dc80" class="m-doc">is_index_range_invalid</a>(</span><span class="m-doc-wrap">B beg,
               E end,
@@ -1372,12 +1368,6 @@
               </tfoot>
             </table>
 <p>This function determines if a specific environment variable exists in the current environment.</p><aside class="m-note m-warning"><h4>Attention</h4><p>The implementation differs between Windows and POSIX platforms:</p><ul><li>On Windows, it uses <code>_dupenv_s</code> to check for the variable&#x27;s presence.</li><li>On POSIX, it uses <code>std::getenv</code> to check for the variable&#x27;s presence.</li></ul></aside>
-          </div></section>
-          <section class="m-doc-details" id="aef9af2433294beb7d41680e5b33eafdd"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">void tf::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aef9af2433294beb7d41680e5b33eafdd" class="m-doc-self">pause</a>(</span><span class="m-doc-wrap">)</span></span>
-            </h3>
-<p>This function is used in spin-wait loops to hint the CPU that the current thread is in a busy-wait state. It helps reduce power consumption and improves performance on hyper-threaded processors by preventing the CPU from consuming unnecessary cycles while waiting. It is particularly useful in low-contention scenarios, where the thread is likely to quickly acquire the lock or condition it&#x27;s waiting for, avoiding an expensive context switch. On modern x86 processors, this instruction can be invoked using <code>__builtin_ia32_pause()</code> in GCC/Clang or <code>_mm_pause()</code> in MSVC. In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead.</p>
           </div></section>
           <section class="m-doc-details" id="a5643bf94c64370ee721692e3e6d9dc80"><div>
             <h3>
