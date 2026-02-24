@@ -1,5 +1,7 @@
 #pragma once
 
+#include <bit>
+
 #include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
 

@@ -96,7 +96,6 @@
 </listitem></itemizedlist>
 </para>
 </listitem><listitem><para>optimized the locking cost of topology</para>
-</listitem><listitem><para>optimized the performance of async tasking with the per-worker task pool</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
@@ -104,19 +103,20 @@
 <title>Utilities</title>
 <para><itemizedlist>
 <listitem><para>removed <computeroutput>floor_log2</computeroutput> due to duplication with C++20 <computeroutput>std::bit_width</computeroutput></para>
+</listitem><listitem><para>removed <computeroutput>cpu_pause</computeroutput> due to platform-dependent implementation</para>
 </listitem></itemizedlist>
 </para>
 </sect2>
 </sect1>
 <sect1 id="release-4-1-0_1release-4-1-0_bug_fixes">
 <title>Bug Fixes</title>
+<para><itemizedlist>
+<listitem><para>fixed the scope bug in creating <computeroutput><ref refid="classtf_1_1Future" kindref="compound">tf::Future</ref>&lt;T&gt;</computeroutput> from <computeroutput><ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>&lt;T&gt;</computeroutput> (<ulink url="https://github.com/taskflow/taskflow/issues/761">#761</ulink>)</para>
+</listitem></itemizedlist>
+</para>
 </sect1>
 <sect1 id="release-4-1-0_1release-4-1-0_breaking_changes">
 <title>Breaking Changes</title>
-<para><itemizedlist>
-<listitem><para>removed tf::floor_log2 as std::bit_width exists in C++20</para>
-</listitem></itemizedlist>
-</para>
 </sect1>
 <sect1 id="release-4-1-0_1release-4-1-0_documentation">
 <title>Documentation</title>

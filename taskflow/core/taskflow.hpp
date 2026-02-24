@@ -634,6 +634,11 @@ class Future : public std::future<T>  {
   Future(Future&&) = default;
 
   /**
+  @brief constructs `*this` from a `std::future`
+  */
+  Future(std::future<T>&&);
+
+  /**
   @brief disabled copy assignment
   */
   Future& operator = (const Future&) = delete;
@@ -681,13 +686,17 @@ class Future : public std::future<T>  {
 
   std::weak_ptr<Topology> _topology;
 
-  Future(std::future<T>&&, std::weak_ptr<Topology> = std::weak_ptr<Topology>());
+  Future(std::future<T>&&, std::weak_ptr<Topology>);
 };
 
 template <typename T>
 Future<T>::Future(std::future<T>&& f, std::weak_ptr<Topology> p) :
   std::future<T> {std::move(f)},
   _topology      {std::move(p)} {
+}
+
+template <typename T>
+Future<T>::Future(std::future<T>&& f) : std::future<T> {std::move(f)} {
 }
 
 // Function: cancel

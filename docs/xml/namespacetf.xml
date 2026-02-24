@@ -284,7 +284,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="48" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="48" bodyend="-1"/>
+        <location file="taskflow/core/worker.hpp" line="38" column="3" bodyfile="taskflow/core/worker.hpp" bodystart="38" bodyend="-1"/>
       </memberdef>
       <memberdef kind="typedef" id="namespacetf_1a8cff4bbd797dde4dfab096c3cc657833" prot="public" static="no">
         <type><ref refid="cpp/chrono/time_point" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::time_point</ref>&lt; <ref refid="cpp/chrono/steady_clock" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::chrono::steady_clock</ref> &gt;</type>
@@ -459,7 +459,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="977" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="977" bodyend="-1"/>
+        <location file="taskflow/core/graph.hpp" line="971" column="16" bodyfile="taskflow/core/graph.hpp" bodystart="971" bodyend="-1"/>
       </memberdef>
       <memberdef kind="variable" id="namespacetf_1a3d823d8776745f3348dc87bba2fcc91b" prot="private" static="no" constexpr="yes" mutable="no">
         <type>constexpr <ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array</ref>&lt; <ref refid="namespacetf_1a1355048578785a80414707ff308b395a" kindref="member">TaskType</ref>, 7 &gt;</type>
@@ -1367,7 +1367,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="200" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="200" bodyend="216"/>
+        <location file="taskflow/utility/os.hpp" line="183" column="20" bodyfile="taskflow/utility/os.hpp" bodystart="183" bodyend="199"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1adc9815b9f96b796675ba939078d25413" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>bool</type>
@@ -1404,21 +1404,7 @@ Example usage: <programlisting><codeline><highlight class="normal">struct<sp/>A<
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="230" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="230" bodyend="246"/>
-      </memberdef>
-      <memberdef kind="function" id="namespacetf_1aef9af2433294beb7d41680e5b33eafdd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
-        <type>void</type>
-        <definition>tf::pause</definition>
-        <argsstring>()</argsstring>
-        <name>pause</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-<para>This function is used in spin-wait loops to hint the CPU that the current thread is in a busy-wait state. It helps reduce power consumption and improves performance on hyper-threaded processors by preventing the CPU from consuming unnecessary cycles while waiting. It is particularly useful in low-contention scenarios, where the thread is likely to quickly acquire the lock or condition it&apos;s waiting for, avoiding an expensive context switch. On modern x86 processors, this instruction can be invoked using <computeroutput>__builtin_ia32_pause()</computeroutput> in GCC/Clang or <computeroutput>_mm_pause()</computeroutput> in MSVC. In non-x86 architectures, alternative mechanisms such as yielding the CPU may be used instead. </para>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="taskflow/utility/os.hpp" line="263" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="263" bodyend="263"/>
+        <location file="taskflow/utility/os.hpp" line="213" column="13" bodyfile="taskflow/utility/os.hpp" bodystart="213" bodyend="229"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a5643bf94c64370ee721692e3e6d9dc80" prot="public" static="no" constexpr="yes" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1639,7 +1625,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="826" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="826" bodyend="832"/>
+        <location file="taskflow/core/graph.hpp" line="820" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="820" bodyend="826"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a445fe5f14e30fe86b18bf7c35df34ad5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>TF_FORCE_INLINE void</type>
@@ -1656,7 +1642,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/graph.hpp" line="837" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="837" bodyend="843"/>
+        <location file="taskflow/core/graph.hpp" line="831" column="22" bodyfile="taskflow/core/graph.hpp" bodystart="831" bodyend="837"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a6371ab1b1b0e57db6ca95cb4456ac5d3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -1711,7 +1697,7 @@ The distance of a range represents the number of required iterations to traverse
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/worker.hpp" line="322" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="322" bodyend="328"/>
+        <location file="taskflow/core/worker.hpp" line="312" column="17" bodyfile="taskflow/core/worker.hpp" bodystart="312" bodyend="318"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1a9ca58dc6c666698cc7373eb0262140ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>const char *</type>
@@ -1927,7 +1913,7 @@ This example demonstrates how to create and launch multiple taskflows in paralle
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/algorithm/module.hpp" line="75" column="6" bodyfile="taskflow/algorithm/module.hpp" bodystart="75" bodyend="77"/>
+        <location file="taskflow/algorithm/module.hpp" line="73" column="6" bodyfile="taskflow/algorithm/module.hpp" bodystart="73" bodyend="75"/>
       </memberdef>
       <memberdef kind="function" id="namespacetf_1abffa70155a5f160b7ceb86ee52ab2136" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type>size_t</type>
