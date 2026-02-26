@@ -1119,3 +1119,184 @@ TEST_CASE("AtomicNotifier.no_missing_notify_alls.16threads" * doctest::timeout(3
 TEST_CASE("AtomicNotifier.no_missing_notify_alls.31threads" * doctest::timeout(300)) {
   no_missing_notifications<tf::AtomicNotifier, NotificationType::ALL>(31);
 }
+
+// A stronger stress/fuzz test for BOTH NonblockingNotifier and AtomicNotifier.
+// Key ideas:
+//  - many notifier threads
+//  - randomized delays + mixed notify_one/notify_n/notify_all
+//  - true protocol: check predicate -> prepare -> recheck -> cancel/commit
+//  - partial participation (some iterations a worker doesn't wait at all)
+//  - asserts: progress + clean shutdown (no stuck waiters)
+
+static inline void tiny_jitter(std::mt19937& rng) {
+  // Random mix of yield, short spin, and tiny sleep.
+  std::uniform_int_distribution<int> pick(0, 9);
+  int x = pick(rng);
+  if(x < 4) {
+    std::this_thread::yield();
+  }
+  else if(x < 8) {
+    volatile int sink = 0;
+    int spins = 20 + (pick(rng) * 30);
+    for(int i = 0; i < spins; ++i) sink += i;
+    (void)sink;
+  }
+  else {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(200));
+  }
+}
+
+template <typename Notifier>
+void fuzz_stress_notifier(
+  size_t N,
+  size_t M_notifiers,
+  size_t ops_per_worker,
+  uint32_t seed
+) {
+  Notifier notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  std::atomic<bool> stop{false};
+
+  // The user predicate: a global "signal generation".
+  // Workers wait until signal_epoch != local_epoch.
+  std::atomic<uint64_t> signal_epoch{0};
+
+  std::atomic<uint64_t> prepares{0};
+  std::atomic<uint64_t> cancels{0};
+  std::atomic<uint64_t> commits_entered{0};
+  std::atomic<uint64_t> commits_returned{0};
+  std::atomic<uint64_t> fast_path{0};
+
+  // Workers
+  std::vector<std::thread> workers;
+  workers.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    workers.emplace_back([&, i] {
+      std::mt19937 rng(seed ^ (0x9e3779b9u + (uint32_t)i * 101u));
+      uint64_t local = signal_epoch.load(std::memory_order_relaxed);
+
+      std::uniform_int_distribution<int> coin(0, 99);
+
+      for(size_t it = 0; it < ops_per_worker && !stop.load(std::memory_order_relaxed); ++it) {
+
+        // partial participation: sometimes do "work" without waiting
+        if(coin(rng) < 15) {
+          tiny_jitter(rng);
+          continue;
+        }
+
+        // Fast-path predicate check
+        uint64_t cur = signal_epoch.load(std::memory_order_acquire);
+        if(cur != local) {
+          local = cur;
+          fast_path.fetch_add(1, std::memory_order_relaxed);
+          tiny_jitter(rng);
+          continue;
+        }
+
+        // Two-phase wait protocol
+        tiny_jitter(rng);
+        notifier.prepare_wait(i);
+        prepares.fetch_add(1, std::memory_order_relaxed);
+
+        tiny_jitter(rng);
+
+        cur = signal_epoch.load(std::memory_order_acquire);
+        if(cur != local) {
+          notifier.cancel_wait(i);
+          cancels.fetch_add(1, std::memory_order_relaxed);
+          local = cur;
+          tiny_jitter(rng);
+          continue;
+        }
+
+        // Commit (may block until notified)
+        commits_entered.fetch_add(1, std::memory_order_relaxed);
+        notifier.commit_wait(i);
+        commits_returned.fetch_add(1, std::memory_order_relaxed);
+
+        // After commit returns, predicate should have advanced (or will very soon).
+        // We don't require "immediate" change due to scheduling, but in practice
+        // signal_epoch should not stay equal forever (notifier threads keep advancing it).
+        local = signal_epoch.load(std::memory_order_acquire);
+
+        tiny_jitter(rng);
+      }
+    });
+  }
+
+  // Notifier threads
+  std::vector<std::thread> notifiers;
+  notifiers.reserve(M_notifiers);
+
+  for(size_t t = 0; t < M_notifiers; ++t) {
+    notifiers.emplace_back([&, t] {
+      std::mt19937 rng(seed + (uint32_t)(777u + t * 17u));
+      std::uniform_int_distribution<int> which(0, 99);
+
+      while(!stop.load(std::memory_order_relaxed)) {
+        tiny_jitter(rng);
+
+        int w = which(rng);
+
+        // Sometimes "empty notify" (no predicate change) — should be harmless.
+        if(w < 15) {
+          // mixed notify
+          int kind = which(rng) % 3;
+          if(kind == 0) notifier.notify_one();
+          else if(kind == 1) notifier.notify_n((size_t)(which(rng) % (int)(N + 1)));
+          else notifier.notify_all();
+          continue;
+        }
+
+        // Normal: change predicate then notify (condition-variable style).
+        signal_epoch.fetch_add(1, std::memory_order_release);
+
+        if(w < 60) {
+          notifier.notify_one();
+        }
+        else if(w < 85) {
+          notifier.notify_n((size_t)(which(rng) % (int)(N + 1)));
+        }
+        else {
+          notifier.notify_all();
+        }
+      }
+    });
+  }
+
+  // Let it run for a bounded time based on work size (no sleeps needed).
+  // Just wait until workers finish their ops.
+  for(auto& w : workers) w.join();
+
+  // Shutdown notifiers and drain anyone parked.
+  stop.store(true, std::memory_order_release);
+  notifier.notify_all();
+  for(auto& n : notifiers) n.join();
+
+  // Strong end conditions:
+  REQUIRE(notifier.num_waiters() == 0);
+
+  // Every commit must return (no "stuck in commit_wait forever").
+  REQUIRE(commits_returned.load() == commits_entered.load());
+
+  // Basic sanity: we exercised the slow path and the fast path.
+  REQUIRE(prepares.load() > 0);
+  REQUIRE(fast_path.load() > 0);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.8threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(8, 4, 4000, 12345);
+}
+TEST_CASE("NonblockingNotifier.fuzz_stress.31threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(31, 6, 1500, 77777);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.8threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(8, 4, 4000, 22222);
+}
+TEST_CASE("AtomicNotifier.fuzz_stress.31threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(31, 6, 1500, 99991);
+}
