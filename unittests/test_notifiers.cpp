@@ -3,6 +3,11 @@
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 
+#include <atomic>
+#include <thread>
+#include <vector>
+#include <random>
+#include <chrono>
 // ----------------------------------------------------------------------------
 // NonblockingNotifier: no_missing_notify_all
 //   - In each round, all threads call prepare_wait()
