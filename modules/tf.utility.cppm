@@ -104,7 +104,6 @@ export namespace tf {
     using tf::distance;
     using tf::next_pow2;
     using tf::is_pow2;
-    using tf::floor_log2;
     using tf::static_floor_log2;
     using tf::median_of_three;
     using tf::pseudo_median_of_nine;
@@ -118,8 +117,6 @@ export namespace tf {
     using tf::make_coprime_lut;
     using tf::get_env;
     using tf::has_env;
-    using tf::pause;
-    using tf::spin_until;
     using tf::make_size_tag;
     using tf::make_kv_pair;
     using tf::capacity_in_bytes;

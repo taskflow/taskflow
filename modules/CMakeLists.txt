@@ -1,3 +1,5 @@
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+
 add_library(tf_module)
 
 target_sources(tf_module
@@ -6,9 +8,13 @@ target_sources(tf_module
             tf.cppm
             tf.algorithm.cppm
             tf.core.cppm
-            tf.cuda.cppm
             tf.utility.cppm
 )
+
+if(TF_BUILD_CUDA)
+  target_sources(tf_module PUBLIC FILE_SET CXX_MODULES FILES tf.cuda.cppm)
+  target_compile_definitions(tf_module PUBLIC TF_BUILD_CUDA)
+endif()
 
 target_compile_features(tf_module PUBLIC cxx_std_20)
 

@@ -49,6 +49,11 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   doctest_discover_tests(${unittest})
 endforeach()
 
+# include C++ module tests
+if(TF_BUILD_MODULES)
+  add_subdirectory(${TF_UTEST_DIR}/modules)
+endif()
+
 # include CUDA tests
 if(TF_BUILD_CUDA)
   add_subdirectory(${TF_UTEST_DIR}/cuda)
