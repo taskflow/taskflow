@@ -2,12 +2,13 @@
 <doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
   <compounddef id="wsq_8hpp" kind="file" language="C++">
     <compoundname>wsq.hpp</compoundname>
+    <includes local="no">bit</includes>
     <includes local="yes">../utility/macros.hpp</includes>
     <includes local="yes">../utility/traits.hpp</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
     <includedby refid="worker_8hpp" local="yes">taskflow/core/worker.hpp</includedby>
     <incdepgraph>
-      <node id="2">
+      <node id="3">
         <label>../utility/macros.hpp</label>
       </node>
       <node id="1">
@@ -17,9 +18,14 @@
         </childnode>
         <childnode refid="3" relation="include">
         </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
       </node>
-      <node id="3">
+      <node id="4">
         <label>../utility/traits.hpp</label>
+      </node>
+      <node id="2">
+        <label>bit</label>
       </node>
     </incdepgraph>
     <invincdepgraph>
@@ -155,7 +161,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="19" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="19" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="21" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="21" bodyend="-1"/>
       </memberdef>
       <memberdef kind="define" id="wsq_8hpp_1a45e25b85f72dd5c43f2c9010205c3e37" prot="public" static="no">
         <name>TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE</name>
@@ -167,7 +173,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/wsq.hpp" line="30" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="30" bodyend="-1"/>
+        <location file="taskflow/core/wsq.hpp" line="32" column="11" bodyfile="taskflow/core/wsq.hpp" bodystart="32" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
