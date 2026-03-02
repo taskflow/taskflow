@@ -1150,7 +1150,7 @@ template <typename Notifier>
 void fuzz_stress_notifier(
   size_t N,
   size_t M_notifiers,
-  size_t ops_per_worker,
+  size_t rounds,
   uint32_t seed
 ) {
   Notifier notifier(N);
@@ -1179,7 +1179,7 @@ void fuzz_stress_notifier(
 
       std::uniform_int_distribution<int> coin(0, 99);
 
-      for(size_t it = 0; it < ops_per_worker && !stop.load(std::memory_order_relaxed); ++it) {
+      for(size_t it = 0; it < rounds && !stop.load(std::memory_order_relaxed); ++it) {
 
         // partial participation: sometimes do "work" without waiting
         if(coin(rng) < 15) {
@@ -1268,7 +1268,7 @@ void fuzz_stress_notifier(
   }
 
   // Let it run for a bounded time based on work size (no sleeps needed).
-  // Just wait until workers finish their ops.
+  // Just wait until workers finish their rounds.
   for(auto& w : workers) w.join();
 
   // Shutdown notifiers and drain anyone parked.
@@ -1287,16 +1287,88 @@ void fuzz_stress_notifier(
   REQUIRE(fast_path.load() > 0);
 }
 
-TEST_CASE("NonblockingNotifier.fuzz_stress.8threads") {
-  fuzz_stress_notifier<tf::NonblockingNotifier>(8, 4, 4000, 12345);
-}
-TEST_CASE("NonblockingNotifier.fuzz_stress.31threads") {
-  fuzz_stress_notifier<tf::NonblockingNotifier>(31, 6, 1500, 77777);
+// workers, notifiers, rounds, seed
+
+// ------------------ NonblockingNotifier ------------------
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.1threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(1, 1, 20000, 1);
 }
 
-TEST_CASE("AtomicNotifier.fuzz_stress.8threads") {
-  fuzz_stress_notifier<tf::AtomicNotifier>(8, 4, 4000, 22222);
+TEST_CASE("NonblockingNotifier.fuzz_stress.2threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(2, 2, 12000, 2);
 }
-TEST_CASE("AtomicNotifier.fuzz_stress.31threads") {
-  fuzz_stress_notifier<tf::AtomicNotifier>(31, 6, 1500, 99991);
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.3threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(3, 2, 9000, 3);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.7threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(7, 3, 6000, 77);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.13threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(13, 4, 3500, 1313);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.16threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(16, 4, 3000, 1616);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.29threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(29, 5, 2000, 2929);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.32threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(32, 6, 1500, 3232);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.64threads") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(64, 8, 800, 6464);
+}
+
+TEST_CASE("NonblockingNotifier.fuzz_stress.more_notifiers_than_workers") {
+  fuzz_stress_notifier<tf::NonblockingNotifier>(8, 16, 3000, 8888);
+}
+
+// ------------------ AtomicNotifier ------------------
+
+TEST_CASE("AtomicNotifier.fuzz_stress.1threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(1, 1, 20000, 1);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.2threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(2, 2, 12000, 2);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.3threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(3, 2, 9000, 3);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.7threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(7, 3, 6000, 77);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.13threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(13, 4, 3500, 1313);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.16threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(16, 4, 3000, 1616);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.29threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(29, 5, 2000, 2929);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.32threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(32, 6, 1500, 3232);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.64threads") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(64, 8, 800, 6464);
+}
+
+TEST_CASE("AtomicNotifier.fuzz_stress.more_notifiers_than_workers") {
+  fuzz_stress_notifier<tf::AtomicNotifier>(8, 16, 3000, 8888);
 }
