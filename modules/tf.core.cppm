@@ -27,8 +27,6 @@ export namespace tf {
     using tf::nstate_t;
     using tf::ESTATE;
     using tf::estate_t;
-    using tf::ASTATE;
-    using tf::astate_t;
     using tf::Executor;
     using tf::FlowBuilder;
     using tf::Graph;
@@ -61,7 +59,6 @@ export namespace tf {
     using tf::Taskflow;
     using tf::Future;
     using tf::Topology;
-    using tf::DerivedTopology;
     using tf::DefaultNotifier;
     using tf::Worker;
     using tf::WorkerView;
