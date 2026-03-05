@@ -1643,9 +1643,21 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   }
 
   // if acquiring semaphore(s) exists, acquire them first
-  if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
-    SmallVector<Node*> waiters;
-    if(!node->_acquire_all(waiters)) {
+  if (node->_semaphores && !node->_semaphores->to_acquire.empty()) {
+    SmallVector<Node *> waiters;
+    bool acquired = false;
+
+    // Acquiring can throw exceptions now
+    TF_EXECUTOR_EXCEPTION_HANDLER(worker, node,
+                                  { acquired = node->_acquire_all(waiters); });
+
+    if (node->_is_parent_cancelled()) {
+      _tear_down_invoke(worker, node, cache);
+      TF_INVOKE_CONTINUATION();
+      return;
+    }
+
+    if (!acquired) {
       _bulk_schedule(worker, waiters.begin(), waiters.size());
       return;
     }
@@ -1839,7 +1851,12 @@ inline void Executor::_observer_epilogue(Worker& worker, Node* node) {
 }
 
 // Procedure: _process_exception
-inline void Executor::_process_exception(Worker&, Node* node) {
+inline void Executor::_process_exception(Worker &, Node *node) {
+
+  SmallVector<Node *> waiters;
+  std::unordered_set<Node *> visited;
+  node->_handle_broken_semaphores(waiters, visited);
+  _bulk_schedule(waiters.begin(), waiters.size());
 
   // Finds the anchor and mark the entire path with exception, 
   // so recursive tasks can be cancelled properly.
