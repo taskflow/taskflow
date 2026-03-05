@@ -4,10 +4,14 @@
     <compoundname>math.hpp</compoundname>
     <includes local="no">atomic</includes>
     <includes local="no">chrono</includes>
+    <includes local="no">numeric</includes>
     <includedby refid="graph_8hpp" local="yes">taskflow/core/graph.hpp</includedby>
     <incdepgraph>
       <node id="2">
         <label>atomic</label>
+      </node>
+      <node id="4">
+        <label>numeric</label>
       </node>
       <node id="1">
         <label>taskflow/utility/math.hpp</label>
@@ -15,6 +19,8 @@
         <childnode refid="2" relation="include">
         </childnode>
         <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
         </childnode>
       </node>
       <node id="3">

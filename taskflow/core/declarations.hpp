@@ -18,6 +18,7 @@ class TaskGroup;
 class Task;
 class TaskView;
 class Taskflow;
+class AsyncTask;
 class Topology;
 class Executor;
 class Worker;
@@ -26,6 +27,7 @@ class ObserverInterface;
 class ChromeTracingObserver;
 class TFProfObserver;
 class TFProfManager;
+class ExplicitAnchorGuard;
 
 template <typename T>
 class Future;

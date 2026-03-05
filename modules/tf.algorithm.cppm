@@ -48,12 +48,9 @@ export namespace tf {
     using tf::make_transform_exclusive_scan_task;
     using tf::make_sort_task;
     using tf::make_transform_task;
-}
-
-export {
-    using ::make_find_if_not_task;
-    using ::make_min_element_task;
-    using ::make_max_element_task;
-    using ::make_for_each_index_task;
-    using ::make_for_each_by_index_task;
+    using tf::make_find_if_not_task;
+    using tf::make_min_element_task;
+    using tf::make_max_element_task;
+    using tf::make_for_each_index_task;
+    using tf::make_for_each_by_index_task;
 }

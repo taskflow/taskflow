@@ -896,7 +896,7 @@ This member function executes a moved taskflow multiple times until the predicat
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/executor.hpp" line="411" column="14" bodyfile="taskflow/core/runtime.hpp" bodystart="965" bodyend="1002"/>
+        <location file="taskflow/core/executor.hpp" line="411" column="14" bodyfile="taskflow/core/runtime.hpp" bodystart="965" bodyend="998"/>
       </memberdef>
       <memberdef kind="function" id="classtf_1_1Executor_1a8fcd9e0557922bb8194999f0cd433ea8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -2464,11 +2464,11 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
         </inbodydescription>
         <location file="taskflow/core/executor.hpp" line="1135" column="8"/>
       </memberdef>
-      <memberdef kind="function" id="classtf_1_1Executor_1a419c0252463084be1ddb2e38445780c8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="classtf_1_1Executor_1a593a8edee05f6017377fc48e4abfc8d8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
-        <definition>void tf::Executor::_schedule_graph_with_parent</definition>
+        <definition>void tf::Executor::_schedule_graph</definition>
         <argsstring>(Worker &amp;, Graph &amp;, Topology *, NodeBase *)</argsstring>
-        <name>_schedule_graph_with_parent</name>
+        <name>_schedule_graph</name>
         <param>
           <type><ref refid="classtf_1_1Worker" kindref="compound">Worker</ref> &amp;</type>
         </param>
@@ -3488,7 +3488,7 @@ A <ref refid="classtf_1_1TaskGroup" kindref="compound">TaskGroup</ref> allows su
       <member refid="classtf_1_1Executor_1a685c08b62a494359e34c6de2a700fdab" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule</name></member>
       <member refid="classtf_1_1Executor_1a9f0ff31910ac22157bef9c07ffabe403" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_async_task</name></member>
       <member refid="classtf_1_1Executor_1a85c7e3460237b46d0306b834169894a8" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_dependent_async_task</name></member>
-      <member refid="classtf_1_1Executor_1a419c0252463084be1ddb2e38445780c8" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_graph_with_parent</name></member>
+      <member refid="classtf_1_1Executor_1a593a8edee05f6017377fc48e4abfc8d8" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_schedule_graph</name></member>
       <member refid="classtf_1_1Executor_1a34ffdee3f2e734645e2ea8aadf03ca7c" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_graph</name></member>
       <member refid="classtf_1_1Executor_1a723daf897c5d3d3517583cb4c62654ee" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_set_up_topology</name></member>
       <member refid="classtf_1_1Executor_1a918b9de1ca1e20e35bf0d3b610dfa803" prot="private" virt="non-virtual"><scope>tf::Executor</scope><name>_shutdown</name></member>
