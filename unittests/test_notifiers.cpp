@@ -1372,3 +1372,144 @@ TEST_CASE("AtomicNotifier.fuzz_stress.64threads") {
 TEST_CASE("AtomicNotifier.fuzz_stress.more_notifiers_than_workers") {
   fuzz_stress_notifier<tf::AtomicNotifier>(8, 16, 3000, 8888);
 }
+
+// Stronger test: forces ALL threads to become committed waiters (num_waiters == N),
+// then checks notify_n(k) alone releases at least k committed waiters without any
+// extra notify. Then notify_all drains the rest so the round completes.
+
+template <typename T>
+static void notify_n_releases_committed(size_t N, size_t k, size_t rounds, uint32_t seed) {
+
+  (void)seed;
+
+  T notifier(N);
+  REQUIRE(notifier.size() == N);
+
+  std::atomic<size_t> round(0);
+  std::atomic<size_t> prepared(0);
+  std::atomic<size_t> committed_done(0);
+  std::atomic<bool> stop(false);
+
+  std::vector<std::thread> workers;
+  workers.reserve(N);
+
+  for(size_t i = 0; i < N; ++i) {
+    workers.emplace_back([&, i] {
+      size_t local_round = 0;
+
+      while(!stop.load(std::memory_order_relaxed)) {
+
+        // wait for main to advance round
+        while(round.load(std::memory_order_acquire) == local_round &&
+              !stop.load(std::memory_order_relaxed)) {
+          std::this_thread::yield();
+        }
+
+        if(stop.load(std::memory_order_relaxed)) {
+          break;
+        }
+
+        // Intentionally no predicate and no cancel: we want to force committed waiters.
+        notifier.prepare_wait(i);
+        prepared.fetch_add(1, std::memory_order_release);
+
+        notifier.commit_wait(i);
+        committed_done.fetch_add(1, std::memory_order_release);
+
+        local_round++;
+      }
+    });
+  }
+
+  for(size_t r = 1; r <= rounds; ++r) {
+
+    prepared.store(0, std::memory_order_relaxed);
+    committed_done.store(0, std::memory_order_relaxed);
+
+    // start the round
+    round.store(r, std::memory_order_release);
+
+    // wait until everyone finished prepare_wait
+    while(prepared.load(std::memory_order_acquire) != N) {
+      std::this_thread::yield();
+    }
+
+    // wait until everyone is actually committed 
+    while(notifier.num_waiters() != N) {
+      std::this_thread::yield();
+    }
+
+    // notify_n(k) must release at least min(k, N) committed waiters
+    size_t target = (k < N) ? k : N;
+
+    notifier.notify_n(k);
+
+    // bounded wait: give time for >= target wakeups
+    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    while(committed_done.load(std::memory_order_acquire) < target &&
+          std::chrono::steady_clock::now() < deadline) {
+      std::this_thread::yield();
+    }
+    REQUIRE(committed_done.load(std::memory_order_acquire) >= target);
+
+    // drain remaining waiters so round completes
+    notifier.notify_all();
+
+    // bounded wait for everyone to finish
+    auto deadline2 = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    while(committed_done.load(std::memory_order_acquire) != N &&
+          std::chrono::steady_clock::now() < deadline2) {
+      notifier.notify_all();
+      std::this_thread::yield();
+    }
+
+    REQUIRE(committed_done.load(std::memory_order_acquire) == N);
+    REQUIRE(notifier.num_waiters() == 0);
+  }
+
+  // shutdown
+  stop.store(true, std::memory_order_release);
+  notifier.notify_all();
+
+  for(auto& t : workers) {
+    t.join();
+  }
+
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
+// ------------------ TEST CASES: NonblockingNotifier ------------------
+
+TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N8.k1" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::NonblockingNotifier>(8, 1, 200, 1);
+}
+
+TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N8.k3" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::NonblockingNotifier>(8, 3, 200, 2);
+}
+
+TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N31.k15" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::NonblockingNotifier>(31, 15, 120, 3);
+}
+
+TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N31.k31" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::NonblockingNotifier>(31, 31, 120, 4);
+}
+
+// ------------------ TEST CASES: AtomicNotifier ------------------
+
+TEST_CASE("AtomicNotifier.notify_n_releases_committed.N8.k1" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::AtomicNotifier>(8, 1, 200, 11);
+}
+
+TEST_CASE("AtomicNotifier.notify_n_releases_committed.N8.k3" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::AtomicNotifier>(8, 3, 200, 12);
+}
+
+TEST_CASE("AtomicNotifier.notify_n_releases_committed.N31.k15" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::AtomicNotifier>(31, 15, 120, 13);
+}
+
+TEST_CASE("AtomicNotifier.notify_n_releases_committed.N31.k31" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::AtomicNotifier>(31, 31, 120, 14);
+}
