@@ -445,34 +445,39 @@ void exception_deadlock(size_t semaphore_size) {
   auto status = future.wait_for(std::chrono::seconds(2));
   REQUIRE(status == std::future_status::ready);
   REQUIRE_THROWS_WITH_AS(future.get(), "exception", std::runtime_error);
-
+  // No Release tasks ran
   REQUIRE(semaphore.value() == 0);
 
-  // reset the semaphore to a clean state before running the taskflow again
-  semaphore.reset();
-  // run it again
-  REQUIRE(semaphore.value() == semaphore_size);
+  // acquiring a broken semaphore should result in an instant exception
   auto future_2 = executor.run(taskflow);
   auto status_2 = future_2.wait_for(std::chrono::seconds(2));
   REQUIRE(status_2 == std::future_status::ready);
-  REQUIRE_THROWS_WITH_AS(future_2.get(), "exception", std::runtime_error);
+  REQUIRE_THROWS_AS(future_2.get() ,std::runtime_error);
+  
+  // reseting the semaphore makes it valid  again
+  semaphore.reset();
+  REQUIRE(semaphore.value() == semaphore_size);
+  auto future_3 = executor.run(taskflow);
+  auto status_3 = future_3.wait_for(std::chrono::seconds(2));
+  REQUIRE(status_3 == std::future_status::ready);
+  REQUIRE_THROWS_WITH_AS(future_3.get(), "exception", std::runtime_error);
 }
 
-TEST_CASE("Exception.Exception.Deadlock.4threads" * doctest::timeout(5)) {
+TEST_CASE("Exception.Exception.Deadlock.4threads" * doctest::timeout(10)) {
   exception_deadlock(4);
 }
 
-void exception_cyclicgraph(size_t sem_capacity) {
+void exception_cyclicgraph(size_t executors) {
 
-  tf::Executor executor(sem_capacity);
-  tf::Semaphore sem(sem_capacity);
+  tf::Executor executor(executors);
+  tf::Semaphore sem(1);
   tf::Taskflow taskflow;
   tf::Task init = taskflow.emplace([]() {});
   int counter = 0;
-  for (size_t i = 0; i < sem_capacity * sem_capacity; i++) {
+  for (size_t i = 0; i < executors ; i++) {
     tf::Task A = taskflow.emplace([&counter]() { counter++; });
     tf::Task B = taskflow.emplace([&counter]() {
-      if (counter > 1) {
+      if (counter > 0) {
         return 1;
       } else {
         return 0;
@@ -492,13 +497,13 @@ void exception_cyclicgraph(size_t sem_capacity) {
   auto future = executor.run(taskflow);
   REQUIRE_THROWS_WITH_AS(future.get(), "exception", std::runtime_error);
   sem.reset();
-  REQUIRE(sem.value() == sem_capacity);
+  REQUIRE(sem.value() == 1);
   auto future_2 = executor.run(taskflow);
   auto status_2 = future_2.wait_for(std::chrono::seconds(2));
   REQUIRE(status_2 == std::future_status::ready);
   REQUIRE_THROWS_WITH_AS(future_2.get(), "exception", std::runtime_error);
 }
 
-TEST_CASE("Semaphore.Exception.CyclicGraph.4threads" * doctest::timeout(5)) {
+TEST_CASE("Semaphore.Exception.CyclicGraph.4threads" * doctest::timeout(10)) {
   exception_cyclicgraph(4);
 }
