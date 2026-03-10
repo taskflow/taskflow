@@ -1496,6 +1496,11 @@ TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N31.k31" * doctest::t
   notify_n_releases_committed<tf::NonblockingNotifier>(31, 31, 120, 4);
 }
 
+TEST_CASE("NonblockingNotifier.notify_n_releases_committed.N8.k16" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::NonblockingNotifier>(8, 16, 200, 5);
+}
+
+
 // ------------------ TEST CASES: AtomicNotifier ------------------
 
 TEST_CASE("AtomicNotifier.notify_n_releases_committed.N8.k1" * doctest::timeout(300)) {
@@ -1512,4 +1517,8 @@ TEST_CASE("AtomicNotifier.notify_n_releases_committed.N31.k15" * doctest::timeou
 
 TEST_CASE("AtomicNotifier.notify_n_releases_committed.N31.k31" * doctest::timeout(300)) {
   notify_n_releases_committed<tf::AtomicNotifier>(31, 31, 120, 14);
+}
+
+TEST_CASE("AtomicNotifier.notify_n_releases_committed.N8.k16" * doctest::timeout(300)) {
+  notify_n_releases_committed<tf::AtomicNotifier>(8, 16, 200, 15);
 }
