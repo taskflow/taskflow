@@ -96,3 +96,4 @@ constexpr const char* version() {
 
 
 
+#include "core/spsc.hpp"
