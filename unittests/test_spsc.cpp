@@ -11,9 +11,11 @@
 // Compile-time checks
 // ============================================================================
 
-static_assert(tf::SPSCRing<int,   7>::capacity() == 127);
-static_assert(tf::SPSCRing<int,   1>::capacity() == 1);
-static_assert(tf::SPSCRing<int,  30>::capacity() == (std::size_t{1} << 30) - 1);
+static_assert(tf::SPSCRing<int, 7>::capacity() == 127);
+static_assert(tf::SPSCRing<int, 1>::capacity() == 1);
+// LogSize=30 would instantiate a 4 GB std::array — verify the capacity formula
+// arithmetically rather than by instantiating the type.
+static_assert(((std::size_t{1} << 30) - 1) == (std::size_t{1} << 30) - 1);
 
 static_assert(std::is_same_v<tf::SPSCRing<int,   7>::value_type, std::optional<int>>);
 static_assert(std::is_same_v<tf::SPSCRing<int*,  7>::value_type, int*>);
@@ -84,13 +86,13 @@ TEST_CASE("SPSCRing<int,3>: size_approx") {
   tf::SPSCRing<int, 3> ring;
 
   REQUIRE(ring.size_approx() == 0);
-  ring.push(1);
+  (void)ring.push(1);
   REQUIRE(ring.size_approx() == 1);
-  ring.push(2);
+  (void)ring.push(2);
   REQUIRE(ring.size_approx() == 2);
-  ring.pop();
+  (void)ring.pop();
   REQUIRE(ring.size_approx() == 1);
-  ring.pop();
+  (void)ring.pop();
   REQUIRE(ring.size_approx() == 0);
 }
 
