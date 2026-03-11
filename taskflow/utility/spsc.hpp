@@ -22,9 +22,10 @@ namespace tf {
 /**
 @class SPSCRing
 
-@tparam T    element type; must be noexcept move-constructible and
-             noexcept move-assignable
-@tparam SIZE capacity in elements; must be a power of two in [2, 2^30]
+@tparam T       element type; must be noexcept move-constructible and
+                noexcept move-assignable
+@tparam LogSize base-2 logarithm of the internal buffer size;
+                capacity = 2^LogSize - 1; LogSize must be in [1, 30]
 
 @brief lock-free single-producer / single-consumer ring buffer
 
@@ -38,67 +39,99 @@ coordination.
 @par Guarantees
 - <b>Lock-free</b>: no mutexes, condition variables, or spin-locks.
 - <b>Zero allocation</b>: the buffer is stored inline (std::array); the
-  total object size is <tt>SIZE * sizeof(T) + 128</tt> bytes.
+  total object size is <tt>2^LogSize * sizeof(T) + 128</tt> bytes.
 - <b>Cache-friendly</b>: producer index and consumer index live on
   separate cache lines (<tt>alignas(64)</tt>) to eliminate false sharing.
 - <b>noexcept</b>: @ref push and @ref pop are unconditionally noexcept
   provided T satisfies the noexcept move requirements.
 - <b>Non-blocking</b>: @ref push returns @c false when full; @ref pop
-  returns @c std::nullopt when empty.
+  returns an empty @ref value_type when empty.
 
 @par Capacity
-The usable capacity is <tt>SIZE - 1</tt>.  One slot is reserved to
-distinguish the full state from the empty state without a separate
-counter.
+The usable capacity is <tt>2^LogSize - 1</tt>.  One slot is reserved to
+distinguish the full state from the empty state without a separate counter.
+
+@par Return-type specialization
+Like @ref UnboundedWSQ, the return type of @ref pop is specialized on T:
+- For pointer types, @ref pop returns @c T (using @c nullptr as the empty sentinel).
+- For non-pointer types, @ref pop returns @c std::optional<T> (using
+  @c std::nullopt as the empty sentinel).
 
 @par Typical usage
 
 @code{.cpp}
 // shared between producer and consumer threads
-tf::SPSCRing<int, 4096> ring;
+tf::SPSCRing<int, 7> ring;   // capacity = 2^7 - 1 = 127
 
 // --- producer thread ---
-ring.push(42);           // returns false if full
+ring.push(42);               // returns false if full
 
 // --- consumer thread ---
 if (auto v = ring.pop()) {
-    process(*v);         // returns std::nullopt if empty
+    process(*v);             // std::nullopt / nullptr when empty
 }
 @endcode
 
-@note Create one %SPSCRing per producer–consumer pair.
+@note Create one %SPSCRing per producer-consumer pair.
       %SPSCRing is not safe for multiple producers or multiple consumers.
 */
-template <typename T, std::size_t SIZE>
+template <typename T, std::size_t LogSize>
 class SPSCRing {
 
-  static_assert(SIZE >= 2,
-    "tf::SPSCRing: SIZE must be at least 2");
-  static_assert((SIZE & (SIZE - 1u)) == 0u,
-    "tf::SPSCRing: SIZE must be a power of two");
-  static_assert(SIZE <= (1u << 30u),
-    "tf::SPSCRing: SIZE exceeds safe limit (2^30)");
+  static_assert(LogSize >= 1,
+    "tf::SPSCRing: LogSize must be at least 1");
+  static_assert(LogSize <= 30,
+    "tf::SPSCRing: LogSize must be at most 30");
   static_assert(std::is_nothrow_move_constructible_v<T>,
     "tf::SPSCRing: T must be noexcept move-constructible");
   static_assert(std::is_nothrow_move_assignable_v<T>,
     "tf::SPSCRing: T must be noexcept move-assignable");
 
+  static constexpr std::size_t SIZE = std::size_t{1} << LogSize;
   static constexpr std::size_t MASK = SIZE - 1u;
 
   public:
 
   /**
+  @brief the return type of @ref pop
+
+  For pointer element types @c T, `value_type` is @c T itself and uses
+  @c nullptr to indicate an empty result.  For non-pointer types, it is
+  @c std::optional<T>, where @c std::nullopt denotes the absence of a value.
+
+  @code{.cpp}
+  static_assert(std::is_same_v<tf::SPSCRing<int,   7>::value_type, std::optional<int>>);
+  static_assert(std::is_same_v<tf::SPSCRing<int*,  7>::value_type, int*>);
+  @endcode
+  */
+  using value_type = std::conditional_t<std::is_pointer_v<T>, T, std::optional<T>>;
+
+  /**
   @brief returns the maximum number of elements the ring can hold simultaneously
 
-  The capacity is <tt>SIZE - 1</tt>; one slot is reserved for full/empty
-  disambiguation.
+  The capacity is <tt>2^LogSize - 1</tt>; one slot is reserved for
+  full/empty disambiguation.
   */
   [[nodiscard]] static constexpr std::size_t capacity() noexcept {
     return SIZE - 1u;
   }
 
+  /**
+  @brief returns the empty sentinel value appropriate for @ref value_type
+
+  For pointer types this is @c nullptr; for non-pointer types it is
+  @c std::nullopt.
+  */
+  static constexpr value_type empty_value() noexcept {
+    if constexpr (std::is_pointer_v<T>) {
+      return T{nullptr};
+    } else {
+      return std::optional<T>{std::nullopt};
+    }
+  }
+
   // --------------------------------------------------------------------------
-  // Producer API — call from a single producer thread only
+  // Producer API - call from a single producer thread only
   // --------------------------------------------------------------------------
 
   /**
@@ -138,7 +171,7 @@ class SPSCRing {
   }
 
   // --------------------------------------------------------------------------
-  // Consumer API — call from a single consumer thread only
+  // Consumer API - call from a single consumer thread only
   // --------------------------------------------------------------------------
 
   /**
@@ -146,23 +179,27 @@ class SPSCRing {
 
   Returns immediately without blocking.
 
-  @return @c std::optional<T> containing the dequeued element on success,
-          or @c std::nullopt if the ring is empty
+  @return @ref value_type containing the dequeued element on success,
+          or the empty sentinel (@c std::nullopt / @c nullptr) if empty
 
   @note Call from the <em>consumer thread only</em>.
   */
-  [[nodiscard]] std::optional<T> pop() noexcept {
+  [[nodiscard]] value_type pop() noexcept {
     const std::size_t head = _head.load(std::memory_order_relaxed);
     if (head == _tail.load(std::memory_order_acquire)) {
-      return std::nullopt; // empty
+      return empty_value(); // empty
     }
     T item{std::move(_buf[head])};
     _head.store((head + 1u) & MASK, std::memory_order_release);
-    return item;
+    if constexpr (std::is_pointer_v<T>) {
+      return item;
+    } else {
+      return std::optional<T>{std::move(item)};
+    }
   }
 
   // --------------------------------------------------------------------------
-  // Diagnostic queries (approximate — non-atomic snapshot)
+  // Diagnostic queries (approximate - non-atomic snapshot)
   // --------------------------------------------------------------------------
 
   /**
@@ -196,7 +233,7 @@ class SPSCRing {
 
   private:
 
-  // Producer index on its own cache line — eliminates false sharing with _head.
+  // Producer index on its own cache line - eliminates false sharing with _head.
 #ifdef _MSC_VER
 # pragma warning(push)
 # pragma warning(disable: 4324) // structure padded due to __declspec(align)
