@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bit>
+#include <thread>
 
 #include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
@@ -953,6 +954,227 @@ template <typename T, size_t LogSize>
 constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
   return BufferSize;
 }
+
+
+// ----------------------------------------------------------------------------
+// MPMCQueue
+// ----------------------------------------------------------------------------
+
+/**
+@class MPMCQueue
+
+@tparam T data type (must be a pointer type)
+
+@brief Bounded multi-producer multi-consumer (MPMC) queue using the Vyukov
+       sequence-number algorithm.
+
+This queue supports concurrent push and pop from any number of threads without
+locks or dynamic allocation after construction.  Capacity must be a power of
+two and is fixed at construction time.  When the queue is full, try_push
+returns @c false; callers are responsible for back-pressure.
+
+The queue is used by tf::Executor as its overflow spill buffers, replacing the
+previous design that wrapped an UnboundedWSQ with a std::mutex.
+
+Memory layout
+- The two position counters (_enqueue_pos, _dequeue_pos) are each placed on
+  their own cache line to eliminate false sharing between producers and
+  consumers.
+- The slot array is allocated without per-slot padding; at typical overflow-
+  buffer sizes (≥ 1024 entries) the probability of two threads contending on
+  the same cache line is negligible.
+
+@note Only pointer element types are supported (nullptr is the empty sentinel).
+*/
+template <typename T>
+class MPMCQueue {
+
+  static_assert(std::is_pointer_v<T>,
+    "MPMCQueue requires a pointer element type (nullptr is used as sentinel)");
+
+  struct Slot {
+    std::atomic<size_t> sequence{0};
+    T data{nullptr};
+  };
+
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _enqueue_pos{0};
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _dequeue_pos{0};
+
+  const size_t _capacity;
+  const size_t _mask;
+  std::unique_ptr<Slot[]> _slots;
+
+  public:
+
+  /**
+  @brief the empty-sentinel value returned by pop / steal on an empty queue
+  */
+  using value_type = T;  // pointer — nullptr means empty
+
+  /**
+  @brief constructs the queue with the given power-of-two capacity
+
+  @param capacity number of slots; must be a power of two and ≥ 2
+  */
+  explicit MPMCQueue(size_t capacity) :
+    _capacity{capacity},
+    _mask    {capacity - 1},
+    _slots   {std::make_unique<Slot[]>(capacity)} {
+    // Slot sequences must be pre-loaded so that slot[i] is "ready for
+    // enqueue[i]" at construction time.
+    for(size_t i = 0; i < capacity; ++i) {
+      _slots[i].sequence.store(i, std::memory_order_relaxed);
+    }
+  }
+
+  // Non-copyable, non-movable (atomics and unique_ptr)
+  MPMCQueue(const MPMCQueue&) = delete;
+  MPMCQueue& operator=(const MPMCQueue&) = delete;
+
+  /**
+  @brief queries if the queue appears empty at the time of the call
+
+  The result is approximate under concurrent access.
+  */
+  bool empty() const noexcept {
+    // Relaxed loads — we only need a rough snapshot for the scheduler's
+    // park / unpark decision.
+    auto ep = _enqueue_pos.load(std::memory_order_relaxed);
+    auto dp = _dequeue_pos.load(std::memory_order_relaxed);
+    return dp >= ep;
+  }
+
+  /**
+  @brief queries the approximate number of items in the queue
+  */
+  size_t size() const noexcept {
+    auto ep = _enqueue_pos.load(std::memory_order_relaxed);
+    auto dp = _dequeue_pos.load(std::memory_order_relaxed);
+    return ep > dp ? ep - dp : 0;
+  }
+
+  /**
+  @brief tries to push one item into the queue
+
+  @param item the item to enqueue (must not be nullptr)
+  @return true if the item was enqueued; false if the queue is full
+  */
+  bool try_push(T item) noexcept {
+    size_t pos = _enqueue_pos.load(std::memory_order_relaxed);
+    for(;;) {
+      Slot& slot = _slots[pos & _mask];
+      size_t seq  = slot.sequence.load(std::memory_order_acquire);
+      auto   diff = static_cast<intptr_t>(seq) - static_cast<intptr_t>(pos);
+      if(diff == 0) {
+        // Slot is ready for this enqueue position — try to claim it.
+        if(_enqueue_pos.compare_exchange_weak(
+              pos, pos + 1,
+              std::memory_order_relaxed, std::memory_order_relaxed)) {
+          slot.data = item;
+          // Publish: sequence = pos + 1 tells consumers the slot is full.
+          slot.sequence.store(pos + 1, std::memory_order_release);
+          return true;
+        }
+        // Another producer claimed this slot — reload pos and retry.
+      } else if(diff < 0) {
+        // seq < pos: a consumer has not yet finished recycling this slot,
+        // which means we have lapped around and the queue is full.
+        return false;
+      } else {
+        // seq > pos: another producer already advanced _enqueue_pos; reload.
+        pos = _enqueue_pos.load(std::memory_order_relaxed);
+      }
+    }
+  }
+
+  /**
+  @brief tries to dequeue one item from the queue (FIFO)
+
+  @return the dequeued item, or nullptr if the queue is empty
+  */
+  T try_pop() noexcept {
+    size_t pos = _dequeue_pos.load(std::memory_order_relaxed);
+    for(;;) {
+      Slot& slot = _slots[pos & _mask];
+      size_t seq  = slot.sequence.load(std::memory_order_acquire);
+      auto   diff = static_cast<intptr_t>(seq) -
+                    static_cast<intptr_t>(pos + 1);
+      if(diff == 0) {
+        // Slot has been written by a producer — try to claim it.
+        if(_dequeue_pos.compare_exchange_weak(
+              pos, pos + 1,
+              std::memory_order_relaxed, std::memory_order_relaxed)) {
+          T item = slot.data;
+          // Recycle: sequence = pos + capacity signals producers that this
+          // slot is now available for the next lap.
+          slot.sequence.store(pos + _capacity, std::memory_order_release);
+          return item;
+        }
+        // Another consumer claimed this slot — reload and retry.
+      } else if(diff < 0) {
+        // seq < pos+1: the slot hasn't been written yet → queue is empty.
+        return nullptr;
+      } else {
+        // seq > pos+1: another consumer advanced _dequeue_pos; reload.
+        pos = _dequeue_pos.load(std::memory_order_relaxed);
+      }
+    }
+  }
+
+  /**
+  @brief steals one item from the queue (alias for try_pop; any thread may call)
+
+  Matches the steal() interface of BoundedWSQ / UnboundedWSQ so that the
+  executor can use a uniform call site for all queue types.
+
+  @return the stolen item, or nullptr if the queue is empty
+  */
+  T steal() noexcept {
+    return try_pop();
+  }
+
+  /**
+  @brief tries to push up to N items from the range [first, first+N)
+
+  On return, @p first points one past the last successfully enqueued element.
+
+  @tparam I  forward iterator whose value_type is T
+  @param first  reference to the iterator (advanced in place)
+  @param N      number of items to attempt
+  @return the number of items actually enqueued
+  */
+  template <typename I>
+  size_t try_bulk_push(I& first, size_t N) {
+    size_t pushed = 0;
+    for(size_t i = 0; i < N; ++i) {
+      if(!try_push(*first)) break;
+      ++first;
+      ++pushed;
+    }
+    return pushed;
+  }
+
+  /**
+  @brief pushes exactly N items, yielding between attempts if the queue is full
+
+  Unlike try_bulk_push, this call does not return until all N items are
+  enqueued.  If the queue is persistently full the calling thread yields via
+  std::this_thread::yield().
+
+  @tparam I  forward iterator whose value_type is T
+  @param first  reference to the iterator (advanced in place)
+  @param N      number of items to push
+  */
+  template <typename I>
+  void bulk_push(I& first, size_t N) {
+    for(size_t i = 0; i < N; ++i) {
+      while(!try_push(*first)) {
+        std::this_thread::yield();
+      }
+      ++first;
+    }
+  }
+};
 
 
 }  // end of namespace tf -----------------------------------------------------

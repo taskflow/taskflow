@@ -1109,13 +1109,8 @@ class Executor {
 
   private:
   
-  struct Buffer {
-    std::mutex mutex;
-    UnboundedWSQ<Node*> queue;
-  };  
-  
   std::vector<Worker> _workers;
-  std::vector<Buffer> _buffers;
+  std::vector<std::unique_ptr<MPMCQueue<Node*>>> _buffers;
   
   // notifier's state variable and num_topologies should sit on different cachelines
   // or the false sharing can cause serious performance drop
@@ -1208,11 +1203,27 @@ class Executor {
 // Constructor
 inline Executor::Executor(size_t N, std::shared_ptr<WorkerInterface> wif) :
   _workers  (N),
-  _buffers  (std::bit_width(N)), // Empirically, we find that log2(N) performs best.
   _notifier (N) {
 
   if(N == 0) {
     TF_THROW("executor must define at least one worker");
+  }
+
+  // Allocate log2(N) lock-free MPMC overflow buffers.
+  //
+  // Capacity must be large enough to absorb the maximum burst of spilled
+  // tasks.  In a semaphore-heavy workload a single _release can reschedule
+  // all waiting tasks simultaneously.  Using 1M (2^20) as the floor gives
+  // each buffer enough headroom for typical production graphs while keeping
+  // memory usage reasonable (8 MB per buffer).  Pathological graphs with
+  // more than (num_bufs * buf_cap - WSQ_capacity) simultaneously runnable
+  // tasks will spin-wait in _spill until workers drain the buffer.
+  const size_t num_bufs = std::bit_width(N);        // empirically log2(N) is best
+  const size_t raw_cap  = std::max<size_t>(size_t{1} << 20, N * 1024);
+  const size_t buf_cap  = std::bit_ceil(raw_cap);
+  _buffers.reserve(num_bufs);
+  for(size_t i = 0; i < num_bufs; ++i) {
+    _buffers.push_back(std::make_unique<MPMCQueue<Node*>>(buf_cap));
   }
   
   // If spawning N threads fails, shut down any created threads before 
@@ -1392,7 +1403,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     // Otherwise, steal from the buffer, adjusting the victim index based on the worker pool size.
     t = (vtm < _workers.size())
       ? _workers[vtm]._wsq.steal()
-      : _buffers[vtm - _workers.size()].queue.steal();
+      : _buffers[vtm - _workers.size()]->steal();
 
     if(t) {
       w._sticky_victim = vtm;
@@ -1445,7 +1456,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   
   // Condition #1: buffers should be empty
   for(size_t b=0; b<_buffers.size(); ++b) {
-    if(!_buffers[b].queue.empty()) {
+    if(!_buffers[b]->empty()) {
       _notifier.cancel_wait(w._id);
       w._sticky_victim = b + _workers.size();
       goto explore_task;
@@ -1514,23 +1525,23 @@ inline size_t Executor::num_observers() const noexcept {
 
 // Procedure: _spill
 inline void Executor::_spill(Node* item) {
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
+  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid
   // contention caused by hashing to the same slot.
   auto b = (reinterpret_cast<uintptr_t>(item) >> 16) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
-  _buffers[b].queue.push(item);
+  while(!_buffers[b]->try_push(item)) {
+    std::this_thread::yield();
+  }
 }
 
 // Procedure: _bulk_spill
 template <typename I>
 void Executor::_bulk_spill(I first, size_t N) {
   // assert(N != 0);
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
+  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid
   // contention caused by hashing to the same slot.
   auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
   auto b = (p ^ (N << 6)) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
-  _buffers[b].queue.bulk_push(first, N);
+  _buffers[b]->bulk_push(first, N);
 }
 
 // Procedure: _schedule
@@ -2180,7 +2191,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
       t = (vtm < _workers.size()) 
         ? _workers[vtm]._wsq.steal()
-        : _buffers[vtm-_workers.size()].queue.steal();
+        : _buffers[vtm-_workers.size()]->steal();
 
       if(t) {
         _invoke(w, t);
