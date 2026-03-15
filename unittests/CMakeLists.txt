@@ -2,9 +2,10 @@ enable_testing()
 
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
-list(APPEND TF_UNITTESTS 
-  test_utility 
+list(APPEND TF_UNITTESTS
+  test_utility
   test_wsq
+  test_mpmc_wsq
   test_spsc
   test_basics 
   test_notifiers

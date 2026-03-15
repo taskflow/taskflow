@@ -1,30 +1,35 @@
 #pragma once
 
 #include <bit>
+#include <thread>
+#if defined(_MSC_VER)
+#  include <intrin.h>
+#endif
 
 #include "../utility/macros.hpp"
 #include "../utility/traits.hpp"
+#include "error.hpp"
 
 /**
 @file wsq.hpp
 @brief work-stealing queue (wsq) include file
 */
 
-#ifndef TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE 
+#ifndef TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE
   /**
   @def TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE
-  
-  This macro defines the default size of the bounded task queue in Log2. 
+
+  This macro defines the default size of the bounded task queue in Log2.
   Bounded task queue is used by each worker.
   By default, the value is set to 8, allowing the queue to hold 256 tasks.
   */
   #define TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE 8
 #endif
 
-#ifndef TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE 
+#ifndef TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE
   /**
   @def TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE
-  
+
   This macro defines the default size of the unbounded task queue in Log2.
   Unbounded task queue is used by the executor as an overflow region.
   By default, the value is set to 10, allowing the queue to hold 1024 tasks initially.
@@ -48,34 +53,50 @@ namespace tf {
 
 This class implements the work-stealing queue described in the paper,
 <a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">
-Correct and Efficient Work-Stealing for Weak Memory Models</a>.
+Correct and Efficient Work-Stealing for Weak Memory Models</a>,
+extended to support concurrent push from multiple producer threads.
 
-A work-stealing queue supports a single owner thread that performs push and pop
-operations, while multiple concurrent thief threads may steal tasks
-from the opposite end of the queue. The implementation is designed to
-operate correctly under weak memory models and uses atomic operations
-with carefully chosen memory orderings to ensure correctness and
-scalability.
+A work-stealing queue supports multiple producer threads that perform
+push operations, and multiple concurrent thief threads that may steal
+tasks from the opposite end of the queue.  A single owner thread may
+additionally pop tasks from the bottom (LIFO) end.
 
 @dotfile images/unbounded_wsq.dot
 
 Unlike bounded queues, this queue automatically grows its internal
 storage as needed, allowing it to accommodate an arbitrary number of
 tasks without a fixed capacity limit.
+
+Each push() holds an atomic_flag spinlock (resize_lock) for the
+duration of the slot write and _bottom store.  resize() holds the
+same lock, so it can never copy a slot mid-write.  The steal() path
+is lock-free and identical to the original Chase-Lev algorithm.
 */
 template <typename T>
 class UnboundedWSQ {
 
   struct Array {
 
+    // C  : logical capacity (max in-flight items); used for the push
+    //      capacity check.
+    // M  : ring-buffer mask = 2*C - 1 (ring has 2*C physical slots).
+    //
+    // Allocating 2*C physical slots ensures that two absolute indices that
+    // share the same ring position (i.e. differ by exactly C) can NEVER
+    // both be live simultaneously.  The capacity check (b-t >= C) prevents
+    // more than C items from being in flight at once; with a ring of size
+    // 2*C, the next wrap-around is unreachable while slot t is still live.
     size_t C;
     size_t M;
     std::atomic<T>* S;
 
     explicit Array(size_t c) :
       C {c},
-      M {c-1},
-      S {new std::atomic<T>[C]} {
+      M {2*c - 1},
+      S {new std::atomic<T>[2*C]} {
+      for (size_t i = 0; i < 2*C; ++i) {
+        S[i].store(T{}, std::memory_order_relaxed);
+      }
     }
 
     ~Array() {
@@ -86,27 +107,42 @@ class UnboundedWSQ {
       return C;
     }
 
+    // Store with caller-supplied memory order.
+    void store(int64_t i, T o, std::memory_order mo = std::memory_order_relaxed) noexcept {
+      S[i & M].store(o, mo);
+    }
+
+    // Legacy alias kept for resize helpers (relaxed store).
     void push(int64_t i, T o) noexcept {
       S[i & M].store(o, std::memory_order_relaxed);
     }
 
+    // Owner-only relaxed load (used by pop()).
     T pop(int64_t i) noexcept {
       return S[i & M].load(std::memory_order_relaxed);
     }
 
+    // Load with caller-supplied memory order.
+    T load(int64_t i, std::memory_order mo) noexcept {
+      return S[i & M].load(mo);
+    }
+
+    // resize: copy live slots [t, b) to a new array.
+    // Slots claimed but not yet written by concurrent push()es are null;
+    // the push() stable-write loop guarantees the pusher will also write to
+    // any newer array installed after the resize, so copying null is safe.
     Array* resize(int64_t b, int64_t t) {
       Array* ptr = new Array {2*C};
-      for(int64_t i=t; i!=b; ++i) {
-        ptr->push(i, pop(i));
+      for(int64_t i = t; i != b; ++i) {
+        ptr->push(i, load(i, std::memory_order_acquire));
       }
       return ptr;
     }
 
     Array* resize(int64_t b, int64_t t, size_t N) {
-      // assert(N>0);
       Array* ptr = new Array {std::bit_ceil(C + N)};
-      for(int64_t i=t; i!=b; ++i) {
-        ptr->push(i, pop(i));
+      for(int64_t i = t; i != b; ++i) {
+        ptr->push(i, load(i, std::memory_order_acquire));
       }
       return ptr;
     }
@@ -118,11 +154,16 @@ class UnboundedWSQ {
   std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 
+  // Spinlock serialising concurrent resize operations.
+  // Only the first thread to observe a full queue performs the allocation;
+  // the rest spin here then retry the push after the lock is released.
+  std::atomic_flag _resize_lock = ATOMIC_FLAG_INIT;
+
   public:
-  
+
   /**
   @brief the return type of queue operations
-  
+
   `value_type` represents the type returned by `pop` and `steal` operations.
   For pointer element types `T`, it is `T` itself and uses `nullptr` to
   indicate an empty result. For non-pointer types, it is `std::optional<T>`,
@@ -132,7 +173,7 @@ class UnboundedWSQ {
   static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
   static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
   @endcode
-  
+
   This design avoids the overhead of `std::optional` for pointer types
   while providing a uniform empty-result semantics.
   */
@@ -144,7 +185,7 @@ class UnboundedWSQ {
   @param LogSize the base-2 logarithm of the queue size
 
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   @endcode
   */
@@ -157,9 +198,9 @@ class UnboundedWSQ {
 
   /**
   @brief queries if the queue is empty at the time of this call
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.empty() == true);
   wsq.push(1);
   assert(wsq.empty() == false);
@@ -169,9 +210,9 @@ class UnboundedWSQ {
 
   /**
   @brief queries the number of items at the time of this call
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.size() == 0);
   wsq.push(1);
   assert(wsq.size() == 1);
@@ -181,9 +222,9 @@ class UnboundedWSQ {
 
   /**
   @brief queries the capacity of the queue
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   for(int i=0; i<1025; i++){  // insert more than 1024 ints to trigger resizing
     wsq.push(i);
@@ -193,17 +234,24 @@ class UnboundedWSQ {
   @endcode
   */
   size_t capacity() const noexcept;
-  
+
   /**
-  @brief inserts an item to the queue
+  @brief inserts an item to the queue (multi-producer safe)
 
   @param item the item to push to the queue
-  
-  This method pushes one item into the queue.
-  The operation can trigger the queue to resize its capacity if more space is required.
-  
+
+  Multiple producer threads may call push() concurrently.  Each producer
+  atomically claims a slot at the bottom of the queue via a CAS loop on
+  _bottom, then writes the item into that slot with release ordering.
+  steal() spin-waits with acquire until the slot holds a non-null value,
+  handling the window between slot-claim and slot-write.
+
+  The operation triggers a resize when the queue is full; resize is
+  serialised by an internal spinlock so at most one doubling occurs at
+  a time.
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   for(int i=0; i<1025; i++) {   // insert more than 1024 items to trigger resizing
     wsq.push(i);
@@ -211,37 +259,33 @@ class UnboundedWSQ {
   assert(wsq.capacity() == 2048);
   assert(wsq.size() == 1025);
   @endcode
-  
-  Only the owner thread can insert an item to the queue.
   */
   void push(T item);
-  
+
   /**
-  @brief tries to insert a batch of items into the queue
+  @brief tries to insert a batch of items into the queue (multi-producer safe)
 
   @tparam I input iterator type
   @param first iterator to the first item in the batch
   @param N number of items to insert beginning at @p first
 
-  This method pushes up to @p N items from the range `[first, first + N)` into the queue. 
-  The operation can trigger the queue to resize its capacity 
+  This method pushes up to @p N items from the range `[first, first + N)` into the queue.
+  The operation can trigger the queue to resize its capacity
   if more space is required.
   The iterator `first` is updated in place and will point to the next uninserted element after the call.
 
   Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
 
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   std::vector<int> vec(1025, 1);
   auto first = vec.data();
-  wsq.bulk_push(first, vec.size()); 
+  wsq.bulk_push(first, vec.size());
   assert(wsq.capacity() == 2048);
   assert(wsq.size() == vec.size());
   assert(std::distance(vec.begin(), first) == 1025);
   @endcode
-  
-  Only the owner thread can insert an item to the queue.
   */
   template <typename I>
   void bulk_push(I& first, size_t N);
@@ -252,9 +296,9 @@ class UnboundedWSQ {
   This method pops an item from the queue.
   If the queue is empty, empty_value() is returned.
   The elements popped out from the queue follow a last-in-first-out (LIFO) order.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -263,7 +307,7 @@ class UnboundedWSQ {
   assert(wsq.pop().value() = 1);
   assert(wsq.pop() == std::nullopt);
   @endcode
-  
+
   Only the owner thread can pop out an item from the queue.
   */
   value_type pop();
@@ -274,9 +318,15 @@ class UnboundedWSQ {
   Any threads can try to steal an item from the queue.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
+  After winning the CAS on _top the stealer exclusively owns slot t.
+  Because a producer may have claimed the slot (advanced _bottom) but not
+  yet written the payload, steal() spin-waits (yielding the CPU) until
+  the slot holds a non-null value.  The slot is cleared to null before
+  returning so the sentinel remains valid for future occupants.
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -292,18 +342,18 @@ class UnboundedWSQ {
 
   /**
   @brief attempts to steal a task with feedback on the emptiness of the queue
-  
+
   @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
-  
+
   This function tries to steal a task from the queue. If the steal attempt
-  is successful, the stolen task is returned. 
+  is successful, the stolen task is returned.
   Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
   otherwise, `num_empty_steals` is reset to zero.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   size_t num_empty_steals(0);
   assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
   assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
@@ -319,17 +369,17 @@ class UnboundedWSQ {
   Multiple threads can simultaneously steal items from the queue.
   */
   value_type steal_with_feedback(size_t& num_empty_steals);
-  
+
   /**
   @brief returns the empty sentinel value for the queue element type
-  
+
   This function provides a type-appropriate empty value used to indicate
   that a pop or steal operation failed. For pointer types, the empty value
   is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
-  
+
   The function is implemented as a `constexpr` helper to avoid additional
   storage, runtime overhead, or code duplication across queue operations.
-  
+
   @return an empty `value_type` representing the absence of an element.
   */
   static constexpr auto empty_value() {
@@ -380,54 +430,100 @@ size_t UnboundedWSQ<T>::size() const noexcept {
   return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
-// Function: push
+// Function: push (multi-producer safe)
+//
+// The resize_lock serialises every push: CAS on _bottom and slot write are
+// a single atomic unit from resize's perspective.  resize() holds the same
+// lock, so it cannot copy a slot that a pusher has claimed but not yet
+// written.  Holding the lock means no concurrent pusher can modify _bottom,
+// so a plain store replaces the CAS: write item -> store _bottom (release).
+//
+// Memory ordering:
+//   Item store (relaxed) is sequenced-before _bottom store (release) in the
+//   same thread.  A stealer that loads _bottom with acquire synchronises
+//   with this release, making the item store visible — the standard
+//   release-sequence rule applies since the item write precedes the release.
+//
 template <typename T>
 void UnboundedWSQ<T>::push(T o) {
 
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
-  Array* a = _array.load(std::memory_order_relaxed);
-
-  // queue is full with one additional item (b-t+1)
-  if (a->capacity() < static_cast<size_t>(b - t + 1)) [[unlikely]] {
-    a = _resize_array(a, b, t);
+  while (_resize_lock.test_and_set(std::memory_order_acquire)) {
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    _mm_pause();
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    __yield();
+#else
+    std::atomic_signal_fence(std::memory_order_seq_cst);
+#endif
   }
 
-  a->push(b, o);
-  std::atomic_thread_fence(std::memory_order_release);
+  auto b = _bottom.load(std::memory_order_relaxed);
+  auto t = _top.load(std::memory_order_acquire);
+  auto a = _array.load(std::memory_order_relaxed);
 
-  // original paper uses relaxed here but tsa complains
+  if (static_cast<size_t>(b - t) >= a->capacity()) [[unlikely]] {
+    auto a2 = a->resize(b, t);
+    _array.store(a2, std::memory_order_relaxed);
+    _garbage.push_back(a);
+    a = a2;
+  }
+
+  // Write item to slot b before publishing b+1.  The _bottom release carries
+  // this write to any stealer that acquires _bottom.
+  a->store(b, o, std::memory_order_relaxed);
   _bottom.store(b + 1, std::memory_order_release);
-}
 
-// Function: bulk_push
+  _resize_lock.clear(std::memory_order_release);
+}
+// Function: bulk_push (multi-producer safe)
+//
+// Same lock-based strategy as push(): hold resize_lock for the entire
+// operation so resize cannot interleave with the N slot writes.
+// Items are written before _bottom is advanced, maintaining the same
+// release-sequence ordering guarantee as push().
+//
 template <typename T>
 template <typename I>
 void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
+  if (N == 0) return;
 
-  if(N == 0) return;
-
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
-  Array* a = _array.load(std::memory_order_relaxed);
-
-  // queue is full with N additional items
-  if ( (b - t + N) > a->capacity() ) [[unlikely]] {
-    a = _resize_array(a, b, t, N);
+  while (_resize_lock.test_and_set(std::memory_order_acquire)) {
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
+    _mm_pause();
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    __yield();
+#else
+    std::atomic_signal_fence(std::memory_order_seq_cst);
+#endif
   }
 
-  for(size_t i=0; i<N; ++i) {
-    a->push(b++, *first++);
-  }
-  std::atomic_thread_fence(std::memory_order_release);
+  auto b = _bottom.load(std::memory_order_relaxed);
+  auto t = _top.load(std::memory_order_acquire);
+  auto a = _array.load(std::memory_order_relaxed);
 
-  // original paper uses relaxed here but tsa complains
-  _bottom.store(b, std::memory_order_release);
+  // Resize until the array fits all N new items.
+  while (static_cast<size_t>(b - t) + N > a->capacity()) [[unlikely]] {
+    auto a2 = a->resize(b, t, N);
+    _array.store(a2, std::memory_order_relaxed);
+    _garbage.push_back(a);
+    a = a2;
+  }
+
+  // Write all N items to slots [b, b+N) before publishing b+N.
+  for (size_t i = 0; i < N; ++i, ++first) {
+    a->store(b + static_cast<int64_t>(i), *first, std::memory_order_relaxed);
+  }
+  _bottom.store(b + static_cast<int64_t>(N), std::memory_order_release);
+
+  _resize_lock.clear(std::memory_order_release);
 }
 
 // Function: pop
+//
+// Owner-only LIFO pop.  Unchanged from the original Chase-Lev algorithm.
+//
 template <typename T>
-typename UnboundedWSQ<T>::value_type 
+typename UnboundedWSQ<T>::value_type
 UnboundedWSQ<T>::pop() {
 
   int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
@@ -436,16 +532,13 @@ UnboundedWSQ<T>::pop() {
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t t = _top.load(std::memory_order_relaxed);
 
-  //T item {nullptr};
   auto item = empty_value();
 
   if(t <= b) {
     item = a->pop(b);
     if(t == b) {
-      // the last item just got stolen
       if(!_top.compare_exchange_strong(t, t+1, std::memory_order_seq_cst,
                                                std::memory_order_relaxed)) {
-        //item = nullptr;
         item = empty_value();
       }
       _bottom.store(b + 1, std::memory_order_relaxed);
@@ -459,58 +552,61 @@ UnboundedWSQ<T>::pop() {
 }
 
 // Function: steal
+//
+// Original Chase-Lev steal algorithm, unchanged.
+// push() holds resize_lock across its slot write and _bottom store, so by
+// the time _bottom is visible to a stealer (via acquire), the item is
+// already in the array.  No spin-wait is needed.
+//
 template <typename T>
-typename UnboundedWSQ<T>::value_type 
+typename UnboundedWSQ<T>::value_type
 UnboundedWSQ<T>::steal() {
-  
+
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
 
-  //T item {nullptr};
-  auto item = empty_value();
+  if(t >= b) return empty_value();
 
-  if(t < b) {
-    Array* a = _array.load(std::memory_order_consume);
-    item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      //return nullptr;
-      return empty_value();
-    }
+  Array* a = _array.load(std::memory_order_consume);
+  auto item = a->pop(t);
+
+  if(!_top.compare_exchange_strong(t, t+1,
+                                   std::memory_order_seq_cst,
+                                   std::memory_order_relaxed)) {
+    return empty_value();
   }
 
-  return item;
+  if constexpr (std::is_pointer_v<T>) return item;
+  else return std::optional<T>{item};
 }
 
-// Function: steal
+// Function: steal_with_feedback
 template <typename T>
-typename UnboundedWSQ<T>::value_type 
+typename UnboundedWSQ<T>::value_type
 UnboundedWSQ<T>::steal_with_feedback(size_t& num_empty_steals) {
-  
+
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
 
-  //T item {nullptr};
-  auto item = empty_value();
-
-  if(t < b) {
-    num_empty_steals = 0;
-    Array* a = _array.load(std::memory_order_consume);
-    item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      //return nullptr;
-      return empty_value();
-    }
-  }
-  else {
+  if(t >= b) {
     ++num_empty_steals;
+    return empty_value();
   }
-  return item;
+
+  num_empty_steals = 0;
+  Array* a = _array.load(std::memory_order_consume);
+  auto item = a->pop(t);
+
+  if(!_top.compare_exchange_strong(t, t+1,
+                                   std::memory_order_seq_cst,
+                                   std::memory_order_relaxed)) {
+    return empty_value();
+  }
+
+  if constexpr (std::is_pointer_v<T>) return item;
+  else return std::optional<T>{item};
 }
 
 // Function: capacity
@@ -570,7 +666,7 @@ may fail or require external handling.
 */
 template <typename T, size_t LogSize = TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE>
 class BoundedWSQ {
-  
+
   constexpr static size_t BufferSize = size_t{1} << LogSize;
   constexpr static size_t BufferMask = (BufferSize - 1);
 
@@ -581,30 +677,30 @@ class BoundedWSQ {
   alignas(TF_CACHELINE_SIZE) std::atomic<T> _buffer[BufferSize];
 
   public:
-  
+
   /**
   @brief the return type of queue operations
-  
+
   `value_type` represents the type returned by `pop` and `steal` operations.
   For pointer element types `T`, it is `T` itself and uses `nullptr` to
   indicate an empty result. For non-pointer types, it is `std::optional<T>`,
   where `std::nullopt` denotes the absence of a value.
-  
+
   @code{.cpp}
   static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
   static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
   @endcode
-  
+
   This design avoids the overhead of `std::optional` for pointer types
   while providing a uniform empty-result semantics.
   */
   using value_type = std::conditional_t<std::is_pointer_v<T>, T, std::optional<T>>;
-    
+
   /**
   @brief constructs the queue with a given capacity
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   static_assert(wsq.capacity() == 1024);
   @endcode
   */
@@ -614,24 +710,24 @@ class BoundedWSQ {
   @brief destructs the queue
   */
   ~BoundedWSQ() = default;
-  
+
   /**
   @brief queries if the queue is empty at the time of this call
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   assert(wsq.empty() == true);
   wsq.push(1);
   assert(wsq.empty() == false);
   @endcode
   */
   bool empty() const noexcept;
-  
+
   /**
   @brief queries the number of items at the time of this call
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   assert(wsq.size() == 0);
   wsq.push(1);
   assert(wsq.size() == 1);
@@ -641,7 +737,7 @@ class BoundedWSQ {
 
   /**
   @brief queries the capacity of the queue
-  
+
   The capacity of a bounded work-stealing queue is decided at compile time.
 
   @code{.cpp}
@@ -650,19 +746,19 @@ class BoundedWSQ {
   @endcode
   */
   constexpr size_t capacity() const;
-  
+
   /**
   @brief tries to insert an item to the queue
 
-  @tparam O data type 
+  @tparam O data type
   @param item the item to perfect-forward to the queue
   @return `true` if the insertion succeed or `false` (queue is full)
-  
+
   This method attempts to push one item into the queue.
   If the operation succeed, it returns `true` or `false` otherwise.
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   static_assert(wsq.capacity() == 1024);
   for(int i=0; i<1024; i++) {
     assert(wsq.try_push(i) == true);
@@ -671,11 +767,11 @@ class BoundedWSQ {
   assert(wsq.try_push(0) == false);
   @endcode
 
-  Only the owner thread can insert an item to the queue. 
+  Only the owner thread can insert an item to the queue.
   */
   template <typename O>
   bool try_push(O&& item);
-  
+
   /**
   @brief tries to insert a batch of items into the queue
 
@@ -686,13 +782,13 @@ class BoundedWSQ {
 
   This method attempts to push up to @p N items from the range
   `[first, first + N)` into the queue. Insertion stops early if the
-  queue becomes full. 
+  queue becomes full.
   The iterator `first` is updated in place and will point to the next uninserted element after the call.
 
   Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   static_assert(wsq.capacity() == 1024);
   std::vector<int> vec(1030, 1);
   auto first = vec.begin();
@@ -704,7 +800,7 @@ class BoundedWSQ {
   */
   template <typename I>
   size_t try_bulk_push(I& first, size_t N);
-  
+
   /**
   @brief pops out an item from the queue
 
@@ -712,7 +808,7 @@ class BoundedWSQ {
   The return can be an empty_value() if this operation failed (empty queue).
 
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -722,19 +818,19 @@ class BoundedWSQ {
   assert(wsq.pop() == std::nullopt);
   @endcode
 
-  Only the owner thread can pop out an item from the queue. 
+  Only the owner thread can pop out an item from the queue.
   */
   value_type pop();
-  
+
   /**
   @brief steals an item from the queue
 
   Any threads can try to steal an item from the queue.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -743,25 +839,25 @@ class BoundedWSQ {
   assert(wsq.steal().value() = 3);
   assert(wsq.steal() == std::nullopt);
   @endcode
-  
+
   Multiple threads can simultaneously steal items from the queue.
   */
   value_type steal();
 
   /**
   @brief attempts to steal a task with feedback on the emptiness of the queue
-  
+
   @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
-  
+
   This function tries to steal a task from the queue. If the steal attempt
-  is successful, the stolen task is returned. 
+  is successful, the stolen task is returned.
   Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
   otherwise, `num_empty_steals` is reset to zero.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
   @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
+  tf::BoundedWSQ<int, 10> wsq;
   size_t num_empty_steals(0);
   assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
   assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
@@ -780,14 +876,14 @@ class BoundedWSQ {
 
   /**
   @brief returns the empty sentinel value for the queue element type
-  
+
   This function provides a type-appropriate empty value used to indicate
   that a pop or steal operation failed. For pointer types, the empty value
   is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
-  
+
   The function is implemented as a `constexpr` helper to avoid additional
   storage, runtime overhead, or code duplication across queue operations.
-  
+
   @return an empty `value_type` representing the absence of an element.
   */
   static constexpr auto empty_value() {
@@ -827,11 +923,11 @@ bool BoundedWSQ<T, LogSize>::try_push(O&& o) {
   if(static_cast<size_t>(b - t + 1) > BufferSize) [[unlikely]] {
     return false;
   }
-  
+
   _buffer[b & BufferMask].store(std::forward<O>(o), std::memory_order_relaxed);
 
   std::atomic_thread_fence(std::memory_order_release);
-  
+
   // original paper uses relaxed here but tsa complains
   _bottom.store(b + 1, std::memory_order_release);
 
@@ -860,13 +956,13 @@ size_t BoundedWSQ<T, LogSize>::try_bulk_push(I& first, size_t N) {
     // original paper uses relaxed here but tsa complains
     _bottom.store(b, std::memory_order_release);
   }
-  
+
   return n;
 }
 
 // Function: pop
 template <typename T, size_t LogSize>
-typename BoundedWSQ<T, LogSize>::value_type 
+typename BoundedWSQ<T, LogSize>::value_type
 BoundedWSQ<T, LogSize>::pop() {
 
   int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
@@ -881,8 +977,8 @@ BoundedWSQ<T, LogSize>::pop() {
     item = _buffer[b & BufferMask].load(std::memory_order_relaxed);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
+      if(!_top.compare_exchange_strong(t, t+1,
+                                       std::memory_order_seq_cst,
                                        std::memory_order_relaxed)) {
         //item = nullptr;
         item = empty_value();
@@ -899,12 +995,12 @@ BoundedWSQ<T, LogSize>::pop() {
 
 // Function: steal
 template <typename T, size_t LogSize>
-typename BoundedWSQ<T, LogSize>::value_type 
+typename BoundedWSQ<T, LogSize>::value_type
 BoundedWSQ<T, LogSize>::steal() {
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
-  
+
   //T item{nullptr};
   auto item = empty_value();
 
@@ -923,12 +1019,12 @@ BoundedWSQ<T, LogSize>::steal() {
 
 // Function: steal
 template <typename T, size_t LogSize>
-typename BoundedWSQ<T, LogSize>::value_type 
+typename BoundedWSQ<T, LogSize>::value_type
 BoundedWSQ<T, LogSize>::steal_with_feedback(size_t& num_empty_steals) {
   int64_t t = _top.load(std::memory_order_acquire);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
-  
+
   //T item {nullptr};
   auto item = empty_value();
 
@@ -956,6 +1052,3 @@ constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-

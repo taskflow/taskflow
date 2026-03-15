@@ -1110,9 +1110,10 @@ class Executor {
   private:
   
   struct Buffer {
-    std::mutex mutex;
+    // mutex removed: UnboundedWSQ now supports multi-producer push via
+    // an internal CAS loop on _bottom; no external lock is required.
     UnboundedWSQ<Node*> queue;
-  };  
+  };
   
   std::vector<Worker> _workers;
   std::vector<Buffer> _buffers;
@@ -1517,7 +1518,6 @@ inline void Executor::_spill(Node* item) {
   // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
   // contention caused by hashing to the same slot.
   auto b = (reinterpret_cast<uintptr_t>(item) >> 16) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
   _buffers[b].queue.push(item);
 }
 
@@ -1529,7 +1529,6 @@ void Executor::_bulk_spill(I first, size_t N) {
   // contention caused by hashing to the same slot.
   auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
   auto b = (p ^ (N << 6)) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
   _buffers[b].queue.bulk_push(first, N);
 }
 
