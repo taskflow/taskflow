@@ -450,8 +450,10 @@ void UnboundedWSQ<T>::push(T o) {
   while (_resize_lock.test_and_set(std::memory_order_acquire)) {
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
     _mm_pause();
-#elif defined(__aarch64__) || defined(_M_ARM64)
+#elif defined(_M_ARM64)
     __yield();
+#elif defined(__aarch64__)
+    __asm__ volatile("yield");
 #else
     std::atomic_signal_fence(std::memory_order_seq_cst);
 #endif
@@ -490,8 +492,10 @@ void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
   while (_resize_lock.test_and_set(std::memory_order_acquire)) {
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
     _mm_pause();
-#elif defined(__aarch64__) || defined(_M_ARM64)
+#elif defined(_M_ARM64)
     __yield();
+#elif defined(__aarch64__)
+    __asm__ volatile("yield");
 #else
     std::atomic_signal_fence(std::memory_order_seq_cst);
 #endif
