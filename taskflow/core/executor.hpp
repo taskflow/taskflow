@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "observer.hpp"
 #include "taskflow.hpp"
@@ -1413,7 +1413,9 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
     } 
 
     // Randomely generate a next victim.
-    vtm = w._rdgen() % MAX_VICTIM;
+    do {
+        vtm = w._rdgen() % MAX_VICTIM;
+    } while (vtm == w._id);
   } 
   return true;
 }
@@ -1513,26 +1515,100 @@ inline size_t Executor::num_observers() const noexcept {
 }
 
 // Procedure: _spill
+// Purpose: Offloads a single task (Node) to an available buffer to balance the workload.
+// It uses a lock-avoidance strategy to find an uncontended queue before falling back to blocking.
 inline void Executor::_spill(Node* item) {
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
-  // contention caused by hashing to the same slot.
-  auto b = (reinterpret_cast<uintptr_t>(item) >> 16) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
-  _buffers[b].queue.push(item);
+    // Use the memory address of the item as the basis for our hash.
+    // Since pointers are typically aligned to 8 bytes, direct modulo operations can cause
+    // severe clustering (contention). We multiply by a Fibonacci hashing constant
+    // (11400714819323198485ULL) to evenly distribute items across all slots.
+    std::uintptr_t const ptr = reinterpret_cast<std::uintptr_t>(item);
+    std::size_t const size = _buffers.size();
+    std::size_t hash = ptr * 11400714819323198485ULL;
+    std::size_t b = 0;
+
+    // Fast modulo operation: if the buffer size is a power of 2, we can use a highly
+    // efficient bitwise AND instead of a division.
+    // [[likely]] hints to the compiler to optimize for this branch.
+    if (std::has_single_bit(size)) [[likely]] {
+        b = hash & (size - 1);
+    } else {
+        b = hash % size;
+    }
+
+    // Fast-Path: Linearly probe the buffers starting from our hashed index 'b'.
+    // We use try_lock() to find the first buffer that is NOT currently locked by another thread.
+    // First pass: from index 'b' to the end of the array.
+    for (std::size_t curr_b = b; curr_b < size; ++curr_b) {
+        auto& buf = _buffers[curr_b];
+        if (buf.mutex.try_lock()) {
+            buf.queue.push(item);
+            buf.mutex.unlock();
+            return;
+        }
+    }
+    // Second pass: wrap around and check from the beginning of the array up to 'b'.
+    for (std::size_t curr_b = 0; curr_b < b; ++curr_b) {
+        auto& buf = _buffers[curr_b];
+        if (buf.mutex.try_lock()) {
+            buf.queue.push(item);
+            buf.mutex.unlock();
+            return;
+        }
+    }
+
+    // Slow-Path Fallback: If all buffers are currently locked (high contention),
+    // we cannot avoid waiting. We perform a blocking wait on the originally hashed buffer 'b'.
+    std::lock_guard<std::mutex> lock(_buffers[b].mutex);
+    _buffers[b].queue.push(item);
 }
 
 // Procedure: _bulk_spill
+// Purpose: Offloads a batch of tasks (N items starting from iterator 'first') to a buffer.
+// Follows the same lock-avoidance strategy as _spill to minimize thread contention.
 template <typename I>
 void Executor::_bulk_spill(I first, size_t N) {
-  // assert(N != 0);
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
-  // contention caused by hashing to the same slot.
-  auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
-  auto b = (p ^ (N << 6)) % _buffers.size();
-  std::scoped_lock lock(_buffers[b].mutex);
-  _buffers[b].queue.bulk_push(first, N);
-}
+    // assert(N != 0);
 
+    // Use the memory address of the first item in the batch for hashing.
+    // Fibonacci hashing is used again to scramble aligned pointers and prevent
+    // multiple threads from constantly hammering the same buffer.
+    std::uintptr_t const ptr = reinterpret_cast<std::uintptr_t>(*first);
+    std::size_t const size = _buffers.size();
+    std::size_t hash = ptr * 11400714819323198485ULL;
+    std::size_t b = 0;
+
+    // Optimize modulo calculation if the buffer size is a power of 2.
+    if (std::has_single_bit(size)) [[likely]] {
+        b = hash & (size - 1);
+    } else {
+        b = hash % size;
+    }
+
+    // Fast-Path: Attempt to bulk-push into the first uncontended buffer.
+    // First pass: from index 'b' to the end.
+    for (std::size_t curr_b = b; curr_b < size; ++curr_b) {
+        auto& buf = _buffers[curr_b];
+        if (buf.mutex.try_lock()) {
+            buf.queue.bulk_push(first, N);
+            buf.mutex.unlock();
+            return;
+        }
+    }
+    // Second pass: wrap around from index 0 to 'b'.
+    for (std::size_t curr_b = 0; curr_b < b; ++curr_b) {
+        auto& buf = _buffers[curr_b];
+        if (buf.mutex.try_lock()) {
+            buf.queue.bulk_push(first, N);
+            buf.mutex.unlock();
+            return;
+        }
+    }
+
+    // Slow-Path Fallback: All queues are locked. Wait and push to the hashed queue.
+    std::lock_guard<std::mutex> lock(_buffers[b].mutex);
+    _buffers[b].queue.bulk_push(first, N);
+}
 // Procedure: _schedule
 inline void Executor::_schedule(Worker& worker, Node* node) {
   // starting at v3.5 we do not use any complicated notification mechanism 
