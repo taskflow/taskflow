@@ -52,7 +52,10 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                              part_b - prev_e + std::distance(prev_e2_it, beg2_it));
 
                 std::merge(beg1, end1, beg2_it, end2_it, d_beg);
+                std::advance(d_beg,
+                             part_e - part_b + std::distance(beg2_it, end2_it));
                 prev_e = part_e;
+                beg1 = end1;
                 prev_e2_it = end2_it;
               });
         });
@@ -80,7 +83,10 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                              part_b - prev_e + std::distance(prev_e2_it, beg2_it));
 
                 std::merge(beg1, end1, beg2_it, end2_it, d_beg);
+                std::advance(d_beg,
+                             part_e - part_b + std::distance(beg2_it, end2_it));
                 prev_e = part_e;
+                beg1 = end1;
                 prev_e2_it = end2_it;
               });
         });
