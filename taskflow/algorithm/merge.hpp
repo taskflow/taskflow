@@ -46,7 +46,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 B_t beg2_it =
                     (part_b == 0) ? beg2 : std::lower_bound(beg2, end2, *beg1);
                 E_t end2_it =
-                    (part_e == N) ? end2 : std::upper_bound(beg2, end2, *end1);
+                    (part_e == N) ? end2 : std::lower_bound(beg2, end2, *end1);
 
                 std::advance(d_beg,
                              part_b - prev_e + std::distance(prev_e2_it, beg2_it));
@@ -77,7 +77,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 B_t beg2_it =
                     (part_b == 0) ? beg2 : std::lower_bound(beg2, end2, *beg1);
                 E_t end2_it =
-                    (part_e == N) ? end2 : std::upper_bound(beg2, end2, *end1);
+                    (part_e == N) ? end2 : std::lower_bound(beg2, end2, *end1);
 
                 std::advance(d_beg,
                              part_b - prev_e + std::distance(prev_e2_it, beg2_it));
