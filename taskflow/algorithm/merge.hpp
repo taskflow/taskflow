@@ -3,8 +3,7 @@
 #include "../taskflow.hpp"
 
 namespace tf {
-template <typename B, typename E, typename O,
-          typename P = DefaultPartitioner>
+template <typename B, typename E, typename O, typename P = DefaultPartitioner>
 auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                      P part = P()) {
   using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
@@ -30,6 +29,25 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
       W = N;
     }
 
+    auto merge = [](B_t first1, E_t last1, B_t first2, E_t last2, O& dest) {
+      while (first1 != last1 && first2 != last2) {
+        if (*first1 <= *first2) {
+          *(dest++) = *(first1++);
+        } else {
+          *(dest++) = *(first2++);
+        }
+      }
+      if (first1 == last1 && first2 != last2) {
+        while (first2 != last2) {
+          *(dest++) = *(first2++);
+        }
+      } else if (first2 == last2 && first1 != last1) {
+        while (first1 != last1) {
+          *(dest++) = *(first1++);
+        }
+      }
+    };
+
     // static partitioner
     if constexpr (part.type() == PartitionerType::STATIC) {
       for (size_t w = 0, curr_b = 0; w < W && curr_b < N;) {
@@ -48,12 +66,10 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 E_t end2_it =
                     (part_e == N) ? end2 : std::lower_bound(beg2, end2, *end1);
 
-                std::advance(d_beg,
-                             part_b - prev_e + std::distance(prev_e2_it, beg2_it));
+                std::advance(d_beg, part_b - prev_e +
+                                        std::distance(prev_e2_it, beg2_it));
 
-                std::merge(beg1, end1, beg2_it, end2_it, d_beg);
-                std::advance(d_beg,
-                             part_e - part_b + std::distance(beg2_it, end2_it));
+                merge(beg1, end1, beg2_it, end2_it, d_beg);
                 prev_e = part_e;
                 beg1 = end1;
                 prev_e2_it = end2_it;
@@ -79,8 +95,8 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 E_t end2_it =
                     (part_e == N) ? end2 : std::lower_bound(beg2, end2, *end1);
 
-                std::advance(d_beg,
-                             part_b - prev_e + std::distance(prev_e2_it, beg2_it));
+                std::advance(d_beg, part_b - prev_e +
+                                        std::distance(prev_e2_it, beg2_it));
 
                 std::merge(beg1, end1, beg2_it, end2_it, d_beg);
                 std::advance(d_beg,
