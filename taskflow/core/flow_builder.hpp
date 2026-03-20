@@ -1261,6 +1261,11 @@ class FlowBuilder {
   template <typename B, typename E>
   Task sort(B first, E last);
 
+  template <
+  typename B1, typename E1, typename B2, typename E2, typename O, 
+  typename P = DefaultPartitioner>
+  Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
+  
   protected:
 
   /**
