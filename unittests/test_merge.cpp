@@ -1,25 +1,24 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest/doctest.h>
-#include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/merge.hpp>
+#include <taskflow/taskflow.hpp>
 
 // ----------------------------------------------------------------------------
 // parallel merge POD
 // ----------------------------------------------------------------------------
 
-template <typename T>
-void pm_pod(size_t W, size_t N) {
+template <typename T> void pm_pod(size_t W, size_t N) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<T> data1(N);
   std::vector<T> data2(N);
 
-  for(auto& d : data1) {
+  for (auto &d : data1) {
     d = ::rand() % 1000 - 500;
   }
-  for(auto& d : data2) {
+  for (auto &d : data2) {
     d = ::rand() % 1000 - 500;
   }
 
@@ -32,7 +31,8 @@ void pm_pod(size_t W, size_t N) {
   tf::Taskflow taskflow;
   tf::Executor executor(W);
 
-  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin());
+  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+                 res.begin());
 
   executor.run(taskflow).wait();
 
@@ -78,49 +78,43 @@ TEST_CASE("ParallelMerge.ldouble.4.100000" * doctest::timeout(300)) {
 void async(size_t W) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Executor executor(W);
   std::vector<int> data1;
   std::vector<int> data2;
   std::vector<int> res;
 
-  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
-    
+  for (size_t n = 0; n < 100000; n = (n ? n * 10 : 1)) {
+
     data1.resize(n);
     data2.resize(n);
     res.resize(n * 2);
 
-    for(auto& d : data1) {
+    for (auto &d : data1) {
       d = ::rand() % 1000 - 500;
     }
-    for(auto& d : data2) {
+    for (auto &d : data2) {
       d = ::rand() % 1000 - 500;
     }
 
     std::sort(data1.begin(), data1.end());
     std::sort(data2.begin(), data2.end());
-  
-    executor.async(tf::make_merge_task(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin()));
+
+    executor.async(tf::make_merge_task(data1.begin(), data1.end(),
+                                       data2.begin(), data2.end(),
+                                       std::less<>{}, res.begin()));
     executor.wait_for_all();
     REQUIRE(std::is_sorted(res.begin(), res.end()));
   }
 }
 
-TEST_CASE("ParallelMerge.Async.1thread" * doctest::timeout(300)) {
-  async(1);
-}
+TEST_CASE("ParallelMerge.Async.1thread" * doctest::timeout(300)) { async(1); }
 
-TEST_CASE("ParallelMerge.Async.2threads" * doctest::timeout(300)) {
-  async(2);
-}
+TEST_CASE("ParallelMerge.Async.2threads" * doctest::timeout(300)) { async(2); }
 
-TEST_CASE("ParallelMerge.Async.3threads" * doctest::timeout(300)) {
-  async(3);
-}
+TEST_CASE("ParallelMerge.Async.3threads" * doctest::timeout(300)) { async(3); }
 
-TEST_CASE("ParallelMerge.Async.4threads" * doctest::timeout(300)) {
-  async(4);
-}
+TEST_CASE("ParallelMerge.Async.4threads" * doctest::timeout(300)) { async(4); }
 
 // ----------------------------------------------------------------------------
 // Parallel Merge with Dependent Async Tasks
@@ -129,25 +123,29 @@ TEST_CASE("ParallelMerge.Async.4threads" * doctest::timeout(300)) {
 void dependent_async(size_t W) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Executor executor(W);
   std::vector<int> data1;
   std::vector<int> data2;
   std::vector<int> res;
 
-  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
-    
+  for (size_t n = 0; n < 100000; n = (n ? n * 10 : 1)) {
+
     data1.resize(n);
     data2.resize(n);
     res.resize(n * 2);
 
-    for(auto& d : data1) d = ::rand() % 1000 - 500;
-    for(auto& d : data2) d = ::rand() % 1000 - 500;
+    for (auto &d : data1)
+      d = ::rand() % 1000 - 500;
+    for (auto &d : data2)
+      d = ::rand() % 1000 - 500;
 
     std::sort(data1.begin(), data1.end());
     std::sort(data2.begin(), data2.end());
-  
-    executor.dependent_async(tf::make_merge_task(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin()));
+
+    executor.dependent_async(tf::make_merge_task(data1.begin(), data1.end(),
+                                                 data2.begin(), data2.end(),
+                                                 std::less<>{}, res.begin()));
     executor.wait_for_all();
     REQUIRE(std::is_sorted(res.begin(), res.end()));
   }
@@ -176,25 +174,29 @@ TEST_CASE("ParallelMerge.DependentAsync.4threads" * doctest::timeout(300)) {
 void silent_async(size_t W) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Executor executor(W);
   std::vector<int> data1;
   std::vector<int> data2;
   std::vector<int> res;
 
-  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
-    
+  for (size_t n = 0; n < 100000; n = (n ? n * 10 : 1)) {
+
     data1.resize(n);
     data2.resize(n);
     res.resize(n * 2);
 
-    for(auto& d : data1) d = ::rand() % 1000 - 500;
-    for(auto& d : data2) d = ::rand() % 1000 - 500;
+    for (auto &d : data1)
+      d = ::rand() % 1000 - 500;
+    for (auto &d : data2)
+      d = ::rand() % 1000 - 500;
 
     std::sort(data1.begin(), data1.end());
     std::sort(data2.begin(), data2.end());
-  
-    executor.silent_async(tf::make_merge_task(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin()));
+
+    executor.silent_async(tf::make_merge_task(data1.begin(), data1.end(),
+                                              data2.begin(), data2.end(),
+                                              std::less<>{}, res.begin()));
     executor.wait_for_all();
     REQUIRE(std::is_sorted(res.begin(), res.end()));
   }
@@ -223,43 +225,51 @@ TEST_CASE("ParallelMerge.SilentAsync.4threads" * doctest::timeout(300)) {
 void silent_dependent_async(size_t W) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
-  
+
   tf::Executor executor(W);
   std::vector<int> data1;
   std::vector<int> data2;
   std::vector<int> res;
 
-  for(size_t n=0; n < 100000; n = (n ? n*10 : 1)) {
-    
+  for (size_t n = 0; n < 100000; n = (n ? n * 10 : 1)) {
+
     data1.resize(n);
     data2.resize(n);
     res.resize(n * 2);
 
-    for(auto& d : data1) d = ::rand() % 1000 - 500;
-    for(auto& d : data2) d = ::rand() % 1000 - 500;
+    for (auto &d : data1)
+      d = ::rand() % 1000 - 500;
+    for (auto &d : data2)
+      d = ::rand() % 1000 - 500;
 
     std::sort(data1.begin(), data1.end());
     std::sort(data2.begin(), data2.end());
-  
-    executor.silent_dependent_async(tf::make_merge_task(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin()));
+
+    executor.silent_dependent_async(
+        tf::make_merge_task(data1.begin(), data1.end(), data2.begin(),
+                            data2.end(), std::less<>{}, res.begin()));
     executor.wait_for_all();
     REQUIRE(std::is_sorted(res.begin(), res.end()));
   }
 }
 
-TEST_CASE("ParallelMerge.SilentDependentAsync.1thread" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.SilentDependentAsync.1thread" *
+          doctest::timeout(300)) {
   silent_dependent_async(1);
 }
 
-TEST_CASE("ParallelMerge.SilentDependentAsync.2threads" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.SilentDependentAsync.2threads" *
+          doctest::timeout(300)) {
   silent_dependent_async(2);
 }
 
-TEST_CASE("ParallelMerge.SilentDependentAsync.3threads" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.SilentDependentAsync.3threads" *
+          doctest::timeout(300)) {
   silent_dependent_async(3);
 }
 
-TEST_CASE("ParallelMerge.SilentDependentAsync.4threads" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.SilentDependentAsync.4threads" *
+          doctest::timeout(300)) {
   silent_dependent_async(4);
 }
 
@@ -267,18 +277,17 @@ TEST_CASE("ParallelMerge.SilentDependentAsync.4threads" * doctest::timeout(300))
 // Parallel Merge with Different Partitioners
 // ----------------------------------------------------------------------------
 
-template <typename P>
-void pm_partitioner(size_t W, size_t N) {
+template <typename P> void pm_partitioner(size_t W, size_t N) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
 
   std::vector<int> data1(N);
   std::vector<int> data2(N);
 
-  for(auto& d : data1) {
+  for (auto &d : data1) {
     d = ::rand() % 1000 - 500;
   }
-  for(auto& d : data2) {
+  for (auto &d : data2) {
     d = ::rand() % 1000 - 500;
   }
 
@@ -292,7 +301,8 @@ void pm_partitioner(size_t W, size_t N) {
   tf::Executor executor(W);
 
   // Pass the instantiated partitioner to the merge algorithm
-  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(), res.begin(), P());
+  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+                 res.begin(), P());
 
   executor.run(taskflow).wait();
 
@@ -383,8 +393,10 @@ void pm_chunk_sweep(size_t W, size_t N, size_t chunk_size) {
   std::vector<int> data1(N);
   std::vector<int> data2(N);
 
-  for(auto& d : data1) d = ::rand() % 1000 - 500;
-  for(auto& d : data2) d = ::rand() % 1000 - 500;
+  for (auto &d : data1)
+    d = ::rand() % 1000 - 500;
+  for (auto &d : data2)
+    d = ::rand() % 1000 - 500;
 
   std::sort(data1.begin(), data1.end());
   std::sort(data2.begin(), data2.end());
@@ -395,7 +407,7 @@ void pm_chunk_sweep(size_t W, size_t N, size_t chunk_size) {
   tf::Executor executor(W);
 
   // Initialize partitioner with the specific chunk size
-  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(), 
+  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
                  res.begin(), P(chunk_size));
 
   executor.run(taskflow).wait();
@@ -408,11 +420,19 @@ void pm_chunk_sweep(size_t W, size_t N, size_t chunk_size) {
 TEST_CASE("ParallelMerge.Static.ChunkSweep" * doctest::timeout(300)) {
   size_t W = 4;
   size_t N = 100000;
-  
-  SUBCASE("Small chunk size (1)") { pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 1); }
-  SUBCASE("Medium chunk size (100)") { pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 100); }
-  SUBCASE("Large chunk size (10000)") { pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 10000); }
-  SUBCASE("Chunk size larger than N") { pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, N + 1); }
+
+  SUBCASE("Small chunk size (1)") {
+    pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 1);
+  }
+  SUBCASE("Medium chunk size (100)") {
+    pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 100);
+  }
+  SUBCASE("Large chunk size (10000)") {
+    pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, 10000);
+  }
+  SUBCASE("Chunk size larger than N") {
+    pm_chunk_sweep<tf::StaticPartitioner<>>(W, N, N + 1);
+  }
 }
 
 // --- Dynamic Partitioner Sweeps ---
@@ -421,9 +441,15 @@ TEST_CASE("ParallelMerge.Dynamic.ChunkSweep" * doctest::timeout(300)) {
   size_t W = 4;
   size_t N = 100000;
 
-  SUBCASE("Small chunk size (1)") { pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 1); }
-  SUBCASE("Medium chunk size (50)") { pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 50); }
-  SUBCASE("Large chunk size (5000)") { pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 5000); }
+  SUBCASE("Small chunk size (1)") {
+    pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 1);
+  }
+  SUBCASE("Medium chunk size (50)") {
+    pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 50);
+  }
+  SUBCASE("Large chunk size (5000)") {
+    pm_chunk_sweep<tf::DynamicPartitioner<>>(W, N, 5000);
+  }
 }
 
 // --- Guided Partitioner Sweeps ---
@@ -433,8 +459,12 @@ TEST_CASE("ParallelMerge.Guided.ChunkSweep" * doctest::timeout(300)) {
   size_t N = 100000;
 
   // Guided partitioner uses chunk_size as the minimum chunk size
-  SUBCASE("Min chunk size (1)") { pm_chunk_sweep<tf::GuidedPartitioner<>>(W, N, 1); }
-  SUBCASE("Min chunk size (100)") { pm_chunk_sweep<tf::GuidedPartitioner<>>(W, N, 100); }
+  SUBCASE("Min chunk size (1)") {
+    pm_chunk_sweep<tf::GuidedPartitioner<>>(W, N, 1);
+  }
+  SUBCASE("Min chunk size (100)") {
+    pm_chunk_sweep<tf::GuidedPartitioner<>>(W, N, 100);
+  }
 }
 
 // --- Random Partitioner Sweeps ---
@@ -443,13 +473,14 @@ TEST_CASE("ParallelMerge.Random.ChunkSweep" * doctest::timeout(300)) {
   size_t W = 4;
   size_t N = 100000;
 
-  SUBCASE("Small range (1, 10)") { 
+  SUBCASE("Small range (1, 10)") {
     tf::Executor executor(W);
-    std::vector<int> d1(N), d2(N), res(N*2);
+    std::vector<int> d1(N), d2(N), res(N * 2);
     // Standard setup omitted for brevity in this specific subcase call
     // Logic: P(min, max)
     tf::Taskflow tf;
-    tf.merge(d1.begin(), d1.end(), d2.begin(), d2.end(), res.begin(), tf::RandomPartitioner<>(1, 10));
+    tf.merge(d1.begin(), d1.end(), d2.begin(), d2.end(), res.begin(),
+             tf::RandomPartitioner<>(1, 10));
     executor.run(tf).wait();
   }
 }

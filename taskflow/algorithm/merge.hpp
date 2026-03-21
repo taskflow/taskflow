@@ -1,19 +1,23 @@
 #pragma once
 
 #include "../taskflow.hpp"
+#include <cstddef>
 
 namespace tf {
-template <typename B, typename E, typename O, typename P = DefaultPartitioner>
-auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
+template <typename B1, typename E1, typename B2, typename E2, typename O,
+          typename C, typename P = DefaultPartitioner>
+auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
                      P part = P()) {
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
+  using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
+  using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
+  using E2_t = std::decay_t<unwrap_ref_decay_t<E2>>;
   using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
-  return [=](Runtime& rt) mutable {
-    B_t beg1 = first1;
-    E_t end1 = last1;
-    B_t beg2 = first2;
-    E_t end2 = last2;
+  return [=](Runtime &rt) mutable {
+    B1_t beg1 = first1;
+    E1_t end1 = last1;
+    B2_t beg2 = first2;
+    E2_t end2 = last2;
     O_t d_beg = d_first;
 
     size_t n = static_cast<size_t>(std::distance(beg1, end1));
@@ -24,7 +28,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
 
     // only myself - no need to spawn another graph
     if (W <= 1 || N <= part.chunk_size()) {
-      part([=]() mutable { std::merge(beg1, end1, beg2, end2, d_beg); });
+      part([=]() mutable { std::merge(beg1, end1, beg2, end2, d_beg, cmp); });
       return;
     }
 
@@ -32,7 +36,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
       W = N;
     }
 
-    auto co_rank =[n, m](B_t f1, B_t f2, size_t rank) {
+    auto co_rank = [cmp, n, m](B1_t f1, B2_t f2, size_t rank) {
       // Prevents underflow if rank < m
       size_t low = (rank > m) ? rank - m : 0;
       size_t high = std::min(n, rank);
@@ -41,12 +45,12 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
         size_t i = low + (high - low) / 2;
         size_t j = rank - i;
 
-        B_t pt1 = f1;
+        auto pt1 = f1;
         std::advance(pt1, i);
-        B_t pt2 = f2;
+        auto pt2 = f2;
         std::advance(pt2, j - 1);
-
-        if (*pt1 <= *pt2) {
+        // *pt1 <= *pt2
+        if (!cmp(*pt2, *pt1)) {
           low = i + 1;
         } else {
           high = i;
@@ -66,10 +70,10 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 auto [b1_ind, b2_ind] = co_rank(beg1, beg2, part_b);
                 auto [e1_ind, e2_ind] = co_rank(beg1, beg2, part_e);
 
-                B_t b1 = beg1;
-                B_t b2 = beg2;
-                E_t e1 = beg1;
-                E_t e2 = beg2;
+                auto b1 = beg1;
+                auto b2 = beg2;
+                auto e1 = beg1;
+                auto e2 = beg2;
 
                 std::advance(b1, b1_ind);
                 std::advance(b2, b2_ind);
@@ -78,7 +82,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
 
                 std::advance(d_beg, part_b - prev_e);
 
-                d_beg = std::merge(b1, e1, b2, e2, d_beg);
+                d_beg = std::merge(b1, e1, b2, e2, d_beg, cmp);
                 prev_e = part_e;
               });
         });
@@ -95,10 +99,10 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
                 auto [b1_ind, b2_ind] = co_rank(beg1, beg2, part_b);
                 auto [e1_ind, e2_ind] = co_rank(beg1, beg2, part_e);
 
-                B_t b1 = beg1;
-                B_t b2 = beg2;
-                E_t e1 = beg1;
-                E_t e2 = beg2;
+                auto b1 = beg1;
+                auto b2 = beg2;
+                auto e1 = beg1;
+                auto e2 = beg2;
 
                 std::advance(b1, b1_ind);
                 std::advance(b2, b2_ind);
@@ -107,7 +111,7 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
 
                 std::advance(d_beg, part_b - prev_e);
 
-                d_beg = std::merge(b1, e1, b2, e2, d_beg);
+                d_beg = std::merge(b1, e1, b2, e2, d_beg, cmp);
                 prev_e = part_e;
               });
         });
@@ -116,10 +120,29 @@ auto make_merge_task(B first1, E last1, B first2, E last2, O d_first,
     }
   };
 }
+
+// ----------------------------------------------------------------------------
+// tf::Taskflow::merge
+// ----------------------------------------------------------------------------
+
+// Function: merge
 template <typename B1, typename E1, typename B2, typename E2, typename O,
-          typename P>
+          typename P,
+          std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void> * = nullptr>
 Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
                         P part) {
-  return emplace(make_merge_task(first1, last1, first2, last2, d_first, part));
+  return emplace(make_merge_task(first1, last1, first2, last2, std::less<>{},
+                                 d_first, part));
 }
-}  // namespace tf
+
+// Function: merge
+template <
+    typename B1, typename E1, typename B2, typename E2, typename O, typename C,
+    typename P,
+    std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void> * = nullptr>
+Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
+                        C cmp, P part) {
+  return emplace(
+      make_merge_task(first1, last1, first2, last2, cmp, d_first, part));
+}
+} // namespace tf
