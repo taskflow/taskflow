@@ -484,3 +484,108 @@ TEST_CASE("ParallelMerge.Random.ChunkSweep" * doctest::timeout(300)) {
     executor.run(tf).wait();
   }
 }
+
+// ----------------------------------------------------------------------------
+// Parallel Merge with Custom Comparator (Descending Order)
+// ----------------------------------------------------------------------------
+
+template <typename T> void pm_custom_cmp(size_t W, size_t N) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  std::vector<T> data1(N);
+  std::vector<T> data2(N);
+
+  for (auto &d : data1) {
+    d = ::rand() % 1000 - 500;
+  }
+  for (auto &d : data2) {
+    d = ::rand() % 1000 - 500;
+  }
+
+  // Input arrays MUST be sorted according to the custom comparator
+  std::sort(data1.begin(), data1.end(), std::greater<T>{});
+  std::sort(data2.begin(), data2.end(), std::greater<T>{});
+
+  std::vector<T> res(N * 2);
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  // Pass custom comparator: std::greater
+  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+                 res.begin(), std::greater<T>{});
+
+  executor.run(taskflow).wait();
+
+  // Verify the result is sorted in descending order
+  REQUIRE(std::is_sorted(res.begin(), res.end(), std::greater<T>{}));
+}
+
+TEST_CASE("ParallelMerge.CustomCmp.1.100000" * doctest::timeout(300)) {
+  pm_custom_cmp<int>(1, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp.2.100000" * doctest::timeout(300)) {
+  pm_custom_cmp<int>(2, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp.3.100000" * doctest::timeout(300)) {
+  pm_custom_cmp<int>(3, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp.4.100000" * doctest::timeout(300)) {
+  pm_custom_cmp<int>(4, 100000);
+}
+
+// ----------------------------------------------------------------------------
+// Parallel Merge with Custom Comparator AND Custom Partitioner
+// ----------------------------------------------------------------------------
+
+template <typename T, typename P> 
+void pm_custom_cmp_partitioner(size_t W, size_t N) {
+
+  std::srand(static_cast<unsigned int>(time(NULL)));
+
+  std::vector<T> data1(N);
+  std::vector<T> data2(N);
+
+  for (auto &d : data1) {
+    d = ::rand() % 1000 - 500;
+  }
+  for (auto &d : data2) {
+    d = ::rand() % 1000 - 500;
+  }
+
+  std::sort(data1.begin(), data1.end(), std::greater<T>{});
+  std::sort(data2.begin(), data2.end(), std::greater<T>{});
+
+  std::vector<T> res(N * 2);
+
+  tf::Taskflow taskflow;
+  tf::Executor executor(W);
+
+  // Pass BOTH custom comparator and custom partitioner
+  taskflow.merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+                 res.begin(), std::greater<T>{}, P());
+
+  executor.run(taskflow).wait();
+
+  REQUIRE(std::is_sorted(res.begin(), res.end(), std::greater<T>{}));
+}
+
+TEST_CASE("ParallelMerge.CustomCmp_StaticPartitioner.4.100000" * doctest::timeout(300)) {
+  pm_custom_cmp_partitioner<int, tf::StaticPartitioner<>>(4, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp_DynamicPartitioner.4.100000" * doctest::timeout(300)) {
+  pm_custom_cmp_partitioner<int, tf::DynamicPartitioner<>>(4, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp_GuidedPartitioner.4.100000" * doctest::timeout(300)) {
+  pm_custom_cmp_partitioner<int, tf::GuidedPartitioner<>>(4, 100000);
+}
+
+TEST_CASE("ParallelMerge.CustomCmp_RandomPartitioner.4.100000" * doctest::timeout(300)) {
+  pm_custom_cmp_partitioner<int, tf::RandomPartitioner<>>(4, 100000);
+}
