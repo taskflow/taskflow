@@ -378,3 +378,20 @@ install(
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
 
+if(TF_BUILD_PROFILER)
+  install(
+    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/tfprof/server/tfprof
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+  install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/tfprof/css
+      ${CMAKE_SOURCE_DIR}/tfprof/images
+      ${CMAKE_SOURCE_DIR}/tfprof/js
+      ${CMAKE_SOURCE_DIR}/tfprof/favicon
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/tfprof/
+  )
+  install(
+    FILES ${CMAKE_SOURCE_DIR}/tfprof/index.html 
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/tfprof
+  )
+endif(TF_BUILD_PROFILER)
