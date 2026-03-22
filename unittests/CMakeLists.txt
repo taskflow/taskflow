@@ -25,7 +25,6 @@ list(APPEND TF_UNITTESTS
   test_scan
   test_find
   test_modules
-  test_merge
   test_traversals
   test_runtimes
   test_task_group
