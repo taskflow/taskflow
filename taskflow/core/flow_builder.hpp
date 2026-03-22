@@ -1289,7 +1289,7 @@ class FlowBuilder {
 
   template <typename B1, typename E1, typename B2, typename E2, 
   typename O, typename P = DefaultPartitioner,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*>
+  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr>
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
 
   /**
@@ -1323,7 +1323,7 @@ class FlowBuilder {
 
   template <typename B1, typename E1, typename B2, typename E2,  
   typename O, typename C, typename P = DefaultPartitioner,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>*>
+  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr>
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
   
   protected:
