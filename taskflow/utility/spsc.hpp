@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <optional>
 #include <type_traits>
+#include "os.hpp"
 
 /**
 @file spsc.hpp
@@ -75,7 +76,7 @@ if (auto v = ring.pop()) {
 @note Create one %SPSCRing per producer-consumer pair.
       %SPSCRing is not safe for multiple producers or multiple consumers.
 */
-template <typename T, std::size_t LogSize>
+template <typename T, size_t LogSize>
 class SPSCRing {
 
   static_assert(LogSize >= 1,
@@ -87,8 +88,8 @@ class SPSCRing {
   static_assert(std::is_nothrow_move_assignable_v<T>,
     "tf::SPSCRing: T must be noexcept move-assignable");
 
-  static constexpr std::size_t SIZE = std::size_t{1} << LogSize;
-  static constexpr std::size_t MASK = SIZE - 1u;
+  static constexpr size_t SIZE = size_t{1} << LogSize;
+  static constexpr size_t MASK = SIZE - 1u;
 
   public:
 
@@ -112,7 +113,7 @@ class SPSCRing {
   The capacity is <tt>2^LogSize - 1</tt>; one slot is reserved for
   full/empty disambiguation.
   */
-  [[nodiscard]] static constexpr std::size_t capacity() noexcept {
+  [[nodiscard]] static constexpr size_t capacity() noexcept {
     return SIZE - 1u;
   }
 
@@ -147,8 +148,8 @@ class SPSCRing {
   @note Call from the <em>producer thread only</em>.
   */
   [[nodiscard]] bool push(T&& item) noexcept {
-    const std::size_t tail = _tail.load(std::memory_order_relaxed);
-    const std::size_t next = (tail + 1u) & MASK;
+    const size_t tail = _tail.load(std::memory_order_relaxed);
+    const size_t next = (tail + 1u) & MASK;
     if (next == _head.load(std::memory_order_acquire)) {
       return false; // full
     }
@@ -185,7 +186,7 @@ class SPSCRing {
   @note Call from the <em>consumer thread only</em>.
   */
   [[nodiscard]] value_type pop() noexcept {
-    const std::size_t head = _head.load(std::memory_order_relaxed);
+    const size_t head = _head.load(std::memory_order_relaxed);
     if (head == _tail.load(std::memory_order_acquire)) {
       return empty_value(); // empty
     }
@@ -208,9 +209,9 @@ class SPSCRing {
   Not guaranteed to be exact under concurrent use.  Suitable for
   monitoring and metrics only.
   */
-  [[nodiscard]] std::size_t size_approx() const noexcept {
-    const std::size_t t = _tail.load(std::memory_order_acquire);
-    const std::size_t h = _head.load(std::memory_order_acquire);
+  [[nodiscard]] size_t size_approx() const noexcept {
+    const size_t t = _tail.load(std::memory_order_acquire);
+    const size_t h = _head.load(std::memory_order_acquire);
     return (t - h + SIZE) & MASK;
   }
 
@@ -226,24 +227,15 @@ class SPSCRing {
   @brief returns @c true if the ring appears full (approximate)
   */
   [[nodiscard]] bool full_approx() const noexcept {
-    const std::size_t t = _tail.load(std::memory_order_acquire);
-    const std::size_t h = _head.load(std::memory_order_acquire);
+    const size_t t = _tail.load(std::memory_order_acquire);
+    const size_t h = _head.load(std::memory_order_acquire);
     return ((t + 1u) & MASK) == h;
   }
 
   private:
 
-  // Producer index on its own cache line - eliminates false sharing with _head.
-#ifdef _MSC_VER
-# pragma warning(push)
-# pragma warning(disable: 4324) // structure padded due to __declspec(align)
-#endif
-  alignas(64) std::atomic<std::size_t> _tail{0};
-  alignas(64) std::atomic<std::size_t> _head{0};
-#ifdef _MSC_VER
-# pragma warning(pop)
-#endif
-
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _tail{0};
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _head{0};
   std::array<T, SIZE> _buf{};
 };
 
