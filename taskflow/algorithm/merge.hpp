@@ -28,7 +28,7 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
 
     // only myself - no need to spawn another graph
     if (W <= 1 || N <= part.chunk_size()) {
-      part([=]() mutable { std::merge(beg1, end1, beg2, end2, d_beg, cmp); });
+      part([=]() mutable { std::merge(beg1, end1, beg2, end2, d_beg, cmp); })();
       return;
     }
 
