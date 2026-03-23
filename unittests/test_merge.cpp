@@ -36,7 +36,12 @@ template <typename T> void pm_pod(size_t W, size_t N) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(std::is_sorted(res.begin(), res.end()));
+  std::vector<T> ground_truth(N * 2);
+
+  std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+             ground_truth.begin());
+
+  REQUIRE(ground_truth == res);
 }
 
 TEST_CASE("ParallelMerge.int.1.100000" * doctest::timeout(300)) {
@@ -104,7 +109,13 @@ void async(size_t W) {
                                        data2.begin(), data2.end(),
                                        std::less<>{}, res.begin()));
     executor.wait_for_all();
-    REQUIRE(std::is_sorted(res.begin(), res.end()));
+
+    std::vector<int> ground_truth(n * 2);
+
+    std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+               ground_truth.begin());
+
+    REQUIRE(ground_truth == res);
   }
 }
 
@@ -147,7 +158,12 @@ void dependent_async(size_t W) {
                                                  data2.begin(), data2.end(),
                                                  std::less<>{}, res.begin()));
     executor.wait_for_all();
-    REQUIRE(std::is_sorted(res.begin(), res.end()));
+    std::vector<int> ground_truth(n * 2);
+
+    std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+               ground_truth.begin());
+
+    REQUIRE(ground_truth == res);
   }
 }
 
@@ -198,7 +214,12 @@ void silent_async(size_t W) {
                                               data2.begin(), data2.end(),
                                               std::less<>{}, res.begin()));
     executor.wait_for_all();
-    REQUIRE(std::is_sorted(res.begin(), res.end()));
+    std::vector<int> ground_truth(n * 2);
+
+    std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+               ground_truth.begin());
+
+    REQUIRE(ground_truth == res);
   }
 }
 
@@ -249,7 +270,12 @@ void silent_dependent_async(size_t W) {
         tf::make_merge_task(data1.begin(), data1.end(), data2.begin(),
                             data2.end(), std::less<>{}, res.begin()));
     executor.wait_for_all();
-    REQUIRE(std::is_sorted(res.begin(), res.end()));
+    std::vector<int> ground_truth(n * 2);
+
+    std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+               ground_truth.begin());
+
+    REQUIRE(ground_truth == res);
   }
 }
 
@@ -306,7 +332,12 @@ template <typename P> void pm_partitioner(size_t W, size_t N) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(std::is_sorted(res.begin(), res.end()));
+  std::vector<int> ground_truth(N * 2);
+
+  std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+             ground_truth.begin());
+
+  REQUIRE(ground_truth == res);
 }
 
 // --- Static Partitioner ---
@@ -412,7 +443,12 @@ void pm_chunk_sweep(size_t W, size_t N, size_t chunk_size) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(std::is_sorted(res.begin(), res.end()));
+  std::vector<int> ground_truth(N * 2);
+
+  std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+             ground_truth.begin());
+
+  REQUIRE(ground_truth == res);
 }
 
 // --- Static Partitioner Sweeps ---
@@ -519,7 +555,12 @@ template <typename T> void pm_custom_cmp(size_t W, size_t N) {
   executor.run(taskflow).wait();
 
   // Verify the result is sorted in descending order
-  REQUIRE(std::is_sorted(res.begin(), res.end(), std::greater<T>{}));
+  std::vector<int> ground_truth(N * 2);
+
+  std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+             ground_truth.begin(), std::greater<>{});
+
+  REQUIRE(ground_truth == res);
 }
 
 TEST_CASE("ParallelMerge.CustomCmp.1.100000" * doctest::timeout(300)) {
@@ -542,7 +583,7 @@ TEST_CASE("ParallelMerge.CustomCmp.4.100000" * doctest::timeout(300)) {
 // Parallel Merge with Custom Comparator AND Custom Partitioner
 // ----------------------------------------------------------------------------
 
-template <typename T, typename P> 
+template <typename T, typename P>
 void pm_custom_cmp_partitioner(size_t W, size_t N) {
 
   std::srand(static_cast<unsigned int>(time(NULL)));
@@ -571,21 +612,30 @@ void pm_custom_cmp_partitioner(size_t W, size_t N) {
 
   executor.run(taskflow).wait();
 
-  REQUIRE(std::is_sorted(res.begin(), res.end(), std::greater<T>{}));
+  std::vector<int> ground_truth(N * 2);
+
+  std::merge(data1.begin(), data1.end(), data2.begin(), data2.end(),
+             ground_truth.begin(), std::greater<>{});
+
+  REQUIRE(ground_truth == res);
 }
 
-TEST_CASE("ParallelMerge.CustomCmp_StaticPartitioner.4.100000" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.CustomCmp_StaticPartitioner.4.100000" *
+          doctest::timeout(300)) {
   pm_custom_cmp_partitioner<int, tf::StaticPartitioner<>>(4, 100000);
 }
 
-TEST_CASE("ParallelMerge.CustomCmp_DynamicPartitioner.4.100000" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.CustomCmp_DynamicPartitioner.4.100000" *
+          doctest::timeout(300)) {
   pm_custom_cmp_partitioner<int, tf::DynamicPartitioner<>>(4, 100000);
 }
 
-TEST_CASE("ParallelMerge.CustomCmp_GuidedPartitioner.4.100000" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.CustomCmp_GuidedPartitioner.4.100000" *
+          doctest::timeout(300)) {
   pm_custom_cmp_partitioner<int, tf::GuidedPartitioner<>>(4, 100000);
 }
 
-TEST_CASE("ParallelMerge.CustomCmp_RandomPartitioner.4.100000" * doctest::timeout(300)) {
+TEST_CASE("ParallelMerge.CustomCmp_RandomPartitioner.4.100000" *
+          doctest::timeout(300)) {
   pm_custom_cmp_partitioner<int, tf::RandomPartitioner<>>(4, 100000);
 }
