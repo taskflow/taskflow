@@ -70,7 +70,7 @@ class Taskflow : public FlowBuilder {
 
   struct Dumper {
     size_t id;
-    std::stack<std::pair<const Node*, const Graph*>> stack;
+    std::stack<std::tuple<const Node*, const Graph*, size_t>> stack;  // added depth
     std::unordered_map<const Graph*, size_t> visited;
   };
 
@@ -332,8 +332,8 @@ class Taskflow : public FlowBuilder {
   std::queue<std::shared_ptr<Topology>> _topologies;
 
   void _dump(std::ostream&, const Graph*) const;
-  void _dump(std::ostream&, const Node*, Dumper&) const;
-  void _dump(std::ostream&, const Graph*, Dumper&) const;
+  void _dump(std::ostream&, const Node*, Dumper&, size_t indent) const;
+  void _dump(std::ostream&, const Graph*, Dumper&, size_t indent) const;
 
   size_t _fetch_enqueue(std::shared_ptr<Topology>);
 };
@@ -432,25 +432,30 @@ inline std::string Taskflow::dump() const {
 // Function: dump
 inline void Taskflow::dump(std::ostream& os) const {
   os << "digraph Taskflow {\n";
+  os << "  compound=true;\n";  // required for lhead/ltail cluster edges
   _dump(os, &_graph);
   os << "}\n";
 }
 
-// Function: _dump
+// Function: _dump (top-level — iterates module stack)
 inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
 
   Dumper dumper;
 
   dumper.id = 0;
-  dumper.stack.push({nullptr, top});
+  dumper.stack.push({nullptr, top, 1});
   dumper.visited[top] = dumper.id++;
 
   while(!dumper.stack.empty()) {
 
-    auto [p, f] = dumper.stack.top();
+    auto [p, f, depth] = dumper.stack.top();
     dumper.stack.pop();
 
-    os << "subgraph cluster_p" << f << " {\nlabel=\"";
+    std::string ind(depth * 2, ' ');
+    std::string ind2((depth + 1) * 2, ' ');
+
+    os << ind << "subgraph cluster_p" << f << " {\n";
+    os << ind2 << "label=\"";
 
     // n-level module
     if(p) {
@@ -466,18 +471,20 @@ inline void Taskflow::_dump(std::ostream& os, const Graph* top) const {
 
     os << "\";\n";
 
-    _dump(os, f, dumper);
-    os << "}\n";
+    _dump(os, f, dumper, depth + 1);
+    os << ind << "}\n";
   }
 }
 
-// Function: _dump
+// Function: _dump (single node)
 inline void Taskflow::_dump(
-  std::ostream& os, const Node* node, Dumper& dumper
+  std::ostream& os, const Node* node, Dumper& dumper, size_t indent
 ) const {
 
+  std::string ind(indent * 2, ' ');
+
   // label of the node
-  os << 'p' << node << "[label=\"";
+  os << ind << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
   else os << node->_name;
   os << "\" ";
@@ -498,19 +505,11 @@ inline void Taskflow::_dump(
 
   for(size_t s=0; s<node->_num_successors; ++s) {
     if(node->_is_conditioner()) {
-      // case edge is dashed
-      os << 'p' << node << " -> p" << node->_edges[s]
+      os << ind << 'p' << node << " -> p" << node->_edges[s]
          << " [style=dashed label=\"" << s << "\"];\n";
     } else {
-      os << 'p' << node << " -> p" << node->_edges[s] << ";\n";
+      os << ind << 'p' << node << " -> p" << node->_edges[s] << ";\n";
     }
-  }
-
-  // subflow join node
-  if(node->_parent && static_cast<Node*>(node->_parent)->_handle.index() == Node::SUBFLOW &&
-     node->_num_successors == 0
-    ) {
-    os << 'p' << node << " -> p" << node->_parent << " [style=dashed color=blue];\n";
   }
 
   // node info
@@ -519,13 +518,24 @@ inline void Taskflow::_dump(
     case Node::SUBFLOW: {
       auto& sbg = std::get_if<Node::Subflow>(&node->_handle)->subgraph;
       if(!sbg.empty()) {
-        os << "subgraph cluster_p" << node << " {\nlabel=\"Subflow: ";
+        std::string ind2((indent + 1) * 2, ' ');
+
+        os << ind  << "subgraph cluster_p" << node << " {\n";
+        os << ind2 << "label=\"Subflow: ";
         if(node->_name.empty()) os << 'p' << node;
         else os << node->_name;
+        os << "\";\n";
+        os << ind2 << "color=blue;\n";
 
-        os << "\";\n" << "color=blue\n";
-        _dump(os, &sbg, dumper);
-        os << "}\n";
+        _dump(os, &sbg, dumper, indent + 1);
+        os << ind << "}\n";
+
+        // Single cluster-level join edge: subflow cluster → parent node.
+        // ltail clips the arrow tail at the cluster boundary.
+        auto first = *sbg.begin();
+        os << ind << 'p' << first << " -> p" << node
+           << " [ltail=cluster_p" << node
+           << " style=dashed color=blue];\n";
       }
     }
     break;
@@ -535,10 +545,12 @@ inline void Taskflow::_dump(
   }
 }
 
-// Function: _dump
+// Function: _dump (graph — iterates nodes)
 inline void Taskflow::_dump(
-  std::ostream& os, const Graph* graph, Dumper& dumper
+  std::ostream& os, const Graph* graph, Dumper& dumper, size_t indent
 ) const {
+
+  std::string ind(indent * 2, ' ');
 
   for(auto itr = graph->begin(); itr != graph->end(); ++itr) {
 
@@ -546,27 +558,26 @@ inline void Taskflow::_dump(
 
     // regular task
     if(n->_handle.index() != Node::MODULE) {
-      _dump(os, n, dumper);
+      _dump(os, n, dumper, indent);
     }
     // module task
     else {
       auto mgraph = &(std::get_if<Node::Module>(&n->_handle)->graph);
 
-      os << 'p' << n << "[shape=box3d, color=blue, label=\"";
+      os << ind << 'p' << n << "[shape=box3d, color=blue, label=\"";
       if(n->_name.empty()) os << 'p' << n;
       else os << n->_name;
 
       if(dumper.visited.find(mgraph) == dumper.visited.end()) {
         dumper.visited[mgraph] = dumper.id++;
-        dumper.stack.push({n, mgraph});
+        dumper.stack.push({n, mgraph, indent});
       }
 
       if(n->_name.empty()) os << " [m" << dumper.visited[mgraph] << "]";
       os << "\"];\n";
 
-      //for(const auto s : n->_successors) {
       for(size_t i=0; i<n->_num_successors; ++i) {
-        os << 'p' << n << "->" << 'p' << n->_edges[i] << ";\n";
+        os << ind << 'p' << n << " -> " << 'p' << n->_edges[i] << ";\n";
       }
     }
   }
