@@ -382,10 +382,17 @@ class Node : public NodeBase {
   // module work handle
   struct Module {
 
-    template <typename T>
-    Module(T&);
+    Module(Graph&);
 
     Graph& graph;
+  };
+  
+  // adopted module work handle
+  struct AdoptedModule {
+
+    AdoptedModule(Graph&&);
+
+    Graph graph;
   };
 
   // Async work
@@ -425,6 +432,7 @@ class Node : public NodeBase {
     Condition,            // conditional tasking
     MultiCondition,       // multi-conditional tasking
     Module,               // composable tasking
+    AdoptedModule,        // composable tasking with move semantics
     Async,                // async tasking
     DependentAsync        // dependent async tasking
   >;
@@ -445,6 +453,7 @@ class Node : public NodeBase {
   constexpr static auto CONDITION             = get_index_v<Condition, handle_t>;
   constexpr static auto MULTI_CONDITION       = get_index_v<MultiCondition, handle_t>;
   constexpr static auto MODULE                = get_index_v<Module, handle_t>;
+  constexpr static auto ADOPTED_MODULE        = get_index_v<AdoptedModule, handle_t>;
   constexpr static auto ASYNC                 = get_index_v<Async, handle_t>;
   constexpr static auto DEPENDENT_ASYNC       = get_index_v<DependentAsync, handle_t>;
 
@@ -545,8 +554,11 @@ Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
 // ----------------------------------------------------------------------------
 
 // Constructor
-template <typename T>
-inline Node::Module::Module(T& obj) : graph{ obj.graph() } {
+inline Node::Module::Module(Graph& g) : graph(g){
+}
+
+// Constructor
+inline Node::AdoptedModule::AdoptedModule(Graph&& g) : graph(std::move(g)){
 }
 
 // ----------------------------------------------------------------------------
@@ -925,47 +937,36 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 // ----------------------------------------------------------------------------
 
 /**
-@private
- */
-template <typename T, typename = void>
-struct has_graph : std::false_type {};
+@brief retrieves a reference to the underlying tf::Graph from an object
 
-/**
-@private
- */
-template <typename T>
-struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
-    : std::is_same<decltype(std::declval<T>().graph()), Graph&> {};
+This function attempts to extract a tf::Graph reference from the given object
+using the following priority:
 
-/**
- * @brief determines if the given type has a member function `Graph& graph()`
- *
- * This trait determines if the provided type `T` contains a member function
- * with the exact signature `tf::Graph& graph()`. It uses SFINAE and `std::void_t`
- * to detect the presence of the member function and its return type.
- *
- * @tparam T The type to inspect.
- * @retval true If the type `T` has a member function `tf::Graph& graph()`.
- * @retval false Otherwise.
- *
- * Example usage:
- * @code
- *
- * struct A {
- *   tf::Graph& graph() { return my_graph; };
- *   tf::Graph my_graph;
- *
- *   // other custom members to alter my_graph
- * };
- *
- * struct C {}; // No graph function
- *
- * static_assert(has_graph_v<A>, "A has graph()");
- * static_assert(!has_graph_v<C>, "C does not have graph()");
- * @endcode
- */
+1. If @c t has a @c graph() method returning a reference convertible to
+   <tt>const tf::Graph&</tt>, that reference is returned.
+2. Otherwise, @c T must be derived from tf::Graph, in which case @c t itself
+   is returned via a static upcast.
+
+@tparam T the type of the object, which must either have a @c graph() method
+          returning a @c tf::Graph reference, or be derived from @c tf::Graph
+
+@param t the object from which to retrieve the graph
+
+@return a reference to the underlying tf::Graph (or @c const tf::Graph)
+
+@note This function is evaluated at compile time via @c if constexpr.
+      A @c static_assert will fire at compile time if @c T satisfies
+      neither condition.
+*/
 template <typename T>
-constexpr bool has_graph_v = has_graph<T>::value;
+auto& retrieve_graph(T& t) {
+  if constexpr (requires { { t.graph() } -> std::convertible_to<const Graph&>; }) {
+    return t.graph();
+  } else {
+    static_assert(std::is_base_of_v<Graph, T>, "T must be tf::Graph or have a graph() method returning tf::Graph&");
+    return static_cast<Graph&>(t);
+  }
+}
 
 
 }  // end of namespace tf. ----------------------------------------------------

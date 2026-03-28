@@ -278,6 +278,25 @@ class FlowBuilder {
   */
   template <typename T>
   Task composed_of(T& object);
+  
+  /**
+  @brief creates an adopted module task from the given graph with move semantics
+
+  @param graph the given graph to adopt
+
+  @return @c *this
+  
+  The example below creates an adopted module task from a moved graph:
+  
+  @code{.cpp}
+  tf::Taskflow taskflow;
+  tf::Graph g;
+  tf::FlowBuilder fb(g);
+  fb.emplace([](){ std::cout << "task inside the adopted graph\n"; });
+  taskflow.adopt(std::move(g));
+  @endcode
+  */
+  Task adopt(Graph&& graph);
 
   /**
   @brief creates a placeholder task
@@ -1396,11 +1415,17 @@ Task FlowBuilder::emplace(C&& c) {
 
 // Function: composed_of
 template <typename T>
-Task FlowBuilder::composed_of(T& object) {
-  auto node = _graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
-    std::in_place_type_t<Node::Module>{}, object
-  );
-  return Task(node);
+Task FlowBuilder::composed_of(T& target) {
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+    std::in_place_type_t<Node::Module>{}, retrieve_graph(target)
+  ));
+}
+
+// Function: adopt
+inline Task FlowBuilder::adopt(Graph&& graph) {
+  return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
+    std::in_place_type_t<Node::AdoptedModule>{}, std::move(graph)
+  ));
 }
 
 // Function: placeholder

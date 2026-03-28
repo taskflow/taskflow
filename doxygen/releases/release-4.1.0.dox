@@ -40,6 +40,9 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + added bulk cache update method in executor
 + added more unit tests to `test_notifiers.cpp`
 + added module support under `taskflow/modules/`
++ added adopted module task to support composable tasking with move semantics
+  + tf::Taskflow::adopt
+  + tf::Task::adopt
 + improved the dump format with proper indention
 + improved the dump format of `tf::Subflow` with cluster-level edges
 + optimized executor member variable data layout to reduce false sharing

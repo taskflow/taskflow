@@ -414,7 +414,7 @@ class Executor {
   @brief runs a target graph and waits until it completes using 
          an internal worker of this executor
   
-  @tparam T target type which has `tf::Graph& T::graph()` defined
+  @tparam T target type which is either convertible to `tf::Graph` or has `tf::Graph& T::graph()` defined
   @param target the target task graph object
 
   The method coruns a target graph cooperatively with other workers in the same executor
@@ -1156,6 +1156,7 @@ class Executor {
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
+  bool _invoke_adopted_module_task(Worker&, Node*);
   bool _invoke_module_task_impl(Worker&, Node*, Graph&);
   bool _invoke_async_task(Worker&, Node*);
   bool _invoke_dependent_async_task(Worker&, Node*);
@@ -1704,6 +1705,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       }
     }
     break;
+    
+    // adopted module task
+    case Node::ADOPTED_MODULE: {
+      if(_invoke_adopted_module_task(worker, node)) {
+        return;
+      }
+    }
+    break;
 
     // async task
     case Node::ASYNC: {
@@ -1963,6 +1972,11 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
   return _invoke_module_task_impl(w, node, std::get_if<Node::Module>(&node->_handle)->graph);  
 }
 
+// Procedure: _invoke_adopted_module_task
+inline bool Executor::_invoke_adopted_module_task(Worker& w, Node* node) {
+  return _invoke_module_task_impl(w, node, std::get_if<Node::AdoptedModule>(&node->_handle)->graph);  
+}
+
 // Procedure: _invoke_module_task_impl
 inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& graph) {
 
@@ -1973,17 +1987,11 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
 
   // first entry - not spawned yet
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-    // observe module start
-    //_observer_prologue(w, node);
-
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
     _schedule_graph(w, graph, node->_topology, node);
     return true;
   }
-
-  // observe module end
-  //_observer_epilogue(w, node);
 
   // second entry - already spawned
   node->_nstate &= ~NSTATE::PREEMPTED;
@@ -2205,15 +2213,13 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 template <typename T>
 void Executor::corun(T& target) {
 
-  static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
-  
   Worker* w = this_worker();
   if(w == nullptr) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
   NodeBase anchor;
-  _corun_graph(*w, target.graph(), nullptr, &anchor);
+  _corun_graph(*w, retrieve_graph(target), nullptr, &anchor);
 }
 
 // Procedure: _corun_graph

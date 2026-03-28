@@ -1,0 +1,11 @@
+digraph Taskflow {
+p0x55d923794f10[label="allocate_a" ];
+p0x55d923794f10 -> p0x55d923795240;
+p0x55d923795020[label="allocate_b" ];
+p0x55d923795020 -> p0x55d923795240;
+p0x55d923795130[label="allocate_c" ];
+p0x55d923795130 -> p0x55d923795240;
+p0x55d923795240[label="cudaFlow" shape=folder fillcolor=cyan style=filled];
+p0x55d923795240 -> p0x55d923795350;
+p0x55d923795350[label="free" ];
+}

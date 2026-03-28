@@ -1,0 +1,81 @@
+
+digraph Taskflow {
+newrank=true;
+#columns
+subgraph {
+p00[label="pipe-0"];
+p10[label="pipe-0"];
+p20[label="pipe-0"];
+p30[label="pipe-0"];
+}
+
+subgraph  {
+p01[label="pipe-1"];
+p11[label="pipe-1"];
+p21[label="pipe-1"];
+p31[label="pipe-1"];
+}
+
+subgraph  {
+p02[label="pipe-2"];
+p12[label="pipe-2"];
+p22[label="pipe-2"];
+p32[label="pipe-2"];
+}
+
+
+subgraph cluster0 {
+label="line 0";
+rank="same";
+style="dashed";
+p00;
+p01;
+p02;
+}
+
+subgraph cluster1 {
+label="line 1";
+rank="same";
+style="dashed";
+p10;
+p11;
+p12;
+}
+
+subgraph cluster2 {
+label="line 2";
+rank="same";
+style="dashed";
+p20;
+p21;
+p22;
+}
+
+subgraph cluster3 {
+label="line 3";
+rank="same";
+style="dashed";
+p30;
+p31;
+p32;
+}
+
+p00 -> p01;
+p01 -> p02;
+p10 -> p11;
+p11 -> p12;
+p20 -> p21;
+p21 -> p22;
+p30 -> p31;
+p31 -> p32;
+p00 -> p10;
+#p01 -> p11;
+p02 -> p12;
+p10 -> p20;
+#p11 -> p21;
+p12 -> p22;
+p20 -> p30;
+#p21 -> p31;
+p22 -> p32;
+}
+

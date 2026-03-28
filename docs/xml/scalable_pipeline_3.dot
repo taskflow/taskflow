@@ -1,0 +1,32 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffcc76abe80 {
+label="Taskflow";
+p0x8e9a68[label="init pipes" ];
+p0x8e9a68 -> p0x8e9980;
+p0x8e9980[shape=box3d, color=blue, label="pipeline [m1]"];
+}
+subgraph cluster_p0x7ffcc76abd30 {
+label="m1";
+p0x8ea460[label="cond" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x8ea460 -> p0x8ea378 [style=dashed label="0"];
+p0x8ea460 -> p0x8ea290 [style=dashed label="1"];
+p0x8ea460 -> p0x8ea1a8 [style=dashed label="2"];
+p0x8ea460 -> p0x8ea0c0 [style=dashed label="3"];
+p0x8ea460 -> p0x8e9fd8 [style=dashed label="4"];
+p0x8ea460 -> p0x8e9ef0 [style=dashed label="5"];
+p0x8ea460 -> p0x8e9e08 [style=dashed label="6"];
+p0x8ea460 -> p0x8e9d20 [style=dashed label="7"];
+p0x8ea460 -> p0x8e9c38 [style=dashed label="8"];
+p0x8ea460 -> p0x8e9b50 [style=dashed label="9"];
+p0x8ea378[label="rt-0" shape=component];
+p0x8ea290[label="rt-1" shape=component];
+p0x8ea1a8[label="rt-2" shape=component];
+p0x8ea0c0[label="rt-3" shape=component];
+p0x8e9fd8[label="rt-4" shape=component];
+p0x8e9ef0[label="rt-5" shape=component];
+p0x8e9e08[label="rt-6" shape=component];
+p0x8e9d20[label="rt-7" shape=component];
+p0x8e9c38[label="rt-8" shape=component];
+p0x8e9b50[label="rt-9" shape=component];
+}
+}

@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
-<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.1" xml:lang="en-US">
   <compounddef id="classtf_1_1Runtime" kind="class" language="C++" prot="public">
     <compoundname>tf::Runtime</compoundname>
     <includes refid="runtime_8hpp" local="no">taskflow/core/runtime.hpp</includes>
-      <sectiondef kind="friend">
+    <sectiondef kind="friend">
       <memberdef kind="friend" id="classtf_1_1Runtime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Executor</definition>
         <argsstring></argsstring>
         <name>Executor</name>
+        <qualifiedname>tf::Runtime::Executor</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref></type>
         </param>
@@ -18,13 +19,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="49" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="49" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="49" column="16" bodyfile="taskflow/core/runtime.hpp" bodystart="49" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Runtime_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class FlowBuilder</definition>
         <argsstring></argsstring>
         <name>FlowBuilder</name>
+        <qualifiedname>tf::Runtime::FlowBuilder</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1FlowBuilder" kindref="compound">FlowBuilder</ref></type>
         </param>
@@ -34,13 +36,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="50" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="50" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="50" column="16" bodyfile="taskflow/core/runtime.hpp" bodystart="50" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Runtime_1adb56fdbfd3879bf32dbc9b766e797b55" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class PreemptionGuard</definition>
         <argsstring></argsstring>
         <name>PreemptionGuard</name>
+        <qualifiedname>tf::Runtime::PreemptionGuard</qualifiedname>
         <param>
           <type>PreemptionGuard</type>
         </param>
@@ -50,13 +53,14 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="51" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="51" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="51" column="16" bodyfile="taskflow/core/runtime.hpp" bodystart="51" bodyend="-1"/>
       </memberdef>
       <memberdef kind="friend" id="classtf_1_1Runtime_1ab016b9124e80f55ad92e01579c060f08" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>class</type>
         <definition>friend class Algorithm</definition>
         <argsstring></argsstring>
         <name>Algorithm</name>
+        <qualifiedname>tf::Runtime::Algorithm</qualifiedname>
         <param>
           <type>Algorithm</type>
         </param>
@@ -66,15 +70,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="taskflow/core/runtime.hpp" line="52" column="3" bodyfile="taskflow/core/runtime.hpp" bodystart="52" bodyend="-1"/>
+        <location file="taskflow/core/runtime.hpp" line="52" column="16" bodyfile="taskflow/core/runtime.hpp" bodystart="52" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-attrib">
+    </sectiondef>
+    <sectiondef kind="private-attrib">
       <memberdef kind="variable" id="classtf_1_1Runtime_1a8074028372bb09946927b1b6ec01c6e1" prot="private" static="no" mutable="no">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
         <definition>Executor&amp; tf::Runtime::_executor</definition>
         <argsstring></argsstring>
         <name>_executor</name>
+        <qualifiedname>tf::Runtime::_executor</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -88,6 +93,7 @@
         <definition>Worker&amp; tf::Runtime::_worker</definition>
         <argsstring></argsstring>
         <name>_worker</name>
+        <qualifiedname>tf::Runtime::_worker</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -101,6 +107,7 @@
         <definition>Node* tf::Runtime::_node</definition>
         <argsstring></argsstring>
         <name>_node</name>
+        <qualifiedname>tf::Runtime::_node</qualifiedname>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
@@ -109,24 +116,25 @@
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="618" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="618" bodyend="-1"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="public-func">
+    </sectiondef>
+    <sectiondef kind="public-func">
       <memberdef kind="function" id="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
         <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
         <definition>Executor &amp; tf::Runtime::executor</definition>
         <argsstring>()</argsstring>
         <name>executor</name>
+        <qualifiedname>tf::Runtime::executor</qualifiedname>
         <briefdescription>
 <para>obtains the running executor </para>
         </briefdescription>
         <detaileddescription>
 <para>The running executor of a runtime task is the executor that runs the parent taskflow of that runtime task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>;</highlight></codeline>
+<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(&amp;(rt.<ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>())<sp/>==<sp/>&amp;<ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -138,6 +146,7 @@
         <definition>Worker &amp; tf::Runtime::worker</definition>
         <argsstring>()</argsstring>
         <name>worker</name>
+        <qualifiedname>tf::Runtime::worker</qualifiedname>
         <briefdescription>
 <para>acquire a reference to the underlying worker </para>
         </briefdescription>
@@ -152,6 +161,7 @@
         <definition>void tf::Runtime::schedule</definition>
         <argsstring>(Task task)</argsstring>
         <name>schedule</name>
+        <qualifiedname>tf::Runtime::schedule</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Task" kindref="compound">Task</ref></type>
           <declname>task</declname>
@@ -170,18 +180,18 @@
 </parameteritem>
 </parameterlist>
 This member function immediately schedules an active task to the task queue of the associated worker in the runtime task. An active task is a task in a running taskflow. The task may or may not be running, and scheduling that task will immediately put the task into the task queue of the worker that is running the runtime task. Consider the following example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A,<sp/>B,<sp/>C,<sp/>D;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/utility/tuple/tie" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tie</ref>(A,<sp/>B,<sp/>C,<sp/>D)<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Task<sp/>A,<sp/>B,<sp/>C,<sp/>D;</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="cpp/utility/tuple/tie" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::tie</ref>(A,<sp/>B,<sp/>C,<sp/>D)<sp/>=<sp/>taskflow.emplace(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[&amp;C]<sp/>(<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>must<sp/>be<sp/>captured<sp/>by<sp/>reference</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[&amp;C]<sp/>(tf::Runtime&amp;<sp/>rt)<sp/>{<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>must<sp/>be<sp/>captured<sp/>by<sp/>reference</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.schedule(C);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/><ref refid="cpp/io/basic_ostream" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::cout</ref><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;C\n&quot;</highlight><highlight class="normal">;<sp/>},</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>[]<sp/>()<sp/>{<sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;D\n&quot;</highlight><highlight class="normal">;<sp/>}</highlight></codeline>
 <codeline><highlight class="normal">);</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B,<sp/>C,<sp/>D);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para>The executor will first run the condition task <computeroutput>A</computeroutput> which returns <computeroutput>0</computeroutput> to inform the scheduler to go to the runtime task <computeroutput>B</computeroutput>. During the execution of <computeroutput>B</computeroutput>, it directly schedules task <computeroutput>C</computeroutput> without going through the normal taskflow graph scheduling process. At this moment, task <computeroutput>C</computeroutput> is active because its parent taskflow is running. When the taskflow finishes, we will see both <computeroutput>B</computeroutput> and <computeroutput>C</computeroutput> in the output.</para>
 <para><simplesect kind="attention"><para>This method can only be called by the parent worker of this runtime, or the behavior is undefined. Furthermore, we currently do not support scheduling a runtime task. </para>
@@ -202,6 +212,7 @@ This member function immediately schedules an active task to the task queue of t
         <definition>auto tf::Runtime::async</definition>
         <argsstring>(F &amp;&amp;f)</argsstring>
         <name>async</name>
+        <qualifiedname>tf::Runtime::async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>f</declname>
@@ -229,8 +240,8 @@ This member function immediately schedules an active task to the task queue of t
 </parameteritem>
 </parameterlist>
 This method creates an asynchronous task that executes the given function with the specified arguments. Unlike <ref refid="classtf_1_1Executor_1af960048056f7c6b5bc71f4f526f05df7" kindref="member">tf::Executor::async</ref>, the task created here is parented to the runtime object and is implicitly synchronized at the end of the runtime&apos;s scope. Applications may also call <ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">tf::Runtime::corun</ref> explicitly to wait for all asynchronous tasks spawned from the runtime to complete. For example:</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter(0);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::atomic&lt;int&gt;<sp/>counter(0);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu1<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>fu2<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fu1.get();</highlight></codeline>
@@ -264,6 +275,7 @@ This method creates an asynchronous task that executes the given function with t
         <definition>auto tf::Runtime::async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;f)</argsstring>
         <name>async</name>
+        <qualifiedname>tf::Runtime::async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -311,7 +323,7 @@ This method creates an asynchronous task that executes the given function with t
 </parameteritem>
 </parameterlist>
 Similar to <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref>, but takes a parameter of type <ref refid="classtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref> to initialize the asynchronous task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>future<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">async</ref>(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>10;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(future.get()<sp/>==<sp/>10);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
@@ -331,6 +343,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" ki
         <definition>void tf::Runtime::silent_async</definition>
         <argsstring>(F &amp;&amp;f)</argsstring>
         <name>silent_async</name>
+        <qualifiedname>tf::Runtime::silent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>f</declname>
@@ -357,9 +370,9 @@ Similar to <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" ki
 </parameterdescription>
 </parameteritem>
 </parameterlist>
-This function is more efficient than <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref> and is recommended when the result of the asynchronous task does not need to be accessed via a <ref refid="cpp/thread/future" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;int&gt;</ref><sp/>counter(0);</highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+This function is more efficient than <ref refid="classtf_1_1Runtime_1a5688b13034f179c4a8b2b0ebbb215051" kindref="member">tf::Runtime::async</ref> and is recommended when the result of the asynchronous task does not need to be accessed via a <ref refid="cpp/thread/future" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::future</ref>.</para>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::atomic&lt;int&gt;<sp/>counter(0);</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
@@ -385,6 +398,7 @@ This function is more efficient than <ref refid="classtf_1_1Runtime_1a5688b13034
         <definition>void tf::Runtime::silent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;f)</argsstring>
         <name>silent_async</name>
+        <qualifiedname>tf::Runtime::silent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -424,7 +438,7 @@ This function is more efficient than <ref refid="classtf_1_1Runtime_1a5688b13034
 </parameteritem>
 </parameterlist>
 Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">tf::Runtime::silent_async</ref>, but takes a parameter of type <ref refid="classtf_1_1TaskParams" kindref="compound">tf::TaskParams</ref> to initialize the created asynchronous task.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>(</highlight><highlight class="stringliteral">&quot;my<sp/>task&quot;</highlight><highlight class="normal">,<sp/>[](){});</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 </programlisting> </para>
@@ -452,6 +466,7 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
         <definition>auto tf::Runtime::dependent_async</definition>
         <argsstring>(F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>dependent_async</name>
+        <qualifiedname>tf::Runtime::dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -501,19 +516,19 @@ Similar to <ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" ki
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. <ref refid="classtf_1_1Task" kindref="compound">Task</ref> <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">dependent_async</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>A,<sp/>B</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>fuC.get();<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -542,6 +557,7 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
         <definition>auto tf::Runtime::dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>dependent_async</name>
+        <qualifiedname>tf::Runtime::dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -611,20 +627,20 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three named asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. <ref refid="classtf_1_1Task" kindref="compound">Task</ref> <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">dependent_async</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>A,<sp/>B</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -648,6 +664,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         <definition>auto tf::Runtime::dependent_async</definition>
         <argsstring>(F &amp;&amp;func, I first, I last)</argsstring>
         <name>dependent_async</name>
+        <qualifiedname>tf::Runtime::dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -709,21 +726,21 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. <ref refid="classtf_1_1Task" kindref="compound">Task</ref> <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">dependent_async</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -750,6 +767,7 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
         <definition>auto tf::Runtime::dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, I first, I last)</argsstring>
         <name>dependent_async</name>
+        <qualifiedname>tf::Runtime::dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -831,22 +849,22 @@ The example below creates three asynchronous tasks, <computeroutput>A</computero
 <simplesect kind="return"><para>a pair of a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> that holds the result of the execution</para>
 </simplesect>
 The example below creates three named asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. <ref refid="classtf_1_1Task" kindref="compound">Task</ref> <computeroutput>C</computeroutput> returns a pair of its <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle and a std::future&lt;int&gt; that eventually will hold the result of the execution. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">auto</highlight><highlight class="normal"><sp/>[C,<sp/>fuC]<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">dependent_async</ref>(</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/></highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1;</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>},<sp/></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(fuC.get()==1);<sp/><sp/></highlight><highlight class="comment">//<sp/>C<sp/>finishes,<sp/>which<sp/>in<sp/>turns<sp/>means<sp/>both<sp/>A<sp/>and<sp/>B<sp/>finish</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -872,6 +890,7 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
         <definition>tf::AsyncTask tf::Runtime::silent_dependent_async</definition>
         <argsstring>(F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>silent_dependent_async</name>
+        <qualifiedname>tf::Runtime::silent_dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -921,12 +940,12 @@ The example below creates three named asynchronous tasks, <computeroutput>A</com
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B);</highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.wait_for_all();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -955,6 +974,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>tf::AsyncTask tf::Runtime::silent_dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</argsstring>
         <name>silent_dependent_async</name>
+        <qualifiedname>tf::Runtime::silent_dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -1016,14 +1036,14 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref><sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>A<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>tf::AsyncTask<sp/>B<sp/>=<sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>A,<sp/>B</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.wait_for_all();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -1047,6 +1067,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>tf::AsyncTask tf::Runtime::silent_dependent_async</definition>
         <argsstring>(F &amp;&amp;func, I first, I last)</argsstring>
         <name>silent_dependent_async</name>
+        <qualifiedname>tf::Runtime::silent_dependent_async</qualifiedname>
         <param>
           <type>F &amp;&amp;</type>
           <declname>func</declname>
@@ -1108,16 +1129,16 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">Taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">Taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>([](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1ab9aa252f70e9a40020a1e5a89d485b85" kindref="member">wait_for_all</ref>();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.wait_for_all();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -1144,6 +1165,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>tf::AsyncTask tf::Runtime::silent_dependent_async</definition>
         <argsstring>(P &amp;&amp;params, F &amp;&amp;func, I first, I last)</argsstring>
         <name>silent_dependent_async</name>
+        <qualifiedname>tf::Runtime::silent_dependent_async</qualifiedname>
         <param>
           <type>P &amp;&amp;</type>
           <declname>params</declname>
@@ -1217,16 +1239,16 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
 <simplesect kind="return"><para>a <ref refid="classtf_1_1AsyncTask" kindref="compound">tf::AsyncTask</ref> handle</para>
 </simplesect>
 This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e87733508e3610d34728a38e975177" kindref="member">tf::Runtime::dependent_async</ref> and is encouraged to use when you do not want a <ulink url="https://en.cppreference.com/w/cpp/thread/future">std::future</ulink> to acquire the result or synchronize the execution. The example below creates three asynchronous tasks, <computeroutput>A</computeroutput>, <computeroutput>B</computeroutput>, and <computeroutput>C</computeroutput>, in which task <computeroutput>C</computeroutput> runs after task <computeroutput>A</computeroutput> and task <computeroutput>B</computeroutput>. Assigned task names will appear in the observers of the executor.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><ref refid="cpp/container/array" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::array&lt;tf::AsyncTask, 2&gt;</ref><sp/>array<sp/>{</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">taskflow.emplace([](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>std::array&lt;tf::AsyncTask,<sp/>2&gt;<sp/>array<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;A&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;A\n&quot;</highlight><highlight class="normal">);<sp/>}),</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight><highlight class="stringliteral">&quot;B&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/>printf(</highlight><highlight class="stringliteral">&quot;B\n&quot;</highlight><highlight class="normal">);<sp/>})</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>};</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a1b89026b619e145c7e2c5c223a0adfc7" kindref="member">silent_dependent_async</ref>(</highlight></codeline>
-<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;C&quot;</highlight><highlight class="normal">,<sp/>[](){<sp/><ref refid="cpp/io/c/fprintf" kindref="compound" external="/Users/twhuang/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">printf</ref>(</highlight><highlight class="stringliteral">&quot;C<sp/>runs<sp/>after<sp/>A<sp/>and<sp/>B\n&quot;</highlight><highlight class="normal">);<sp/>},<sp/>array.begin(),<sp/>array.end()</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>);</highlight></codeline>
 <codeline><highlight class="normal">});<sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>of<sp/>all<sp/>tasks<sp/>at<sp/>the<sp/>end<sp/>of<sp/>runtime&apos;s<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting> </para>
         </detaileddescription>
         <inbodydescription>
@@ -1238,14 +1260,15 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>void tf::Runtime::corun</definition>
         <argsstring>()</argsstring>
         <name>corun</name>
+        <qualifiedname>tf::Runtime::corun</qualifiedname>
         <briefdescription>
 <para>corun all tasks spawned by this runtime with other workers </para>
         </briefdescription>
         <detaileddescription>
 <para>Coruns all tasks spawned by this runtime cooperatively with other workers in the same executor until all these tasks finish. Under cooperative execution, a worker is not preempted. Instead, it continues participating in the work-stealing loop, executing available tasks alongside other workers. <linebreak/>
 </para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>counter{0};</highlight></codeline>
-<codeline><highlight class="normal">taskflow.emplace([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">std::atomic&lt;size_t&gt;<sp/>counter{0};</highlight></codeline>
+<codeline><highlight class="normal">taskflow.emplace([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>100<sp/>async<sp/>tasks<sp/>and<sp/>wait</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;100;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>counter++;<sp/>});</highlight></codeline>
@@ -1272,6 +1295,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>void tf::Runtime::corun_all</definition>
         <argsstring>()</argsstring>
         <name>corun_all</name>
+        <qualifiedname>tf::Runtime::corun_all</qualifiedname>
         <briefdescription>
 <para>equivalent to <ref refid="classtf_1_1Runtime_1aba54a7cacffb54f5eb133730d256a7c4" kindref="member">tf::Runtime::corun</ref> - just an alias for legacy purpose </para>
         </briefdescription>
@@ -1286,6 +1310,7 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         <definition>bool tf::Runtime::is_cancelled</definition>
         <argsstring>()</argsstring>
         <name>is_cancelled</name>
+        <qualifiedname>tf::Runtime::is_cancelled</qualifiedname>
         <briefdescription>
 <para>queries if this runtime task has been cancelled </para>
         </briefdescription>
@@ -1295,13 +1320,14 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="596" column="8" bodyfile="taskflow/core/runtime.hpp" bodystart="669" bodyend="671"/>
       </memberdef>
-      </sectiondef>
-      <sectiondef kind="private-func">
+    </sectiondef>
+    <sectiondef kind="private-func">
       <memberdef kind="function" id="classtf_1_1Runtime_1abe76e072e64f5d1b1fe09c7e7c22777e" prot="private" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
         <type></type>
         <definition>tf::Runtime::Runtime</definition>
         <argsstring>(Executor &amp;, Worker &amp;, Node *)</argsstring>
         <name>Runtime</name>
+        <qualifiedname>tf::Runtime::Runtime</qualifiedname>
         <param>
           <type><ref refid="classtf_1_1Executor" kindref="compound">Executor</ref> &amp;</type>
           <defname>executor</defname>
@@ -1322,29 +1348,29 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
         </inbodydescription>
         <location file="taskflow/core/runtime.hpp" line="603" column="12" bodyfile="taskflow/core/runtime.hpp" bodystart="622" bodyend="626"/>
       </memberdef>
-      </sectiondef>
+    </sectiondef>
     <briefdescription>
 <para>class to create a runtime task </para>
     </briefdescription>
     <detaileddescription>
 <para>A runtime object provides an interface for interacting with the scheduling system from within a task (i.e., the parent task of this runtime). It enables operations such as spawning asynchronous tasks, executing tasks cooperatively, and implementing recursive parallelism. The runtime guarantees an implicit join at the end of its scope, so all spawned tasks will finish before the parent runtime task continues to its successors.</para>
-<para><programlisting filename=".cpp"><codeline><highlight class="normal"><ref refid="classtf_1_1Executor" kindref="compound">tf::Executor</ref><sp/><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>(num_threads);</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Taskflow" kindref="compound">tf::Taskflow</ref><sp/>taskflow;</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="cpp/atomic/atomic" kindref="compound" external="/home/thuang295/Code/taskflow/doxygen/cppreference-doxygen-web.tag.xml">std::atomic&lt;size_t&gt;</ref><sp/>counter(0);</highlight></codeline>
+<para><programlisting filename=".cpp"><codeline><highlight class="normal">tf::Executor<sp/><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>(num_threads);</highlight></codeline>
+<codeline><highlight class="normal">tf::Taskflow<sp/>taskflow;</highlight></codeline>
+<codeline><highlight class="normal">std::atomic&lt;size_t&gt;<sp/>counter(0);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](<ref refid="classtf_1_1Runtime" kindref="compound">tf::Runtime</ref>&amp;<sp/>rt){</highlight></codeline>
+<codeline><highlight class="normal">tf::Task<sp/>A<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](tf::Runtime&amp;<sp/>rt){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>spawn<sp/>1000<sp/>asynchronous<sp/>tasks<sp/>from<sp/>this<sp/>runtime<sp/>task</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i=0;<sp/>i&lt;1000;<sp/>i++)<sp/>{</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/><sp/><sp/>rt.<ref refid="classtf_1_1Runtime_1a0ce29efa2106c8c5a1432e4a55ab2e05" kindref="member">silent_async</ref>([&amp;](){<sp/>counter.fetch_add(1,<sp/>std::memory_order_relaxed);<sp/>});</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>}</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="comment">//<sp/>implicit<sp/>synchronization<sp/>at<sp/>the<sp/>end<sp/>of<sp/>the<sp/>runtime<sp/>scope</highlight><highlight class="normal"></highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Task" kindref="compound">tf::Task</ref><sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
+<codeline><highlight class="normal">tf::Task<sp/>B<sp/>=<sp/>taskflow.<ref refid="classtf_1_1FlowBuilder_1a60d7a666cab71ecfa3010b2efb0d6b57" kindref="member">emplace</ref>([&amp;](){</highlight></codeline>
 <codeline><highlight class="normal"><sp/><sp/>assert(counter.load(std::memory_order_relaxed)<sp/>==<sp/>1000);</highlight></codeline>
 <codeline><highlight class="normal">});</highlight></codeline>
 <codeline><highlight class="normal">A.<ref refid="classtf_1_1Task_1a8c78c453295a553c1c016e4062da8588" kindref="member">precede</ref>(B);</highlight></codeline>
 <codeline><highlight class="normal"></highlight></codeline>
-<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.<ref refid="classtf_1_1Executor_1a8d08f0cb79e7b3780087975d13368a96" kindref="member">run</ref>(taskflow).wait();</highlight></codeline>
+<codeline><highlight class="normal"><ref refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" kindref="member">executor</ref>.run(taskflow).wait();</highlight></codeline>
 </programlisting></para>
 <para><simplesect kind="note"><para>To understand how Taskflow schedules a runtime task, please refer to <ref refid="RuntimeTasking" kindref="compound">Runtime Tasking</ref>. </para>
 </simplesect>
@@ -1364,8 +1390,8 @@ This member function is more efficient than <ref refid="classtf_1_1Runtime_1a42e
       <member refid="classtf_1_1Runtime_1a033e68b47cecca58c59ee550274ceb6f" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>dependent_async</name></member>
       <member refid="classtf_1_1Runtime_1a7cd6502c12443a04f39d6ec139adff42" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>dependent_async</name></member>
       <member refid="classtf_1_1Runtime_1a5386a0f3a4460f8a471d76be2ea36f11" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>dependent_async</name></member>
-      <member refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>executor</name></member>
       <member refid="classtf_1_1Runtime_1a763b2f90bc53f92d680a635fe28e858e" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>Executor</name></member>
+      <member refid="classtf_1_1Runtime_1a4ee48a82df1f9758a999d18e6015cec4" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>executor</name></member>
       <member refid="classtf_1_1Runtime_1a61184f9bd9c801d0a5eccecfdbddc641" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>FlowBuilder</name></member>
       <member refid="classtf_1_1Runtime_1a20d9756a7aa6b58d0d04437818c10066" prot="public" virt="non-virtual"><scope>tf::Runtime</scope><name>is_cancelled</name></member>
       <member refid="classtf_1_1Runtime_1adb56fdbfd3879bf32dbc9b766e797b55" prot="private" virt="non-virtual"><scope>tf::Runtime</scope><name>PreemptionGuard</name></member>

@@ -1,0 +1,56 @@
+digraph Taskflow {
+  subgraph cluster_error1 {
+    label="error1: no source tasks"
+    e1A[label="A" shape=diamond color=black fillcolor=aquamarine style=filled];
+    e1B[label="B"];
+    e1C[label="C"];
+    e1A->e1A[style=dashed label="0"];
+    e1A->e1B[style=dashed label="1"];
+    e1A->e1C[style=dashed label="2"];
+  }
+  subgraph cluster_fix1 {
+    label="fix1: adds a source"
+    f1S[label="S"];
+    f1A[label="A" shape=diamond color=black fillcolor=aquamarine style=filled];
+    f1B[label="B"];
+    f1C[label="C"];
+    f1S->f1A;
+    f1A->f1A[style=dashed label="0"];
+    f1A->f1B[style=dashed label="1"];
+    f1A->f1C[style=dashed label="2"];
+  }
+  subgraph cluster_error2 {
+    label="error2: race on D"
+    e2C[label="C" shape=diamond color=black fillcolor=aquamarine style=filled];
+    e2D[label="D"];
+    e2F[label="F"];
+    e2E[label="E"];
+    e2E->e2D;
+    e2C->e2D[style=dashed label="0"];
+    e2C->e2F[style=dashed label="1"];
+  }
+  subgraph cluster_fix2 {
+    label="fix2: adds an auxiliary task"
+    f2C[label="C" shape=diamond color=black fillcolor=aquamarine style=filled];
+    f2D[label="D"];
+    f2Daux[label="D-aux"]
+    f2F[label="F"];
+    f2E[label="E"];
+    f2E->f2D;
+    f2C->f2Daux[style=dashed label="0"];
+    f2C->f2F[style=dashed label="1"];
+    f2Daux->f2D
+  }
+  subgraph cluster_risky{
+    label="risky: X might be raced"
+    rP[label="P" shape=diamond color=black fillcolor=aquamarine style=filled];
+    rM[label="M" shape=diamond color=black fillcolor=aquamarine style=filled];
+    rQ[label="Q"]
+    rX[label="X"]
+    rN[label="N"]
+    rP->rX[style=dashed label="1"]
+    rM->rX[style=dashed label="0"]
+    rM->rN[style=dashed label="1"]
+    rP->rQ[style=dashed label="0"]
+  }
+}

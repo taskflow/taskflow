@@ -1,0 +1,62 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffd972c0cd0 {
+label="Taskflow: fibonacci";
+p0xa445c0[label="5" ];
+subgraph cluster_p0xa445c0 {
+label="Subflow: 5";
+color=blue
+p0x7fe918000b90[label="4" ];
+p0x7fe918000b90 -> p0xa445c0;
+subgraph cluster_p0x7fe918000b90 {
+label="Subflow: 4";
+color=blue
+p0x7fe910000b90[label="3" ];
+p0x7fe910000b90 -> p0x7fe918000b90;
+subgraph cluster_p0x7fe910000b90 {
+label="Subflow: 3";
+color=blue
+p0x7fe918000fe0[label="2" ];
+p0x7fe918000fe0 -> p0x7fe910000b90;
+subgraph cluster_p0x7fe918000fe0 {
+label="Subflow: 2";
+color=blue
+p0x7fe918001150[label="1" ];
+p0x7fe918001150 -> p0x7fe918000fe0;
+p0x7fe918001208[label="0" ];
+p0x7fe918001208 -> p0x7fe918000fe0;
+}
+p0x7fe918001098[label="1" ];
+p0x7fe918001098 -> p0x7fe910000b90;
+}
+p0x7fe910000c48[label="2" ];
+p0x7fe910000c48 -> p0x7fe918000b90;
+subgraph cluster_p0x7fe910000c48 {
+label="Subflow: 2";
+color=blue
+p0x7fe910000d00[label="1" ];
+p0x7fe910000d00 -> p0x7fe910000c48;
+p0x7fe910000db8[label="0" ];
+p0x7fe910000db8 -> p0x7fe910000c48;
+}
+}
+p0x7fe918000c48[label="3" ];
+p0x7fe918000c48 -> p0xa445c0;
+subgraph cluster_p0x7fe918000c48 {
+label="Subflow: 3";
+color=blue
+p0x7fe918000d00[label="2" ];
+p0x7fe918000d00 -> p0x7fe918000c48;
+subgraph cluster_p0x7fe918000d00 {
+label="Subflow: 2";
+color=blue
+p0x7fe918000e70[label="1" ];
+p0x7fe918000e70 -> p0x7fe918000d00;
+p0x7fe918000f28[label="0" ];
+p0x7fe918000f28 -> p0x7fe918000d00;
+}
+p0x7fe918000db8[label="1" ];
+p0x7fe918000db8 -> p0x7fe918000c48;
+}
+}
+}
+}

@@ -1,0 +1,26 @@
+digraph Fibonacci {
+  rankdir=TB;
+  node [shape=box];
+
+  F4 [label="fibonacci(4)\n[rt]"];
+  F3_1 [label="fibonacci(3)\n[rt1]"];
+  F2_1 [label="fibonacci(2)\n[rt1_1]"];
+  F1_1 [label="fibonacci(1)\n[rt1_1_1]"];
+  F0_1 [label="fibonacci(0)\n[rt1_1_2]"];
+  F1_2 [label="fibonacci(1)\n[rt1_2]"];
+  F2_2 [label="fibonacci(2)\n[rt2]"];
+  F1_3 [label="fibonacci(1)\n[rt2_1]"];
+  F0_2 [label="fibonacci(0)\n[rt2_2]"];
+
+  F4 -> F3_1;
+  F4 -> F2_2;
+
+  F3_1 -> F2_1;
+  F3_1 -> F1_2;
+
+  F2_1 -> F1_1;
+  F2_1 -> F0_1;
+
+  F2_2 -> F1_3;
+  F2_2 -> F0_2;
+}
