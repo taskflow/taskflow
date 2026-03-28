@@ -318,6 +318,7 @@ class Node : public NodeBase {
   friend class ExplicitAnchorGuard;
   friend class TaskGroup;
   friend class Algorithm;
+  friend class Semaphore;
 
 #ifdef TF_ENABLE_TASK_POOL
   TF_ENABLE_POOLABLE_ON_THIS;
