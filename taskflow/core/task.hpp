@@ -487,6 +487,24 @@ class Task {
   */
   template <typename T>
   Task& composed_of(T& object);
+  
+  /**
+  @brief creates an adopted module task from the given graph with move semantics
+
+  @param graph the given graph to adopt
+
+  @return @c *this
+  
+  The example below creates an adopted module task from a moved graph:
+  
+  @code{.cpp}
+  tf::Graph g;
+  tf::FlowBuilder fb(g);
+  fb.emplace([](){ std::cout << "task inside the adopted graph\n"; });
+  task.adopt(std::move(g));
+  @endcode
+  */
+  Task& adopt(tf::Graph&& graph);
 
   /**
   @brief adds precedence links from this to other tasks
@@ -945,8 +963,14 @@ Task& Task::remove_successors(Ts&&... tasks) {
 
 // Function: composed_of
 template <typename T>
-Task& Task::composed_of(T& object) {
-  _node->_handle.emplace<Node::Module>(object);
+Task& Task::composed_of(T& target) {
+  _node->_handle.emplace<Node::Module>(retrieve_graph(target));
+  return *this;
+}
+
+// Function: adopt
+inline Task& Task::adopt(Graph&& graph) {
+  _node->_handle.emplace<Node::AdoptedModule>(std::move(graph));
   return *this;
 }
 
@@ -1092,6 +1116,7 @@ inline TaskType Task::type() const {
     case Node::CONDITION:             return TaskType::CONDITION;
     case Node::MULTI_CONDITION:       return TaskType::CONDITION;
     case Node::MODULE:                return TaskType::MODULE;
+    case Node::ADOPTED_MODULE:        return TaskType::MODULE;
     case Node::ASYNC:                 return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
     default:                          return TaskType::UNDEFINED;
@@ -1305,6 +1330,7 @@ inline TaskType TaskView::type() const {
     case Node::CONDITION:             return TaskType::CONDITION;
     case Node::MULTI_CONDITION:       return TaskType::CONDITION;
     case Node::MODULE:                return TaskType::MODULE;
+    case Node::ADOPTED_MODULE:        return TaskType::MODULE;
     case Node::ASYNC:                 return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
     default:                          return TaskType::UNDEFINED;

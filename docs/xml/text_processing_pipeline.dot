@@ -1,0 +1,19 @@
+digraph Taskflow {
+subgraph cluster_p0x7ffd7418c200 {
+label="Text Processing Pipeline";
+p0x7bc4000142e8[label="starting pipeline" ];
+p0x7bc4000142e8 -> p0x7bc4000143d0;
+p0x7bc4000143d0[shape=box3d, color=blue, label="pipeline [m1]"];
+p0x7bc4000143d0->p0x7bc4000144b8;
+p0x7bc4000144b8[label="pipeline stopped" ];
+}
+subgraph cluster_p0x7ffd7418c110 {
+label="m1";
+p0x7bc400014030[label="cond" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7bc400014030 -> p0x7bc400014118 [style=dashed label="0"];
+p0x7bc400014030 -> p0x7bc400014200 [style=dashed label="1"];
+p0x7bc400014118[label="rt-0" shape=component];
+p0x7bc400014200[label="rt-1" shape=component];
+}
+}
+

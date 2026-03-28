@@ -1,0 +1,7 @@
+digraph Taskflow {
+  rankdir="LR"
+  cond[label="cond"  shape=diamond color=black fillcolor=aquamarine style=filled];
+  init->cond;
+  cond->cond[style=dashed label="0"];
+  cond->stop[style=dashed label="1"];
+}

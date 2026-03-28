@@ -1,0 +1,17 @@
+digraph Taskflow {
+rankdir="LR";
+p0x7fa25f000030[label="source" ];
+p0x7fa25f000030 -> p0x7fa25f000140;
+p0x7fa25f000140[label="switch" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa25f000140 -> p0x7fa25f000250 [style=dashed label="0"];
+p0x7fa25f000140 -> p0x7fa25f000360 [style=dashed label="1"];
+p0x7fa25f000140 -> p0x7fa25f000470 [style=dashed label="2"];
+p0x7fa25f000250[label="case 1" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa25f000250 -> p0x7fa25f000580 [style=dashed label="0"];
+p0x7fa25f000360[label="case 2" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa25f000360 -> p0x7fa25f000580 [style=dashed label="0"];
+p0x7fa25f000470[label="case 3" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x7fa25f000470 -> p0x7fa25f000580 [style=dashed label="0"];
+p0x7fa25f000580[label="target" ];
+}
+

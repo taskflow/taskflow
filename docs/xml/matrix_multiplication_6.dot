@@ -1,0 +1,24 @@
+digraph Taskflow {
+p0x5558af970f10[label="allocate_a" ];
+p0x5558af970f10 -> p0x5558af971240;
+p0x5558af971020[label="allocate_b" ];
+p0x5558af971020 -> p0x5558af971240;
+p0x5558af971130[label="allocate_c" ];
+p0x5558af971130 -> p0x5558af971240;
+p0x5558af971240[label="cudaFlow" shape=folder fillcolor=cyan style=filled];
+p0x5558af971240 -> p0x5558af971350;
+subgraph cluster_p0x5558af971240 {
+label="cudaFlow: cudaFlow";
+color="purple"
+p0x7f6fd8000b20[label="H2D_a"];
+p0x7f6fd8000b20 -> p0x7f6fd8000db0;
+p0x7f6fd8000c00[label="H2D_b"];
+p0x7f6fd8000c00 -> p0x7f6fd8000db0;
+p0x7f6fd8000ce0[label="D2H_c"];
+p0x7f6fd8000ce0 -> p0x5558af971240;
+p0x7f6fd8000db0[label="matmul" style="filled" color="white" fillcolor="black" fontcolor="white" shape="box3d"];
+p0x7f6fd8000db0 -> p0x7f6fd8000ce0;
+}
+p0x5558af971350[label="free" ];
+}
+

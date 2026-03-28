@@ -10,9 +10,8 @@ namespace tf {
 @private
 */
 template <typename T>
-auto Algorithm::make_module_task(T&& target) {
-  return [&target=std::forward<T>(target)](tf::Runtime& rt){
-    auto& graph = target.graph();
+auto Algorithm::make_module_task(T& target) {
+  return [&graph=retrieve_graph(target)](tf::Runtime& rt){
     if(graph.empty()) {
       return;
     }

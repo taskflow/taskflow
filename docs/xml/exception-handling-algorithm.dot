@@ -1,0 +1,31 @@
+digraph ProcessException {
+  rankdir=TB;
+  node [shape=box];
+
+  start [label="Exception thrown by task"];
+  mark  [label="Traverse to the root to find exception catcher\n(explicit & implicit anchors)"];
+
+  explicit [label="Explicit anchor found?\n(blocking context)"];
+  explicit_catch [label="Store exception in explicit anchor\n(first exception wins)\n→ Scenario 1"];
+
+  topology [label="Shared state found?\n(e.g., promise, topology)"];
+  topology_catch [label="Store exception in the shared state\n(first exception wins)\n→ Scenario 2"];
+
+  implicit [label="Implicit anchor found?\n(e.g., task group, runtime task)"];
+  implicit_catch [label="Store exception in implicit anchor\n(first exception wins)\n→ Scenario 3"];
+
+  silent [label="Store exception locally\n(no exception report)"];
+
+  start -> mark;
+  mark -> explicit;
+
+  explicit -> explicit_catch [label="yes"];
+  explicit -> topology [label="no"];
+
+  topology -> topology_catch [label="yes"];
+  topology -> implicit [label="no"];
+
+  implicit -> implicit_catch [label="yes"];
+  implicit -> silent [label="no"];
+}
+

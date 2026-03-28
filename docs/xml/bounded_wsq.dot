@@ -1,0 +1,36 @@
+digraph BoundedWSQ {
+  rankdir=TB;
+
+  graph [fontname="Arial"];
+  node  [fontname="Arial", shape=record];
+  edge  [fontname="Arial"];
+
+  // Threads
+  Owner   [label=" Owner Thread\n(single) ", shape=box];
+  Thieves [label=" Thief Threads\n(multiple) ", shape=box];
+
+  // Queue structure
+  Queue [
+    label="{\
+      <head> Head (Top)\nsteal index |\
+      Tasks Buffer\n[Fixed Capacity = 2^LogSize] |\
+      <tail> Tail (Bottom)\npush / pop index\
+    }"
+  ];
+
+  // Operations
+  Push [label=" try_push()\ntry_bulk_push() ", shape=oval];
+  Pop  [label=" pop() ", shape=oval];
+  Steal [label=" steal() ", shape=oval];
+
+  // Owner edges
+  Owner -> Push;
+  Owner -> Pop;
+  Push -> Queue:tail [label=" append at bottom "];
+  Pop  -> Queue:tail [label=" remove from bottom "];
+
+  // Thief edges
+  Thieves -> Steal;
+  Steal -> Queue:head [label=" remove from top "];
+}
+

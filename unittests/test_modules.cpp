@@ -742,4 +742,81 @@ TEST_CASE("Module.DependentAsyncLaunch.8threads" * doctest::timeout(300)) {
   module_with_silent_dependent_async_launch(8);
 }
 
+// --------------------------------------------------------
+// Testcase: AdoptedModule
+// --------------------------------------------------------
+void adopted_module(unsigned W) {
 
+  tf::Executor executor(W);
+
+  tf::Taskflow f0;
+
+  int cnt {0};
+
+  auto A = f0.emplace([&cnt](){ ++cnt; });
+  auto B = f0.emplace([&cnt](){ ++cnt; });
+  auto C = f0.emplace([&cnt](){ ++cnt; });
+  auto D = f0.emplace([&cnt](){ ++cnt; });
+  auto E = f0.emplace([&cnt](){ ++cnt; });
+
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  tf::Taskflow f1;
+
+  // module 1
+  std::tie(A, B, C, D, E) = f1.emplace(
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; }
+  );
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+  auto m1_1 = f1.adopt(std::move(f0.graph()));
+  E.precede(m1_1);
+
+  REQUIRE(f0.graph().empty());
+
+  executor.run(f1).get();
+  REQUIRE(cnt == 10);
+
+  //f1.dump(std::cout);
+}
+
+TEST_CASE("AdoptedModule.1thread" * doctest::timeout(300)) {
+  adopted_module(1);
+}
+
+TEST_CASE("AdoptedModule.2threads" * doctest::timeout(300)) {
+  adopted_module(2);
+}
+
+TEST_CASE("AdoptedModule.3threads" * doctest::timeout(300)) {
+  adopted_module(3);
+}
+
+TEST_CASE("AdoptedModule.4threads" * doctest::timeout(300)) {
+  adopted_module(4);
+}
+
+TEST_CASE("AdoptedModule.5threads" * doctest::timeout(300)) {
+  adopted_module(5);
+}
+
+TEST_CASE("AdoptedModule.6threads" * doctest::timeout(300)) {
+  adopted_module(6);
+}
+
+TEST_CASE("AdoptedModule.7threads" * doctest::timeout(300)) {
+  adopted_module(7);
+}
+
+TEST_CASE("AdoptedModule.8threads" * doctest::timeout(300)) {
+  adopted_module(8);
+}

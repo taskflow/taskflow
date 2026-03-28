@@ -1,0 +1,43 @@
+digraph Taskflow {
+rankdir="LR";
+p0x1dcb4c0[label="init" ];
+p0x1dcb4c0 -> p0x1dcb5d0;
+p0x1dcb5d0[label="clean_up" ];
+p0x1dcb5d0 -> p0x1dcb6e0;
+p0x1dcb6e0[label="parallel-for" ];
+p0x1dcb6e0 -> p0x1dcb7f0;
+subgraph cluster_p0x1dcb6e0 {
+label="Subflow: parallel-for";
+color=blue
+p0x7fd610000b50[label="pfg_0" ];
+p0x7fd610000b50 -> p0x1dcb6e0;
+p0x7fd610000c60[label="pfg_1" ];
+p0x7fd610000c60 -> p0x1dcb6e0;
+p0x7fd610000d70[label="pfg_2" ];
+p0x7fd610000d70 -> p0x1dcb6e0;
+p0x7fd610000e80[label="pfg_3" ];
+p0x7fd610000e80 -> p0x1dcb6e0;
+p0x7fd610000f90[label="pfg_4" ];
+p0x7fd610000f90 -> p0x1dcb6e0;
+p0x7fd6100010a0[label="pfg_5" ];
+p0x7fd6100010a0 -> p0x1dcb6e0;
+p0x7fd6100011b0[label="pfg_6" ];
+p0x7fd6100011b0 -> p0x1dcb6e0;
+p0x7fd6100012c0[label="pfg_7" ];
+p0x7fd6100012c0 -> p0x1dcb6e0;
+p0x7fd6100013d0[label="pfg_8" ];
+p0x7fd6100013d0 -> p0x1dcb6e0;
+p0x7fd6100014e0[label="pfg_9" ];
+p0x7fd6100014e0 -> p0x1dcb6e0;
+p0x7fd6100015f0[label="pfg_10" ];
+p0x7fd6100015f0 -> p0x1dcb6e0;
+p0x7fd610001700[label="pfg_11" ];
+p0x7fd610001700 -> p0x1dcb6e0;
+p0x7fd610001810[label="pfg_12" ];
+p0x7fd610001810 -> p0x1dcb6e0;
+}
+p0x1dcb7f0[label="update_cluster" ];
+p0x1dcb7f0 -> p0x1dcb900;
+p0x1dcb900[label="converged?" shape=diamond color=black fillcolor=aquamarine style=filled];
+p0x1dcb900 -> p0x1dcb5d0 [style=dashed label="0"];
+}
