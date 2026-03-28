@@ -753,9 +753,15 @@ class Executor {
 
   This member function is thread-safe.
   */
+
+#if __cplusplus >= TF_CPP20
+  template <typename F, typename... Tasks>
+  requires all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
+#endif
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -789,9 +795,14 @@ class Executor {
 
   This member function is thread-safe.
   */
+#if __cplusplus >= TF_CPP20
+  template <typename P, typename F, typename... Tasks>
+  requires is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
   template <typename P, typename F, typename... Tasks,
     std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
+#endif
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -826,9 +837,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename I, 
+#if __cplusplus >= TF_CPP20
+  template <typename F, typename I>
+  requires (!std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
+  template <typename F, typename I,
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
+#endif
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
@@ -865,9 +881,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename I, 
+#if __cplusplus >= TF_CPP20
+  template <typename P, typename F, typename I>
+  requires (is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
+  template <typename P, typename F, typename I,
     std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
+#endif
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
   
   // --------------------------------------------------------------------------
@@ -911,9 +932,14 @@ class Executor {
 
   This member function is thread-safe.
   */
+#if __cplusplus >= TF_CPP20
+    template <typename F, typename... Tasks>
+    requires all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
   template <typename F, typename... Tasks,
     std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
+#endif
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -957,9 +983,14 @@ class Executor {
 
   This member function is thread-safe.
   */
+#if __cplusplus >= TF_CPP20
+  template <typename P, typename F, typename... Tasks>
+  requires is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>
+#else
   template <typename P, typename F, typename... Tasks,
     std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
   >
+#endif
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -1002,9 +1033,14 @@ class Executor {
 
   This member function is thread-safe.
   */
+#if __cplusplus >= TF_CPP20
+  template <typename F, typename I>
+  requires (!std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
   template <typename F, typename I,
     std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
+#endif
   auto dependent_async(F&& func, I first, I last);
   
   /**
@@ -1051,9 +1087,14 @@ class Executor {
 
   This member function is thread-safe.
   */
+#if __cplusplus >= TF_CPP20
+  template <typename P, typename F, typename I>
+  requires (is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>)
+#else
   template <typename P, typename F, typename I,
     std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
   >
+#endif
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   // ----------------------------------------------------------------------------------------------
