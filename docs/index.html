@@ -330,7 +330,7 @@ Run a Taskflow through an Executor</h1>
 <div class="ttc" id="aclasstf_1_1Future_html"><div class="ttname"><a href="classtf_1_1Future.html">tf::Future</a></div><div class="ttdoc">class to access the result of an execution</div><div class="ttdef"><b>Definition</b> taskflow.hpp:630</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="QuickStartOffloadTasksToGPU"></a>
 Offload Tasks to a GPU</h1>
-<p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using Nvidia CUDA <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">Graph</a>.</p>
+<p>Taskflow supports GPU tasking for you to accelerate a wide range of scientific computing applications by harnessing the power of CPU-GPU collaborative computing using Nvidia CUDA Graph.</p>
 <div class="fragment"><div class="line">__global__ <span class="keywordtype">void</span> saxpy(<span class="keywordtype">int</span> n, <span class="keywordtype">float</span> a, <span class="keywordtype">float</span> *x, <span class="keywordtype">float</span> *y) {</div>
 <div class="line">  <span class="keywordtype">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;</div>
 <div class="line">  <span class="keywordflow">if</span> (i &lt; n) {</div>

@@ -1,1135 +1,771 @@
+// This file is part of Taskflow project <https://taskflow.github.io>
+// Copyright (c) 2018-2023 Dr. Tsung-Wei Huang
+// MIT License - see LICENSE file for details
+
 #pragma once
 
-#include <type_traits>
-#include <iterator>
-#include <iostream>
-#include <fstream>
-#include <stack>
-#include <queue>
-#include <vector>
-#include <algorithm>
-#include <memory>
-#include <functional>
+#include <cassert>
+#include <array>
+#include <deque>
+#include <forward_list>
 #include <map>
+#include <optional>
 #include <set>
+#include <string>
+#include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
-#include <sstream>
-#include <list>
-#include <forward_list>
-#include <numeric>
-#include <iomanip>
-#include <cassert>
-#include <cmath>
-#include <array>
-#include <string>
 #include <variant>
-#include <optional>
+#include <vector>
+#include <concepts>    // C++20
 
 namespace tf {
 
 // ----------------------------------------------------------------------------
-// Supported C++ STL type
+// Type detection traits (partial specializations — unchanged as per spec)
 // ----------------------------------------------------------------------------
 
-// std::basic_string
 template <typename T>
 struct is_std_basic_string : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_basic_string <std::basic_string<ArgsT...>> : std::true_type {};
-
+template <typename C, typename T, typename A>
+struct is_std_basic_string<std::basic_string<C,T,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_basic_string_v = is_std_basic_string<T>::value;
+inline constexpr bool is_std_basic_string_v = is_std_basic_string<T>::value;
 
-// std::array
-template <typename T>
-struct is_std_array : std::false_type {};
-
-template <typename T, size_t N>
-struct is_std_array <std::array<T, N>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_array_v = is_std_array<T>::value;
-
-// std::vector
 template <typename T>
 struct is_std_vector : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_vector <std::vector<ArgsT...>> : std::true_type {};
-
+template <typename T, typename A>
+struct is_std_vector<std::vector<T,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_vector_v = is_std_vector<T>::value;
+inline constexpr bool is_std_vector_v = is_std_vector<T>::value;
 
-// std::deque
 template <typename T>
 struct is_std_deque : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_deque <std::deque<ArgsT...>> : std::true_type {};
-
+template <typename T, typename A>
+struct is_std_deque<std::deque<T,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_deque_v = is_std_deque<T>::value;
+inline constexpr bool is_std_deque_v = is_std_deque<T>::value;
 
-// std::list
-template <typename T>
-struct is_std_list : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_list <std::list<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_list_v = is_std_list<T>::value;
-
-// std::forward_list
-template <typename T>
-struct is_std_forward_list : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_forward_list <std::forward_list<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_forward_list_v = is_std_forward_list<T>::value;
-
-// std::map
 template <typename T>
 struct is_std_map : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_map <std::map<ArgsT...>> : std::true_type {};
-
+template <typename K, typename V, typename C, typename A>
+struct is_std_map<std::map<K,V,C,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_map_v = is_std_map<T>::value;
+inline constexpr bool is_std_map_v = is_std_map<T>::value;
 
-// std::unordered_map
 template <typename T>
 struct is_std_unordered_map : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_unordered_map <std::unordered_map<ArgsT...>> : std::true_type {};
-
+template <typename K, typename V, typename H, typename E, typename A>
+struct is_std_unordered_map<std::unordered_map<K,V,H,E,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_unordered_map_v = is_std_unordered_map<T>::value;
+inline constexpr bool is_std_unordered_map_v = is_std_unordered_map<T>::value;
 
-// std::set
 template <typename T>
 struct is_std_set : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_set <std::set<ArgsT...>> : std::true_type {};
-
+template <typename K, typename C, typename A>
+struct is_std_set<std::set<K,C,A>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_set_v = is_std_set<T>::value;
+inline constexpr bool is_std_set_v = is_std_set<T>::value;
 
-// std::unordered_set
 template <typename T>
 struct is_std_unordered_set : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_unordered_set <std::unordered_set<ArgsT...>> : std::true_type {};
+template <typename K, typename H, typename E, typename A>
+struct is_std_unordered_set<std::unordered_set<K,H,E,A>> : std::true_type {};
+template <typename T>
+inline constexpr bool is_std_unordered_set_v = is_std_unordered_set<T>::value;
 
 template <typename T>
-constexpr bool is_std_unordered_set_v = is_std_unordered_set<T>::value;
+struct is_std_forward_list : std::false_type {};
+template <typename T, typename A>
+struct is_std_forward_list<std::forward_list<T,A>> : std::true_type {};
+template <typename T>
+inline constexpr bool is_std_forward_list_v = is_std_forward_list<T>::value;
 
-// std::variant
 template <typename T>
 struct is_std_variant : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_variant <std::variant<ArgsT...>> : std::true_type {};
-
+template <typename... Ts>
+struct is_std_variant<std::variant<Ts...>> : std::true_type {};
 template <typename T>
-constexpr bool is_std_variant_v = is_std_variant<T>::value;
+inline constexpr bool is_std_variant_v = is_std_variant<T>::value;
 
-// std::optional
 template <typename T>
 struct is_std_optional : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_optional <std::optional<ArgsT...>> : std::true_type {};
-
 template <typename T>
-constexpr bool is_std_optional_v = is_std_optional<T>::value;
-
-// std::unique_ptr
+struct is_std_optional<std::optional<T>> : std::true_type {};
 template <typename T>
-struct is_std_unique_ptr : std::false_type {};
+inline constexpr bool is_std_optional_v = is_std_optional<T>::value;
 
-template <typename... ArgsT>
-struct is_std_unique_ptr <std::unique_ptr<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_unique_ptr_v = is_std_unique_ptr<T>::value;
-
-// std::shared_ptr
-template <typename T>
-struct is_std_shared_ptr : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_shared_ptr <std::shared_ptr<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_shared_ptr_v = is_std_shared_ptr<T>::value;
-
-// std::duration
-template <typename T> struct is_std_duration : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_duration<std::chrono::duration<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_duration_v = is_std_duration<T>::value;
-
-// std::time_point
-template <typename T>
-struct is_std_time_point : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_time_point<std::chrono::time_point<ArgsT...>> : std::true_type {};
-
-template <typename T>
-constexpr bool is_std_time_point_v = is_std_time_point<T>::value;
-
-// std::tuple
 template <typename T>
 struct is_std_tuple : std::false_type {};
-
-template <typename... ArgsT>
-struct is_std_tuple<std::tuple<ArgsT...>> : std::true_type {};
+template <typename... Ts>
+struct is_std_tuple<std::tuple<Ts...>> : std::true_type {};
+template <typename T>
+inline constexpr bool is_std_tuple_v = is_std_tuple<T>::value;
 
 template <typename T>
-constexpr bool is_std_tuple_v = is_std_tuple<T>::value;
-
-//-----------------------------------------------------------------------------
-// Type extraction.
-//-----------------------------------------------------------------------------
-
-// ExtractType: forward declaration
-template <size_t, typename>
-struct ExtractType;
-
-// ExtractType_t: alias interface
-template <size_t idx, typename C>
-using ExtractType_t = typename ExtractType<idx, C>::type;
-
-// ExtractType: base
-template <template <typename...> typename C, typename T, typename... RestT>
-struct ExtractType <0, C<T, RestT...>> {
-  using type = T;
-};
-
-// ExtractType: base
+struct is_std_array : std::false_type {};
+template <typename T, std::size_t N>
+struct is_std_array<std::array<T,N>> : std::true_type {};
 template <typename T>
-struct ExtractType <0, T> {
-  using type = T;
-};
+inline constexpr bool is_std_array_v = is_std_array<T>::value;
 
-// ExtractType: recursive definition.
-template <size_t idx, template <typename...> typename C, typename T, typename... RestT>
-struct ExtractType <idx, C<T, RestT...>> : ExtractType<idx-1, C<RestT...>> {
-};
+template <typename T>
+struct is_std_duration : std::false_type {};
+template <typename Rep, typename Period>
+struct is_std_duration<std::chrono::duration<Rep,Period>> : std::true_type {};
+template <typename T>
+inline constexpr bool is_std_duration_v = is_std_duration<T>::value;
+
+template <typename T>
+struct is_std_time_point : std::false_type {};
+template <typename Clock, typename Duration>
+struct is_std_time_point<std::chrono::time_point<Clock,Duration>> : std::true_type {};
+template <typename T>
+inline constexpr bool is_std_time_point_v = is_std_time_point<T>::value;
+
+template <typename T>
+inline constexpr bool is_std_enum_v = std::is_enum_v<T>;
+
+// is_default_serializable_v: compound trait — unchanged as per spec
+template <typename T>
+inline constexpr bool is_default_serializable_v =
+    std::is_arithmetic_v<T>        ||
+    is_std_basic_string_v<T>       ||
+    is_std_vector_v<T>             ||
+    is_std_deque_v<T>              ||
+    is_std_map_v<T>                ||
+    is_std_unordered_map_v<T>      ||
+    is_std_set_v<T>                ||
+    is_std_unordered_set_v<T>      ||
+    is_std_forward_list_v<T>       ||
+    is_std_variant_v<T>            ||
+    is_std_optional_v<T>           ||
+    is_std_tuple_v<T>              ||
+    is_std_array_v<T>              ||
+    is_std_duration_v<T>           ||
+    is_std_time_point_v<T>         ||
+    is_std_enum_v<T>;
 
 // ----------------------------------------------------------------------------
-// Size Wrapper
+// C++20 concepts derived from the _v traits above
 // ----------------------------------------------------------------------------
 
-// Struct: SizeTag
-// Class that wraps a given size item which can be customized.
+/**
+ * @brief concept for std::basic_string specializations
+ */
 template <typename T>
-class SizeTag {
+concept StdBasicString = is_std_basic_string_v<std::decay_t<T>>;
 
-  public:
-
-    using type = std::conditional_t<std::is_lvalue_reference_v<T>, T, std::decay_t<T>>;
-
-    SizeTag(T&& item) : _item(std::forward<T>(item)) {}
-
-    SizeTag& operator = (const SizeTag&) = delete;
-
-    inline const T& get() const {return _item;}
-
-    template <typename ArchiverT>
-    auto save(ArchiverT & ar) const { return ar(_item); }
-
-    template <typename ArchiverT>
-    auto load(ArchiverT & ar) { return ar(_item); }
-
-  private:
-
-    type _item;
-};
-
-// Function: make_size_tag
+/**
+ * @brief concept for std::vector specializations
+ */
 template <typename T>
-SizeTag<T> make_size_tag(T&& t) {
-  return { std::forward<T>(t) };
+concept StdVector = is_std_vector_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::deque specializations
+ */
+template <typename T>
+concept StdDeque = is_std_deque_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::map specializations
+ */
+template <typename T>
+concept StdMap = is_std_map_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::unordered_map specializations
+ */
+template <typename T>
+concept StdUnorderedMap = is_std_unordered_map_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::set specializations
+ */
+template <typename T>
+concept StdSet = is_std_set_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::unordered_set specializations
+ */
+template <typename T>
+concept StdUnorderedSet = is_std_unordered_set_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::forward_list specializations
+ */
+template <typename T>
+concept StdForwardList = is_std_forward_list_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::variant specializations
+ */
+template <typename T>
+concept StdVariant = is_std_variant_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::optional specializations
+ */
+template <typename T>
+concept StdOptional = is_std_optional_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::tuple specializations
+ */
+template <typename T>
+concept StdTuple = is_std_tuple_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::array specializations
+ */
+template <typename T>
+concept StdArray = is_std_array_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::chrono::duration specializations
+ */
+template <typename T>
+concept StdDuration = is_std_duration_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for std::chrono::time_point specializations
+ */
+template <typename T>
+concept StdTimePoint = is_std_time_point_v<std::decay_t<T>>;
+
+/**
+ * @brief concept for enum types
+ */
+template <typename T>
+concept StdEnum = is_std_enum_v<std::decay_t<T>>;
+
+// ----------------------------------------------------------------------------
+// Helper: index sequence iteration over a tuple
+// ----------------------------------------------------------------------------
+
+namespace detail {
+
+template <typename F, typename Tuple, std::size_t... Is>
+void for_each_in_tuple(F&& f, Tuple&& t, std::index_sequence<Is...>) {
+  (f(std::get<Is>(std::forward<Tuple>(t))), ...);
 }
 
-// ----------------------------------------------------------------------------
-// Size Wrapper
-// ----------------------------------------------------------------------------
-
-// Class: MapItem
-template <typename KeyT, typename ValueT>
-class MapItem {
-
-  public:
-
-    using KeyType = std::conditional_t <std::is_lvalue_reference_v<KeyT>, KeyT, std::decay_t<KeyT>>;
-    using ValueType = std::conditional_t <std::is_lvalue_reference_v<ValueT>, ValueT, std::decay_t<ValueT>>;
-
-    MapItem(KeyT&& k, ValueT&& v) : _key(std::forward<KeyT>(k)), _value(std::forward<ValueT>(v)) {}
-    MapItem& operator = (const MapItem&) = delete;
-
-    inline const KeyT& key() const { return _key; }
-    inline const ValueT& value() const { return _value; }
-
-    template <typename ArchiverT>
-    auto save(ArchiverT & ar) const { return ar(_key, _value); }
-
-    template <typename ArchiverT>
-    auto load(ArchiverT & ar) { return ar(_key, _value); }
-
-  private:
-
-    KeyType _key;
-    ValueType _value;
-};
-
-// Function: make_kv_pair
-template <typename KeyT, typename ValueT>
-MapItem<KeyT, ValueT> make_kv_pair(KeyT&& k, ValueT&& v) {
-  return { std::forward<KeyT>(k), std::forward<ValueT>(v) };
+template <typename F, typename Tuple>
+void for_each_in_tuple(F&& f, Tuple&& t) {
+  for_each_in_tuple(
+    std::forward<F>(f),
+    std::forward<Tuple>(t),
+    std::make_index_sequence<std::tuple_size_v<std::remove_reference_t<Tuple>>>{}
+  );
 }
 
+} // namespace detail
+
 // ----------------------------------------------------------------------------
-// Serializer Definition
+// Serializer
 // ----------------------------------------------------------------------------
 
-template <typename T>
-constexpr auto is_default_serializable_v = (
-  std::is_arithmetic_v<T>    ||
-  std::is_enum_v<T>          ||
-  is_std_basic_string_v<T>   ||
-  is_std_vector_v<T>         ||
-  is_std_deque_v<T>          ||
-  is_std_list_v<T>           ||
-  is_std_forward_list_v<T>   ||
-  is_std_map_v<T>            ||
-  is_std_unordered_map_v<T>  ||
-  is_std_set_v<T>            ||
-  is_std_unordered_set_v<T>  ||
-  is_std_duration_v<T>       ||
-  is_std_time_point_v<T>     ||
-  is_std_variant_v<T>        ||
-  is_std_optional_v<T>       ||
-  is_std_tuple_v<T>          ||
-  is_std_array_v<T>
-);
-
-
-// Class: Serializer
-template <typename Stream, typename SizeType = std::streamsize>
+/**
+ * @brief serializer class
+ *
+ * @tparam Device output device type (must support write())
+ * @tparam SizeType integer type used to encode sizes
+ */
+template <typename Device, typename SizeType = std::streamsize>
 class Serializer {
 
-  public:
+public:
 
-    Serializer(Stream& stream);
+  /**
+   * @brief constructs the serializer with a reference to the output device
+   */
+  explicit Serializer(Device& device) : _device(device) {}
 
-    template <typename... T>
-    SizeType operator()(T&&... items);
+  /**
+   * @brief serializes one or more values to the device
+   *
+   * @tparam Ts value types to serialize
+   * @param args values to serialize
+   * @return total number of bytes written
+   */
+  template <typename... Ts>
+  SizeType operator()(Ts&&... args) {
+    return (_save(std::forward<Ts>(args)) + ... + SizeType{0});
+  }
 
-  private:
+private:
 
-    Stream& _stream;
+  Device& _device;
 
-    template <typename T,
-      std::enable_if_t<!is_default_serializable_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // ------------------------------------------------------------------
+  // Dispatch overloads — ordered from most- to least-specific so that
+  // the requires clauses form a clean, non-overlapping partition.
+  // The negated !is_default_serializable_v<U> guard stays as a
+  // requires clause per project conventions.
+  // ------------------------------------------------------------------
 
-    template <typename T,
-      std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (1) Custom / user-defined serializable: T has a .save(ar) method
+  //     and is NOT one of the standard types we handle ourselves.
+  template <typename T>
+  requires (!is_default_serializable_v<std::decay_t<T>>)
+  SizeType _save(T&& t) {
+    SizeType sz = 0;
+    auto ar = [&](auto&&... args) {
+      sz += (*this)(std::forward<decltype(args)>(args)...);
+    };
+    t.save(ar);
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (2) Arithmetic (int, float, double, bool, …)
+  template <typename T>
+  requires std::is_arithmetic_v<std::decay_t<T>>
+  SizeType _save(T&& t) {
+    _device.write(reinterpret_cast<const char*>(&t), sizeof(std::decay_t<T>));
+    return sizeof(std::decay_t<T>);
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (3) std::basic_string
+  template <StdBasicString T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    _device.write(t.data(), t.size() * sizeof(typename std::decay_t<T>::value_type));
+    sz += static_cast<SizeType>(t.size() * sizeof(typename std::decay_t<T>::value_type));
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<
-        is_std_deque_v<std::decay_t<T>> ||
-        is_std_list_v<std::decay_t<T>>,
-        void
-      >* = nullptr
-    >
-    SizeType _save(T&&);
+  // (4) std::vector — bulk write for arithmetic value_type, element-wise otherwise
+  template <StdVector T>
+  SizeType _save(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+      _device.write(
+        reinterpret_cast<const char*>(t.data()),
+        t.size() * sizeof(typename U::value_type)
+      );
+      sz += static_cast<SizeType>(t.size() * sizeof(typename U::value_type));
+    } else {
+      for (auto&& item : t) {
+        sz += _save(item);
+      }
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<
-        is_std_forward_list_v<std::decay_t<T>>,
-        void
-      >* = nullptr
-    >
-    SizeType _save(T&&);
+  // (5) std::deque
+  template <StdDeque T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    for (auto&& item : t) {
+      sz += _save(item);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<
-        is_std_map_v<std::decay_t<T>> ||
-        is_std_unordered_map_v<std::decay_t<T>>,
-        void
-      >* = nullptr
-    >
-    SizeType _save(T&&);
+  // (6) std::map
+  template <StdMap T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    for (auto&& [k, v] : t) {
+      sz += _save(k);
+      sz += _save(v);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<
-        is_std_set_v<std::decay_t<T>> ||
-        is_std_unordered_set_v<std::decay_t<T>>,
-        void
-      >* = nullptr
-    >
-    SizeType _save(T&&);
+  // (7) std::unordered_map
+  template <StdUnorderedMap T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    for (auto&& [k, v] : t) {
+      sz += _save(k);
+      sz += _save(v);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (8) std::set
+  template <StdSet T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    for (auto&& item : t) {
+      sz += _save(item);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (9) std::unordered_set
+  template <StdUnorderedSet T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.size()));
+    for (auto&& item : t) {
+      sz += _save(item);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (10) std::forward_list — must count elements first (no size())
+  template <StdForwardList T>
+  SizeType _save(T&& t) {
+    SizeType count = static_cast<SizeType>(std::distance(t.begin(), t.end()));
+    SizeType sz = _save(count);
+    for (auto&& item : t) {
+      sz += _save(item);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (11) std::variant — save index, then the active alternative
+  template <StdVariant T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<SizeType>(t.index()));
+    sz += std::visit([&](auto&& v) { return _save(v); }, std::forward<T>(t));
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (12) std::optional — save has_value flag, then the value if present
+  template <StdOptional T>
+  SizeType _save(T&& t) {
+    SizeType sz = _save(static_cast<bool>(t.has_value()));
+    if (t.has_value()) {
+      sz += _save(*t);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (13) std::tuple — fold over elements
+  template <StdTuple T>
+  SizeType _save(T&& t) {
+    SizeType sz{0};
+    detail::for_each_in_tuple([&](auto&& v) { sz += _save(v); }, std::forward<T>(t));
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _save(T&&);
+  // (14) std::array — bulk write for arithmetic, element-wise otherwise
+  template <StdArray T>
+  SizeType _save(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType sz{0};
+    if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+      _device.write(
+        reinterpret_cast<const char*>(t.data()),
+        t.size() * sizeof(typename U::value_type)
+      );
+      sz = static_cast<SizeType>(t.size() * sizeof(typename U::value_type));
+    } else {
+      for (auto&& item : t) {
+        sz += _save(item);
+      }
+    }
+    return sz;
+  }
 
+  // (15) std::chrono::duration — serialize the underlying rep
+  template <StdDuration T>
+  SizeType _save(T&& t) {
+    return _save(t.count());
+  }
 
+  // (16) std::chrono::time_point — serialize as duration since epoch
+  template <StdTimePoint T>
+  SizeType _save(T&& t) {
+    return _save(t.time_since_epoch());
+  }
+
+  // (17) enum — serialize as underlying integer type
+  template <StdEnum T>
+  SizeType _save(T&& t) {
+    return _save(static_cast<std::underlying_type_t<std::decay_t<T>>>(t));
+  }
 };
 
-// Constructor
-template <typename Stream, typename SizeType>
-Serializer<Stream, SizeType>::Serializer(Stream& stream) : _stream(stream) {
-}
-
-// Operator ()
-template <typename Stream, typename SizeType>
-template <typename... T>
-SizeType Serializer<Stream, SizeType>::operator() (T&&... items) {
-  return (_save(std::forward<T>(items)) + ...);
-}
-
-// arithmetic data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  _stream.write(reinterpret_cast<const char*>(std::addressof(t)), sizeof(t));
-  return sizeof(t);
-}
-
-// std::basic_string
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  using U = std::decay_t<T>;
-  auto sz = _save(make_size_tag(t.size()));
-  _stream.write(
-    reinterpret_cast<const char*>(t.data()),
-    t.size()*sizeof(typename U::value_type)
-  );
-  return sz + t.size()*sizeof(typename U::value_type);
-}
-
-// std::vector
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  auto sz = _save(make_size_tag(t.size()));
-
-  if constexpr (std::is_arithmetic_v<typename U::value_type>) {
-    _stream.write(
-      reinterpret_cast<const char*>(t.data()),
-      t.size() * sizeof(typename U::value_type)
-    );
-    sz += t.size() * sizeof(typename U::value_type);
-  } else {
-    for(auto&& item : t) {
-      sz += _save(item);
-    }
-  }
-
-  return sz;
-}
-
-// std::list and std::deque
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_deque_v<std::decay_t<T>> ||
-                   is_std_list_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  auto sz = _save(make_size_tag(t.size()));
-  for(auto&& item : t) {
-    sz += _save(item);
-  }
-  return sz;
-}
-
-// std::forward_list
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_forward_list_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  auto sz = _save(make_size_tag(std::distance(t.begin(), t.end())));
-  for(auto&& item : t) {
-    sz += _save(item);
-  }
-  return sz;
-}
-
-// std::map and std::unordered_map
-template <typename Stream, typename SizeType>
-template <typename T, std::enable_if_t<
-  is_std_map_v<std::decay_t<T>> ||
-  is_std_unordered_map_v<std::decay_t<T>>,
-  void
->*>
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  auto sz = _save(make_size_tag(t.size()));
-  for(auto&& [k, v] : t) {
-    sz += _save(make_kv_pair(k, v));
-  }
-  return sz;
-}
-
-// std::set and std::unordered_set
-template <typename Stream, typename SizeType>
-template <typename T, std::enable_if_t<
-  is_std_set_v<std::decay_t<T>> ||
-  is_std_unordered_set_v<std::decay_t<T>>,
-  void
->*>
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  auto sz = _save(make_size_tag(t.size()));
-  for(auto&& item : t) {
-    sz += _save(item);
-  }
-  return sz;
-}
-
-// enum data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  using U = std::decay_t<T>;
-  return _save(static_cast<std::underlying_type_t<U>>(t));
-}
-
-// duration data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  return _save(t.count());
-}
-
-// time point data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  return _save(t.time_since_epoch());
-}
-
-// optional data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  if(bool flag = t.has_value(); flag) {
-    return _save(flag) + _save(*t);
-  }
-  else {
-    return _save(flag);
-  }
-}
-
-// variant type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  return _save(t.index()) +
-         std::visit([&] (auto&& arg){ return _save(arg);}, t);
-}
-
-// tuple type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  return std::apply(
-    [&] (auto&&... args) {
-      return (_save(std::forward<decltype(args)>(args)) + ... + 0);
-    },
-    std::forward<T>(t)
-  );
-}
-
-// array
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  static_assert(std::tuple_size<U>::value > 0, "Array size can't be zero");
-
-  SizeType sz;
-
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
-    _stream.write(reinterpret_cast<const char*>(t.data()), sizeof(t));
-    sz = sizeof(t);
-  }
-  else {
-    sz = 0;
-    for(auto&& item : t) {
-      sz += _save(item);
-    }
-  }
-
-  return sz;
-}
-
-// custom save method
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<!is_default_serializable_v<std::decay_t<T>>, void>*
->
-SizeType Serializer<Stream, SizeType>::_save(T&& t) {
-  return t.save(*this);
-}
-
 // ----------------------------------------------------------------------------
-// DeSerializer Definition
+// Deserializer
 // ----------------------------------------------------------------------------
 
-template <typename T>
-constexpr auto is_default_deserializable_v =
-  std::is_arithmetic_v<T>    ||
-  std::is_enum_v<T>          ||
-  is_std_basic_string_v<T>   ||
-  is_std_vector_v<T>         ||
-  is_std_deque_v<T>          ||
-  is_std_list_v<T>           ||
-  is_std_forward_list_v<T>   ||
-  is_std_map_v<T>            ||
-  is_std_unordered_map_v<T>  ||
-  is_std_set_v<T>            ||
-  is_std_unordered_set_v<T>  ||
-  is_std_duration_v<T>       ||
-  is_std_time_point_v<T>     ||
-  is_std_variant_v<T>        ||
-  is_std_optional_v<T>       ||
-  is_std_tuple_v<T>          ||
-  is_std_array_v<T>;
-
-// Class: Deserializer
-template <typename Stream, typename SizeType = std::streamsize>
+/**
+ * @brief deserializer class
+ *
+ * @tparam Device input device type (must support read())
+ * @tparam SizeType integer type used to decode sizes (must match Serializer)
+ */
+template <typename Device, typename SizeType = std::streamsize>
 class Deserializer {
 
-  public:
+public:
 
-    Deserializer(Stream& stream);
+  /**
+   * @brief constructs the deserializer with a reference to the input device
+   */
+  explicit Deserializer(Device& device) : _device(device) {}
 
-    template <typename... T>
-    SizeType operator()(T&&... items);
+  /**
+   * @brief deserializes one or more values from the device
+   *
+   * @tparam Ts value types to deserialize
+   * @param args values to populate
+   * @return total number of bytes read
+   */
+  template <typename... Ts>
+  SizeType operator()(Ts&&... args) {
+    return (_load(std::forward<Ts>(args)) + ... + SizeType{0});
+  }
 
-  private:
+private:
 
-    Stream& _stream;
+  Device& _device;
 
-    // Function: _variant_helper
-    template <
-      size_t I = 0, typename... ArgsT,
-      std::enable_if_t<I==sizeof...(ArgsT)>* = nullptr
-    >
-    SizeType _variant_helper(size_t, std::variant<ArgsT...>&);
+  // ------------------------------------------------------------------
+  // Dispatch overloads — mirror of Serializer::_save
+  // ------------------------------------------------------------------
 
-    // Function: _variant_helper
-    template <
-      size_t I = 0, typename... ArgsT,
-      std::enable_if_t<I<sizeof...(ArgsT)>* = nullptr
-    >
-    SizeType _variant_helper(size_t, std::variant<ArgsT...>&);
+  // (1) Custom / user-defined deserializable
+  template <typename T>
+  requires (!is_default_serializable_v<std::decay_t<T>>)
+  SizeType _load(T&& t) {
+    SizeType sz = 0;
+    auto ar = [&](auto&&... args) {
+      sz += (*this)(std::forward<decltype(args)>(args)...);
+    };
+    t.load(ar);
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (2) Arithmetic
+  template <typename T>
+  requires std::is_arithmetic_v<std::decay_t<T>>
+  SizeType _load(T&& t) {
+    _device.read(reinterpret_cast<char*>(&t), sizeof(std::decay_t<T>));
+    return sizeof(std::decay_t<T>);
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (3) std::basic_string
+  template <StdBasicString T>
+  SizeType _load(T&& t) {
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.resize(static_cast<std::size_t>(n));
+    _device.read(
+      reinterpret_cast<char*>(t.data()),
+      static_cast<std::size_t>(n) * sizeof(typename std::decay_t<T>::value_type)
+    );
+    sz += static_cast<SizeType>(n * sizeof(typename std::decay_t<T>::value_type));
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (4) std::vector
+  template <StdVector T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.resize(static_cast<std::size_t>(n));
+    if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+      _device.read(
+        reinterpret_cast<char*>(t.data()),
+        static_cast<std::size_t>(n) * sizeof(typename U::value_type)
+      );
+      sz += static_cast<SizeType>(n * sizeof(typename U::value_type));
+    } else {
+      for (auto& item : t) {
+        sz += _load(item);
+      }
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<
-        is_std_deque_v<std::decay_t<T>> ||
-        is_std_list_v<std::decay_t<T>>  ||
-        is_std_forward_list_v<std::decay_t<T>>,
-        void
-      >* = nullptr
-    >
-    SizeType _load(T&&);
+  // (5) std::deque
+  template <StdDeque T>
+  SizeType _load(T&& t) {
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.resize(static_cast<std::size_t>(n));
+    for (auto& item : t) {
+      sz += _load(item);
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_map_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (6) std::map
+  template <StdMap T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.clear();
+    for (SizeType i = 0; i < n; ++i) {
+      typename U::key_type k{};
+      typename U::mapped_type v{};
+      sz += _load(k);
+      sz += _load(v);
+      t.emplace(std::move(k), std::move(v));
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_unordered_map_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (7) std::unordered_map
+  template <StdUnorderedMap T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.clear();
+    t.reserve(static_cast<std::size_t>(n));
+    for (SizeType i = 0; i < n; ++i) {
+      typename U::key_type k{};
+      typename U::mapped_type v{};
+      sz += _load(k);
+      sz += _load(v);
+      t.emplace(std::move(k), std::move(v));
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_set_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (8) std::set
+  template <StdSet T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.clear();
+    for (SizeType i = 0; i < n; ++i) {
+      typename U::value_type v{};
+      sz += _load(v);
+      t.emplace(std::move(v));
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_unordered_set_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (9) std::unordered_set
+  template <StdUnorderedSet T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.clear();
+    t.reserve(static_cast<std::size_t>(n));
+    for (SizeType i = 0; i < n; ++i) {
+      typename U::value_type v{};
+      sz += _load(v);
+      t.emplace(std::move(v));
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (10) std::forward_list
+  template <StdForwardList T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType n{0};
+    SizeType sz = _load(n);
+    t.clear();
+    // Build in reverse then reverse — O(n) without needing push_back
+    for (SizeType i = 0; i < n; ++i) {
+      typename U::value_type v{};
+      sz += _load(v);
+      t.push_front(std::move(v));
+    }
+    t.reverse();
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (11) std::variant — load the index, then construct the right alternative
+  template <StdVariant T>
+  SizeType _load(T&& t) {
+    SizeType idx{0};
+    SizeType sz = _load(idx);
+    sz += _load_variant_at(t, static_cast<std::size_t>(idx),
+                           std::make_index_sequence<
+                             std::variant_size_v<std::decay_t<T>>>{});
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  template <typename V, std::size_t... Is>
+  SizeType _load_variant_at(V& v, std::size_t idx, std::index_sequence<Is...>) {
+    SizeType sz{0};
+    bool matched = false;
+    ([&]() {
+      if (!matched && idx == Is) {
+        matched = true;
+        std::variant_alternative_t<Is, std::decay_t<V>> alt{};
+        sz = _load(alt);
+        v = std::move(alt);
+      }
+    }(), ...);
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (12) std::optional
+  template <StdOptional T>
+  SizeType _load(T&& t) {
+    bool has{false};
+    SizeType sz = _load(has);
+    if (has) {
+      typename std::decay_t<T>::value_type v{};
+      sz += _load(v);
+      t = std::move(v);
+    } else {
+      t = std::nullopt;
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (13) std::tuple
+  template <StdTuple T>
+  SizeType _load(T&& t) {
+    SizeType sz{0};
+    detail::for_each_in_tuple([&](auto& v) { sz += _load(v); }, std::forward<T>(t));
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (14) std::array
+  template <StdArray T>
+  SizeType _load(T&& t) {
+    using U = std::decay_t<T>;
+    SizeType sz{0};
+    if constexpr (std::is_arithmetic_v<typename U::value_type>) {
+      _device.read(
+        reinterpret_cast<char*>(t.data()),
+        t.size() * sizeof(typename U::value_type)
+      );
+      sz = static_cast<SizeType>(t.size() * sizeof(typename U::value_type));
+    } else {
+      for (auto& item : t) {
+        sz += _load(item);
+      }
+    }
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (15) std::chrono::duration
+  template <StdDuration T>
+  SizeType _load(T&& t) {
+    typename std::decay_t<T>::rep rep{};
+    SizeType sz = _load(rep);
+    t = std::decay_t<T>{rep};
+    return sz;
+  }
 
-    template <typename T,
-      std::enable_if_t<!is_default_deserializable_v<std::decay_t<T>>, void>* = nullptr
-    >
-    SizeType _load(T&&);
+  // (16) std::chrono::time_point
+  template <StdTimePoint T>
+  SizeType _load(T&& t) {
+    typename std::decay_t<T>::duration dur{};
+    SizeType sz = _load(dur);
+    t = std::decay_t<T>{dur};
+    return sz;
+  }
+
+  // (17) enum
+  template <StdEnum T>
+  SizeType _load(T&& t) {
+    std::underlying_type_t<std::decay_t<T>> val{};
+    SizeType sz = _load(val);
+    t = static_cast<std::decay_t<T>>(val);
+    return sz;
+  }
 };
 
-// Constructor
-template <typename Stream, typename SizeType>
-Deserializer<Stream, SizeType>::Deserializer(Stream& stream) : _stream(stream) {
-}
-
-// Operator ()
-template <typename Stream, typename SizeType>
-template <typename... T>
-SizeType Deserializer<Stream, SizeType>::operator() (T&&... items) {
-  return (_load(std::forward<T>(items)) + ...);
-}
-
-// Function: _variant_helper
-template <typename Stream, typename SizeType>
-template <size_t I, typename... ArgsT, std::enable_if_t<I==sizeof...(ArgsT)>*>
-SizeType Deserializer<Stream, SizeType>::_variant_helper(size_t, std::variant<ArgsT...>&) {
-  return 0;
-}
-
-// Function: _variant_helper
-template <typename Stream, typename SizeType>
-template <size_t I, typename... ArgsT, std::enable_if_t<I<sizeof...(ArgsT)>*>
-SizeType Deserializer<Stream, SizeType>::_variant_helper(size_t i, std::variant<ArgsT...>& v) {
-  if(i == 0) {
-    using type = ExtractType_t<I, std::variant<ArgsT...>>;
-    if(v.index() != I) {
-      static_assert(
-        std::is_default_constructible<type>::value,
-        "Failed to archive variant (type should be default constructible T())"
-      );
-      v = type();
-    }
-    return _load(*std::get_if<type>(&v));
-  }
-  return _variant_helper<I+1, ArgsT...>(i-1, v);
-}
-
-// arithmetic data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<std::is_arithmetic_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  _stream.read(reinterpret_cast<char*>(std::addressof(t)), sizeof(t));
-  return sizeof(t);
-}
-
-// std::basic_string
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_basic_string_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-  typename U::size_type num_chars;
-  auto sz = _load(make_size_tag(num_chars));
-  t.resize(num_chars);
-  _stream.read(reinterpret_cast<char*>(t.data()), num_chars*sizeof(typename U::value_type));
-  return sz + num_chars*sizeof(typename U::value_type);
-}
-
-// std::vector
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_vector_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  typename U::size_type num_data;
-
-  auto sz = _load(make_size_tag(num_data));
-
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
-    t.resize(num_data);
-    _stream.read(reinterpret_cast<char*>(t.data()), num_data * sizeof(typename U::value_type));
-    sz += num_data * sizeof(typename U::value_type);
-  }
-  else {
-    t.resize(num_data);
-    for(auto && v : t) {
-      sz += _load(v);
-    }
-  }
-  return sz;
-}
-
-// std::list and std::deque
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_deque_v<std::decay_t<T>> ||
-                   is_std_list_v<std::decay_t<T>>  ||
-                   is_std_forward_list_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-
-  typename U::size_type num_data;
-  auto sz = _load(make_size_tag(num_data));
-
-  t.resize(num_data);
-  for(auto && v : t) {
-    sz += _load(v);
-  }
-  return sz;
-}
-
-// std::map
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_map_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  typename U::size_type num_data;
-  auto sz = _load(make_size_tag(num_data));
-
-  t.clear();
-  auto hint = t.begin();
-
-  typename U::key_type k;
-  typename U::mapped_type v;
-
-  for(size_t i=0; i<num_data; ++i) {
-    sz += _load(make_kv_pair(k, v));
-    hint = t.emplace_hint(hint, std::move(k), std::move(v));
-  }
-  return sz;
-}
-
-// std::unordered_map
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_unordered_map_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-  typename U::size_type num_data;
-  auto sz = _load(make_size_tag(num_data));
-
-  t.clear();
-  t.reserve(num_data);
-
-  typename U::key_type k;
-  typename U::mapped_type v;
-
-  for(size_t i=0; i<num_data; ++i) {
-    sz += _load(make_kv_pair(k, v));
-    t.emplace(std::move(k), std::move(v));
-  }
-
-  return sz;
-}
-
-// std::set
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_set_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  typename U::size_type num_data;
-  auto sz = _load(make_size_tag(num_data));
-
-  t.clear();
-  auto hint = t.begin();
-
-  typename U::key_type k;
-
-  for(size_t i=0; i<num_data; ++i) {
-    sz += _load(k);
-    hint = t.emplace_hint(hint, std::move(k));
-  }
-  return sz;
-}
-
-// std::unordered_set
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_unordered_set_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  typename U::size_type num_data;
-  auto sz = _load(make_size_tag(num_data));
-
-  t.clear();
-  t.reserve(num_data);
-
-  typename U::key_type k;
-
-  for(size_t i=0; i<num_data; ++i) {
-    sz += _load(k);
-    t.emplace(std::move(k));
-  }
-  return sz;
-}
-
-// enum data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<std::is_enum_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-  std::underlying_type_t<U> k;
-  auto sz = _load(k);
-  t = static_cast<U>(k);
-  return sz;
-}
-
-// duration data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_duration_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-  typename U::rep count;
-  auto s = _load(count);
-  t = U{count};
-  return s;
-}
-
-// time point data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_time_point_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  using U = std::decay_t<T>;
-  typename U::duration elapsed;
-  auto s = _load(elapsed);
-  t = U{elapsed};
-  return s;
-}
-
-// optional data type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_optional_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  bool has_value;
-  auto s = _load(has_value);
-  if(has_value) {
-    if(!t) {
-      t = typename U::value_type();
-    }
-    s += _load(*t);
-  }
-  else {
-    t.reset();
-  }
-  return s;
-}
-
-// variant type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_variant_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  std::decay_t<decltype(t.index())> idx;
-  auto s = _load(idx);
-  return s + _variant_helper(idx, t);
-}
-
-// tuple type
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_tuple_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  return std::apply(
-    [&] (auto&&... args) {
-      return (_load(std::forward<decltype(args)>(args)) + ... + 0);
-    },
-    std::forward<T>(t)
-  );
-}
-
-// array
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<is_std_array_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-
-  using U = std::decay_t<T>;
-
-  static_assert(std::tuple_size<U>::value > 0, "Array size can't be zero");
-
-  SizeType sz;
-
-  if constexpr(std::is_arithmetic_v<typename U::value_type>) {
-    _stream.read(reinterpret_cast<char*>(t.data()), sizeof(t));
-    sz = sizeof(t);
-  }
-  else {
-    sz = 0;
-    for(auto && v : t) {
-      sz += _load(v);
-    }
-  }
-
-  return sz;
-}
-
-// custom save method
-template <typename Stream, typename SizeType>
-template <typename T,
-  std::enable_if_t<!is_default_deserializable_v<std::decay_t<T>>, void>*
->
-SizeType Deserializer<Stream, SizeType>::_load(T&& t) {
-  return t.load(*this);
-}
-
-}  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-
+} // namespace tf

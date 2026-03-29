@@ -174,7 +174,7 @@ A type satisfies tf::TaskParams if it is one of the following:
   + any type constructible from std::string
 */
 template <typename P>
-concept TaskParamsConcept =
+concept TaskParameters =
   std::same_as<std::decay_t<P>, TaskParams> ||
   std::same_as<std::decay_t<P>, DefaultTaskParams> ||
   std::constructible_from<std::string, P>;
@@ -184,10 +184,10 @@ concept TaskParamsConcept =
 
 @tparam P type to check
 
-Equivalent to tf::TaskParamsConcept<P>. Provided for backward compatibility.
+Equivalent to tf::TaskParameters<P>. Provided for backward compatibility.
 */
 template <typename P>
-constexpr bool is_task_params_v = TaskParamsConcept<P>;
+constexpr bool is_task_params_v = TaskParameters<P>;
 
 // ----------------------------------------------------------------------------
 // NodeBase
@@ -947,50 +947,37 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 // ----------------------------------------------------------------------------
 
 /**
-@brief determines if a type provides a graph via a @c graph() method
+@brief determines if a type owns or provides a graph
 
-A type satisfies tf::GraphOwner if it has a @c graph() method
-returning a reference convertible to <tt>tf::Graph&</tt>.
+A type satisfies tf::HasGraph if it either derives from tf::Graph
+or provides a @c graph() method returning a reference convertible to
+<tt>tf::Graph&</tt>.
 */
 template <typename T>
-concept GraphOwner = requires(T& t) {
-  { t.graph() } -> std::convertible_to<Graph&>;
-};
-
-/**
-@brief determines if a type owns or is a graph
-
-A type satisfies tf::HasGraph if it either satisfies tf::GraphOwner
-(has a @c graph() method) or is derived from tf::Graph.
-*/
-template <typename T>
-concept HasGraph = GraphOwner<T> || std::derived_from<T, Graph>;
+concept HasGraph = std::derived_from<T, Graph> ||
+                   requires(T& t) {
+                     { t.graph() } -> std::convertible_to<Graph&>;
+                   };
 
 /**
 @brief retrieves a reference to the underlying tf::Graph from an object
-
-This function extracts a tf::Graph reference from the given object
-using the following priority:
-
-1. If @c T satisfies tf::GraphOwner (has a @c graph() method), that reference
-   is returned.
-2. Otherwise, @c T must be derived from tf::Graph, in which case @c t itself
-   is returned via a static upcast.
 
 @tparam T type satisfying tf::HasGraph
 
 @param t the object from which to retrieve the graph
 
 @return a reference to the underlying tf::Graph
+
+If @c T provides a @c graph() method, that reference is returned.
+Otherwise, @c T is derived from tf::Graph and is returned via a static upcast.
 */
 template <HasGraph T>
-auto& retrieve_graph(T& t) {
-  if constexpr (GraphOwner<T>) {
+Graph& retrieve_graph(T& t) {
+  if constexpr (requires { t.graph(); }) {
     return t.graph();
   } else {
     return static_cast<Graph&>(t);
   }
 }
-
 
 }  // end of namespace tf. ----------------------------------------------------

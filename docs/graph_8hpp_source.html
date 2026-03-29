@@ -198,13 +198,13 @@ $(function(){initNavTree('graph_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="classtf_1_1DefaultTaskParams.html">  166</a></span><span class="keyword">class </span><a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a> {};</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span></div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> P&gt;</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="concepttf_1_1TaskParamsConcept.html">  177</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a> =</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="concepttf_1_1TaskParameters.html">  177</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters</a> =</div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>  std::same_as&lt;std::decay_t&lt;P&gt;, <a class="code hl_class" href="classtf_1_1TaskParams.html">TaskParams</a>&gt; ||</div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>  std::same_as&lt;std::decay_t&lt;P&gt;, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>&gt; ||</div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>  std::constructible_from&lt;std::string, P&gt;;</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span></div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> P&gt;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno"><a class="line" href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c">  190</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c">is_task_params_v</a> = <a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept&lt;P&gt;</a>;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno"><a class="line" href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c">  190</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c">is_task_params_v</a> = <a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters&lt;P&gt;</a>;</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment">// NodeBase</span></div>
@@ -957,29 +957,26 @@ $(function(){initNavTree('graph_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span><span class="comment">// Graph checker</span></div>
 <div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span></div>
-<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00956" data-start="{" data-end="}">
-<div class="line"><a id="l00956" name="l00956"></a><span class="lineno"><a class="line" href="concepttf_1_1GraphOwner.html">  956</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1GraphOwner.html">GraphOwner</a> = <span class="keyword">requires</span>(T&amp; t) {</div>
-<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>  { t.graph() } -&gt; std::convertible_to&lt;Graph&amp;&gt;;</div>
-<div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span>};</div>
+<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00957" data-start="{" data-end="}">
+<div class="line"><a id="l00957" name="l00957"></a><span class="lineno"><a class="line" href="concepttf_1_1HasGraph.html">  957</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1HasGraph.html">HasGraph</a> = std::derived_from&lt;T, Graph&gt; ||</div>
+<div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span>                   <span class="keyword">requires</span>(T&amp; t) {</div>
+<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>                     { t.graph() } -&gt; std::convertible_to&lt;Graph&amp;&gt;;</div>
+<div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span>                   };</div>
 </div>
-<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span></div>
-<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00967" name="l00967"></a><span class="lineno"><a class="line" href="concepttf_1_1HasGraph.html">  967</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1HasGraph.html">HasGraph</a> = <a class="code hl_concept" href="concepttf_1_1GraphOwner.html">GraphOwner&lt;T&gt;</a> || std::derived_from&lt;T, Graph&gt;;</div>
-<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span></div>
-<div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span><span class="keyword">template</span> &lt;HasGraph T&gt;</div>
-<div class="foldopen" id="foldopen00987" data-start="{" data-end="}">
-<div class="line"><a id="l00987" name="l00987"></a><span class="lineno"><a class="line" href="namespacetf.html#a1d0bda5806c6fcde04ac31d3ac0dd4f2">  987</a></span><span class="keyword">auto</span>&amp; <a class="code hl_function" href="namespacetf.html#a1d0bda5806c6fcde04ac31d3ac0dd4f2">retrieve_graph</a>(T&amp; t) {</div>
-<div class="line"><a id="l00988" name="l00988"></a><span class="lineno">  988</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<a class="code hl_concept" href="concepttf_1_1GraphOwner.html">GraphOwner&lt;T&gt;</a>) {</div>
-<div class="line"><a id="l00989" name="l00989"></a><span class="lineno">  989</span>    <span class="keywordflow">return</span> t.graph();</div>
-<div class="line"><a id="l00990" name="l00990"></a><span class="lineno">  990</span>  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;<span class="keyword">&gt;</span>(t);</div>
-<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span>  }</div>
-<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>}</div>
+<div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span></div>
+<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span><span class="keyword">template</span> &lt;HasGraph T&gt;</div>
+<div class="foldopen" id="foldopen00975" data-start="{" data-end="}">
+<div class="line"><a id="l00975" name="l00975"></a><span class="lineno"><a class="line" href="namespacetf.html#a73adea366eb4162d2d4ecd90e74e9cc8">  975</a></span><a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; <a class="code hl_function" href="namespacetf.html#a73adea366eb4162d2d4ecd90e74e9cc8">retrieve_graph</a>(T&amp; t) {</div>
+<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">requires</span> { t.graph(); }) {</div>
+<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>    <span class="keywordflow">return</span> t.graph();</div>
+<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;<span class="keyword">&gt;</span>(t);</div>
+<div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span>  }</div>
+<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>}</div>
 </div>
-<div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span> </div>
-<div class="line"><a id="l00995" name="l00995"></a><span class="lineno">  995</span> </div>
-<div class="line"><a id="l00996" name="l00996"></a><span class="lineno">  996</span>}  <span class="comment">// end of namespace tf. ----------------------------------------------------</span></div>
+<div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span> </div>
+<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>}  <span class="comment">// end of namespace tf. ----------------------------------------------------</span></div>
 <div class="ttc" id="aclasstf_1_1AsyncTask_html"><div class="ttname"><a href="classtf_1_1AsyncTask.html">tf::AsyncTask</a></div><div class="ttdoc">class to hold a dependent asynchronous task with shared ownership</div><div class="ttdef"><b>Definition</b> async_task.hpp:45</div></div>
 <div class="ttc" id="aclasstf_1_1DefaultTaskParams_html"><div class="ttname"><a href="classtf_1_1DefaultTaskParams.html">tf::DefaultTaskParams</a></div><div class="ttdoc">class to create an empty task parameter for compile-time optimization</div><div class="ttdef"><b>Definition</b> graph.hpp:166</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html"><div class="ttname"><a href="classtf_1_1Executor.html">tf::Executor</a></div><div class="ttdoc">class to create an executor</div><div class="ttdef"><b>Definition</b> executor.hpp:62</div></div>
@@ -1003,9 +1000,8 @@ $(function(){initNavTree('graph_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="aclasstf_1_1TaskView_html"><div class="ttname"><a href="classtf_1_1TaskView.html">tf::TaskView</a></div><div class="ttdoc">class to access task information from the observer interface</div><div class="ttdef"><b>Definition</b> task.hpp:1235</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:263</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
-<div class="ttc" id="aconcepttf_1_1GraphOwner_html"><div class="ttname"><a href="concepttf_1_1GraphOwner.html">tf::GraphOwner</a></div><div class="ttdoc">determines if a type provides a graph via a graph() method</div><div class="ttdef"><b>Definition</b> graph.hpp:956</div></div>
-<div class="ttc" id="aconcepttf_1_1HasGraph_html"><div class="ttname"><a href="concepttf_1_1HasGraph.html">tf::HasGraph</a></div><div class="ttdoc">determines if a type owns or is a graph</div><div class="ttdef"><b>Definition</b> graph.hpp:967</div></div>
-<div class="ttc" id="aconcepttf_1_1TaskParamsConcept_html"><div class="ttname"><a href="concepttf_1_1TaskParamsConcept.html">tf::TaskParamsConcept</a></div><div class="ttdoc">determines if a type is a task parameter type</div><div class="ttdef"><b>Definition</b> graph.hpp:177</div></div>
+<div class="ttc" id="aconcepttf_1_1HasGraph_html"><div class="ttname"><a href="concepttf_1_1HasGraph.html">tf::HasGraph</a></div><div class="ttdoc">determines if a type owns or provides a graph</div><div class="ttdef"><b>Definition</b> graph.hpp:957</div></div>
+<div class="ttc" id="aconcepttf_1_1TaskParameters_html"><div class="ttname"><a href="concepttf_1_1TaskParameters.html">tf::TaskParameters</a></div><div class="ttdoc">determines if a type is a task parameter type</div><div class="ttdef"><b>Definition</b> graph.hpp:177</div></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
 <div class="ttc" id="anamespacetf_html_a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69"><div class="ttname"><a href="namespacetf.html#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69">tf::TaskType::MODULE</a></div><div class="ttdeci">@ MODULE</div><div class="ttdoc">module task type</div><div class="ttdef"><b>Definition</b> task.hpp:33</div></div>
 <div class="ttc" id="anamespacetf_html_a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad"><div class="ttname"><a href="namespacetf.html#a1355048578785a80414707ff308b395aa46be697979903d784a70aeec45eb14ad">tf::TaskType::SUBFLOW</a></div><div class="ttdeci">@ SUBFLOW</div><div class="ttdoc">dynamic (subflow) task type</div><div class="ttdef"><b>Definition</b> task.hpp:29</div></div>
@@ -1014,7 +1010,7 @@ $(function(){initNavTree('graph_8hpp_source.html',''); initResizable(true); });
 <div class="ttc" id="anamespacetf_html_a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842"><div class="ttname"><a href="namespacetf.html#a1355048578785a80414707ff308b395aae54e6f6ba0c7cbb4eb7a2016e2f17842">tf::TaskType::PLACEHOLDER</a></div><div class="ttdeci">@ PLACEHOLDER</div><div class="ttdoc">placeholder task type</div><div class="ttdef"><b>Definition</b> task.hpp:23</div></div>
 <div class="ttc" id="anamespacetf_html_a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8"><div class="ttname"><a href="namespacetf.html#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8">tf::TaskType::RUNTIME</a></div><div class="ttdeci">@ RUNTIME</div><div class="ttdoc">runtime task type</div><div class="ttdef"><b>Definition</b> task.hpp:27</div></div>
 <div class="ttc" id="anamespacetf_html_a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc"><div class="ttname"><a href="namespacetf.html#a1355048578785a80414707ff308b395aafe6f99ef1ec99efbdc19a9786cf1facc">tf::TaskType::STATIC</a></div><div class="ttdeci">@ STATIC</div><div class="ttdoc">static task type</div><div class="ttdef"><b>Definition</b> task.hpp:25</div></div>
-<div class="ttc" id="anamespacetf_html_a1d0bda5806c6fcde04ac31d3ac0dd4f2"><div class="ttname"><a href="namespacetf.html#a1d0bda5806c6fcde04ac31d3ac0dd4f2">tf::retrieve_graph</a></div><div class="ttdeci">auto &amp; retrieve_graph(T &amp;t)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:987</div></div>
+<div class="ttc" id="anamespacetf_html_a73adea366eb4162d2d4ecd90e74e9cc8"><div class="ttname"><a href="namespacetf.html#a73adea366eb4162d2d4ecd90e74e9cc8">tf::retrieve_graph</a></div><div class="ttdeci">Graph &amp; retrieve_graph(T &amp;t)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:975</div></div>
 <div class="ttc" id="anamespacetf_html_ad3a41adc2499a9519da3e77dc3e9849c"><div class="ttname"><a href="namespacetf.html#ad3a41adc2499a9519da3e77dc3e9849c">tf::is_task_params_v</a></div><div class="ttdeci">constexpr bool is_task_params_v</div><div class="ttdoc">determines if a type is a task parameter type (variable template)</div><div class="ttdef"><b>Definition</b> graph.hpp:190</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

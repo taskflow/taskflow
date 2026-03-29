@@ -156,7 +156,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>  <span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>  <span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">dependent_async</a>(F&amp;&amp; func, Tasks&amp;&amp;... tasks);</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>  </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>  <span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>  <span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>  <span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>  <span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, Tasks&amp;&amp;... tasks);</div>
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>  </div>
@@ -164,7 +164,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>  <span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>  <span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">dependent_async</a>(F&amp;&amp; func, I first, I last);</div>
 <div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>  </div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>  <span class="keyword">template</span> &lt;TaskParamsConcept P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>  <span class="keyword">template</span> &lt;TaskParameters P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
 <div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>  <span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>  <span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, I first, I last);</div>
 <div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>  </div>
@@ -176,7 +176,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>  <span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>  <a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">silent_dependent_async</a>(F&amp;&amp; func, Tasks&amp;&amp;... tasks);</div>
 <div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>  </div>
-<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>  <span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
+<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>  <span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
 <div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>  <span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span>  <a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">silent_dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, Tasks&amp;&amp;... tasks);</div>
 <div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span>  </div>
@@ -184,7 +184,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 <div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>  <span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>  <a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">silent_dependent_async</a>(F&amp;&amp; func, I first, I last);</div>
 <div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>  </div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>  <span class="keyword">template</span> &lt;TaskParamsConcept P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>  <span class="keyword">template</span> &lt;TaskParameters P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
 <div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>  <span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>  <a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">silent_dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, I first, I last);</div>
 <div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span> </div>
@@ -338,7 +338,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 </div>
 <div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span> </div>
 <div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span><span class="comment">// Function: silent_dependent_async</span></div>
-<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span><span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno">  717</span><span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
 <div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span><span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="foldopen" id="foldopen00719" data-start="{" data-end="}">
 <div class="line"><a id="l00719" name="l00719"></a><span class="lineno"><a class="line" href="classtf_1_1Runtime.html#a0b14c63a700495468bfe72447ed6070f">  719</a></span><a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">Runtime::silent_dependent_async</a>(</div>
@@ -361,7 +361,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 </div>
 <div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span> </div>
 <div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span><span class="comment">// Function: silent_dependent_async</span></div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="keyword">template</span> &lt;TaskParamsConcept P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span><span class="keyword">template</span> &lt;TaskParameters P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
 <div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span><span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="foldopen" id="foldopen00738" data-start="{" data-end="}">
 <div class="line"><a id="l00738" name="l00738"></a><span class="lineno"><a class="line" href="classtf_1_1Runtime.html#a15cd519ef73d759233e41de687291030">  738</a></span><a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> <a class="code hl_function" href="classtf_1_1Runtime.html#a03e2912dc6a2b4763afd3f5e0cd38f0e">Runtime::silent_dependent_async</a>(</div>
@@ -388,7 +388,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 </div>
 <div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span> </div>
 <div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span><span class="comment">// Function: dependent_async</span></div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span><span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span><span class="keyword">template</span> &lt;<a class="code hl_concept" href="concepttf_1_1TaskParameters.html">TaskParameters</a> P, <span class="keyword">typename</span> F, <span class="keyword">typename</span>... Tasks&gt;</div>
 <div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span><span class="keyword">requires</span> (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
 <div class="foldopen" id="foldopen00761" data-start="{" data-end="}">
 <div class="line"><a id="l00761" name="l00761"></a><span class="lineno"><a class="line" href="classtf_1_1Runtime.html#ab892793357a5a87ea6ab0035f9b63b66">  761</a></span><span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">Runtime::dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, Tasks&amp;&amp;... tasks) {</div>
@@ -409,7 +409,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 </div>
 <div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span> </div>
 <div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span><span class="comment">// Function: dependent_async</span></div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span><span class="keyword">template</span> &lt;TaskParamsConcept P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span><span class="keyword">template</span> &lt;TaskParameters P, <span class="keyword">typename</span> F, <span class="keyword">typename</span> I&gt;</div>
 <div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span><span class="keyword">requires</span> (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="code hl_class" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
 <div class="foldopen" id="foldopen00778" data-start="{" data-end="}">
 <div class="line"><a id="l00778" name="l00778"></a><span class="lineno"><a class="line" href="classtf_1_1Runtime.html#a830d134e8a9a728972e37079e75c6b78">  778</a></span><span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1Runtime.html#adf4363e398c883a421f4553445be2675">Runtime::dependent_async</a>(P&amp;&amp; params, F&amp;&amp; func, I first, I last) {</div>
@@ -627,7 +627,7 @@ $(function(){initNavTree('runtime_8hpp_source.html',''); initResizable(true); })
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:263</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
 <div class="ttc" id="aclasstf_1_1Worker_html"><div class="ttname"><a href="classtf_1_1Worker.html">tf::Worker</a></div><div class="ttdoc">class to create a worker in an executor</div><div class="ttdef"><b>Definition</b> worker.hpp:55</div></div>
-<div class="ttc" id="aconcepttf_1_1TaskParamsConcept_html"><div class="ttname"><a href="concepttf_1_1TaskParamsConcept.html">tf::TaskParamsConcept</a></div><div class="ttdoc">determines if a type is a task parameter type</div><div class="ttdef"><b>Definition</b> graph.hpp:177</div></div>
+<div class="ttc" id="aconcepttf_1_1TaskParameters_html"><div class="ttname"><a href="concepttf_1_1TaskParameters.html">tf::TaskParameters</a></div><div class="ttdoc">determines if a type is a task parameter type</div><div class="ttdef"><b>Definition</b> graph.hpp:177</div></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -100,7 +100,7 @@ var NAVTREEINDEX =
 "TaskflowProcessingPipeline.html#TaskflowPipelineDefineThePipes",
 "classtf_1_1Runtime.html#a0b14c63a700495468bfe72447ed6070f",
 "classtf_1_1cudaGraphExecCreator.html#af9fb8a423bd7dbbaa6683a946ff114f1",
-"release-3-10-0.html"
+"release-3-10-0.html#release-3-10-0_breaking_changes"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

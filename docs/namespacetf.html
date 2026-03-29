@@ -277,14 +277,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1TaskParamsConcept.html">TaskParamsConcept</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1TaskParameters.html">TaskParameters</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type is a task parameter type <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1GraphOwner.html">GraphOwner</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type provides a graph via a <code>graph()</code> method <br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1HasGraph.html">HasGraph</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type owns or is a graph <br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type owns or provides a graph <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1StaticTask.html">StaticTask</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a callable is a static task <br /></td></tr>
@@ -443,10 +440,10 @@ template&lt;size_t N&gt; </td></tr>
 <tr class="memitem:a5512fcb154402c277ce3ef5709988080"><td class="memTemplItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a5512fcb154402c277ce3ef5709988080">distance</a> (B beg, E end, S step)</td></tr>
 <tr class="memdesc:a5512fcb154402c277ce3ef5709988080"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculates the number of iterations in the given index range  <br /></td></tr>
 <tr class="separator:a5512fcb154402c277ce3ef5709988080"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d0bda5806c6fcde04ac31d3ac0dd4f2" id="r_a1d0bda5806c6fcde04ac31d3ac0dd4f2"><td class="memTemplParams" colspan="2">template&lt;HasGraph T&gt; </td></tr>
-<tr class="memitem:a1d0bda5806c6fcde04ac31d3ac0dd4f2"><td class="memTemplItemLeft" align="right" valign="top">auto &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a1d0bda5806c6fcde04ac31d3ac0dd4f2">retrieve_graph</a> (T &amp;t)</td></tr>
-<tr class="memdesc:a1d0bda5806c6fcde04ac31d3ac0dd4f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">retrieves a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> from an object  <br /></td></tr>
-<tr class="separator:a1d0bda5806c6fcde04ac31d3ac0dd4f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73adea366eb4162d2d4ecd90e74e9cc8" id="r_a73adea366eb4162d2d4ecd90e74e9cc8"><td class="memTemplParams" colspan="2">template&lt;HasGraph T&gt; </td></tr>
+<tr class="memitem:a73adea366eb4162d2d4ecd90e74e9cc8"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Graph.html">Graph</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a73adea366eb4162d2d4ecd90e74e9cc8">retrieve_graph</a> (T &amp;t)</td></tr>
+<tr class="memdesc:a73adea366eb4162d2d4ecd90e74e9cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">retrieves a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> from an object  <br /></td></tr>
+<tr class="separator:a73adea366eb4162d2d4ecd90e74e9cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a277bf0914351f67a59f54d6b1fa0b08f" id="r_a277bf0914351f67a59f54d6b1fa0b08f"><td class="memTemplParams" colspan="2">template&lt;typename T, typename... ArgsT&gt; </td></tr>
 <tr class="memitem:a277bf0914351f67a59f54d6b1fa0b08f"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a277bf0914351f67a59f54d6b1fa0b08f">make_worker_interface</a> (ArgsT &amp;&amp;... args)</td></tr>
 <tr class="memdesc:a277bf0914351f67a59f54d6b1fa0b08f"><td class="mdescLeft">&#160;</td><td class="mdescRight">helper function to create an instance derived from <a class="el" href="classtf_1_1WorkerInterface.html" title="class to configure worker behavior in an executor">tf::WorkerInterface</a>  <br /></td></tr>
@@ -662,7 +659,7 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:ad3a41adc2499a9519da3e77dc3e9849c" id="r_ad3a41adc2499a9519da3e77dc3e9849c"><td class="memTemplParams" colspan="2">template&lt;typename P&gt; </td></tr>
-<tr class="memitem:ad3a41adc2499a9519da3e77dc3e9849c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad3a41adc2499a9519da3e77dc3e9849c">is_task_params_v</a> = TaskParamsConcept&lt;P&gt;</td></tr>
+<tr class="memitem:ad3a41adc2499a9519da3e77dc3e9849c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad3a41adc2499a9519da3e77dc3e9849c">is_task_params_v</a> = TaskParameters&lt;P&gt;</td></tr>
 <tr class="memdesc:ad3a41adc2499a9519da3e77dc3e9849c"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type is a task parameter type (variable template)  <br /></td></tr>
 <tr class="separator:ad3a41adc2499a9519da3e77dc3e9849c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11fc9c98eb3a0d3a9aa55598b1f4d614" id="r_a11fc9c98eb3a0d3a9aa55598b1f4d614"><td class="memTemplParams" colspan="2">template&lt;typename C&gt; </td></tr>
@@ -1917,8 +1914,8 @@ template&lt;typename RandItr, typename C&gt; </div>
 
 </div>
 </div>
-<a id="a1d0bda5806c6fcde04ac31d3ac0dd4f2" name="a1d0bda5806c6fcde04ac31d3ac0dd4f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d0bda5806c6fcde04ac31d3ac0dd4f2">&#9670;&#160;</a></span>retrieve_graph()</h2>
+<a id="a73adea366eb4162d2d4ecd90e74e9cc8" name="a73adea366eb4162d2d4ecd90e74e9cc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73adea366eb4162d2d4ecd90e74e9cc8">&#9670;&#160;</a></span>retrieve_graph()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1926,7 +1923,7 @@ template&lt;typename RandItr, typename C&gt; </div>
 template&lt;HasGraph T&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto &amp; tf::retrieve_graph </td>
+          <td class="memname"><a class="el" href="classtf_1_1Graph.html">Graph</a> &amp; tf::retrieve_graph </td>
           <td>(</td>
           <td class="paramtype">T &amp;</td>          <td class="paramname"><span class="paramname"><em>t</em></span></td><td>)</td>
           <td></td>
@@ -1935,14 +1932,9 @@ template&lt;HasGraph T&gt; </div>
 </div><div class="memdoc">
 
 <p>retrieves a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> from an object </p>
-<p>This function extracts a <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> reference from the given object using the following priority:</p>
-<ol type="1">
-<li>If <code>T</code> satisfies <a class="el" href="concepttf_1_1GraphOwner.html" title="determines if a type provides a graph via a graph() method">tf::GraphOwner</a> (has a <code>graph()</code> method), that reference is returned.</li>
-<li>Otherwise, <code>T</code> must be derived from <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a>, in which case <code>t</code> itself is returned via a static upcast.</li>
-</ol>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>type satisfying <a class="el" href="concepttf_1_1HasGraph.html" title="determines if a type owns or is a graph">tf::HasGraph</a></td></tr>
+    <tr><td class="paramname">T</td><td>type satisfying <a class="el" href="concepttf_1_1HasGraph.html" title="determines if a type owns or provides a graph">tf::HasGraph</a></td></tr>
   </table>
   </dd>
 </dl>
@@ -1952,7 +1944,8 @@ template&lt;HasGraph T&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a></dd></dl>
+<p>If <code>T</code> provides a <code>graph()</code> method, that reference is returned. Otherwise, <code>T</code> is derived from <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> and is returned via a static upcast. </p>
 
 </div>
 </div>
@@ -2399,7 +2392,7 @@ template&lt;typename P&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool tf::is_task_params_v = TaskParamsConcept&lt;P&gt;</td>
+          <td class="memname">bool tf::is_task_params_v = TaskParameters&lt;P&gt;</td>
         </tr>
       </table>
   </td>
@@ -2416,7 +2409,7 @@ template&lt;typename P&gt; </div>
   </table>
   </dd>
 </dl>
-<p>Equivalent to <a class="el" href="concepttf_1_1TaskParamsConcept.html" title="determines if a type is a task parameter type">tf::TaskParamsConcept</a></p>
+<p>Equivalent to <a class="el" href="concepttf_1_1TaskParameters.html" title="determines if a type is a task parameter type">tf::TaskParameters</a></p>
 <p>. Provided for backward compatibility. </p>
 
 </div>

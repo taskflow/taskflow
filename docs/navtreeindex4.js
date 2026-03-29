@@ -1,6 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"release-3-10-0.html":[1,4],
 "release-3-10-0.html#release-3-10-0_breaking_changes":[1,4,5],
 "release-3-10-0.html#release-3-10-0_bug_fixes":[1,4,4],
 "release-3-10-0.html#release-3-10-0_documentation":[1,4,6],

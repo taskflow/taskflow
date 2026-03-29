@@ -176,7 +176,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=] (size_t part_b, size_t part_e) {
-            c(r.discrete_domain(part_b, part_e));
+            c(r.unravel(part_b, part_e));
           });
         });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
@@ -188,7 +188,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
       for(size_t w=0; w<W;) {
         auto task = part([=] () mutable {
           part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) {
-            c(r.discrete_domain(part_b, part_e));
+            c(r.unravel(part_b, part_e));
           });
         });
         (++w == W) ? task() : rt.silent_async(task);

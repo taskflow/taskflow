@@ -170,32 +170,33 @@ $(function(){initNavTree('iterator_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span></div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a2146e73c53a5f3dde2cda3c659b8b064">  194</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a2146e73c53a5f3dde2cda3c659b8b064">size</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetf.html#a5512fcb154402c277ce3ef5709988080">distance</a>(_beg, _end, _step_size); }</div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span></div>
-<div class="foldopen" id="foldopen00214" data-start="{" data-end="}">
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#abe3a1bf7a912d73ead27e3375cc660d7">  214</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#ab67d261986b699206aa8af8d1dc3e2b7">IndexRange</a> <a class="code hl_function" href="classtf_1_1IndexRange.html#abe3a1bf7a912d73ead27e3375cc660d7">discrete_domain</a>(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ab67d261986b699206aa8af8d1dc3e2b7">IndexRange</a>(</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>      <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_beg) * _step_size + _beg,</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>      <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_end) * _step_size + _beg,</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>      _step_size</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    );</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>  }</div>
+<div class="foldopen" id="foldopen00228" data-start="{" data-end="}">
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a2104be06f6508f04d61806bff62d19c0">  228</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#ab67d261986b699206aa8af8d1dc3e2b7">IndexRange</a> <a class="code hl_function" href="classtf_1_1IndexRange.html#a2104be06f6508f04d61806bff62d19c0">unravel</a>(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ab67d261986b699206aa8af8d1dc3e2b7">IndexRange</a>(</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>      <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_beg) * _step_size + _beg,</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>      <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_end) * _step_size + _beg,</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>      _step_size</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    );</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>  }</div>
 </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>  T _beg;</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>  T _end;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>  T _step_size;</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>};</div>
-</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>  </div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>  T _beg;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>  T _end;</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>  T _step_size;</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>};</div>
+</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>  </div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a2104be06f6508f04d61806bff62d19c0"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2104be06f6508f04d61806bff62d19c0">tf::IndexRange::unravel</a></div><div class="ttdeci">IndexRange unravel(size_t part_beg, size_t part_end) const</div><div class="ttdoc">maps a contiguous index partition back to the corresponding subrange</div><div class="ttdef"><b>Definition</b> iterator.hpp:228</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a2146e73c53a5f3dde2cda3c659b8b064"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2146e73c53a5f3dde2cda3c659b8b064">tf::IndexRange::size</a></div><div class="ttdeci">size_t size() const</div><div class="ttdoc">queries the number of elements in the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:194</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a280096cb4056bc19b86da77d019434e4"><div class="ttname"><a href="classtf_1_1IndexRange.html#a280096cb4056bc19b86da77d019434e4">tf::IndexRange::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:150</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a2b52381358ab392efa257e185a33d4af"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2b52381358ab392efa257e185a33d4af">tf::IndexRange::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:145</div></div>
@@ -206,7 +207,6 @@ $(function(){initNavTree('iterator_8hpp_source.html',''); initResizable(true); }
 <div class="ttc" id="aclasstf_1_1IndexRange_html_aafd4f2d04614e550649cd9b7912e0bf1"><div class="ttname"><a href="classtf_1_1IndexRange.html#aafd4f2d04614e550649cd9b7912e0bf1">tf::IndexRange::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:155</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_ab67d261986b699206aa8af8d1dc3e2b7"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab67d261986b699206aa8af8d1dc3e2b7">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange()=default</div><div class="ttdoc">constructs an index range object without any initialization</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_ab9e48fe80add350412be71fa0a219e4d"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab9e48fe80add350412be71fa0a219e4d">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange(T beg, T end, T step_size)</div><div class="ttdoc">constructs an IndexRange object</div><div class="ttdef"><b>Definition</b> iterator.hpp:139</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_abe3a1bf7a912d73ead27e3375cc660d7"><div class="ttname"><a href="classtf_1_1IndexRange.html#abe3a1bf7a912d73ead27e3375cc660d7">tf::IndexRange::discrete_domain</a></div><div class="ttdeci">IndexRange discrete_domain(size_t part_beg, size_t part_end) const</div><div class="ttdoc">returns a range from the given discrete domain</div><div class="ttdef"><b>Definition</b> iterator.hpp:214</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_addb769bccbcd30a680c59567876a24b7"><div class="ttname"><a href="classtf_1_1IndexRange.html#addb769bccbcd30a680c59567876a24b7">tf::IndexRange::begin</a></div><div class="ttdeci">IndexRange&lt; T &gt; &amp; begin(T new_begin)</div><div class="ttdoc">updates the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:170</div></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
 <div class="ttc" id="anamespacetf_html_a5512fcb154402c277ce3ef5709988080"><div class="ttname"><a href="namespacetf.html#a5512fcb154402c277ce3ef5709988080">tf::distance</a></div><div class="ttdeci">constexpr size_t distance(B beg, E end, S step)</div><div class="ttdoc">calculates the number of iterations in the given index range</div><div class="ttdef"><b>Definition</b> iterator.hpp:73</div></div>

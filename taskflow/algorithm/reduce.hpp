@@ -442,7 +442,7 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 
           // loop reduce
           part.loop(N, W, curr_b, chunk_size, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
+            tmp = lop(r.unravel(part_b, part_e), std::move(tmp));
           }); 
           
           // final reduce - tmp is guaranteed to have value
@@ -467,7 +467,7 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
           
           // loop reduce
           part.loop(N, W, *next, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
+            tmp = lop(r.unravel(part_b, part_e), std::move(tmp));
           }); 
           
           // final reduce - need to check if the running total has value since

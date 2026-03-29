@@ -103,18 +103,20 @@ $(function(){initNavTree('concepttf_1_1HasGraph.html',''); initResizable(true); 
 </div><!--header-->
 <div class="contents">
 
-<p>determines if a type owns or is a graph  
+<p>determines if a type owns or provides a graph  
 <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="graph_8hpp_source.html">taskflow/core/graph.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
 <div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1HasGraph.html">tf::HasGraph</a> =  <a class="code hl_concept" href="concepttf_1_1GraphOwner.html">GraphOwner&lt;T&gt;</a> || std::derived_from&lt;T, Graph&gt;</div>
-<div class="ttc" id="aconcepttf_1_1GraphOwner_html"><div class="ttname"><a href="concepttf_1_1GraphOwner.html">tf::GraphOwner</a></div><div class="ttdoc">determines if a type provides a graph via a graph() method</div><div class="ttdef"><b>Definition</b> graph.hpp:956</div></div>
-<div class="ttc" id="aconcepttf_1_1HasGraph_html"><div class="ttname"><a href="concepttf_1_1HasGraph.html">tf::HasGraph</a></div><div class="ttdoc">determines if a type owns or is a graph</div><div class="ttdef"><b>Definition</b> graph.hpp:967</div></div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1HasGraph.html">tf::HasGraph</a> =  std::derived_from&lt;T, Graph&gt; ||</div>
+<div class="line">                   <span class="keyword">requires</span>(T&amp; t) {</div>
+<div class="line">                     { t.graph() } -&gt; std::convertible_to&lt;Graph&amp;&gt;;</div>
+<div class="line">                   }</div>
+<div class="ttc" id="aconcepttf_1_1HasGraph_html"><div class="ttname"><a href="concepttf_1_1HasGraph.html">tf::HasGraph</a></div><div class="ttdoc">determines if a type owns or provides a graph</div><div class="ttdef"><b>Definition</b> graph.hpp:957</div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>determines if a type owns or is a graph </p>
-<p>A type satisfies <a class="el" href="concepttf_1_1HasGraph.html" title="determines if a type owns or is a graph">tf::HasGraph</a> if it either satisfies <a class="el" href="concepttf_1_1GraphOwner.html" title="determines if a type provides a graph via a graph() method">tf::GraphOwner</a> (has a <code>graph()</code> method) or is derived from <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a>. </p>
+<div class="textblock"><p>determines if a type owns or provides a graph </p>
+<p>A type satisfies <a class="el" href="concepttf_1_1HasGraph.html" title="determines if a type owns or provides a graph">tf::HasGraph</a> if it either derives from <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> or provides a <code>graph()</code> method returning a reference convertible to <code><a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a>&amp;</code>. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.13.1-->

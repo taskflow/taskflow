@@ -113,7 +113,7 @@ $(function(){initNavTree('module_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">auto</span> Algorithm::make_module_task(T&amp; target) {</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>  <span class="keywordflow">return</span> [&amp;graph=<a class="code hl_function" href="namespacetf.html#a1d0bda5806c6fcde04ac31d3ac0dd4f2">retrieve_graph</a>(target)](tf::Runtime&amp; rt){</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>  <span class="keywordflow">return</span> [&amp;graph=<a class="code hl_function" href="namespacetf.html#a73adea366eb4162d2d4ecd90e74e9cc8">retrieve_graph</a>(target)](tf::Runtime&amp; rt){</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="keywordflow">if</span>(graph.empty()) {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>      <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    }</div>
@@ -132,8 +132,8 @@ $(function(){initNavTree('module_8hpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}  <span class="comment">// end of namespact tf -----------------------------------------------------</span></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
-<div class="ttc" id="anamespacetf_html_a1d0bda5806c6fcde04ac31d3ac0dd4f2"><div class="ttname"><a href="namespacetf.html#a1d0bda5806c6fcde04ac31d3ac0dd4f2">tf::retrieve_graph</a></div><div class="ttdeci">auto &amp; retrieve_graph(T &amp;t)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:987</div></div>
 <div class="ttc" id="anamespacetf_html_a69c0aab9bc9be1f32dca706c2959b616"><div class="ttname"><a href="namespacetf.html#a69c0aab9bc9be1f32dca706c2959b616">tf::make_module_task</a></div><div class="ttdeci">auto make_module_task(T &amp;graph)</div><div class="ttdoc">creates a module task using the given graph</div><div class="ttdef"><b>Definition</b> module.hpp:74</div></div>
+<div class="ttc" id="anamespacetf_html_a73adea366eb4162d2d4ecd90e74e9cc8"><div class="ttname"><a href="namespacetf.html#a73adea366eb4162d2d4ecd90e74e9cc8">tf::retrieve_graph</a></div><div class="ttdeci">Graph &amp; retrieve_graph(T &amp;t)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:975</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.13.1-->
