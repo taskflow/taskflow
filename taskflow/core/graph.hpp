@@ -506,8 +506,10 @@ class Node : public NodeBase {
 
   void _remove_successors(Node*);
   void _remove_predecessors(Node*);
-};
 
+  void _handle_broken_semaphores(SmallVector<Node *> &,
+                                 std::unordered_set<Node *> &);
+};
 
 // ----------------------------------------------------------------------------
 // Definition for Node::Static
@@ -793,7 +795,23 @@ inline void Node::_release_all(SmallVector<Node*>& nodes) {
   }
 }
 
-
+inline void
+Node::_handle_broken_semaphores(SmallVector<Node *> &waiters,
+                                std::unordered_set<Node *> &visited) {
+  if (visited.contains(this)) {
+    return;
+  }
+  visited.insert(this);
+  if (_semaphores) {
+    auto &to_acquire = _semaphores->to_acquire;
+    for (auto sem : to_acquire) {
+      sem->_break(waiters);
+    }
+  }
+  for (size_t i = _num_successors; i < _edges.size(); i++) {
+    _edges[i]->_handle_broken_semaphores(waiters, visited);
+  }
+}
 
 // ----------------------------------------------------------------------------
 // ExplicitAnchorGuard
