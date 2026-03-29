@@ -620,7 +620,7 @@ class Executor {
   /**
   @brief creates a parameterized asynchronous task to run the given function
 
-  @tparam P task parameter type
+  @tparam P task parameter type satisfying tf::TaskParamsConcept
   @tparam F callable type
 
   @param params task parameters
@@ -753,9 +753,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -789,9 +788,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -826,9 +824,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename I, 
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
@@ -865,9 +862,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
   
   // --------------------------------------------------------------------------
@@ -911,16 +907,15 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
   
@@ -957,9 +952,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -1002,16 +996,15 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename I,
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(F&& func, I first, I last);
   
   /**
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam I iterator type 
   
@@ -1051,9 +1044,8 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   // ----------------------------------------------------------------------------------------------
@@ -1187,14 +1179,12 @@ class Executor {
   template <typename P, typename F>
   void _silent_async(P&&, F&&, Topology*, NodeBase*);
 
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto _dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
   template <typename... ArgsT>
@@ -2399,9 +2389,3 @@ inline void Subflow::join() {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-

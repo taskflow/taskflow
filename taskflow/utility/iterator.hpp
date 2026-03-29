@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <cstddef>
 #include <type_traits>
 
@@ -8,9 +9,9 @@ namespace tf {
 /**
 @brief checks if the given index range is invalid
 
-@tparam B type of the beginning index
-@tparam E type of the ending index
-@tparam S type of the step size
+@tparam B integral type of the beginning index
+@tparam E integral type of the ending index
+@tparam S integral type of the step size
 
 @param beg starting index of the range
 @param end ending index of the range
@@ -23,11 +24,8 @@ A range is considered invalid under the following conditions:
  + A positive range (begin < end) with a non-positive step.
  + A negative range (begin > end) with a non-negative step.
 */
-template <typename B, typename E, typename S>
-constexpr std::enable_if_t<std::is_integral_v<std::decay_t<B>> && 
-                           std::is_integral_v<std::decay_t<E>> && 
-                           std::is_integral_v<std::decay_t<S>>, bool>
-is_index_range_invalid(B beg, E end, S step) {
+template <std::integral B, std::integral E, std::integral S>
+constexpr bool is_index_range_invalid(B beg, E end, S step) {
   return ((step == 0 && beg != end) ||
           (beg < end && step <=  0) ||  // positive range
           (beg > end && step >=  0));   // negative range
@@ -36,9 +34,9 @@ is_index_range_invalid(B beg, E end, S step) {
 /**
 @brief calculates the number of iterations in the given index range
 
-@tparam B type of the beginning index
-@tparam E type of the ending index
-@tparam S type of the step size
+@tparam B integral type of the beginning index
+@tparam E integral type of the ending index
+@tparam S integral type of the step size
 
 @param beg starting index of the range
 @param end ending index of the range
@@ -71,11 +69,8 @@ size_t dist = distance(5, 20, 5);  // Returns 3, the sequence is [5, 10, 15]
 It is user's responsibility to ensure the given index range is valid.
 For instance, a range from 0 to 10 with a step size of -2 is invalid.
 */
-template <typename B, typename E, typename S>
-constexpr std::enable_if_t<std::is_integral_v<std::decay_t<B>> && 
-                           std::is_integral_v<std::decay_t<E>> && 
-                           std::is_integral_v<std::decay_t<S>>, size_t>
-distance(B beg, E end, S step) {
+template <std::integral B, std::integral E, std::integral S>
+constexpr size_t distance(B beg, E end, S step) {
   return (end - beg + step + (step > 0 ? -1 : 1)) / step;
 }
 

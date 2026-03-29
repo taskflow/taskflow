@@ -33,7 +33,7 @@ class FlowBuilder {
   /**
   @brief creates a static task
 
-  @tparam C callable type constructible from std::function<void()>
+  @tparam C callable type satisfying tf::StaticTask
 
   @param callable callable to construct a static task
 
@@ -48,15 +48,13 @@ class FlowBuilder {
   @note
   Please refer to @ref StaticTasking for details.
   */
-  template <typename C,
-    std::enable_if_t<is_static_task_v<C>, void>* = nullptr
-  >
+  template <StaticTask C>
   Task emplace(C&& callable);
   
   /**
   @brief creates a runtime task
 
-  @tparam C callable type constructible from std::function<void(tf::Runtime&)>
+  @tparam C callable type satisfying tf::RuntimeTask
 
   @param callable callable to construct a runtime task
 
@@ -71,15 +69,13 @@ class FlowBuilder {
   @note
   Please refer to @ref RuntimeTasking for details.
   */
-  template <typename C,
-    std::enable_if_t<is_runtime_task_v<C>, void>* = nullptr
-  >
+  template <RuntimeTask C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a dynamic task
 
-  @tparam C callable type constructible from std::function<void(tf::Subflow&)>
+  @tparam C callable type satisfying tf::SubflowTask
 
   @param callable callable to construct a dynamic task
 
@@ -98,15 +94,13 @@ class FlowBuilder {
   @note
   Please refer to @ref SubflowTasking for details.
   */
-  template <typename C,
-    std::enable_if_t<is_subflow_task_v<C>, void>* = nullptr
-  >
+  template <SubflowTask C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a condition task
 
-  @tparam C callable type constructible from std::function<int()>
+  @tparam C callable type satisfying tf::ConditionTask
 
   @param callable callable to construct a condition task
 
@@ -133,16 +127,13 @@ class FlowBuilder {
   @note
   Please refer to @ref ConditionalTasking for details.
   */
-  template <typename C,
-    std::enable_if_t<is_condition_task_v<C>, void>* = nullptr
-  >
+  template <ConditionTask C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a multi-condition task
 
-  @tparam C callable type constructible from
-          std::function<tf::SmallVector<int>()>
+  @tparam C callable type satisfying tf::MultiConditionTask
 
   @param callable callable to construct a multi-condition task
 
@@ -170,9 +161,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ConditionalTasking for details.
   */
-  template <typename C,
-    std::enable_if_t<is_multi_condition_task_v<C>, void>* = nullptr
-  >
+  template <MultiConditionTask C>
   Task emplace(C&& callable);
 
   /**
@@ -199,7 +188,7 @@ class FlowBuilder {
   );
   @endcode
   */
-  template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>* = nullptr>
+  template <typename... C> requires (sizeof...(C) > 1)
   auto emplace(C&&... callables);
 
   /**
@@ -276,7 +265,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ComposableTasking for details.
   */
-  template <typename T>
+  template <HasGraph T>
   Task composed_of(T& object);
   
   /**
@@ -492,7 +481,7 @@ class FlowBuilder {
   @tparam E ending input iterator type
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P partitioner type satisfying tf::Partitioner (default tf::DefaultPartitioner)
 
   @param first1 iterator to the beginning of the first range
   @param last1 iterator to the end of the first range
@@ -519,10 +508,9 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelTransforms for details.
   */
-  template <
-    typename B, typename E, typename O, typename C, typename P = DefaultPartitioner,
-    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
-  >
+  template <typename B, typename E, typename O, typename C,
+            typename P = DefaultPartitioner>
+requires Partitioner<std::decay_t<P>>
   Task transform(B first1, E last1, O d_first, C c, P part = P());
   
   /**
@@ -533,7 +521,7 @@ class FlowBuilder {
   @tparam B2 beginning input iterator type for the first second range
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P partitioner type satisfying tf::Partitioner (default tf::DefaultPartitioner)
 
   @param first1 iterator to the beginning of the first input range
   @param last1 iterator to the end of the first input range
@@ -561,10 +549,9 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelTransforms for details.
   */
-  template <
-    typename B1, typename E1, typename B2, typename O, typename C, typename P=DefaultPartitioner,
-    std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
-  >
+  template <typename B1, typename E1, typename B2, typename O, typename C,
+            typename P = DefaultPartitioner>
+requires (!Partitioner<std::decay_t<C>>)
   Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());
   
   // ------------------------------------------------------------------------
@@ -703,10 +690,9 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <
-    typename B, typename E, typename T, typename BOP, typename UOP, typename P = DefaultPartitioner,
-    std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
-  >
+  template <typename B, typename E, typename T, typename BOP, typename UOP,
+            typename P = DefaultPartitioner>
+requires Partitioner<std::decay_t<P>>
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P part = P());
 
   /**
@@ -746,11 +732,9 @@ class FlowBuilder {
   Please refer to @ref ParallelReduction for details.
   */
   
-  template <
-    typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
-    typename P = DefaultPartitioner,
-    std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
-  >
+  template <typename B1, typename E1, typename B2, typename T,
+            typename BOP_R, typename BOP_T, typename P = DefaultPartitioner>
+requires (!Partitioner<std::decay_t<BOP_T>>)
   Task transform_reduce(
     B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
   );
@@ -1306,9 +1290,9 @@ class FlowBuilder {
 
   */
 
-  template <typename B1, typename E1, typename B2, typename E2, 
-  typename O, typename P = DefaultPartitioner,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr>
+  template <typename B1, typename E1, typename B2, typename E2,
+            typename O, typename P = DefaultPartitioner>
+requires Partitioner<std::decay_t<P>>
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
 
   /**
@@ -1340,9 +1324,9 @@ class FlowBuilder {
 
   */
 
-  template <typename B1, typename E1, typename B2, typename E2,  
-  typename O, typename C, typename P = DefaultPartitioner,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr>
+  template <typename B1, typename E1, typename B2, typename E2,
+            typename O, typename C, typename P = DefaultPartitioner>
+requires (!Partitioner<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
   
   protected:
@@ -1364,7 +1348,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_static_task_v<C>, void>*>
+template <StaticTask C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
@@ -1372,7 +1356,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_runtime_task_v<C>, void>*>
+template <RuntimeTask C>
 Task FlowBuilder::emplace(C&& c) {
   if constexpr (std::is_invocable_v<C, tf::Runtime&>) {
     return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
@@ -1390,7 +1374,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_subflow_task_v<C>, void>*>
+template <SubflowTask C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Subflow>{}, std::forward<C>(c)
@@ -1398,7 +1382,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_condition_task_v<C>, void>*>
+template <ConditionTask C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
@@ -1406,7 +1390,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <typename C, std::enable_if_t<is_multi_condition_task_v<C>, void>*>
+template <MultiConditionTask C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
@@ -1414,7 +1398,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: composed_of
-template <typename T>
+template <HasGraph T>
 Task FlowBuilder::composed_of(T& target) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Module>{}, retrieve_graph(target)
@@ -1437,7 +1421,7 @@ inline Task FlowBuilder::placeholder() {
 }
 
 // Function: emplace
-template <typename... C, std::enable_if_t<(sizeof...(C)>1), void>*>
+template <typename... C> requires (sizeof...(C) > 1)
 auto FlowBuilder::emplace(C&&... cs) {
   return std::make_tuple(emplace(std::forward<C>(cs))...);
 }
@@ -1657,13 +1641,3 @@ inline bool Subflow::retain() const {
 }
 
 }  // end of namespace tf. ---------------------------------------------------
-
-
-
-
-
-
-
-
-
-

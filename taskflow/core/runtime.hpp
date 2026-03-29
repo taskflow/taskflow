@@ -160,7 +160,7 @@ class Runtime {
   @brief runs the given callable asynchronously
 
   @tparam F callable type
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
 
   @param params task parameters
   @param f callable
@@ -263,16 +263,15 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam Tasks tasks of type tf::AsyncTask
   
@@ -306,9 +305,8 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -348,16 +346,15 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <typename F, typename I,
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(F&& func, I first, I last);
   
   /**
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam I iterator type 
   
@@ -394,9 +391,8 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
   
   // ----------------------------------------------------------------------------------------------
@@ -430,9 +426,8 @@ class Runtime {
   executor.wait_for_all();
   @endcode
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -466,9 +461,8 @@ class Runtime {
   executor.wait_for_all();
   @endcode
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -503,9 +497,8 @@ class Runtime {
   executor.wait_for_all();
   @endcode
   */
-  template <typename F, typename I, 
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
@@ -542,9 +535,8 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
 
 
@@ -713,9 +705,8 @@ auto Runtime::async(P&& params, F&& f) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: silent_dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Runtime::silent_dependent_async(F&& func, Tasks&&... tasks) {
   return silent_dependent_async(
     DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...
@@ -723,9 +714,8 @@ tf::AsyncTask Runtime::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Runtime::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
@@ -736,17 +726,15 @@ tf::AsyncTask Runtime::silent_dependent_async(
 }
 
 // Function: silent_dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Runtime::silent_dependent_async(F&& func, I first, I last) {
   return silent_dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Runtime::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
@@ -761,17 +749,15 @@ tf::AsyncTask Runtime::silent_dependent_async(
 // ------------------------------------------------------------------------------------------------
 
 // Function: dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Runtime::dependent_async(F&& func, Tasks&&... tasks) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Runtime::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
   return dependent_async(
@@ -780,17 +766,15 @@ auto Runtime::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Runtime::dependent_async(F&& func, I first, I last) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Runtime::dependent_async(P&& params, F&& func, I first, I last) {
   _node->_join_counter.fetch_add(1, std::memory_order_relaxed);
   return _executor._dependent_async(
@@ -998,12 +982,3 @@ tf::Future<void> Executor::run_until(Taskflow&& f, P&& p, C&& c) {
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-
-
-
-

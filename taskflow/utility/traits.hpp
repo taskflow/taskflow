@@ -1,13 +1,8 @@
 #pragma once
 
-#if __has_include(<version>)
 #include <version>
-#endif
-
-#if __has_include(<latch>)
+#include <concepts>
 #include <latch>
-#endif
-
 #include <type_traits>
 #include <iterator>
 #include <iostream>
@@ -143,25 +138,6 @@ template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;
 
 // ----------------------------------------------------------------------------
-// unwrap_reference
-// ----------------------------------------------------------------------------
-
-template <class T>
-struct unwrap_reference { using type = T; };
-
-template <class U>
-struct unwrap_reference<std::reference_wrapper<U>> { using type = U&; };
-
-template<class T>
-using unwrap_reference_t = typename unwrap_reference<T>::type;
-
-template< class T >
-struct unwrap_ref_decay : unwrap_reference<std::decay_t<T>> {};
-
-template<class T>
-using unwrap_ref_decay_t = typename unwrap_ref_decay<T>::type;
-
-// ----------------------------------------------------------------------------
 // stateful iterators
 // ----------------------------------------------------------------------------
 
@@ -169,8 +145,8 @@ using unwrap_ref_decay_t = typename unwrap_ref_decay<T>::type;
 template <typename B, typename E>
 struct stateful_iterator {
 
-  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
+  using TB = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   static_assert(std::is_same_v<TB, TE>, "decayed iterator types must match");
 
@@ -184,9 +160,9 @@ using stateful_iterator_t = typename stateful_iterator<B, E>::type;
 template <typename B, typename E, typename S>
 struct stateful_index {
 
-  using TB = std::decay_t<unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<unwrap_ref_decay_t<E>>;
-  using TS = std::decay_t<unwrap_ref_decay_t<S>>;
+  using TB = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using TE = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using TS = std::decay_t<std::unwrap_ref_decay_t<S>>;
 
   static_assert(
     std::is_integral_v<TB>, "decayed beg index must be an integral type"
@@ -215,40 +191,22 @@ using stateful_index_t = typename stateful_index<B, E, S>::type;
 // visit a tuple with a functor at runtime
 // ----------------------------------------------------------------------------
 
-template <typename Func, typename Tuple, size_t N = 0>
-void visit_tuple(Func func, Tuple& tup, size_t idx) {
-  if (N == idx) {
-    std::invoke(func, std::get<N>(tup));
-    return;
-  }
-  if constexpr (N + 1 < std::tuple_size_v<Tuple>) {
-    return visit_tuple<Func, Tuple, N + 1>(func, tup, idx);
-  }
+template <typename Func, typename Tuple>
+void visit_tuple(Func&& func, Tuple& tup, size_t idx) {
+  [&]<size_t... Is>(std::index_sequence<Is...>) {
+    ([&]{ if(Is == idx) { std::invoke(func, std::get<Is>(tup)); } }(), ...);
+  }(std::make_index_sequence<std::tuple_size_v<Tuple>>{});
 }
 
 // ----------------------------------------------------------------------------
 // unroll loop
 // ----------------------------------------------------------------------------
 
-// Template unrolled looping construct.
-template<auto beg, auto end, auto step, bool valid = (beg < end)>
-struct Unroll {
-  template<typename F>
-  static void eval(F f) {
-    f(beg);
-    Unroll<beg + step, end, step>::eval(f);
-  }
-};
-
-template<auto beg, auto end, auto step>
-struct Unroll<beg, end, step, false> {
-  template<typename F>
-  static void eval(F) { }
-};
-
 template<auto beg, auto end, auto step, typename F>
-void unroll(F f) {
-  Unroll<beg, end, step>::eval(f);
+constexpr void unroll(F&& f) {
+  [&]<auto... Is>(std::index_sequence<Is...>) {
+    (f(beg + Is * step), ...);
+  }(std::make_index_sequence<(end - beg + step - 1) / step>{});
 }
 
 // ----------------------------------------------------------------------------
@@ -288,31 +246,23 @@ constexpr bool is_std_compare_v = is_std_compare<T>::value;
 // check if all types are the same
 // ----------------------------------------------------------------------------
 
-template<bool...> 
-struct bool_pack;
-
-template<bool... bs>
-using all_true = std::is_same<bool_pack<bs..., true>, bool_pack<true, bs...>>;
-
 template <typename T, typename... Ts>
-using all_same = all_true<std::is_same_v<T, Ts>...>;
+concept all_same = (std::same_as<T, Ts> && ...);
 
+// backward-compatible variable template
 template <typename T, typename... Ts>
-constexpr bool all_same_v = all_same<T, Ts...>::value;
+constexpr bool all_same_v = all_same<T, Ts...>;
 
 // ----------------------------------------------------------------------------
 // Iterator
 // ----------------------------------------------------------------------------
 
+// use std::iter_value_t instead of the custom deref_t
 template <typename I>
-using deref_t = std::decay_t<decltype(*std::declval<I>())>;
+using deref_t = std::iter_value_t<I>;
 
+// use std::random_access_iterator concept instead of the custom variable
 template <typename I>
-constexpr auto is_random_access_iterator = std::is_same_v<
-  typename std::iterator_traits<I>::iterator_category, std::random_access_iterator_tag
->;
+constexpr bool is_random_access_iterator = std::random_access_iterator<I>;
 
 }  // end of namespace tf. ----------------------------------------------------
-
-
-

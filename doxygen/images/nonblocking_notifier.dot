@@ -9,7 +9,7 @@ digraph TwoPhaseProtocol {
       style = dashed;
       color = "#aaaaaa";
     // Nodes
-    Start [shape=rec, label=" A worker thread (wid)\nwanting to wait ", fillcolor=black];
+    Start [shape=record, label=" A worker thread (wid)\nwanting to wait ", fillcolor=black];
     End [label=" waiter queue ", style=filled, fillcolor=black, fontcolor=white];
 
     Check1 [shape=diamond, label=" Predicate\nTrue? "];

@@ -2,13 +2,15 @@
 
 #include "../taskflow.hpp"
 
+/**
+@file module.hpp
+@brief module algorithm include file
+*/
+
 namespace tf {
 
 // ----------------------------------------------------------------------------
 
-/**
-@private
-*/
 template <typename T>
 auto Algorithm::make_module_task(T& target) {
   return [&graph=retrieve_graph(target)](tf::Runtime& rt){
@@ -69,8 +71,8 @@ Users are responsible for ensuring that the given target remains valid throughou
 The executor does not assume ownership of the target object.
 */
 template <typename T>
-auto make_module_task(T&& graph) {
-  return Algorithm::make_module_task(std::forward<T>(graph));
+auto make_module_task(T& graph) {
+  return Algorithm::make_module_task(graph);
 }
 
 }  // end of namespact tf -----------------------------------------------------

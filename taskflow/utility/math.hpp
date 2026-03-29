@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <concepts>
 #include <numeric>
 
 namespace tf {
@@ -9,9 +10,8 @@ namespace tf {
 /**
  * @brief rounds the given 64-bit unsigned integer to the nearest power of 2
  */
-template <typename T, std::enable_if_t<
-  (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 8), void
->* = nullptr>
+template <typename T>
+requires (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 8)
 constexpr T next_pow2(T x) {
   if(x == 0) return 1;
   x--;
@@ -28,9 +28,8 @@ constexpr T next_pow2(T x) {
 /**
  * @brief rounds the given 32-bit unsigned integer to the nearest power of 2
  */
-template <typename T, std::enable_if_t<
-  (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 4), void
->* = nullptr>
+template <typename T>
+requires (std::is_unsigned_v<std::decay_t<T>> && sizeof(T) == 4)
 constexpr T next_pow2(T y) {
   if(y == 0) return 1;
   y--;
@@ -48,16 +47,14 @@ constexpr T next_pow2(T y) {
  *
  * This function determines if the given integer is a power of 2.
  *
- * @tparam T The type of the input. Must be an integral type.
+ * @tparam T integral type of the input
  * @param x The integer to check.
  * @return `true` if `x` is a power of 2, otherwise `false`.
  *
  * @attention This function is constexpr and can be evaluated at compile time.
  *
  */
-template <typename T, std::enable_if_t<
-  std::is_integral_v<std::decay_t<T>>, void>* = nullptr
->
+template <std::integral T>
 constexpr bool is_pow2(const T& x) {
   return x && (!(x&(x-1)));
 }
@@ -174,14 +171,14 @@ void sort3(Iter a, Iter b, Iter c, Compare comp) {
  * It uses a static `std::atomic` counter to ensure thread safety and increments the
  * counter in a relaxed memory ordering for efficiency.
  *
- * @tparam T The type of the ID to generate. Must be an integral type.
+ * @tparam T integral type of the ID to generate
  * @return A unique ID of type `T`.
  *
  * @attention The uniqueness of the ID is guaranteed only within the program's lifetime.
  * @attention The function does not throw exceptions.
  *
  */
-template <typename T, std::enable_if_t<std::is_integral_v<T>, void>* = nullptr>
+template <std::integral T>
 T unique_id() {
   static std::atomic<T> counter{0};
   return counter.fetch_add(1, std::memory_order_relaxed);
@@ -392,6 +389,3 @@ class Xorshift {
 };
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-

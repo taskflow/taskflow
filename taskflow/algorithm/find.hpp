@@ -10,8 +10,8 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
   
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -96,8 +96,8 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
   
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -181,8 +181,8 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -323,8 +323,8 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 

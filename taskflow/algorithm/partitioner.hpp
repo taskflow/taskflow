@@ -50,11 +50,7 @@ enum class PartitionerType : int {
 */
 class DefaultClosureWrapper {};
 
-/**
-@private
-*/
-struct IsPartitioner {
-};
+
 
 // ----------------------------------------------------------------------------
 // Partitioner Base
@@ -126,7 +122,7 @@ the partitioned task (closure).
 
 */
 template <typename C = DefaultClosureWrapper>
-class PartitionerBase : public IsPartitioner {
+class PartitionerBase {
 
   public:
   
@@ -289,9 +285,8 @@ class GuidedPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -337,9 +332,8 @@ class GuidedPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -465,9 +459,8 @@ class DynamicPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t, std::atomic<size_t>& next, F&& func
   ) const {
@@ -484,9 +477,8 @@ class DynamicPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t, std::atomic<size_t>& next, F&& func
   ) const {
@@ -600,9 +592,8 @@ class StaticPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func
   ) {
@@ -617,9 +608,8 @@ class StaticPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func
   ) {
@@ -755,9 +745,8 @@ class RandomPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<void, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -780,9 +769,8 @@ class RandomPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <typename F, 
-    std::enable_if_t<std::is_invocable_r_v<bool, F, size_t, size_t>, void>* = nullptr
-  >
+  template <typename F>
+  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -819,14 +807,21 @@ for most parallel algorithms.
 using DefaultPartitioner = GuidedPartitioner<>;
 
 /**
-@brief determines if a type is a partitioner 
+@brief determines if a type is a partitioner
 
-A partitioner is a derived type from tf::PartitionerBase.
+A type satisfies tf::Partitioner if it is derived from tf::PartitionerBase.
 */
 template <typename P>
-inline constexpr bool is_partitioner_v = std::is_base_of<IsPartitioner, P>::value;
+concept Partitioner = std::derived_from<P, PartitionerBase<typename P::closure_wrapper_type>>;
+
+/**
+@brief determines if a type is a partitioner (variable template)
+
+@tparam P type to check
+
+Equivalent to tf::Partitioner<P>. Provided for backward compatibility.
+*/
+template <typename P>
+inline constexpr bool is_partitioner_v = Partitioner<P>;
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-

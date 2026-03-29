@@ -145,7 +145,7 @@ class TaskGroup {
   @brief runs the given callable asynchronously
 
   @tparam F callable type
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
 
   @param params task parameters
   @param f callable
@@ -254,16 +254,15 @@ class TaskGroup {
   });
   @endcode
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam Tasks tasks of type tf::AsyncTask
   
@@ -298,9 +297,8 @@ class TaskGroup {
   });
   @endcode
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -341,16 +339,15 @@ class TaskGroup {
   }); 
   @endcode
   */
-  template <typename F, typename I,
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(F&& func, I first, I last);
   
   /**
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsConcept
   @tparam F callable type
   @tparam I iterator type 
   
@@ -388,9 +385,8 @@ class TaskGroup {
   });
   @endcode
   */
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   
@@ -426,9 +422,8 @@ class TaskGroup {
   });
   @endcode
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -463,9 +458,8 @@ class TaskGroup {
   }); 
   @endcode
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename... Tasks>
+      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -501,9 +495,8 @@ class TaskGroup {
   }); 
   @endcode
   */
-  template <typename F, typename I, 
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
@@ -541,9 +534,8 @@ class TaskGroup {
   }); 
   @endcode
   */
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsConcept P, typename F, typename I>
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
 
 
@@ -798,9 +790,8 @@ auto TaskGroup::async(P&& params, F&& f) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: silent_dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask TaskGroup::silent_dependent_async(F&& func, Tasks&&... tasks) {
   return silent_dependent_async(
     DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...
@@ -808,9 +799,8 @@ tf::AsyncTask TaskGroup::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask TaskGroup::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
@@ -821,17 +811,15 @@ tf::AsyncTask TaskGroup::silent_dependent_async(
 }
 
 // Function: silent_dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask TaskGroup::silent_dependent_async(F&& func, I first, I last) {
   return silent_dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask TaskGroup::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
@@ -846,17 +834,17 @@ tf::AsyncTask TaskGroup::silent_dependent_async(
 // ------------------------------------------------------------------------------------------------
 
 // Function: dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+
 auto TaskGroup::dependent_async(F&& func, Tasks&&... tasks) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+
 auto TaskGroup::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
   return dependent_async(
@@ -865,17 +853,17 @@ auto TaskGroup::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+
 auto TaskGroup::dependent_async(F&& func, I first, I last) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+
 auto TaskGroup::dependent_async(P&& params, F&& func, I first, I last) {
   _node_base._join_counter.fetch_add(1, std::memory_order_relaxed);
   return _executor._dependent_async(
@@ -898,12 +886,3 @@ inline TaskGroup Executor::task_group() {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-
-
-
-

@@ -10,8 +10,8 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
@@ -139,8 +139,8 @@ template <
 auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P()) {
 
   using namespace std::string_literals;
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
@@ -259,20 +259,18 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 }
 
 // Function: make_transform_reduce_task with two binary operation
-template <
-  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
-  typename P = DefaultPartitioner,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
->
+template <typename B1, typename E1, typename B2, typename T,
+          typename BOP_R, typename BOP_T, typename P = DefaultPartitioner>
+requires (!Partitioner<std::decay_t<BOP_T>>)
 auto make_transform_reduce_task(
   B1 b1, E1 e1, B2 b2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
 ) {
   
   using namespace std::string_literals;
 
-  using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
-  using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
-  using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
+  using B1_t = std::decay_t<std::unwrap_ref_decay_t<B1>>;
+  using E1_t = std::decay_t<std::unwrap_ref_decay_t<E1>>;
+  using B2_t = std::decay_t<std::unwrap_ref_decay_t<B2>>;
 
   return [=, &r=init] (Runtime& rt) mutable {
 
@@ -401,7 +399,7 @@ auto make_transform_reduce_task(
 template <typename R, typename T, typename L, typename G, typename P = DefaultPartitioner>
 auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
   
-  using range_type = std::decay_t<unwrap_ref_decay_t<R>>;
+  using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
@@ -500,9 +498,8 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: transform_reduce
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename P,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
->
+template <typename B, typename E, typename T, typename BOP, typename UOP, typename P>
+requires Partitioner<std::decay_t<P>>
 Task FlowBuilder::transform_reduce(
   B beg, E end, T& init, BOP bop, UOP uop, P part
 ) {
@@ -510,11 +507,9 @@ Task FlowBuilder::transform_reduce(
 }
 
 // Function: transform_reduce
-template <
-  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
-  typename P,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>*
->
+template <typename B1, typename E1, typename B2, typename T,
+          typename BOP_R, typename BOP_T, typename P>
+requires (!Partitioner<std::decay_t<BOP_T>>)
 Task FlowBuilder::transform_reduce(
   B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P part
 ) {
@@ -532,7 +527,3 @@ Task FlowBuilder::reduce_by_index(R range, T& init, L lop, G gop, P part) {
 }
 
 }  // end of namespace tf -------------------------------------------------------------------------
-
-
-
-

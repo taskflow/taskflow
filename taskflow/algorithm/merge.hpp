@@ -8,11 +8,11 @@ template <typename B1, typename E1, typename B2, typename E2, typename O,
           typename C, typename P = DefaultPartitioner>
 auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
                      P part = P()) {
-  using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
-  using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
-  using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
-  using E2_t = std::decay_t<unwrap_ref_decay_t<E2>>;
-  using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
+  using B1_t = std::decay_t<std::unwrap_ref_decay_t<B1>>;
+  using E1_t = std::decay_t<std::unwrap_ref_decay_t<E1>>;
+  using B2_t = std::decay_t<std::unwrap_ref_decay_t<B2>>;
+  using E2_t = std::decay_t<std::unwrap_ref_decay_t<E2>>;
+  using O_t = std::decay_t<std::unwrap_ref_decay_t<O>>;
   return [=](Runtime &rt) mutable {
     B1_t beg1 = first1;
     E1_t end1 = last1;
@@ -126,9 +126,8 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
 // ----------------------------------------------------------------------------
 
 // Function: merge
-template <typename B1, typename E1, typename B2, typename E2, typename O,
-          typename P,
-          std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void> *>
+template <typename B1, typename E1, typename B2, typename E2, typename O, typename P>
+requires Partitioner<std::decay_t<P>>
 Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
                         P part) {
   return emplace(make_merge_task(first1, last1, first2, last2, std::less<>{},
@@ -136,10 +135,9 @@ Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
 }
 
 // Function: merge
-template <
-    typename B1, typename E1, typename B2, typename E2, typename O, typename C,
-    typename P,
-    std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void> *>
+template <typename B1, typename E1, typename B2, typename E2,
+          typename O, typename C, typename P>
+requires (!Partitioner<std::decay_t<C>>)
 Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
                         C cmp, P part) {
   return emplace(

@@ -1,0 +1,77 @@
+var hierarchy =
+[
+    [ "tf::AsyncTask", "classtf_1_1AsyncTask.html", null ],
+    [ "tf::BoundedWSQ< T, LogSize >", "classtf_1_1BoundedWSQ.html", null ],
+    [ "tf::BoundedWSQ< Node * >", "classtf_1_1BoundedWSQ.html", null ],
+    [ "tf::CachelineAligned< T >", "classtf_1_1CachelineAligned.html", null ],
+    [ "tf::cudaEventCreator", "classtf_1_1cudaEventCreator.html", null ],
+    [ "tf::cudaEventDeleter", "classtf_1_1cudaEventDeleter.html", null ],
+    [ "tf::cudaGraphCreator", "classtf_1_1cudaGraphCreator.html", null ],
+    [ "tf::cudaGraphDeleter", "classtf_1_1cudaGraphDeleter.html", null ],
+    [ "tf::cudaGraphExecCreator", "classtf_1_1cudaGraphExecCreator.html", null ],
+    [ "tf::cudaGraphExecDeleter", "classtf_1_1cudaGraphExecDeleter.html", null ],
+    [ "tf::cudaScopedDevice", "classtf_1_1cudaScopedDevice.html", null ],
+    [ "tf::cudaStreamCreator", "classtf_1_1cudaStreamCreator.html", null ],
+    [ "tf::cudaStreamDeleter", "classtf_1_1cudaStreamDeleter.html", null ],
+    [ "tf::cudaTask", "classtf_1_1cudaTask.html", null ],
+    [ "tf::DataPipe< Input, Output, C >", "classtf_1_1DataPipe.html", null ],
+    [ "tf::DataPipeline< Ps >", "classtf_1_1DataPipeline.html", null ],
+    [ "tf::DefaultClosureWrapper", "classtf_1_1DefaultClosureWrapper.html", null ],
+    [ "tf::DefaultTaskParams", "classtf_1_1DefaultTaskParams.html", null ],
+    [ "tf::Executor", "classtf_1_1Executor.html", null ],
+    [ "tf::FlowBuilder", "classtf_1_1FlowBuilder.html", [
+      [ "tf::Subflow", "classtf_1_1Subflow.html", null ],
+      [ "tf::Taskflow", "classtf_1_1Taskflow.html", null ]
+    ] ],
+    [ "std::future", null, [
+      [ "tf::Future< T >", "classtf_1_1Future.html", null ]
+    ] ],
+    [ "tf::Graph", "classtf_1_1Graph.html", null ],
+    [ "hash", "structhash.html", null ],
+    [ "tf::IndexRange< T >", "classtf_1_1IndexRange.html", null ],
+    [ "tf::NonblockingNotifier", "classtf_1_1NonblockingNotifier.html", null ],
+    [ "tf::ObserverInterface", "classtf_1_1ObserverInterface.html", [
+      [ "tf::ChromeObserver", "classtf_1_1ChromeObserver.html", null ],
+      [ "tf::TFProfObserver", "classtf_1_1TFProfObserver.html", null ]
+    ] ],
+    [ "tf::PartitionerBase< C >", "classtf_1_1PartitionerBase.html", null ],
+    [ "tf::PartitionerBase< DefaultClosureWrapper >", "classtf_1_1PartitionerBase.html", [
+      [ "tf::DynamicPartitioner< C >", "classtf_1_1DynamicPartitioner.html", null ],
+      [ "tf::GuidedPartitioner< C >", "classtf_1_1GuidedPartitioner.html", null ],
+      [ "tf::RandomPartitioner< C >", "classtf_1_1RandomPartitioner.html", null ],
+      [ "tf::StaticPartitioner< C >", "classtf_1_1StaticPartitioner.html", null ]
+    ] ],
+    [ "tf::Pipe< C >", "classtf_1_1Pipe.html", null ],
+    [ "tf::Pipeflow", "classtf_1_1Pipeflow.html", null ],
+    [ "tf::Pipeline< Ps >", "classtf_1_1Pipeline.html", null ],
+    [ "tf::cudaDeviceAllocator< T >::rebind< U >", "structtf_1_1cudaDeviceAllocator_1_1rebind.html", null ],
+    [ "tf::cudaUSMAllocator< T >::rebind< U >", "structtf_1_1cudaUSMAllocator_1_1rebind.html", null ],
+    [ "tf::Runtime", "classtf_1_1Runtime.html", null ],
+    [ "tf::ScalablePipeline< P >", "classtf_1_1ScalablePipeline.html", null ],
+    [ "tf::Semaphore", "classtf_1_1Semaphore.html", null ],
+    [ "tf::SmallVector< T, N >", "classtf_1_1SmallVector.html", null ],
+    [ "tf::SmallVector< Node * >", "classtf_1_1SmallVector.html", null ],
+    [ "tf::SmallVector< Node *, 4 >", "classtf_1_1SmallVector.html", null ],
+    [ "tf::SmallVector< tf::Semaphore * >", "classtf_1_1SmallVector.html", null ],
+    [ "tf::Task", "classtf_1_1Task.html", null ],
+    [ "tf::TaskGroup", "classtf_1_1TaskGroup.html", null ],
+    [ "tf::TaskParams", "classtf_1_1TaskParams.html", null ],
+    [ "tf::TaskView", "classtf_1_1TaskView.html", null ],
+    [ "tf::UnboundedWSQ< T >", "classtf_1_1UnboundedWSQ.html", null ],
+    [ "tf::UnboundedWSQ< Node * >", "classtf_1_1UnboundedWSQ.html", null ],
+    [ "std::unique_ptr", null, [
+      [ "tf::cudaEventBase< cudaEventCreator, cudaEventDeleter >", "classtf_1_1cudaEventBase.html", null ],
+      [ "tf::cudaGraphBase< cudaGraphCreator, cudaGraphDeleter >", "classtf_1_1cudaGraphBase.html", null ],
+      [ "tf::cudaGraphExecBase< cudaGraphExecCreator, cudaGraphExecDeleter >", "classtf_1_1cudaGraphExecBase.html", null ],
+      [ "tf::cudaStreamBase< cudaStreamCreator, cudaStreamDeleter >", "classtf_1_1cudaStreamBase.html", null ],
+      [ "tf::cudaEventBase< Creator, Deleter >", "classtf_1_1cudaEventBase.html", null ],
+      [ "tf::cudaGraphBase< Creator, Deleter >", "classtf_1_1cudaGraphBase.html", null ],
+      [ "tf::cudaGraphExecBase< Creator, Deleter >", "classtf_1_1cudaGraphExecBase.html", null ],
+      [ "tf::cudaStreamBase< Creator, Deleter >", "classtf_1_1cudaStreamBase.html", null ]
+    ] ],
+    [ "tf::Worker", "classtf_1_1Worker.html", null ],
+    [ "tf::WorkerInterface", "classtf_1_1WorkerInterface.html", null ],
+    [ "tf::WorkerView", "classtf_1_1WorkerView.html", null ],
+    [ "tf::Xorshift< T >", "classtf_1_1Xorshift.html", null ],
+    [ "tf::Xorshift< uint32_t >", "classtf_1_1Xorshift.html", null ]
+];

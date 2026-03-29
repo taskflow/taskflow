@@ -194,9 +194,8 @@ void Executor::_silent_async(P&& params, F&& f, Topology* tpg, NodeBase* parent)
 // ----------------------------------------------------------------------------
 
 // Function: silent_dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
   return silent_dependent_async(
     DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...
@@ -204,9 +203,8 @@ tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
@@ -217,17 +215,15 @@ tf::AsyncTask Executor::silent_dependent_async(
 }
 
 // Function: silent_dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Executor::silent_dependent_async(F&& func, I first, I last) {
   return silent_dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: silent_dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, I first, I last
 ) {
@@ -237,10 +233,9 @@ tf::AsyncTask Executor::silent_dependent_async(
   );
 }
 
-// Function: silent_dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+// Function: _silent_dependent_async
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::_silent_dependent_async(
   P&& params, F&& func, I first, I last, Topology* tpg, NodeBase* parent
 ) {
@@ -256,17 +251,15 @@ auto Executor::_silent_dependent_async(
 // ----------------------------------------------------------------------------
 
 // Function: dependent_async
-template <typename F, typename... Tasks,
-  std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Executor::dependent_async(F&& func, Tasks&&... tasks) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), std::forward<Tasks>(tasks)...);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename... Tasks,
-  std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>*
->
+template <TaskParamsConcept P, typename F, typename... Tasks>
+requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
   return dependent_async(
@@ -275,26 +268,23 @@ auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
-template <typename F, typename I,
-  std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::dependent_async(F&& func, I first, I last) {
   return dependent_async(DefaultTaskParams{}, std::forward<F>(func), first, last);
 }
 
 // Function: dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   _increment_topology();
   return _dependent_async(std::forward<P>(params), std::forward<F>(func), first, last, nullptr, nullptr);
 }
 
-// Function: dependent_async
-template <typename P, typename F, typename I,
-  std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>*
->
+// Function: _dependent_async
+template <TaskParamsConcept P, typename F, typename I>
+requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology* tpg, NodeBase* parent) {
     
   size_t num_predecessors = std::distance(first, last);
@@ -437,4 +427,3 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
 
 
 }  // end of namespace tf -----------------------------------------------------
-

@@ -8,8 +8,8 @@ namespace tf {
 template <typename B, typename E, typename C, typename P = DefaultPartitioner>
 auto make_for_each_task(B b, E e, C c, P part = P()) {
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=] (Runtime& rt) mutable {
 
@@ -75,9 +75,9 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
 template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
 auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using S_t = std::decay_t<unwrap_ref_decay_t<S>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using S_t = std::decay_t<std::unwrap_ref_decay_t<S>>;
 
   return [=] (Runtime& rt) mutable {
 
@@ -145,7 +145,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 template <typename R, typename C, typename P = DefaultPartitioner>
 auto make_for_each_by_index_task(R range, C c, P part = P()){
   
-  using range_type = std::decay_t<unwrap_ref_decay_t<R>>;
+  using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
 
   return [=] (Runtime& rt) mutable {
 
@@ -230,4 +230,3 @@ Task FlowBuilder::for_each_by_index(R range, C c, P part){
 }
 
 }  // end of namespace tf -------------------------------------------------------------------------
-

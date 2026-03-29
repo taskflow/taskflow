@@ -163,9 +163,9 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop) {
    
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -235,9 +235,9 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop, T init) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -316,9 +316,9 @@ auto make_transform_inclusive_scan_task(
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -390,9 +390,9 @@ auto make_transform_inclusive_scan_task(
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -469,9 +469,9 @@ auto make_exclusive_scan_task(
 
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -556,9 +556,9 @@ auto make_transform_exclusive_scan_task(
 
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -697,5 +697,3 @@ Task FlowBuilder::transform_exclusive_scan(
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
-

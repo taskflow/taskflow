@@ -1,0 +1,32 @@
+/* constrain toolbar logo */
+#projectlogo img {
+  max-height: 50px;
+  width: auto;
+}
+
+/* constrain standalone @image html outside of tables */
+div.contents > div.image img,
+div.textblock > div.image img {
+  max-width: 100%;
+  height: auto;
+}
+
+table.sponsor-table {
+  border: 0;
+  border-spacing: 20px;
+}
+
+table.sponsor-table td {
+  border: 0;
+  vertical-align: middle;
+  text-align: center;
+}
+
+table.sponsor-table .image img {
+  max-width: 160px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+

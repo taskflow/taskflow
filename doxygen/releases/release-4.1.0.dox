@@ -51,6 +51,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + optimized tf::Executor::run(Taskflow&&)` with asynchronous tasking
   + removed satellite field from both taskflow and executor classes
 + optimized the locking cost of topology
++ refactored the codebase with C++20 concept to enhance readability
+  + credit goest to the amazing Anthropic Claude
 
 @subsection release-4-1-0_utilities Utilities
 
@@ -65,6 +67,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 @section release-4-1-0_documentation Documentation
 
++ switched to the native doxygen for C++20 support
 + revised @ref Cookbook
   + added video tutorials
 
