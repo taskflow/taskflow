@@ -1366,6 +1366,75 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
 
 // Function: _explore_task
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
+ 
+  // Fast path: if no topologies are live, all queues are guaranteed empty
+  // by the executor's invariant (num_topologies reaches zero only after all
+  // nodes have been scheduled and their queues flushed). Skip the entire
+  // steal loop and return immediately so the caller enters _wait_for_task
+  // to sleep. relaxed ordering is sufficient — this is a hint, and any
+  // missed update is caught safely by the 2PC guard in _wait_for_task.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    return true;
+  }
+ 
+  const size_t MAX_VICTIM    = num_queues();  // guaranteed >= 2 by constructor
+  const size_t MAX_STEALS    = ((MAX_VICTIM + 1) << 1);
+  const size_t STICKY_THRESH = 4;  // max retries on a contended victim
+ 
+  // local aliases for steal protocol sentinels — these are properties of the
+  // steal protocol, not of any specific queue type
+  constexpr Node* empty_steal     = wsq_empty_value<Node*>();
+  const     Node* contended_steal = wsq_contended_value<Node*>();
+ 
+  size_t num_steals    = 0;
+  size_t num_contended = 0;
+  size_t vtm           = w._sticky_victim;
+ 
+  while(true) {
+ 
+    Node* result = (vtm < _workers.size())
+      ? _workers[vtm]._wsq.steal_with_feedback()
+      : _buffers[vtm - _workers.size()].queue.steal_with_feedback();
+ 
+    if(result != empty_steal && result != contended_steal) {
+      // STOLEN: successfully acquired a task — reinforce sticky victim
+      t = result;
+      w._sticky_victim = vtm;
+      break;
+    }
+ 
+    if(result == contended_steal) {
+      // CONTENDED: victim has work but we lost the CAS race — retry the
+      // same victim up to STICKY_THRESH times before moving on
+      if(++num_contended < STICKY_THRESH) {
+        continue;  // stay on vtm, skip victim switch and num_steals increment
+      }
+    }
+    // EMPTY or CONTENDED-exhausted: pick a new victim excluding self
+    // since our own queue is empty by invariant. map [0, MAX_VICTIM-1)
+    // over [0, MAX_VICTIM) \ {w._id} — always safe since MAX_VICTIM >= 2.
+    num_contended = 0;
+    vtm = w._rdgen() % (MAX_VICTIM - 1);
+    if(vtm >= w._id) vtm++;
+ 
+    if(++num_steals > MAX_STEALS) {
+      std::this_thread::yield();
+      if(num_steals > 150 + MAX_STEALS) {
+        break;
+      }
+    }
+ 
+    if(w._done.test(std::memory_order_relaxed)) {
+      return false;
+    }
+  }
+ 
+  return true;
+} 
+
+/*
+// Function: _explore_task
+inline bool Executor::_explore_task(Worker& w, Node*& t) {
 
   // Fast path: if no topologies are live, all queues are guaranteed empty
   // by the executor's invariant (num_topologies reaches zero only after all
@@ -1416,6 +1485,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   } 
   return true;
 }
+*/
 
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(Worker& w, Node*& t) {
@@ -2205,6 +2275,72 @@ void Executor::corun_until(P&& predicate) {
 // Function: _corun_until
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
+ 
+  const size_t MAX_VICTIM    = num_queues();
+  const size_t MAX_STEALS    = ((MAX_VICTIM + 1) << 1);
+  const size_t STICKY_THRESH = 8;
+ 
+  constexpr Node* empty_steal     = wsq_empty_value<Node*>();
+  const     Node* contended_steal = wsq_contended_value<Node*>();
+ 
+  bool stop = false;
+ 
+  while(!stop && !(stop = stop_predicate())) {
+ 
+    // try local queue first — only one task at a time to avoid deep
+    // recursive corun calls causing stack overflow
+    if(auto t = w._wsq.pop(); t) {
+      _invoke(w, t);
+      continue;
+    }
+ 
+    // local queue empty: steal from others until stop_predicate or stolen.
+    // stop is set by the inner loop condition so when predicate becomes true
+    // the outer loop exits immediately without calling stop_predicate again.
+    size_t num_steals    = 0;
+    size_t num_contended = 0;
+    size_t vtm           = w._sticky_victim;
+ 
+    while(!(stop = stop_predicate())) {
+ 
+      Node* result = (vtm < _workers.size())
+        ? _workers[vtm]._wsq.steal_with_feedback()
+        : _buffers[vtm - _workers.size()].queue.steal_with_feedback();
+ 
+      if(result != empty_steal && result != contended_steal) {
+        // STOLEN: invoke task then return to outer loop to re-check
+        // local queue and stop_predicate
+        _invoke(w, result);
+        w._sticky_victim = vtm;
+        break;
+      }
+ 
+      if(result == contended_steal) {
+        // CONTENDED: victim has work, retry same victim up to STICKY_THRESH
+        if(++num_contended < STICKY_THRESH) {
+          continue;
+        }
+      }
+ 
+      // EMPTY or CONTENDED-exhausted: pick a new victim excluding self
+      num_contended = 0;
+      vtm = w._rdgen() % (MAX_VICTIM - 1);
+      if(vtm >= w._id) vtm++;
+ 
+      if(++num_steals > MAX_STEALS) {
+        // unlike _explore_task we cannot sleep here — the calling worker
+        // is blocked inside a task and must keep making progress to avoid
+        // deadlock. yield to let other threads run and make progress.
+        std::this_thread::yield();
+      }
+    }
+  }
+}
+ 
+/*
+// Function: _corun_until
+template <typename P>
+void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 
   const size_t MAX_VICTIM = num_queues();
   const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
@@ -2245,7 +2381,7 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
       }
     }
   }
-}
+}*/
 
 // Function: corun
 template <typename T>

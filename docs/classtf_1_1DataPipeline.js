@@ -1,6 +1,6 @@
 var classtf_1_1DataPipeline =
 [
-    [ "data_t", "classtf_1_1DataPipeline.html#ae3bce106a357267223e5a6c5884d57c4", null ],
+    [ "data_t", "classtf_1_1DataPipeline.html#a534794134344f86242836c4b0fb62e94", null ],
     [ "DataPipeline", "classtf_1_1DataPipeline.html#a1559f218ca91b41d6c871a88183a04e5", null ],
     [ "DataPipeline", "classtf_1_1DataPipeline.html#abe9f09834e32eebf792c330fe825138d", null ],
     [ "graph", "classtf_1_1DataPipeline.html#adfc70da6fdffc4a0a56bd2fe0f0dc07d", null ],

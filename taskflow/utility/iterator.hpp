@@ -88,7 +88,7 @@ constexpr size_t distance(B beg, E end, S step) {
 This class provides functionality for managing a range of indices, where the range 
 is defined by a starting index, an ending index, and a step size. 
 Indices must be an integral type.
-For example, the range `[0, 10) with a step size 2 represents the five elements,
+For example, the range `[0, 10)` with a step size 2 represents the five elements,
 0, 2, 4, 6, and 8.
 
 @code{.cpp}

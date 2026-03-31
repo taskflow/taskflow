@@ -48,7 +48,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + optimized executor member variable data layout to reduce false sharing
   + aligned `num_topologies` to a cache line
   + aligned `notifier` to a cache line
-+ optimized tf::Executor::run(Taskflow&&)` with asynchronous tasking
++ optimized `tf::Executor::run(Taskflow&&)` with asynchronous tasking
   + removed satellite field from both taskflow and executor classes
 + optimized the locking cost of topology
 + refactored the codebase with C++20 concept to enhance readability

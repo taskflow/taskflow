@@ -8,7 +8,7 @@ var classtf_1_1BoundedWSQ =
     [ "pop", "classtf_1_1BoundedWSQ.html#a0f3fc5d2f38ca7df06b55afa391f26ce", null ],
     [ "size", "classtf_1_1BoundedWSQ.html#a95ca63c53c35d04f3959923dbc3e1576", null ],
     [ "steal", "classtf_1_1BoundedWSQ.html#a57e08d6415b5b586ee32875c91057f35", null ],
-    [ "steal_with_feedback", "classtf_1_1BoundedWSQ.html#a87e13fb05bf65caa30aa677f8dd84386", null ],
+    [ "steal_with_feedback", "classtf_1_1BoundedWSQ.html#a7494b141326b5288a7ec754038e635e0", null ],
     [ "try_bulk_push", "classtf_1_1BoundedWSQ.html#a10375ce815e0c5c047a4331de787053b", null ],
     [ "try_push", "classtf_1_1BoundedWSQ.html#a7d7be330e9c1c0e5a2051b7e190bf4c2", null ]
 ];

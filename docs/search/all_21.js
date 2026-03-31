@@ -44,5 +44,7 @@ var searchData=
   ['working_20items_41',['Working Items',['../release-3-2-0.html#release-3-2-0_working_items',1,'Working Items'],['../release-3-0-0.html#release-3-0-0_working_items',1,'Working Items']]],
   ['wrapper_20for_20a_20partitioner_42',['Define a Closure Wrapper for a Partitioner',['../PartitioningAlgorithm.html#DefineAClosureWrapperForAPartitioner',1,'']]],
   ['write_20a_20taskflow_20program_43',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]],
-  ['wrong_44',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]]
+  ['wrong_44',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
+  ['wsq_5fcontended_5fvalue_45',['wsq_contended_value',['../namespacetf.html#aaf8863dc074a1f973e89330a8a71458b',1,'tf']]],
+  ['wsq_5fempty_5fvalue_46',['wsq_empty_value',['../namespacetf.html#a9ab6597dd60690bd8c20cc76590985a6',1,'tf']]]
 ];

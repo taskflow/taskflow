@@ -74,7 +74,7 @@ var searchData=
   ['statictask_71',['StaticTask',['../concepttf_1_1StaticTask.html',1,'tf']]],
   ['status_20of_20dependent_20async_20tasks_72',['Query the Completion Status of Dependent Async Tasks',['../DependentAsyncTasking.html#QueryTheComppletionStatusOfDependentAsyncTasks',1,'']]],
   ['steal_73',['steal',['../classtf_1_1UnboundedWSQ.html#a0b91802df36d932ee43b10aedc3abebc',1,'tf::UnboundedWSQ::steal()'],['../classtf_1_1BoundedWSQ.html#a57e08d6415b5b586ee32875c91057f35',1,'tf::BoundedWSQ::steal()']]],
-  ['steal_5fwith_5ffeedback_74',['steal_with_feedback',['../classtf_1_1UnboundedWSQ.html#aa48bbb819409d53df6ead0183add73cf',1,'tf::UnboundedWSQ::steal_with_feedback()'],['../classtf_1_1BoundedWSQ.html#a87e13fb05bf65caa30aa677f8dd84386',1,'tf::BoundedWSQ::steal_with_feedback()']]],
+  ['steal_5fwith_5ffeedback_74',['steal_with_feedback',['../classtf_1_1UnboundedWSQ.html#af2e9678cae63477e05e55b255d009558',1,'tf::UnboundedWSQ::steal_with_feedback()'],['../classtf_1_1BoundedWSQ.html#a7494b141326b5288a7ec754038e635e0',1,'tf::BoundedWSQ::steal_with_feedback()']]],
   ['stealing_20in_20executor_75',['Understand Work Stealing in Executor',['../ExecuteTaskflow.html#UnderstandWorkStealingInExecutor',1,'']]],
   ['step_201_3a_20look_20around_76',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
   ['step_202_3a_20write_20a_20taskflow_20program_77',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]],

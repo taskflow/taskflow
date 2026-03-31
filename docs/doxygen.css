@@ -1,4 +1,4 @@
-/* The standard CSS for doxygen 1.14.0*/
+/* The standard CSS for doxygen 1.17.0*/
 
 body {
 	background-color: white;
@@ -79,6 +79,7 @@ dt {
 
 p.startli, p.startdd {
 	margin-top: 2px;
+	margin-bottom: 0px;
 }
 
 th p.starttd, th p.intertd, th p.endtd {
@@ -149,6 +150,19 @@ td.navtabHL {
 	padding-left: 6px;
 	border-radius: 0 6px 6px 0;
 	background-color: #DCE2EF;
+}
+
+div.alphasepar:before{
+  content: " | " ;
+  width: 14px;
+  display: inline-block;
+  text-align: center;
+  line-height: 140%;
+  font-size: 130%;
+}
+
+div.alphasepar{
+  display: inline-block;
 }
 
 div.qindex{
@@ -270,6 +284,11 @@ a.code.hl_event { /* style for links to event names in code snippets */ }
 a.code.hl_sequence { /* style for links to sequence names in code snippets */ }
 a.code.hl_dictionary { /* style for links to dictionary names in code snippets */ }
 
+div.embeddoc {
+	font-family: 'JetBrains Mono',Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace,fixed;
+	padding-left: 10px;
+}
+
 /* @end */
 
 dl.el {
@@ -277,15 +296,35 @@ dl.el {
 }
 
 ul.check {
-	list-style:none;
-	text-indent: -16px;
-	padding-left: 38px;
+	list-style: none;
+	padding-left: 40px;
+	margin: 0;
 }
-li.unchecked:before {
-	content: "\2610\A0";
+
+ul.check li {
+	position: relative;
 }
-li.checked:before {
-	content: "\2611\A0";
+
+li.unchecked::before, li.checked::before {
+	position: absolute;
+	left: -18px;
+	top: 0;
+}
+
+li.unchecked::before {
+	content: "☐";
+}
+
+li.checked::before {
+	content: "☑";
+}
+
+ul.check li > p {
+	display: inline;
+}
+
+ul.check li > p:not(:first-child) {
+	display: block;
 }
 
 ol {
@@ -340,6 +379,7 @@ pre.fragment {
 span.tt {
         white-space: pre;
 	font-family: 'JetBrains Mono',Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace,fixed;
+	background-color: #FBFCFD;
 }
 
 .clipboard {
@@ -755,6 +795,8 @@ tr:not(:first-child) > td.ititle {
 	border-bottom: 1px solid #D5DDEC;
 	padding-left: 10px;
 	transition: none;
+	vertical-align: top;
+	text-align: right;
 }
 
 .memItemRight {
@@ -763,6 +805,7 @@ tr:not(:first-child) > td.ititle {
 	border-bottom: 1px solid #D5DDEC;
 	padding-right: 10px;
 	transition: none;
+	vertical-align: bottom;
 }
 
 tr.heading        + tr[class^='memitem'] td.memItemLeft,
@@ -1316,7 +1359,6 @@ table.fieldtable {
 	text-align: right;
 }
 
-
 .fieldtable td.fielddoc {
 	border-bottom: 1px solid #A8B8D9;
 }
@@ -1344,6 +1386,41 @@ table.fieldtable {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 	border-bottom: 1px solid #A8B8D9;
+}
+
+/* style requirements page */
+
+div.req_title {
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-color: #2D4068;
+        text-decoration-thickness: 1px;
+        font-weight: bold;
+}
+
+table.reqlist tr > td:first-child {
+        text-align: right;
+        font-weight: bold;
+}
+
+div.missing_satisfies {
+        border-left: 8px solid #b61825;
+	border-radius: 4px;
+	background: #f8d1cc;
+        padding: 10px;
+        margin: 10px 0px;
+        overflow: hidden;
+        margin-left: 0;
+}
+
+div.missing_verifies {
+        border-left: 8px solid #b61825;
+	border-radius: 4px;
+	background: #f8d1cc;
+        padding: 10px;
+        margin: 10px 0px;
+        overflow: hidden;
+        margin-left: 0;
 }
 
 /* ----------- navigation breadcrumb styling ----------- */
@@ -1510,6 +1587,10 @@ dl.warning dt, dl.attention dt, dl.important dt {
 	color: #b61825;
 }
 
+dl.warning .tt, dl.attention .tt, dl.important .tt {
+	background-color: hsl(from #f8d1cc h s calc(l + -3));
+}
+
 dl.note, dl.remark {
 	background: #faf3d8;
 	border-left: 8px solid #f3a600;
@@ -1518,6 +1599,10 @@ dl.note, dl.remark {
 
 dl.note dt, dl.remark dt {
 	color: #f3a600;
+}
+
+dl.note .tt, dl.remark .tt {
+	background-color: hsl(from #faf3d8 h s calc(l + -3));
 }
 
 dl.todo {
@@ -1530,6 +1615,10 @@ dl.todo dt {
 	color: #1879C4;
 }
 
+dl.todo .tt {
+	background-color: hsl(from #e4f3ff h s calc(l + -3));
+}
+
 dl.test {
 	background: #e8e8ff;
 	border-left: 8px solid #3939C4;
@@ -1538,6 +1627,10 @@ dl.test {
 
 dl.test dt {
 	color: #3939C4;
+}
+
+dl.test .tt {
+	background-color: hsl(from #e8e8ff h s calc(l + -3));
 }
 
 dl.bug dt a {
@@ -1554,6 +1647,10 @@ dl.bug dt a {
 	color: #5b2bdd !important;
 }
 
+dl.bug .tt {
+	background-color: hsl(from #e4dafd h s calc(l + -3));
+}
+
 dl.deprecated {
 	background: #ecf0f3;
 	border-left: 8px solid #5b6269;
@@ -1564,11 +1661,10 @@ dl.deprecated dt a {
 	color: #5b6269 !important;
 }
 
-dl.note dd, dl.warning dd, dl.pre dd, dl.post dd,
-dl.remark dd, dl.attention dd, dl.important dd, dl.invariant dd,
-dl.bug dd, dl.deprecated dd, dl.todo dd, dl.test dd {
-	margin-inline-start: 0px;
+dl.deprecated .tt {
+	background-color: hsl(from #ecf0f3 h s calc(l + -3));
 }
+
 
 dl.invariant, dl.pre, dl.post {
 	background: #d8f1e3;
@@ -1578,6 +1674,16 @@ dl.invariant, dl.pre, dl.post {
 
 dl.invariant dt, dl.pre dt, dl.post dt {
 	color: #44b86f;
+}
+
+dl.invariant .tt, dl.pre .tt, dl.post .tt {
+	background-color: hsl(from #d8f1e3 h s calc(l + -3));
+}
+
+dl.note dd, dl.warning dd, dl.pre dd, dl.post dd,
+dl.remark dd, dl.attention dd, dl.important dd, dl.invariant dd,
+dl.bug dd, dl.deprecated dd, dl.todo dd, dl.test dd {
+	margin-inline-start: 0px;
 }
 
 
@@ -2025,14 +2131,17 @@ details > summary::-webkit-details-marker {
 }
 
 details>summary::before {
-	content: "\25ba";
-	padding-right:4px;
-	font-size: 80%;
+        content: "\25bc";
+        padding-right:4px;
+        font-size: 80%;
+        display: inline-block;
+        transform: rotate(-90deg);
 }
 
 details[open]>summary::before {
-	content: "\25bc";
-	padding-right:4px;
-	font-size: 80%;
+        content: "\25bc";
+        padding-right:4px;
+        font-size: 80%;
+        display: inline-block;
+        transform: rotate(0deg);
 }
-
