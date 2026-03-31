@@ -1,11 +1,12 @@
 #pragma once
 
-#include "task.hpp"
-#include "worker.hpp"
+#include "interface.hpp"
+#include "../utility/os.hpp"
+#include "../utility/serializer.hpp"
 
 /** 
-@file observer.hpp
-@brief observer include file
+@file observer/tfprof_observer.hpp
+@brief TFProfObserver include file
 */
 
 namespace tf {
@@ -13,11 +14,6 @@ namespace tf {
 // ----------------------------------------------------------------------------
 // timeline data structure
 // ----------------------------------------------------------------------------
-
-/**
-@brief default time point type of observers
-*/
-using observer_stamp_t = std::chrono::time_point<std::chrono::steady_clock>;
 
 /**
 @private
@@ -106,306 +102,6 @@ struct ProfileData {
     return ar(timelines);
   }
 };
-
-// ----------------------------------------------------------------------------
-// observer interface 
-// ----------------------------------------------------------------------------
-
-/**
-@class: ObserverInterface
-
-@brief class to derive an executor observer 
-
-The tf::ObserverInterface class allows users to define custom methods to monitor 
-the behaviors of an executor. This is particularly useful when you want to 
-inspect the performance of an executor and visualize when each thread 
-participates in the execution of a task.
-To prevent users from direct access to the internal threads and tasks, 
-tf::ObserverInterface provides immutable wrappers,
-tf::WorkerView and tf::TaskView, over workers and tasks.
-
-Please refer to tf::WorkerView and tf::TaskView for details.
-
-Example usage:
-
-@code{.cpp}
-
-struct MyObserver : public tf::ObserverInterface {
-
-  MyObserver(const std::string& name) {
-    std::cout << "constructing observer " << name << '\n';
-  }
-
-  void set_up(size_t num_workers) override final {
-    std::cout << "setting up observer with " << num_workers << " workers\n";
-  }
-
-  void on_entry(WorkerView w, tf::TaskView tv) override final {
-    std::ostringstream oss;
-    oss << "worker " << w.id() << " ready to run " << tv.name() << '\n';
-    std::cout << oss.str();
-  }
-
-  void on_exit(WorkerView w, tf::TaskView tv) override final {
-    std::ostringstream oss;
-    oss << "worker " << w.id() << " finished running " << tv.name() << '\n';
-    std::cout << oss.str();
-  }
-};
-  
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-// insert tasks into taskflow
-// ...
-  
-// create a custom observer
-std::shared_ptr<MyObserver> observer = executor.make_observer<MyObserver>("MyObserver");
-
-// run the taskflow
-executor.run(taskflow).wait();
-@endcode
-*/
-class ObserverInterface {
-
-  public:
-
-  /**
-  @brief virtual destructor
-  */
-  virtual ~ObserverInterface() = default;
-  
-  /**
-  @brief constructor-like method to call when the executor observer is fully created
-  @param num_workers the number of the worker threads in the executor
-  */
-  virtual void set_up(size_t num_workers) = 0;
-  
-  /**
-  @brief method to call before a worker thread executes a closure 
-  @param wv an immutable view of this worker thread 
-  @param task_view a constant wrapper object to the task 
-  */
-  virtual void on_entry(WorkerView wv, TaskView task_view) = 0;
-  
-  /**
-  @brief method to call after a worker thread executed a closure
-  @param wv an immutable view of this worker thread
-  @param task_view a constant wrapper object to the task
-  */
-  virtual void on_exit(WorkerView wv, TaskView task_view) = 0;
-};
-
-// ----------------------------------------------------------------------------
-// ChromeObserver definition
-// ----------------------------------------------------------------------------
-
-/**
-@class: ChromeObserver
-
-@brief class to create an observer based on Chrome tracing format
-
-A tf::ChromeObserver inherits tf::ObserverInterface and defines methods to dump
-the observed thread activities into a format that can be visualized through
-@ChromeTracing.
-
-@code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-// insert tasks into taskflow
-// ...
-  
-// create a custom observer
-std::shared_ptr<tf::ChromeObserver> observer = executor.make_observer<tf::ChromeObserver>();
-
-// run the taskflow
-executor.run(taskflow).wait();
-
-// dump the thread activities to a chrome-tracing format.
-observer->dump(std::cout);
-@endcode
-*/
-class ChromeObserver : public ObserverInterface {
-
-  friend class Executor;
-  
-  // data structure to record each task execution
-  struct Segment {
-
-    std::string name;
-
-    observer_stamp_t beg;
-    observer_stamp_t end;
-
-    Segment(
-      const std::string& n,
-      observer_stamp_t b,
-      observer_stamp_t e
-    );
-  };
-  
-  // data structure to store the entire execution timeline
-  struct Timeline {
-    observer_stamp_t origin;
-    std::vector<std::vector<Segment>> segments;
-    std::vector<std::stack<observer_stamp_t>> stacks;
-  };  
-
-  public:
-
-    /**
-    @brief dumps the timelines into a @ChromeTracing format through 
-           an output stream 
-    */
-    void dump(std::ostream& ostream) const;
-
-    /**
-    @brief dumps the timelines into a @ChromeTracing format
-    */
-    inline std::string dump() const;
-
-    /**
-    @brief clears the timeline data
-    */
-    inline void clear();
-
-    /**
-    @brief queries the number of tasks observed
-    */
-    inline size_t num_tasks() const;
-
-  private:
-    
-    inline void set_up(size_t num_workers) override final;
-    inline void on_entry(WorkerView w, TaskView task_view) override final;
-    inline void on_exit(WorkerView w, TaskView task_view) override final;
-
-    Timeline _timeline;
-};  
-    
-// constructor
-inline ChromeObserver::Segment::Segment(
-  const std::string& n, observer_stamp_t b, observer_stamp_t e
-) :
-  name {n}, beg {b}, end {e} {
-}
-
-// Procedure: set_up
-inline void ChromeObserver::set_up(size_t num_workers) {
-  _timeline.segments.resize(num_workers);
-  _timeline.stacks.resize(num_workers);
-
-  for(size_t w=0; w<num_workers; ++w) {
-    _timeline.segments[w].reserve(32);
-  }
-  
-  _timeline.origin = observer_stamp_t::clock::now();
-}
-
-// Procedure: on_entry
-inline void ChromeObserver::on_entry(WorkerView wv, TaskView) {
-  _timeline.stacks[wv.id()].push(observer_stamp_t::clock::now());
-}
-
-// Procedure: on_exit
-inline void ChromeObserver::on_exit(WorkerView wv, TaskView tv) {
-
-  size_t w = wv.id();
-
-  assert(!_timeline.stacks[w].empty());
-
-  auto beg = _timeline.stacks[w].top();
-  _timeline.stacks[w].pop();
-
-  _timeline.segments[w].emplace_back(
-    tv.name(), beg, observer_stamp_t::clock::now()
-  );
-}
-
-// Function: clear
-inline void ChromeObserver::clear() {
-  for(size_t w=0; w<_timeline.segments.size(); ++w) {
-    _timeline.segments[w].clear();
-    while(!_timeline.stacks[w].empty()) {
-      _timeline.stacks[w].pop();
-    }
-  }
-}
-
-// Procedure: dump
-inline void ChromeObserver::dump(std::ostream& os) const {
-
-  using namespace std::chrono;
-
-  size_t first;
-
-  for(first = 0; first<_timeline.segments.size(); ++first) {
-    if(_timeline.segments[first].size() > 0) { 
-      break; 
-    }
-  }
-
-  os << '[';
-
-  for(size_t w=first; w<_timeline.segments.size(); w++) {
-
-    if(w != first && _timeline.segments[w].size() > 0) {
-      os << ',';
-    }
-
-    for(size_t i=0; i<_timeline.segments[w].size(); i++) {
-
-      os << '{'<< "\"cat\":\"ChromeObserver\",";
-
-      // name field
-      os << "\"name\":\"";
-      if(_timeline.segments[w][i].name.empty()) {
-        os << w << '_' << i;
-      }
-      else {
-        os << _timeline.segments[w][i].name;
-      }
-      os << "\",";
-      
-      // segment field
-      os << "\"ph\":\"X\","
-         << "\"pid\":1,"
-         << "\"tid\":" << w << ','
-         << "\"ts\":" << duration_cast<microseconds>(
-                           _timeline.segments[w][i].beg - _timeline.origin
-                         ).count() << ','
-         << "\"dur\":" << duration_cast<microseconds>(
-                           _timeline.segments[w][i].end - _timeline.segments[w][i].beg
-                         ).count();
-
-      if(i != _timeline.segments[w].size() - 1) {
-        os << "},";
-      }
-      else {
-        os << '}';
-      }
-    }
-  }
-  os << "]\n";
-}
-
-// Function: dump
-inline std::string ChromeObserver::dump() const {
-  std::ostringstream oss;
-  dump(oss);
-  return oss.str();
-}
-
-// Function: num_tasks
-inline size_t ChromeObserver::num_tasks() const {
-  return std::accumulate(
-    _timeline.segments.begin(), _timeline.segments.end(), size_t{0}, 
-    [](size_t sum, const auto& exe){ 
-      return sum + exe.size(); 
-    }
-  );
-}
 
 // ----------------------------------------------------------------------------
 // TFProfObserver definition
@@ -515,20 +211,19 @@ class TFProfObserver : public ObserverInterface {
     size_t wall_us         {0};
     size_t num_all_workers {0};
 
-    // average worker utilization = mean of (busy_us / wall_us) across workers
-    // that ran at least one task. workers with no tasks are excluded since they
-    // were never assigned work. result is in [0, 100]% — a single number that
-    // directly answers "how well did I use my thread pool?"
+    // avg_utilization = sum of (busy_us / wall_us) across ALL workers
+    // (including idle ones) divided by num_all_workers.
+    // this answers "how well did I use my thread pool overall?" — a worker
+    // that ran no tasks contributes 0% to the sum, correctly dragging the
+    // average down when the pool was underutilized.
+    // result is in [0, 100]%.
     double avg_utilization() const {
-      if(wall_us == 0 || wsum.empty()) return 0.0;
+      if(wall_us == 0 || num_all_workers == 0) return 0.0;
       double sum = 0.0;
-      size_t active = 0;
       for(const auto& w : wsum) {
-        if(w.count == 0) continue;
         sum += static_cast<double>(w.busy_us) / static_cast<double>(wall_us) * 100.0;
-        ++active;
       }
-      return active ? sum / active : 0.0;
+      return sum / static_cast<double>(num_all_workers);
     }
 
     void dump_overview  (std::ostream&, size_t uid, size_t num_tasks) const;
@@ -635,11 +330,11 @@ inline void TFProfObserver::Summary::dump_overview(
 
   os << std::string(80, '=') << '\n';
   os << std::fixed << std::setprecision(2);
-  os << " Observer "      << uid
-     << " | Wall: "       << wall_val << " " << wall_unit
-     << " | Workers: "    << num_all_workers
-     << " | Tasks: "      << num_tasks
-     << " | Utilization: "<< avg_utilization() << "%\n";
+  os << " Observer "         << uid
+     << " | Wall: "          << wall_val << " " << wall_unit
+     << " | Workers: "       << num_all_workers
+     << " | Tasks: "         << num_tasks
+     << " | Avg Utilization: "<< avg_utilization() << "%\n";
   os << std::string(80, '=') << '\n';
 }
 
@@ -751,7 +446,8 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
        << '\n';
   }
 
-  // totals row
+  // totals row: Util% shows avg across ALL num_all_workers (including idle),
+  // consistent with the header's "Avg Utilization" figure
   _tf_rule(os, row_w);
   size_t total_count = 0;
   size_t total_busy  = 0;
@@ -769,7 +465,7 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
      << std::setw(min_w+2)   << ""
      << std::setw(max_w+2)   << ""
      << std::setw(util_w+2)  << std::fixed << std::setprecision(1)
-                             << avg_utilization() << "%"
+                             << avg_utilization() << "% (avg)"
      << '\n';
 }
 
@@ -1079,6 +775,13 @@ inline void TFProfObserver::summary(std::ostream& os) const {
 
   // --- pass 1: scan all segments to compute time range, task stats,
   //             per-worker busy time, and global task type breakdown ---
+  //
+  // per-worker busy time is computed via a merge-intervals line sweep across
+  // ALL nesting levels to correctly handle recursive tasking. a worker that
+  // spawns subflow children has overlapping segments across levels — simply
+  // summing durations would double-count the overlapping wall-clock time.
+  // the sweep merges [beg, end] intervals per worker into non-overlapping
+  // spans and sums only those, giving true wall-clock busy time in [0, wall_us].
   std::optional<observer_stamp_t> view_beg, view_end;
 
   // per-worker accumulators indexed by worker id; sized to num_workers
@@ -1087,21 +790,33 @@ inline void TFProfObserver::summary(std::ostream& os) const {
     wmap[w].id = w;
   }
 
+  // collect flat interval lists per worker (across all levels) for line sweep
+  // intervals stored as (beg_us, end_us) relative to timeline origin
+  // (we use the raw time points for sorting, convert to us after merging)
+  using Interval = std::pair<observer_stamp_t, observer_stamp_t>;
+  std::vector<std::vector<Interval>> worker_intervals(_timeline.segments.size());
+
   for(size_t w = 0; w < _timeline.segments.size(); ++w) {
     for(size_t l = 0; l < _timeline.segments[w].size(); ++l) {
       for(const auto& s : _timeline.segments[w][l]) {
 
-        // update global time bounds
+        // update global time bounds (all levels)
         view_beg = view_beg ? (std::min)(*view_beg, s.beg) : s.beg;
         view_end = view_end ? (std::max)(*view_end, s.end) : s.end;
 
         size_t t = duration_cast<microseconds>(s.end - s.beg).count();
 
-        // global per-type stats
+        // global per-type stats count all levels
         summary.tsum[static_cast<int>(s.type)].update(t);
 
-        // per-worker stats (collapsed across levels)
-        wmap[w].update(t);
+        // update count/min/max on WorkerSummary (these are task-level stats,
+        // not time stats, so all levels count)
+        wmap[w].count += 1;
+        wmap[w].min_span = (wmap[w].count == 1) ? t : (std::min)(wmap[w].min_span, t);
+        wmap[w].max_span = (wmap[w].count == 1) ? t : (std::max)(wmap[w].max_span, t);
+
+        // collect interval for line sweep
+        worker_intervals[w].emplace_back(s.beg, s.end);
       }
     }
   }
@@ -1113,14 +828,38 @@ inline void TFProfObserver::summary(std::ostream& os) const {
   }
 
   summary.wall_us = duration_cast<microseconds>(*view_end - *view_beg).count();
-  if(summary.wall_us == 0) summary.wall_us = 1;  // guard against zero wall time
+  if(summary.wall_us == 0) summary.wall_us = 1;
 
-  // compute idle time for each worker that ran at least one task,
-  // and accumulate global busy total
-  for(size_t w = 0; w < wmap.size(); ++w) {
-    if(wmap[w].count == 0) continue;
-    wmap[w].idle_us = (summary.wall_us > wmap[w].busy_us)
-                    ? (summary.wall_us - wmap[w].busy_us) : 0;
+  // line sweep per worker: sort intervals by start time, merge overlaps,
+  // sum merged span durations to get true wall-clock busy time
+  for(size_t w = 0; w < worker_intervals.size(); ++w) {
+    auto& ivs = worker_intervals[w];
+    if(ivs.empty()) continue;
+
+    // sort by beg
+    std::sort(ivs.begin(), ivs.end(),
+      [](const Interval& a, const Interval& b){ return a.first < b.first; });
+
+    size_t busy_us = 0;
+    auto cur_beg = ivs[0].first;
+    auto cur_end = ivs[0].second;
+
+    for(size_t i = 1; i < ivs.size(); ++i) {
+      if(ivs[i].first <= cur_end) {
+        // overlapping or adjacent: extend current merged interval
+        cur_end = (std::max)(cur_end, ivs[i].second);
+      }
+      else {
+        // gap: emit completed merged interval and start a new one
+        busy_us += duration_cast<microseconds>(cur_end - cur_beg).count();
+        cur_beg = ivs[i].first;
+        cur_end = ivs[i].second;
+      }
+    }
+    busy_us += duration_cast<microseconds>(cur_end - cur_beg).count();  // emit last
+
+    wmap[w].busy_us = busy_us;
+    wmap[w].idle_us = (summary.wall_us > busy_us) ? (summary.wall_us - busy_us) : 0;
     summary.wsum.push_back(wmap[w]);
   }
 

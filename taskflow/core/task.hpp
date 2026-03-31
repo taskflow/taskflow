@@ -502,20 +502,25 @@ class Task {
   Task& composed_of(T& object);
   
   /**
-  @brief creates an adopted module task from the given graph with move semantics
-
-  @param graph the given graph to adopt
-
-  @return @c *this
+  @brief creates a module task from a graph by taking over its ownership
   
-  The example below creates an adopted module task from a moved graph:
+  @param graph the graph to adopt (moved into the task)
+  
+  @return a Task handle to the adopted module task
+  
+  Unlike tf::Task::composed_of, which references an externally-owned
+  tf::Taskflow, @c adopt transfers ownership of the given tf::Graph into
+  the task. The graph's lifetime is managed by the executor once adopted,
+  and the caller has no access to the moved-from graph afterward.
   
   @code{.cpp}
+  tf::Taskflow taskflow;
   tf::Graph g;
-  tf::FlowBuilder fb(g);
-  fb.emplace([](){ std::cout << "task inside the adopted graph\n"; });
-  task.adopt(std::move(g));
+  tf::FlowBuilder{g}.emplace([]{ std::cout << "task in adopted graph\n"; });
+  taskflow.adopt(std::move(g)).name("adopted");
   @endcode
+  
+  @note Please refer to @ref ComposableTasking for details.
   */
   Task& adopt(tf::Graph&& graph);
 

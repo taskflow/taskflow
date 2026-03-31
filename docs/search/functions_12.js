@@ -22,6 +22,5 @@ var searchData=
   ['step_5fsize_19',['step_size',['../classtf_1_1IndexRange.html#aafd4f2d04614e550649cd9b7912e0bf1',1,'tf::IndexRange::step_size() const'],['../classtf_1_1IndexRange.html#aa63f63345d773c9dd98e368579882f29',1,'tf::IndexRange::step_size(T new_step_size)']]],
   ['stop_20',['stop',['../classtf_1_1Pipeflow.html#a830b7f204cb87fff17e8d424918d9453',1,'tf::Pipeflow']]],
   ['succeed_21',['succeed',['../classtf_1_1Task.html#a331b1b726555072e7c7d10941257f664',1,'tf::Task::succeed()'],['../classtf_1_1cudaTask.html#a4a9ca1a34bac47e4c9b04eb4fb2f7775',1,'tf::cudaTask::succeed()']]],
-  ['summary_22',['summary',['../classtf_1_1TFProfObserver.html#a6102cedbaf2e40f8b8ff916827297198',1,'tf::TFProfObserver::summary(std::ostream &amp;ostream) const'],['../classtf_1_1TFProfObserver.html#a6f12a927a328bd594cf6c3c3a6bfe992',1,'tf::TFProfObserver::summary() const']]],
-  ['synchronize_23',['synchronize',['../classtf_1_1cudaStreamBase.html#a1e5140505629afd4b3422399f8080cb0',1,'tf::cudaStreamBase']]]
+  ['synchronize_22',['synchronize',['../classtf_1_1cudaStreamBase.html#a1e5140505629afd4b3422399f8080cb0',1,'tf::cudaStreamBase']]]
 ];

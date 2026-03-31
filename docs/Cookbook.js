@@ -51,7 +51,8 @@ var Cookbook =
     [ "Composable Tasking", "ComposableTasking.html", [
       [ "Compose a Taskflow", "ComposableTasking.html#ComposeATaskflow", null ],
       [ "Create a Module Task from a Taskflow", "ComposableTasking.html#CreateAModuleTaskFromATaskflow", null ],
-      [ "Create a Custom Composable Graph", "ComposableTasking.html#CreateACustomComposableGraph", null ]
+      [ "Create a Custom Composable Graph", "ComposableTasking.html#CreateACustomComposableGraph", null ],
+      [ "Create an Adopted Module Task", "ComposableTasking.html#CreateAnAdoptedModuleTask", null ]
     ] ],
     [ "Asynchronous Tasking", "AsyncTasking.html", [
       [ "Launch Asynchronous Tasks from an Executor", "AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor", null ],

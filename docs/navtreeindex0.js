@@ -21,6 +21,7 @@ var NAVTREEINDEX0 =
 "ComposableTasking.html#ComposeATaskflow":[3,5,0],
 "ComposableTasking.html#CreateACustomComposableGraph":[3,5,2],
 "ComposableTasking.html#CreateAModuleTaskFromATaskflow":[3,5,1],
+"ComposableTasking.html#CreateAnAdoptedModuleTask":[3,5,3],
 "ConditionalTasking.html":[3,4],
 "ConditionalTasking.html#AvoidCommonPitfalls":[3,4,2],
 "ConditionalTasking.html#CreateAConditionTask":[3,4,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "TaskParallelPipeline.html#UnderstandPipelineScheduling":[4,8,1],
 "TaskflowProcessingPipeline.html":[5,10],
 "TaskflowProcessingPipeline.html#CreateATaskflowProcessingPipeline":[5,10,1],
-"TaskflowProcessingPipeline.html#FormulateTheTaskflowProcessingPipelineProblem":[5,10,0],
-"TaskflowProcessingPipeline.html#TaskflowPipelineDefineTaskflows":[5,10,1,0]
+"TaskflowProcessingPipeline.html#FormulateTheTaskflowProcessingPipelineProblem":[5,10,0]
 };

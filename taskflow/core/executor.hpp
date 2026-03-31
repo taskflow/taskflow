@@ -1,6 +1,6 @@
 #pragma once
 
-#include "observer.hpp"
+#include "../observer/tfprof.hpp"
 #include "taskflow.hpp"
 #include "async_task.hpp"
 
@@ -1169,6 +1169,9 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   template <typename I>
   void _bulk_spill(I, size_t);
+  
+  template <typename I>
+  void _bulk_spill_round_robin(I, size_t);
 
   template <size_t N>
   void _bulk_update_cache(Worker&, Node*&, Node*, std::array<Node*, N>&, size_t&);
@@ -1363,11 +1366,16 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
 
 // Function: _explore_task
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
-  
-  // Early pruning does not always give consistent performance gain.
-  //if(_num_topologies.load(std::memory_order_acquire) == 0) {
-  //  return !(w._done.test(std::memory_order_relaxed));
-  //}
+
+  // Fast path: if no topologies are live, all queues are guaranteed empty
+  // by the executor's invariant (num_topologies reaches zero only after all
+  // nodes have been scheduled and their queues flushed). Skip the entire
+  // steal loop and return immediately so the caller enters _wait_for_task
+  // to sleep. relaxed ordering is sufficient — this is a hint, and any
+  // missed update is caught safely by the 2PC guard in _wait_for_task.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    return true;
+  }
 
   //assert(!t);
   const size_t MAX_VICTIM = num_queues();
@@ -1433,6 +1441,21 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
 
   // Entering the 2PC guard as all queues are likely empty after many stealing attempts.
   _notifier.prepare_wait(w._id);
+
+  // Fast path: if no topologies are live, all queues are guaranteed empty.
+  // Skip the O(N) buffer and worker queue scans and go directly to sleep.
+  // This is safe because prepare_wait has already been called — any notify
+  // that arrives after this check but before commit_wait will be caught by
+  // the 2PC guarantee of the notifier.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    // still check done flag before committing to sleep
+    if(w._done.test(std::memory_order_relaxed)) {
+      _notifier.cancel_wait(w._id);
+      return false;
+    }
+    _notifier.commit_wait(w._id);
+    goto explore_task;
+  }
   
   // Condition #1: buffers should be empty
   for(size_t b=0; b<_buffers.size(); ++b) {
@@ -1512,16 +1535,41 @@ inline void Executor::_spill(Node* item) {
   _buffers[b].queue.push(item);
 }
 
-// Procedure: _bulk_spill
+// Procedure: _bulk_spill (single batch to one buffer)
+// Uses Knuth multiplicative hash on the first pointer to select a buffer,
+// providing better bit diffusion than the shift-based approach, especially
+// when the allocator returns pointers with regular low-bit patterns.
 template <typename I>
 void Executor::_bulk_spill(I first, size_t N) {
-  // assert(N != 0);
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
-  // contention caused by hashing to the same slot.
-  auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
-  auto b = (p ^ (N << 6)) % _buffers.size();
+  //assert(N != 0);
+  auto b = ((reinterpret_cast<uintptr_t>(*first) * 2654435761ULL) >> 32) % _buffers.size();
   std::scoped_lock lock(_buffers[b].mutex);
   _buffers[b].queue.bulk_push(first, N);
+}
+
+// Procedure: _bulk_spill
+// Distributes a batch of N spilled nodes across all buffers in round-robin
+// order starting from a hash of the first node's pointer. Each buffer's lock
+// is held only for its chunk, reducing contention compared to sending the
+// entire batch to a single buffer.
+template <typename I>
+void Executor::_bulk_spill_round_robin(I first, size_t N) {
+
+  // assert(N != 0);
+  const size_t B     = _buffers.size();
+  const size_t start = ((reinterpret_cast<uintptr_t>(*first) * 2654435761ULL) >> 32) % B;
+  const size_t per_buf = (N + B - 1) / B;
+  size_t remaining = N;
+  for(size_t i = 0; i < B && remaining > 0; ++i) {
+    size_t b     = (start + i) % B;
+    size_t chunk = std::min(per_buf, remaining);
+    {
+      std::scoped_lock lock(_buffers[b].mutex);
+      _buffers[b].queue.bulk_push(first, chunk);
+    }
+    // terminates early via remaining > 0, so we don't acquire unnecessary locks on empty chunks.
+    remaining -= chunk;
+  }
 }
 
 // Procedure: _schedule

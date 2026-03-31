@@ -36,7 +36,7 @@ var searchData=
   ['modify_20worker_20property_33',['Modify Worker Property',['../ExecuteTaskflow.html#ModifyWorkerProperty',1,'']]],
   ['module_34',['MODULE',['../namespacetf.html#a1355048578785a80414707ff308b395aa1cf5e1f5569acda3c4a88a91c5130a69',1,'tf']]],
   ['module_20algorithm_35',['Module Algorithm',['../ModuleAlgorithm.html',1,'Algorithms']]],
-  ['module_20task_36',['Module Task',['../DataParallelPipeline.html#CreateADataPipelineModuleTask',1,'Create a Data Pipeline Module Task'],['../ScalableTaskParallelPipeline.html#CreateAScalablePipelineModuleTask',1,'Create a Scalable Pipeline Module Task'],['../TaskParallelPipeline.html#CreateATaskParallelPipelineModuleTask',1,'Create a Task-parallel Pipeline Module Task'],['../ModuleAlgorithm.html#WhatIsAModuleTask',1,'What is a Module Task']]],
+  ['module_20task_36',['Module Task',['../DataParallelPipeline.html#CreateADataPipelineModuleTask',1,'Create a Data Pipeline Module Task'],['../ScalableTaskParallelPipeline.html#CreateAScalablePipelineModuleTask',1,'Create a Scalable Pipeline Module Task'],['../TaskParallelPipeline.html#CreateATaskParallelPipelineModuleTask',1,'Create a Task-parallel Pipeline Module Task'],['../ComposableTasking.html#CreateAnAdoptedModuleTask',1,'Create an Adopted Module Task'],['../ModuleAlgorithm.html#WhatIsAModuleTask',1,'What is a Module Task']]],
   ['module_20task_20from_20a_20taskflow_37',['Create a Module Task from a Taskflow',['../ComposableTasking.html#CreateAModuleTaskFromATaskflow',1,'']]],
   ['module_20task_20over_20a_20custom_20graph_38',['Create a Module Task over a Custom Graph',['../ModuleAlgorithm.html#CreateAModuleTaskOverACustomGraph',1,'']]],
   ['motivation_39',['Project Motivation',['../ProjectMotivation.html',1,'Cookbook']]],

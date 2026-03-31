@@ -12,7 +12,7 @@ var searchData=
   ['recursion_20optimization_9',['Tail Recursion Optimization',['../ExamplesFibonacciNumber.html#TailRecursionOptimization',1,'']]],
   ['recursive_20asynchronous_20tasks_20from_20a_20runtime_20task_10',['Create Recursive Asynchronous Tasks from a Runtime Task',['../RuntimeTasking.html#CreateRecursiveAsynchronousTasksFromARuntimeTask',1,'']]],
   ['recursive_20fibonacci_20parallelism_20using_20runtime_20tasking_11',['Recursive Fibonacci Parallelism using Runtime Tasking',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking',1,'']]],
-  ['recursive_20fibonacci_20parallelism_20using_20task_20group_12',['Recursive Fibonacci Parallelism using %Task Group',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'']]],
+  ['recursive_20fibonacci_20parallelism_20using_20task_20group_12',['Recursive Fibonacci Parallelism using Task Group',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'']]],
   ['recursive_20task_20parallelism_13',['Implement Recursive Task Parallelism',['../TaskGroup.html#ImplementRecursiveTaskParallelismUsingTaskGroup',1,'']]],
   ['recursively_20from_20a_20runtime_14',['Launch Asynchronous Tasks Recursively from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime',1,'']]],
   ['reduce_15',['reduce',['../classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7',1,'tf::FlowBuilder']]],
