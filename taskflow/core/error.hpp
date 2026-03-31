@@ -50,8 +50,16 @@ struct ESTATE {
   constexpr static underlying_type LOCKED              = 0x01000000;
   constexpr static underlying_type FINISHED            = 0x02000000;
   
-  // mask to isolate state bits - non-state bits store # weak dependents
+  // mask to isolate the 8 state bits in the upper byte
   constexpr static underlying_type MASK                = 0xFF000000;
+
+  // lower 24 bits: shared reference count for AsyncTask (dependent-async only).
+  // supports up to 2^24 = 16,777,216 concurrent owners, which is safe in practice.
+  // arithmetic on these bits never interferes with the state bits above since
+  // normal refcount operations (fetch_add/fetch_sub by REFCOUNT_ONE) cannot carry
+  // into bit 24 as long as the count stays below 2^24.
+  constexpr static underlying_type REFCOUNT_MASK       = 0x00FFFFFF;
+  constexpr static underlying_type REFCOUNT_ONE        = 0x00000001;
 };
 
 using estate_t = ESTATE::underlying_type;
@@ -91,5 +99,3 @@ void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
       _process_exception(worker, node);            \
     }
 #endif
-
-

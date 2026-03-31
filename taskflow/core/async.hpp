@@ -241,7 +241,7 @@ auto Executor::_silent_dependent_async(
 ) {
   size_t num_predecessors = std::distance(first, last);
   return _schedule_dependent_async_task(first, last, num_predecessors,
-    NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
+    NSTATE::NONE, ESTATE::REFCOUNT_ONE, std::forward<P>(params), tpg, parent, num_predecessors,
     std::in_place_type_t<Node::DependentAsync>{}, std::forward<F>(func)
   );
 }
@@ -296,7 +296,7 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
     auto fu{p.get_future()};
 
     return std::make_pair(_schedule_dependent_async_task(first, last, num_predecessors,
-      NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED, std::forward<P>(params), tpg, parent, num_predecessors,
+      NSTATE::NONE, ESTATE::EXPLICITLY_ANCHORED | ESTATE::REFCOUNT_ONE, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=MoC{std::move(p)}, f=std::forward<F>(func)] (tf::Runtime& rt, bool reentered) mutable { 
         if(!reentered) {
@@ -317,7 +317,7 @@ auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology*
     auto fu{p.get_future()};
 
     return std::make_pair(_schedule_dependent_async_task(first, last, num_predecessors,
-      NSTATE::NONE, ESTATE::NONE, std::forward<P>(params), tpg, parent, num_predecessors,
+      NSTATE::NONE, ESTATE::REFCOUNT_ONE, std::forward<P>(params), tpg, parent, num_predecessors,
       std::in_place_type_t<Node::DependentAsync>{},
       [p=make_moc(std::move(p))] () mutable { p.object(); }
     ), std::move(fu));
@@ -363,7 +363,6 @@ inline void Executor::_process_dependent_async(
 // Procedure: _tear_down_dependent_async
 inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Node*& cache) {
 
-  auto handle = std::get_if<Node::DependentAsync>(&(node->_handle));
   auto target = node->_estate.load(std::memory_order_acquire);
 
   while(true) {
@@ -416,8 +415,11 @@ inline void Executor::_tear_down_dependent_async(Worker& worker, Node* node, Nod
     }
   }
   
-  // now the executor no longer needs to retain ownership
-  if(handle->use_count.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+  // now the executor no longer needs to retain ownership —
+  // decrement the refcount packed in the lower 24 bits of _estate.
+  // if it reaches zero, no AsyncTask handle remains and we can recycle.
+  if((node->_estate.fetch_sub(ESTATE::REFCOUNT_ONE, std::memory_order_acq_rel) 
+      & ESTATE::REFCOUNT_MASK) == ESTATE::REFCOUNT_ONE) {
     recycle(node);
   }
 }

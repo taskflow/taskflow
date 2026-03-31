@@ -201,7 +201,7 @@ class&#160;</td><td class="memItemRight"><b>Executor</b></td></tr>
 <p>An empty dependent-async task is not associated with any task created from the executor.</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> task;</div>
 <div class="line">assert(task.<a class="code hl_function" href="#ae42c70dc0c5edc6d58f47b346125fca3">empty</a>());</div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_ae42c70dc0c5edc6d58f47b346125fca3"><div class="ttname"><a href="#ae42c70dc0c5edc6d58f47b346125fca3">tf::AsyncTask::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">checks if this dependent-async task is associated with any task</div><div class="ttdef"><b>Definition</b> async_task.hpp:264</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_ae42c70dc0c5edc6d58f47b346125fca3"><div class="ttname"><a href="#ae42c70dc0c5edc6d58f47b346125fca3">tf::AsyncTask::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">checks if this dependent-async task is associated with any task</div><div class="ttdef"><b>Definition</b> async_task.hpp:268</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -238,7 +238,7 @@ class&#160;</td><td class="memItemRight"><b>Executor</b></td></tr>
 <div class="line"><span class="comment">// propagate the exception to the outer caller</span></div>
 <div class="line">assert(task.<a class="code hl_function" href="#aace6e20ee4cb6f82812cf498d0d9828f">exception_ptr</a>() != <span class="keyword">nullptr</span>);</div>
 <div class="line">std::rethrow_exception(task.<a class="code hl_function" href="#aace6e20ee4cb6f82812cf498d0d9828f">exception_ptr</a>());</div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_aace6e20ee4cb6f82812cf498d0d9828f"><div class="ttname"><a href="#aace6e20ee4cb6f82812cf498d0d9828f">tf::AsyncTask::exception_ptr</a></div><div class="ttdeci">std::exception_ptr exception_ptr() const</div><div class="ttdoc">retrieves the exception pointer of this task</div><div class="ttdef"><b>Definition</b> async_task.hpp:254</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_aace6e20ee4cb6f82812cf498d0d9828f"><div class="ttname"><a href="#aace6e20ee4cb6f82812cf498d0d9828f">tf::AsyncTask::exception_ptr</a></div><div class="ttdeci">std::exception_ptr exception_ptr() const</div><div class="ttdoc">retrieves the exception pointer of this task</div><div class="ttdef"><b>Definition</b> async_task.hpp:258</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -296,7 +296,7 @@ class&#160;</td><td class="memItemRight"><b>Executor</b></td></tr>
 <p>obtains the hashed value of this dependent-async task </p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> task = executor.silent_dependent_async([](){});</div>
 <div class="line">std::cout &lt;&lt; task.<a class="code hl_function" href="#a826a2ea909094f5a26c2df876de58056">hash_value</a>() &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_a826a2ea909094f5a26c2df876de58056"><div class="ttname"><a href="#a826a2ea909094f5a26c2df876de58056">tf::AsyncTask::hash_value</a></div><div class="ttdeci">size_t hash_value() const</div><div class="ttdoc">obtains the hashed value of this dependent-async task</div><div class="ttdef"><b>Definition</b> async_task.hpp:275</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_a826a2ea909094f5a26c2df876de58056"><div class="ttname"><a href="#a826a2ea909094f5a26c2df876de58056">tf::AsyncTask::hash_value</a></div><div class="ttdeci">size_t hash_value() const</div><div class="ttdoc">obtains the hashed value of this dependent-async task</div><div class="ttdef"><b>Definition</b> async_task.hpp:279</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -331,8 +331,8 @@ class&#160;</td><td class="memItemRight"><b>Executor</b></td></tr>
 <div class="line"> </div>
 <div class="line">task.<a class="code hl_function" href="#a7c12835577fbdc1bca3190cf92c78088">reset</a>();</div>
 <div class="line">assert(task.<a class="code hl_function" href="#aefeefa30d7cafdfbb7dc8def542e8e51">is_done</a>() == <span class="keyword">true</span>);</div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_a7c12835577fbdc1bca3190cf92c78088"><div class="ttname"><a href="#a7c12835577fbdc1bca3190cf92c78088">tf::AsyncTask::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">release the managed object of this</div><div class="ttdef"><b>Definition</b> async_task.hpp:269</div></div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_aefeefa30d7cafdfbb7dc8def542e8e51"><div class="ttname"><a href="#aefeefa30d7cafdfbb7dc8def542e8e51">tf::AsyncTask::is_done</a></div><div class="ttdeci">bool is_done() const</div><div class="ttdoc">checks if this dependent-async task finishes</div><div class="ttdef"><b>Definition</b> async_task.hpp:288</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_a7c12835577fbdc1bca3190cf92c78088"><div class="ttname"><a href="#a7c12835577fbdc1bca3190cf92c78088">tf::AsyncTask::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">release the managed object of this</div><div class="ttdef"><b>Definition</b> async_task.hpp:273</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_aefeefa30d7cafdfbb7dc8def542e8e51"><div class="ttname"><a href="#aefeefa30d7cafdfbb7dc8def542e8e51">tf::AsyncTask::is_done</a></div><div class="ttdeci">bool is_done() const</div><div class="ttdoc">checks if this dependent-async task finishes</div><div class="ttdef"><b>Definition</b> async_task.hpp:292</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -451,7 +451,7 @@ class&#160;</td><td class="memItemRight"><b>Executor</b></td></tr>
 <p>In a multithreaded environment, <span class="tt"><a class="el" href="#a6a4a54030f57d1ef05c04ae01825165d" title="returns the number of shared owners that are currently managing this dependent-async task">use_count</a></span> atomically retrieves (with <span class="tt">memory_order_relaxed</span> load) the number of <a class="el" href="classtf_1_1AsyncTask.html" title="class to hold a dependent asynchronous task with shared ownership">tf::AsyncTask</a> instances that manage the current task.</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a> task;</div>
 <div class="line">assert(task.<a class="code hl_function" href="#a6a4a54030f57d1ef05c04ae01825165d">use_count</a>() == 0);</div>
-<div class="ttc" id="aclasstf_1_1AsyncTask_html_a6a4a54030f57d1ef05c04ae01825165d"><div class="ttname"><a href="#a6a4a54030f57d1ef05c04ae01825165d">tf::AsyncTask::use_count</a></div><div class="ttdeci">size_t use_count() const</div><div class="ttdoc">returns the number of shared owners that are currently managing this dependent-async task</div><div class="ttdef"><b>Definition</b> async_task.hpp:280</div></div>
+<div class="ttc" id="aclasstf_1_1AsyncTask_html_a6a4a54030f57d1ef05c04ae01825165d"><div class="ttname"><a href="#a6a4a54030f57d1ef05c04ae01825165d">tf::AsyncTask::use_count</a></div><div class="ttdeci">size_t use_count() const</div><div class="ttdoc">returns the number of shared owners that are currently managing this dependent-async task</div><div class="ttdef"><b>Definition</b> async_task.hpp:284</div></div>
 </div><!-- fragment --> 
 </div>
 </div>

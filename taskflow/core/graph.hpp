@@ -430,7 +430,9 @@ class Node : public NodeBase {
       std::function<void(tf::Runtime&, bool)>  // async
     > work;
    
-    std::atomic<size_t> use_count {1};
+    // use_count is packed into the lower 24 bits of NodeBase::_estate
+    // (ESTATE::REFCOUNT_MASK) to avoid a separate atomic and a std::get_if
+    // call on every AsyncTask copy/move/destroy. see ESTATE::REFCOUNT_ONE.
   };
 
   using handle_t = std::variant<
