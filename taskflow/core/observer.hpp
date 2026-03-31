@@ -513,12 +513,22 @@ class TFProfObserver : public ObserverInterface {
     std::vector<size_t>                          task_histogram;    // sized at runtime to num_bins
 
     size_t wall_us         {0};
-    size_t total_busy      {0};
     size_t num_all_workers {0};
 
-    double efficiency() const {
-      size_t capacity = wall_us * num_all_workers;
-      return capacity ? static_cast<double>(total_busy) / capacity * 100.0 : 0.0;
+    // average worker utilization = mean of (busy_us / wall_us) across workers
+    // that ran at least one task. workers with no tasks are excluded since they
+    // were never assigned work. result is in [0, 100]% — a single number that
+    // directly answers "how well did I use my thread pool?"
+    double avg_utilization() const {
+      if(wall_us == 0 || wsum.empty()) return 0.0;
+      double sum = 0.0;
+      size_t active = 0;
+      for(const auto& w : wsum) {
+        if(w.count == 0) continue;
+        sum += static_cast<double>(w.busy_us) / static_cast<double>(wall_us) * 100.0;
+        ++active;
+      }
+      return active ? sum / active : 0.0;
     }
 
     void dump_overview  (std::ostream&, size_t uid, size_t num_tasks) const;
@@ -615,29 +625,21 @@ static inline double _tf_time_scale(size_t us, const char*& unit) {
 
 // Procedure: dump_overview
 // Emits the single-line header with wall time, worker count, task count,
-// total busy time, scheduling overhead, and parallel efficiency.
-// Time values are auto-scaled to the most readable unit (us/ms/s/min).
+// and average worker utilization — the single number that captures how
+// well the thread pool was used (mean of busy/wall across active workers).
 inline void TFProfObserver::Summary::dump_overview(
   std::ostream& os, size_t uid, size_t num_tasks
 ) const {
-  // overhead = wall time not accounted for by tasks, averaged per worker
-  size_t overhead_us = (num_all_workers > 0 && wall_us > 0)
-    ? wall_us - (total_busy / num_all_workers) : 0;
-
-  const char* wall_unit;    double wall_val    = _tf_time_scale(wall_us,    wall_unit);
-  const char* busy_unit;    double busy_val    = _tf_time_scale(total_busy, busy_unit);
-  const char* over_unit;    double over_val    = _tf_time_scale(overhead_us,over_unit);
+  const char* wall_unit;
+  double wall_val = _tf_time_scale(wall_us, wall_unit);
 
   os << std::string(80, '=') << '\n';
   os << std::fixed << std::setprecision(2);
-  os << " Observer "    << uid
-     << " | Wall: "     << wall_val    << " " << wall_unit
-     << " | Workers: "  << num_all_workers
-     << " | Tasks: "    << num_tasks
-     << " | Busy: "     << busy_val    << " " << busy_unit
-     << " | Overhead: " << over_val    << " " << over_unit
-     << " | Efficiency: ";
-  os << std::fixed << std::setprecision(1) << efficiency() << "%\n";
+  os << " Observer "      << uid
+     << " | Wall: "       << wall_val << " " << wall_unit
+     << " | Workers: "    << num_all_workers
+     << " | Tasks: "      << num_tasks
+     << " | Utilization: "<< avg_utilization() << "%\n";
   os << std::string(80, '=') << '\n';
 }
 
@@ -752,20 +754,22 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
   // totals row
   _tf_rule(os, row_w);
   size_t total_count = 0;
+  size_t total_busy  = 0;
   size_t total_idle  = 0;
   for(const auto& w : wsum) {
     total_count += w.count;
+    total_busy  += w.busy_us;
     total_idle  += w.idle_us;
   }
   os << std::setw(w_w+2)     << "Total"
      << std::setw(count_w+2) << total_count
      << std::setw(busy_w+2)  << total_busy
      << std::setw(idle_w+2)  << total_idle
-     << std::setw(avg_w+2)   << ""   // avg across workers not meaningful here
+     << std::setw(avg_w+2)   << ""
      << std::setw(min_w+2)   << ""
      << std::setw(max_w+2)   << ""
      << std::setw(util_w+2)  << std::fixed << std::setprecision(1)
-                             << efficiency() << "%"
+                             << avg_utilization() << "%"
      << '\n';
 }
 
@@ -774,11 +778,17 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
 //   title    : label printed in the section header
 //   hist     : histogram data (num_bins entries)
 //   num_bins : number of bins (runtime value)
-//   y_max    : value mapping to the top of the chart
+//   y_max    : the true maximum value (e.g. num_workers or peak task count)
 //   bin_us   : time width of each bin in microseconds
 //   col_w    : display column width per bin
 //   bar_width: num_bins * col_w
 //   wall_us  : total wall clock duration in microseconds
+//
+// Y axis is capped at MAX_Y_ROWS terminal rows regardless of y_max so that
+// large workloads (e.g. millions of tasks) don't flood the terminal.
+// Each display row represents a band of ceil(y_max / MAX_Y_ROWS) units;
+// a bin fills row r if its value >= the row's lower threshold.
+// Y axis labels show the upper bound of each row's band.
 static inline void _dump_one_histogram(
   std::ostream&              os,
   const char*                title,
@@ -790,7 +800,7 @@ static inline void _dump_one_histogram(
   size_t                     bar_width,
   size_t                     wall_us
 ) {
-  static constexpr size_t Y_PREFIX = 6;
+  static constexpr size_t MAX_Y_ROWS = 20;
 
   const char* wall_unit;
   const char* bin_unit;
@@ -802,24 +812,42 @@ static inline void _dump_one_histogram(
      << "  (wall: 0.." << wall_val << " " << wall_unit << ","
      << " " << num_bins << " bins)\n";
 
-  // pre-build filled and empty column strings
+  // scale Y: cap at MAX_Y_ROWS display rows, each covering y_step units
+  size_t num_rows = (std::min)(y_max, MAX_Y_ROWS);
+  if(num_rows == 0) num_rows = 1;
+  size_t y_step = (y_max + num_rows - 1) / num_rows;
+  if(y_step == 0) y_step = 1;
+
+  // Y label width driven by y_max so labels never overflow their column
+  size_t y_label_w = (std::max)(std::to_string(y_max).size(), size_t(4));
+  size_t y_prefix  = y_label_w + 2;  // label + " |"
+
+  // pre-build filled and empty column strings.
+  // U+2588 FULL BLOCK encoded as raw UTF-8 bytes \xe2\x96\x88 to avoid
+  // MSVC warning C4566 which triggers when the source code page (1252)
+  // cannot represent the character named by a universal-character-name.
   std::string filled_col(1, ' ');
   for(size_t i = 0; i < col_w - 1; ++i) {
-    filled_col += "\u2588";
+    filled_col += "\xe2\x96\x88";  // UTF-8 encoding of U+2588 FULL BLOCK
   }
   std::string empty_col(col_w, ' ');
 
-  // bar rows from y_max down to 1
-  for(size_t row = y_max; row >= 1; --row) {
-    os << std::setw(4) << row << " |";
+  // bar rows from top (num_rows) down to 1.
+  // row r represents the band [(r-1)*y_step+1 .. r*y_step].
+  // a bin fills this row if hist[b] >= (r-1)*y_step + 1.
+  // label shows r*y_step (capped at y_max for the top row).
+  for(size_t r = num_rows; r >= 1; --r) {
+    size_t threshold = (r - 1) * y_step + 1;
+    size_t label_val = (std::min)(r * y_step, y_max);
+    os << std::setw(static_cast<int>(y_label_w)) << label_val << " |";
     for(size_t b = 0; b < num_bins; ++b) {
-      os << (hist[b] >= row ? filled_col : empty_col);
+      os << (hist[b] >= threshold ? filled_col : empty_col);
     }
     os << '\n';
   }
 
-  // X axis rule
-  os << std::string(Y_PREFIX - 1, ' ') << '+'
+  // X axis rule, aligned to y_prefix
+  os << std::string(y_prefix - 1, ' ') << '+'
      << std::string(bar_width, '-') << '\n';
 
   // tick label row: scale each tick to the bin unit, stamp at b*col_w+1
@@ -846,7 +874,7 @@ static inline void _dump_one_histogram(
       labels[pos + i] = tick[i];
     }
   }
-  os << std::string(Y_PREFIX, ' ') << labels << "  (" << tick_unit << ")\n";
+  os << std::string(y_prefix, ' ') << labels << "  (" << tick_unit << ")\n";
 }
 
 // Procedure: dump_histogram
@@ -1093,7 +1121,6 @@ inline void TFProfObserver::summary(std::ostream& os) const {
     if(wmap[w].count == 0) continue;
     wmap[w].idle_us = (summary.wall_us > wmap[w].busy_us)
                     ? (summary.wall_us - wmap[w].busy_us) : 0;
-    summary.total_busy += wmap[w].busy_us;
     summary.wsum.push_back(wmap[w]);
   }
 
