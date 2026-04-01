@@ -61,7 +61,7 @@ include(CheckLanguage)
 include(GNUInstallDirs)
 
 # Check for correct settings for atomic library
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/atomic/CheckAtomic.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Atomic/CheckAtomic.cmake)
 
 # Compiler vendors
 ## g++ >= 11.0

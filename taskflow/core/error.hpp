@@ -46,7 +46,6 @@ struct ESTATE {
   constexpr static underlying_type EXPLICITLY_ANCHORED = 0x80000000;
   
   // Async task state
-  //constexpr static underlying_type UNFINISHED = 0x00000000;
   constexpr static underlying_type LOCKED              = 0x01000000;
   constexpr static underlying_type FINISHED            = 0x02000000;
   

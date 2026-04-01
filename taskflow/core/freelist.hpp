@@ -149,61 +149,6 @@ class AtomicIntrusiveStack {
   }
 
   /**
-  @brief pushes @c N nodes from array @c first onto the stack in a single
-         atomic operation
-
-  @tparam I   iterator or pointer type for the node array (e.g., @c Node**)
-  @param  first iterator to the first element of the array
-  @param  N     number of nodes to push; if zero the call is a no-op
-
-  Chains the @c N nodes through their link fields locally without atomics,
-  then CAS-splices the entire chain onto the head in one operation.
-  This amortizes CAS cost across @c N nodes. After the call, nodes appear
-  on the stack in array order with @c first[0] on top.
-
-  @code{.cpp}
-  struct Node { Node* next {nullptr}; int value {0}; };
-  tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
-
-  Node a{nullptr,1}, b{nullptr,2}, c{nullptr,3};
-  Node* arr[3] = {&a, &b, &c};
-  stack.bulk_push(arr, 3);
-  // stack order top-to-bottom: a -> b -> c
-  assert(stack.pop() == &a);
-  assert(stack.pop() == &b);
-  assert(stack.pop() == &c);
-  assert(stack.pop() == nullptr);
-  @endcode
-  */
-  template <typename I>
-  void bulk_push(I first, size_t N) {
-
-    if(N == 0) {
-      return;
-    }
-
-    // chain nodes locally through their link fields (no atomics needed)
-    for(size_t i = 0; i < N-1; ++i) {
-      _link(first[i]) = first[i+1];
-    }
-    _link(first[N-1]) = nullptr;
-
-    TaggedPointer curr = _head.load(std::memory_order_relaxed);
-
-    while(true) {
-      // splice: tail of new chain points to current head
-      _link(first[N-1]) = curr.ptr;
-      TaggedPointer next = {first[0], curr.tag + 1};
-
-      if(_head.compare_exchange_weak(curr, next,
-                                     std::memory_order_release,
-                                     std::memory_order_relaxed)) {
-        break;
-      }
-    }
-  }
-
-  /**
   @brief removes and returns the top node, or @c nullptr if the stack is empty
 
   @return pointer to the popped node, or @c nullptr if the stack was empty
@@ -226,7 +171,6 @@ class AtomicIntrusiveStack {
 
   Node* n = stack.pop();
   assert(n == &b);
-  assert(n->next == nullptr);  // link field is cleared after pop
 
   assert(stack.pop() == &a);
   assert(stack.pop() == nullptr);
@@ -242,7 +186,9 @@ class AtomicIntrusiveStack {
       if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_acquire)) {
-        _link(curr.ptr) = nullptr;  // clear link before returning to caller
+        // This can cause thread sanitizer to report error since this assignment
+        // has not guarantee to finish before the return while the other thread
+        // may call push that modify curr.ptr causing data race...
         return curr.ptr;
       }
       // on failure curr is reloaded
