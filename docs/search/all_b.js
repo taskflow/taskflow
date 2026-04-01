@@ -149,7 +149,8 @@ var searchData=
   ['asynctask_146',['AsyncTask',['../classtf_1_1AsyncTask.html',1,'tf::AsyncTask'],['../classtf_1_1AsyncTask.html#a68689c79c7d794a8be2e1c181c818001',1,'tf::AsyncTask::AsyncTask()=default'],['../classtf_1_1AsyncTask.html#a682bc679a773da5e45714f71c8137f70',1,'tf::AsyncTask::AsyncTask(const AsyncTask &amp;rhs)'],['../classtf_1_1AsyncTask.html#a5a31f85d2ee542f62e784d551ec78896',1,'tf::AsyncTask::AsyncTask(AsyncTask &amp;&amp;rhs)']]],
   ['atomic_5fmax_147',['atomic_max',['../namespacetf.html#a5002af34dc323ff28e87ae83203b2c36',1,'tf']]],
   ['atomic_5fmin_148',['atomic_min',['../namespacetf.html#a512ffa0d24a237b098f5de656b8bdcb0',1,'tf']]],
-  ['attach_20custom_20data_20to_20a_20task_20and_20access_20it_149',['Q12: How can I attach custom data to a task and access it?',['../FAQ.html#ProgrammingQuestions12',1,'']]],
-  ['attach_20user_20data_20to_20a_20task_150',['Attach User Data to a Task',['../StaticTasking.html#AttachUserDataToATask',1,'']]],
-  ['avoid_20common_20pitfalls_151',['Avoid Common Pitfalls',['../ConditionalTasking.html#AvoidCommonPitfalls',1,'']]]
+  ['atomicintrusivestack_149',['AtomicIntrusiveStack',['../classtf_1_1AtomicIntrusiveStack.html',1,'tf::AtomicIntrusiveStack&lt; T, MemberPtr &gt;'],['../classtf_1_1AtomicIntrusiveStack.html#a5ef944dae69fa7ccfc0f44674da622f2',1,'tf::AtomicIntrusiveStack::AtomicIntrusiveStack()']]],
+  ['attach_20custom_20data_20to_20a_20task_20and_20access_20it_150',['Q12: How can I attach custom data to a task and access it?',['../FAQ.html#ProgrammingQuestions12',1,'']]],
+  ['attach_20user_20data_20to_20a_20task_151',['Attach User Data to a Task',['../StaticTasking.html#AttachUserDataToATask',1,'']]],
+  ['avoid_20common_20pitfalls_152',['Avoid Common Pitfalls',['../ConditionalTasking.html#AvoidCommonPitfalls',1,'']]]
 ];

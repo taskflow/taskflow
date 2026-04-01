@@ -2,6 +2,7 @@ var annotated_dup =
 [
     [ "tf", "namespacetf.html", [
       [ "AsyncTask", "classtf_1_1AsyncTask.html", "classtf_1_1AsyncTask" ],
+      [ "AtomicIntrusiveStack", "classtf_1_1AtomicIntrusiveStack.html", "classtf_1_1AtomicIntrusiveStack" ],
       [ "BoundedWSQ", "classtf_1_1BoundedWSQ.html", "classtf_1_1BoundedWSQ" ],
       [ "CachelineAligned", "classtf_1_1CachelineAligned.html", "classtf_1_1CachelineAligned" ],
       [ "cudaEventBase", "classtf_1_1cudaEventBase.html", "classtf_1_1cudaEventBase" ],

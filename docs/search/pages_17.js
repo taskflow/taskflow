@@ -1,14 +1,4 @@
 var searchData=
 [
-  ['nested_20subflow_0',['Create a Nested Subflow',['../SubflowTasking.html#CreateANestedSubflow',1,'']]],
-  ['never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_1',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['new_20algorithms_2',['New Algorithms',['../release-3-0-0.html#release-3-0-0_new_algorithms',1,'']]],
-  ['new_20features_3',['New Features',['../release-4-1-0.html#release-4-1-0_new_features',1,'New Features'],['../release-4-0-0.html#release-4-0-0_new_features',1,'New Features'],['../release-3-11-0.html#release-3-11-0_new_features',1,'New Features'],['../release-3-10-0.html#release-3-10-0_new_features',1,'New Features'],['../release-3-9-0.html#release-3-9-0_new_features',1,'New Features'],['../release-3-8-0.html#release-3-8-0_new_features',1,'New Features'],['../release-3-7-0.html#release-3-7-0_new_features',1,'New Features'],['../release-3-6-0.html#release-3-6-0_new_features',1,'New Features'],['../release-3-5-0.html#release-3-5-0_new_features',1,'New Features'],['../release-3-4-0.html#release-3-4-0_new_features',1,'New Features'],['../release-3-3-0.html#release-3-3-0_new_features',1,'New Features'],['../release-3-2-0.html#release-3-2-0_new_features',1,'New Features'],['../release-3-1-0.html#release-3-1-0_new_features',1,'New Features'],['../release-3-0-0.html#release-3-0-0_new_features',1,'New Features'],['../release-2-7-0.html#release-2-7-0_new_features',1,'New Features'],['../release-2-6-0.html#release-2-6-0_new_features',1,'New Features'],['../release-2-5-0.html#release-2-5-0_new_features',1,'New Features'],['../release-2-4-0.html#release-2-4-0_new_features',1,'New Features'],['../release-2-3-0.html#release-2-3-0_new_features',1,'New Features'],['../release-2-2-0.html#release-2-2-0_new_features',1,'New Features'],['../release-2-1-0.html#release-2-1-0_new_features',1,'New Features'],['../release-2-0-0.html#release-2-0-0_new_features',1,'New Features']]],
-  ['nondeterministic_20control_20flow_4',['Nondeterministic Control Flow',['../ExamplesNondeterministicControlFlow.html',1,'Examples']]],
-  ['not_20task_5',['Create a Parallel Find-If-Not Task',['../ParallelFind.html#CreateAParallelFindIfNotTask',1,'']]],
-  ['notes_6',['Release Notes',['../Releases.html',1,'']]],
-  ['number_7',['Fibonacci Number',['../ExamplesFibonacciNumber.html',1,'Examples']]],
-  ['number_20of_20rounds_8',['Specify the Number of Rounds',['../BenchmarkTaskflow.html#SpecifyTheNumberOfRounds',1,'']]],
-  ['number_20of_20threads_9',['Specify the Number of Threads',['../BenchmarkTaskflow.html#SpecifyTheNumberOfThreads',1,'']]],
-  ['nvcc_10',['Link Objects Using nvcc',['../CompileTaskflowWithCUDA.html#CompileTaskflowWithCUDANaiveLinking',1,'']]]
+  ['of_20conduct_0',['Code of Conduct',['../codeofconduct.html',1,'Governance']]]
 ];

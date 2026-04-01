@@ -8,7 +8,7 @@ var searchData=
   ['data_20storage_5',['Understand Internal Data Storage',['../DataParallelPipeline.html#UnderstandInternalDataStorage',1,'']]],
   ['data_20to_20a_20task_6',['Attach User Data to a Task',['../StaticTasking.html#AttachUserDataToATask',1,'']]],
   ['data_20to_20a_20task_20and_20access_20it_7',['Q12: How can I attach custom data to a task and access it?',['../FAQ.html#ProgrammingQuestions12',1,'']]],
-  ['data_5ft_8',['data_t',['../classtf_1_1DataPipeline.html#a534794134344f86242836c4b0fb62e94',1,'tf::DataPipeline']]],
+  ['data_5ft_8',['data_t',['../classtf_1_1DataPipeline.html#ae3bce106a357267223e5a6c5884d57c4',1,'tf::DataPipeline']]],
   ['datapipe_9',['DataPipe',['../classtf_1_1DataPipe.html',1,'tf::DataPipe&lt; Input, Output, C &gt;'],['../classtf_1_1DataPipe.html#a8b7e8194874901eacfb5d3d2b72a2b85',1,'tf::DataPipe::DataPipe()=default'],['../classtf_1_1DataPipe.html#a542531895cb9363c6291e0ce9d126974',1,'tf::DataPipe::DataPipe(PipeType d, callable_t &amp;&amp;callable)']]],
   ['datapipeline_10',['DataPipeline',['../classtf_1_1DataPipeline.html',1,'tf::DataPipeline&lt; Ps &gt;'],['../classtf_1_1DataPipeline.html#a1559f218ca91b41d6c871a88183a04e5',1,'tf::DataPipeline::DataPipeline(size_t num_lines, Ps &amp;&amp;... ps)'],['../classtf_1_1DataPipeline.html#abe9f09834e32eebf792c330fe825138d',1,'tf::DataPipeline::DataPipeline(size_t num_lines, std::tuple&lt; Ps... &gt; &amp;&amp;ps)']]],
   ['decisions_11',['Decisions',['../rules.html#FinancialDecisions',1,'Financial Decisions'],['../rules.html#SoftwareDecisions',1,'Software Decisions']]],

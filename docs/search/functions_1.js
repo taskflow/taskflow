@@ -4,5 +4,5 @@ var searchData=
   ['begin_5fcapture_1',['begin_capture',['../classtf_1_1cudaStreamBase.html#a4ad9778fb045ebc9e9d87ca72c2cc772',1,'tf::cudaStreamBase']]],
   ['beta_2',['beta',['../classtf_1_1RandomPartitioner.html#a8f378443b152a7f0b7476a82982d12cb',1,'tf::RandomPartitioner']]],
   ['boundedwsq_3',['BoundedWSQ',['../classtf_1_1BoundedWSQ.html#a79b19fbd242f08042854f99f812823e8',1,'tf::BoundedWSQ']]],
-  ['bulk_5fpush_4',['bulk_push',['../classtf_1_1UnboundedWSQ.html#a5b64ed2cd6beb8a65d94353d5ce9f291',1,'tf::UnboundedWSQ']]]
+  ['bulk_5fpush_4',['bulk_push',['../classtf_1_1AtomicIntrusiveStack.html#ab6bec2811ae803ea0d5abbe2c3220180',1,'tf::AtomicIntrusiveStack::bulk_push()'],['../classtf_1_1UnboundedWSQ.html#a5b64ed2cd6beb8a65d94353d5ce9f291',1,'tf::UnboundedWSQ::bulk_push()']]]
 ];

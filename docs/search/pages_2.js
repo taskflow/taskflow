@@ -39,8 +39,5 @@ var searchData=
   ['25_36',['25',['../release-2-4-0.html',1,'Release 2.4.0 (2020/03/25)'],['../release-2-6-0.html',1,'Release 2.6.0 (2020/08/25)']]],
   ['27_37',['Release 2.3.0 (2020/02/27)',['../release-2-3-0.html',1,'Releases']]],
   ['28_38',['Release 2.0.0 (2018/08/28)',['../release-2-0-0.html',1,'Releases']]],
-  ['29_39',['Release 3.2.0 (2021/07/29)',['../release-3-2-0.html',1,'Releases']]],
-  ['2_3a_20asynchronous_20exception_20propagation_40',['Scenario 2: Asynchronous Exception Propagation',['../ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation',1,'']]],
-  ['2_3a_20concatenate_20two_20pipelines_41',['Example 2: Concatenate Two Pipelines',['../TaskParallelPipeline.html#ConcatenateTwoPipelines',1,'']]],
-  ['2_3a_20write_20a_20taskflow_20program_42',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]]
+  ['29_39',['Release 3.2.0 (2021/07/29)',['../release-3-2-0.html',1,'Releases']]]
 ];

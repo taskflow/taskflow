@@ -607,12 +607,6 @@ function createResults(resultsPath) {
     elem.setAttribute('className',attr);
   }
 
-  const decodeHtml = (html) => {
-    const txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-  };
-
   const results = document.getElementById("SRResults");
   results.innerHTML = '';
   searchData.forEach((elem,index) => {
@@ -626,14 +620,10 @@ function createResults(resultsPath) {
     srLink.setAttribute('id','Item'+index);
     setKeyActions(srLink,'return searchResults.Nav(event,'+index+')');
     setClassAttr(srLink,'SRSymbol');
-    srLink.innerHTML = decodeHtml(elem[1][0]);
+    srLink.innerHTML = elem[1][0];
     srEntry.appendChild(srLink);
     if (elem[1].length==2) { // single result
-      if (elem[1][1][0].startsWith('http://') || elem[1][1][0].startsWith('https://')) { // absolute path
-        srLink.setAttribute('href',elem[1][1][0]);
-      } else { // relative path
-        srLink.setAttribute('href',resultsPath+elem[1][1][0]);
-      }
+      srLink.setAttribute('href',resultsPath+elem[1][1][0]);
       srLink.setAttribute('onclick','searchBox.CloseResultsWindow()');
       if (elem[1][1][1]) {
        srLink.setAttribute('target','_parent');
@@ -642,7 +632,7 @@ function createResults(resultsPath) {
       }
       const srScope = document.createElement('span');
       setClassAttr(srScope,'SRScope');
-      srScope.innerHTML = decodeHtml(elem[1][1][2]);
+      srScope.innerHTML = elem[1][1][2];
       srEntry.appendChild(srScope);
     } else { // multiple results
       srLink.setAttribute('href','javascript:searchResults.Toggle("SR_'+id+'")');
@@ -653,18 +643,14 @@ function createResults(resultsPath) {
         srChild.setAttribute('id','Item'+index+'_c'+c);
         setKeyActions(srChild,'return searchResults.NavChild(event,'+index+','+c+')');
         setClassAttr(srChild,'SRScope');
-        if (elem[1][c+1][0].startsWith('http://') || elem[1][c+1][0].startsWith('https://')) { // absolute path
-          srChild.setAttribute('href',elem[1][c+1][0]);
-        } else { // relative path
-          srChild.setAttribute('href',resultsPath+elem[1][c+1][0]);
-        }
+        srChild.setAttribute('href',resultsPath+elem[1][c+1][0]);
         srChild.setAttribute('onclick','searchBox.CloseResultsWindow()');
         if (elem[1][c+1][1]) {
          srChild.setAttribute('target','_parent');
         } else {
          srChild.setAttribute('target','_blank');
         }
-        srChild.innerHTML = decodeHtml(elem[1][c+1][2]);
+        srChild.innerHTML = elem[1][c+1][2];
         srChildren.appendChild(srChild);
       }
       srEntry.appendChild(srChildren);

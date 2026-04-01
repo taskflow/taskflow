@@ -5,7 +5,7 @@
 #include "../utility/iterator.hpp"
 
 #ifdef TF_ENABLE_TASK_POOL
-#include "../utility/object_pool.hpp"
+#include "freelist.hpp"
 #endif
 
 #include "../utility/os.hpp"
@@ -328,10 +328,6 @@ class Node : public NodeBase {
   friend class ExplicitAnchorGuard;
   friend class TaskGroup;
   friend class Algorithm;
-
-#ifdef TF_ENABLE_TASK_POOL
-  TF_ENABLE_POOLABLE_ON_THIS;
-#endif
 
   using Placeholder = std::monostate;
 
@@ -831,7 +827,43 @@ class ExplicitAnchorGuard {
 @private
 */
 #ifdef TF_ENABLE_TASK_POOL
-inline ObjectPool<Node> _node_pool;
+class NodePool {
+
+  private:
+
+    AtomicIntrusiveStack<NodeBase*, &NodeBase::_parent> _stack;
+
+  public:
+
+    template <typename... ArgsT>
+    Node* animate(ArgsT&&... args) {
+      if(auto n = _stack.pop(); n) {
+        return new(n) Node(std::forward<ArgsT>(args)...);
+      }
+      return new Node(std::forward<ArgsT>(args)...);
+    }
+
+    void recycle(Node* ptr) {
+      ptr->~Node();
+      _stack.push(static_cast<NodeBase*>(ptr));
+    }
+
+    // destructor is intentionally omitted to avoid the static destruction
+    // order problem — if a tf::Taskflow is defined as a static object,
+    // the destruction order relative to this global pool is unspecified,
+    // which could cause recycle() to push onto an already-destroyed stack.
+    // the leaked nodes are reclaimed by the OS at process exit.
+    //
+    // to enable clean destruction in controlled environments (e.g. tests),
+    // uncomment the destructor below:
+    //
+    // ~NodePool() {
+    //   while(auto* n = _stack.pop()) {
+    //     ::operator delete(static_cast<Node*>(n));
+    //   }
+    // }
+};
+inline NodePool _node_pool;
 #endif
 
 /**

@@ -12,7 +12,7 @@ var searchData=
   ['recursion_20optimization_9',['Tail Recursion Optimization',['../ExamplesFibonacciNumber.html#TailRecursionOptimization',1,'']]],
   ['recursive_20asynchronous_20tasks_20from_20a_20runtime_20task_10',['Create Recursive Asynchronous Tasks from a Runtime Task',['../RuntimeTasking.html#CreateRecursiveAsynchronousTasksFromARuntimeTask',1,'']]],
   ['recursive_20fibonacci_20parallelism_20using_20runtime_20tasking_11',['Recursive Fibonacci Parallelism using Runtime Tasking',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking',1,'']]],
-  ['recursive_20fibonacci_20parallelism_20using_20task_20group_12',['Recursive Fibonacci Parallelism using Task Group',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'']]],
+  ['recursive_20fibonacci_20parallelism_20using_20task_20group_12',['Recursive Fibonacci Parallelism using %Task Group',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'']]],
   ['recursive_20task_20parallelism_13',['Implement Recursive Task Parallelism',['../TaskGroup.html#ImplementRecursiveTaskParallelismUsingTaskGroup',1,'']]],
   ['recursively_20from_20a_20runtime_14',['Launch Asynchronous Tasks Recursively from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime',1,'']]],
   ['reduce_15',['reduce',['../classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7',1,'tf::FlowBuilder']]],
@@ -90,6 +90,5 @@ var searchData=
   ['runtime_87',['RUNTIME',['../namespacetf.html#a1355048578785a80414707ff308b395aae5f5cd9fe71ac064a678f27c7d539ae8',1,'tf']]],
   ['runtime_88',['Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksFromARuntime',1,'Launch Asynchronous Tasks from a Runtime'],['../AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime',1,'Launch Asynchronous Tasks Recursively from a Runtime'],['../classtf_1_1Runtime.html',1,'tf::Runtime']]],
   ['runtime_20task_89',['Runtime Task',['../RuntimeTasking.html#CreateARuntimeTask',1,'Create a Runtime Task'],['../RuntimeTasking.html#CreateAsynchronousTasksFromARuntimeTask',1,'Create Asynchronous Tasks from a Runtime Task'],['../RuntimeTasking.html#CreateRecursiveAsynchronousTasksFromARuntimeTask',1,'Create Recursive Asynchronous Tasks from a Runtime Task']]],
-  ['runtime_20tasking_90',['Runtime Tasking',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking',1,'Recursive Fibonacci Parallelism using Runtime Tasking'],['../RuntimeTasking.html',1,'Runtime Tasking']]],
-  ['runtimetask_91',['RuntimeTask',['../concepttf_1_1RuntimeTask.html',1,'tf']]]
+  ['runtime_20tasking_90',['Runtime Tasking',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking',1,'Recursive Fibonacci Parallelism using Runtime Tasking'],['../RuntimeTasking.html',1,'Runtime Tasking']]]
 ];

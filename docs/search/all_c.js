@@ -31,7 +31,7 @@ var searchData=
   ['build_20examples_20and_20unit_20tests_28',['Build Examples and Unit Tests',['../install.html#BAIBuildExamplesAndUnitTests',1,'']]],
   ['build_20sanitizers_29',['Build Sanitizers',['../install.html#BAIBuildSanitizers',1,'']]],
   ['building_20and_20installing_30',['Building and Installing',['../install.html',1,'']]],
-  ['bulk_5fpush_31',['bulk_push',['../classtf_1_1UnboundedWSQ.html#a5b64ed2cd6beb8a65d94353d5ce9f291',1,'tf::UnboundedWSQ']]],
+  ['bulk_5fpush_31',['bulk_push',['../classtf_1_1AtomicIntrusiveStack.html#ab6bec2811ae803ea0d5abbe2c3220180',1,'tf::AtomicIntrusiveStack::bulk_push()'],['../classtf_1_1UnboundedWSQ.html#a5b64ed2cd6beb8a65d94353d5ce9f291',1,'tf::UnboundedWSQ::bulk_push()']]],
   ['by_20index_20task_32',['Create a Reduce-by-Index Task',['../ParallelReduction.html#ParallelReductionCreateAReduceByIndexTask',1,'']]],
   ['by_20multiple_20threads_33',['Create a Dynamic Task Graph by Multiple Threads',['../DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads',1,'']]],
   ['by_20reference_34',['by Reference',['../ParallelIterations.html#ParallelForEachCaptureIndicesByReference',1,'Capture Indices by Reference'],['../ParallelIterations.html#ParallelForEachCaptureIteratorsByReference',1,'Capture Iterators by Reference'],['../ParallelTransforms.html#ParallelTransformsCaptureIteratorsByReference',1,'Capture Iterators by Reference'],['../ParallelReduction.html#ParallelReductionCaptureIteratorsByReference',1,'Capture Iterators by Reference'],['../ParallelFind.html#ParallelFindCaptureIteratorsByReference',1,'Capture Iterators by Reference']]]

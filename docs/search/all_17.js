@@ -42,13 +42,12 @@ var searchData=
   ['motivation_39',['Project Motivation',['../ProjectMotivation.html',1,'Cookbook']]],
   ['move_20a_20taskflow_40',['Move a Taskflow',['../StaticTasking.html#MoveATaskflow',1,'']]],
   ['multi_20condition_20task_41',['Create a Multi-condition Task',['../ConditionalTasking.html#CreateAMultiConditionTask',1,'']]],
-  ['multiconditiontask_42',['MultiConditionTask',['../concepttf_1_1MultiConditionTask.html',1,'tf']]],
-  ['multicore_43',['The Era of Multicore',['../ProjectMotivation.html#TheEraOfMulticore',1,'']]],
-  ['multiple_20parallel_20pipelines_44',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
-  ['multiple_20threads_45',['Create a Dynamic Task Graph by Multiple Threads',['../DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads',1,'']]],
-  ['multiplication_46',['Multiplication',['../MatrixMultiplicationWithCUDAGPU.html#DefineACUDAGraphForMatrixMultiplication',1,'Define a CUDA Graph for Matrix Multiplication'],['../matrix_multiplication.html',1,'Matrix Multiplication']]],
-  ['multiplication_20kernel_47',['Define a Matrix Multiplication Kernel',['../MatrixMultiplicationWithCUDAGPU.html#GPUAcceleratedMatrixMultiplication',1,'']]],
-  ['multiplication_20with_20cuda_20gpu_48',['Matrix Multiplication with CUDA GPU',['../MatrixMultiplicationWithCUDAGPU.html',1,'Examples']]],
-  ['my_20program_20hangs_20and_20never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_49',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['my_20projects_50',['Q2: How do I use Taskflow in my projects?',['../FAQ.html#GeneralQuestion2',1,'']]]
+  ['multicore_42',['The Era of Multicore',['../ProjectMotivation.html#TheEraOfMulticore',1,'']]],
+  ['multiple_20parallel_20pipelines_43',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
+  ['multiple_20threads_44',['Create a Dynamic Task Graph by Multiple Threads',['../DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads',1,'']]],
+  ['multiplication_45',['Multiplication',['../MatrixMultiplicationWithCUDAGPU.html#DefineACUDAGraphForMatrixMultiplication',1,'Define a CUDA Graph for Matrix Multiplication'],['../matrix_multiplication.html',1,'Matrix Multiplication']]],
+  ['multiplication_20kernel_46',['Define a Matrix Multiplication Kernel',['../MatrixMultiplicationWithCUDAGPU.html#GPUAcceleratedMatrixMultiplication',1,'']]],
+  ['multiplication_20with_20cuda_20gpu_47',['Matrix Multiplication with CUDA GPU',['../MatrixMultiplicationWithCUDAGPU.html',1,'Examples']]],
+  ['my_20program_20hangs_20and_20never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_48',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
+  ['my_20projects_49',['Q2: How do I use Taskflow in my projects?',['../FAQ.html#GeneralQuestion2',1,'']]]
 ];

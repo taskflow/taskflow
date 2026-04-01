@@ -59,7 +59,7 @@ var NAVTREE =
         [ "Q3: Is taskflow thread-safe?", "FAQ.html#ProgrammingQuestions3", null ],
         [ "Q4: Is executor thread-safe?", "FAQ.html#ProgrammingQuestions4", null ],
         [ "Q5: My program hangs and never returns after dispatching a taskflow graph. What's wrong?", "FAQ.html#ProgrammingQuestions5", null ],
-        [ "Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?", "FAQ.html#ProgrammingQuestions6", null ],
+        [ "Q6: In the following example where B spawns a joined subflow of three tasks B1, B2,...", "FAQ.html#ProgrammingQuestions6", null ],
         [ "Q7: What is the purpose of a condition task?", "FAQ.html#ProgrammingQuestions7", null ],
         [ "Q8: Is the program master thread involved in running tasks?", "FAQ.html#ProgrammingQuestions8", null ],
         [ "Q9: Are there any limits on the branches of conditional tasking?", "FAQ.html#ProgrammingQuestions9", null ],
@@ -98,11 +98,10 @@ var NAVTREEINDEX =
 [
 "Algorithms.html",
 "TaskflowProcessingPipeline.html#TaskflowPipelineDefineTaskflows",
-"classtf_1_1Runtime.html#a333a76d63e50f3ddfbea60c4356b86f3",
-"classtf_1_1cudaStreamBase.html#a54df1c74423c0476c0ca1f1798584def",
-"release-3-11-0.html#release-3-11-0_bug_fixes"
+"classtf_1_1Runtime.html",
+"classtf_1_1cudaStreamBase.html",
+"release-3-10-0.html#release-3-10-0_summary"
 ];
 
-const SYNCONMSG = 'click to disable panel synchronization';
-const SYNCOFFMSG = 'click to enable panel synchronization';
-const LISTOFALLMEMBERS = 'List of all members';
+var SYNCONMSG = 'click to disable panel synchronisation';
+var SYNCOFFMSG = 'click to enable panel synchronisation';

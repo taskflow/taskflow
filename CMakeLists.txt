@@ -61,7 +61,7 @@ include(CheckLanguage)
 include(GNUInstallDirs)
 
 # Check for correct settings for atomic library
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Atomic/CheckAtomic.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/atomic/CheckAtomic.cmake)
 
 # Compiler vendors
 ## g++ >= 11.0
@@ -224,9 +224,7 @@ target_link_libraries(
   default_settings 
   INTERFACE 
   tf::error_settings 
-  #atomic
-  #tf::optimize_settings 
-  #tf::features_settings
+  $<$<BOOL:${ATOMIC_LIBRARY}>:${ATOMIC_LIBRARY}>
 )
 
 # -----------------------------------------------------------------------------
@@ -285,7 +283,6 @@ find_package(Threads REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-#target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} INTERFACE ${ATOMIC_LIBRARY} Threads::Threads)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -377,4 +374,3 @@ install(
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}
 )
-
