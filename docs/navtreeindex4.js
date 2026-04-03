@@ -1,10 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"release-3-10-0.html#release-3-10-0_summary":[1,4,0],
-"release-3-10-0.html#release-3-10-0_system_requirements":[1,4,2],
-"release-3-10-0.html#release-3-10-0_taskflow_core":[1,4,3,0],
-"release-3-10-0.html#release-3-10-0_utilities":[1,4,3,1],
-"release-3-11-0.html":[1,3],
 "release-3-11-0.html#release-3-11-0_breaking_changes":[1,3,5],
 "release-3-11-0.html#release-3-11-0_bug_fixes":[1,3,4],
 "release-3-11-0.html#release-3-11-0_documentation":[1,3,6],

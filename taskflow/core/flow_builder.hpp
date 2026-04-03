@@ -216,7 +216,7 @@ class FlowBuilder {
   /**
   @brief creates a module task for the target object
 
-  @tparam T target object type
+  @tparam T type satisfying tf::HasGraph
   @param object a custom object that defines the method @c T::graph()
 
   @return a tf::Task handle
@@ -1345,9 +1345,9 @@ requires (!Partitioner<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
   
   protected:
-
+  
   /**
-  @brief associated graph object
+  @private
   */
   Graph& _graph;
 

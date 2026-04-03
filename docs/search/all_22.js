@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['x_20before_202018_0',['Release 1.x.x (before 2018)',['../release-1-x-x.html',1,'Releases']]],
-  ['x_20x_20before_202018_1',['Release 1.x.x (before 2018)',['../release-1-x-x.html',1,'Releases']]],
-  ['xorshift_2',['Xorshift',['../classtf_1_1Xorshift.html',1,'tf::Xorshift&lt; T &gt;'],['../classtf_1_1Xorshift.html#a9753af25d9a8262c67c55914f8e82ce5',1,'tf::Xorshift::Xorshift()=default'],['../classtf_1_1Xorshift.html#a6eeccbfe1882564147e5509f446536e0',1,'tf::Xorshift::Xorshift(T value)']]],
-  ['xorshift_3c_20uint32_5ft_20_3e_3',['Xorshift&lt; uint32_t &gt;',['../classtf_1_1Xorshift.html',1,'tf']]]
+  ['you_20for_20developing_20taskflow_0',['Thank You for Developing Taskflow',['../contributors.html#ThankYouForDevelopingTaskflow',1,'']]],
+  ['you_20for_20using_20taskflow_1',['Thank You for Using Taskflow',['../contributors.html#ThankYouForUsingTaskflow',1,'']]],
+  ['you_20have_20any_20real_20use_20cases_2',['Q11: Do you have any real use cases?',['../FAQ.html#GeneralQuestion11',1,'']]],
+  ['you_20try_20to_20simplify_20the_20gpu_20kernel_20programming_3',['Q10: Do you try to simplify the GPU kernel programming?',['../FAQ.html#GeneralQuestion10',1,'']]],
+  ['your_20first_20taskflow_20program_4',['Start Your First Taskflow Program',['../index.html#ASimpleFirstProgram',1,'']]],
+  ['your_20project_5',['Integrate Taskflow to Your Project',['../install.html#BAIIntegrateTaskflowToYourProject',1,'']]],
+  ['your_20voice_20matters_6',['Your Voice Matters!',['../guidelines.html#YourVoiceMatters',1,'']]]
 ];

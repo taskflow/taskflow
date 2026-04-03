@@ -197,12 +197,12 @@ class PartitionerBase {
   protected:
   
   /**
-  @brief chunk size 
+  @private
   */
   size_t _chunk_size{0};
-
+  
   /**
-  @brief closure wrapper
+  @private
   */
   C _closure_wrapper;
 };

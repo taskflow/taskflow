@@ -1,9 +1,12 @@
 var searchData=
 [
-  ['join_0',['join',['../classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245',1,'tf::Subflow']]],
-  ['join_20a_20subflow_20explicitly_1',['Join a Subflow Explicitly',['../SubflowTasking.html#JoinASubflow',1,'']]],
-  ['joinable_2',['joinable',['../classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57',1,'tf::Subflow']]],
-  ['joined_20subflow_20of_20three_20tasks_20b1_20b2_20and_20b3_20do_20they_20run_20concurrently_20with_20task_20a_3',['Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?',['../FAQ.html#ProgrammingQuestions6',1,'']]],
-  ['joining_20core_20members_4',['Joining Core Members',['../rules.html#JoiningCoreMembers',1,'']]],
-  ['just_20an_20another_20api_20or_20model_5',['Q14: Is Taskflow just an another API or model?',['../FAQ.html#GeneralQuestion14',1,'']]]
+  ['k_20means_20clustering_0',['k-means Clustering',['../kmeans.html',1,'Examples']]],
+  ['k_20means_20clustering_20with_20cuda_20gpu_1',['k-means Clustering with CUDA GPU',['../KMeansWithCUDAGPU.html',1,'Examples']]],
+  ['k_20means_20cuda_20graph_2',['Define the k-means CUDA Graph',['../KMeansWithCUDAGPU.html#DefineTheKMeansCUDAGraph',1,'']]],
+  ['k_20means_20kernels_3',['Define the k-means Kernels',['../KMeansWithCUDAGPU.html#DefineTheKMeansKernels',1,'']]],
+  ['k_20means_20using_20cpus_4',['Parallel k-means using CPUs',['../kmeans.html#ParallelKMeansUsingCPUs',1,'']]],
+  ['kernel_5',['Define a Matrix Multiplication Kernel',['../MatrixMultiplicationWithCUDAGPU.html#GPUAcceleratedMatrixMultiplication',1,'']]],
+  ['kernel_6',['kernel',['../classtf_1_1cudaGraphBase.html#a1473a15a6023fbc25e1f029f2ff84aec',1,'tf::cudaGraphBase::kernel()'],['../classtf_1_1cudaGraphExecBase.html#a9d9842feec938f6dad9d21f66a202bb6',1,'tf::cudaGraphExecBase::kernel()']]],
+  ['kernel_20programming_7',['Q10: Do you try to simplify the GPU kernel programming?',['../FAQ.html#GeneralQuestion10',1,'']]],
+  ['kernels_8',['Define the k-means Kernels',['../KMeansWithCUDAGPU.html#DefineTheKMeansKernels',1,'']]]
 ];

@@ -58,6 +58,10 @@ var hierarchy =
     [ "tf::UnboundedWSQ< T >", "classtf_1_1UnboundedWSQ.html", null ],
     [ "tf::UnboundedWSQ< Node * >", "classtf_1_1UnboundedWSQ.html", null ],
     [ "std::unique_ptr", null, [
+      [ "tf::cudaEventBase< cudaEventCreator, cudaEventDeleter >", "classtf_1_1cudaEventBase.html", null ],
+      [ "tf::cudaGraphBase< cudaGraphCreator, cudaGraphDeleter >", "classtf_1_1cudaGraphBase.html", null ],
+      [ "tf::cudaGraphExecBase< cudaGraphExecCreator, cudaGraphExecDeleter >", "classtf_1_1cudaGraphExecBase.html", null ],
+      [ "tf::cudaStreamBase< cudaStreamCreator, cudaStreamDeleter >", "classtf_1_1cudaStreamBase.html", null ],
       [ "tf::cudaEventBase< Creator, Deleter >", "classtf_1_1cudaEventBase.html", null ],
       [ "tf::cudaGraphBase< Creator, Deleter >", "classtf_1_1cudaGraphBase.html", null ],
       [ "tf::cudaGraphExecBase< Creator, Deleter >", "classtf_1_1cudaGraphExecBase.html", null ],

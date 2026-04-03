@@ -484,7 +484,7 @@ class Task {
   /**
   @brief creates a module task from a taskflow
 
-  @tparam T object type
+  @tparam T type satisfying tf::HasGraph
   @param object a custom object that defines @c T::graph() method
 
   @return @c *this

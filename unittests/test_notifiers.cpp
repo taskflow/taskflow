@@ -1139,6 +1139,7 @@ static inline void tiny_jitter(std::mt19937& rng) {
     int sink = 0;
     int spins = 20 + (pick(rng) * 30);
     for(int i = 0; i < spins; ++i) sink += i;
+    (void) sink;
   }
   else {
     std::this_thread::sleep_for(std::chrono::nanoseconds(200));

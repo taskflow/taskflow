@@ -980,12 +980,35 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 // Graph checker
 // ----------------------------------------------------------------------------
 
-/**
-@brief determines if a type owns or provides a graph
 
-A type satisfies tf::HasGraph if it either derives from tf::Graph
-or provides a @c graph() method returning a reference convertible to
-<tt>tf::Graph&</tt>.
+/**
+@brief concept that determines if a type owns or provides access to a tf::Graph
+
+A type satisfies @c tf::HasGraph if it meets one of the following two criteria:
+  + **Inheritance**: The type is derived from @c tf::Graph.
+  + **Composition**: The type provides a @c graph() method that returns a reference convertible to @c tf::Graph&.
+
+This concept is used by @c tf::retrieve_graph to abstract the way graphs are
+accessed across different taskflow components.
+
+@code{.cpp}
+// Satisfies via inheritance
+struct CustomGraph1 : public tf::Graph {};
+static_assert(tf::HasGraph<CustomGraph1>);
+
+// Satisfies via composition
+struct CustomGraph2 {
+  tf::Graph& graph() { return _g; }
+  tf::Graph _g;
+};
+static_assert(tf::HasGraph<CustomGraph2>);
+
+// Fails: does not meet inheritance or method requirements
+struct InvalidType {
+void handle() {}
+};
+static_assert(!tf::HasGraph<InvalidType>);
+@endcode
 */
 template <typename T>
 concept HasGraph = std::derived_from<T, Graph> ||
@@ -996,21 +1019,42 @@ concept HasGraph = std::derived_from<T, Graph> ||
 /**
 @brief retrieves a reference to the underlying tf::Graph from an object
 
-@tparam T type satisfying tf::HasGraph
+This helper function abstracts the retrieval of a graph reference. It uses 
+compile-time introspection to determine if the object provides a @c graph() 
+member function or if it should be treated as a @c tf::Graph directly.
 
-@param t the object from which to retrieve the graph
+@tparam T type satisfying the @c tf::HasGraph concept
+@param target object from which to retrieve the graph
+@return a reference to the underlying @c tf::Graph
 
-@return a reference to the underlying tf::Graph
+@code{.cpp}
+// Case 1: T has a .graph() member (composition)
+struct CustomGraph1 {
+  tf::Graph& graph() { return _graph; }
+  tf::Graph _graph;
+};
 
-If @c T provides a @c graph() method, that reference is returned.
-Otherwise, @c T is derived from tf::Graph and is returned via a static upcast.
+// Case 2: T is derived from tf::Graph (inheritance)
+struct CustomGraph2 : public tf::Graph { 
+// ... 
+};
+
+CustomGraph1 custom_graph1;
+CustomGraph2 custom_graph2;
+
+tf::Graph& g1 = tf::retrieve_graph(custom_graph1);
+tf::Graph& g2 = tf::retrieve_graph(custom_graph2);
+@endcode
+
+@note This function is evaluated at compile time via @c if @c constexpr, 
+resulting in zero runtime overhead.
 */
 template <HasGraph T>
-Graph& retrieve_graph(T& t) {
-  if constexpr (requires { t.graph(); }) {
-    return t.graph();
+Graph& retrieve_graph(T& target) {
+  if constexpr (requires { target.graph(); }) {
+    return target.graph();
   } else {
-    return static_cast<Graph&>(t);
+    return static_cast<Graph&>(target);
   }
 }
 

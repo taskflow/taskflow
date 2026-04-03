@@ -35,6 +35,5 @@ var classtf_1_1FlowBuilder =
     [ "transform_inclusive_scan", "classtf_1_1FlowBuilder.html#a82f3c3f49a2d52cd52f6eac07a659e9c", null ],
     [ "transform_inclusive_scan", "classtf_1_1FlowBuilder.html#a49f7e17d02c708035b9134d8c6c89f90", null ],
     [ "transform_reduce", "classtf_1_1FlowBuilder.html#a5a2c9f37dc81f44508f217d3b67d1b0c", null ],
-    [ "transform_reduce", "classtf_1_1FlowBuilder.html#ac6ad9cee0f5836c3d38bf0be861fc49b", null ],
-    [ "_graph", "classtf_1_1FlowBuilder.html#a9404a57d9d37a4d49d20b686e4e5f68f", null ]
+    [ "transform_reduce", "classtf_1_1FlowBuilder.html#ac6ad9cee0f5836c3d38bf0be861fc49b", null ]
 ];
