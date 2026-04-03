@@ -5,74 +5,77 @@
 #include <type_traits>
 
 namespace tf {
-
+ 
 /**
 @brief checks if the given index range is invalid
-
-@tparam B integral type of the beginning index
-@tparam E integral type of the ending index
-@tparam S integral type of the step size
-
+ 
+@tparam T integral type of the indices and step
+ 
 @param beg starting index of the range
 @param end ending index of the range
 @param step step size to traverse the range
-
+ 
 @return returns @c true if the range is invalid; @c false otherwise.
-
+ 
 A range is considered invalid under the following conditions:
  + The step is zero and the begin and end values are not equal.
  + A positive range (begin < end) with a non-positive step.
  + A negative range (begin > end) with a non-negative step.
 */
-template <std::integral B, std::integral E, std::integral S>
-constexpr bool is_index_range_invalid(B beg, E end, S step) {
-  return ((step == 0 && beg != end) ||
-          (beg < end && step <=  0) ||  // positive range
-          (beg > end && step >=  0));   // negative range
+template <std::integral T>
+constexpr bool is_index_range_invalid(T beg, T end, T step) {
+  return ((step == T{0} && beg != end) ||
+          (beg < end && step <= T{0}) ||  // positive range
+          (beg > end && step >= T{0}));   // negative range
 }
-
+ 
 /**
 @brief calculates the number of iterations in the given index range
-
-@tparam B integral type of the beginning index
-@tparam E integral type of the ending index
-@tparam S integral type of the step size
-
+ 
+@tparam T integral type of the indices and step
+ 
 @param beg starting index of the range
 @param end ending index of the range
 @param step step size to traverse the range
-
+ 
 @return returns the number of required iterations to traverse the range
-
+ 
 The distance of a range represents the number of required iterations to traverse the range
 from the beginning index to the ending index (exclusive) with the given step size.
-
+ 
 Example 1:
 @code{.cpp}
 // Range: 0 to 10 with step size 2
 size_t dist = distance(0, 10, 2);  // Returns 5, the sequence is [0, 2, 4, 6, 8]
 @endcode
-
+ 
 Example 2:
 @code{.cpp}
 // Range: 10 to 0 with step size -2
 size_t dist = distance(10, 0, -2);  // Returns 5, the sequence is [10, 8, 6, 4, 2]
 @endcode
-
+ 
 Example 3:
 @code{.cpp}
 // Range: 5 to 20 with step size 5
 size_t dist = distance(5, 20, 5);  // Returns 3, the sequence is [5, 10, 15]
 @endcode
-
+ 
 @attention
 It is user's responsibility to ensure the given index range is valid.
 For instance, a range from 0 to 10 with a step size of -2 is invalid.
 */
-template <std::integral B, std::integral E, std::integral S>
-constexpr size_t distance(B beg, E end, S step) {
-  return (end - beg + step + (step > 0 ? -1 : 1)) / step;
+template <std::integral T>
+constexpr size_t distance(T beg, T end, T step) {
+  if constexpr (std::is_unsigned_v<T>) {
+    // step is always positive for unsigned types — standard ceiling division
+    return static_cast<size_t>((end - beg + step - T{1}) / step);
+  } else {
+    // signed: step may be positive or negative
+    return static_cast<size_t>((end - beg + step + (step > T{0} ? T{-1} : T{1})) / step);
+  }
 }
+ 
 
 // ----------------------------------------------------------------------------
 // IndexRange
