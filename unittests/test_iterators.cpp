@@ -406,17 +406,23 @@ TEST_CASE("consume_chunk.documented_examples") {
     tf::IndexRange<int>(0, 10, 1)
   );
 
-  // Scenario 1: flat_beg=0, requested=30 -> box [0,1) x [0,3) x [0,10), consumed=30
+  // Scenario 1: flat_beg=0, requested=30
+  // Coords (0,0,0). inner_volume reaches 50 at dim-0 (first >= 30), so grow_dim=0,
+  // steps_to_take=1. The box overshoots to the next orthogonal boundary.
+  // box is [0,1) x [0,5) x [0,10), consumed=50
   {
     auto [box, consumed] = range.consume_chunk(0, 30);
-    REQUIRE(consumed == 30);
+    REQUIRE(consumed == 50);
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
-    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 3);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 5);
     REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10);
-    REQUIRE(box.size() == 30);
+    REQUIRE(box.size() == 50);
   }
 
-  // Scenario 2: flat_beg=30, requested=30 -> box [0,1) x [3,5) x [0,10), consumed=20
+  // Scenario 2: flat_beg=30, requested=30
+  // Coords (0,3,0). coords[1]=3 != 0, so trailing-zeros fires at d=0.
+  // grow_dim=1, active=10. steps_left=2, steps_needed=3, steps_to_take=2.
+  // box is [0,1) x [3,5) x [0,10), consumed=20 (geometry-constrained, < requested)
   {
     auto [box, consumed] = range.consume_chunk(30, 30);
     REQUIRE(consumed == 20);
@@ -426,7 +432,10 @@ TEST_CASE("consume_chunk.documented_examples") {
     REQUIRE(box.size() == 20);
   }
 
-  // Scenario 3: flat_beg=55, requested=30 -> box [1,2) x [0,1) x [5,10), consumed=5
+  // Scenario 3: flat_beg=55, requested=30
+  // Coords (1,0,5). coords[2]=5 != 0, trailing-zeros fires at d=1.
+  // grow_dim=2, active=1. steps_left=5, steps_needed=30, steps_to_take=5.
+  // box is [1,2) x [0,1) x [5,10), consumed=5 (geometry-constrained, < requested)
   {
     auto [box, consumed] = range.consume_chunk(55, 30);
     REQUIRE(consumed == 5);
@@ -434,6 +443,19 @@ TEST_CASE("consume_chunk.documented_examples") {
     REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
     REQUIRE(box.dim(2).begin() == 5); REQUIRE(box.dim(2).end() == 10);
     REQUIRE(box.size() == 5);
+  }
+
+  // Scenario 4: exact fit — requested equals a natural dimension boundary
+  // flat_beg=0, requested=10. inner_volume reaches 10 at d=1 (10>=10), stops there.
+  // grow_dim=1, active=10. steps_left=5, steps_needed=1, steps_to_take=1.
+  // box is [0,1) x [0,1) x [0,10), consumed=10 (no overshoot needed)
+  {
+    auto [box, consumed] = range.consume_chunk(0, 10);
+    REQUIRE(consumed == 10);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10);
+    REQUIRE(box.size() == 10);
   }
 }
 

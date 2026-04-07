@@ -1,0 +1,104 @@
+digraph Partitioners {
+
+  rankdir  = TB;
+  compound = true;
+  graph [fontname="Helvetica", fontsize=12, ranksep=0.7, nodesep=0.0];
+  node  [fontname="Helvetica", fontsize=12, style=filled, shape=box,
+         height=0.5, margin="0.1,0.1"];
+  edge  [style=invis, weight=100];
+
+  // ── invisible spine: forces top-to-bottom cluster ordering ───────────────
+  spine1 [style=invis, width=0.01, height=0.01, label=""];
+  spine2 [style=invis, width=0.01, height=0.01, label=""];
+  spine3 [style=invis, width=0.01, height=0.01, label=""];
+  spine4 [style=invis, width=0.01, height=0.01, label=""];
+  spine1 -> spine2 -> spine3 -> spine4;
+
+  // ============================================================
+  // ROW 1 — StaticPartitioner, chunk_size = 0
+  // ============================================================
+  subgraph cluster_s0 {
+    label     = "StaticPartitioner  (with default chunk size = 0)";
+    labeljust = "l";  fontsize = 11;
+    style = filled;  fillcolor = "#f0f0f0";  color = "#999999";
+
+    { rank=same;
+      s0w1 [label="Worker 1", fillcolor="#ffffff", width=1.6];
+      s0w2 [label="Worker 2", fillcolor="#bbbbbb", width=1.6];
+      s0w3 [label="Worker 3", fillcolor="#888888", width=1.6];
+      s0w4 [label="Worker 4", fillcolor="#555555", fontcolor="#ffffff", width=1.6];
+      s0w1 -> s0w2 -> s0w3 -> s0w4;
+    }
+    spine1;
+  }
+
+  // ============================================================
+  // ROW 2 — StaticPartitioner, chunk_size > 0
+  // ============================================================
+  subgraph cluster_sc {
+    label     = "StaticPartitioner  (chunk size > 0)";
+    labeljust = "l";  fontsize = 11;
+    style = filled;  fillcolor = "#f0f0f0";  color = "#999999";
+
+    { rank=same;
+      sc1  [label="W1", fillcolor="#ffffff",              width=0.52];
+      sc2  [label="W2", fillcolor="#bbbbbb",              width=0.52];
+      sc3  [label="W3", fillcolor="#888888",              width=0.52];
+      sc4  [label="W4", fillcolor="#555555", fontcolor="#ffffff", width=0.52];
+      sc5  [label="W1", fillcolor="#ffffff",              width=0.52];
+      sc6  [label="W2", fillcolor="#bbbbbb",              width=0.52];
+      sc7  [label="W3", fillcolor="#888888",              width=0.52];
+      sc8  [label="W4", fillcolor="#555555", fontcolor="#ffffff", width=0.52];
+      sc9  [label="W1", fillcolor="#ffffff",              width=0.52];
+      sc10 [label="W2", fillcolor="#bbbbbb",              width=0.52];
+      sc1->sc2->sc3->sc4->sc5->sc6->sc7->sc8->sc9->sc10;
+    }
+    spine2;
+  }
+
+  // ============================================================
+  // ROW 3 — DynamicPartitioner
+  // ============================================================
+  subgraph cluster_dc {
+    label     = "DynamicPartitioner";
+    labeljust = "l";  fontsize = 11;
+    style = filled;  fillcolor = "#f0f0f0";  color = "#999999";
+
+    { rank=same;
+      dc1 [label="W1", fillcolor="#ffffff",              width=0.65];
+      dc2 [label="W2", fillcolor="#bbbbbb",              width=0.65];
+      dc3 [label="W3", fillcolor="#888888",              width=0.65];
+      dc4 [label="W4", fillcolor="#555555", fontcolor="#ffffff", width=0.65];
+      dc5 [label="W2", fillcolor="#bbbbbb",              width=0.65];
+      dc6 [label="W3", fillcolor="#888888",              width=0.65];
+      dc7 [label="W1", fillcolor="#ffffff",              width=0.65];
+      dc8 [label="W4", fillcolor="#555555", fontcolor="#ffffff", width=0.65];
+      dc1->dc2->dc3->dc4->dc5->dc6->dc7->dc8;
+    }
+    spine3;
+  }
+
+  // ============================================================
+  // ROW 4 — GuidedPartitioner  (default)
+  // ============================================================
+  subgraph cluster_gc {
+    label     = "GuidedPartitioner";
+    labeljust = "l";  fontsize = 11;
+    style = filled;  fillcolor = "#f0f0f0";  color = "#999999";
+
+    { rank=same;
+      gc1 [label="Worker 1", fillcolor="#ffffff",              width=1.35];
+      gc2 [label="Worker 2", fillcolor="#bbbbbb",              width=1.35];
+      gc3 [label="Worker 3", fillcolor="#888888",              width=0.95];
+      gc4 [label="Worker 4", fillcolor="#555555", fontcolor="#ffffff", width=0.95];
+      gc5 [label="W1",       fillcolor="#ffffff",              width=0.48];
+      gc6 [label="W2",       fillcolor="#bbbbbb",              width=0.48];
+      gc7 [label="W4",       fillcolor="#555555", fontcolor="#ffffff", width=0.48];
+      gc8 [label="...",      fillcolor="#e0e0e0",              width=0.32];
+      gc9 [label="...",      fillcolor="#e0e0e0",              width=0.32];
+      gc1->gc2->gc3->gc4->gc5->gc6->gc7->gc8->gc9;
+    }
+    spine4;
+  }
+}
+

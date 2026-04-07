@@ -223,7 +223,7 @@ void demo_2d(int H, int W) {
         }
       }
     },
-    tf::DynamicPartitioner()
+    tf::GuidedPartitioner()
   );
 
   executor.run(taskflow).wait();

@@ -178,8 +178,8 @@ public:
   /**
   @brief constructs an N-D index range from an array of 1D ranges
   */
-  explicit IndexRange(const std::array<IndexRange<T, 1>, N>& dims) : _dims{dims} {}
-  
+  explicit IndexRange(const std::array<IndexRange<T, 1>, N>& dims);
+
   // --------------------------------------------------------------------------
   // Dimension access
   // --------------------------------------------------------------------------
@@ -222,11 +222,7 @@ public:
   printf("%zu\n", r.size());  // 192
   @endcode
   */
-  size_t size() const {
-    size_t total = 1;
-    for (size_t d = 0; d < N; ++d) total *= _dims[d].size();
-    return total;
-  }
+  size_t size() const;
 
   // --------------------------------------------------------------------------
   // Flat <-> ND coordinate mapping
@@ -246,16 +242,7 @@ public:
   auto c = r.coords(5);  // flat 5 -> row 1, col 1 -> {1, 1}
   @endcode
   */
-  std::array<T, N> coords(size_t flat) const {
-    std::array<T, N> c;
-    for (size_t d = N; d-- > 0; ) {
-      size_t sz  = _dims[d].size();
-      size_t pos = flat % sz;
-      c[d] = _dims[d].begin() + static_cast<T>(pos) * _dims[d].step_size();
-      flat /= sz;
-    }
-    return c;
-  }
+  std::array<T, N> coords(size_t flat) const;
 
   /**
   @brief consumes a linear chunk of the multidimensional space and returns the largest
@@ -279,128 +266,169 @@ public:
   @code{.cpp}
   // 3D range: 4 x 5 x 10
   tf::IndexRange<int, 3> range(
-    tf::IndexRange<int>(0, 4),
-    tf::IndexRange<int>(0, 5),
-    tf::IndexRange<int>(0, 10)
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 10, 1)
   );
 
-  // Scenario 1: Clean boundaries
-  // Ask for 30 elements starting at flat index 0 (Coords: 0, 0, 0)
+  // Scenario 1: flat_beg=0, requested=30
+  // Coords (0,0,0). inner_volume reaches 50 at dim-0 (first >= 30), so grow_dim=0,
+  // steps_to_take=1. The box overshoots to the next orthogonal boundary.
+  // box is [0,1) x [0,5) x [0,10), consumed=50
   auto [box1, consumed1] = range.consume_chunk(0, 30);
-  // box1 is [0,1) x [0,3) x [0,10)
-  // consumed1 is 30
 
-  // Scenario 2: Hitting a boundary constraint
-  // Ask for 30 elements starting at flat index 30 (Coords: 0, 3, 0)
+  // Scenario 2: flat_beg=30, requested=30
+  // Coords (0,3,0). coords[1]=3 != 0, so trailing-zeros fires at d=0.
+  // grow_dim=1, active=10. steps_left=2, steps_needed=3, steps_to_take=2.
+  // box is [0,1) x [3,5) x [0,10), consumed=20 (geometry-constrained, < requested)
   auto [box2, consumed2] = range.consume_chunk(30, 30);
-  // Dim 1 can only take 2 more steps before rolling over (max size is 5).
-  // box2 is [0,1) x [3,5) x [0,10)
-  // consumed2 is 20 (less than the requested 30!)
 
-  // Scenario 3: Trapped at an inner dimension
-  // Ask for 30 elements starting at flat index 55 (Coords: 1, 0, 5)
+  // Scenario 3: flat_beg=55, requested=30
+  // Coords (1,0,5). coords[2]=5 != 0, trailing-zeros fires at d=1.
+  // grow_dim=2, active=1. steps_left=5, steps_needed=30, steps_to_take=5.
+  // box is [1,2) x [0,1) x [5,10), consumed=5 (geometry-constrained, < requested)
   auto [box3, consumed3] = range.consume_chunk(55, 30);
-  // Because Dim 2 is at 5 (not 0), outer dimensions cannot grow.
-  // It is forced to just finish the inner-most row.
-  // box3 is [1,2) x [0,1) x [5,10)
-  // consumed3 is 5
+
+  // Scenario 4: exact fit — requested equals a natural dimension boundary
+  // flat_beg=0, requested=10. inner_volume reaches 10 at d=1 (10>=10), stops there.
+  // grow_dim=1, active=10. steps_left=5, steps_needed=1, steps_to_take=1.
+  // box is [0,1) x [0,1) x [0,10), consumed=10 (no overshoot needed)
+  auto [box4, consumed4] = range.consume_chunk(0, 10);
   @endcode
   */
-  std::pair<IndexRange<T, N>, size_t> consume_chunk(size_t flat_beg, size_t requested_size) const {
-
-    if (requested_size == 0) {
-      return { *this, 0 };
-    }
-
-    std::array<size_t, N> coords;
-    size_t temp = flat_beg;
-
-    // 1. Convert flat_beg to ND coordinates
-    // We use the standard unsigned reverse iteration idiom (d-- > 0) to avoid
-    // -Wsign-compare warnings while correctly wrapping around after 0.
-    for (size_t d = N; d-- > 0; ) {
-      size_t dim_size = _dims[d].size();
-      coords[d] = temp % dim_size;
-      temp /= dim_size;
-    }
-
-    // 2. Find the highest valid dimension to grow (The "Trailing Zeros" Rule)
-    size_t grow_dim = N - 1;
-    size_t inner_volume = 1;
-    size_t active_inner_vol = 1;   // Track the volume strictly inner to grow_dim
-
-    for (size_t d = N; d-- > 0; ) {
-      // The "Trailing Zeros" boundary check:
-      // We mathematically CANNOT grow dimension `d` if any dimension inner to it
-      // (d+1) is not sitting at coordinate 0. If we did, we would break the
-      // orthogonal hyper-rectangle shape and create a discontiguous "stair-step" box.
-      if (d + 1 < N && coords[d + 1] != 0) {
-        break;
-      }
-
-      // We are authorized to grow this dimension if one whole step (inner_volume)
-      // does not overshoot the requested chunk budget.
-      if (inner_volume <= requested_size) {
-        grow_dim = d;
-        active_inner_vol = inner_volume;
-      }
-      else {
-        // We hit the budget ceiling.
-        // Because inner_volume strictly increases as we move outward, 
-        // all outer dimensions will also exceed the budget. We can safely stop looking.
-        break;
-      }
-
-      // Branchless accumulation: We multiply unconditionally. The CPU ALU is faster
-      // than checking `if (d > 0)`. The dead-store/potential-overflow when d == 0
-      // is completely harmless because the loop ends immediately after.
-      inner_volume *= _dims[d].size();
-    }
-
-    // 3. Determine how many steps to take along grow_dim
-    // We use integer floor division (/) here intentionally to decide steps needed.
-    // A step along `grow_dim` is an indivisible unit of work (active_inner_vol).
-    // Using ceiling division would routinely cause us to overshoot the requested_size
-    // budget. Floor division ensures we take as many *whole* slices as possible.
-    // The std::max(1, ...) handles the edge case where the budget is smaller than a
-    // single slice; we MUST take at least 1 step to guarantee forward progress.
-    size_t steps_left = _dims[grow_dim].size() - coords[grow_dim];
-    size_t steps_needed = (std::max)(size_t{1}, requested_size / active_inner_vol);
-    size_t steps_to_take = (std::min)(steps_left, steps_needed);
-
-    // 4. Construct the beautifully orthogonal Box
-    std::array<IndexRange<T, 1>, N> box_dims;
-    for(size_t d = 0; d < N; ++d) {
-      if (d < grow_dim) {
-        // Outer dimensions are locked at their current coordinate.
-        // We use `coords[d] + 1` for the end bound because C++ uses half-open
-        // intervals [begin, end). To lock a dimension to exactly ONE element,
-        // the end bound must be exactly 1 step past the begin bound.
-        box_dims[d] = IndexRange<T, 1>(
-          _dims[d].begin() + static_cast<T>(coords[d]) * _dims[d].step_size(),
-          _dims[d].begin() + static_cast<T>(coords[d] + 1) * _dims[d].step_size(),
-          _dims[d].step_size()
-        );
-      } else if (d == grow_dim) {
-        // The chosen dimension expands by the calculated steps.
-        box_dims[d] = IndexRange<T, 1>(
-          _dims[d].begin() + static_cast<T>(coords[d]) * _dims[d].step_size(),
-          _dims[d].begin() + static_cast<T>(coords[d] + steps_to_take) * _dims[d].step_size(),
-          _dims[d].step_size()
-        );
-      } else {
-        // Inner dimensions take their full unadulterated extent.
-        box_dims[d] = _dims[d];
-      }
-    }
-
-    return { IndexRange<T, N>(box_dims), steps_to_take * active_inner_vol };
-  }
+  std::pair<IndexRange<T, N>, size_t> consume_chunk(size_t flat_beg, size_t requested_size) const;
 
   private:
 
   std::array<IndexRange<T, 1>, N> _dims;
 };
+
+// ============================================================================
+// Out-of-class definitions — IndexRange<T, N>  (primary template)
+// ============================================================================
+
+template <std::integral T, size_t N>
+IndexRange<T, N>::IndexRange(const std::array<IndexRange<T, 1>, N>& dims) : _dims{dims} {}
+
+template <std::integral T, size_t N>
+size_t IndexRange<T, N>::size() const {
+  size_t total = 1;
+  for (size_t d = 0; d < N; ++d) total *= _dims[d].size();
+  return total;
+}
+
+template <std::integral T, size_t N>
+std::array<T, N> IndexRange<T, N>::coords(size_t flat) const {
+  std::array<T, N> c;
+  for (size_t d = N; d-- > 0; ) {
+    size_t sz  = _dims[d].size();
+    size_t pos = flat % sz;
+    c[d] = _dims[d].begin() + static_cast<T>(pos) * _dims[d].step_size();
+    flat /= sz;
+  }
+  return c;
+}
+
+template <std::integral T, size_t N>
+std::pair<IndexRange<T, N>, size_t>
+IndexRange<T, N>::consume_chunk(size_t flat_beg, size_t requested_size) const {
+
+  if (requested_size == 0) {
+    return { *this, 0 };
+  }
+
+  std::array<size_t, N> coords;
+  size_t temp = flat_beg;
+
+  // 1. Convert flat_beg to ND coordinates.
+  // We use the standard unsigned reverse iteration idiom (d-- > 0) to avoid
+  // -Wsign-compare warnings while correctly wrapping around after 0.
+  for (size_t d = N; d-- > 0; ) {
+    size_t dim_size = _dims[d].size();
+    coords[d] = temp % dim_size;
+    temp /= dim_size;
+  }
+
+  // 2. Find the outermost dimension whose cumulative inner volume first meets
+  //    or exceeds requested_size (the "minimum overshooting box" rule).
+  //
+  //    We walk from the innermost dimension outward, recording grow_dim on
+  //    every iteration BEFORE checking the budget.  This means grow_dim always
+  //    refers to the current candidate and active_inner_vol is its cumulative
+  //    volume.  We stop as soon as inner_volume >= requested_size (budget met)
+  //    or the trailing-zeros rule fires (geometry prevents further growth).
+  //
+  //    Trailing-zeros rule: dimension d cannot be the grow dimension if any
+  //    dimension inner to it is not at coordinate 0.  Growing d in that case
+  //    would produce a discontiguous "stair-step" shape rather than an
+  //    orthogonal hyper-rectangle.  When this fires we break immediately,
+  //    returning the best box reachable regardless of requested_size.
+  size_t grow_dim = N - 1;
+  size_t inner_volume = 1;
+  size_t active_inner_vol = 1;
+
+  for (size_t d = N; d-- > 0; ) {
+    // Trailing-zeros rule: an inner dimension is not at coordinate 0.
+    // No outer dimension can grow; return the best box we can form here.
+    if (d + 1 < N && coords[d + 1] != 0) {
+      break;
+    }
+
+    // Record this dimension as the current candidate before the budget check.
+    grow_dim = d;
+    active_inner_vol = inner_volume;
+
+    // Stop as soon as the cumulative volume meets the requested size.
+    // This is the outermost dimension we need — going further would produce
+    // a larger box than necessary.
+    if (inner_volume >= requested_size) {
+      break;
+    }
+
+    // Branchless accumulation: multiply unconditionally.  The potential
+    // dead-store when d == 0 is harmless because the loop ends immediately.
+    inner_volume *= _dims[d].size();
+  }
+
+  // 3. Determine how many steps to take along grow_dim.
+  //
+  //    active_inner_vol is the volume of one step along grow_dim.  When
+  //    active_inner_vol >= requested_size (the budget was already met at this
+  //    dimension or the trailing-zeros rule fired with active_inner_vol == 1),
+  //    integer division yields 0 and std::max promotes it to 1, taking exactly
+  //    one indivisible step — the minimum overshooting box.
+  size_t steps_left   = _dims[grow_dim].size() - coords[grow_dim];
+  size_t steps_needed = (std::max)(size_t{1}, requested_size / active_inner_vol);
+  size_t steps_to_take = (std::min)(steps_left, steps_needed);
+
+  // 4. Construct the orthogonal sub-box.
+  std::array<IndexRange<T, 1>, N> box_dims;
+  for (size_t d = 0; d < N; ++d) {
+    if (d < grow_dim) {
+      // Outer dimensions are locked at their current coordinate.
+      // We use coords[d] + 1 for the end bound because C++ uses half-open
+      // intervals [begin, end). To lock a dimension to exactly ONE element,
+      // the end bound must be exactly 1 step past the begin bound.
+      box_dims[d] = IndexRange<T, 1>(
+        _dims[d].begin() + static_cast<T>(coords[d])     * _dims[d].step_size(),
+        _dims[d].begin() + static_cast<T>(coords[d] + 1) * _dims[d].step_size(),
+        _dims[d].step_size()
+      );
+    } else if (d == grow_dim) {
+      // The chosen dimension expands by the calculated steps.
+      box_dims[d] = IndexRange<T, 1>(
+        _dims[d].begin() + static_cast<T>(coords[d])                 * _dims[d].step_size(),
+        _dims[d].begin() + static_cast<T>(coords[d] + steps_to_take) * _dims[d].step_size(),
+        _dims[d].step_size()
+      );
+    } else {
+      // Inner dimensions take their full extent.
+      box_dims[d] = _dims[d];
+    }
+  }
+
+  return { IndexRange<T, N>(box_dims), steps_to_take * active_inner_vol };
+}
 
 
 // ============================================================================
@@ -528,7 +556,7 @@ class IndexRange<T, 1> {
   printf("%zu\n", range.size());        // 5 (0, 2, 4, 6, 8)
   @endcode
   */
-  size_t size() const { return distance(_beg, _end, _step_size); }
+  size_t size() const;
 
   /**
   @brief maps a contiguous index partition back to the corresponding subrange
@@ -562,13 +590,7 @@ class IndexRange<T, 1> {
   Users must ensure [@c part_beg, @c part_end) is a valid partition of
   [0, @c size()), i.e., @c part_end <= size().
   */
-  IndexRange<T, 1> unravel(size_t part_beg, size_t part_end) const {
-    return IndexRange<T, 1>(
-      static_cast<T>(part_beg) * _step_size + _beg,
-      static_cast<T>(part_end) * _step_size + _beg,
-      _step_size
-    );
-  }
+  IndexRange<T, 1> unravel(size_t part_beg, size_t part_end) const;
 
   private:
 
@@ -577,6 +599,26 @@ class IndexRange<T, 1> {
   T _step_size;
 
 };
+
+
+
+// ============================================================================
+// Out-of-class definitions — IndexRange<T, 1>  (1D specialization)
+// ============================================================================
+
+template <std::integral T>
+size_t IndexRange<T, 1>::size() const {
+  return distance(_beg, _end, _step_size);
+}
+
+template <std::integral T>
+IndexRange<T, 1> IndexRange<T, 1>::unravel(size_t part_beg, size_t part_end) const {
+  return IndexRange<T, 1>(
+    static_cast<T>(part_beg) * _step_size + _beg,
+    static_cast<T>(part_end) * _step_size + _beg,
+    _step_size
+  );
+}
 
 // ----------------------------------------------------------------------------
 // Deduction guide: IndexRange(beg, end, step) -> IndexRange<T, 1>
@@ -698,4 +740,3 @@ template <typename R>
 concept IndexRangeMDLike = is_md_index_range_v<std::decay_t<std::unwrap_ref_decay_t<R>>>;
 
 }  // end of namespace tf -----------------------------------------------------
-

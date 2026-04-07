@@ -1,11 +1,11 @@
 var Cookbook =
 [
     [ "Project Motivation", "ProjectMotivation.html", [
-      [ "The Era of Multicore", "ProjectMotivation.html#TheEraOfMulticore", null ],
-      [ "Heterogeneous Computing", "ProjectMotivation.html#C0HeterogeneousComputing", null ],
-      [ "Loop-level Parallelism", "ProjectMotivation.html#LoopLevelParallelism", null ],
+      [ "The Parallel Programming Challenge", "ProjectMotivation.html#TheParallelProgrammingChallenge", null ],
+      [ "Heterogeneous Computing", "ProjectMotivation.html#HeterogeneousComputing", null ],
+      [ "From Loops to Task Graphs", "ProjectMotivation.html#LoopVsTaskParallelism", null ],
       [ "Task-based Parallelism", "ProjectMotivation.html#TaskBasedParallelism", null ],
-      [ "The Project Mantra", "ProjectMotivation.html#TheProjectMantra", null ]
+      [ "What Taskflow Does Differently", "ProjectMotivation.html#TheProjectMantra", null ]
     ] ],
     [ "Static Tasking", "StaticTasking.html", [
       [ "Create a Task Dependency Graph", "StaticTasking.html#CreateATaskDependencyGraph", null ],
@@ -79,18 +79,19 @@ var Cookbook =
       [ "Implement Recursive Task Parallelism", "TaskGroup.html#ImplementRecursiveTaskParallelismUsingTaskGroup", null ]
     ] ],
     [ "Exception Handling", "ExceptionHandling.html", [
-      [ "Understand the Logic of Exception Handling in Taskflow", "ExceptionHandling.html#UnderstandTheLogicOfExceptionHandlingInTaskflow", [
-        [ "Scenario 1: Synchronous Exception Propagation", "ExceptionHandling.html#Secnario1SynchronousExceptionPropagation", null ],
-        [ "Scenario 2: Asynchronous Exception Propagation", "ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation", null ],
-        [ "Scenario 3: Contextual Exception Propagation", "ExceptionHandling.html#Scenario3ContextualExceptionPropagation", null ],
-        [ "Algorithm Flow of Exception Handling", "ExceptionHandling.html#ExceptionHandlingAlgorithmFlow", null ]
+      [ "Why Parallel Exception Handling is Hard", "ExceptionHandling.html#ExceptionHandlingWhyHard", null ],
+      [ "How Taskflow Handles Exceptions", "ExceptionHandling.html#ExceptionHandlingLogic", [
+        [ "Scenario 1: Synchronous Propagation", "ExceptionHandling.html#Scenario1SynchronousExceptionPropagation", null ],
+        [ "Scenario 2: Asynchronous Propagation", "ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation", null ],
+        [ "Scenario 3: Contextual Propagation", "ExceptionHandling.html#Scenario3ContextualExceptionPropagation", null ],
+        [ "Algorithm Flow", "ExceptionHandling.html#ExceptionHandlingAlgorithmFlow", null ]
       ] ],
-      [ "Example: Catch an Exception from a Running Taskflow", "ExceptionHandling.html#CatchAnExceptionFromARunningTaskflow", null ],
-      [ "Example: Catch an Exception from a Subflow", "ExceptionHandling.html#CatchAnExceptionFromASubflow", null ],
-      [ "Example: Catch an Exception from an Async Task", "ExceptionHandling.html#CatchAnExceptionFromAnAsyncTask", null ],
-      [ "Example: Catch an Exception from a Corun Loop", "ExceptionHandling.html#CatchAnExceptionFromACorunLoop", null ],
+      [ "Catch an Exception from a Running Taskflow", "ExceptionHandling.html#ExceptionHandlingRunningTaskflow", null ],
+      [ "Catch an Exception from a Subflow", "ExceptionHandling.html#ExceptionHandlingSubflow", null ],
+      [ "Catch an Exception from an Async Task", "ExceptionHandling.html#ExceptionHandlingAsyncTask", null ],
+      [ "Catch an Exception from a Corun Loop", "ExceptionHandling.html#ExceptionHandlingCorun", null ],
       [ "Retrieve the Exception Pointer of a Task", "ExceptionHandling.html#RetrieveTheExceptionPointerOfATask", null ],
-      [ "Turn off Exception Handling", "ExceptionHandling.html#TurnOffExceptionHandling", null ]
+      [ "Disable Exception Handling at Compile Time", "ExceptionHandling.html#DisableExceptionHandling", null ]
     ] ],
     [ "Limit the Maximum Concurrency", "LimitTheMaximumConcurrency.html", [
       [ "Define a Semaphore", "LimitTheMaximumConcurrency.html#DefineASemaphore", null ],

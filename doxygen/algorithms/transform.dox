@@ -2,8 +2,8 @@ namespace tf {
 
 /** @page ParallelTransforms Parallel Transforms
 
-%Taskflow provides template functions for constructing tasks to 
-perform parallel transforms over ranges of items.
+%Taskflow provides template functions for constructing tasks to perform
+parallel transforms over ranges of items.
 
 @tableofcontents
 
@@ -16,12 +16,13 @@ for creating a parallel-transform task.
 #include <taskflow/algorithm/transform.hpp>
 @endcode
 
-@section ParallelTransformsOverARange Create a Unary Parallel-Transform Task
+@section ParallelTransformsUnary Create a Unary Parallel-Transform Task
 
-Parallel-transform transforms a range of items, possibly
-with a different type for the transformed data, and stores the result in another range.
-The task created by tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)
-is equivalent to a parallel execution of the following loop:
+A unary parallel-transform applies a callable to every element in a source
+range and writes the result to a destination range.
+The task created by
+tf::Taskflow::transform(B first1, E last1, O d_first, C c, P part)
+represents parallel execution of the following loop:
 
 @code{.cpp}
 while (first1 != last1) {
@@ -29,35 +30,33 @@ while (first1 != last1) {
 }
 @endcode
 
-tf::Taskflow::transform
-simultaneously applies the callable @c c to the object obtained by dereferencing 
-every iterator in the range <tt>[first1, last1)</tt> and stores
-the result in another range beginning at @c d_first.
-It is user's responsibility for ensuring the range is valid 
-within the execution of the parallel-transform task. 
+tf::Taskflow::transform simultaneously applies the callable @c c to the object
+obtained by dereferencing every iterator in the range <tt>[first1, last1)</tt>
+and stores the result in another range beginning at @c d_first.
+It is the user's responsibility to ensure the range is valid within the
+execution of the parallel-transform task.
 
 @code{.cpp}
 std::vector<int> src = {1, 2, 3, 4, 5};
 std::vector<int> tgt(src.size());
-taskflow.transform(src.begin(), src.end(), tgt.begin(), [](int i){ 
-  std::cout << "transforming item " << i << " to " << i + 1 << '\n';
+
+taskflow.transform(src.begin(), src.end(), tgt.begin(), [](int i) {
   return i + 1;
 });
 @endcode
 
-@section ParallelTransformsCaptureIteratorsByReference Capture Iterators by Reference
+@subsection ParallelTransformsCaptureIteratorsByReference Capture Iterators by Reference
 
-You can pass iterators by reference using @std_ref
-to marshal parameter update between dependent tasks.
-This is especially useful when the range is unknown
-at the time of creating a parallel-transform task,
-but needs initialization from another task.
+You can pass iterators by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the range is not known at task-graph construction time
+but is initialized by an upstream task.
 
 @code{.cpp}
 std::vector<int> src, tgt;
 std::vector<int>::iterator first, last, d_first;
 
-tf::Task init = taskflow.emplace([&](){
+tf::Task init = taskflow.emplace([&]() {
   src.resize(1000);
   tgt.resize(1000);
   first   = src.begin();
@@ -66,101 +65,159 @@ tf::Task init = taskflow.emplace([&](){
 });
 
 tf::Task transform = taskflow.transform(
-  std::ref(first), std::ref(last), std::ref(d_first), 
-  [&](int i) {
-    std::cout << "transforming item " << i << " to " << i + 1 << '\n';
-    return i+1;
+  std::ref(first), std::ref(last), std::ref(d_first),
+  [](int i) {
+    return i + 1;
   }
 );
+
+// wrong! first, last, and d_first are captured by copy at construction time
+// tf::Task transform = taskflow.transform(first, last, d_first, [](int i) {
+//   return i + 1;
+// });
 
 init.precede(transform);
 @endcode
 
-When @c init finishes, the parallel-transform task @c transform 
-will see @c first pointing to the beginning of @c src and 
-@c last pointing to the end of @c src.
-Then, it simultaneously transforms these 1000 items 
-by adding one to each element and stores the result 
-in another range starting at @c d_first.
+When @c init finishes, the parallel-transform task @c transform will see
+@c first pointing to the beginning of @c src and @c last pointing to the end
+of @c src, and performs parallel transforms over the 1000 items storing
+results starting at @c d_first.
 
-@section ParallelBinaryTransformsOverARange Create a Binary Parallel-Transform Task
+@section ParallelTransformsBinary Create a Binary Parallel-Transform Task
 
-You can use the overload, 
-tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part),
-to perform parallel transforms on two source ranges pointed by
-@c first1 and @c first2 using the binary
-operator @c c
-and store the result in another range pointed by @c d_first.
-This method is equivalent to the parallel execution of the following loop:
-    
+A binary parallel-transform applies a callable to pairs of elements drawn
+from two source ranges and writes each result to a destination range.
+The overload
+tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)
+represents parallel execution of the following loop:
+
 @code{.cpp}
 while (first1 != last1) {
   *d_first++ = c(*first1++, *first2++);
 }
 @endcode
 
-The following example creates a parallel-transform task 
-that adds two ranges of elements one by one
-and stores the result in a target range:
+The following example creates a parallel-transform task that adds two ranges
+element-wise and stores the result in a target range:
 
 @code{.cpp}
 std::vector<int> src1 = {1, 2, 3, 4, 5};
 std::vector<int> src2 = {5, 4, 3, 2, 1};
 std::vector<int> tgt(src1.size());
+
 taskflow.transform(
-  src1.begin(), src1.end(), src2.begin(), tgt.begin(), 
-  [](int i, int j){ 
+  src1.begin(), src1.end(), src2.begin(), tgt.begin(),
+  [](int i, int j) {
     return i + j;
   }
 );
 @endcode
 
-@section ParallelTransformsCfigureAPartitioner Configure a Partitioner
+@subsection ParallelBinaryTransformsCaptureIteratorsByReference Capture Iterators by Reference
 
-You can configure a partitioner for parallel-transform tasks to run with different
-scheduling methods, such as guided partitioning, dynamic partitioning, and static partitioning.
-The following example creates two parallel-transform tasks using two different
-partitioners, one with the static partitioning algorithm and 
-another one with the guided partitioning algorithm:
+As with the unary overload, all iterators can be passed by reference using
+@std_ref so that an upstream task can set up the ranges before the
+parallel-transform runs.
 
 @code{.cpp}
-tf::StaticPartitioner static_partitioner;
-tf::GuidedPartitioner guided_partitioner;
+std::vector<int> src1, src2, tgt;
+std::vector<int>::iterator first1, last1, first2, d_first;
 
+tf::Task init = taskflow.emplace([&]() {
+  src1.resize(1000);
+  src2.resize(1000);
+  tgt.resize(1000);
+  first1  = src1.begin();
+  last1   = src1.end();
+  first2  = src2.begin();
+  d_first = tgt.begin();
+});
+
+tf::Task transform = taskflow.transform(
+  std::ref(first1), std::ref(last1), std::ref(first2), std::ref(d_first),
+  [](int i, int j) {
+    return i + j;
+  }
+);
+
+// wrong! all iterators are captured by copy at construction time
+// tf::Task transform = taskflow.transform(
+//   first1, last1, first2, d_first, [](int i, int j) { return i + j; }
+// );
+
+init.precede(transform);
+@endcode
+
+When @c init finishes, the parallel-transform task @c transform will see all
+four iterators updated and performs parallel transforms over the 1000 item
+pairs, storing each result in @c tgt.
+
+@section ParallelTransformsConfigureAPartitioner Configure a Partitioner
+
+A partitioner controls how the iteration space is divided among workers.
+%Taskflow provides four partitioners, each suited to different workload
+characteristics:
+
+- tf::StaticPartitioner divides the range into equal-sized chunks ahead of
+  execution and assigns them to workers in order.
+  It has the lowest scheduling overhead and delivers the best performance
+  when every element costs roughly the same amount of work to transform.
+
+- tf::DynamicPartitioner distributes fixed-sized chunks to workers on demand
+  as they become available.
+  It adapts well to workloads where transform cost varies per element, at
+  the expense of slightly higher coordination overhead.
+
+- tf::GuidedPartitioner distributes chunks whose size decreases adaptively
+  as work is consumed — large chunks early to reduce overhead, smaller chunks
+  late to balance the tail.
+  This is the default partitioner and delivers stable, near-optimal
+  performance across a wide range of workloads.
+
+- tf::RandomPartitioner distributes chunks of randomly sampled sizes, which
+  can help avoid systematic load imbalances caused by data-dependent cost
+  patterns.
+
+The following example creates two parallel-transform tasks using different
+partitioners:
+
+@code{.cpp}
 std::vector<int> src1 = {1, 2, 3, 4, 5};
 std::vector<int> src2 = {5, 4, 3, 2, 1};
 std::vector<int> tgt1(src1.size());
-std::vector<int> tgt2(src2.size());
+std::vector<int> tgt2(src1.size());
 
-// create a parallel-transform task with static execution partitioner
+tf::StaticPartitioner static_partitioner(0);   // chunk size auto-determined
+tf::GuidedPartitioner  guided_partitioner(0);  // minimum chunk size auto-determined
+
+// parallel-transform with static partitioner
 taskflow.transform(
-  src1.begin(), src1.end(), src2.begin(), tgt1.begin(), 
-  [](int i, int j){ 
-    return i + j;
-  },
+  src1.begin(), src1.end(), src2.begin(), tgt1.begin(),
+  [](int i, int j) { return i + j; },
   static_partitioner
 );
 
-// create a parallel-transform task with guided execution partitioner
+// parallel-transform with guided partitioner
 taskflow.transform(
-  src1.begin(), src1.end(), src2.begin(), tgt2.begin(), 
-  [](int i, int j){ 
-    return i + j;
-  },
+  src1.begin(), src1.end(), src2.begin(), tgt2.begin(),
+  [](int i, int j) { return i + j; },
   guided_partitioner
 );
 @endcode
 
+As a rule of thumb, prefer tf::StaticPartitioner when every element costs
+the same to transform (e.g., element-wise arithmetic) and
+tf::GuidedPartitioner for irregular workloads (e.g., transforms whose cost
+depends on the element value).
+tf::DynamicPartitioner is a good choice when chunks must be kept small and
+strictly equal in size.
+
 @note
 By default, parallel-transform tasks use tf::DefaultPartitioner
-if no partitioner is specified. 
+(currently tf::GuidedPartitioner) if no partitioner is specified.
 
 */
 
 }
-
-
-
-
-
 

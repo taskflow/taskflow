@@ -1,7 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"release-3-1-0.html#release-3-1-0_documentation":[1,13,6],
-"release-3-1-0.html#release-3-1-0_download":[1,13,0],
 "release-3-1-0.html#release-3-1-0_miscellaneous_items":[1,13,7],
 "release-3-1-0.html#release-3-1-0_new_features":[1,13,2],
 "release-3-1-0.html#release-3-1-0_profiler":[1,13,2,3],

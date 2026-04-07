@@ -1,7 +1,5 @@
 var NAVTREEINDEX3 =
 {
-"classtf_1_1cudaGraphExecBase.html#aed30ccc98bb2187e9141c4f7b63ff66e":[13,0,0,10,3],
-"classtf_1_1cudaGraphExecBase.html#af5c546cfeb8d42f4b6aa52dd3eb2af3f":[13,0,0,10,5],
 "classtf_1_1cudaGraphExecBase.html#afa67dc39ef8f142284b799dd0c93aed2":[13,0,0,10,4],
 "classtf_1_1cudaGraphExecCreator.html":[13,0,0,11],
 "classtf_1_1cudaGraphExecCreator.html#a14fa4bcc0f94658523a92eb91967e873":[13,0,0,11,1],
@@ -249,5 +247,7 @@ var NAVTREEINDEX3 =
 "release-3-1-0.html#release-3-1-0_breaking_changes":[1,13,4],
 "release-3-1-0.html#release-3-1-0_bug_fixes":[1,13,3],
 "release-3-1-0.html#release-3-1-0_cudaflow":[1,13,2,1],
-"release-3-1-0.html#release-3-1-0_deprecated_items":[1,13,5]
+"release-3-1-0.html#release-3-1-0_deprecated_items":[1,13,5],
+"release-3-1-0.html#release-3-1-0_documentation":[1,13,6],
+"release-3-1-0.html#release-3-1-0_download":[1,13,0]
 };

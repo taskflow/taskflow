@@ -1,0 +1,85 @@
+digraph ExceptionHandlingHard {
+
+  rankdir = TB;
+  graph [fontname="Helvetica", fontsize=12, ranksep=0.5, nodesep=0.6,
+         splines=polyline];
+  node  [fontname="Helvetica", fontsize=12, style=filled, shape=box,
+         height=0.38, margin="0.12,0.06"];
+  edge  [fontname="Helvetica", fontsize=12];
+
+  // ── invisible spine to anchor left/right columns ─────────────────────────
+  sp1 [style=invis, width=0.01, label=""];
+  sp2 [style=invis, width=0.01, label=""];
+  sp3 [style=invis, width=0.01, label=""];
+  sp4 [style=invis, width=0.01, label=""];
+  sp1 -> sp2 -> sp3 -> sp4 [style=invis, weight=20];
+
+  // ── column headers ────────────────────────────────────────────────────────
+  { rank=same;
+    hdr_app [label="Application Thread", shape=plaintext,
+             fontname="Helvetica Bold", fontsize=12, fillcolor=white];
+    hdr_rt  [label="Taskflow Runtime",   shape=plaintext,
+             fontname="Helvetica Bold", fontsize=12, fillcolor=white];
+    hdr_wk  [label="Worker Thread",      shape=plaintext,
+             fontname="Helvetica Bold", fontsize=12, fillcolor=white];
+    hdr_app -> hdr_rt -> hdr_wk [style=invis, weight=5];
+    sp1;
+  }
+
+  // ── row 1: application submits; worker executes ───────────────────────────
+  { rank=same;
+    app1 [label="try {\n  executor.run(tf).get();\n}",
+          fillcolor="#dce8fb", shape=box, width=2.0];
+    rt1  [label="schedules tasks\nacross workers",
+          fillcolor="#f0f0f0", width=1.7];
+    wk1  [label="execute task()\n→ throws exception!",
+          fillcolor="#fde8d0", width=1.7];
+    app1 -> rt1 -> wk1 [style=invis, weight=5];
+    sp2;
+  }
+
+  // ── row 2: the problem ────────────────────────────────────────────────────
+  { rank=same;
+    app2 [label="waiting…\n(no call stack\nconnection)",
+          fillcolor="#dce8fb", width=2.0];
+    rt2  [label="intercepts exception\nstores it safely\ncancels downstream tasks",
+          fillcolor="#fff3cd", width=1.7];
+    wk2  [label="exception cannot\npropagate up\ncall stack ✗",
+          fillcolor="#f8d7da", width=1.7];
+    app2 -> rt2 -> wk2 [style=invis, weight=5];
+    sp3;
+  }
+
+  // ── row 3: resolution ─────────────────────────────────────────────────────
+  { rank=same;
+    app3 [label="catch (exception& e) {\n  // handled here ✓\n}",
+          fillcolor="#d4edda", width=2.0];
+    rt3  [label="re-raises exception\non application thread",
+          fillcolor="#f0f0f0", width=1.7];
+    wk3  [label="remaining tasks\nskipped",
+          fillcolor="#f0f0f0", width=1.7];
+    app3 -> rt3 -> wk3 [style=invis, weight=5];
+    sp4;
+  }
+
+  // ── vertical flow — application thread (left column) ─────────────────────
+  app1 -> app2 -> app3 [color="#1a5fa8", style=solid, weight=10,
+                         label="", arrowsize=0.7];
+
+  // ── vertical flow — worker thread (right column) ──────────────────────────
+  wk1  -> wk2  [color="#cc3300", style=solid, weight=10, arrowsize=0.7];
+  wk2  -> wk3  [color="#cc3300", style=dashed, weight=10, arrowsize=0.7,
+                 label="cancelled"];
+
+  // ── cross-thread: exception thrown → runtime intercepts ──────────────────
+  wk1 -> rt2 [color="#cc3300", style=solid, arrowsize=0.7,
+               label="  throw  ", fontcolor="#cc3300", weight=1];
+
+  // ── cross-thread: runtime re-raises on application thread ────────────────
+  rt3 -> app3 [color="#2a7a2a", style=solid, arrowsize=0.7,
+               label="  rethrow  ", fontcolor="#2a7a2a", weight=1];
+
+  // ── runtime vertical continuity ───────────────────────────────────────────
+  rt1 -> rt2 -> rt3 [color="#888888", style=solid, weight=10, arrowsize=0.7];
+}
+

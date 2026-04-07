@@ -2,105 +2,175 @@ namespace tf {
 
 /** @page ProjectMotivation Project Motivation
 
-%Taskflow addresses a long-standing problem,
-<em>how can we make it easier for C++ developers to 
-quickly write parallel and heterogeneous programs with high performance scalability
-and simultaneous high productivity?</em>
+Writing parallel programs is hard.
+Getting them right, efficient, and maintainable is even harder.
+%Taskflow exists to close that gap -
+to let C++ developers express sophisticated parallel workloads
+using a clean task-parallel graph description language.
 
 @tableofcontents
 
-@section TheEraOfMulticore The Era of Multicore
+@section TheParallelProgrammingChallenge The Parallel Programming Challenge
 
-In the past, we embrace *free* performance scaling on our software thanks to 
-advances in manufacturing technologies and micro-architectural innovations.
-Approximately for every 1.5 year we can speed up our programs by simply switching to new
-hardware and compiler vendors that brings 2x more transistors, faster clock rates, 
-and higher instruction-level parallelism.
-However, this paradigm was challenged by the power wall and increasing difficulties in exploiting
-instruction-level parallelism.
-The boost to computing performance has stemmed from changes to multicore chip designs.
+For decades, software performance improved almost for free.
+Every processor generation brought faster clock speeds, more transistors,
+and deeper instruction-level parallelism.
+A program written in 1995 ran measurably faster on 2005 hardware
+without changing a single line of code.
+
+That era ended.
+Clock frequencies plateaued around 2004 as chip designers hit the @em power @em wall —
+the point at which adding more transistors simply generated more heat than the chip
+could dissipate.
+The industry's answer was to put multiple independent cores on a single die,
+giving birth to the multicore era.
 
 @image html images/era_multicore.jpg width=60%
 
-The above sweeping visualization (thanks to Prof. Mark Horowitz and his group) 
-shows the evolution of computer architectures is moving toward multicore designs.
-Today, multicore processors and multiprocessor systems are common
-in many electronic products such as mobiles, laptops, desktops, and servers.
-In order to keep up with the performance scaling, 
-it is becoming necessary for software developers to write parallel programs 
-that utilize the number of available cores.
+The sweeping visualization above (courtesy of Prof. Mark Horowitz and his group)
+captures this transition clearly: performance scaling has shifted from
+single-core frequency improvements to parallelism across many cores.
+Today, every laptop, phone, server, and embedded device ships with multiple cores.
+The implication for software developers is unavoidable —
+@em if @em your @em program @em does @em not @em run @em in @em parallel,
+@em it @em is @em leaving @em performance @em on @em the @em table.
 
-@section C0HeterogeneousComputing Heterogeneous Computing
+@section HeterogeneousComputing Heterogeneous Computing
 
-With the influence of artificial intelligence (AI) through new and merged workloads, 
-heterogeneous computing becomes demanding and will continue to be heard for years to come.
-We have not just CPUs but GPUs, TPUs, FPGAs, and ASICs to accelerator a wide variety of
-scientific computing problems.
+Multicore CPUs were only the beginning.
+Driven by the explosive growth of artificial intelligence, scientific simulation,
+and data analytics, modern systems now combine CPUs, GPUs, TPUs, FPGAs,
+and domain-specific ASICs — each offering different throughputs,
+latencies, memory hierarchies, and programming models.
 
 @image html images/CPU-vs-TPU-vs-GPU.png width=60%
 
-The question is: <em>How are we going to program these beasts?</em>
-Writing a high-performance sequential program is hard. 
-Parallel programming is harder. 
-Parallel programming of heterogeneous devices is extremely challenging 
-if we care about performance and power efficiency.
-Programming models need to deal with productivity versus performance.
+Exploiting this hardware diversity is one of the most difficult problems
+in systems programming.
+A developer who wants to run a neural network inference must orchestrate
+data movement from host memory to device memory,
+launch GPU kernels with the right grid geometry,
+synchronise CPU and GPU execution at the right points,
+and do all of this without introducing unnecessary stalls or data races —
+all while keeping the CPU cores busy in the meantime.
+Miss any of these concerns and either correctness or performance suffers.
 
-@section LoopLevelParallelism Loop-level Parallelism
+Parallel programming is hard.
+Parallel programming across heterogeneous devices is a different order of difficulty.
 
-The most basic and simplest concept of parallel programming is *loop-level parallelism*,
-exploiting parallelism that exists among the iterations of a loop.
-The program typically partitions a loop of iterations into a set of of blocks,
-either fixed or dynamic,
-and run each block in parallel. Below the figure illustrates this pattern.
+@section LoopVsTaskParallelism From Loops to Task Graphs
+
+The first tool most developers reach for is @em loop-level @em parallelism:
+partition the iterations of a loop into blocks and run the blocks concurrently.
 
 @image html images/loop-level-parallelism.jpeg width=50%
 
-The main advantage of the loop-based approach is its simplicity in 
-speeding up a regular workload in line with Amdahl's Law.
-Programmers only need to discover independence of each iteration within a loop 
-and, once possible, the parallel decomposition strategy can be easily implemented.
-Many existing libraries have built-in support to write a parallel-for loop.
+Loop parallelism is easy to reason about and well-supported by OpenMP,
+Intel TBB, and the C++ parallel algorithms library.
+For regular, independent workloads, such as
+matrix multiplication, image filters, and element-wise array operations,
+it delivers excellent results.
+But real applications are rarely that simple.
+Consider a program with four computational stages where stage A must complete
+before stages B and C can begin, and stage D cannot start until both B and C
+have finished, a diamond-shaped dependency as shown below:
 
+@dotfile images/simple.dot
+
+There is no natural way to express this with a parallel-for loop.
+The dependencies cut across loop boundaries.
+A developer forced to implement this with raw threads must manually
+coordinate joins, futures, or condition variables, producing code that
+obscures the actual parallel structure:
+
+@code{.cpp}
+// -- Raw std::thread: a diamond A -> {B, C} -> D ---------------------------
+int result_a, result_b, result_c, result_d;
+
+// Step 1: run A sequentially (nothing can overlap)
+std::thread tA([&]() { result_a = compute_a(); });
+tA.join();   // force sync before B and C can start
+
+// Step 2: run B and C in parallel
+std::thread tB([&]() { result_b = compute_b(result_a); });
+std::thread tC([&]() { result_c = compute_c(result_a); });
+tB.join();
+tC.join();   // force sync before D can start
+
+// Step 3: run D
+std::thread tD([&]() { result_d = compute_d(result_b, result_c); });
+tD.join();
+@endcode
+
+The join-points expose the structure, but only because this example is tiny.
+In a real program with dozens of stages, mixed data and control dependencies,
+and dynamic subgraphs, the synchronisation logic quickly becomes
+the dominant concern — error-prone, hard to test, and painful to modify.
+The root problem is that the parallelism is real and the dependencies are real,
+but the code has no first-class way to represent either.
+Thread joins and mutexes are @em mechanisms, not @em descriptions.
 
 @section TaskBasedParallelism Task-based Parallelism
 
-The traditional loop-level parallelism is simple but hardly allows users 
-to exploit parallelism in more irregular applications such as graph algorithms,
-incremental flows, recursion, and dynamically-allocated data structures.
-To address these challenges,
-parallel programming and libraries are evolving from the tradition loop-based parallelism to
-the *task-based* model.
+The right abstraction is a @em task @em dependency @em graph.
+Each node is a unit of work; each edge is a dependency.
+The runtime takes the graph and schedules tasks on available cores,
+respecting all dependencies, without the developer needing to think about
+threads, joins, or synchronisation points.
 
-<!-- @image html images/task-level-parallelism.svg width=60% -->
 @dotfile images/task-level-parallelism.dot
 
-The above figure shows an example *task dependency graph*.
-Each node in the graph represents a task unit at function level and each
-edge indicates the task dependency between a pair of tasks.
-Task-based model offers a powerful means to express both regular 
-and irregular parallelism in a top-down manner, 
-and provides transparent scaling to large number of cores.
-In fact, it has been proven, both by the research community and 
-the evolution of parallel programming standards, 
-task-based approach scales the best with future processor generations and architectures.
+Task-based parallelism is not a new idea —
+it has been validated by the research community and embedded in
+standards such as OpenMP tasks, Intel TBB flow graphs, and C++ executors.
+What has been missing is a library that makes task graphs as easy to
+write as sequential code, works across both CPU and heterogeneous devices,
+and scales to real-world application complexity.
 
-@section TheProjectMantra The Project Mantra
+@section TheProjectMantra What Taskflow Does Differently
 
-The goal of %Taskflow is simple -
-<em>We help developers quickly write parallel programs 
-with high performance scalability and simultaneous high productivity</em>.
-We want developers to write simple and effective parallel code, specifically with the following objectives:
+%Taskflow gives developers a concise, expressive API for building and executing
+task dependency graphs in C++.
+The same diamond example that required manual thread management above
+becomes self-documenting with %Taskflow:
 
-@li Expressiveness
-@li Readability 
-@li Transparency
+@code{.cpp}
+// -- Taskflow: the same diamond, expressed as a graph ----------------------
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+int result_a, result_b, result_c, result_d;
+
+auto A = taskflow.emplace([&]() { result_a = compute_a(); });
+auto B = taskflow.emplace([&]() { result_b = compute_b(result_a); });
+auto C = taskflow.emplace([&]() { result_c = compute_c(result_a); });
+auto D = taskflow.emplace([&]() { result_d = compute_d(result_b, result_c); });
+
+A.precede(B, C);   // B and C run after A
+D.succeed(B, C);   // D runs after both B and C
+
+executor.run(taskflow).wait();
+@endcode
+
+The dependency structure is explicit and readable.
+There are no join calls, no mutexes, no condition variables.
+The executor handles scheduling across all available cores automatically.
+Adding a new stage, changing a dependency, or reusing the graph
+requires changing only the parts of the code that actually changed.
+
+This is the design philosophy behind %Taskflow:
+
+@li @b Expressiveness — complex parallel patterns should be easy to write
+@li @b Readability — code should communicate its parallel structure, not hide it
+@li @b Transparency — the runtime should be predictable and observable
 
 In a nutshell, code written with %Taskflow explains itself.
-The transparency allows developers to focus on the development of application algorithms
-and parallel decomposition strategies,
-rather than low-level, system-specific details.
+Developers focus on algorithms and decomposition strategies,
+not on low-level synchronisation mechanics.
+%Taskflow scales from simple parallel loops to large heterogeneous pipelines,
+and does so with a programming model that stays consistent across both.
 
 */
 
 }
+

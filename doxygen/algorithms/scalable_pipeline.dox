@@ -127,7 +127,7 @@ to the new range of two additional pipes, resulting in a pipeline of five serial
 When resetting a scalable pipeline to a new range, it will start from the initial state
 as if it has just been constructed, i.e., the token number counts from zero.
 
-@attention
+@note
 Unlike tf::Pipeline that keeps the given pipes in a std::tuple object,
 tf::ScalablePipeline does not own the given pipe but maintains a vector of iterators
 to each pipe in the given range.
@@ -174,7 +174,7 @@ The task graph of this program is shown below:
 
 @dotfile images/scalable_pipeline_3.dot
 
-@attention
+@note
 It is your responsibility to ensure a scalable pipeline has
 a valid structure before running it.
 A valid pipeline must have at least one parallel line and one pipe,
