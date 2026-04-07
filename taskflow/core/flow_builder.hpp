@@ -375,7 +375,7 @@ class FlowBuilder {
   @tparam B beginning iterator type
   @tparam E ending iterator type
   @tparam C callable type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -401,7 +401,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename B, typename E, typename C, typename P = DefaultPartitioner>
+  template <typename B, typename E, typename C, Partitioner P = DefaultPartitioner>
   Task for_each(B first, E last, C callable, P part = P());
   
   /**
@@ -411,7 +411,7 @@ class FlowBuilder {
   @tparam E ending index type (must be integral)
   @tparam S step type (must be integral)
   @tparam C callable type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first index of the beginning (inclusive)
   @param last index of the end (exclusive)
@@ -443,15 +443,15 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
+  template <typename B, typename E, typename S, typename C, Partitioner P = DefaultPartitioner>
   Task for_each_index(B first, E last, S step, C callable, P part = P());
 
   /**
   @brief constructs an index range-based parallel-for task
 
-  @tparam R index range type (tf::IndexRange)
+  @tparam R type satisfying tf::IndexRangeLike
   @tparam C callable type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param range index range 
   @param callable callable object to apply to each valid index
@@ -482,7 +482,10 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename R, typename C, typename P = DefaultPartitioner>
+  template <IndexRange1DLike R, typename C, Partitioner P = DefaultPartitioner>
+  Task for_each_by_index(R range, C callable, P part = P());
+  
+  template <IndexRangeMDLike R, typename C, Partitioner P = DefaultPartitioner>
   Task for_each_by_index(R range, C callable, P part = P());
 
   // ------------------------------------------------------------------------
@@ -496,7 +499,7 @@ class FlowBuilder {
   @tparam E ending input iterator type
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P partitioner type satisfying tf::Partitioner (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first1 iterator to the beginning of the first range
   @param last1 iterator to the end of the first range
@@ -524,8 +527,7 @@ class FlowBuilder {
   Please refer to @ref ParallelTransforms for details.
   */
   template <typename B, typename E, typename O, typename C,
-            typename P = DefaultPartitioner>
-requires Partitioner<std::decay_t<P>>
+            Partitioner P = DefaultPartitioner>
   Task transform(B first1, E last1, O d_first, C c, P part = P());
   
   /**
@@ -536,7 +538,7 @@ requires Partitioner<std::decay_t<P>>
   @tparam B2 beginning input iterator type for the first second range
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P partitioner type satisfying tf::Partitioner (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first1 iterator to the beginning of the first input range
   @param last1 iterator to the end of the first input range
@@ -565,8 +567,8 @@ requires Partitioner<std::decay_t<P>>
   Please refer to @ref ParallelTransforms for details.
   */
   template <typename B1, typename E1, typename B2, typename O, typename C,
-            typename P = DefaultPartitioner>
-requires (!Partitioner<std::decay_t<C>>)
+            Partitioner P = DefaultPartitioner>
+  requires (!Partitioner<std::decay_t<C>>)
   Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());
   
   // ------------------------------------------------------------------------
@@ -580,7 +582,7 @@ requires (!Partitioner<std::decay_t<C>>)
   @tparam E ending iterator type
   @tparam T result type
   @tparam O binary reducer type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -606,17 +608,17 @@ requires (!Partitioner<std::decay_t<C>>)
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <typename B, typename E, typename T, typename O, typename P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename O, Partitioner P = DefaultPartitioner>
   Task reduce(B first, E last, T& init, O bop, P part = P());
 
   /**
   @brief constructs an index range-based parallel-reduction task
 
-  @tparam R index range type (tf::IndexRange)
+  @tparam R type satisfying tf::IndexRangeLike
   @tparam T result type
   @tparam L local reducer type
   @tparam G global reducer type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param range index range 
   @param init initial value of the reduction and the storage for the reduced result
@@ -663,7 +665,7 @@ requires (!Partitioner<std::decay_t<C>>)
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <typename R, typename T, typename L, typename G, typename P = DefaultPartitioner>
+  template <IndexRangeLike R, typename T, typename L, typename G, Partitioner P = DefaultPartitioner>
   Task reduce_by_index(R range, T& init, L lop, G gop, P part = P());
   
   // ------------------------------------------------------------------------
@@ -678,7 +680,7 @@ requires (!Partitioner<std::decay_t<C>>)
   @tparam T result type
   @tparam BOP binary reducer type
   @tparam UOP unary transformation type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -706,8 +708,7 @@ requires (!Partitioner<std::decay_t<C>>)
   Please refer to @ref ParallelReduction for details.
   */
   template <typename B, typename E, typename T, typename BOP, typename UOP,
-            typename P = DefaultPartitioner>
-requires Partitioner<std::decay_t<P>>
+            Partitioner P = DefaultPartitioner>
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P part = P());
 
   /**
@@ -718,7 +719,7 @@ requires Partitioner<std::decay_t<P>>
   @tparam T result type
   @tparam BOP_R binary reducer type
   @tparam BOP_T binary transformation type
-  @tparam P partitioner type (default tf::DefaultPartitioner)
+  @tparam P type satisfying tf::Partitioner
  
   @param first1 iterator to the beginning of the first range (inclusive)
   @param last1 iterator to the end of the first range (exclusive)
@@ -748,8 +749,8 @@ requires Partitioner<std::decay_t<P>>
   */
   
   template <typename B1, typename E1, typename B2, typename T,
-            typename BOP_R, typename BOP_T, typename P = DefaultPartitioner>
-requires (!Partitioner<std::decay_t<BOP_T>>)
+            typename BOP_R, typename BOP_T, Partitioner P = DefaultPartitioner>
+  requires (!Partitioner<std::decay_t<BOP_T>>)
   Task transform_reduce(
     B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
   );
@@ -1076,7 +1077,7 @@ requires (!Partitioner<std::decay_t<BOP_T>>)
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename UOP, Partitioner P = DefaultPartitioner>
   Task find_if(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
@@ -1124,7 +1125,7 @@ requires (!Partitioner<std::decay_t<BOP_T>>)
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename UOP, Partitioner P = DefaultPartitioner>
   Task find_if_not(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
@@ -1176,7 +1177,7 @@ requires (!Partitioner<std::decay_t<BOP_T>>)
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename C, typename P>
+  template <typename B, typename E, typename T, typename C, Partitioner P>
   Task min_element(B first, E last, T& result, C comp, P part);
   
   /**
@@ -1228,7 +1229,7 @@ requires (!Partitioner<std::decay_t<BOP_T>>)
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename C, typename P>
+  template <typename B, typename E, typename T, typename C, Partitioner P>
   Task max_element(B first, E last, T& result, C comp, P part);
 
   // ------------------------------------------------------------------------
@@ -1306,8 +1307,7 @@ requires (!Partitioner<std::decay_t<BOP_T>>)
   */
 
   template <typename B1, typename E1, typename B2, typename E2,
-            typename O, typename P = DefaultPartitioner>
-requires Partitioner<std::decay_t<P>>
+            typename O, Partitioner P = DefaultPartitioner>
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
 
   /**
@@ -1340,8 +1340,8 @@ requires Partitioner<std::decay_t<P>>
   */
 
   template <typename B1, typename E1, typename B2, typename E2,
-            typename O, typename C, typename P = DefaultPartitioner>
-requires (!Partitioner<std::decay_t<C>>)
+            typename O, typename C, Partitioner P = DefaultPartitioner>
+  requires (!Partitioner<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
   
   protected:

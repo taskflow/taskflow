@@ -138,56 +138,6 @@ template <typename T, typename... Ts>
 constexpr auto get_index_v = get_index<T, Ts...>::value;
 
 // ----------------------------------------------------------------------------
-// stateful iterators
-// ----------------------------------------------------------------------------
-
-// STL-styled iterator
-template <typename B, typename E>
-struct stateful_iterator {
-
-  using TB = std::decay_t<std::unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<std::unwrap_ref_decay_t<E>>;
-
-  static_assert(std::is_same_v<TB, TE>, "decayed iterator types must match");
-
-  using type = TB;
-};
-
-template <typename B, typename E>
-using stateful_iterator_t = typename stateful_iterator<B, E>::type;
-
-// raw integral index
-template <typename B, typename E, typename S>
-struct stateful_index {
-
-  using TB = std::decay_t<std::unwrap_ref_decay_t<B>>;
-  using TE = std::decay_t<std::unwrap_ref_decay_t<E>>;
-  using TS = std::decay_t<std::unwrap_ref_decay_t<S>>;
-
-  static_assert(
-    std::is_integral_v<TB>, "decayed beg index must be an integral type"
-  );
-
-  static_assert(
-    std::is_integral_v<TE>, "decayed end index must be an integral type"
-  );
-
-  static_assert(
-    std::is_integral_v<TS>, "decayed step must be an integral type"
-  );
-
-  static_assert(
-    std::is_same_v<TB, TE> && std::is_same_v<TE, TS>,
-    "decayed index and step types must match"
-  );
-
-  using type = TB;
-};
-
-template <typename B, typename E, typename S>
-using stateful_index_t = typename stateful_index<B, E, S>::type;
-
-// ----------------------------------------------------------------------------
 // visit a tuple with a functor at runtime
 // ----------------------------------------------------------------------------
 
@@ -265,4 +215,86 @@ using deref_t = std::iter_value_t<I>;
 template <typename I>
 constexpr bool is_random_access_iterator = std::random_access_iterator<I>;
 
+// ----------------------------------------------------------------------------
+// Callable
+// ----------------------------------------------------------------------------
+
+struct AnyArg {
+  // Keep it simple: just one template conversion that can bind to anything.
+  // We use a pointer trick to avoid needing a static dummy object.
+  template <typename T>
+  operator T&() const;
+    
+  template <typename T>
+  operator T&&() const;
+};
+
+// Helper to provide N instances of AnyArg to a call check
+template <typename F, typename Indices>
+struct is_nary_invocable;
+
+template <typename F, std::size_t... I>
+struct is_nary_invocable<F, std::index_sequence<I...>> {
+  static constexpr bool value = requires(F&& f) {
+    std::forward<F>(f)( ((void)I, std::declval<AnyArg>())... );
+  };
+};
+
+/**
+@brief concept to check if a type is callable with `N` arguments of any types
+
+@tparam F The function-like type to be tested.
+@tparam N The required number of arguments (arity).
+
+This concept validates whether a function-like object (lambda, functor, or function pointer)
+can be invoked with a specific number of arguments. It uses an internal @ref AnyArg
+helper to simulate arguments of any type, making it useful for generic API validation.
+
+@code{.cppp}
+auto f = [](int x, int y) { return x + y; };
+static_assert(NaryOperatorLike<decltype(f), 2>); // Passes
+static_assert(!NaryOperatorLike<decltype(f), 1>); // Fails: requires 2 args
+
+auto g = [](auto... args) { return sizeof...(args); };
+static_assert(NaryOperatorLike<decltype(g), 0>); // Passes
+static_assert(NaryOperatorLike<decltype(g), 5>); // Passes
+static_assert(NaryOperatorLike<decltype(g), 100>); // Passes
+
+// When testing member functions via std::invoke, the first argument
+// must be the object instance (or pointer).
+struct Math { void add(int a) {} };
+
+// Passes because std::invoke(ptr_to_mem, instance, arg) is 2 arguments total
+static_assert(NaryOperatorLike<decltype(&Math::add), 2>);
+@endcode
+*/
+template <typename F, size_t N>
+concept NaryOperatorLike = is_nary_invocable<F, std::make_index_sequence<N>>::value;
+
+/**
+@brief concept to check if a type is callable with one argument of any type
+*/
+template <typename F>
+concept UnaryOperatorLike = NaryOperatorLike<F, 1>;
+
+/**
+@brief concept to check if a type is callable with two arguments of any type
+*/
+template <typename F>
+concept BinaryOperatorLike = NaryOperatorLike<F, 2>;
+
+/**
+@brief concept to check if a type is callable with three arguments of any type
+*/
+template <typename F>
+concept TernaryOperatorLike = NaryOperatorLike<F, 3>;
+
 }  // end of namespace tf. ----------------------------------------------------
+
+
+
+
+
+
+
+

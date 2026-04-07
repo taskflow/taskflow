@@ -1376,3 +1376,315 @@ TEST_CASE("ParallelFor.Nested.8threads" * doctest::timeout(300)) {
   nested_for_loop(8);
 }
 
+// ----------------------------------------------------------------------------
+// MD range-based for_each_by_index (IndexRangeMDLike)
+// ----------------------------------------------------------------------------
+
+// 2D: verifies every (i, j) sub-box is visited exactly once and covers the
+// full Cartesian product. Sweeps di x dj sizes to stress consume_chunk
+// boundary alignment across all chunk sizes.
+template <typename P>
+void md_for_each_by_index_2d(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  for(int di = 1; di <= 17; di++) {
+    for(int dj = 1; dj <= 23; dj++) {
+      for(size_t c : {0, 1, 3, 7, 99}) {
+
+        tf::IndexRange<int, 2> range(
+          tf::IndexRange<int>(0, di, 1),
+          tf::IndexRange<int>(0, dj, 1)
+        );
+
+        const size_t N = range.size();  // di * dj
+
+        std::vector<int> visited(N, 0);
+        std::atomic<size_t> total{0};
+
+        taskflow.clear();
+        taskflow.for_each_by_index(range,
+          [&, dj](const tf::IndexRange<int, 2>& box) {
+            for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+              for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+                visited[i * dj + j]++;
+                total.fetch_add(1, std::memory_order_relaxed);
+              }
+            }
+          }, P(c)
+        );
+
+        executor.run(taskflow).wait();
+
+        REQUIRE(total == N);
+        for(size_t k = 0; k < N; k++) {
+          REQUIRE(visited[k] == 1);
+        }
+      }
+    }
+  }
+}
+
+// 3D: same idea extended to three dimensions, with non-unit step sizes to
+// exercise coordinate arithmetic in consume_chunk more thoroughly.
+template <typename P>
+void md_for_each_by_index_3d(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  const int D0 = 4, D1 = 10, D2 = 9;
+  const int S0 = 1, S1 = 2, S2 = 3;
+
+  tf::IndexRange<int, 3> range(
+    tf::IndexRange<int>(0, D0 * S0, S0),
+    tf::IndexRange<int>(0, D1 * S1, S1),
+    tf::IndexRange<int>(0, D2 * S2, S2)
+  );
+
+  const size_t N = range.size();  // D0 * D1 * D2
+
+  for(size_t c : {0, 1, 3, 7, 99}) {
+
+    std::vector<int> visited(N, 0);
+    std::atomic<size_t> total{0};
+
+    taskflow.clear();
+    taskflow.for_each_by_index(range,
+      [&](const tf::IndexRange<int, 3>& box) {
+        for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+          for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+            for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+              size_t fi = (i / S0) * (D1 * D2) + (j / S1) * D2 + (k / S2);
+              visited[fi]++;
+              total.fetch_add(1, std::memory_order_relaxed);
+            }
+          }
+        }
+      }, P(c)
+    );
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(total == N);
+    for(size_t k = 0; k < N; k++) {
+      REQUIRE(visited[k] == 1);
+    }
+  }
+}
+
+// Stateful 2D: range is not known until an upstream init task runs,
+// matching the stateful pattern used in stateful_range_based_for_each_index.
+template <typename P>
+void stateful_md_for_each_by_index_2d(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  tf::IndexRange<int, 2> range(
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 0, 1)
+  );
+
+  for(int di = 1; di <= 17; di++) {
+    for(int dj = 1; dj <= 23; dj++) {
+      for(size_t c : {0, 1, 3, 7, 99}) {
+
+        const size_t N = static_cast<size_t>(di * dj);
+
+        std::vector<int> visited(N, 0);
+        std::atomic<size_t> total{0};
+
+        taskflow.clear();
+
+        auto init = taskflow.emplace([&, di, dj]() {
+          range.dim(0).reset(0, di, 1);
+          range.dim(1).reset(0, dj, 1);
+        });
+
+        auto loop = taskflow.for_each_by_index(std::ref(range),
+          [&, dj](const tf::IndexRange<int, 2>& box) {
+            for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+              for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+                visited[i * dj + j]++;
+                total.fetch_add(1, std::memory_order_relaxed);
+              }
+            }
+          }, P(c)
+        );
+
+        init.precede(loop);
+
+        executor.run(taskflow).wait();
+
+        REQUIRE(total == N);
+        for(size_t k = 0; k < N; k++) {
+          REQUIRE(visited[k] == 1);
+        }
+      }
+    }
+  }
+}
+
+// ---- 2D TEST CASES ----------------------------------------------------------
+
+TEST_CASE("MDForEachByIndex.2D.Guided.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.2D.Guided.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.2D.Guided.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.2D.Guided.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.2D.Dynamic.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.2D.Dynamic.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.2D.Dynamic.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.2D.Dynamic.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.2D.Static.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.2D.Static.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.2D.Static.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.2D.Static.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.2D.Random.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.2D.Random.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.2D.Random.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.2D.Random.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_2d<tf::RandomPartitioner<>>(8);
+}
+
+// ---- 3D TEST CASES ----------------------------------------------------------
+
+TEST_CASE("MDForEachByIndex.3D.Guided.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.3D.Guided.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.3D.Guided.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.3D.Guided.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.3D.Dynamic.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.3D.Dynamic.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.3D.Dynamic.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.3D.Dynamic.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.3D.Static.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.3D.Static.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.3D.Static.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.3D.Static.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("MDForEachByIndex.3D.Random.1thread" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("MDForEachByIndex.3D.Random.2threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("MDForEachByIndex.3D.Random.4threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("MDForEachByIndex.3D.Random.8threads" * doctest::timeout(300)) {
+  md_for_each_by_index_3d<tf::RandomPartitioner<>>(8);
+}
+
+// ---- STATEFUL 2D TEST CASES -------------------------------------------------
+
+TEST_CASE("StatefulMDForEachByIndex.2D.Guided.1thread" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Guided.2threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Guided.4threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Guided.8threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("StatefulMDForEachByIndex.2D.Dynamic.1thread" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Dynamic.2threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Dynamic.4threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Dynamic.8threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("StatefulMDForEachByIndex.2D.Static.1thread" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Static.2threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Static.4threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Static.8threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("StatefulMDForEachByIndex.2D.Random.1thread" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Random.2threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Random.4threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("StatefulMDForEachByIndex.2D.Random.8threads" * doctest::timeout(300)) {
+  stateful_md_for_each_by_index_2d<tf::RandomPartitioner<>>(8);
+}

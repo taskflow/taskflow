@@ -208,295 +208,6 @@ class PartitionerBase {
 };
 
 // ----------------------------------------------------------------------------
-// Guided Partitioner
-// ----------------------------------------------------------------------------
-
-/**
-@class GuidedPartitioner
-
-@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
-
-@brief class to create a guided partitioner for scheduling parallel algorithms
-
-The size of a partition is proportional to the number of unassigned iterations 
-divided by the number of workers, 
-and the size will gradually decrease to the given chunk size.
-The last partition may be smaller than the chunk size.
-
-In addition to partition size, the application can specify a closure wrapper
-for a guided partitioner.
-A closure wrapper allows the application to wrap a partitioned task 
-(i.e., closure) with a custom function object that performs additional tasks.
-For example:
-
-@code{.cpp}
-std::atomic<int> count = 0;
-tf::Taskflow taskflow;
-taskflow.for_each_index(0, 100, 1, 
-  [](){                 
-    printf("%d\n", i); 
-  },
-  tf::GuidedPartitioner(0, [](auto&& closure){
-    // do something before invoking the partitioned task
-    // ...
-    
-    // invoke the partitioned task
-    closure();
-
-    // do something else after invoking the partitioned task
-    // ...
-  }
-);
-executor.run(taskflow).wait();
-@endcode
-*/
-template <typename C = DefaultClosureWrapper>
-class GuidedPartitioner : public PartitionerBase<C> {
-
-  public:
-  
-  /**
-  @brief queries the partition type (dynamic)
-  */
-  static constexpr PartitionerType type() { return PartitionerType::DYNAMIC; }
-  
-  /**
-  @brief default constructor
-  */
-  GuidedPartitioner() = default;
-
-  /**
-  @brief construct a guided partitioner with the given chunk size
-
-  */
-  explicit GuidedPartitioner(size_t sz) : PartitionerBase<C> (sz) {}
- 
-  /**
-  @brief construct a guided partitioner with the given chunk size and the closure
-  */ 
-  explicit GuidedPartitioner(size_t sz, C&& closure) :
-    PartitionerBase<C>(sz, std::forward<C>(closure)) {
-  }
-  
-  // --------------------------------------------------------------------------
-  // scheduling methods
-  // --------------------------------------------------------------------------
-  
-  /**
-  @private
-  */
-  template <typename F>
-  requires std::invocable<F, size_t, size_t>
-  void loop(
-    size_t N, size_t W, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-
-    size_t p1 = 2 * W * (chunk_size + 1);
-    float  p2 = 0.5f / static_cast<float>(W);
-    size_t curr_b = next.load(std::memory_order_relaxed);
-
-    while(curr_b < N) {
-
-      size_t r = N - curr_b;
-
-      // fine-grained
-      if(r < p1) {
-        while(1) {
-          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-          if(curr_b >= N) {
-            return;
-          }
-          func(curr_b, (std::min)(curr_b + chunk_size, N));
-        }
-        break;
-      }
-      // coarse-grained
-      else {
-        size_t q = static_cast<size_t>(p2 * r);
-        if(q < chunk_size) {
-          q = chunk_size;
-        }
-        //size_t curr_e = (q <= r) ? curr_b + q : N;
-        size_t curr_e = (std::min)(curr_b + q, N);
-        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
-                                                        std::memory_order_relaxed)) {
-          func(curr_b, curr_e);
-          curr_b = next.load(std::memory_order_relaxed);
-        }
-      }
-    }
-  }
-  
-  /**
-  @private
-  */
-  template <typename F>
-  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
-  void loop_until(
-    size_t N, size_t W, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-
-    size_t p1 = 2 * W * (chunk_size + 1);
-    float  p2 = 0.5f / static_cast<float>(W);
-    size_t curr_b = next.load(std::memory_order_relaxed);
-
-    while(curr_b < N) {
-
-      size_t r = N - curr_b;
-
-      // fine-grained
-      if(r < p1) {
-        while(1) {
-          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-          if(curr_b >= N) {
-            return;
-          }
-          if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
-            return;
-          }
-        }
-        break;
-      }
-      // coarse-grained
-      else {
-        size_t q = static_cast<size_t>(p2 * r);
-        if(q < chunk_size) {
-          q = chunk_size;
-        }
-        //size_t curr_e = (q <= r) ? curr_b + q : N;
-        size_t curr_e = (std::min)(curr_b + q, N);
-        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
-                                                        std::memory_order_relaxed)) {
-          if(func(curr_b, curr_e)) {
-            return;
-          }
-          curr_b = next.load(std::memory_order_relaxed);
-        }
-      }
-    }
-  }
-
-};
-
-// ----------------------------------------------------------------------------
-// Dynamic Partitioner
-// ----------------------------------------------------------------------------
-
-/**
-@class DynamicPartitioner
-
-@brief class to create a dynamic partitioner for scheduling parallel algorithms
-
-@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
-
-The partitioner splits iterations into many partitions each of size equal to 
-the given chunk size.
-Different partitions are distributed dynamically to workers 
-without any specific order.
-
-In addition to partition size, the application can specify a closure wrapper
-for a dynamic partitioner.
-A closure wrapper allows the application to wrap a partitioned task 
-(i.e., closure) with a custom function object that performs additional tasks.
-For example:
-
-@code{.cpp}
-std::atomic<int> count = 0;
-tf::Taskflow taskflow;
-taskflow.for_each_index(0, 100, 1, 
-  [](){                 
-    printf("%d\n", i); 
-  },
-  tf::DynamicPartitioner(0, [](auto&& closure){
-    // do something before invoking the partitioned task
-    // ...
-    
-    // invoke the partitioned task
-    closure();
-
-    // do something else after invoking the partitioned task
-    // ...
-  }
-);
-executor.run(taskflow).wait();
-@endcode
-*/
-template <typename C = DefaultClosureWrapper>
-class DynamicPartitioner : public PartitionerBase<C> {
-
-  public:
-  
-  /**
-  @brief queries the partition type (dynamic)
-  */
-  static constexpr PartitionerType type() { return PartitionerType::DYNAMIC; }
-
-  /**
-  @brief default constructor
-  */
-  DynamicPartitioner() = default;
-  
-  /**
-  @brief construct a dynamic partitioner with the given chunk size
-  */
-  explicit DynamicPartitioner(size_t sz) : PartitionerBase<C>(sz) {}
-  
-  /**
-  @brief construct a dynamic partitioner with the given chunk size and the closure
-  */ 
-  explicit DynamicPartitioner(size_t sz, C&& closure) :
-    PartitionerBase<C>(sz, std::forward<C>(closure)) {
-  }
-  
-  // --------------------------------------------------------------------------
-  // scheduling methods
-  // --------------------------------------------------------------------------
-
-  /**
-  @private
-  */
-  template <typename F>
-  requires std::invocable<F, size_t, size_t>
-  void loop(
-    size_t N, size_t, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-
-    while(curr_b < N) {
-      func(curr_b, (std::min)(curr_b + chunk_size, N));
-      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-    }
-  }
-  
-  /**
-  @private
-  */
-  template <typename F>
-  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
-  void loop_until(
-    size_t N, size_t, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-
-    while(curr_b < N) {
-      if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
-        return;
-      }
-      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-    }
-  }
-
-};
-
-// ----------------------------------------------------------------------------
 // Static Partitioner
 // ----------------------------------------------------------------------------
 
@@ -593,7 +304,6 @@ class StaticPartitioner : public PartitionerBase<C> {
   @private
   */
   template <typename F>
-  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func
   ) {
@@ -609,7 +319,6 @@ class StaticPartitioner : public PartitionerBase<C> {
   @private
   */
   template <typename F>
-  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func
   ) {
@@ -622,6 +331,364 @@ class StaticPartitioner : public PartitionerBase<C> {
       curr_b += stride;
     }
   }
+  
+  template <IndexRangeMDLike R, typename F>
+  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
+    //size_t N = range.volume();
+    size_t curr_b = next.load(std::memory_order_relaxed);
+    size_t chunk_size = (this->_chunk_size == 0) ? (N+W-1) / W : this->_chunk_size;
+
+    while (curr_b < N) {
+      // calculates the actual valid sub-box and exact consumed amount
+      auto [box, consumed] = range.consume_chunk(curr_b, chunk_size);
+      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                     std::memory_order_relaxed,
+                                     std::memory_order_relaxed)) {
+        func(box);
+        curr_b += consumed;
+      }
+    }
+  }
+
+};
+
+// ----------------------------------------------------------------------------
+// Guided Partitioner
+// ----------------------------------------------------------------------------
+
+/**
+@class GuidedPartitioner
+
+@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
+
+@brief class to create a guided partitioner for scheduling parallel algorithms
+
+The size of a partition is proportional to the number of unassigned iterations 
+divided by the number of workers, 
+and the size will gradually decrease to the given chunk size.
+The last partition may be smaller than the chunk size.
+
+In addition to partition size, the application can specify a closure wrapper
+for a guided partitioner.
+A closure wrapper allows the application to wrap a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::GuidedPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
+*/
+template <typename C = DefaultClosureWrapper>
+class GuidedPartitioner : public PartitionerBase<C> {
+
+  public:
+  
+  /**
+  @brief queries the partition type (dynamic)
+  */
+  static constexpr PartitionerType type() { return PartitionerType::DYNAMIC; }
+  
+  /**
+  @brief default constructor
+  */
+  GuidedPartitioner() = default;
+
+  /**
+  @brief construct a guided partitioner with the given chunk size
+
+  */
+  explicit GuidedPartitioner(size_t sz) : PartitionerBase<C> (sz) {}
+ 
+  /**
+  @brief construct a guided partitioner with the given chunk size and the closure
+  */ 
+  explicit GuidedPartitioner(size_t sz, C&& closure) :
+    PartitionerBase<C>(sz, std::forward<C>(closure)) {
+  }
+  
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
+  
+  /**
+  @private
+  */
+  template <typename F>
+  void loop(
+    size_t N, size_t W, std::atomic<size_t>& next, F&& func
+  ) const {
+
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+
+    size_t p1 = 2 * W * (chunk_size + 1);
+    float  p2 = 0.5f / static_cast<float>(W);
+    size_t curr_b = next.load(std::memory_order_relaxed);
+
+    while(curr_b < N) {
+
+      size_t r = N - curr_b;
+
+      // fine-grained
+      if(r < p1) {
+        while(1) {
+          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+          if(curr_b >= N) {
+            return;
+          }
+          func(curr_b, (std::min)(curr_b + chunk_size, N));
+        }
+        break;
+      }
+      // coarse-grained
+      else {
+        size_t q = static_cast<size_t>(p2 * r);
+        if(q < chunk_size) {
+          q = chunk_size;
+        }
+        //size_t curr_e = (q <= r) ? curr_b + q : N;
+        size_t curr_e = (std::min)(curr_b + q, N);
+        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
+                                                        std::memory_order_relaxed)) {
+          func(curr_b, curr_e);
+          //curr_b = next.load(std::memory_order_relaxed);
+          curr_b = curr_e;
+        }
+      }
+    }
+  }
+  
+  /**
+  @private
+  */
+  template <typename F>
+  void loop_until(
+    size_t N, size_t W, std::atomic<size_t>& next, F&& func
+  ) const {
+
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+
+    size_t p1 = 2 * W * (chunk_size + 1);
+    float  p2 = 0.5f / static_cast<float>(W);
+    size_t curr_b = next.load(std::memory_order_relaxed);
+
+    while(curr_b < N) {
+
+      size_t r = N - curr_b;
+
+      // fine-grained
+      if(r < p1) {
+        while(1) {
+          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+          if(curr_b >= N) {
+            return;
+          }
+          if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
+            return;
+          }
+        }
+        break;
+      }
+      // coarse-grained
+      else {
+        size_t q = static_cast<size_t>(p2 * r);
+        if(q < chunk_size) {
+          q = chunk_size;
+        }
+        //size_t curr_e = (q <= r) ? curr_b + q : N;
+        size_t curr_e = (std::min)(curr_b + q, N);
+        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
+                                                        std::memory_order_relaxed)) {
+          if(func(curr_b, curr_e)) {
+            return;
+          }
+          //curr_b = next.load(std::memory_order_relaxed);
+          curr_b = curr_e;
+        }
+      }
+    }
+  }
+  
+
+  template <IndexRangeMDLike R, typename F>
+  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
+
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+    size_t requested_chunk_size;
+    size_t p1 = 2 * W * (chunk_size + 1);
+    float  p2 = 0.5f / static_cast<float>(W);
+    size_t curr_b = next.load(std::memory_order_relaxed);
+
+    while(curr_b < N) {
+
+      size_t r = N - curr_b;
+      
+      // find-grained
+      if(r < p1) {
+        requested_chunk_size = chunk_size;
+      }
+      // coarse
+      else {
+        requested_chunk_size = (std::max)(static_cast<size_t>(p2*r), chunk_size);
+      }
+      
+      auto [box, consumed] = range.consume_chunk(curr_b, requested_chunk_size);
+      
+      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                     std::memory_order_relaxed,
+                                     std::memory_order_relaxed)) {
+        func(box);
+        curr_b += consumed;
+      }
+    }
+  }
+
+};
+
+// ----------------------------------------------------------------------------
+// Dynamic Partitioner
+// ----------------------------------------------------------------------------
+
+/**
+@class DynamicPartitioner
+
+@brief class to create a dynamic partitioner for scheduling parallel algorithms
+
+@tparam C closure wrapper type (default tf::DefaultClosureWrapper)
+
+The partitioner splits iterations into many partitions each of size equal to 
+the given chunk size.
+Different partitions are distributed dynamically to workers 
+without any specific order.
+
+In addition to partition size, the application can specify a closure wrapper
+for a dynamic partitioner.
+A closure wrapper allows the application to wrap a partitioned task 
+(i.e., closure) with a custom function object that performs additional tasks.
+For example:
+
+@code{.cpp}
+std::atomic<int> count = 0;
+tf::Taskflow taskflow;
+taskflow.for_each_index(0, 100, 1, 
+  [](){                 
+    printf("%d\n", i); 
+  },
+  tf::DynamicPartitioner(0, [](auto&& closure){
+    // do something before invoking the partitioned task
+    // ...
+    
+    // invoke the partitioned task
+    closure();
+
+    // do something else after invoking the partitioned task
+    // ...
+  }
+);
+executor.run(taskflow).wait();
+@endcode
+*/
+template <typename C = DefaultClosureWrapper>
+class DynamicPartitioner : public PartitionerBase<C> {
+
+  public:
+  
+  /**
+  @brief queries the partition type (dynamic)
+  */
+  static constexpr PartitionerType type() { return PartitionerType::DYNAMIC; }
+
+  /**
+  @brief default constructor
+  */
+  DynamicPartitioner() = default;
+  
+  /**
+  @brief construct a dynamic partitioner with the given chunk size
+  */
+  explicit DynamicPartitioner(size_t sz) : PartitionerBase<C>(sz) {}
+  
+  /**
+  @brief construct a dynamic partitioner with the given chunk size and the closure
+  */ 
+  explicit DynamicPartitioner(size_t sz, C&& closure) :
+    PartitionerBase<C>(sz, std::forward<C>(closure)) {
+  }
+  
+  // --------------------------------------------------------------------------
+  // scheduling methods
+  // --------------------------------------------------------------------------
+
+  /**
+  @private
+  */
+  template <typename F>
+  void loop(
+    size_t N, size_t, std::atomic<size_t>& next, F&& func
+  ) const {
+
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+    while(curr_b < N) {
+      func(curr_b, (std::min)(curr_b + chunk_size, N));
+      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+  
+  /**
+  @private
+  */
+  template <typename F>
+  void loop_until(
+    size_t N, size_t, std::atomic<size_t>& next, F&& func
+  ) const {
+
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+
+    while(curr_b < N) {
+      if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
+        return;
+      }
+      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+  
+  template <IndexRangeMDLike R, typename F>
+  void loop(R& range, size_t N, size_t, std::atomic<size_t>& next, F&& func) const {
+    //size_t N = range.volume();
+    size_t curr_b = next.load(std::memory_order_relaxed);
+    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
+
+    while (curr_b < N) {
+      // calculates the actual valid sub-box and exact consumed amount
+      auto [box, consumed] = range.consume_chunk(curr_b, chunk_size);
+      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                     std::memory_order_relaxed,
+                                     std::memory_order_relaxed)) {
+        func(box);
+        curr_b += consumed;
+      }
+    }
+  }
+
 };
 
 // ----------------------------------------------------------------------------
@@ -746,7 +813,6 @@ class RandomPartitioner : public PartitionerBase<C> {
   @private
   */
   template <typename F>
-  requires std::invocable<F, size_t, size_t>
   void loop(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -770,7 +836,6 @@ class RandomPartitioner : public PartitionerBase<C> {
   @private
   */
   template <typename F>
-  requires (std::invocable<F, size_t, size_t> && std::same_as<std::invoke_result_t<F, size_t, size_t>, bool>)
   void loop_until(
     size_t N, size_t W, std::atomic<size_t>& next, F&& func
   ) const {
@@ -789,6 +854,31 @@ class RandomPartitioner : public PartitionerBase<C> {
       }
       chunk_size = dist(engine);
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
+    }
+  }
+
+  /**
+  @private
+  */
+  template <IndexRangeMDLike R, typename F>
+  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
+
+    auto [b1, b2] = chunk_size_range(N, W);
+
+    std::default_random_engine engine{std::random_device{}()};
+    std::uniform_int_distribution<size_t> dist(b1, b2);
+
+    size_t curr_b = next.load(std::memory_order_relaxed);
+
+    while (curr_b < N) {
+      auto [box, consumed] = range.consume_chunk(curr_b, dist(engine));
+      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                     std::memory_order_relaxed,
+                                     std::memory_order_relaxed)) {
+        func(box);
+        curr_b += consumed;
+      }
+      // CAS failure reloads curr_b; resample chunk on next iteration naturally
     }
   }
 

@@ -56,6 +56,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 @subsection release-4-1-0_utilities Utilities
 
++ added tf::NaryOperatorLike concept to check if a type is callable with `N` args
++ added tf::HasGraph concept to check if a type has a tf::Graph
 + removed `floor_log2` due to duplication with C++20 `std::bit_width`
 + removed `cpu_pause` due to platform-dependent implementation
 
