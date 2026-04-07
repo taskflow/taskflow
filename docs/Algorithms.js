@@ -9,10 +9,17 @@ var Algorithms =
     ] ],
     [ "Parallel Iterations", "ParallelIterations.html", [
       [ "Include the Header", "ParallelIterations.html#ParallelIterationsIncludeTheHeader", null ],
-      [ "Create an Index-based Parallel-Iteration Task", "ParallelIterations.html#A1IndexBasedParallelFor", null ],
-      [ "Capture Indices by Reference", "ParallelIterations.html#ParallelForEachCaptureIndicesByReference", null ],
-      [ "Create an Iterator-based Parallel-Iteration Task", "ParallelIterations.html#A1IteratorBasedParallelFor", null ],
-      [ "Capture Iterators by Reference", "ParallelIterations.html#ParallelForEachCaptureIteratorsByReference", null ],
+      [ "Create an Index-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexBased", [
+        [ "Capture Indices by Reference", "ParallelIterations.html#ParallelForEachCaptureIndicesByReference", null ]
+      ] ],
+      [ "Create an IndexRange-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexRangeBased", [
+        [ "1D IndexRange", "ParallelIterations.html#ParallelIterationsIndexRange1D", null ],
+        [ "Multi-dimensional IndexRange", "ParallelIterations.html#ParallelIterationsIndexRangeMD", null ],
+        [ "Capture Range by Reference", "ParallelIterations.html#ParallelIterationsIndexRangeByReference", null ]
+      ] ],
+      [ "Create an Iterator-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIteratorBased", [
+        [ "Capture Iterators by Reference", "ParallelIterations.html#ParallelForEachCaptureIteratorsByReference", null ]
+      ] ],
       [ "Configure a Partitioner", "ParallelIterations.html#ParallelIterationsConfigureAPartitioner", null ]
     ] ],
     [ "Parallel Transforms", "ParallelTransforms.html", [

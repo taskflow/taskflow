@@ -86,6 +86,9 @@ constexpr size_t distance(T beg, T end, T step) {
 // Forward-declare the primary template so the specialization can reference it.
 // ----------------------------------------------------------------------------
 
+/**
+@private
+*/
 template <std::integral T, size_t N = 1>
 class IndexRange;
 
@@ -107,7 +110,7 @@ class IndexRange;
 // ============================================================================
 
 /**
-@class IndexRange<T, N>
+@class IndexRange
 
 @brief class to create an N-dimensional index range of integral indices
 
@@ -176,8 +179,7 @@ public:
   @brief constructs an N-D index range from an array of 1D ranges
   */
   explicit IndexRange(const std::array<IndexRange<T, 1>, N>& dims) : _dims{dims} {}
-  explicit IndexRange(std::array<IndexRange<T, 1>, N>&& dims)      : _dims{std::move(dims)} {}
-
+  
   // --------------------------------------------------------------------------
   // Dimension access
   // --------------------------------------------------------------------------
@@ -233,7 +235,7 @@ public:
   /**
   @brief maps a zero-based flat index to its N-D index coordinates (row-major)
 
-  @param flat zero-based flat index in [0, size())
+  @param flat zero-based flat index in `[0, size())`
   @return array of N index values, one per dimension
 
   @code{.cpp}
@@ -241,7 +243,7 @@ public:
     tf::IndexRange<int>(0, 3, 1),   // dim 0: 0, 1, 2
     tf::IndexRange<int>(0, 4, 1)    // dim 1: 0, 1, 2, 3
   );
-  auto c = r.coords(5);  // flat 5 → row 1, col 1 → {1, 1}
+  auto c = r.coords(5);  // flat 5 -> row 1, col 1 -> {1, 1}
   @endcode
   */
   std::array<T, N> coords(size_t flat) const {
@@ -340,12 +342,10 @@ public:
       // does not overshoot the requested chunk budget.
       if (inner_volume <= requested_size) {
         grow_dim = d;
-        // Optimization: Capture the exact inner volume right now.
-        // This eliminates the need for a second O(N) loop later.
         active_inner_vol = inner_volume;
       }
       else {
-        // We hit the budget ceiling! 
+        // We hit the budget ceiling.
         // Because inner_volume strictly increases as we move outward, 
         // all outer dimensions will also exceed the budget. We can safely stop looking.
         break;
@@ -358,16 +358,14 @@ public:
     }
 
     // 3. Determine how many steps to take along grow_dim
-    size_t steps_left = _dims[grow_dim].size() - coords[grow_dim];
-
-    // We use integer floor division (/) here intentionally.
+    // We use integer floor division (/) here intentionally to decide steps needed.
     // A step along `grow_dim` is an indivisible unit of work (active_inner_vol).
     // Using ceiling division would routinely cause us to overshoot the requested_size
     // budget. Floor division ensures we take as many *whole* slices as possible.
     // The std::max(1, ...) handles the edge case where the budget is smaller than a
     // single slice; we MUST take at least 1 step to guarantee forward progress.
+    size_t steps_left = _dims[grow_dim].size() - coords[grow_dim];
     size_t steps_needed = (std::max)(size_t{1}, requested_size / active_inner_vol);
-
     size_t steps_to_take = (std::min)(steps_left, steps_needed);
 
     // 4. Construct the beautifully orthogonal Box
@@ -588,6 +586,25 @@ class IndexRange<T, 1> {
 // call such as `tf::IndexRange range(0, 10, 2)`.
 // ----------------------------------------------------------------------------
 
+/**
+@brief deduction guide for tf::IndexRange<T, 1>
+
+@tparam T integral type, deduced from the three constructor arguments
+
+Allows class template argument deduction (CTAD) from a three-argument
+constructor call, mapping the common case @c IndexRange(beg, end, step)
+to the 1D specialization tf::IndexRange<T, 1> without requiring an explicit
+template argument.
+
+@code{.cpp}
+tf::IndexRange r(0, 10, 2);          // deduced as IndexRange<int, 1>
+tf::IndexRange s(0ul, 100ul, 5ul);   // deduced as IndexRange<size_t, 1>
+@endcode
+
+Without this guide, CTAD cannot resolve @c N from a three-argument
+call because @c IndexRange is a two-parameter template
+(@c T and @c N). The guide explicitly pins @c N = 1 for the `(beg, end, step)` form.
+*/
 template <std::integral T>
 IndexRange(T, T, T) -> IndexRange<T, 1>;
 
@@ -603,8 +620,8 @@ constexpr bool is_index_range_v = false;
 
 Matches an IndexRange of ANY dimensionality (1D, 2D, 3D, etc.).
 
-@tparam T The underlying coordinate type (e.g., size_t, int).
-@tparam N The number of dimensions.
+@tparam T the underlying coordinate type (e.g., size_t, int)
+@tparam N the number of dimensions
 */
 template <typename T, size_t N>
 constexpr bool is_index_range_v<IndexRange<T, N>> = true;

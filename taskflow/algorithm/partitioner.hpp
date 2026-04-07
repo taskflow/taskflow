@@ -332,6 +332,9 @@ class StaticPartitioner : public PartitionerBase<C> {
     }
   }
   
+  /**
+  @private
+  */
   template <IndexRangeMDLike R, typename F>
   void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
     //size_t N = range.volume();
@@ -525,7 +528,9 @@ class GuidedPartitioner : public PartitionerBase<C> {
     }
   }
   
-
+  /**
+  @private
+  */
   template <IndexRangeMDLike R, typename F>
   void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
 
@@ -671,6 +676,9 @@ class DynamicPartitioner : public PartitionerBase<C> {
     }
   }
   
+  /**
+  @private
+  */
   template <IndexRangeMDLike R, typename F>
   void loop(R& range, size_t N, size_t, std::atomic<size_t>& next, F&& func) const {
     //size_t N = range.volume();

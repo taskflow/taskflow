@@ -447,14 +447,14 @@ class FlowBuilder {
   Task for_each_index(B first, E last, S step, C callable, P part = P());
 
   /**
-  @brief constructs an index range-based parallel-for task
+  @brief constructs a parallel-for task over a one-dimensional index range
 
   @tparam R type satisfying tf::IndexRangeLike
-  @tparam C callable type
+  @tparam C callable type that is invocable with a single argument of type R
   @tparam P type satisfying tf::Partitioner
 
   @param range index range 
-  @param callable callable object to apply to each valid index
+  @param callable callable object to apply to each partitioned index range
   @param part partitioning algorithm to schedule parallel iterations
 
   @return a tf::Task handle
@@ -485,6 +485,74 @@ class FlowBuilder {
   template <IndexRange1DLike R, typename C, Partitioner P = DefaultPartitioner>
   Task for_each_by_index(R range, C callable, P part = P());
   
+  /**
+  @brief constructs a parallel-for task over a multi-dimensional index range
+  
+  @tparam R type satisfying tf::IndexRangeMDLike (i.e., tf::IndexRange<T, N> with `N` > 1)
+  @tparam C callable type that is invocable with a single argument of type R
+  @tparam P type satisfying tf::Partitioner
+  
+  @param range index range 
+  @param callable callable object to apply to each partitioned index range
+  @param part partitioning algorithm to schedule parallel iterations
+  
+  @return a tf::Task handle
+  
+  The function parallelises iteration over the Cartesian product of @c N
+  independent 1D ranges.  The total iteration space is linearized in row-major
+  order (last dimension varies fastest) and divided among workers according to
+  @c part.  Each worker receives one or more orthogonal sub-boxes and invokes
+  @c callable once per sub-box.
+  
+  Each sub-box is guaranteed to be a valid hyper-rectangle: every dimension of
+  the sub-box lies entirely within the corresponding dimension of @c range and
+  preserves its original step size, including negative strides.  The callable
+  must iterate the sub-box using the step sizes reported by each dimension:
+  
+  @code{.cpp}
+  // 3D range: depth x height x width
+  tf::IndexRange<int, 3> range(
+    tf::IndexRange<int>(0, D, 1),
+    tf::IndexRange<int>(0, H, 1),
+    tf::IndexRange<int>(0, W, 1)
+  );
+  
+  taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
+    for(auto d = sub.dim(0).begin(); d < sub.dim(0).end(); d += sub.dim(0).step_size()) {
+      for(auto h = sub.dim(1).begin(); h < sub.dim(1).end(); h += sub.dim(1).step_size()) {
+        for(auto w = sub.dim(2).begin(); w < sub.dim(2).end(); w += sub.dim(2).step_size()) {
+          // process element (d, h, w)
+        }
+      }
+    }
+  });
+  @endcode
+  
+  When the range bounds are not known at task-graph construction time, pass the
+  range by @c std::ref.  An upstream task must set the bounds before this task
+  runs:
+  
+  @code{.cpp}
+  tf::IndexRange<int, 2> range(
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 0, 1)
+  );
+  
+  auto init = taskflow.emplace([&](){
+    range.dim(0).reset(0, rows, 1);
+    range.dim(1).reset(0, cols, 1);
+  });
+  
+  auto loop = taskflow.for_each_by_index(std::ref(range), callable);
+  init.precede(loop);
+  @endcode
+  
+  The loop condition inside the callable must respect the sign of each
+  dimension's step size: use @c < for positive steps and @c > for negative steps.
+  
+  @note
+  Please refer to @ref ParallelIterations for details.
+  */
   template <IndexRangeMDLike R, typename C, Partitioner P = DefaultPartitioner>
   Task for_each_by_index(R range, C callable, P part = P());
 

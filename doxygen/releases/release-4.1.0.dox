@@ -43,6 +43,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + added adopted module task to support composable tasking with move semantics
   + tf::Taskflow::adopt
   + tf::Task::adopt
++ added the parallel-for algorithm over a multi-dimensional index range
+  + tf::Taskflow::for_each_by_index
 + improved the dump format with proper indention
 + improved the dump format of `tf::Subflow` with cluster-level edges
 + optimized executor member variable data layout to reduce false sharing
@@ -58,6 +60,13 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 + added tf::NaryOperatorLike concept to check if a type is callable with `N` args
 + added tf::HasGraph concept to check if a type has a tf::Graph
++ added tf::StaticTask concept to check if a type is a static task
++ added tf::SubflowTask concept to check if a type is a subflow task
++ added tf::RuntimeTask concept to check if a type is a runtime task
++ added tf::ConditionTask concept to check if a type is a condition task
++ added tf::MultiConditionTask concept to check if a type is a multi-condition task
++ added tf::Partitioner concept to check if a type is a partitioner
++ added tf::IndexRange<T, N> concept to define N-dimensional index ranges
 + removed `floor_log2` due to duplication with C++20 `std::bit_width`
 + removed `cpu_pause` due to platform-dependent implementation
 
@@ -77,6 +86,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + revised @ref ComposableTasking
   + added @ref CreateAnAdoptedModuleTask
 + revised @ref Profiler
++ revised @ref ParallelIterations
+  + added @ref ParallelIterationsIndexRangeBased
 
 @section release-4-1-0_miscellaneous_items Miscellaneous Items
 

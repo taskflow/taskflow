@@ -97,11 +97,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Algorithms.html",
-"TaskflowProcessingPipeline.html#TaskflowPipelineDefineTaskflows",
-"classtf_1_1Runtime.html#a15cd519ef73d759233e41de687291030",
-"classtf_1_1cudaStreamBase.html#a4c23849c994f6e797bb547f6229a55e3",
-"release-3-11-0.html#release-3-11-0_breaking_changes"
+"TaskParallelPipeline.html#UnderstandPipelineScheduling",
+"classtf_1_1Pipeline.html#a879a54b37af5db33e5768e5b3c135ba6",
+"classtf_1_1cudaGraphExecBase.html#aed30ccc98bb2187e9141c4f7b63ff66e",
+"release-3-1-0.html#release-3-1-0_documentation"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronization';
-var SYNCOFFMSG = 'click to enable panel synchronization';
+var SYNCONMSG = 'click to disable panel synchronisation';
+var SYNCOFFMSG = 'click to enable panel synchronisation';

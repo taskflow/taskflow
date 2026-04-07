@@ -18,5 +18,6 @@ var searchData=
   ['17_15',['Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?',['../FAQ.html#GeneralQuestion6',1,'']]],
   ['1_3a_20iterate_20a_20pipeline_16',['Example 1: Iterate a Pipeline',['../TaskParallelPipeline.html#IterateAPipeline',1,'']]],
   ['1_3a_20look_20around_17',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
-  ['1_3a_20synchronous_20exception_20propagation_18',['Scenario 1: Synchronous Exception Propagation',['../ExceptionHandling.html#Secnario1SynchronousExceptionPropagation',1,'']]]
+  ['1_3a_20synchronous_20exception_20propagation_18',['Scenario 1: Synchronous Exception Propagation',['../ExceptionHandling.html#Secnario1SynchronousExceptionPropagation',1,'']]],
+  ['1d_20indexrange_19',['1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]]
 ];
