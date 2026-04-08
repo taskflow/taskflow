@@ -18,7 +18,7 @@ var searchData=
   ['epoch_5fmask_15',['EPOCH_MASK',['../classtf_1_1NonblockingNotifier.html#a68b8c94b6c2ef69e54bf27c76277ddc3',1,'tf::NonblockingNotifier']]],
   ['epoch_5fshift_16',['EPOCH_SHIFT',['../classtf_1_1NonblockingNotifier.html#a36db9cce61b1b84d9739325c506de622',1,'tf::NonblockingNotifier']]],
   ['erase_17',['erase',['../classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909',1,'tf::FlowBuilder']]],
-  ['example_18',['Example',['../ConditionalTasking.html#TaskLevelSchedulingExample',1,'']]],
+  ['example_18',['Example',['../ConditionalTasking.html#TaskLevelSchedulingExample',1,'Example'],['../ExamplesDivideAndConquer.html#DivideAndConquerMergeSort',1,'Merge Sort Example']]],
   ['example_201_3a_20iterate_20a_20pipeline_19',['Example 1: Iterate a Pipeline',['../TaskParallelPipeline.html#IterateAPipeline',1,'']]],
   ['example_202_3a_20concatenate_20two_20pipelines_20',['Example 2: Concatenate Two Pipelines',['../TaskParallelPipeline.html#ConcatenateTwoPipelines',1,'']]],
   ['example_203_3a_20define_20multiple_20parallel_20pipelines_21',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
@@ -41,11 +41,12 @@ var searchData=
   ['execute_20a_20taskflow_38',['Execute a Taskflow',['../ExecuteTaskflow.html#ExecuteATaskflow',1,'']]],
   ['execute_20a_20taskflow_20from_20an_20internal_20worker_20cooperatively_39',['Execute a Taskflow from an Internal Worker Cooperatively',['../ExecuteTaskflow.html#ExecuteATaskflowFromAnInternalWorker',1,'']]],
   ['execute_20a_20taskflow_20with_20transferred_20ownership_40',['Execute a Taskflow with Transferred Ownership',['../ExecuteTaskflow.html#ExecuteATaskflowWithTransferredOwnership',1,'']]],
-  ['execution_41',['Execution',['../TaskGroup.html#SubmitAsynchronousTasksWithCooperativeExecution',1,'Submit Asynchronous Tasks with Cooperative Execution'],['../RuntimeTasking.html#SynchronizeWithCooperativeExecution',1,'Synchronize with Cooperative Execution']]],
+  ['execution_41',['Execution',['../ExamplesAsyncProducerConsumer.html#AsyncProducerConsumerIsDone',1,'Conditional Consumption with Cooperative Execution'],['../TaskGroup.html#SubmitAsynchronousTasksWithCooperativeExecution',1,'Submit Asynchronous Tasks with Cooperative Execution'],['../RuntimeTasking.html#SynchronizeWithCooperativeExecution',1,'Synchronize with Cooperative Execution']]],
   ['execution_20order_42',['Understand the Execution Order',['../ExecuteTaskflow.html#UnderstandTheExecutionOrder',1,'']]],
   ['executor_43',['Executor',['../ExecuteTaskflow.html#CreateAnExecutor',1,'Create an Executor'],['../classtf_1_1Executor.html',1,'tf::Executor'],['../classtf_1_1Executor.html#a860297ba5dbd38e29198b65181b4a3e8',1,'tf::Executor::Executor()'],['../ExecuteTaskflow.html',1,'Executor'],['../AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor',1,'Launch Asynchronous Tasks from an Executor'],['../index.html#QuickStartRunATaskflowThroughAnExecution',1,'Run a Taskflow through an Executor'],['../ExecuteTaskflow.html#ThreadSafetyOfExecution',1,'Thread Safety of Executor'],['../ExecuteTaskflow.html#UnderstandWorkStealingInExecutor',1,'Understand Work Stealing in Executor']]],
   ['executor_44',['executor',['../classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510',1,'tf::Subflow::executor()'],['../classtf_1_1Runtime.html#a4ee48a82df1f9758a999d18e6015cec4',1,'tf::Runtime::executor()'],['../classtf_1_1TaskGroup.html#ac39e984ac576ff1e959059abd7b57aa5',1,'tf::TaskGroup::executor()']]],
   ['executor_20thread_20safe_45',['Q4: Is executor thread-safe?',['../FAQ.html#ProgrammingQuestions4',1,'']]],
   ['existing_20task_20programming_20systems_46',['Q9: How does it compare to existing task programming systems?',['../FAQ.html#GeneralQuestion9',1,'']]],
-  ['explicitly_47',['Join a Subflow Explicitly',['../SubflowTasking.html#JoinASubflow',1,'']]]
+  ['explicitly_47',['Join a Subflow Explicitly',['../SubflowTasking.html#JoinASubflow',1,'']]],
+  ['extension_20to_20ternary_20coins_48',['Extension to Ternary Coins',['../ExamplesNondeterministicControlFlow.html#CoinFlippingTernary',1,'']]]
 ];

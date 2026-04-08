@@ -2,19 +2,54 @@ namespace tf {
 
 /** @page Examples Learning from Examples
 
-  This page contains several examples to learn %Taskflow in real use case.
-  
-  + @subpage wavefront
-  + @subpage ExamplesFibonacciNumber
-  + @subpage ExamplesNondeterministicControlFlow
-  + @subpage graphtraversal
-  + @subpage matrix_multiplication
-  + @subpage MatrixMultiplicationWithCUDAGPU
-  + @subpage kmeans
-  + @subpage KMeansWithCUDAGPU 
-  + @subpage TextProcessingPipeline
-  + @subpage GraphProcessingPipeline
-  + @subpage TaskflowProcessingPipeline
+This page collects self-contained examples that demonstrate %Taskflow across
+a broad range of parallel programming patterns — from classic graph algorithms
+and numerical computing to dynamic task graphs, async pipelines, and GPU
+acceleration.
+Each example is designed to be read independently and includes a problem
+formulation, a parallel implementation, and a discussion of the key
+%Taskflow features at work.
+
+@tableofcontents
+
+@section ExamplesTaskGraph Task Graph
+
+These examples demonstrate how to express parallelism as a static task
+dependency graph using tf::Taskflow, including conditional and non-deterministic control flow.
+
++ @subpage wavefront — diagonal sweep parallelism on a 2D grid
++ @subpage ExamplesNondeterministicControlFlow — stochastic control flow with conditional tasks
++ @subpage graphtraversal — parallel DAG traversal driven by graph structure
+
+@section ExamplesParallelAlgorithms Parallel Algorithms
+
+These examples apply %Taskflow's parallel algorithms and pipeline scheduling
+to classic computational and data-processing problems.
+
++ @subpage matrix_multiplication — parallel matrix multiplication on CPU
++ @subpage kmeans — parallel k-means clustering on CPU
++ @subpage TextProcessingPipeline — character frequency analysis as a three-stage pipeline
++ @subpage GraphProcessingPipeline — wavefront pipeline over a DAG
++ @subpage TaskflowProcessingPipeline — nested taskflow graphs inside pipeline stages
+
+@section ExamplesGPUTaskGraph GPU Task Graph
+
+These examples demonstrate how to offload computation to a CUDA GPU using
+tf::cudaGraph, coordinated with CPU tasks in a single taskflow.
+
++ @subpage MatrixMultiplicationWithCUDAGPU — GPU-accelerated matrix multiplication
++ @subpage KMeansWithCUDAGPU — GPU-accelerated k-means clustering
+
+@section ExamplesAsyncTasking Async Tasking
+
+These examples focus on %Taskflow's dynamic task creation capabilities —
+async tasks, dependent-async task graphs, cooperative execution, and
+recursive runtime tasking.
+
++ @subpage ExamplesFibonacciNumber — recursive parallelism with runtime tasking and cooperative synchronization
++ @subpage ExamplesAsyncProducerConsumer — overlapping producer, validator, and consumer stages with dependent-async tasks
++ @subpage ExamplesDivideAndConquer — divide-and-conquer parallelism with tf::TaskGroup, using merge sort as a concrete example
++ @subpage ExamplesDynamicDependencyGraph — runtime-driven task graph whose topology depends on program data
 
 */
 

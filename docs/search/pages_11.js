@@ -1,31 +1,4 @@
 var searchData=
 [
-  ['handle_0',['Q4: How many tasks can Taskflow handle?',['../FAQ.html#GeneralQuestion4',1,'']]],
-  ['handles_20exceptions_1',['How Taskflow Handles Exceptions',['../ExceptionHandling.html#ExceptionHandlingLogic',1,'']]],
-  ['handling_2',['Exception Handling',['../ExceptionHandling.html',1,'Cookbook']]],
-  ['handling_20at_20compile_20time_3',['Disable Exception Handling at Compile Time',['../ExceptionHandling.html#DisableExceptionHandling',1,'']]],
-  ['handling_20is_20hard_4',['Why Parallel Exception Handling is Hard',['../ExceptionHandling.html#ExceptionHandlingWhyHard',1,'']]],
-  ['hangs_20and_20never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_5',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['hard_6',['Why Parallel Exception Handling is Hard',['../ExceptionHandling.html#ExceptionHandlingWhyHard',1,'']]],
-  ['have_20any_20real_20use_20cases_7',['Q11: Do you have any real use cases?',['../FAQ.html#GeneralQuestion11',1,'']]],
-  ['have_20backward_20compatibility_20with_20c_2003_2098_2011_2014_2017_8',['Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?',['../FAQ.html#GeneralQuestion6',1,'']]],
-  ['header_9',['Header',['../GPUTasking.html#GPUTaskingIncludeTheHeader',1,'Include the Header'],['../ParallelIterations.html#ParallelIterationsIncludeTheHeader',1,'Include the Header'],['../ParallelTransforms.html#ParallelTransformsInclude',1,'Include the Header'],['../ParallelReduction.html#ParallelReductionInclude',1,'Include the Header'],['../ParallelSort.html#ParallelSortInclude',1,'Include the Header'],['../ParallelScan.html#ParallelScanInclude',1,'Include the Header'],['../ParallelFind.html#ParallelFindIncludeTheHeader',1,'Include the Header'],['../ModuleAlgorithm.html#ModuleAlgorithmInclude',1,'Include the Header'],['../TaskParallelPipeline.html#TaskParallelPipelineIncludeHeaderFile',1,'Include the Header'],['../ScalableTaskParallelPipeline.html#IncludeTheScalablePipelineHeader',1,'Include the Header'],['../DataParallelPipeline.html#ParallelDataPipelineIncludeHeaderFile',1,'Include the Header']]],
-  ['heterogeneous_20computing_10',['Heterogeneous Computing',['../ProjectMotivation.html#HeterogeneousComputing',1,'']]],
-  ['hex_20value_20like_200x7fc39d402ab0_20in_20the_20dumped_20graph_11',['Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?',['../FAQ.html#GeneralQuestion5',1,'']]],
-  ['high_20performance_20timing_20analysis_20tool_12',['OpenTimer: A High-performance Timing Analysis Tool',['../opentimer.html#UseCasesOpenTimer',1,'']]],
-  ['how_20can_20i_20attach_20custom_20data_20to_20a_20task_20and_20access_20it_13',['Q12: How can I attach custom data to a task and access it?',['../FAQ.html#ProgrammingQuestions12',1,'']]],
-  ['how_20can_20i_20contribute_14',['How Can I Contribute?',['../guidelines.html#HowCanIContribute',1,'']]],
-  ['how_20can_20i_20contribute_15',['Q15: How can I contribute?',['../FAQ.html#GeneralQuestion15',1,'']]],
-  ['how_20can_20i_20edit_20the_20documentation_16',['How Can I Edit the Documentation?',['../guidelines.html#HowCanIEditTheDocumentation',1,'']]],
-  ['how_20can_20i_20get_20credit_17',['How Can I Get Credit?',['../guidelines.html#HowCanIGetCredit',1,'']]],
-  ['how_20can_20i_20get_20started_18',['How Can I Get Started?',['../guidelines.html#HowCanIGetStarted',1,'']]],
-  ['how_20can_20i_20lead_20a_20project_19',['How Can I Lead a Project?',['../guidelines.html#HowCanILeadAProject',1,'']]],
-  ['how_20can_20i_20report_20issues_20',['How Can I Report Issues?',['../guidelines.html#HowCanIReportAnIssue',1,'']]],
-  ['how_20can_20i_20submit_20a_20patch_21',['How Can I Submit a Patch?',['../guidelines.html#HowCanISubmitAPatch',1,'']]],
-  ['how_20do_20i_20use_20taskflow_20in_20my_20projects_22',['Q2: How do I use Taskflow in my projects?',['../FAQ.html#GeneralQuestion2',1,'']]],
-  ['how_20does_20it_20compare_20to_20existing_20task_20programming_20systems_23',['Q9: How does it compare to existing task programming systems?',['../FAQ.html#GeneralQuestion9',1,'']]],
-  ['how_20does_20taskflow_20schedule_20tasks_24',['Q7: How does Taskflow schedule tasks?',['../FAQ.html#GeneralQuestion7',1,'']]],
-  ['how_20many_20tasks_20can_20taskflow_20handle_25',['Q4: How many tasks can Taskflow handle?',['../FAQ.html#GeneralQuestion4',1,'']]],
-  ['how_20taskflow_20handles_20exceptions_26',['How Taskflow Handles Exceptions',['../ExceptionHandling.html#ExceptionHandlingLogic',1,'']]],
-  ['http_20server_27',['Enable Taskflow Profiler on a HTTP Server',['../Profiler.html#ProfilerEnableTFProfServer',1,'']]]
+  ['handling_0',['Exception Handling',['../ExceptionHandling.html',1,'Cookbook']]]
 ];

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['join_20a_20subflow_20explicitly_0',['Join a Subflow Explicitly',['../SubflowTasking.html#JoinASubflow',1,'']]],
-  ['joined_20subflow_20of_20three_20tasks_20b1_20b2_20and_20b3_20do_20they_20run_20concurrently_20with_20task_20a_1',['Q6: In the following example where B spawns a joined subflow of three tasks B1, B2, and B3, do they run concurrently with task A?',['../FAQ.html#ProgrammingQuestions6',1,'']]],
-  ['joining_20core_20members_2',['Joining Core Members',['../rules.html#JoiningCoreMembers',1,'']]],
-  ['just_20an_20another_20api_20or_20model_3',['Q14: Is Taskflow just an another API or model?',['../FAQ.html#GeneralQuestion14',1,'']]]
+  ['k_20means_20clustering_0',['k-means Clustering',['../kmeans.html',1,'Examples']]],
+  ['k_20means_20clustering_20with_20cuda_20gpu_1',['k-means Clustering with CUDA GPU',['../KMeansWithCUDAGPU.html',1,'Examples']]]
 ];

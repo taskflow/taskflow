@@ -28,6 +28,7 @@ function toggleVisibility(linkObj) {
 }
 
 let dynsection = {
+
   // helper function
   updateStripes : function() {
     $('table.directory tr').
@@ -43,13 +44,15 @@ let dynsection = {
     const trigger = $('#'+base+'-trigger');
     const src=$(trigger).attr('src');
     if (content.is(':visible')===true) {
-      content.slideUp('fast');
+      content.hide();
       summary.show();
-      $(linkObj).find('.arrowhead').addClass('closed').removeClass('opened');
+      $(linkObj).addClass('closed').removeClass('opened');
+      $(trigger).attr('src',src.substring(0,src.length-8)+'closed.png');
     } else {
-      content.slideDown('fast');
+      content.show();
       summary.hide();
-      $(linkObj).find('.arrowhead').removeClass('closed').addClass('opened');
+      $(linkObj).removeClass('closed').addClass('opened');
+      $(trigger).attr('src',src.substring(0,src.length-10)+'open.png');
     }
     return false;
   },
@@ -60,12 +63,12 @@ let dynsection = {
       const i = $('#img'+this.id.substring(3));
       const a = $('#arr'+this.id.substring(3));
       if (l<level+1) {
-        i.find('.folder-icon').addClass('open');
-        a.find('.arrowhead').removeClass('closed').addClass('opened');
+        i.removeClass('iconfopen iconfclosed').addClass('iconfopen');
+        a.html('&#9660;');
         $(this).show();
       } else if (l==level+1) {
-        a.find('.arrowhead').removeClass('opened').addClass('closed');
-        i.find('.folder-icon').removeClass('open');
+        i.removeClass('iconfclosed iconfopen').addClass('iconfclosed');
+        a.html('&#9658;');
         $(this).show();
       } else {
         $(this).hide();
@@ -90,49 +93,52 @@ let dynsection = {
     if (childRows.filter(':first').is(':visible')===true) {
       // replace down arrow by right arrow for current row
       const currentRowSpans = currentRow.find("span");
-      currentRowSpans.filter(".iconfolder").find('.folder-icon').removeClass("open");
-      currentRowSpans.filter(".opened").removeClass("opened").addClass("closed");
+      currentRowSpans.filter(".iconfopen").removeClass("iconfopen").addClass("iconfclosed");
+      currentRowSpans.filter(".arrow").html('&#9658;');
       rows.filter("[id^=row_"+id+"]").hide(); // hide all children
     } else { // we are SHOWING
       // replace right arrow by down arrow for current row
       const currentRowSpans = currentRow.find("span");
-      currentRowSpans.filter(".iconfolder").find('.folder-icon').addClass("open");
-      currentRowSpans.filter(".closed").removeClass("closed").addClass("opened");
+      currentRowSpans.filter(".iconfclosed").removeClass("iconfclosed").addClass("iconfopen");
+      currentRowSpans.filter(".arrow").html('&#9660;');
       // replace down arrows by right arrows for child rows
       const childRowsSpans = childRows.find("span");
-      childRowsSpans.filter(".iconfolder").find('.folder-icon').removeClass("open");
-      childRowsSpans.filter(".opened").removeClass("opened").addClass("closed");
+      childRowsSpans.filter(".iconfopen").removeClass("iconfopen").addClass("iconfclosed");
+      childRowsSpans.filter(".arrow").html('&#9658;');
       childRows.show(); //show all children
     }
     this.updateStripes();
   },
 
   toggleInherit : function(id) {
-    let rows = $('tr.inherit.'+id);
-    let header = $('tr.inherit_header.'+id);
+    const rows = $('tr.inherit.'+id);
+    const img = $('tr.inherit_header.'+id+' img');
+    const src = $(img).attr('src');
     if (rows.filter(':first').is(':visible')===true) {
-      rows.hide();
-      $(header).find('.arrowhead').addClass('closed').removeClass('opened');
+      rows.css('display','none');
+      $(img).attr('src',src.substring(0,src.length-8)+'closed.png');
     } else {
-      rows.show();
-      $(header).find('.arrowhead').removeClass('closed').addClass('opened');
+      rows.css('display','table-row'); // using show() causes jump in firefox
+      $(img).attr('src',src.substring(0,src.length-10)+'open.png');
     }
   },
-
 };
 
 let codefold = {
   opened : true,
 
+  // in case HTML_COLORSTYLE is LIGHT or DARK the vars will be replaced, so we write them out explicitly and use double quotes
+  plusImg:  [ "url('plus.svg')",  "url('../../plus.svg')" ],
+  minusImg: [ "url('minus.svg')", "url('../../minus.svg')" ],
+
   // toggle all folding blocks
-  toggle_all : function() {
+  toggle_all : function(relPath) {
     if (this.opened) {
-      $('#fold_all').addClass('plus').removeClass('minus');
+      $('#fold_all').css('background-image',this.plusImg[relPath]);
       $('div[id^=foldopen]').hide();
       $('div[id^=foldclosed]').show();
-      $('div[id^=foldclosed] span.fold').removeClass('minus').addClass('plus');
     } else {
-      $('#fold_all').addClass('minus').removeClass('plus');
+      $('#fold_all').css('background-image',this.minusImg[relPath]);
       $('div[id^=foldopen]').show();
       $('div[id^=foldclosed]').hide();
     }
@@ -143,10 +149,9 @@ let codefold = {
   toggle : function(id) {
     $('#foldopen'+id).toggle();
     $('#foldclosed'+id).toggle();
-    $('#foldopen'+id).next().find('span.fold').addClass('plus').removeClass('minus');
   },
 
-  init : function() {
+  init : function(relPath) {
     $('span[class=lineno]').css({
       'padding-right':'4px',
       'margin-right':'2px',
@@ -155,8 +160,9 @@ let codefold = {
       'background':'linear-gradient(#808080,#808080) no-repeat 46px/2px 100%'
     });
     // add global toggle to first line
-    $('span[class=lineno]:first').append('<span class="fold minus" id="fold_all" '+
-      'onclick="javascript:codefold.toggle_all();"></span>');
+    $('span[class=lineno]:first').append('<span class="fold" id="fold_all" '+
+      'onclick="javascript:codefold.toggle_all('+relPath+');" '+
+      'style="background-image:'+this.minusImg[relPath]+';"></span>');
     // add vertical lines to other rows
     $('span[class=lineno]').not(':eq(0)').append('<span class="fold"></span>');
     // add toggle controls to lines with fold divs
@@ -167,8 +173,9 @@ let codefold = {
       const start = $(this).attr('data-start');
       const end   = $(this).attr('data-end');
       // replace normal fold span with controls for the first line of a foldable fragment
-      $(this).find('span[class=fold]:first').replaceWith('<span class="fold minus" '+
-                   'onclick="javascript:codefold.toggle(\''+id+'\');"></span>');
+      $(this).find('span[class=fold]:first').replaceWith('<span class="fold" '+
+                   'onclick="javascript:codefold.toggle(\''+id+'\');" '+
+                   'style="background-image:'+codefold.minusImg[relPath]+';"></span>');
       // append div for folded (closed) representation
       $(this).after('<div id="foldclosed'+id+'" class="foldclosed" style="display:none;"></div>');
       // extract the first line from the "open" section to represent closed content
@@ -180,7 +187,7 @@ let codefold = {
         $(line).html($(line).html().replace(new RegExp('\\s*'+start+'\\s*$','g'),''));
       }
       // replace minus with plus symbol
-      $(line).find('span[class=fold]').addClass('plus').removeClass('minus');
+      $(line).find('span[class=fold]').css('background-image',codefold.plusImg[relPath]);
       // append ellipsis
       $(line).append(' '+start+'<a href="javascript:codefold.toggle(\''+id+'\')">&#8230;</a>'+end);
       // insert constructed line into closed div

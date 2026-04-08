@@ -233,9 +233,6 @@ requires (sizeof...(Ranges) == N) &amp;&amp; (std::same_as&lt;std::remove_cvref_
 <div class="memproto">
 <div class="memtemplate">
 template&lt;std::integral T, size_t N&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::pair&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, N &gt;, size_t &gt; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::consume_chunk </td>
@@ -248,11 +245,6 @@ template&lt;std::integral T, size_t N&gt; </div>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>requested_size</em></span>&#160;) const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>consumes a linear chunk of the multidimensional space and returns the largest valid N-dimensional sub-box </p>
@@ -268,31 +260,34 @@ template&lt;std::integral T, size_t N&gt; </div>
 <p>Consequently, the actual number of elements consumed may be less than the <code>requested_size</code> if a geometric boundary is hit. This guarantees that workers never process discontiguous memory blocks or skip elements.</p>
 <div class="fragment"><div class="line"><span class="comment">// 3D range: 4 x 5 x 10</span></div>
 <div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> range(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10)</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 1)</div>
 <div class="line">);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Scenario 1: Clean boundaries</span></div>
-<div class="line"><span class="comment">// Ask for 30 elements starting at flat index 0 (Coords: 0, 0, 0)</span></div>
+<div class="line"><span class="comment">// Scenario 1: flat_beg=0, requested=30</span></div>
+<div class="line"><span class="comment">// Coords (0,0,0). inner_volume reaches 50 at dim-0 (first &gt;= 30), so grow_dim=0,</span></div>
+<div class="line"><span class="comment">// steps_to_take=1. The box overshoots to the next orthogonal boundary.</span></div>
+<div class="line"><span class="comment">// box is [0,1) x [0,5) x [0,10), consumed=50</span></div>
 <div class="line"><span class="keyword">auto</span> [box1, consumed1] = range.consume_chunk(0, 30);</div>
-<div class="line"><span class="comment">// box1 is [0,1) x [0,3) x [0,10)</span></div>
-<div class="line"><span class="comment">// consumed1 is 30</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Scenario 2: Hitting a boundary constraint</span></div>
-<div class="line"><span class="comment">// Ask for 30 elements starting at flat index 30 (Coords: 0, 3, 0)</span></div>
+<div class="line"><span class="comment">// Scenario 2: flat_beg=30, requested=30</span></div>
+<div class="line"><span class="comment">// Coords (0,3,0). coords[1]=3 != 0, so trailing-zeros fires at d=0.</span></div>
+<div class="line"><span class="comment">// grow_dim=1, active=10. steps_left=2, steps_needed=3, steps_to_take=2.</span></div>
+<div class="line"><span class="comment">// box is [0,1) x [3,5) x [0,10), consumed=20 (geometry-constrained, &lt; requested)</span></div>
 <div class="line"><span class="keyword">auto</span> [box2, consumed2] = range.consume_chunk(30, 30);</div>
-<div class="line"><span class="comment">// Dim 1 can only take 2 more steps before rolling over (max size is 5).</span></div>
-<div class="line"><span class="comment">// box2 is [0,1) x [3,5) x [0,10)</span></div>
-<div class="line"><span class="comment">// consumed2 is 20 (less than the requested 30!)</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Scenario 3: Trapped at an inner dimension</span></div>
-<div class="line"><span class="comment">// Ask for 30 elements starting at flat index 55 (Coords: 1, 0, 5)</span></div>
+<div class="line"><span class="comment">// Scenario 3: flat_beg=55, requested=30</span></div>
+<div class="line"><span class="comment">// Coords (1,0,5). coords[2]=5 != 0, trailing-zeros fires at d=1.</span></div>
+<div class="line"><span class="comment">// grow_dim=2, active=1. steps_left=5, steps_needed=30, steps_to_take=5.</span></div>
+<div class="line"><span class="comment">// box is [1,2) x [0,1) x [5,10), consumed=5 (geometry-constrained, &lt; requested)</span></div>
 <div class="line"><span class="keyword">auto</span> [box3, consumed3] = range.consume_chunk(55, 30);</div>
-<div class="line"><span class="comment">// Because Dim 2 is at 5 (not 0), outer dimensions cannot grow.</span></div>
-<div class="line"><span class="comment">// It is forced to just finish the inner-most row.</span></div>
-<div class="line"><span class="comment">// box3 is [1,2) x [0,1) x [5,10)</span></div>
-<div class="line"><span class="comment">// consumed3 is 5</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Scenario 4: exact fit — requested equals a natural dimension boundary</span></div>
+<div class="line"><span class="comment">// flat_beg=0, requested=10. inner_volume reaches 10 at d=1 (10&gt;=10), stops there.</span></div>
+<div class="line"><span class="comment">// grow_dim=1, active=10. steps_left=5, steps_needed=1, steps_to_take=1.</span></div>
+<div class="line"><span class="comment">// box is [0,1) x [0,1) x [0,10), consumed=10 (no overshoot needed)</span></div>
+<div class="line"><span class="keyword">auto</span> [box4, consumed4] = range.consume_chunk(0, 10);</div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -303,9 +298,6 @@ template&lt;std::integral T, size_t N&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;std::integral T, size_t N&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::array&lt; T, N &gt; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::coords </td>
@@ -314,11 +306,6 @@ template&lt;std::integral T, size_t N&gt; </div>
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>maps a zero-based flat index to its N-D index coordinates (row-major) </p>
@@ -344,9 +331,6 @@ template&lt;std::integral T, size_t N&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;std::integral T, size_t N&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::size </td>
@@ -355,11 +339,6 @@ template&lt;std::integral T, size_t N&gt; </div>
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>returns the total number of iterations across all dimensions </p>
