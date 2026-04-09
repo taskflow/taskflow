@@ -44,12 +44,16 @@ and recursive runtime tasking.
 | @ref ExamplesAsyncProducerConsumer "Async Producer-Consumer Pipeline" | Overlapping producer, validator, and consumer stages using dependent-async tasks |
 | @ref ExamplesDivideAndConquer "Divide and Conquer" | Divide-and-conquer parallelism with tf::TaskGroup, demonstrated on parallel merge sort |
 | @ref ExamplesDynamicDependencyGraph "Dynamic Dependency Graph" | Runtime-driven task graph whose topology and dependencies are determined by program data |
+| @ref ExamplesTSP "Traveling Salesman Problem" | Parallel branch-and-bound solver for the traveling salesman problem |
+| @ref ExamplesGraphColoring "Graph Coloring Problem" | Parallel branch-and-bound solver for the graph coloring problem |
 
 Links to each example subpage are provided below:
   + @subpage ExamplesFibonacciNumber
   + @subpage ExamplesAsyncProducerConsumer
   + @subpage ExamplesDivideAndConquer
   + @subpage ExamplesDynamicDependencyGraph
+  + @subpage ExamplesTSP
+  + @subpage ExamplesGraphColoring
 
 @section ExamplesParallelAlgorithms Parallel Algorithms
 
@@ -64,7 +68,7 @@ to classic computational and data-processing problems.
 | @ref kmeans "K-Means Clustering" | Parallel k-means clustering with iterative assignment and centroid update steps |
 | @ref ExamplesStencil3D "3D Stencil Computation" | Parallel 3D Jacobi stencil over a volumetric grid using tf::IndexRange |
 | @ref ExamplesSpMV "Sparse Matrix-Vector Multiplication" | Parallel SpMV in CSR format demonstrating partitioner selection for irregular workloads |
-| @ref ExamplesConv2D "2D Image Convolution" | Parallel 2D image convolution |
+| @ref ExamplesConv2D "2D Image Convolution" | Parallel 2D image convolution using tf::IndexRange |
 | @ref TextProcessingPipeline "Text Processing Pipeline" | Character frequency analysis expressed as a three-stage parallel pipeline |
 | @ref GraphProcessingPipeline "Graph Processing Pipeline" | Wavefront pipeline scheduling over a DAG of dependent processing stages |
 | @ref TaskflowProcessingPipeline "Taskflow Processing Pipeline" | Nested taskflow graphs embedded inside pipeline stages for hierarchical parallelism |

@@ -363,7 +363,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskGroup</b></td></
 </dl>
 <p>The constructor spawns <code>N</code> worker threads to run tasks in a work-stealing loop. The number of workers must be greater than zero or an exception will be thrown. By default, the number of worker threads is equal to the maximum hardware concurrency returned by std::thread::hardware_concurrency.</p>
 <p>Users can alter the worker behavior, such as changing thread affinity, via deriving an instance from <a class="el" href="classtf_1_1WorkerInterface.html" title="class to configure worker behavior in an executor">tf::WorkerInterface</a>.</p>
-<dl class="section attention"><dt>Attention</dt><dd>An exception will be thrown if executor construction fails. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>An exception will be thrown if executor construction fails. </dd></dl>
 
 </div>
 </div>
@@ -526,7 +526,7 @@ template&lt;typename T&gt; </div>
 <div class="line">}</div>
 <div class="line">executor.run(taskflow).wait();</div>
 </div><!-- fragment --><p>The method is thread-safe as long as the target is not concurrently ran by two or more threads.</p>
-<dl class="section attention"><dt>Attention</dt><dd>You must call <a class="el" href="#a8fcd9e0557922bb8194999f0cd433ea8" title="runs a target graph and waits until it completes using an internal worker of this executor">tf::Executor::corun</a> from a worker of the calling executor or an exception will be thrown. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>You must call <a class="el" href="#a8fcd9e0557922bb8194999f0cd433ea8" title="runs a target graph and waits until it completes using an internal worker of this executor">tf::Executor::corun</a> from a worker of the calling executor or an exception will be thrown. </dd></dl>
 
 </div>
 </div>
@@ -569,7 +569,7 @@ template&lt;typename P&gt; </div>
 <div class="line">    <span class="keywordflow">return</span> fu.wait_for(std::chrono::seconds(0)) == future_status::ready;</div>
 <div class="line">  });</div>
 <div class="line">});</div>
-</div><!-- fragment --><dl class="section attention"><dt>Attention</dt><dd>You must call <a class="el" href="#a0fc6eb19f168dc4a9cd0a7c6187c1d2d" title="keeps running the work-stealing loop until the predicate returns true">tf::Executor::corun_until</a> from a worker of the calling executor or an exception will be thrown. </dd></dl>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>You must call <a class="el" href="#a0fc6eb19f168dc4a9cd0a7c6187c1d2d" title="keeps running the work-stealing loop until the predicate returns true">tf::Executor::corun_until</a> from a worker of the calling executor or an exception will be thrown. </dd></dl>
 
 </div>
 </div>
@@ -1803,7 +1803,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <div class="ttc" id="aclasstf_1_1TaskGroup_html_a1f481dc466e3107a08346d1a124677bc"><div class="ttname"><a href="classtf_1_1TaskGroup.html#a1f481dc466e3107a08346d1a124677bc">tf::TaskGroup::corun</a></div><div class="ttdeci">void corun()</div><div class="ttdoc">corun all tasks spawned by this task group with other workers</div><div class="ttdef"><b>Definition</b> task_group.hpp:725</div></div>
 <div class="ttc" id="aclasstf_1_1TaskGroup_html_acf90acfcaf9468adc56bf647208a9e78"><div class="ttname"><a href="classtf_1_1TaskGroup.html#acf90acfcaf9468adc56bf647208a9e78">tf::TaskGroup::silent_async</a></div><div class="ttdeci">void silent_async(F &amp;&amp;f)</div><div class="ttdoc">runs the given function asynchronously without returning any future object</div><div class="ttdef"><b>Definition</b> task_group.hpp:756</div></div>
 </div><!-- fragment --><p>This member function is thread-safe.</p>
-<dl class="section attention"><dt>Attention</dt><dd>Due to cooperative execution, a task group can only be created by a worker of an executor. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Due to cooperative execution, a task group can only be created by a worker of an executor. </dd></dl>
 
 </div>
 </div>

@@ -85,7 +85,7 @@ class Executor {
   Users can alter the worker behavior, such as changing thread affinity,
   via deriving an instance from tf::WorkerInterface.
 
-  @attention
+  @note
   An exception will be thrown if executor construction fails.
   */
   explicit Executor(
@@ -446,7 +446,7 @@ class Executor {
   The method is thread-safe as long as the target is not concurrently
   ran by two or more threads.
 
-  @attention
+  @note
   You must call tf::Executor::corun from a worker of the calling executor
   or an exception will be thrown.
   */
@@ -477,7 +477,7 @@ class Executor {
   });
   @endcode
 
-  @attention
+  @note
   You must call tf::Executor::corun_until from a worker of the calling executor
   or an exception will be thrown.
   */
@@ -1094,7 +1094,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   
   This member function is thread-safe.
 
-  @attention
+  @note
   Due to cooperative execution, a task group can only be created by a worker of an executor.
   */
   TaskGroup task_group();

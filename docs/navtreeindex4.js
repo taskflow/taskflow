@@ -1,5 +1,15 @@
 var NAVTREEINDEX4 =
 {
+"namespacemembers_func.html":[11,1],
+"namespacemembers_type.html":[11,3],
+"namespacemembers_vars.html":[11,2],
+"opentimer.html":[6,0],
+"opentimer.html#UseCaseOpenTimerConclusion":[6,0,3],
+"opentimer.html#UseCaseOpenTimerPerformanceImprovement":[6,0,2],
+"opentimer.html#UseCaseOpenTimerProgrammingEffort":[6,0,1],
+"opentimer.html#UseCaseOpenTimerReferences":[6,0,4],
+"opentimer.html#UseCasesOpenTimer":[6,0,0],
+"pages.html":[],
 "release-1-x-x.html":[1,24],
 "release-2-0-0.html":[1,23],
 "release-2-0-0.html#release-2-0-0_breaks_and_deprecated_features":[1,23,3],
@@ -239,11 +249,5 @@ var NAVTREEINDEX4 =
 "structhash.html":[13,0,1],
 "team.html":[8,1],
 "team.html#Alumni":[8,1,1],
-"team.html#CoreMembers":[8,1,0],
-"team.html#FreelanceDevelopers":[8,1,2],
-"usecases.html":[6],
-"wavefront.html":[5,4],
-"wavefront.html#WavefrontApplications":[5,4,2],
-"wavefront.html#WavefrontComputingFormulation":[5,4,0],
-"wavefront.html#WavefrontTaskGraph":[5,4,1]
+"team.html#CoreMembers":[8,1,0]
 };

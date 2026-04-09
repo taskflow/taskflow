@@ -52,6 +52,18 @@ var Examples =
       [ "Implementation", "ExamplesDynamicDependencyGraph.html#DynamicDependencyGraphImplementation", null ],
       [ "Branching Based on Runtime Conditions", "ExamplesDynamicDependencyGraph.html#DynamicDependencyGraphBranchingTopology", null ]
     ] ],
+    [ "Travelling Salesman Problem", "ExamplesTSP.html", [
+      [ "What is the Travelling Salesman Problem?", "ExamplesTSP.html#TSPIntroduction", null ],
+      [ "Concrete Walkthrough", "ExamplesTSP.html#TSPWalkthrough", null ],
+      [ "Implementation", "ExamplesTSP.html#TSPImplementation", null ],
+      [ "Design Points", "ExamplesTSP.html#TSPDesignPoints", null ]
+    ] ],
+    [ "Graph Coloring", "ExamplesGraphColoring.html", [
+      [ "What is Graph Coloring?", "ExamplesGraphColoring.html#GCIntroduction", null ],
+      [ "Concrete Walkthrough", "ExamplesGraphColoring.html#GCWalkthrough", null ],
+      [ "Implementation", "ExamplesGraphColoring.html#GCImplementation", null ],
+      [ "Design Points", "ExamplesGraphColoring.html#GCDesignPoints", null ]
+    ] ],
     [ "Parallel Breadth-First Search", "ExamplesBFS.html", [
       [ "What is BFS and Why Parallelize It?", "ExamplesBFS.html#BFSIntroduction", null ],
       [ "Implementation", "ExamplesBFS.html#BFSImplementation", null ],

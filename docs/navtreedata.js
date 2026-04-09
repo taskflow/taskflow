@@ -97,10 +97,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Algorithms.html",
-"ParallelTransforms.html#ParallelTransformsConfigureAPartitioner",
-"classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555",
-"classtf_1_1Worker.html#a0180ea51cc46551157eaae451b50c7d8",
-"release-1-x-x.html"
+"ParallelScan.html#ParallelScanWhatIsAScan",
+"classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f",
+"classtf_1_1UnboundedWSQ.html#a0b91802df36d932ee43b10aedc3abebc",
+"namespacemembers_func.html",
+"team.html#FreelanceDevelopers"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

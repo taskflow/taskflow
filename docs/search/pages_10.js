@@ -5,8 +5,9 @@ var searchData=
   ['gpu_2',['GPU',['../KMeansWithCUDAGPU.html',1,'k-means Clustering with CUDA GPU'],['../MatrixMultiplicationWithCUDAGPU.html',1,'Matrix Multiplication with CUDA GPU']]],
   ['gpu_20tasking_3',['GPU Tasking',['../GPUTasking.html',1,'Cookbook']]],
   ['graph_4',['Dynamic Dependency Graph',['../ExamplesDynamicDependencyGraph.html',1,'Examples']]],
-  ['graph_20processing_20pipeline_5',['Graph Processing Pipeline',['../GraphProcessingPipeline.html',1,'Examples']]],
-  ['graph_20traversal_6',['Graph Traversal',['../graphtraversal.html',1,'Examples']]],
-  ['group_7',['Task Group',['../TaskGroup.html',1,'Cookbook']]],
-  ['guidelines_8',['Guidelines',['../guidelines.html',1,'Contributing']]]
+  ['graph_20coloring_5',['Graph Coloring',['../ExamplesGraphColoring.html',1,'Examples']]],
+  ['graph_20processing_20pipeline_6',['Graph Processing Pipeline',['../GraphProcessingPipeline.html',1,'Examples']]],
+  ['graph_20traversal_7',['Graph Traversal',['../graphtraversal.html',1,'Examples']]],
+  ['group_8',['Task Group',['../TaskGroup.html',1,'Cookbook']]],
+  ['guidelines_9',['Guidelines',['../guidelines.html',1,'Contributing']]]
 ];

@@ -1,0 +1,47 @@
+digraph TSP {
+  graph [fontname="Helvetica", fontsize=10, ranksep=0.7, nodesep=0.5];
+  node  [fontname="Helvetica", fontsize=10, style=filled, shape=box,
+         height=0.32, margin="0.10,0.04"];
+  edge  [arrowsize=0.6, color="#555555", fontname="Helvetica", fontsize=9];
+
+  // ── level 0: root ─────────────────────────────────────────────────────────
+  root [label="A\ncost=0, lb=55", fillcolor="#fde8d0"];
+
+  // ── level 1 ───────────────────────────────────────────────────────────────
+  { rank=same;
+    AB [label="A→B\ncost=10, lb=70", fillcolor="#fde8d0"];
+    AC [label="A→C\ncost=15, lb=75", fillcolor="#fde8d0"];
+    AD [label="A→D\ncost=20, lb=70", fillcolor="#fde8d0"];
+  }
+
+  // ── level 2 ───────────────────────────────────────────────────────────────
+  { rank=same;
+    ABC [label="A→B→C\ncost=45, lb=95", fillcolor="#fde8d0"];
+    ABD [label="A→B→D\ncost=35, lb=80", fillcolor="#fde8d0"];
+    ACB [label="A→C→B\ncost=50, lb=95\nPRUNED ✗", fillcolor="#f8d7da"];
+    ACD [label="A→C→D\ncost=45, lb=80\nPRUNED ✗", fillcolor="#f8d7da"];
+    ADB [label="A→D→B\ncost=45, lb=95\nPRUNED ✗", fillcolor="#f8d7da"];
+    ADC [label="A→D→C\ncost=50, lb=95\nPRUNED ✗", fillcolor="#f8d7da"];
+  }
+
+  // ── level 3: leaves ───────────────────────────────────────────────────────
+  { rank=same;
+    ABCDA [label="A→B→C→D→A\ncost=95", fillcolor="#fff3cd"];
+    ABDCA [label="A→B→D→C→A\ncost=80 ★", fillcolor="#d4edda"];
+  }
+
+  // ── edges ─────────────────────────────────────────────────────────────────
+  root -> AB [label="+10"];
+  root -> AC [label="+15"];
+  root -> AD [label="+20"];
+
+  AB -> ABC [label="+35"];
+  AB -> ABD [label="+25"];
+  AC -> ACB [label="+35", style=dashed, color="#cc0000"];
+  AC -> ACD [label="+30", style=dashed, color="#cc0000"];
+  AD -> ADB [label="+25", style=dashed, color="#cc0000"];
+  AD -> ADC [label="+30", style=dashed, color="#cc0000"];
+
+  ABC -> ABCDA [label="+50"];
+  ABD -> ABDCA [label="+45"];
+}
