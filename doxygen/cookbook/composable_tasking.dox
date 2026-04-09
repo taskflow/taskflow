@@ -128,7 +128,7 @@ tf::Task comp = taskflow.composed_of(obj);
 
 With this interface in place, the custom graph can then be instantiated as a module task within a larger taskflow, enabling it to be seamlessly composed and scheduled alongside other tasks.
 
-@attention
+@note
 Users are responsible for ensuring the given target remains valid throughout its execution.
 The executor does not assume ownership of the target object.
 
@@ -179,7 +179,7 @@ tf::Executor executor;
 executor.run(taskflow).wait();
 @endcode
 
-@attention
+@note
 The key distinction between tf::Taskflow::composed_of and tf::Taskflow::adopt
 is ownership. Use @c composed_of when the graph is long-lived and shared across
 multiple taskflows or multiple runs. Use @c adopt when you want to transfer a

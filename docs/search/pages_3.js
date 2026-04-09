@@ -14,5 +14,6 @@ var searchData=
   ['3_206_200_202023_2005_2007_11',['Release 3.6.0 (2023/05/07)',['../release-3-6-0.html',1,'Releases']]],
   ['3_207_200_202024_2005_2007_12',['Release 3.7.0 (2024/05/07)',['../release-3-7-0.html',1,'Releases']]],
   ['3_208_200_202024_2010_2002_13',['Release 3.8.0 (2024/10/02)',['../release-3-8-0.html',1,'Releases']]],
-  ['3_209_200_202025_2001_2002_14',['Release 3.9.0 (2025/01/02)',['../release-3-9-0.html',1,'Releases']]]
+  ['3_209_200_202025_2001_2002_14',['Release 3.9.0 (2025/01/02)',['../release-3-9-0.html',1,'Releases']]],
+  ['3d_20stencil_20computation_15',['3D Stencil Computation',['../ExamplesStencil3D.html',1,'Examples']]]
 ];

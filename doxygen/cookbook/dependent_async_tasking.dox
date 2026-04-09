@@ -2,73 +2,138 @@ namespace tf {
 
 /** @page DependentAsyncTasking Asynchronous Tasking with Dependencies
 
-This chapters discusses how to create a task graph dynamically 
-using dependent asynchronous (dependent-async) tasks,
-which is extremely beneficial for workloads that want to
-(1) explore task graph parallelism out of dynamic control flow
-or 
-(2) overlap task graph creation time with individual task execution time.
-We recommend that you first read @ref AsyncTasking before digesting this chapter.
+%Taskflow supports creating task graphs dynamically using dependent async
+tasks so you can handle more challenging parallel problems in a dynamic environment.
+This type of task graph construction is referred to as <i>dynamic task graph programming</i> (DTGP).
+We recommend reading @ref AsyncTasking before this page.
 
 @tableofcontents
 
-@section CreateADynamicTaskGraph Create a Dynamic Task Graph
+@section WhenStaticTaskGraphsAreNotEnough When Static Task Graphs Are Not Enough
 
-When the construct-and-run model of a task graph is not possible in your application,
-you can use tf::Executor::dependent_async and tf::Executor::silent_dependent_async
-to create a task graph on the fly.
-This style of execution is commonly referred to as dynamic task graph parallelism and provides greater flexibility in expressing parallelism that adapts to runtime conditions.
-The example below dynamically creates a task graph of
-four dependent-async tasks, @c A, @c B, @c C, and @c D, where @c A runs before @c B and @c C
-and @c D runs after @c B and @c C:
+The standard %Taskflow model is @em construct-then-run: you build the entire
+task graph upfront with tf::Taskflow, then hand it to tf::Executor to
+execute.
+This model is also referred to as <i>static task graph programming</i> (STGP), 
+which is clean, predictable, and efficient for workloads whose
+structure is known before execution begins.
+However, two scenarios of problems cannot be handled well by
+STGP, explained below:
+
+@par Scenario A: Graph topology determined at runtime
+
+Consider a workflow where the structure of the task graph — how many
+sub-graphs exist, which ones run in parallel, which depend on which —
+is decided entirely by runtime conditions and properties of the graphs
+themselves:
+
+@code{.cpp}
+auto G1 = build_task_graph_1();
+auto G2 = build_task_graph_2();
+
+if(G1.num_tasks() == 100) {
+  // simple case: G2 runs after G1
+  G1.precede(G2);
+}
+else {
+  // complex case: G3 runs alongside G2, both after G1
+  auto G3 = build_task_graph_3();
+  G1.precede(G2, G3);
+
+  if(G2.num_dependencies() >= 10) {
+    // G2 is heavily connected — funnel into a single post-processing step
+    auto G4 = build_task_graph_4();
+    G2.precede(G4);
+    G3.precede(G4);
+  }
+  else {
+    // G2 is lightly connected — fan out into two independent steps
+    auto G5 = build_task_graph_5();
+    auto G6 = build_task_graph_6();
+    G3.precede(G5, G6);
+  }
+}
+@endcode
+
+Building this statically would require enumerating every possible branch
+as a separate pre-built taskflow and selecting one at program start.
+That approach is brittle, wasteful, and breaks down completely when the
+branching logic depends on properties of the graphs themselves — as shown
+here, where the structure of @c G1 and @c G2 determines what runs next.
+Dynamic task graph programming solves this directly: sub-graphs are created
+and wired as control flow unfolds, so the final graph matches the actual
+execution path exactly.
+
+@par Scenario B — Hiding graph construction latency
+
+In large graphs, constructing every task node can itself take non-trivial
+time — allocating buffers, loading metadata, resolving file paths.
+With construct-then-run, all of that setup must complete before a single
+task begins executing.
+With dynamic task graph programming, a task can begin executing the moment
+its dependencies are satisfied, even while downstream tasks are still being
+constructed.
+This @em overlap between graph creation and task execution can significantly
+reduce end-to-end latency.
+
+The figure below illustrates this difference on a four-task graph.
+In the static model, the entire taskflow is constructed before any task
+runs.
+In the dynamic model, execution of early tasks overlaps with the
+construction of later tasks:
+
+@image html images/dependent_async_execution_diagram.png
+
+%Taskflow's dependent-async API, tf::Executor::dependent_async and
+tf::Executor::silent_dependent_async, is designed precisely for these
+scenarios.
+Each task is submitted individually with an explicit list of predecessor
+tasks, and the executor begins running it as soon as all predecessors
+complete, without waiting for the rest of the graph to be defined.
+
+@section CreateADynamicTaskGraph Create a Dynamic Task Graph from an Executor
+
+tf::Executor::silent_dependent_async and tf::Executor::dependent_async
+create a dependent-async task of type tf::AsyncTask and schedule it for
+execution as soon as its dependencies are satisfied.
+tf::Executor::dependent_async additionally returns a @std_future that
+eventually holds the result of the callable.
+
+The example below dynamically creates the following diamond task graph,
+where @c A runs first, @c B and @c C run in parallel after @c A, and
+@c D runs after both @c B and @c C:
 
 @dotfile images/simple.dot
 
 @code{.cpp}
 tf::Executor executor;
+
 tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
 tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
 tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
-auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
-fuD.get();  // wait for D to finish, which in turn means A, B, C have finished
+auto [D, fuD]   = executor.dependent_async([](){ printf("D\n"); }, B, C);
+
+fuD.get();  // waiting for D implies A, B, C have all finished
 @endcode
 
-Both tf::Executor::dependent_async and tf::Executor::silent_dependent_async 
-create a dependent-async task of type tf::AsyncTask to run the given function asynchronously.
-Additionally, tf::Executor::dependent_async returns a @std_future 
-that eventually holds the result of the execution.
-When returning from both calls, the executor has scheduled a worker 
-to run the task whenever its dependencies are met.
-That is, task execution happens @em simultaneously 
-with the creation of the task graph, which is different from constructing a %Taskflow
-and running it from an executor, illustrated in the figure below:
-
-@image html images/dependent_async_execution_diagram.png
-
-
-Since this model only allows relating a dependency from the current task 
-to a previously created task,
-you need a correct topological order of graph expression.
-In our example, there are only two possible topological orderings,
-either @c ABCD or @c ACBD.
-The code below shows another feasible order of expressing this 
-dynamic task graph parallelism:
+Because task execution begins as soon as dependencies are met, this model
+requires you to express tasks in a valid @em topological order — you can
+only name a task as a predecessor after it has already been created.
+For the diamond above there are two valid orderings; the alternative is:
 
 @code{.cpp}
-tf::Executor executor;
 tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
 tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
 tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
-auto [D, fuD] = executor.dependent_async([](){ printf("D\n"); }, B, C);
-fuD.get();  // wait for D to finish, which in turn means A, B, C have finished
+auto [D, fuD]   = executor.dependent_async([](){ printf("D\n"); }, B, C);
+fuD.get();
 @endcode
 
-In addition to using @std_future to synchronize the execution at a particular task point,
-you can use tf::Executor::wait_for_all to wait for all scheduled tasks
-to finish:
+In addition to synchronising on a specific task via its future, you can
+wait for all outstanding dependent-async tasks using
+tf::Executor::wait_for_all:
 
 @code{.cpp}
-tf::Executor executor;
 tf::AsyncTask A = executor.silent_dependent_async([](){ printf("A\n"); });
 tf::AsyncTask B = executor.silent_dependent_async([](){ printf("B\n"); }, A);
 tf::AsyncTask C = executor.silent_dependent_async([](){ printf("C\n"); }, A);
@@ -76,81 +141,105 @@ tf::AsyncTask D = executor.silent_dependent_async([](){ printf("D\n"); }, B, C);
 executor.wait_for_all();
 @endcode
 
-@section SpecifyARagneOfDependentAsyncTasks Specify a Range of Dependent Async Tasks
+@section SpecifyARangeOfDependencies Specify a Range of Dependencies
 
-Both tf::Executor::dependent_async and 
-tf::Executor::silent_dependent_async
-accept an arbitrary number of tasks in the dependency list.
-If the number of task dependencies (i.e., predecessors) is unknown at programming time,
-such as those relying on runtime variables,
-you can use the following two overloads 
-to specify predecessor tasks in an iterable range <tt>[first, last)</tt>:
+Both tf::Executor::dependent_async and tf::Executor::silent_dependent_async
+accept an arbitrary number of predecessor tasks as variadic arguments.
+When the number of predecessors is not known until runtime — for example,
+when it depends on the size of a data set — you can use the iterator
+overloads that accept a range <tt>[first, last)</tt>:
 
-  + tf::Executor::dependent_async(F&& func, I first, I last)
-  + tf::Executor::silent_dependent_async(F&& func, I first, I last)
++ tf::Executor::dependent_async(F&& func, I first, I last)
++ tf::Executor::silent_dependent_async(F&& func, I first, I last)
 
-The range must be an input iterator whose deferenced type is convertible to tf::AsyncTask.
-The following example creates a dependent-async task that depends on 
-@c N previously created dependent-async tasks stored in a vector,
-where @c N is a runtime variable:
+The iterator's dereferenced type must be convertible to tf::AsyncTask.
+The example below creates a final task that depends on @c N previously
+created tasks, where @c N is a runtime variable:
 
 @code{.cpp}
 tf::Executor executor;
 std::vector<tf::AsyncTask> predecessors;
-for(size_t i=0; i<N; i++) {  // N is a runtime variable
+
+for(size_t i = 0; i < N; i++) {
   predecessors.push_back(executor.silent_dependent_async([](){}));
 }
-executor.silent_dependent_async([](){}, predecessors.begin(), predecessors.end());
 
-// wait for the above N+1 dependent-async tasks to finish
+// this task runs after all N predecessors have completed
+executor.silent_dependent_async([](){},
+  predecessors.begin(), predecessors.end()
+);
+
 executor.wait_for_all();
 @endcode
 
-@section UnderstandTheLifeTimeOfADependentAsyncTask Understand the Lifetime of a Dependent-async Task
+@section CreateADynamicTaskGraphFromARuntime Create a Dynamic Task Graph from a Runtime
 
-tf::AsyncTask is a lightweight handle that retains @em shared ownership
-of a dependent-async task created by an executor.
-This shared ownership ensures that the async task remains alive when
-adding it to the dependency list of another async task, 
-thus avoiding the classical [ABA problem](https://en.wikipedia.org/wiki/ABA_problem).
+You can also create dependent-async tasks from within a running task that
+has access to a tf::Runtime object, using tf::Runtime::dependent_async and
+tf::Runtime::silent_dependent_async.
+The API mirrors the executor-level interface, but with one important
+distinction: all dependent-async tasks spawned from a runtime are
+@em parented to that runtime and are @em implicitly joined at the end of
+its scope.
+This means the runtime task does not complete — and control does not pass
+to the next task in the graph — until every dependent-async task it spawned
+has finished.
+This property is especially useful for implementing dynamic sub-graphs
+inside a larger static graph: a single runtime task can build and run an
+entire dynamic task graph as part of one logical step, with the surrounding
+graph remaining unaware of the internal structure.
+
+The example below shows a static graph where task @c A dynamically builds
+a diamond sub-graph at runtime.
+Task @c B is guaranteed to see the results of the entire sub-graph because
+the implicit join ensures all sub-tasks finish before @c A completes:
 
 @code{.cpp}
-// main thread retains shared ownership of async task A
-tf::AsyncTask A = executor.silent_dependent_async([](){});
-assert(A.use_count() >= 1);  // main thread holds a shared ownership to A
+tf::Taskflow taskflow;
+tf::Executor executor;
+std::atomic<int> counter{0};
 
-// task A remains alive (i.e., at least one ref count by the main thread) 
-// when being added to the dependency list of async task B
-tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
-assert(B.use_count() >= 1);  // main thread holds a shared ownership to B
+tf::Task A = taskflow.emplace([&](tf::Runtime& rt) {
+  // dynamically build a diamond sub-graph inside A
+  tf::AsyncTask a = rt.silent_dependent_async([&](){ ++counter; });
+  tf::AsyncTask b = rt.silent_dependent_async([&](){ ++counter; }, a);
+  tf::AsyncTask c = rt.silent_dependent_async([&](){ ++counter; }, a);
+  rt.silent_dependent_async([&](){ ++counter; }, b, c);
+  // implicit join: all four sub-tasks finish before A completes
+});
+
+tf::Task B = taskflow.emplace([&]() {
+  assert(counter == 4);  // guaranteed: A's sub-graph has fully completed
+});
+
+A.precede(B);
+executor.run(taskflow).wait();
 @endcode
 
-Currently, tf::AsyncTask is implemented based on C++ smart pointer (std::shared_ptr) 
-and is considered cheap to copy or move as long as only a handful of objects own it.
-When a worker completes a dependent-async task, it will remove the task from the executor,
-decrementing the number of shared owners by one.
-If that counter reaches zero, the task is destroyed.
+@note
+Dependent-async tasks created from a runtime belong to that runtime and
+are automatically joined when the runtime goes out of scope.
+In contrast, dependent-async tasks created from an executor have no parent
+and must be explicitly synchronised via a future or tf::Executor::wait_for_all.
 
-@section CreateADynamicTaskGraphByMultipleThreads Create a Dynamic Task Graph by Multiple Threads
+@section CreateADynamicTaskGraphByMultipleThreads Create a Dynamic Task Graph from Multiple Threads
 
-You can use multiple threads to create a dynamic task graph as long as 
-the order of simultaneously creating tasks is topologically correct.
-The example below uses creates a dynamic task graph
-using three threads (including the main thread),
-where task @c A runs before task @c B and task @c C:
+Since tf::Executor::dependent_async and tf::Executor::silent_dependent_async
+are thread-safe, multiple threads can collaborate to build the same dynamic
+task graph concurrently, provided the overall topological order is respected.
+The example below uses three threads to build a graph where @c B and @c C
+both depend on @c A:
 
 @code{.cpp}
 tf::Executor executor;
 
-// main thread creates a dependent-async task A
+// main thread creates task A
 tf::AsyncTask A = executor.silent_dependent_async([](){});
 
-// spawn a new thread to create an async task B that runs after A
+// two threads each add a dependent task
 std::thread t1([&](){
   tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
 });
-
-// spawn a new thread to create an async task C that runs after A
 std::thread t2([&](){
   tf::AsyncTask C = executor.silent_dependent_async([](){}, A);
 });
@@ -160,53 +249,86 @@ t1.join();
 t2.join();
 @endcode
 
-Regardless of whether @c t1 runs before or after @c t2, the resulting topological order remains valid with respect to the graph definition. 
-In this example, either @c ABC or @c ACB is a correct ordering.
+Regardless of whether @c t1 runs before or after @c t2, both orderings
+(@c ABC or @c ACB) satisfy the dependency that @c B and @c C follow @c A.
 
-@section QueryTheComppletionStatusOfDependentAsyncTasks Query the Completion Status of Dependent Async Tasks
+@section UnderstandTheLifetimeOfADependentAsyncTask Understand the Lifetime of a Dependent-Async Task
 
-When you create a dependent-async task, you can query its completion status using tf::AsyncTask::is_done,
-which returns @c true if the task has completed its execution, or @c false otherwise.
-A task is considered completed once a worker has finished executing its associated callable.
+tf::AsyncTask is a lightweight handle that holds @em shared ownership of
+the underlying task object.
+This shared ownership ensures the task remains alive when it is added to
+the dependency list of another task, preventing the
+[ABA problem](https://en.wikipedia.org/wiki/ABA_problem) that would arise
+if the task were destroyed before its dependents had been registered:
 
 @code{.cpp}
-// create a dependent-async task that returns 100
-auto [task, fu] = executor.dependent_async([](){ return 100; });
+// main thread retains shared ownership of A
+tf::AsyncTask A = executor.silent_dependent_async([](){});
+assert(A.use_count() >= 1);
 
-// loops until the dependent-async task completes
-while(!task.is_done());
-assert(fu.get() == 100);
+// A remains alive while being registered as a predecessor of B
+tf::AsyncTask B = executor.silent_dependent_async([](){}, A);
+assert(B.use_count() >= 1);
 @endcode
 
-tf::AsyncTask::is_done is useful when you need to wait on the result of a dependent-async task
-before moving onto the next program instruction.
-Often, tf::AsyncTask is used together with tf::Executor::corun_until to keep a worker awake
-in its work-stealing loop to avoid deadlock (see @ref ExecuteATaskflowFromAnInternalWorker 
-for more details).
-For instance, the code below implements the famous Fibonacci sequence using recursive
-dependent-async tasking:
+tf::AsyncTask is implemented in a similar way to @c std::shared_ptr and is cheap to
+copy or move.
+When a worker finishes executing a dependent-async task, it removes the
+task from the executor, decrementing the shared owner count by one.
+The task is destroyed when that count reaches zero.
+
+@section QueryTheCompletionStatusOfDependentAsyncTasks Query Completion Status with Cooperative Execution
+
+tf::AsyncTask::is_done returns @c true once the task has finished
+executing its callable, and @c false before that point.
+This is useful when you need to check whether a specific task has
+completed before proceeding, without blocking the calling thread.
+Consider a scenario where a main thread submits a chain of data-processing
+tasks and needs to verify the results of an intermediate stage before
+deciding what to submit next:
 
 @code{.cpp}
 tf::Executor executor;
-std::function<int(int)> fibonacci;
 
-// calculate the Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89
-fibonacci = [&](int N){
-  if (N < 2) {
-    return N; 
-  }
-  auto [t1, fu1] = executor.dependent_async(std::bind(fibonacci, N-1));
-  auto [t2, fu2] = executor.dependent_async(std::bind(fibonacci, N-2));
-  executor.corun_until([&](){ return t1.is_done() && t2.is_done(); });
-  return fu1.get() + fu2.get();
-};
+// stage 1: load and parse data
+auto [parse,  fu_parse]  = executor.dependent_async([]() -> int {
+  return load_and_parse();   // returns the number of records parsed
+});
 
-auto [task, fib11] = executor.dependent_async(std::bind(fibonacci, 11));
-assert(fib11 == 89);  // the 11-th Fibonacci number is 89
+// stage 2: validate records — depends on parse
+auto [validate, fu_validate] = executor.dependent_async([&]() -> bool {
+  return validate_records();
+}, parse);
+
+// the main thread keeps the executor's workers alive (work-stealing loop)
+// while waiting for both stages to complete
+executor.corun_until([&](){
+  return parse.is_done() && validate.is_done();
+});
+
+// now safe to inspect results and decide on the next step
+int  n_records = fu_parse.get();
+bool valid     = fu_validate.get();
+
+if(valid) {
+  // submit stage 3 only if validation passed
+  executor.silent_dependent_async([=]() {
+    process_records(n_records);
+  }, validate);
+}
+
+executor.wait_for_all();
 @endcode
+
+@note
+tf::AsyncTask::is_done is designed to be used together with
+tf::Executor::corun_until, which keeps the calling worker thread active
+in the work-stealing loop rather than blocking it.
+Blocking a worker thread with a spin-wait or @c std::future::get while
+inside the executor can cause deadlock if all workers are blocked waiting
+for tasks that cannot be scheduled.
+See @ref ExecuteATaskflowFromAnInternalWorker for more details.
 
 */
 
 }
-
-

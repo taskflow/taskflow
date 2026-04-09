@@ -28,7 +28,7 @@ var searchData=
   ['q8_3a_20what_20is_20the_20overhead_20of_20taskflow_25',['Q8: What is the overhead of taskflow?',['../FAQ.html#GeneralQuestion8',1,'']]],
   ['q9_3a_20are_20there_20any_20limits_20on_20the_20branches_20of_20conditional_20tasking_26',['Q9: Are there any limits on the branches of conditional tasking?',['../FAQ.html#ProgrammingQuestions9',1,'']]],
   ['q9_3a_20how_20does_20it_20compare_20to_20existing_20task_20programming_20systems_27',['Q9: How does it compare to existing task programming systems?',['../FAQ.html#GeneralQuestion9',1,'']]],
-  ['query_20the_20completion_20status_20of_20dependent_20async_20tasks_28',['Query the Completion Status of Dependent Async Tasks',['../DependentAsyncTasking.html#QueryTheComppletionStatusOfDependentAsyncTasks',1,'']]],
+  ['query_20completion_20status_20with_20cooperative_20execution_28',['Query Completion Status with Cooperative Execution',['../DependentAsyncTasking.html#QueryTheCompletionStatusOfDependentAsyncTasks',1,'']]],
   ['query_20the_20worker_20id_29',['Query the Worker ID',['../ExecuteTaskflow.html#QueryTheWorkerID',1,'']]],
   ['questions_30',['Questions',['../FAQ.html',1,'Frequently Asked Questions'],['../FAQ.html#GeneralQuestions',1,'General Questions'],['../FAQ.html#ProgrammingQuestions',1,'Programming Questions']]],
   ['queue_5fcapacity_31',['queue_capacity',['../classtf_1_1Worker.html#a0c0505b0ce5b464d4458b5278265429a',1,'tf::Worker::queue_capacity()'],['../classtf_1_1WorkerView.html#aed408a9cbf65b0598fa27cd75d9b915e',1,'tf::WorkerView::queue_capacity()']]],

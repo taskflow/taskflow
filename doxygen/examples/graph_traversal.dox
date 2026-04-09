@@ -96,7 +96,7 @@ std::vector<tf::Task> tasks(num_nodes);
 for(size_t i = 0; i < num_nodes; i++) {
   tasks[i] = taskflow.emplace([v = &nodes[i]]() {
     v->visited = true;
-    for(auto* s : v->successors) {
+    for(auto s : v->successors) {
       s->dependents.fetch_sub(1);
     }
   }).name(nodes[i].name);
@@ -104,7 +104,7 @@ for(size_t i = 0; i < num_nodes; i++) {
 
 // wire task dependencies to match graph edges
 for(size_t i = 0; i < num_nodes; i++) {
-  for(auto* s : nodes[i].successors) {
+  for(auto s : nodes[i].successors) {
     tasks[i].precede(tasks[s->idx]);
   }
 }

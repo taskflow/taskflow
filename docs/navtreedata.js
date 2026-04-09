@@ -97,11 +97,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Algorithms.html",
-"ScalableTaskParallelPipeline.html#ScalablePipelineUseOtherIteratorTypes",
-"classtf_1_1PartitionerBase.html#a56cd2cc038e67d21e6676ab81fa3a8ad",
-"classtf_1_1cudaGraphBase.html#acc2126d8237fe3ef59a1a6943cbf1aa0",
-"release-2-7-0.html#release-2-7-0_new_features"
+"ParallelTransforms.html#ParallelTransformsConfigureAPartitioner",
+"classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555",
+"classtf_1_1Worker.html#a0180ea51cc46551157eaae451b50c7d8",
+"release-1-x-x.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';

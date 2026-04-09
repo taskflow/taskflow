@@ -1,0 +1,10 @@
+digraph stencil3D {
+  rankdir=LR;
+  init  [label="init"]
+  stencil [label="stencil", fillcolor=white;]
+  check [label="check", shape=diamond, style=filled, fillcolor=aquamarine];
+  init  -> stencil;
+  stencil -> check;
+  check -> stencil [label="0", style=dashed, constraint=false];
+}
+

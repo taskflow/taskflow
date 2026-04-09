@@ -15,24 +15,32 @@ In a sequential program, exception handling is straightforward: an exception
 thrown in a function propagates up the call stack until it reaches a
 @c catch block or terminates the program.
 
+@code{.cpp}
+try {
+  do_something();
+} catch(std::exception e) {
+  std::cerr << e.what();
+}
+@endcode
+
 However, in a parallel runtime, this mechanism breaks down entirely.
 %Worker threads execute tasks independently of the application thread.
 When a task on worker thread 3 throws an exception, there is no call stack
 connection back to the @c try block the application wrote.
-The exception cannot simply propagate upward — it will terminate the worker
+The exception cannot simply propagate upward, as it will terminate the worker
 thread if left unhandled, corrupting the entire executor.
 A correct parallel runtime must therefore intercept every exception thrown
 inside a task, store it safely across thread boundaries, cancel the
 appropriate downstream tasks to avoid operating on invalid state, and
-re-raise the exception at the right point — either synchronously on a
+re-raise the exception at the right point, either synchronously on a
 waiting thread or asynchronously via a future handle.
+
+@dotfile images/exception_handling_hard.dot
 
 Getting this right without sacrificing parallel efficiency is non-trivial,
 which is why most task-parallel libraries simply ignore the problem and
 leave exception safety entirely to the user.
 %Taskflow handles it transparently.
-
-@dotfile images/exception_handling_hard.dot
 
 @section ExceptionHandlingLogic How Taskflow Handles Exceptions
 
@@ -151,7 +159,7 @@ catch (const std::runtime_error& e) {
 }
 @endcode
 
-@attention
+@note
 tf::Future is derived from @std_future and inherits all standard
 exception-handling behaviours defined by the C++ standard.
 

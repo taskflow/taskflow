@@ -1,0 +1,10 @@
+digraph BFS {
+  rankdir=LR;
+  init  [label="init"]
+  sweep [label="sweep", fillcolor=white;]
+  check [label="check", shape=diamond, style=filled, fillcolor=aquamarine];
+  init  -> sweep;
+  sweep -> check;
+  check -> sweep [label="0", style=dashed, constraint=false];
+}
+

@@ -39,7 +39,11 @@ var Cookbook =
       [ "Understand our Task-level Scheduling", "ConditionalTasking.html#TaskSchedulingPolicy", [
         [ "Example", "ConditionalTasking.html#TaskLevelSchedulingExample", null ]
       ] ],
-      [ "Avoid Common Pitfalls", "ConditionalTasking.html#AvoidCommonPitfalls", null ],
+      [ "Avoid Common Pitfalls", "ConditionalTasking.html#AvoidCommonPitfalls", [
+        [ "Pitfall 1: No Source Task", "ConditionalTasking.html#PitfallNoSourceTask", null ],
+        [ "Pitfall 2: Task Race", "ConditionalTasking.html#PitfallTaskRace", null ],
+        [ "Pitfall 3: Deadlock from Strong Back-edge", "ConditionalTasking.html#PitfallDeadlock", null ]
+      ] ],
       [ "Implement Control-flow Graphs", "ConditionalTasking.html#ImplementControlFlowGraphs", [
         [ "Implement If-Else Control Flow", "ConditionalTasking.html#ImplementIfElseControlFlow", null ],
         [ "Implement Switch Control Flow", "ConditionalTasking.html#ImplementSwitchControlFlow", null ],
@@ -55,22 +59,27 @@ var Cookbook =
       [ "Create an Adopted Module Task", "ComposableTasking.html#CreateAnAdoptedModuleTask", null ]
     ] ],
     [ "Asynchronous Tasking", "AsyncTasking.html", [
-      [ "Launch Asynchronous Tasks from an Executor", "AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor", null ],
-      [ "Launch Asynchronous Tasks from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksFromARuntime", null ],
-      [ "Launch Asynchronous Tasks Recursively from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime", null ]
+      [ "What is an Async Task?", "AsyncTasking.html#WhatIsAnAsyncTask", null ],
+      [ "Launch Async Tasks from an Executor", "AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor", null ],
+      [ "Launch Async Tasks from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksFromARuntime", null ],
+      [ "Launch Async Tasks Recursively from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime", null ]
     ] ],
     [ "Asynchronous Tasking with Dependencies", "DependentAsyncTasking.html", [
-      [ "Create a Dynamic Task Graph", "DependentAsyncTasking.html#CreateADynamicTaskGraph", null ],
-      [ "Specify a Range of Dependent Async Tasks", "DependentAsyncTasking.html#SpecifyARagneOfDependentAsyncTasks", null ],
-      [ "Understand the Lifetime of a Dependent-async Task", "DependentAsyncTasking.html#UnderstandTheLifeTimeOfADependentAsyncTask", null ],
-      [ "Create a Dynamic Task Graph by Multiple Threads", "DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads", null ],
-      [ "Query the Completion Status of Dependent Async Tasks", "DependentAsyncTasking.html#QueryTheComppletionStatusOfDependentAsyncTasks", null ]
+      [ "When Static Task Graphs Are Not Enough", "DependentAsyncTasking.html#WhenStaticTaskGraphsAreNotEnough", null ],
+      [ "Create a Dynamic Task Graph from an Executor", "DependentAsyncTasking.html#CreateADynamicTaskGraph", null ],
+      [ "Specify a Range of Dependencies", "DependentAsyncTasking.html#SpecifyARangeOfDependencies", null ],
+      [ "Create a Dynamic Task Graph from a Runtime", "DependentAsyncTasking.html#CreateADynamicTaskGraphFromARuntime", null ],
+      [ "Create a Dynamic Task Graph from Multiple Threads", "DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads", null ],
+      [ "Understand the Lifetime of a Dependent-Async Task", "DependentAsyncTasking.html#UnderstandTheLifetimeOfADependentAsyncTask", null ],
+      [ "Query Completion Status with Cooperative Execution", "DependentAsyncTasking.html#QueryTheCompletionStatusOfDependentAsyncTasks", null ]
     ] ],
     [ "Runtime Tasking", "RuntimeTasking.html", [
-      [ "Create a Runtime Task", "RuntimeTasking.html#CreateARuntimeTask", null ],
-      [ "Create Asynchronous Tasks from a Runtime Task", "RuntimeTasking.html#CreateAsynchronousTasksFromARuntimeTask", null ],
-      [ "Synchronize with Cooperative Execution", "RuntimeTasking.html#SynchronizeWithCooperativeExecution", null ],
-      [ "Create Recursive Asynchronous Tasks from a Runtime Task", "RuntimeTasking.html#CreateRecursiveAsynchronousTasksFromARuntimeTask", null ]
+      [ "What is a Runtime Task?", "RuntimeTasking.html#WhatIsARuntimeTask", null ],
+      [ "Spawn Tasks from a Runtime", "RuntimeTasking.html#SpawnTasksFromARuntime", [
+        [ "Async Tasks", "RuntimeTasking.html#SpawnAsyncTasksFromARuntime", null ],
+        [ "Dependent Async Tasks", "RuntimeTasking.html#SpawnDependentAsyncTasksFromARuntime", null ]
+      ] ],
+      [ "Issue Cooperative Execution", "RuntimeTasking.html#IssueCooperativeExecution", null ]
     ] ],
     [ "Task Group", "TaskGroup.html", [
       [ "Create a Task Group", "TaskGroup.html#CreateATaskGroup", null ],

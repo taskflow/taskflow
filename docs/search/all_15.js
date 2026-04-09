@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['launch_20asynchronous_20tasks_0',['Launch Asynchronous Tasks',['../index.html#QuickStartLaunchAsyncTasks',1,'']]],
-  ['launch_20asynchronous_20tasks_20from_20a_20runtime_1',['Launch Asynchronous Tasks from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksFromARuntime',1,'']]],
-  ['launch_20asynchronous_20tasks_20from_20an_20executor_2',['Launch Asynchronous Tasks from an Executor',['../AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor',1,'']]],
-  ['launch_20asynchronous_20tasks_20recursively_20from_20a_20runtime_3',['Launch Asynchronous Tasks Recursively from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime',1,'']]],
+  ['launch_20async_20tasks_20from_20a_20runtime_0',['Launch Async Tasks from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksFromARuntime',1,'']]],
+  ['launch_20async_20tasks_20from_20an_20executor_1',['Launch Async Tasks from an Executor',['../AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor',1,'']]],
+  ['launch_20async_20tasks_20recursively_20from_20a_20runtime_2',['Launch Async Tasks Recursively from a Runtime',['../AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime',1,'']]],
+  ['launch_20asynchronous_20tasks_3',['Launch Asynchronous Tasks',['../index.html#QuickStartLaunchAsyncTasks',1,'']]],
   ['lead_20a_20project_4',['How Can I Lead a Project?',['../guidelines.html#HowCanILeadAProject',1,'']]],
   ['learning_20from_20examples_5',['Learning from Examples',['../Examples.html',1,'']]],
   ['level_20scheduling_6',['Understand our Task-level Scheduling',['../ConditionalTasking.html#TaskSchedulingPolicy',1,'']]],
   ['leverage_20standard_20parallel_20algorithms_7',['Leverage Standard Parallel Algorithms',['../index.html#QuickStartLeverageStandardParallelAlgorithms',1,'']]],
   ['license_8',['License',['../index.html#License',1,'']]],
-  ['lifetime_20of_20a_20dependent_20async_20task_9',['Understand the Lifetime of a Dependent-async Task',['../DependentAsyncTasking.html#UnderstandTheLifeTimeOfADependentAsyncTask',1,'']]],
+  ['lifetime_20of_20a_20dependent_20async_20task_9',['Understand the Lifetime of a Dependent-Async Task',['../DependentAsyncTasking.html#UnderstandTheLifetimeOfADependentAsyncTask',1,'']]],
   ['lifetime_20of_20a_20task_10',['Understand the Lifetime of a Task',['../StaticTasking.html#UnderstandTheLifetimeOfATask',1,'']]],
   ['lifetime_20of_20a_20task_20and_20a_20graph_11',['Q2: What is the Lifetime of a Task and a Graph?',['../FAQ.html#ProgrammingQuestions2',1,'']]],
   ['like_200x7fc39d402ab0_20in_20the_20dumped_20graph_12',['Q5: What is the weird hex value, like 0x7fc39d402ab0, in the dumped graph?',['../FAQ.html#GeneralQuestion5',1,'']]],
@@ -25,6 +25,7 @@ var searchData=
   ['linkers_22',['Link Objects Using Different Linkers',['../CompileTaskflowWithCUDA.html#CompileTaskflowWithCUDADifferentLinkers',1,'']]],
   ['look_20around_23',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
   ['loop_24',['Catch an Exception from a Corun Loop',['../ExceptionHandling.html#ExceptionHandlingCorun',1,'']]],
-  ['loop_20control_20flow_25',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
-  ['loops_20to_20task_20graphs_26',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]]
+  ['loop_20as_20a_20condition_20task_25',['Encoding the Loop as a Condition Task',['../ExamplesBFS.html#BFSConditionTask',1,'']]],
+  ['loop_20control_20flow_26',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
+  ['loops_20to_20task_20graphs_27',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]]
 ];
