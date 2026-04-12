@@ -97,12 +97,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Algorithms.html",
-"ParallelScan.html#ParallelScanWhatIsAScan",
-"classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f",
-"classtf_1_1UnboundedWSQ.html#a0b91802df36d932ee43b10aedc3abebc",
-"namespacemembers_func.html",
-"team.html#FreelanceDevelopers"
+"ParallelReduction.html#ParallelReductionCaptureIteratorsByReference",
+"classtf_1_1Graph.html#a55cb9bcb9a1152943b7bcb2a7549fe81",
+"classtf_1_1UnboundedWSQ.html",
+"matrix_multiplication.html#MatrixMultiplicationProblem",
+"team.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronization';
-var SYNCOFFMSG = 'click to enable panel synchronization';
+var SYNCONMSG = 'click to disable panel synchronisation';
+var SYNCOFFMSG = 'click to enable panel synchronisation';

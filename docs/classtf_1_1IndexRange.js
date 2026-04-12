@@ -1,26 +1,14 @@
 var classtf_1_1IndexRange =
 [
     [ "index_type", "classtf_1_1IndexRange.html#a0824674a9cd219a11d08bb5dd43003d8", null ],
-    [ "index_type", "classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68", null ],
-    [ "IndexRange", "classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72", null ],
-    [ "IndexRange", "classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee", null ],
     [ "IndexRange", "classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555", null ],
     [ "IndexRange", "classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96", null ],
     [ "IndexRange", "classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d", null ],
-    [ "begin", "classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d", null ],
-    [ "begin", "classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201", null ],
     [ "consume_chunk", "classtf_1_1IndexRange.html#adbec8e3eab774a7b8006df2717d0b845", null ],
     [ "coords", "classtf_1_1IndexRange.html#a053a48c1dd6502eb7b9e1d5cbedfc5d8", null ],
     [ "dim", "classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc", null ],
     [ "dim", "classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1", null ],
     [ "dims", "classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f", null ],
-    [ "end", "classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea", null ],
-    [ "end", "classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d", null ],
-    [ "reset", "classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2", null ],
     [ "size", "classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6", null ],
-    [ "size", "classtf_1_1IndexRange.html#a32783aa72f60af58fe0d092f90c80b78", null ],
-    [ "size", "classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834", null ],
-    [ "step_size", "classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112", null ],
-    [ "step_size", "classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b", null ],
-    [ "unravel", "classtf_1_1IndexRange.html#a4e952421491695562fe336ad498469a9", null ]
+    [ "size", "classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834", null ]
 ];

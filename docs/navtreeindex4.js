@@ -1,5 +1,8 @@
 var NAVTREEINDEX4 =
 {
+"matrix_multiplication.html#MatrixMultiplicationProblem":[5,17,0],
+"namespacemembers.html":[11,0],
+"namespacemembers_enum.html":[11,4],
 "namespacemembers_func.html":[11,1],
 "namespacemembers_type.html":[11,3],
 "namespacemembers_vars.html":[11,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX4 =
 "rules.html#RulesForRoles":[8,0,2],
 "rules.html#SoftwareDecisions":[8,0,3],
 "rules.html#TheProjectOverview":[8,0,0],
-"structhash.html":[13,0,1],
-"team.html":[8,1],
-"team.html#Alumni":[8,1,1],
-"team.html#CoreMembers":[8,1,0]
+"structhash.html":[13,0,1]
 };

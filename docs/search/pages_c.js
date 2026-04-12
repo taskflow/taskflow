@@ -21,6 +21,7 @@ var searchData=
   ['control_20flow_18',['Nondeterministic Control Flow',['../ExamplesNondeterministicControlFlow.html',1,'Examples']]],
   ['convolution_19',['2D Image Convolution',['../ExamplesConv2D.html',1,'Examples']]],
   ['cookbook_20',['Cookbook',['../Cookbook.html',1,'']]],
-  ['cuda_21',['Compile Taskflow with CUDA',['../CompileTaskflowWithCUDA.html',1,'install']]],
-  ['cuda_20gpu_22',['CUDA GPU',['../KMeansWithCUDAGPU.html',1,'k-means Clustering with CUDA GPU'],['../MatrixMultiplicationWithCUDAGPU.html',1,'Matrix Multiplication with CUDA GPU']]]
+  ['critical_20path_20scheduling_21',['Critical Path Scheduling',['../ExamplesPERT.html',1,'Examples']]],
+  ['cuda_22',['Compile Taskflow with CUDA',['../CompileTaskflowWithCUDA.html',1,'install']]],
+  ['cuda_20gpu_23',['CUDA GPU',['../KMeansWithCUDAGPU.html',1,'k-means Clustering with CUDA GPU'],['../MatrixMultiplicationWithCUDAGPU.html',1,'Matrix Multiplication with CUDA GPU']]]
 ];

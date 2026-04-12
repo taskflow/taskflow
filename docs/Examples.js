@@ -26,6 +26,22 @@ var Examples =
       [ "Implementation", "ExamplesCholesky.html#CholeskyImplementation", null ],
       [ "Design Points", "ExamplesCholesky.html#CholeskyDesignPoints", null ]
     ] ],
+    [ "Critical Path Scheduling", "ExamplesPERT.html", [
+      [ "What is a PERT Chart?", "ExamplesPERT.html#PERTIntroduction", null ],
+      [ "A Concrete Project", "ExamplesPERT.html#PERTProblem", null ],
+      [ "Finding the Critical Path", "ExamplesPERT.html#PERTCriticalPath", null ],
+      [ "Implementation", "ExamplesPERT.html#PERTImplementation", null ],
+      [ "Design Points", "ExamplesPERT.html#PERTDesignPoints", null ]
+    ] ],
+    [ "Incremental Build Graph", "ExamplesMakeGraph.html", [
+      [ "What is an Incremental Build?", "ExamplesMakeGraph.html#MakeGraphIntroduction", null ],
+      [ "A Concrete Build Graph", "ExamplesMakeGraph.html#MakeGraphProblem", null ],
+      [ "Using Condition Tasks for Staleness", "ExamplesMakeGraph.html#MakeGraphConditionTask", null ],
+      [ "The Task Race at the Join Point", "ExamplesMakeGraph.html#MakeGraphPitfall", null ],
+      [ "The Auxiliary Join Task Pattern", "ExamplesMakeGraph.html#MakeGraphJoinTask", null ],
+      [ "Implementation", "ExamplesMakeGraph.html#MakeGraphImplementation", null ],
+      [ "Design Points", "ExamplesMakeGraph.html#MakeGraphDesignPoints", null ]
+    ] ],
     [ "Fibonacci Number", "ExamplesFibonacciNumber.html", [
       [ "Problem Formulation", "ExamplesFibonacciNumber.html#FibonacciNumberProblem", null ],
       [ "Recursive Fibonacci with Runtime Tasking", "ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking", [

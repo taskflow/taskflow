@@ -23,13 +23,17 @@ non-deterministic control flow.
 | @ref wavefront "Wavefront Parallelism" | Diagonal sweep parallelism over a 2D grid where each cell depends on its left and top neighbours |
 | @ref graphtraversal "Graph Traversal" | Parallel DAG traversal where task dependencies mirror the input graph structure |
 | @ref ExamplesNondeterministicControlFlow "Nondeterministic Control Flow" | Stochastic branching using conditional tasks to express non-deterministic execution paths |
-| @ref ExamplesCholesky "Blocked Cholesky Factorization" | Task-parallel blocked Cholesky decomposition with a statically constructed tile dependency graph |
+| @ref ExamplesCholesky "Blocked Cholesky Factorization" | Task-parallel blocked Cholesky decomposition based on a tile dependency graph |
+| @ref ExamplesPERT "Critical Path Scheduling" | PERT chart executed as a static task graph to identify the critical path |
+| @ref ExamplesMakeGraph "Incremental Build Graph" | Make-style incremental build system using condition tasks |
   
 Links to each example subpage are provided below:
   + @subpage wavefront
   + @subpage graphtraversal
   + @subpage ExamplesNondeterministicControlFlow
   + @subpage ExamplesCholesky
+  + @subpage ExamplesPERT
+  + @subpage ExamplesMakeGraph
 
 @section ExamplesAsyncTasking Async Tasking
 

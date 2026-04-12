@@ -45,12 +45,11 @@ var searchData=
   ['move_20a_20taskflow_42',['Move a Taskflow',['../StaticTasking.html#MoveATaskflow',1,'']]],
   ['multi_20condition_20task_43',['Create a Multi-condition Task',['../ConditionalTasking.html#CreateAMultiConditionTask',1,'']]],
   ['multi_20dimensional_20indexrange_44',['Multi-dimensional IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRangeMD',1,'']]],
-  ['multiconditiontask_45',['MultiConditionTask',['../concepttf_1_1MultiConditionTask.html',1,'tf']]],
-  ['multiple_20parallel_20pipelines_46',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
-  ['multiple_20sweeps_47',['Multiple Sweeps',['../ExamplesStencil3D.html#Stencil3DMultipleSweeps',1,'']]],
-  ['multiple_20threads_48',['Create a Dynamic Task Graph from Multiple Threads',['../DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads',1,'']]],
-  ['multiplication_49',['Multiplication',['../matrix_multiplication.html',1,'Matrix Multiplication'],['../ExamplesSpMV.html',1,'Sparse Matrix-Vector Multiplication'],['../ExamplesSpMV.html#SpMVIntroduction',1,'What is Sparse Matrix-Vector Multiplication?']]],
-  ['multiplication_20with_20cuda_20gpu_50',['Matrix Multiplication with CUDA GPU',['../MatrixMultiplicationWithCUDAGPU.html',1,'Examples']]],
-  ['my_20program_20hangs_20and_20never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_51',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['my_20projects_52',['Q2: How do I use Taskflow in my projects?',['../FAQ.html#GeneralQuestion2',1,'']]]
+  ['multiple_20parallel_20pipelines_45',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
+  ['multiple_20sweeps_46',['Multiple Sweeps',['../ExamplesStencil3D.html#Stencil3DMultipleSweeps',1,'']]],
+  ['multiple_20threads_47',['Create a Dynamic Task Graph from Multiple Threads',['../DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads',1,'']]],
+  ['multiplication_48',['Multiplication',['../matrix_multiplication.html',1,'Matrix Multiplication'],['../ExamplesSpMV.html',1,'Sparse Matrix-Vector Multiplication'],['../ExamplesSpMV.html#SpMVIntroduction',1,'What is Sparse Matrix-Vector Multiplication?']]],
+  ['multiplication_20with_20cuda_20gpu_49',['Matrix Multiplication with CUDA GPU',['../MatrixMultiplicationWithCUDAGPU.html',1,'Examples']]],
+  ['my_20program_20hangs_20and_20never_20returns_20after_20dispatching_20a_20taskflow_20graph_20what_20s_20wrong_50',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
+  ['my_20projects_51',['Q2: How do I use Taskflow in my projects?',['../FAQ.html#GeneralQuestion2',1,'']]]
 ];

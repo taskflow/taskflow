@@ -1,5 +1,8 @@
 var NAVTREEINDEX3 =
 {
+"classtf_1_1UnboundedWSQ.html":[13,0,0,48],
+"classtf_1_1UnboundedWSQ.html#a005abeb0ab8c65d4c98f7eafec46bd9e":[13,0,0,48,5],
+"classtf_1_1UnboundedWSQ.html#a02e2447359cc9d84f59028b236e3a0e7":[13,0,0,48,6],
 "classtf_1_1UnboundedWSQ.html#a0b91802df36d932ee43b10aedc3abebc":[13,0,0,48,9],
 "classtf_1_1UnboundedWSQ.html#a1b1c03ee3602cb76c94e7840c4272498":[13,0,0,48,1],
 "classtf_1_1UnboundedWSQ.html#a2aaa261d52e680dcf00af7514868739f":[13,0,0,48,7],
@@ -240,14 +243,11 @@ var NAVTREEINDEX3 =
 "install.html#BAIBuildSanitizers":[2,4],
 "install.html#BAIIntegrateTaskflowToYourProject":[2,1],
 "install.html#BAISupportedCompilers":[2,0],
-"kmeans.html":[5,16],
-"kmeans.html#KMeansBenchmarking":[5,16,2],
-"kmeans.html#KMeansProblemFormulation":[5,16,0],
-"kmeans.html#ParallelKMeansUsingCPUs":[5,16,1],
-"matrix_multiplication.html":[5,15],
-"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[5,15,2],
-"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[5,15,1],
-"matrix_multiplication.html#MatrixMultiplicationProblem":[5,15,0],
-"namespacemembers.html":[11,0],
-"namespacemembers_enum.html":[11,4]
+"kmeans.html":[5,18],
+"kmeans.html#KMeansBenchmarking":[5,18,2],
+"kmeans.html#KMeansProblemFormulation":[5,18,0],
+"kmeans.html#ParallelKMeansUsingCPUs":[5,18,1],
+"matrix_multiplication.html":[5,17],
+"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[5,17,2],
+"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[5,17,1]
 };

@@ -30,7 +30,7 @@ var annotated_dup =
       [ "Graph", "classtf_1_1Graph.html", "classtf_1_1Graph" ],
       [ "GuidedPartitioner", "classtf_1_1GuidedPartitioner.html", "classtf_1_1GuidedPartitioner" ],
       [ "IndexRange", "classtf_1_1IndexRange.html", "classtf_1_1IndexRange" ],
-      [ "IndexRange< T, 1 >", "classtf_1_1IndexRange.html", "classtf_1_1IndexRange" ],
+      [ "IndexRange< T, 1 >", "classtf_1_1IndexRange_3_01T_00_011_01_4.html", "classtf_1_1IndexRange_3_01T_00_011_01_4" ],
       [ "NonblockingNotifier", "classtf_1_1NonblockingNotifier.html", "classtf_1_1NonblockingNotifier" ],
       [ "ObserverInterface", "classtf_1_1ObserverInterface.html", "classtf_1_1ObserverInterface" ],
       [ "PartitionerBase", "classtf_1_1PartitionerBase.html", "classtf_1_1PartitionerBase" ],
