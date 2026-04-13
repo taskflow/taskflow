@@ -2,9 +2,9 @@ var annotated_dup =
 [
     [ "tf", "namespacetf.html", [
       [ "AsyncTask", "classtf_1_1AsyncTask.html", "classtf_1_1AsyncTask" ],
+      [ "AtomicIntrusiveStack", "classtf_1_1AtomicIntrusiveStack.html", "classtf_1_1AtomicIntrusiveStack" ],
       [ "BoundedWSQ", "classtf_1_1BoundedWSQ.html", "classtf_1_1BoundedWSQ" ],
       [ "CachelineAligned", "classtf_1_1CachelineAligned.html", "classtf_1_1CachelineAligned" ],
-      [ "ChromeObserver", "classtf_1_1ChromeObserver.html", "classtf_1_1ChromeObserver" ],
       [ "cudaEventBase", "classtf_1_1cudaEventBase.html", "classtf_1_1cudaEventBase" ],
       [ "cudaEventCreator", "classtf_1_1cudaEventCreator.html", "classtf_1_1cudaEventCreator" ],
       [ "cudaEventDeleter", "classtf_1_1cudaEventDeleter.html", "classtf_1_1cudaEventDeleter" ],
@@ -30,6 +30,7 @@ var annotated_dup =
       [ "Graph", "classtf_1_1Graph.html", "classtf_1_1Graph" ],
       [ "GuidedPartitioner", "classtf_1_1GuidedPartitioner.html", "classtf_1_1GuidedPartitioner" ],
       [ "IndexRange", "classtf_1_1IndexRange.html", "classtf_1_1IndexRange" ],
+      [ "IndexRange< T, 1 >", "classtf_1_1IndexRange_3_01T_00_011_01_4.html", "classtf_1_1IndexRange_3_01T_00_011_01_4" ],
       [ "NonblockingNotifier", "classtf_1_1NonblockingNotifier.html", "classtf_1_1NonblockingNotifier" ],
       [ "ObserverInterface", "classtf_1_1ObserverInterface.html", "classtf_1_1ObserverInterface" ],
       [ "PartitionerBase", "classtf_1_1PartitionerBase.html", "classtf_1_1PartitionerBase" ],
@@ -48,7 +49,6 @@ var annotated_dup =
       [ "TaskGroup", "classtf_1_1TaskGroup.html", "classtf_1_1TaskGroup" ],
       [ "TaskParams", "classtf_1_1TaskParams.html", "classtf_1_1TaskParams" ],
       [ "TaskView", "classtf_1_1TaskView.html", "classtf_1_1TaskView" ],
-      [ "TFProfObserver", "classtf_1_1TFProfObserver.html", "classtf_1_1TFProfObserver" ],
       [ "UnboundedWSQ", "classtf_1_1UnboundedWSQ.html", "classtf_1_1UnboundedWSQ" ],
       [ "Worker", "classtf_1_1Worker.html", "classtf_1_1Worker" ],
       [ "WorkerInterface", "classtf_1_1WorkerInterface.html", "classtf_1_1WorkerInterface" ],

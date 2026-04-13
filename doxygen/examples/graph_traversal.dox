@@ -2,64 +2,70 @@ namespace tf {
 
 /** @page graphtraversal Graph Traversal
 
-We study the graph traversal problem by visiting each vertex in parallel following their
-edge dependencies. Traversing a graph is a fundamental building block of many
-graph applications especially for large-scale graph analytics.
+We study parallel DAG traversal — visiting every vertex of a directed
+acyclic graph in dependency order, processing each vertex as soon as all
+of its predecessors have finished.
+Graph traversal is a fundamental building block of large-scale graph
+analytics, build systems, circuit simulation, and workflow engines.
 
 @tableofcontents
 
 @section GraphTraversalProblemFormulation Problem Formulation
 
-Given a directed acyclic graph (DAG), i.e., a graph that has no cycles, 
-we would like to traverse each vertex in order without breaking dependency constraints defined by edges.
-The following figure shows a graph of six vertices and seven edges.
-Each vertex represents a particular task and each edge represents a task dependency between two tasks.
+Given a directed acyclic graph (DAG), we want to visit each vertex
+exactly once, respecting the partial order defined by the edges.
+The following figure shows the six-vertex, seven-edge DAG used as a
+running example:
 
 @dotfile images/task-level-parallelism.dot
 
-Traversing the above graph in parallel, the maximum parallelism we can acquire is three.
-When Task1 finishes, we can run Task2, Task3, and Task4 in parallel.
+The graph has a single source (Task1) and a single sink (Task6).
+When Task1 completes, Task2, Task3, and Task4 can all run simultaneously —
+giving a maximum parallelism of three at that point.
+The challenge is to exploit this available parallelism automatically,
+without writing explicit thread management or synchronisation code.
 
 @section GraphTraversalGraphRepresentation Graph Representation
 
-We define the data structure of our graph. The graph is represented by an array of nodes of the following structure:
+We represent the graph as an array of @c Node structures.
+Each node stores its index, a @c visited flag, an atomic in-degree counter
+(@c dependents), and a list of outgoing edge pointers (@c successors):
 
 @code{.cpp}
 struct Node {
   std::string name;
-  size_t idx;                          // index of the node in a array
-  bool visited {false};
+  size_t idx;
 
-  std::atomic<size_t> dependents {0};  // number of incoming edges
-  std::vector<Node*> successors;       // number of outgoing edges
+  bool visited {false};
+  std::atomic<size_t> dependents {0};  // number of unfinished predecessors
+  std::vector<Node*> successors;       // outgoing edges
 
   void precede(Node& n) {
     successors.emplace_back(&n);
-    n.dependents ++;
+    n.dependents++;
   }
 };
 @endcode
 
-Based on the data structure, we randomly generate a DAG using ordered edges.
+We generate random DAGs with ordered edges, which guarantees acyclicity
+since all edges point from lower- to higher-indexed nodes:
 
 @code{.cpp}
 std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
-  
+
   std::unique_ptr<Node[]> nodes(new Node[num_nodes]);
-  
-  // Make sure nodes are in clean state
-  for(size_t i=0; i<num_nodes; i++) {
-    nodes[i].idx = i;
+
+  for(size_t i = 0; i < num_nodes; i++) {
+    nodes[i].idx  = i;
     nodes[i].name = std::to_string(i);
   }
 
-  // Create a DAG by randomly insert ordered edges
-  for(size_t i=0; i<num_nodes; i++) {
-    size_t degree {0};
-    for(size_t j=i+1; j<num_nodes && degree < max_degree; j++) {
+  for(size_t i = 0; i < num_nodes; i++) {
+    size_t degree = 0;
+    for(size_t j = i + 1; j < num_nodes && degree < max_degree; j++) {
       if(std::rand() % 2 == 1) {
         nodes[i].precede(nodes[j]);
-        degree ++;
+        degree++;
       }
     }
   }
@@ -68,74 +74,60 @@ std::unique_ptr<Node[]> make_dag(size_t num_nodes, size_t max_degree) {
 }
 @endcode
 
-The function, @c make_dag, accepts two arguments, @c num_nodes and @c max_degree, to 
-restrict the number of nodes in the graph and the maximum number of outgoing edges of every node.
+@section GraphTraversalStaticTraversal Parallel Static Traversal
 
-@section GraphTraversalStaticTraversal Static Traversal
-
-We create a taskflow to traverse the graph using static tasks (see @ref StaticTasking).
-Each task does nothing but marks @c visited to @c true 
-and subtracts @c dependents from one, both of which are used for validation after the graph is traversed.
-In practice, this computation may be replaced with a heavy function.
+We build a %Taskflow that mirrors the graph structure exactly: one task
+per node, with task dependencies mirroring graph edges.
+Each task marks its node @c visited, decrements the @c dependents counter
+of each successor, and completes.
+In practice, the task body would contain the actual computation for that
+node — the @c visited and @c dependents updates are used here only to
+verify correctness after traversal.
 
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
 
-std::unique_ptr<Node[]> nodes = make_dag(100000, 4);
-std::vector<tf::Task> tasks;
+const size_t num_nodes = 100000;
+std::unique_ptr<Node[]> nodes = make_dag(num_nodes, 4);
+std::vector<tf::Task> tasks(num_nodes);
 
-// create the traversal task for each node
-for(size_t i=0; i<num_nodes; ++i) {
-  tf::Task task = taskflow.emplace([v=&(nodes[i])](){
+// create one traversal task per node
+for(size_t i = 0; i < num_nodes; i++) {
+  tasks[i] = taskflow.emplace([v = &nodes[i]]() {
     v->visited = true;
-    for(size_t j=0; j<v->successors.size(); ++j) {
-      v->successors[j]->dependents.fetch_sub(1);
+    for(auto s : v->successors) {
+      s->dependents.fetch_sub(1);
     }
   }).name(nodes[i].name);
-
-  tasks.push_back(task);
 }
 
-// create the dependency between nodes on top of the graph structure
-for(size_t i=0; i<num_nodes; ++i) {
-  for(size_t j=0; j<nodes[i].successors.size(); ++j) {
-    tasks[i].precede(tasks[nodes[i].successors[j]->idx]);
+// wire task dependencies to match graph edges
+for(size_t i = 0; i < num_nodes; i++) {
+  for(auto s : nodes[i].successors) {
+    tasks[i].precede(tasks[s->idx]);
   }
 }
 
 executor.run(taskflow).wait();
 
-// after the graph is traversed, all nodes must be visited with no dependents
-for(size_t i=0; i<num_nodes; i++) {
+// verify: every node visited with all predecessor counts drained
+for(size_t i = 0; i < num_nodes; i++) {
   assert(nodes[i].visited);
   assert(nodes[i].dependents == 0);
 }
 @endcode
 
-The code above has two parts to construct the parallel graph traversal.
-First, it iterates each node and constructs a traversal task for that node.
-Second, it iterates each outgoing edge of a node and creates a dependency between the node and the other end
-(successor) of that edge.
-The resulting taskflow structure is topologically equivalent to the given graph.
-
-<!-- @image html images/graph_traversal_2.svg width=100% -->
-
-@dotfile images/graph_traversal_2.dot
-
-With task parallelism, we flow computation naturally with the graph structure.
-The runtime autonomously distributes tasks across processor cores to obtain maximum task parallelism.
-You do not need to worry about details of scheduling.
-
+The implementation has two clearly separated phases.
+First, it creates a traversal task for each node.
+Second, it wires task dependencies to exactly mirror the graph edges.
+The resulting taskflow is topologically equivalent to the input DAG.
+The executor distributes tasks across all available cores, respecting
+all dependencies and maximising parallelism wherever the graph structure
+allows it.
+No manual thread management, mutexes, or barrier synchronisation is
+required.
 
 */
 
 }
-
-
-
-
-
-
-
-

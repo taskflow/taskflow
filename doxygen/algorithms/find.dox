@@ -2,47 +2,55 @@ namespace tf {
 
 /** @page ParallelFind Parallel Find
 
-%Taskflow provides template functions for constructing
-tasks to perform parallel iterations over ranges of items.
+%Taskflow provides template functions for constructing tasks to perform
+parallel find over a range of items.
 
 @tableofcontents
 
 @section ParallelFindIncludeTheHeader Include the Header
 
-You need to include the header file, `%taskflow/algorithm/find.hpp`, 
+You need to include the header file, `%taskflow/algorithm/find.hpp`,
 for using parallel-find algorithms.
 
 @code{.cpp}
 #include <taskflow/algorithm/find.hpp>
 @endcode
 
-@section WhatIsAFindAlgorithm What is a Find Algorithm?
+@section ParallelFindWhatIsFind What is a Find Algorithm?
 
-A find algorithm allows you to find an element in a range 
-<tt>[first, last)</tt>
-that satisfies a specific criteria.
-The algorithm returns an iterator to the first found element in the range
-or returns @c last if there is no such iterator.
+A find algorithm searches a range <tt>[first, last)</tt> for an element
+that satisfies a given criterion and returns an iterator to the @em first
+such element, or @c last if no such element exists.
+
+What distinguishes a parallel find from a parallel for-each is its
+@em short-circuit semantics: as soon as any worker finds a qualifying
+element, the remaining workers abandon their portions of the range.
+This means the algorithm does not always process every element —
+it stops as early as possible once a result is found.
+
 %Taskflow provides the following parallel-find algorithms:
 
-+ tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P part)
-+ tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P part)
-+ tf::Taskflow::min_element(B first, E last, T& result, C comp, P part)
-+ tf::Taskflow::max_element(B first, E last, T& result, C comp, P part)
++ tf::Taskflow::find_if finds the first element for which a predicate returns @c true
++ tf::Taskflow::find_if_not finds the first element for which a predicate returns @c false
++ tf::Taskflow::min_element finds the element with the smallest value under a comparator
++ tf::Taskflow::max_element finds the element with the largest value under a comparator
 
-@section CreateAParallelFindIfTask Create a Parallel Find-If Task
+All four algorithms store the result iterator in a variable passed by
+reference, so the result is available after the task completes.
 
-tf::Taskflow::find_if
-performs parallel iterations to find the first element 
-in the range <tt>[first, last)</tt> that makes the given predicate return
-@c true.
+@section ParallelFindIf Create a Parallel Find-If Task
+
+tf::Taskflow::find_if(B first, E last, T& result, UOP predicate, P part)
+performs a parallel search over the range <tt>[first, last)</tt> and stores
+in @c result an iterator to the first element for which @c predicate returns
+@c true, or @c last if no such element exists.
 It resembles a parallel implementation of the following loop:
 
 @code{.cpp}
-template<typename InputIt, typename UnaryPredicate>
+template <typename InputIt, typename UnaryPredicate>
 InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
-  for(; first != last; ++first) {
-    if(predicate(*first)) {
+  for (; first != last; ++first) {
+    if (predicate(*first)) {
       return first;
     }
   }
@@ -50,68 +58,67 @@ InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
 }
 @endcode
 
-The example below creates a task to find the element that is equal
-to 22 from an input range of 10 elements.
-The result will be stored in the forth argument passed by reference:
+The example below creates a task to find the element equal to @c 22 in a
+range of 10 integers:
 
 @code{.cpp}
 std::vector<int> input = {1, 9, 22, 3, -6, 13, 12, 0, 9, 11};
 std::vector<int>::iterator result;
+
 taskflow.find_if(
-  input.begin(), input.end(), [](int i){ return i == 22; }, result
+  input.begin(), input.end(), result, [](int i) { return i == 22; }
 );
-executor.run(taskflow);
+executor.run(taskflow).wait();
+
 assert(*result == 22);
 @endcode
 
-@section ParallelFindCaptureIteratorsByReference Capture Iterators by Reference
+@subsection ParallelFindIfCaptureByReference Capture Iterators by Reference
 
-You can pass iterators by reference using @std_ref
-to marshal parameters update between dependent tasks.
-This is especially useful when the range iterators are not known
-at the time of creating a find-if task,
-but need initialization from another task.
+You can pass iterators by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the range is not known at task-graph construction time
+but is initialized by an upstream task.
 
 @code{.cpp}
 std::vector<int> input;
 std::vector<int>::iterator result, first, last;
 
-// task to set up the range iterators
-tf::Task init = taskflow.emplace([&](){
+tf::Task init = taskflow.emplace([&]() {
   input = {1, 9, 22, 3, -6, 13, 12, 0, 9, 11};
-  first = input.begin(),
+  first = input.begin();
   last  = input.end();
 });
 
-// task to perform parallel find
 tf::Task task = taskflow.find_if(
-  std::ref(first), std::ref(last), result, [](int i){ return i == 22; }
+  std::ref(first), std::ref(last), result, [](int i) { return i == 22; }
 );
 
-init.precede(task);
+// wrong! first and last are captured by copy at construction time
+// tf::Task task = taskflow.find_if(first, last, result, [](int i){ return i == 22; });
 
-executor.run(taskflow);
+init.precede(task);
+executor.run(taskflow).wait();
+
 assert(*result == 22);
 @endcode
 
-In the above example, when @c init finishes, @c input has been initialized to 10 elements with
-@c first and @c last pointing to the data range of @c input.
-The find-if task will then work on this initialized range as a result of
-passing iterators by reference.
+When @c init finishes, @c first and @c last point to the initialized data
+range of @c input, and the find-if task searches over all 10 elements.
 
-@section CreateAParallelFindIfNotTask Create a Parallel Find-If-Not Task
+@section ParallelFindIfNot Create a Parallel Find-If-Not Task
 
-tf::Taskflow::find_if_not
-performs parallel iterations to find the first element 
-in the range <tt>[first, last)</tt> that makes the given predicate return
-@c false.
+tf::Taskflow::find_if_not(B first, E last, T& result, UOP predicate, P part)
+performs a parallel search over the range <tt>[first, last)</tt> and stores
+in @c result an iterator to the first element for which @c predicate returns
+@c false, or @c last if no such element exists.
 It resembles a parallel implementation of the following loop:
 
 @code{.cpp}
-template<typename InputIt, typename UnaryPredicate>
-InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
-  for(; first != last; ++first) {
-    if(!predicate(*first)) {
+template <typename InputIt, typename UnaryPredicate>
+InputIt find_if_not(InputIt first, InputIt last, UnaryPredicate predicate) {
+  for (; first != last; ++first) {
+    if (!predicate(*first)) {
       return first;
     }
   }
@@ -119,107 +126,251 @@ InputIt find_if(InputIt first, InputIt last, UnaryPredicate predicate) {
 }
 @endcode
 
-The example below creates a task to find the element that is @em NOT equal
-to 22 from an input range of 10 elements. The result
-will be stored in the forth argument passed by reference:
+The example below creates a task to find the first element that is @em not
+equal to @c 1 in a range where only one element differs:
 
 @code{.cpp}
 std::vector<int> input = {1, 1, 22, 1, 1, 1, 1, 1, 1, 1};
 std::vector<int>::iterator result;
+
 taskflow.find_if_not(
-  input.begin(), input.end(), result, [](int i){ return i == 1; }
+  input.begin(), input.end(), result, [](int i) { return i == 1; }
 );
-executor.run(taskflow);
+executor.run(taskflow).wait();
+
 assert(*result == 22);
 @endcode
 
-Similar to @ref ParallelFindCaptureIteratorsByReference,
-iterators of tf::Taskflow::find_if_not are templated to 
-allow passing iterators by reference using @std_ref.
-This is especially useful when the range iterators are not known
-at the time of creating a find-if-not task,
-but need initialization from another task.
+@subsection ParallelFindIfNotCaptureByReference Capture Iterators by Reference
 
-@section ParallelFindMinMaxElement Find the Smallest and the Largest Elements
+As with tf::Taskflow::find_if, iterators can be passed by reference using
+@std_ref so that an upstream task can set up the range before the
+parallel find-if-not runs.
 
-tf::Taskflow::min_element finds the smallest element in a range
-<tt>[first, last)</tt> using the given comparison function object.
-The example below finds the smallest element, i.e., -1, 
-from an input range of 10 elements and stores the iterator
-to that smallest element in @c result:
+@code{.cpp}
+std::vector<int> input;
+std::vector<int>::iterator result, first, last;
+
+tf::Task init = taskflow.emplace([&]() {
+  input = {1, 1, 22, 1, 1, 1, 1, 1, 1, 1};
+  first = input.begin();
+  last  = input.end();
+});
+
+tf::Task task = taskflow.find_if_not(
+  std::ref(first), std::ref(last), result, [](int i) { return i == 1; }
+);
+
+// wrong! first and last are captured by copy at construction time
+// tf::Task task = taskflow.find_if_not(first, last, result, [](int i){ return i == 1; });
+
+init.precede(task);
+executor.run(taskflow).wait();
+
+assert(*result == 22);
+@endcode
+
+@section ParallelFindMinElement Find the Minimum Element
+
+tf::Taskflow::min_element(B first, E last, T& result, C comp, P part)
+performs a parallel search over the range <tt>[first, last)</tt> and stores
+in @c result an iterator to the element with the smallest value under the
+comparator @c comp.
+It resembles a parallel implementation of the following loop:
+
+@code{.cpp}
+template <typename InputIt, typename Compare>
+InputIt min_element(InputIt first, InputIt last, Compare comp) {
+  if (first == last) return last;
+  InputIt smallest = first;
+  for (++first; first != last; ++first) {
+    if (comp(*first, *smallest)) {
+      smallest = first;
+    }
+  }
+  return smallest;
+}
+@endcode
+
+The example below finds the smallest element in a range of 10 integers:
 
 @code{.cpp}
 std::vector<int> input = {1, 1, 1, 1, 1, -1, 1, 1, 1, 1};
 std::vector<int>::iterator result;
+
 taskflow.min_element(
   input.begin(), input.end(), std::less<int>(), result
 );
 executor.run(taskflow).wait();
+
 assert(*result == -1);
 @endcode
 
-Similarly, tf::Taskflow::max_element finds the largest element
-in a range <tt>[first, last)</tt> using the given comparison function object.
-The example below finds the largest element, i.e., 2,
-from an input range of 10 elements and stores the iterator
-to that largest element in @c result:
+@subsection ParallelFindMinElementCaptureByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref so that an upstream task
+can set up the range before the parallel min-element search runs.
+
+@code{.cpp}
+std::vector<int> input;
+std::vector<int>::iterator result, first, last;
+
+tf::Task init = taskflow.emplace([&]() {
+  input = {1, 1, 1, 1, 1, -1, 1, 1, 1, 1};
+  first = input.begin();
+  last  = input.end();
+});
+
+tf::Task task = taskflow.min_element(
+  std::ref(first), std::ref(last), std::less<int>(), result
+);
+
+// wrong! first and last are captured by copy at construction time
+// tf::Task task = taskflow.min_element(first, last, std::less<int>(), result);
+
+init.precede(task);
+executor.run(taskflow).wait();
+
+assert(*result == -1);
+@endcode
+
+@section ParallelFindMaxElement Find the Maximum Element
+
+tf::Taskflow::max_element(B first, E last, T& result, C comp, P part)
+performs a parallel search over the range <tt>[first, last)</tt> and stores
+in @c result an iterator to the element with the largest value under the
+comparator @c comp.
+It resembles a parallel implementation of the following loop:
+
+@code{.cpp}
+template <typename InputIt, typename Compare>
+InputIt max_element(InputIt first, InputIt last, Compare comp) {
+  if (first == last) return last;
+  InputIt largest = first;
+  for (++first; first != last; ++first) {
+    if (comp(*largest, *first)) {
+      largest = first;
+    }
+  }
+  return largest;
+}
+@endcode
+
+The example below finds the largest element in a range of 10 integers:
 
 @code{.cpp}
 std::vector<int> input = {1, 1, 1, 1, 1, 2, 1, 1, 1, 1};
 std::vector<int>::iterator result;
+
 taskflow.max_element(
   input.begin(), input.end(), std::less<int>(), result
 );
 executor.run(taskflow).wait();
+
 assert(*result == 2);
 @endcode
 
-@attention
-When using tf::Taskflow::max_element to find the large element,
-we will still need to use std::less as our comparison function.
-Details can be referred to 
-[std::max_element](https://en.cppreference.com/w/cpp/algorithm/max_element).
+@note
+tf::Taskflow::max_element uses @c std::less as its comparator, which may
+seem counterintuitive. The comparator @c comp defines an ordering such that
+@c comp(a, b) returns @c true if @c a comes @em before @c b.
+For finding the maximum, we want the element that nothing else comes after,
+so @c std::less naturally puts the largest element last — and @c max_element
+returns it.
+Refer to
+<a href="https://en.cppreference.com/w/cpp/algorithm/max_element">std::max_element</a>
+for further details.
+
+@subsection ParallelFindMaxElementCaptureByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref so that an upstream task
+can set up the range before the parallel max-element search runs.
+
+@code{.cpp}
+std::vector<int> input;
+std::vector<int>::iterator result, first, last;
+
+tf::Task init = taskflow.emplace([&]() {
+  input = {1, 1, 1, 1, 1, 2, 1, 1, 1, 1};
+  first = input.begin();
+  last  = input.end();
+});
+
+tf::Task task = taskflow.max_element(
+  std::ref(first), std::ref(last), std::less<int>(), result
+);
+
+// wrong! first and last are captured by copy at construction time
+// tf::Task task = taskflow.max_element(first, last, std::less<int>(), result);
+
+init.precede(task);
+executor.run(taskflow).wait();
+
+assert(*result == 2);
+@endcode
 
 @section ParallelFindConfigureAPartitioner Configure a Partitioner
 
-You can configure a partitioner for parallel-find tasks
-(tf::Taskflow::find_if, tf::Taskflow::find_if_not, 
-tf::Taskflow::min_element, tf::Taskflow::max_element)
-to run with different scheduling methods, 
-such as guided partitioning, dynamic partitioning, and static partitioning.
-The following example creates two parallel-find tasks using two different
-partitioners, one with the static partitioning algorithm and 
-another one with the guided partitioning algorithm:
+A partitioner controls how the iteration space is divided among workers.
+%Taskflow provides four partitioners, each suited to different workload
+characteristics:
+
+- tf::StaticPartitioner divides the range into equal-sized chunks ahead of
+  execution and assigns them to workers in order.
+  It has the lowest scheduling overhead and works best when the predicate
+  or comparator costs the same for every element.
+
+- tf::DynamicPartitioner distributes fixed-sized chunks to workers on demand
+  as they become available.
+  It adapts well to workloads where element evaluation cost varies, at the
+  expense of slightly higher coordination overhead.
+
+- tf::GuidedPartitioner distributes chunks whose size decreases adaptively
+  as work is consumed — large chunks early to reduce overhead, smaller chunks
+  late to balance the tail.
+  This is the default partitioner and delivers stable, near-optimal
+  performance across a wide range of workloads.
+
+- tf::RandomPartitioner distributes chunks of randomly sampled sizes, which
+  can help avoid systematic load imbalances caused by data-dependent cost
+  patterns.
+
+The following example creates two parallel find-if tasks using different
+partitioners:
 
 @code{.cpp}
-std::vector<int> vec(1024, -1);
+std::vector<int> input(1024, -1);
 std::vector<int>::iterator result;
 
-// create two partitioners with a chunk size of 10
-tf::StaticPartitioner static_partitioner(10);
-tf::GuidedPartitioner guided_partitioner(10);
+tf::StaticPartitioner static_partitioner(0);  // chunk size auto-determined
+tf::GuidedPartitioner  guided_partitioner(0); // minimum chunk size auto-determined
 
-// create a parallel-find task with a static partitioner
+// parallel find-if with static partitioner
 taskflow.find_if(
-  vec.begin(), vec.end(), result, [&](int i) { return i == -1; }, static_partitioner
+  input.begin(), input.end(), result,
+  [](int i) { return i == -1; },
+  static_partitioner
 );
 
-// create a parallel-find task with a guided partitioner
+// parallel find-if with guided partitioner
 taskflow.find_if(
-  vec.begin(), vec.end(), result, [&](int i) { return i == -1; }, guided_partitioner
+  input.begin(), input.end(), result,
+  [](int i) { return i == -1; },
+  guided_partitioner
 );
 @endcode
 
-@attention
+As a rule of thumb, prefer tf::StaticPartitioner when the predicate or
+comparator costs the same for every element and tf::GuidedPartitioner for
+irregular workloads where evaluation cost varies across elements.
+tf::DynamicPartitioner is a good choice when chunks must be kept small and
+strictly equal in size.
+
+@note
 By default, parallel-find tasks use tf::DefaultPartitioner
-if no partitioner is specified. 
+(currently tf::GuidedPartitioner) if no partitioner is specified.
 
 */
 
 }
-
-
-
-
-
 

@@ -9,7 +9,5 @@ var classtf_1_1PartitionerBase =
     [ "closure_wrapper", "classtf_1_1PartitionerBase.html#ab6397b18772820fafe6a613f906976ce", null ],
     [ "closure_wrapper", "classtf_1_1PartitionerBase.html#a56cd2cc038e67d21e6676ab81fa3a8ad", null ],
     [ "closure_wrapper", "classtf_1_1PartitionerBase.html#a99e23ce7c0faf3a932ab2b7ac51e58f4", null ],
-    [ "operator()", "classtf_1_1PartitionerBase.html#a27c56bac76df639c7bf30e6213c47776", null ],
-    [ "_chunk_size", "classtf_1_1PartitionerBase.html#a9ff56f7150ee4ff42b5006942f9c4b52", null ],
-    [ "_closure_wrapper", "classtf_1_1PartitionerBase.html#a9c5a8d350a913bea4c63d350e2bc9d1b", null ]
+    [ "operator()", "classtf_1_1PartitionerBase.html#a27c56bac76df639c7bf30e6213c47776", null ]
 ];

@@ -495,89 +495,6 @@ TEST_CASE("RefWrapper" * doctest::timeout(300)) {
 
 }
 
-//// --------------------------------------------------------
-//// Testcase: FunctionTraits
-//// --------------------------------------------------------
-//void func1() {
-//}
-//
-//int func2(int, double, float, char) {
-//  return 0;
-//}
-//
-//TEST_CASE("FunctionTraits" * doctest::timeout(300)) {
-//
-//  SUBCASE("func1") {
-//    using func1_traits = tf::function_traits<decltype(func1)>;
-//    static_assert(std::is_same<func1_traits::return_type, void>::value, "");
-//    static_assert(func1_traits::arity == 0, "");
-//  }
-//
-//  SUBCASE("func2") {
-//    using func2_traits = tf::function_traits<decltype(func2)>;
-//    static_assert(std::is_same<func2_traits::return_type, int>::value, "");
-//    static_assert(func2_traits::arity == 4, "");
-//    static_assert(std::is_same<func2_traits::argument_t<0>, int>::value,   "");
-//    static_assert(std::is_same<func2_traits::argument_t<1>, double>::value,"");
-//    static_assert(std::is_same<func2_traits::argument_t<2>, float>::value, "");
-//    static_assert(std::is_same<func2_traits::argument_t<3>, char>::value,  "");
-//  }
-//
-//  SUBCASE("lambda1") {
-//    auto lambda1 = [] () mutable {
-//      return 1;
-//    };
-//    using lambda1_traits = tf::function_traits<decltype(lambda1)>;
-//    static_assert(std::is_same<lambda1_traits::return_type, int>::value, "");
-//    static_assert(lambda1_traits::arity == 0, "");
-//  }
-//
-//  SUBCASE("lambda2") {
-//    auto lambda2 = [] (int, double, char&) {
-//    };
-//    using lambda2_traits = tf::function_traits<decltype(lambda2)>;
-//    static_assert(std::is_same<lambda2_traits::return_type, void>::value, "");
-//    static_assert(lambda2_traits::arity == 3, "");
-//    static_assert(std::is_same<lambda2_traits::argument_t<0>, int>::value, "");
-//    static_assert(std::is_same<lambda2_traits::argument_t<1>, double>::value, "");
-//    static_assert(std::is_same<lambda2_traits::argument_t<2>, char&>::value, "");
-//  }
-//
-//  SUBCASE("class") {
-//    struct foo {
-//      int operator ()(int, float) const;
-//    };
-//    using foo_traits = tf::function_traits<foo>;
-//    static_assert(std::is_same<foo_traits::return_type, int>::value, "");
-//    static_assert(foo_traits::arity == 2, "");
-//    static_assert(std::is_same<foo_traits::argument_t<0>, int>::value, "");
-//    static_assert(std::is_same<foo_traits::argument_t<1>, float>::value, "");
-//  }
-//
-//  SUBCASE("std-function") {
-//    using ft1 = tf::function_traits<std::function<void()>>;
-//    static_assert(std::is_same<ft1::return_type, void>::value, "");
-//    static_assert(ft1::arity == 0, "");
-//
-//    using ft2 = tf::function_traits<std::function<int(int&, double&&)>&>;
-//    static_assert(std::is_same<ft2::return_type, int>::value, "");
-//    static_assert(ft2::arity == 2, "");
-//    static_assert(std::is_same<ft2::argument_t<0>, int&>::value, "");
-//    static_assert(std::is_same<ft2::argument_t<1>, double&&>::value, "");
-//
-//    using ft3 = tf::function_traits<std::function<int(int&, double&&)>&&>;
-//    static_assert(std::is_same<ft3::return_type, int>::value, "");
-//    static_assert(ft3::arity == 2, "");
-//    static_assert(std::is_same<ft3::argument_t<0>, int&>::value, "");
-//    static_assert(std::is_same<ft3::argument_t<1>, double&&>::value, "");
-//
-//    using ft4 = tf::function_traits<const std::function<void(int)>&>;
-//    static_assert(std::is_same<ft4::return_type, void>::value, "");
-//    static_assert(ft4::arity == 1, "");
-//    static_assert(std::is_same<ft4::argument_t<0>, int>::value, "");
-//  }
-//}
-
 // --------------------------------------------------------
 // Math utilities
 // --------------------------------------------------------
@@ -873,3 +790,206 @@ TEST_CASE("Xorshift.uint64.Uniformity.2bits") {
 TEST_CASE("Xorshift.uint64.Uniformity.1bits") {
   xorshift_uniformity<uint64_t>(1);
 }
+
+
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.Basic
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.Basic" * doctest::timeout(300)) {
+
+  // 0-ary
+  {
+    auto f0 = []() {};
+    static_assert(tf::NaryOperatorLike<decltype(f0) , 0>);
+    static_assert(!tf::NaryOperatorLike<decltype(f0), 1>);
+    static_assert(!tf::NaryOperatorLike<decltype(f0), 2>);
+    static_assert(!tf::NaryOperatorLike<decltype(f0), 3>);
+  }
+
+  // 1-ary
+  {
+    auto f1 = [](int) {};
+    static_assert(!tf::NaryOperatorLike<decltype(f1), 0>);
+    static_assert(tf::NaryOperatorLike<decltype(f1) , 1>);
+    static_assert(!tf::NaryOperatorLike<decltype(f1), 2>);
+    static_assert(!tf::NaryOperatorLike<decltype(f1), 3>);
+  }
+
+  // 2-ary
+  {
+    auto f2 = [](int, int) {};
+    static_assert(!tf::NaryOperatorLike<decltype(f2), 0>);
+    static_assert(!tf::NaryOperatorLike<decltype(f2), 1>);
+    static_assert(tf::NaryOperatorLike<decltype(f2) , 2>);
+    static_assert(!tf::NaryOperatorLike<decltype(f2), 3>);
+  }
+
+  // 3-ary
+  {
+    auto f3 = [](int, int, int) {};
+    static_assert(!tf::NaryOperatorLike<decltype(f3), 0>);
+    static_assert(!tf::NaryOperatorLike<decltype(f3), 1>);
+    static_assert(!tf::NaryOperatorLike<decltype(f3), 2>);
+    static_assert(tf::NaryOperatorLike<decltype(f3) , 3>);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.DefaultArguments
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.DefaultArguments" * doctest::timeout(300)) {
+
+  // default arguments allow fewer args
+  {
+    auto f = [](int, int = 0) {};
+
+    static_assert(!tf::NaryOperatorLike<decltype(f), 0>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 1>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+    static_assert(!tf::NaryOperatorLike<decltype(f), 3>);
+  }
+
+  {
+    auto f = [](int, int = 0, int = 0) {};
+
+    static_assert(tf::NaryOperatorLike<decltype(f), 1>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 3>);
+    static_assert(!tf::NaryOperatorLike<decltype(f), 4>);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.Variadic
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.Variadic" * doctest::timeout(300)) {
+
+  // variadic lambda accepts any N
+  {
+    auto f = [](auto...) {};
+
+    static_assert(tf::NaryOperatorLike<decltype(f), 0>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 1>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 5>);
+  }
+
+  // variadic with fixed prefix
+  {
+    auto f = [](int, auto...) {};
+
+    static_assert(!tf::NaryOperatorLike<decltype(f), 0>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 1>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+    static_assert(tf::NaryOperatorLike<decltype(f), 10>);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.FunctionPointer
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.FunctionPointer" * doctest::timeout(300)) {
+
+  // function pointer
+  {
+    using F = void(*)(int, int);
+
+    static_assert(tf::NaryOperatorLike<F, 2>);
+    static_assert(!tf::NaryOperatorLike<F, 1>);
+    static_assert(!tf::NaryOperatorLike<F, 3>);
+  }
+
+  // function reference
+  {
+    auto f = [](int, int, int) {};
+    using F = decltype(f)&;
+
+    static_assert(tf::NaryOperatorLike<F, 3>);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.Functor
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.Functor" * doctest::timeout(300)) {
+
+  struct Unary {
+    void operator()(int) const {}
+  };
+
+  struct Binary {
+    void operator()(int, int) const {}
+  };
+
+  struct Overloaded {
+    void operator()(int) const {}
+    void operator()(int, int) const {}
+  };
+
+  static_assert(tf::NaryOperatorLike<Unary, 1>);
+  static_assert(!tf::NaryOperatorLike<Unary, 2>);
+
+  static_assert(tf::NaryOperatorLike<Binary, 2>);
+  static_assert(!tf::NaryOperatorLike<Binary, 1>);
+
+  // overloaded: satisfies both
+  static_assert(tf::NaryOperatorLike<Overloaded, 1>);
+  static_assert(tf::NaryOperatorLike<Overloaded, 2>);
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.StdFunction
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.StdFunction" * doctest::timeout(300)) {
+
+  {
+    std::function<void(int)> f;
+    static_assert(tf::NaryOperatorLike<decltype(f), 1>);
+    static_assert(!tf::NaryOperatorLike<decltype(f), 2>);
+  }
+
+  {
+    std::function<void(int, int)> f;
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+    static_assert(!tf::NaryOperatorLike<decltype(f), 1>);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.RefWrapper
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.RefWrapper" * doctest::timeout(300)) {
+
+  auto f = [](int, int) {};
+
+  auto rf = std::ref(f);
+
+  static_assert(tf::NaryOperatorLike<decltype(rf), 2>);
+  static_assert(!tf::NaryOperatorLike<decltype(rf), 1>);
+}
+
+// --------------------------------------------------------
+// Testcase: NaryOperatorLike.EdgeCases
+// --------------------------------------------------------
+TEST_CASE("NaryOperatorLike.EdgeCases" * doctest::timeout(300)) {
+
+  // non-callable
+  {
+    static_assert(!tf::NaryOperatorLike<int, 0>);
+    static_assert(!tf::NaryOperatorLike<int, 1>);
+  }
+
+  // callable returning something
+  {
+    auto f = [](int, int) { return 42; };
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+  }
+
+  // weird signature (reference, const, etc.)
+  {
+    auto f = [](const int&, double&&) {};
+    static_assert(tf::NaryOperatorLike<decltype(f), 2>);
+  }
+}
+

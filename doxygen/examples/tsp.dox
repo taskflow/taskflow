@@ -1,0 +1,306 @@
+namespace tf {
+
+/** @page ExamplesTSP Travelling Salesman Problem
+
+We implement a parallel branch-and-bound solver for the Travelling Salesman
+Problem (TSP) using tf::TaskGroup for recursive task parallelism.
+This example demonstrates how a combinatorial search algorithm with a
+dynamically growing task tree maps naturally onto %Taskflow's cooperative
+task group model.
+
+@tableofcontents
+
+@section TSPIntroduction What is the Travelling Salesman Problem?
+
+The Travelling Salesman Problem asks: given a set of cities and the distance
+between every pair of cities, what is the shortest route that visits every
+city exactly once and returns to the starting city?
+
+@image html images/tsp_example.png
+
+It is one of the most studied problems in computer science and operations
+research.
+Despite its simple statement, TSP is NP-hard: no known algorithm solves
+it in polynomial time for arbitrary inputs.
+The only way to guarantee an optimal solution is exhaustive search, which
+explores all possible tours.
+For @c N cities there are @c (N-1)!/2 distinct tours, which grows
+astronomically: 10 cities have 181,440 tours, 15 cities have over 43 billion.
+
+This is precisely why parallelism matters.
+Each branch of the search tree is independent of every other branch and can
+be explored on a separate CPU core simultaneously.
+Branch and bound makes the search tractable by pruning branches that cannot
+possibly improve the best solution found so far, but the remaining work is
+still substantial and benefits greatly from parallel execution.
+
+@section TSPWalkthrough Concrete Walkthrough
+
+Consider four cities A, B, C, D with the following symmetric distance matrix:
+
+@code
+        A    B    C    D
+  A  [  0   10   15   20 ]
+  B  [ 10    0   35   25 ]
+  C  [ 15   35    0   30 ]
+  D  [ 20   25   30    0 ]
+@endcode
+
+Starting from city A, the algorithm builds partial tours by choosing which
+city to visit next at each step.
+At each node it computes a lower bound on the best possible completion of
+the current partial tour.
+If the lower bound is greater than or equal to the best complete tour found
+so far, the entire subtree rooted at that node is pruned — there is no point
+exploring it further.
+The lower bound used here is:
+
+@code
+  lb = cost_so_far
+     + min outgoing edge from current city to any unvisited city
+     + sum of min outgoing edge from each remaining unvisited city
+@endcode
+
+This is a valid lower bound because any completion of the tour must include
+at least one edge out of the current city and at least one edge incident to
+each unvisited city.
+The figure below shows the full search tree for this 4-city instance.
+Peach nodes are explored, red nodes are pruned (their lower bound already
+exceeds the best known cost), and the green node is the optimal tour:
+
+@dotfile images/tsp_tree.dot
+
+The algorithm finds `A->B->C->D->A` with cost 95 first, then improves to
+`A->B->D->C->A` with cost 80 (the optimum).
+With `best_cost` equal to 80 established, all four remaining branches are pruned because
+their lower bounds of 80 or 95 cannot improve on 80.
+Only 5 of the 9 possible interior nodes are actually evaluated.
+
+@section TSPImplementation Implementation
+
+We represent the distance matrix as a flat vector and implement the
+branch-and-bound search as a recursive function.
+Each recursive call creates a tf::TaskGroup to spawn one async task per
+unvisited city (the "include this city next" branch) while computing one
+branch directly on the current worker.
+After spawning, @c tg.corun() cooperatively waits for all spawned branches
+to complete without blocking the worker thread.
+
+A global @c std::atomic<int> tracks the best tour cost found so far.
+Any branch whose lower bound is at or above this value is pruned immediately
+by returning without spawning children.
+When a better complete tour is found, the atomic is updated with
+@c compare_exchange_weak so that all workers immediately see the tighter
+bound on their next pruning check.
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+tf::Executor executor;
+const int INF = std::numeric_limits<int>::max();
+std::atomic<int> best_cost{INF};
+
+// ── distance matrix (4 cities: A=0, B=1, C=2, D=3) ───────────────────────
+const int N = 4;
+const int dist[N][N] = {
+  {  0, 10, 15, 20 },
+  { 10,  0, 35, 25 },
+  { 15, 35,  0, 30 },
+  { 20, 25, 30,  0 },
+};
+
+// ── lower bound ──────────────────────────────────────────────────────────────
+//
+// The key insight: any valid completion of the partial tour must include
+// at least one edge leaving the current city (to reach the next unvisited
+// city) and at least one edge touching each remaining unvisited city
+// (to enter or leave it).
+//
+// We do not know which edges those will be, but we know they cannot be
+// shorter than the cheapest available option for each city.
+// So the cheapest possible completion is at minimum:
+//
+//   (1) the shortest edge from the current city to any unvisited city
+//   (2) for each unvisited city, its shortest outgoing edge to any other city
+//
+// Adding these minimum costs to the cost already spent gives a floor: the
+// final tour cannot possibly cost less than this bound, regardless of how
+// the remaining cities are visited.
+// If this floor already meets or exceeds the best complete tour found so
+// far, the entire subtree can be pruned safely.
+//
+// Example: at partial tour A->C (cost=15) with best_cost=80:
+//   (1) min edge from C to unvisited {B,D}: min(35,30) = 30
+//   (2) min edge from B to anywhere:        min(10,35,25) = 10
+//       min edge from D to anywhere:        min(20,25,30) = 20
+//   lb = 15 + 30 + 10 + 20 = 75  <  80  =>  not pruned yet
+//
+// Later at A->C->B (cost=50):
+//   (1) min edge from B to unvisited {D}: 25
+//   (2) min edge from D to anywhere:      20
+//   lb = 50 + 25 + 20 = 95  >=  80  =>  PRUNED
+//
+int lower_bound(int current, const std::vector<bool>& visited, int cost_so_far) {
+  int bound = cost_so_far;
+
+  // (1) cheapest edge we can take out of the current city
+  // to reach any city we have not yet visited
+  int min_curr = INF;
+  for(int v = 0; v < N; v++) {
+    if(!visited[v]) min_curr = std::min(min_curr, dist[current][v]);
+  }
+  if(min_curr == INF) return bound;   // no unvisited cities: tour is complete
+  bound += min_curr;
+
+  // (2) for each unvisited city, add the cost of its cheapest outgoing edge
+  // to any other city (visited or not, as long as it is not the city itself).
+  // This accounts for the fact that we must enter or leave each unvisited city
+  // at some point, and the cheapest way to do so is via its minimum edge.
+  for(int u = 0; u < N; u++) {
+    if(visited[u]) continue;
+    int min_u = INF;
+    for(int v = 0; v < N; v++) {
+      if(v != u) min_u = std::min(min_u, dist[u][v]);
+    }
+    bound += min_u;
+  }
+  return bound;
+}
+
+void branch_and_bound(
+  int current,
+  std::vector<bool> visited,
+  int cost_so_far,
+  int depth
+) {
+  // compute a lower bound on the best possible tour through this node.
+  // if the bound already meets or exceeds the best complete tour found so
+  // far by any worker, this entire subtree cannot improve on the best known
+  // solution and can be safely discarded.
+  int lb = lower_bound(current, visited, cost_so_far);
+  if(lb >= best_cost.load(std::memory_order_relaxed)) return;
+
+  // all N cities have been visited: close the tour by returning to city 0.
+  // try to update best_cost if this tour is cheaper than any found so far.
+  // compare_exchange_weak retries if another worker concurrently updates
+  // best_cost, ensuring only the true minimum is stored.
+  if(depth == N) {
+    int total = cost_so_far + dist[current][0];
+    int cur = best_cost.load(std::memory_order_relaxed);
+    while(total < cur &&
+          !best_cost.compare_exchange_weak(cur, total,
+                                          std::memory_order_relaxed, 
+                                          std::memory_order_relaxed));
+    return;
+  }
+
+  // create a task group for parallel branching.
+  // task_group() is valid here because this function always runs inside a
+  // worker thread of the executor (either the root executor.async task or
+  // a tg.silent_async task spawned by a parent call).
+  auto tg = executor.task_group();
+
+  bool first = true;
+  for(int v = 0; v < N; v++) {
+    if(visited[v]) continue;
+
+    // prepare the state for the branch where we visit city v next
+    std::vector<bool> new_visited = visited;
+    new_visited[v] = true;
+    int new_cost = cost_so_far + dist[current][v];
+
+    if(first) {
+      // run the first unvisited branch directly on the current worker.
+      // this avoids task creation overhead for at least one branch per node
+      // and keeps the current worker busy without yielding to the scheduler.
+      first = false;
+      branch_and_bound(v, new_visited, new_cost, depth + 1);
+    }
+    else {
+      // spawn the remaining branches as independent async tasks in the group.
+      // each task explores a different city as the next stop in the tour.
+      // all spawned tasks share the same best_cost atomic, so a good solution
+      // found in any branch immediately tightens the pruning bound for all others.
+      tg.silent_async([=]() {
+        branch_and_bound(v, new_visited, new_cost, depth + 1);
+      });
+    }
+  }
+
+  // cooperatively wait for all spawned branches to finish.
+  // corun() does not block the worker thread: it re-enters the executor's
+  // work-stealing loop, executing other pending tasks while waiting.
+  // this prevents worker starvation and avoids deadlock in deep recursion.
+  tg.corun();
+}
+
+int main() {
+
+  std::vector<bool> visited(N, false);
+  visited[0] = true;   // start from city A (index 0)
+
+  // the root call must run inside a worker so that task_group() is valid
+  executor.async([&]() {
+    branch_and_bound(0, visited, 0, 1);
+  }).get();
+
+  const char* names[] = {"A", "B", "C", "D"};
+  printf("Optimal tour cost: %d\n", best_cost.load());
+
+  return 0;
+}
+@endcode
+
+The program output is:
+
+@code{.bash}
+Optimal tour cost: 80
+@endcode
+
+which corresponds to the tour @c A->B->D->C->A.
+
+@section TSPDesignPoints Design Points
+
+There are a few important design points worth noting for this example,
+which also apply generally to parallel search algorithms:
+
+  + %TaskGroup per recursive call: Each invocation of @c branch_and_bound creates its own @c tg via
+@c executor.task_group(). This is valid because every invocation runs inside a worker thread of
+the executor — either as the root @c executor.async task or as a
+@c tg.silent_async task spawned by a parent invocation.
+Attempting to call @c executor.task_group() from outside a worker thread
+throws an exception.
+
+  + First branch on the current worker: Rather than spawning all branches as async tasks, the first unvisited city
+is explored directly on the current worker.
+This avoids task creation overhead for at least one branch per node and
+keeps the worker busy without yielding back to the scheduler.
+The remaining branches are spawned via @c tg.silent_async.
+
+  + Atomic @c best_cost for pruning: All workers share a single @c std::atomic<int> @c best_cost.
+When any worker finds a better complete tour, it updates @c best_cost with
+@c compare_exchange_weak so that all other workers immediately see the
+tighter bound on their next pruning check.
+This is the key mechanism that makes parallel branch and bound more efficient
+than running independent serial searches: workers continuously share
+information about the best solution found so far, tightening the pruning
+bound for the entire parallel search.
+
+  + Cooperative execution via corun: @c tg.corun() does not block the calling worker thread.
+Instead, the worker participates in the executor's work-stealing loop,
+executing other tasks while waiting for its spawned branches to complete.
+This prevents worker starvation when the search tree is deep and avoids
+the deadlock that would result from a blocking wait inside an executor worker.
+
+@note
+For larger instances, the @c visited vector copy on each recursive call
+becomes a bottleneck.
+A bitmask (@c uint32_t or @c uint64_t) is more efficient for up to 32 or 64
+cities respectively.
+For production TSP solvers, more sophisticated bounding functions such as
+the Held-Karp lower bound or minimum spanning tree bound deliver much tighter
+pruning and dramatically reduce the search tree size.
+
+*/
+
+}

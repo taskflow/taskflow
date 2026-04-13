@@ -57,6 +57,8 @@ class Worker {
   friend class Executor;
   friend class Runtime;
   friend class WorkerView;
+  
+  using wsq_type = BoundedWSQ<Node*>;
 
   public:
 
@@ -93,7 +95,7 @@ class Worker {
   size_t _sticky_victim;
   Xorshift<uint32_t> _rdgen; 
   std::thread _thread;
-  BoundedWSQ<Node*> _wsq;
+  wsq_type _wsq;
   //std::vector<Node*> _pool;
 };
 

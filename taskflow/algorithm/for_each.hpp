@@ -5,7 +5,7 @@
 namespace tf {
 
 // Function: make_for_each_task
-template <typename B, typename E, typename C, typename P = DefaultPartitioner>
+template <typename B, typename E, typename C, Partitioner P = DefaultPartitioner>
 auto make_for_each_task(B b, E e, C c, P part = P()) {
   
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
@@ -72,7 +72,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
 }
 
 // Function: make_for_each_index_task
-template <typename B, typename E, typename S, typename C, typename P = DefaultPartitioner>
+template <typename B, typename E, typename S, typename C, Partitioner P = DefaultPartitioner>
 auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
   
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
@@ -142,7 +142,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 }
 
 // Function: make_for_each_by_index_task
-template <typename R, typename C, typename P = DefaultPartitioner>
+template <IndexRange1DLike R, typename C, Partitioner P = DefaultPartitioner>
 auto make_for_each_by_index_task(R range, C c, P part = P()){
   
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
@@ -197,12 +197,52 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
   };
 }
 
+// Function: make_for_each_by_index_task
+template <IndexRangeMDLike R, typename C, Partitioner P = DefaultPartitioner>
+auto make_for_each_by_index_task(R range, C c, P part = P()){
+  
+  using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
+
+  return [=] (Runtime& rt) mutable {
+
+    // fetch the iterator values
+    range_type r = range;
+    
+    // TODO:
+    // nothing to be done if the range is invalid
+    //if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
+    //  return;
+    //}
+
+    size_t W = rt.executor().num_workers();
+    size_t N = r.size();
+
+    // only myself - no need to spawn another graph
+    if(W <= 1 || N <= part.chunk_size()) {
+      part([=]() mutable { c(r); })();
+      return;
+    }
+
+    if(N < W) {
+      W = N;
+    }
+    
+    auto next = std::make_shared<std::atomic<size_t>>(0);
+    for(size_t w=0; w<W;) {
+      auto task = part([=] () mutable {
+        part.loop(r, N, W, *next, c);
+      });
+      (++w == W) ? task() : rt.silent_async(task);
+    }
+  };
+}
+
 // ------------------------------------------------------------------------------------------------
 // for_each
 // ------------------------------------------------------------------------------------------------
 
 // Function: for_each
-template <typename B, typename E, typename C, typename P>
+template <typename B, typename E, typename C, Partitioner P>
 Task FlowBuilder::for_each(B beg, E end, C c, P part) {
   return emplace(
     make_for_each_task(beg, end, c, part)
@@ -214,7 +254,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: for_each_index
-template <typename B, typename E, typename S, typename C, typename P>
+template <typename B, typename E, typename S, typename C, Partitioner P>
 Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
   return emplace(
     make_for_each_index_task(beg, end, inc, c, part)
@@ -222,7 +262,15 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
 }
 
 // Function: for_each_by_index
-template <typename R, typename C, typename P>
+template <IndexRange1DLike R, typename C, Partitioner P>
+Task FlowBuilder::for_each_by_index(R range, C c, P part){
+  return emplace(
+    make_for_each_by_index_task(range, c, part)
+  );
+}
+
+// Function: for_each_by_index
+template <IndexRangeMDLike R, typename C, Partitioner P>
 Task FlowBuilder::for_each_by_index(R range, C c, P part){
   return emplace(
     make_for_each_by_index_task(range, c, part)

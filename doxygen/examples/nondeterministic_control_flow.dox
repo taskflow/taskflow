@@ -2,39 +2,35 @@ namespace tf {
 
 /** @page ExamplesNondeterministicControlFlow Nondeterministic Control Flow
 
-This page demonstrates how Taskflow models *nondeterministic control flow* using conditional tasking.
-Nondeterministic control flow is a fundamental abstraction in many optimization,
-search, and simulation algorithms that rely on randomness, probabilistic pruning,
-or stochastic convergence.
-We use a chain of coin-flipping tasks as a concrete example to illustrate how
-conditional tasks dynamically alter execution paths at runtime.
-
+We demonstrate how %Taskflow models @em nondeterministic @em control @em flow
+using conditional tasking — a powerful pattern for stochastic search,
+probabilistic simulation, and optimization algorithms whose execution path
+is determined only at runtime.
 
 @tableofcontents
 
-@section CoinFlippingProblemFormulation Problem Formulation 
+@section CoinFlippingProblemFormulation Problem Formulation
 
-Consider a fair binary coin. We repeatedly toss the coin until we observe
-five consecutive heads.
-Apparently, the probability of obtaining five heads in a row is 1/32:
+Consider a fair binary coin.
+We toss it repeatedly until we observe five consecutive heads.
+The probability of obtaining five heads in a row is <tt>1/2<sup>5</sup> = 1/32</tt>:
 
 @dotfile images/flipcoins_1.dot
 
-Equivalently, the expected number of tosses required to observe five consecutive
-heads is 32.
-Our goal is to model this stochastic process using %Taskflow and verify that
-the observed execution behavior matches the theoretical expectation.
+The expected number of tosses required to reach five consecutive heads is
+therefore 32.
+Our goal is to model this stochastic process as a %Taskflow task graph and
+verify that the observed average over many trials matches the theoretical
+expectation.
 
+@section CoinFlippingBinary Implementation with Conditional Tasking
 
-
-@section CoinFlippingProbabilistic Implementation using Conditional Tasking
-
-We use condition tasks to simulate the five coin tosses.
-We create five condition tasks each returning a random binary number.
-If the return is zero (head toss), the execution moves to the next condition task; 
-or it (tail toss) goes back to the first condition task to restart the simulation.
-This structure naturally expresses nondeterministic control flow without
-explicit loops or synchronization:
+We create five condition tasks, each returning a random binary value.
+A return value of 0 (heads) advances execution to the next coin-flip task;
+a return value of 1 (tails) sends execution back to the first coin-flip
+task to restart.
+This structure expresses nondeterministic control flow directly as a task
+graph — no explicit loop variables, mutexes, or synchronisation needed:
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
@@ -43,119 +39,106 @@ int main() {
 
   tf::Taskflow taskflow;
   tf::Executor executor;
-  
-  size_t rounds = 10000;
-  size_t tosses = 0; 
-  size_t total_tosses = 0; 
-  double average_tosses = 0.0; 
-  
-  tf::Task A = taskflow.emplace([&](){ tosses = 0; })
-                       .name("init"); 
-  
-  tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%2; })
+
+  const size_t rounds = 10000;
+  size_t tosses = 0;
+  size_t total_tosses = 0;
+
+  // reset the toss counter at the start of each trial
+  tf::Task init = taskflow.emplace([&]() { tosses = 0; })
+                          .name("init");
+
+  // each condition task returns 0 (heads) or 1 (tails)
+  tf::Task B = taskflow.emplace([&]() { ++tosses; return std::rand() % 2; })
                        .name("flip-coin-1");
-  tf::Task C = taskflow.emplace([&](){ return std::rand()%2; })
+  tf::Task C = taskflow.emplace([&]() { return std::rand() % 2; })
                        .name("flip-coin-2");
-  tf::Task D = taskflow.emplace([&](){ return std::rand()%2; })
+  tf::Task D = taskflow.emplace([&]() { return std::rand() % 2; })
                        .name("flip-coin-3");
-  tf::Task E = taskflow.emplace([&](){ return std::rand()%2; })
+  tf::Task E = taskflow.emplace([&]() { return std::rand() % 2; })
                        .name("flip-coin-4");
-  tf::Task F = taskflow.emplace([&](){ return std::rand()%2; })
+  tf::Task F = taskflow.emplace([&]() { return std::rand() % 2; })
                        .name("flip-coin-5");
-  
-  // reach the target; record the number of tosses 
-  tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
-                       .name("stop");
-  
-  A.precede(B);
-  
-  // five probabilistic conditions
+
+  // accumulate the toss count when five consecutive heads are achieved
+  tf::Task stop = taskflow.emplace([&]() { total_tosses += tosses; })
+                          .name("stop");
+
+  init.precede(B);
+
+  // 0 (heads) → advance to next flip; 1 (tails) → restart from B
   B.precede(C, B);
   C.precede(D, B);
   D.precede(E, B);
   E.precede(F, B);
-  F.precede(G, B);
-  
-  // repeat the flip-coin simulation by rounds times
+  F.precede(stop, B);
+
+  // run 10,000 independent trials
   executor.run_n(taskflow, rounds).wait();
-  
-  // calculate the expected number of tosses
-  average_tosses = total_tosses / (double)rounds;
-  
-  assert(std::fabs(average_tosses-32.0)<1.0);
-  
+
+  double average_tosses = static_cast<double>(total_tosses) / rounds;
+  assert(std::fabs(average_tosses - 32.0) < 1.0);
+
+  std::cout << "average tosses to five consecutive heads: "
+            << average_tosses << '\n';
+
   return 0;
 }
 @endcode
 
-Running the taskflow by a fair number of times, the average tosses we have is close to 32.
-The corresponding taskflow diagram is shown below:
+After 10,000 trials, the observed average converges to approximately 32,
+matching the theoretical expectation.
+The corresponding task graph is shown below:
 
 @dotfile images/flipcoins_2.dot
 
-Although the execution of this taskflow is non-deterministic,
-its control flow can expand to a tree of tasks based on our scheduling rule for conditional tasking
-(see @ref ConditionalTasking).
-Each path from the root to a leaf represents a result of five heads,
-and none of them can overlap at the same time (no task race).
-You must follow the same rule when creating a probabilistic framework using conditional tasking.
+Although individual executions are non-deterministic, the task graph's
+control flow expands to a tree of tasks according to %Taskflow's scheduling
+rule for conditional tasking (see @ref ConditionalTasking).
+Each path from the root to @c stop represents one successful run of five
+consecutive heads, and no two live paths can race — the conditional edges
+ensure that only one execution path is active at any time.
 
-@section CoinFlippingTernaryCoins Ternary Coins
+@section CoinFlippingTernary Extension to Ternary Coins
 
-We can extend the binary coin example to a ternary case. 
-Each condition task has one successor going back to the beginning and two successors moving to the next task.
-The expected number of tosses to reach 
-five identical results is 3*3*3*3*3 = 243.
+The same pattern extends naturally to higher-arity conditions.
+With a ternary coin (three equally likely outcomes), two outcomes advance
+execution and one restarts.
+The expected number of tosses to observe five identical consecutive results
+is <tt>3<sup>5</sup> = 243</tt>:
 
 @code{.cpp}
-tf::Task A = taskflow.emplace( [&](){ tosses = 0; } )
-                     .name("init"); 
-
-// start over the flip again
-tf::Task B = taskflow.emplace([&](){ ++tosses; return std::rand()%3; })
+tf::Task B = taskflow.emplace([&]() { ++tosses; return std::rand() % 3; })
                      .name("flip-coin-1");
-tf::Task C = taskflow.emplace([&](){ return std::rand()%3; })
+tf::Task C = taskflow.emplace([&]() { return std::rand() % 3; })
                      .name("flip-coin-2");
-tf::Task D = taskflow.emplace([&](){ return std::rand()%3; })
+tf::Task D = taskflow.emplace([&]() { return std::rand() % 3; })
                      .name("flip-coin-3");
-tf::Task E = taskflow.emplace([&](){ return std::rand()%3; })
+tf::Task E = taskflow.emplace([&]() { return std::rand() % 3; })
                      .name("flip-coin-4");
-tf::Task F = taskflow.emplace([&](){ return std::rand()%3; })
+tf::Task F = taskflow.emplace([&]() { return std::rand() % 3; })
                      .name("flip-coin-5");
 
-// reach the target; record the number of tosses 
-tf::Task G = taskflow.emplace([&](){ total_tosses += tosses; })
-                     .name("stop");
-
-A.precede(B);
-
-// five probabilistic conditions
+// outcomes 0 and 1 advance; outcome 2 restarts
 B.precede(C, B, B);
 C.precede(D, B, B);
 D.precede(E, B, B);
 E.precede(F, B, B);
-F.precede(G, B, B);
+F.precede(stop, B, B);
 
-// repeat the flip-coin simulation by rounds times
 executor.run_n(taskflow, rounds).wait();
 
-// calculate the expected number of tosses
-average_tosses = total_tosses / (double)rounds;
-
-assert(std::fabs(average_tosses-243.0)<1.0);
+double average_tosses = static_cast<double>(total_tosses) / rounds;
+assert(std::fabs(average_tosses - 243.0) < 1.0);
 @endcode
 
-@dotfile images/flipcoins_3.dot 
+@dotfile images/flipcoins_3.dot
 
-This pattern extends naturally to probabilistic conditions of any degree,
-making conditional tasking a powerful tool for expressing nondeterministic
-control flow in stochastic algorithms.
+This pattern scales to probabilistic conditions of any arity, making
+conditional tasking a natural fit for Monte Carlo simulation, stochastic
+search, Markov chain sampling, and any algorithm whose control flow depends
+on outcomes known only at runtime.
 
 */
 
 }
-
-
-
-
-

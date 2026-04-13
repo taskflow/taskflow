@@ -95,41 +95,98 @@ We currently support the following two view types:
   + Cluster: visualize the profiling data using a clustering algorithm with a limit
   + Criticality: visualize the top-limit tasks in decreasing order of their execution times
 
+
 @section ProfilerDisplayProfileSummary Display Profile Summary
 
-You can display a profile summary by specifying only the environment variable
+You can display a profile summary by specifying the environment variable
 `TF_ENABLE_PROFILER` without any value.
-The %Taskflow will generate a separate summary report of tasks and workers
-for each executor created by the program.
+%Taskflow will print a summary report to standard error for each executor
+created by the program.
 
 @code{.bash}
-# enable the environment variable without any value
-~$ TF_ENABLE_PROFILER=    ./my_taskflow_program  
+# enable the profiler without a file path to print summary to stderr
+~$ TF_ENABLE_PROFILER=  ./my_taskflow_program
 
-# your program output
-...
-... 
-...
-# Taskflow profile summary
-==Observer 0: 1 workers completed 18 tasks in 28 us
-    -Task-  Count  Time (us)   Avg (us)  Min (us)  Max (us)
-    static      7          5   0.714286         0         4
- condition     11          0   0.000000         0         0
+# Taskflow profile summary printed to stderr
+================================================================================
+ Observer 0 | Wall: 33.00 us | Workers: 12 | Tasks: 8 | Avg Utilization: 8.33%
+================================================================================
 
-  -Worker-  Level      Task  Count  Time (us)  Avg (us)  Min (us)  Max (us)
-        14      0    static      7          5  0.714286         0         4
-                  condition     11          0  0.000000         0         0
-                                18          5  0.277778         0         4
+[Aggregate Task Statistics]
+------------------------------------------------------------------
+     Type  Count   Total(us)     Avg(us)    Min(us)    Max(us)
+------------------------------------------------------------------
+    async      8          51        6.38          0         33
+
+[Worker Utilization]
+----------------------------------------------------------------------------
+  Worker  Tasks   Busy(us)   Idle(us)    Avg(us)   Min(us)   Max(us)   Util%
+----------------------------------------------------------------------------
+       6      8         33          0       4.12         0        33   100.0%
+----------------------------------------------------------------------------
+   Total      8         33          0                                    8.3% (avg)
+
+[Worker Concurrency  (Y=active workers)]  bin=2.00 us  (wall: 0..33.00 us, 24 bins)
+  12 |
+  11 |
+  10 |
+   9 |
+   8 |
+   7 |
+   6 |
+   5 |
+   4 |
+   3 |
+   2 |
+   1 | ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██
+     +------------------------------------------------------------------------
+       0  2  4  6  8  10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46  (us)
+
+[Task Parallelism  (Y=concurrent tasks)]  bin=2.00 us  (wall: 0..33.00 us, 24 bins)
+   5 |                                  ██ ██
+   4 |                                  ██ ██
+   3 |                      ██ ██       ██ ██
+   2 |                      ██ ██ ██ ██ ██ ██ ██
+   1 | ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██
+     +------------------------------------------------------------------------
+       0  2  4  6  8  10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46  (us)
 @endcode
 
-The report consists of two sections, task summary and worker summary.
-In the first section,
-the summary reports for each task type the number of executions (`Count`),
-the total execution time (`Time`), average execution time per task (`Avg`),
-and the minimum (`Min`) and the maximum (`Max`) execution time among all tasks.
-Similarly in the second section,
-the summary reports for each worker the task execution statistics.
+The report consists of four sections: 
 
+  1. The overview line at the top reports the total wall-clock duration (`Wall`),
+the number of worker threads (`Workers`), the total number of tasks executed (`Tasks`),
+and the average worker utilization (`Avg Utilization`).
+The average utilization is the mean of each worker's busy fraction
+(busy time divided by wall time) across all workers in the executor,
+including those that ran no tasks.
+A value of 100% means every worker was busy for the entire execution;
+a low value indicates that most threads were idle and the workload
+did not fully exploit the available parallelism.
+
+  2. The aggregated task statistics section reports execution statistics
+broken down by task type.
+For each type observed, it shows the number of executions (`Count`),
+total execution time (`Total`), average per-task time (`Avg`),
+and the shortest and longest individual task (`Min`, `Max`).
+
+  3. The worker utilization section reports per-worker statistics.
+For each worker that executed at least one task, it shows the task count,
+total busy time, idle time (wall time minus busy time), average task duration,
+min/max task duration, and per-worker utilization percentage.
+The `Total` row at the bottom aggregates counts and times across all active workers,
+and its `Util%` column shows the same average utilization as the overview line.
+Workers that executed no tasks are omitted from this table.
+
+  4. The concurrency histograms at the bottom visualize how parallelism evolved
+over wall-clock time using two complementary bar charts.
+The  `Worker Concurrency` chart shows how many distinct worker threads were
+simultaneously active in each time bin.
+The `Task Parallelism` chart shows how many tasks were concurrently running
+in each bin, which can exceed the worker count when subflow nesting produces
+multiple active tasks on the same worker.
+The number of bins and the time unit are chosen automatically to fill
+roughly 80 characters of terminal width.
 
 */
 

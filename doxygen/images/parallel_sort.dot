@@ -1,0 +1,93 @@
+digraph ParallelSort {
+
+  rankdir = TB;
+  graph [fontname="Courier New", fontsize=12, ranksep=0.55, nodesep=0.4];
+  node  [fontname="Courier New", fontsize=12, style=filled, shape=box,
+         height=0.35, margin="0.12,0.06"];
+  edge  [arrowsize=0.7];
+
+  // ── colour scheme ─────────────────────────────────────────────────────────
+  // unsorted = light blue   sorted = light green   merged = light orange
+
+  // ── level 0: input ────────────────────────────────────────────────────────
+  input [label="[3, 1, 4, 1, 5, 9, 2, 6]",
+         fillcolor="#cce5ff", tooltip="input range"];
+
+  // ── level 1: split into two halves ────────────────────────────────────────
+  subgraph rank_l1 { rank=same;
+    l1a [label="[3, 1, 4, 1]", fillcolor="#cce5ff"];
+    l1b [label="[5, 9, 2, 6]", fillcolor="#cce5ff"];
+  }
+
+  // ── level 2: split into quarters ──────────────────────────────────────────
+  subgraph rank_l2 { rank=same;
+    l2a [label="[3, 1]", fillcolor="#cce5ff"];
+    l2b [label="[4, 1]", fillcolor="#cce5ff"];
+    l2c [label="[5, 9]", fillcolor="#cce5ff"];
+    l2d [label="[2, 6]", fillcolor="#cce5ff"];
+  }
+
+  // ── level 3: base-case sequential sort ────────────────────────────────────
+  subgraph rank_l3 { rank=same;
+    l3a [label="[1, 3]", fillcolor="#d4edda"];
+    l3b [label="[1, 4]", fillcolor="#d4edda"];
+    l3c [label="[5, 9]", fillcolor="#d4edda"];
+    l3d [label="[2, 6]", fillcolor="#d4edda"];
+  }
+
+  // ── level 4: merge pairs ──────────────────────────────────────────────────
+  subgraph rank_l4 { rank=same;
+    l4a [label="[1, 1, 3, 4]", fillcolor="#ffe8c0"];
+    l4b [label="[2, 5, 6, 9]", fillcolor="#ffe8c0"];
+  }
+
+  // ── level 5: final merge ──────────────────────────────────────────────────
+  output [label="[1, 1, 2, 3, 4, 5, 6, 9]",
+          fillcolor="#ffe8c0", style="filled,bold"];
+
+  // ── split edges (downward, dashed) ────────────────────────────────────────
+  edge [style=dashed, color="#555555"];
+  input -> l1a;
+  input -> l1b;
+  l1a -> l2a;
+  l1a -> l2b;
+  l1b -> l2c;
+  l1b -> l2d;
+
+  // ── sort edges (within base case, solid) ──────────────────────────────────
+  edge [style=solid, color="#2a7a2a"];
+  l2a -> l3a;
+  l2b -> l3b;
+  l2c -> l3c;
+  l2d -> l3d;
+
+  // ── merge edges (upward, solid) ───────────────────────────────────────────
+  edge [style=solid, color="#b85c00"];
+  l3a -> l4a;
+  l3b -> l4a;
+  l3c -> l4b;
+  l3d -> l4b;
+  l4a -> output;
+  l4b -> output;
+
+  // ── legend ────────────────────────────────────────────────────────────────
+  subgraph cluster_legend {
+    fontsize  = 12;
+    fontname  = "Helvetica";
+    style     = filled;
+    fillcolor = "#f8f8f8";
+    color     = "#aaaaaa";
+    margin    = 8;
+
+    leg_unsorted [label="unsorted subrange", fillcolor="#cce5ff",
+                  fontname="Helvetica", fontsize=12, width=1.3];
+    leg_sorted   [label="sorted subrange",   fillcolor="#d4edda",
+                  fontname="Helvetica", fontsize=12, width=1.3];
+    leg_merged   [label="merged result",     fillcolor="#ffe8c0",
+                  fontname="Helvetica", fontsize=12, width=1.3];
+
+    leg_unsorted -> leg_sorted   [style=invis];
+    leg_sorted   -> leg_merged   [style=invis];
+  }
+}
+

@@ -53,7 +53,6 @@ f1_module_task.precede(f2D);
 f2.dump(std::cout);
 @endcode
 
-<!-- @image html images/composition_static_1.svg width=40% -->
 @dotfile images/composition_static_1.dot
 
 The above example first constructs a taskflow consisting of three tasks, `f1A`, `f1B`, and `f1C`, 
@@ -96,20 +95,19 @@ The following example defines a custom graph object that can be assembled in a t
 through composition:
 
 @code{.cpp}
- 1: struct CustomGraph {
- 2:   tf::Graph graph;
- 3:   CustomGraph() {
- 4:     tf::FlowBuilder builder(graph);  // inherit all task builders in tf::Taskflow
- 5:     tf::Task task = builder.emplace([](){
- 6:       std::cout << "a task\n";  // static task
- 7:     });
- 8:   }
- 9:   // returns a reference to the graph for taskflow composition
-10:   Graph& graph() { return graph; }
-11: };
-12:
-13: CustomGraph obj;
-14: tf::Task comp = taskflow.composed_of(obj);
+struct CustomGraph {
+  tf::Graph graph;
+  CustomGraph() {
+    tf::FlowBuilder builder(graph);  // inherit all task builders in tf::Taskflow
+    tf::Task task = builder.emplace([](){
+      std::cout << "a task\n";  // static task
+    });
+  }
+  // returns a reference to the graph for taskflow composition
+  Graph& graph() { return graph; }
+};
+CustomGraph obj;
+tf::Task comp = taskflow.composed_of(obj);
 @endcode
 
 The above code defines a custom graph that can participate in taskflow composition. 
@@ -117,12 +115,75 @@ The graph object is represented using tf::Graph, and its constructor builds the 
 through tf::FlowBuilder. 
 To support composition, the graph implements the required interface method (`Graph& graph()`)
 that exposes its internal structure to the %Taskflow runtime. 
+Or, you can simply expose the `graph` and pass it to tf::FlowBuilder::composed_of without defining an additional struct.
+
+@code{.cpp}
+tf::Graph graph;
+tf::FlowBuilder builder(graph);  // inherit all task builders in tf::Taskflow
+tf::Task task = builder.emplace([](){
+  std::cout << "a task\n";  // static task
+});
+tf::Task comp = taskflow.composed_of(obj);
+@endcode
+
 With this interface in place, the custom graph can then be instantiated as a module task within a larger taskflow, enabling it to be seamlessly composed and scheduled alongside other tasks.
 
-@attention
+@note
 Users are responsible for ensuring the given target remains valid throughout its execution.
 The executor does not assume ownership of the target object.
 
+@section CreateAnAdoptedModuleTask Create an Adopted Module Task
+
+Unlike tf::FlowBuilder::composed_of, which holds a @em reference to an externally-owned
+graph and requires the caller to manage its lifetime,
+tf::FlowBuilder::adopt transfers @em ownership of a tf::Graph into the task via move semantics.
+Once adopted, the graph is owned and managed by the executor for the duration of its execution,
+and the caller must not access the moved-from graph afterward.
+The following example creates a graph through tf::FlowBuilder and moves it to a taskflow
+as an adopted module task:
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+// build a graph independently using FlowBuilder
+tf::Graph g;
+tf::FlowBuilder fb(g);
+tf::Task t1 = fb.emplace([]{ std::cout << "task A\n"; }).name("A");
+tf::Task t2 = fb.emplace([]{ std::cout << "task B\n"; }).name("B");
+t1.precede(t2);
+
+// adopt the graph into the taskflow — ownership transfers here
+tf::Task module = taskflow.adopt(std::move(g)).name("adopted module task");
+
+// g is now in a moved-from state and must not be used
+tf::Executor executor;
+executor.run(taskflow).wait();
+@endcode
+
+The adopted module task can participate in the taskflow's dependency graph
+just like any other module task created via tf::FlowBuilder::composed_of.
+You can chain dependencies before and after it in the usual way:
+
+@code{.cpp}
+tf::Task before = taskflow.emplace([]{ std::cout << "before\n"; }).name("before");
+tf::Task after  = taskflow.emplace([]{ std::cout << "after\n";  }).name("after");
+
+tf::Graph g;
+tf::FlowBuilder{g}.emplace([]{ std::cout << "inside adopted graph\n"; });
+tf::Task module = taskflow.adopt(std::move(g)).name("module");
+
+before.precede(module);
+module.precede(after);
+
+tf::Executor executor;
+executor.run(taskflow).wait();
+@endcode
+
+@note
+The key distinction between tf::Taskflow::composed_of and tf::Taskflow::adopt
+is ownership. Use @c composed_of when the graph is long-lived and shared across
+multiple taskflows or multiple runs. Use @c adopt when you want to transfer a
+graph into the taskflow and let the executor manage its lifetime.
 
 */
 

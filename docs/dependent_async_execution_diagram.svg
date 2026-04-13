@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" viewBox="0 0 700 250" style="background:white">
+  <title>Static vs dynamic task graph execution timeline</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: Helvetica, Arial, sans-serif; font-size: 12px; fill: #000000; }
+      .label { font-size: 12px; fill: #333333; }
+      .title { font-size: 12px; font-weight: bold; fill: #000000; }
+      .box-gray { fill: #ffffff; stroke: #000000; stroke-width: 0.8; }
+      .box-blue { fill: #4a90d9; stroke: #2c5f8a; stroke-width: 0.8; }
+      .box-blue-text { fill: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 12px; }
+      .axis { stroke: #000000; stroke-width: 0.8; fill: none; }
+      .dash { stroke: #888888; stroke-width: 0.7; stroke-dasharray: 4 3; fill: none; }
+      .sep  { stroke: #888888; stroke-width: 0.8; fill: none; }
+    </style>
+  </defs>
+
+  <!-- LEFT: Static Task Graph -->
+  <text class="title" x="195" y="20" text-anchor="middle">Static task graph</text>
+  <text class="label" x="46" y="70"  text-anchor="end" dominant-baseline="central">setup</text>
+  <text class="label" x="46" y="122" text-anchor="end" dominant-baseline="central">worker 1</text>
+  <text class="label" x="46" y="168" text-anchor="end" dominant-baseline="central">worker 2</text>
+
+  <rect class="box-gray" x="52" y="52" width="136" height="36" rx="4"/>
+  <text x="120" y="70" text-anchor="middle" dominant-baseline="central">Create taskflow</text>
+
+  <line class="dash" x1="190" y1="44" x2="190" y2="208"/>
+
+  <rect class="box-blue" x="194" y="104" width="52" height="36" rx="4"/>
+  <text class="box-blue-text" x="220" y="122" text-anchor="middle" dominant-baseline="central">Run A</text>
+  <line x1="247" y1="122" x2="251" y2="122" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect class="box-blue" x="253" y="104" width="52" height="36" rx="4"/>
+  <text class="box-blue-text" x="279" y="122" text-anchor="middle" dominant-baseline="central">Run B</text>
+
+  <rect class="box-blue" x="253" y="151" width="52" height="36" rx="4"/>
+  <text class="box-blue-text" x="279" y="169" text-anchor="middle" dominant-baseline="central">Run C</text>
+  <line x1="306" y1="169" x2="310" y2="169" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect class="box-blue" x="312" y="151" width="52" height="36" rx="4"/>
+  <text class="box-blue-text" x="338" y="169" text-anchor="middle" dominant-baseline="central">Run D</text>
+
+  <line x1="246" y1="136" x2="252" y2="152" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="305" y1="136" x2="311" y2="152" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <line class="axis" x1="52" y1="210" x2="370" y2="210" marker-end="url(#arrow)"/>
+  <text class="label" x="374" y="210" dominant-baseline="central">t</text>
+
+  <line class="sep" x1="385" y1="15" x2="385" y2="218"/>
+
+  <!-- RIGHT: Dynamic Task Graph -->
+  <text class="title" x="542" y="20" text-anchor="middle">Dynamic task graph</text>
+
+  <rect class="box-gray" x="396" y="52" width="56" height="36" rx="4"/>
+  <text x="424" y="70" text-anchor="middle" dominant-baseline="central">Create A</text>
+
+  <rect class="box-gray" x="454" y="52" width="56" height="36" rx="4"/>
+  <text x="482" y="70" text-anchor="middle" dominant-baseline="central">Create B</text>
+
+  <rect class="box-gray" x="512" y="52" width="56" height="36" rx="4"/>
+  <text x="540" y="70" text-anchor="middle" dominant-baseline="central">Create C</text>
+
+  <rect class="box-gray" x="570" y="52" width="56" height="36" rx="4"/>
+  <text x="598" y="70" text-anchor="middle" dominant-baseline="central">Create D</text>
+
+  <line class="dash" x1="396" y1="96" x2="682" y2="96"/>
+
+  <rect class="box-blue" x="454" y="104" width="56" height="36" rx="4"/>
+  <text class="box-blue-text" x="482" y="122" text-anchor="middle" dominant-baseline="central">Run A</text>
+  <line x1="511" y1="122" x2="515" y2="122" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect class="box-blue" x="517" y="104" width="56" height="36" rx="4"/>
+  <text class="box-blue-text" x="545" y="122" text-anchor="middle" dominant-baseline="central">Run B</text>
+
+  <rect class="box-blue" x="570" y="151" width="56" height="36" rx="4"/>
+  <text class="box-blue-text" x="598" y="169" text-anchor="middle" dominant-baseline="central">Run C</text>
+  <line x1="627" y1="169" x2="631" y2="169" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect class="box-blue" x="633" y="151" width="44" height="36" rx="4"/>
+  <text class="box-blue-text" x="655" y="169" text-anchor="middle" dominant-baseline="central">Run D</text>
+
+  <line x1="510" y1="136" x2="568" y2="152" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="573" y1="136" x2="631" y2="152" stroke="#000000" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <line class="axis" x1="396" y1="210" x2="682" y2="210" marker-end="url(#arrow)"/>
+  <text class="label" x="686" y="210" dominant-baseline="central">t</text>
+
+</svg>

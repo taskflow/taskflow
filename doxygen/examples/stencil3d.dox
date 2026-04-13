@@ -1,0 +1,252 @@
+namespace tf {
+
+/** @page ExamplesStencil3D 3D Stencil Computation
+
+We parallelize a three-dimensional Jacobi stencil over a regular Cartesian
+grid using tf::IndexRang and tf::Taskflow::for_each_by_index.
+This example demonstrates how multidimensional index ranges map naturally
+onto volumetric parallel workloads in scientific computing.
+
+@tableofcontents
+
+@section Stencil3DProblem Problem Formulation
+
+A stencil computation updates each interior cell of a 3D grid by combining
+the values of its six face-adjacent neighbors.
+The 7-point Jacobi stencil used here computes one iteration of the
+Laplacian smoother:
+
+@code
+v(i,j,k) = 1/6 * [ u(i-1, j, k) + u(i+1, j, k) +
+                   u(i, j-1, k) + u(i, j+1, k) +
+                   u(i, j, k-1) + u(i, j, k+1) ]
+@endcode 
+
+@image html images/stencil3D.svg
+
+The computation reads from an input volume @c u and writes to a separate
+output volume @c v so that reads and writes do not interfere.
+Only interior cells are updated; the one-cell boundary layer is treated as
+a fixed Dirichlet condition and is never written.
+The sequential baseline is a straightforward triple loop:
+
+@code{.cpp}
+// sequential 7-point Jacobi stencil
+for(int i = 1; i < Nx - 1; i++) {
+  for(int j = 1; j < Ny - 1; j++) {
+    for(int k = 1; k < Nz - 1; k++) {
+      v[i][j][k] = (u[i-1][j][k] + u[i+1][j][k] +
+                    u[i][j-1][k] + u[i][j+1][k] +
+                    u[i][j][k-1] + u[i][j][k+1]) / 6.0f;
+    }
+  }
+}
+@endcode
+
+Each interior cell is independent of every other interior cell within the
+same sweep, so all updates can be executed in parallel.
+
+@section Stencil3DImplementation Parallel Implementation
+
+We represent the interior iteration space as a @c tf::IndexRange<int, 3>
+covering indices `[1, Nx-1) x [1, Ny-1) x [1, Nz-1)` and dispatch
+it with tf::Taskflow::for_each_by_index.
+The executor partitions the flat index space into axis-aligned sub-boxes
+and schedules them across available workers.
+Within each sub-box the kernel executes the same triple loop as the
+sequential version:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+#include <vector>
+#include <cmath>
+
+int main() {
+
+  // grid dimensions (including the one-cell boundary halo on each side)
+  const int Nx = 128, Ny = 128, Nz = 128;
+  const int total = Nx * Ny * Nz;
+
+  // flat row-major storage: index (i, j, k) -> i*Ny*Nz + j*Nz + k
+  std::vector<float> u(total, 0.0f);
+  std::vector<float> v(total, 0.0f);
+
+  // initialize a sphere of ones in the interior
+  float cx = Nx / 2.0f, cy = Ny / 2.0f, cz = Nz / 2.0f, r = 20.0f;
+  for(int i = 0; i < Nx; i++) {
+    for(int j = 0; j < Ny; j++) {
+      for(int k = 0; k < Nz; k++) {
+        if((i-cx)*(i-cx) + (j-cy)*(j-cy) + (k-cz)*(k-cz) < r*r) {
+          u[i*Ny*Nz + j*Nz + k] = 1.0f;
+        }
+      }
+    }
+  }
+
+  tf::Executor executor;
+  tf::Taskflow taskflow;
+
+  // interior-only iteration space: skip the one-cell boundary on each side
+  tf::IndexRange<int, 3> interior(
+    tf::IndexRange<int>(1, Nx - 1, 1),   // i: rows
+    tf::IndexRange<int>(1, Ny - 1, 1),   // j: columns
+    tf::IndexRange<int>(1, Nz - 1, 1)    // k: depth
+  );
+
+  // one Jacobi sweep
+  taskflow.for_each_by_index(interior,
+    [&](const tf::IndexRange<int, 3>& box) {
+      for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+        for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+          for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+            v[i*Ny*Nz + j*Nz + k] =
+              (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
+               u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
+               u[i*Ny*Nz + j*Nz + (k-1)] + u[i*Ny*Nz + j*Nz + (k+1)]) / 6.0f;
+          }
+        }
+      }
+    },
+    tf::StaticPartitioner()
+  );
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+@section Stencil3DMultipleSweeps Multiple Sweeps
+
+A single stencil sweep is rarely sufficient in practice.
+Iterating for a fixed number of steps requires swapping the input and
+output buffers after each sweep and re-running the same taskflow.
+Because tf::Taskflow::for_each_by_index captures @c u and @c v by
+reference, swapping the pointers before each @c run is sufficient:
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+taskflow.for_each_by_index(interior,
+  [&](const tf::IndexRange<int, 3>& box) {
+    for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+      for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+        for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+          v[i*Ny*Nz + j*Nz + k] =
+            (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
+             u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
+             u[i*Ny*Nz + j*Nz + (k-1)] + u[i*Ny*Nz + j*Nz + (k+1)]) / 6.0f;
+        }
+      }
+    }
+  },
+  tf::StaticPartitioner()
+);
+
+const int num_sweeps = 100;
+for(int iter = 0; iter < num_sweeps; iter++) {
+  executor.run(taskflow).wait();
+  std::swap(u, v);
+}
+@endcode
+
+@section Stencil3DConditionTask Iteration Control with a Condition Task
+
+The loop-based approach runs the taskflow from the host and re-enters the
+executor once per sweep.
+An alternative is to encode the iteration control entirely inside the task
+graph using a condition task, so the executor drives the full multi-sweep
+computation in a single @c run call.
+
+The graph has two nodes: a parallel stencil task and a condition task that
+swaps the buffers and decides whether to loop back or stop:
+
+@code{.cpp}
+//
+//               ┌──────────────────────────┐
+//               │                          │ (return 0: keep going)
+//               ▼                          │
+// [init] -> [stencil] -> [swap + check] ───┤
+//                                 │ (return 1: done)
+//                                 ▼
+//                               (exit)
+//
+int iter = 0;
+const int num_sweeps = 100;
+
+tf::Taskflow taskflow;
+
+auto init = taskflow.emplace([&](){
+  // initialize the data here ...
+});
+
+auto stencil = taskflow.for_each_by_index(interior,
+  [&](const tf::IndexRange<int, 3>& box) {
+    for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+      for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+        for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+          v[i*Ny*Nz + j*Nz + k] =
+            (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
+             u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
+             u[i*Ny*Nz + j*Nz + (k-1)] + u[i*Ny*Nz + j*Nz + (k+1)]) / 6.0f;
+        }
+      }
+    }
+  },
+  tf::StaticPartitioner()
+);
+
+auto check = taskflow.emplace([&]() -> int {
+  std::swap(u, v);
+  return (++iter < num_sweeps) ? 0 : 1;
+});
+
+stencil.precede(check)
+       .succeed(init);
+check.precede(stencil);   // back-edge: return 0 loops here
+
+executor.run(taskflow).wait();
+@endcode
+
+The condition task returns @c 0 to jump back to @c stencil for the next
+sweep, or @c 1 to fall through and let the graph terminate.
+The back-edge from @c check to @c stencil forms the loop; %Taskflow's
+scheduler re-activates @c stencil each time the condition returns @c 0
+and the executor drives the entire multi-sweep computation in a single
+@c run call without re-entering from the host.
+
+@dotfile images/stencil3D_taskflow.dot
+
+@note
+The condition task runs on a single worker thread, so @c u, @c v,
+and @c iter can be plain (non-atomic) variables.
+The stencil task is fully complete before the condition task runs,
+so the swap and the counter increment are always sequenced correctly.
+
+@section Stencil3DDesignPoints Design Points
+
+There are a few important design points worth noting for this example,
+which also apply generally to parallel stencil algorithms:
+
+  + Double buffering: Reading from @c u and writing to @c v prevents
+read-write races between workers. A single-buffer update would require a reduction or synchronization point
+between every pair of updated cells, which eliminates the parallelism.
+
+  + Interior-only range: The @c tf::IndexRange<int, 3> is defined over `[1, N-1)` in each dimension, 
+  not `[0, N)`. This means the boundary halo is never written inside the parallel kernel,
+  so there is no need for conditional boundary checks inside the inner loop.
+  The boundary conditions are enforced implicitly by never touching those cells.
+
+  + %Partitioner choice: A regular stencil has uniform work per cell, so tf::StaticPartitioner delivers the best performance.
+It assigns each worker a pre-determined contiguous sub-box of the iteration space with no synchronization overhead during execution. For workloads where the per-cell cost varies (adaptive meshes, masked stencils), tf::GuidedPartitioner or tf::DynamicPartitioner may be more appropriate.
+
+@note
+When scheduling a multi-dimensional range like @c tf::IndexRange<int,3>, %Taskflow partitions the flat index space into
+axis-aligned sub-boxes rather than arbitrary flat ranges.
+Each sub-box delivered to the kernel is a geometrically contiguous
+region of the grid, which preserves spatial locality and benefits from
+cache reuse across the innermost dimension.
+
+*/
+
+}

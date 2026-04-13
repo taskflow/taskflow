@@ -6,8 +6,7 @@ namespace tf {
 
 // Function: make_transform_task
 template <typename B, typename E, typename O, typename C,
-          typename P = DefaultPartitioner>
-requires Partitioner<std::decay_t<P>>
+          Partitioner P = DefaultPartitioner>
 auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
   
   using namespace std::string_literals;
@@ -75,7 +74,7 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
 // Function: make_transform_task
 template <typename B1, typename E1, typename B2, typename O, typename C,
-          typename P = DefaultPartitioner>
+          Partitioner P = DefaultPartitioner>
 requires (!Partitioner<std::decay_t<C>>)
 auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P()) {
   
@@ -151,8 +150,7 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename B, typename E, typename O, typename C, typename P>
-requires Partitioner<std::decay_t<P>>
+template <typename B, typename E, typename O, typename C, Partitioner P>
 Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P part) {
   return emplace(
     make_transform_task(first1, last1, d_first, c, part)
@@ -164,7 +162,7 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P part) {
 // ----------------------------------------------------------------------------
   
 // Function: transform
-template <typename B1, typename E1, typename B2, typename O, typename C, typename P>
+template <typename B1, typename E1, typename B2, typename O, typename C, Partitioner P>
 requires (!Partitioner<std::decay_t<C>>)
 Task FlowBuilder::transform(
   B1 first1, E1 last1, B2 first2, O d_first, C c, P part

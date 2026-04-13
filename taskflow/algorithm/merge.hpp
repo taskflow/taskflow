@@ -6,7 +6,7 @@ namespace tf {
 
 
 template <typename B1, typename E1, typename B2, typename E2, typename O,
-          typename C, typename P = DefaultPartitioner>
+          typename C, Partitioner P = DefaultPartitioner>
 auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
                      P part = P()) {
   using B1_t = std::decay_t<std::unwrap_ref_decay_t<B1>>;
@@ -128,8 +128,7 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
 // ----------------------------------------------------------------------------
 
 // Function: merge
-template <typename B1, typename E1, typename B2, typename E2, typename O, typename P>
-requires Partitioner<std::decay_t<P>>
+template <typename B1, typename E1, typename B2, typename E2, typename O, Partitioner P>
 Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
                         P part) {
   return emplace(make_merge_task(first1, last1, first2, last2, std::less<>{},
@@ -138,7 +137,7 @@ Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
 
 // Function: merge
 template <typename B1, typename E1, typename B2, typename E2,
-          typename O, typename C, typename P>
+          typename O, typename C, Partitioner P>
 requires (!Partitioner<std::decay_t<C>>)
 Task FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first,
                         C cmp, P part) {

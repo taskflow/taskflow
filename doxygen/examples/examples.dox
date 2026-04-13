@@ -2,19 +2,108 @@ namespace tf {
 
 /** @page Examples Learning from Examples
 
-  This page contains several examples to learn %Taskflow in real use case.
+This page collects self-contained examples that demonstrate %Taskflow across
+a broad range of parallel programming patterns, from classic graph algorithms
+and numerical computing to dynamic task graphs, async pipelines, and GPU
+acceleration.
+Each example is designed to be read independently and includes a problem
+formulation, a parallel implementation, and a discussion of the key
+%Taskflow features at work.
+
+@tableofcontents
+
+@section ExamplesTaskGraph Task Graph
+
+These examples demonstrate how to express parallelism as a static task
+dependency graph using tf::Taskflow, including conditional and
+non-deterministic control flow.
+
+| Example | Brief |
+|:--------|:------|
+| @ref wavefront "Wavefront Parallelism" | Diagonal sweep parallelism over a 2D grid where each cell depends on its left and top neighbours |
+| @ref graphtraversal "Graph Traversal" | Parallel DAG traversal where task dependencies mirror the input graph structure |
+| @ref ExamplesNondeterministicControlFlow "Nondeterministic Control Flow" | Stochastic branching using conditional tasks to express non-deterministic execution paths |
+| @ref ExamplesCholesky "Blocked Cholesky Factorization" | Task-parallel blocked Cholesky decomposition based on a tile dependency graph |
+| @ref ExamplesPERT "Critical Path Scheduling" | PERT chart executed as a static task graph to identify the critical path |
+| @ref ExamplesMakeGraph "Incremental Build Graph" | Make-style incremental build system using condition tasks |
+| @ref ExamplesSpeculativeExecution "Speculative Execution" | Bloom filter simualtion using condition tasks |
   
+Links to each example subpage are provided below:
   + @subpage wavefront
-  + @subpage ExamplesFibonacciNumber
-  + @subpage ExamplesNondeterministicControlFlow
   + @subpage graphtraversal
+  + @subpage ExamplesNondeterministicControlFlow
+  + @subpage ExamplesCholesky
+  + @subpage ExamplesPERT
+  + @subpage ExamplesMakeGraph
+  + @subpage ExamplesSpeculativeExecution
+
+@section ExamplesAsyncTasking Async Tasking
+
+These examples focus on %Taskflow's dynamic task creation capabilities,
+including async tasks, dependent-async task graphs, cooperative execution,
+and recursive runtime tasking.
+
+
+| Example | Brief |
+|:--------|:------|
+| @ref ExamplesFibonacciNumber "Fibonacci Number" | Recursive task parallelism using tf::Runtime and cooperative synchronization via tf::TaskGroup |
+| @ref ExamplesAsyncProducerConsumer "Async Producer-Consumer Pipeline" | Overlapping producer, validator, and consumer stages using dependent-async tasks |
+| @ref ExamplesDivideAndConquer "Divide and Conquer" | Divide-and-conquer parallelism with tf::TaskGroup, demonstrated on parallel merge sort |
+| @ref ExamplesDynamicDependencyGraph "Dynamic Dependency Graph" | Runtime-driven task graph whose topology and dependencies are determined by program data |
+| @ref ExamplesTSP "Traveling Salesman Problem" | Parallel branch-and-bound solver for the traveling salesman problem |
+| @ref ExamplesGraphColoring "Graph Coloring Problem" | Parallel branch-and-bound solver for the graph coloring problem |
+
+Links to each example subpage are provided below:
+  + @subpage ExamplesFibonacciNumber
+  + @subpage ExamplesAsyncProducerConsumer
+  + @subpage ExamplesDivideAndConquer
+  + @subpage ExamplesDynamicDependencyGraph
+  + @subpage ExamplesTSP
+  + @subpage ExamplesGraphColoring
+
+@section ExamplesParallelAlgorithms Parallel Algorithms
+
+These examples apply %Taskflow's parallel algorithms and pipeline scheduling
+to classic computational and data-processing problems.
+
+
+| Example | Brief |
+|:--------|:------|
+| @ref ExamplesBFS "Parallel Breadth-First Search" | Parallel BFS using stateful frontier iteration with tf::IndexRange and atomic distance claims |
+| @ref matrix_multiplication "Matrix Multiplication" | Parallel dense matrix multiplication partitioned across CPU workers |
+| @ref kmeans "K-Means Clustering" | Parallel k-means clustering with iterative assignment and centroid update steps |
+| @ref ExamplesStencil3D "3D Stencil Computation" | Parallel 3D Jacobi stencil over a volumetric grid using tf::IndexRange |
+| @ref ExamplesSpMV "Sparse Matrix-Vector Multiplication" | Parallel SpMV in CSR format demonstrating partitioner selection for irregular workloads |
+| @ref ExamplesConv2D "2D Image Convolution" | Parallel 2D image convolution using tf::IndexRange |
+| @ref TextProcessingPipeline "Text Processing Pipeline" | Character frequency analysis expressed as a three-stage parallel pipeline |
+| @ref GraphProcessingPipeline "Graph Processing Pipeline" | Wavefront pipeline scheduling over a DAG of dependent processing stages |
+| @ref TaskflowProcessingPipeline "Taskflow Processing Pipeline" | Nested taskflow graphs embedded inside pipeline stages for hierarchical parallelism |
+
+Links to each example subpage are provided below:
+  + @subpage ExamplesBFS
   + @subpage matrix_multiplication
-  + @subpage MatrixMultiplicationWithCUDAGPU
   + @subpage kmeans
-  + @subpage KMeansWithCUDAGPU 
+  + @subpage ExamplesStencil3D
+  + @subpage ExamplesSpMV
+  + @subpage ExamplesConv2D
   + @subpage TextProcessingPipeline
   + @subpage GraphProcessingPipeline
   + @subpage TaskflowProcessingPipeline
+
+@section ExamplesGPUTaskGraph GPU Task Graph
+
+These examples demonstrate how to offload computation to a CUDA GPU using
+tf::cudaGraph, coordinated with CPU tasks in a single taskflow.
+
+
+| Example | Brief |
+|:--------|:------|
+| @ref MatrixMultiplicationWithCUDAGPU "Matrix Multiplication (CUDA)" | GPU-accelerated dense matrix multiplication using tf::cudaGraph coordinated with CPU tasks |
+| @ref KMeansWithCUDAGPU "K-Means Clustering (CUDA)" | GPU-accelerated k-means clustering with CUDA kernels for assignment and centroid update |
+
+Links to each example subpage are provided below:
+  + @subpage MatrixMultiplicationWithCUDAGPU
+  + @subpage KMeansWithCUDAGPU
 
 */
 

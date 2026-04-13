@@ -15,5 +15,6 @@ var searchData=
   ['the_20maximum_20concurrency_12',['Limit the Maximum Concurrency',['../LimitTheMaximumConcurrency.html',1,'Cookbook']]],
   ['timing_20analysis_13',['Static Timing Analysis',['../opentimer.html',1,'usecases']]],
   ['transforms_14',['Parallel Transforms',['../ParallelTransforms.html',1,'Algorithms']]],
-  ['traversal_15',['Graph Traversal',['../graphtraversal.html',1,'Examples']]]
+  ['travelling_20salesman_20problem_15',['Travelling Salesman Problem',['../ExamplesTSP.html',1,'Examples']]],
+  ['traversal_16',['Graph Traversal',['../graphtraversal.html',1,'Examples']]]
 ];

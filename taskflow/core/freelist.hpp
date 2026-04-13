@@ -1,136 +1,255 @@
 #pragma once
 
+#include "../utility/os.hpp"
+#include <atomic>
+
 namespace tf {
 
-// ----------------------------------------------------------------------------
-// Lock-free stack
-// ----------------------------------------------------------------------------
+/**
+@file freelist.hpp
+@brief atomic intrusive stack include file
+*/
 
-template <typename T>
-concept AtomicIntrusiveStackValue = requires(std::remove_pointer_t<T> n) { n.next; };
+/**
+@class AtomicIntrusiveStack
 
-template <AtomicIntrusiveStackValue T>
+@tparam T         pointer type of the node (e.g., @c Node*)
+@tparam MemberPtr pointer-to-member that identifies the intrusive link field
+                  within the node type (e.g., @c &Node::next)
+
+@brief class to create a lock-free, ABA-safe intrusive stack
+
+An intrusive stack embeds the link pointer directly inside each node rather
+than allocating separate list nodes. The caller selects which field serves as
+the link by supplying @c MemberPtr. While a node is held in the stack that
+field is exclusively owned by the stack and must not be accessed by the caller.
+
+The field identified by @c MemberPtr must be of type @c T (a pointer to the
+same node type) so the stack can chain nodes through it:
+
+@code{.cpp}
+struct Node {
+  Node* next {nullptr};  // used as the intrusive link
+  int   value{0};
+};
+tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
+@endcode
+
+All methods are safe to call concurrently from multiple threads.
+@c push and @c bulk_push are lock-free. @c pop is lock-free.
+
+@par ABA safety
+
+Each CAS operation pairs the pointer with a monotonically-incrementing version
+tag stored in a 128-bit @c TaggedPointer atomic. This requires
+@c CMPXCHG16B support on x86-64. A 64-bit tagged-pointer alternative for
+platforms without 128-bit CAS is available in the commented-out section at
+the bottom of this file.
+
+
+*/
+template <typename T, auto MemberPtr>
 class AtomicIntrusiveStack {
 
+  // NodeType is the pointee (e.g. Node from Node*)
+  using NodeType = std::remove_pointer_t<T>;
+
+  static_assert(
+    std::is_same_v<T, std::remove_reference_t<
+      decltype(std::declval<NodeType>().*MemberPtr)
+    >>,
+    "MemberPtr must point to a field of type T within the node"
+  );
+
+  // helper: access the intrusive link field of a node
+  static T& _link(T node) { return node->*MemberPtr; }
+
   struct TaggedPointer {
-    T ptr;
+    T      ptr;
     size_t tag;
   };
 
-  alignas(TF_CACHELINE_SIZE) std::atomic<TaggedPointer> head;
+  alignas(TF_CACHELINE_SIZE) std::atomic<TaggedPointer> _head;
 
   public:
 
+  /**
+  @brief constructs an empty stack
+
+  @code{.cpp}
+  struct Node { Node* next {nullptr}; };
+  tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
+  assert(stack.empty() == true);
+  @endcode
+  */
   AtomicIntrusiveStack() {
-    head.store({nullptr, 0});
+    _head.store({nullptr, 0}, std::memory_order_relaxed);
   }
 
+  /**
+  @brief queries whether the stack is empty at the time of this call
+
+  The result is a snapshot and may be stale by the time the caller acts on
+  it in a concurrent setting.
+
+  @code{.cpp}
+  struct Node { Node* next {nullptr}; };
+  tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
+
+  assert(stack.empty() == true);
+  Node n;
+  stack.push(&n);
+  assert(stack.empty() == false);
+  stack.pop();
+  assert(stack.empty() == true);
+  @endcode
+  */
   bool empty() const {
-    return head.load(std::memory_order_relaxed).ptr == nullptr;
+    return _head.load(std::memory_order_relaxed).ptr == nullptr;
   }
 
+  /**
+  @brief pushes a node onto the top of the stack
+
+  @param node pointer to the node to push; must not be @c nullptr
+
+  Sets the node's link field to the current head and atomically swaps the
+  head to @c node. The version tag is incremented on every successful CAS
+  to prevent ABA. Safe to call concurrently with other @c push, @c bulk_push,
+  and @c pop calls.
+
+  @code{.cpp}
+  struct Node { Node* next {nullptr}; int value {0}; };
+  tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
+
+  Node a{nullptr, 1}, b{nullptr, 2};
+  stack.push(&a);
+  stack.push(&b);
+  // stack order top-to-bottom: b -> a
+  assert(stack.pop() == &b);
+  assert(stack.pop() == &a);
+  assert(stack.pop() == nullptr);
+  @endcode
+  */
   void push(T node) {
 
-    TaggedPointer curr_head = head.load(std::memory_order_relaxed);
+    TaggedPointer curr = _head.load(std::memory_order_relaxed);
 
-    while (true) {
-      node->next = curr_head.ptr;
-      // Create a new tagged pointer with an incremented tag
-      TaggedPointer next_head = {node, curr_head.tag + 1};
+    while(true) {
+      _link(node) = curr.ptr;
+      TaggedPointer next = {node, curr.tag + 1};
 
-      if (head.compare_exchange_weak(curr_head, next_head,
+      if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_relaxed)) {
         break;
       }
-      // On failure, curr_head is updated with the latest value
-    }
-  }
-  
-  template <typename I>
-  void bulk_push(I first, size_t N) {
-
-    if(N == 0) {
-      return;
-    }
-    
-    for(size_t i=0; i<N-1; ++i) {
-      first[i]->next = first[i+1];
-    }
-    first[N-1]->next = nullptr;
-
-    TaggedPointer curr_head = head.load(std::memory_order_relaxed);
-
-    while (true) {
-      first[N-1]->next = curr_head.ptr;
-      // Create a new tagged pointer with an incremented tag
-      TaggedPointer next_head = {first[0], curr_head.tag + 1};
-
-      if (head.compare_exchange_weak(curr_head, next_head,
-                                     std::memory_order_release,
-                                     std::memory_order_relaxed)) {
-        break;
-      }
-      // On failure, curr_head is updated with the latest value
+      // on failure curr is reloaded by compare_exchange_weak
     }
   }
 
-  T steal() {
+  /**
+  @brief removes and returns the top node, or @c nullptr if the stack is empty
 
-    TaggedPointer curr_head = head.load(std::memory_order_acquire);
+  @return pointer to the popped node, or @c nullptr if the stack was empty
 
-    while (curr_head.ptr != nullptr) {
-      TaggedPointer next_head = {curr_head.ptr->next, curr_head.tag + 1};
+  Atomically swaps the head to the next node in the chain. The popped node's
+  link field is cleared to @c nullptr before it is returned, so the caller
+  receives a clean node with no dangling stack pointer. Safe to call
+  concurrently with other @c push, @c bulk_push, and @c pop calls.
 
-      if (head.compare_exchange_weak(curr_head, next_head,
+  @code{.cpp}
+  struct Node { Node* next {nullptr}; int value {0}; };
+  tf::AtomicIntrusiveStack<Node*, &Node::next> stack;
+
+  // pop from empty stack returns nullptr
+  assert(stack.pop() == nullptr);
+
+  Node a{nullptr, 1}, b{nullptr, 2};
+  stack.push(&a);
+  stack.push(&b);
+
+  Node* n = stack.pop();
+  assert(n == &b);
+
+  assert(stack.pop() == &a);
+  assert(stack.pop() == nullptr);
+  @endcode
+  */
+  T pop() {
+
+    TaggedPointer curr = _head.load(std::memory_order_acquire);
+
+    while(curr.ptr != nullptr) {
+      TaggedPointer next = {_link(curr.ptr), curr.tag + 1};
+
+      if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_acquire)) {
-        curr_head.ptr->next = nullptr;
-        return curr_head.ptr;
+        // This can cause thread sanitizer to report error since this assignment
+        // has not guarantee to finish before the return while the other thread
+        // may call push that modify curr.ptr causing data race...
+        return curr.ptr;
       }
+      // on failure curr is reloaded
     }
     return nullptr;
   }
 };
 
+// ----------------------------------------------------------------------------
+// AtomicIntrusiveStack — 64-bit tagged-pointer alternative
+//
+// Uses the upper 16 bits of a 64-bit uintptr_t as a version tag, avoiding
+// the need for 128-bit CAS. Relies on x86-64 canonical address space where
+// only the lower 48 bits are used for actual addresses.
+//
+// Parameterized identically to the 128-bit version above.
+// ----------------------------------------------------------------------------
+
 /*
-template <AtomicIntrusiveStackValue T>
+template <typename T, auto MemberPtr>
 class AtomicIntrusiveStack {
 
-  // Mask for the lower 48 bits (the actual memory address)
-  static constexpr uintptr_t ADDR_MASK = (1ULL << 48) - 1;
-  // The bit where the tag starts
-  static constexpr uintptr_t TAG_INC = (1ULL << 48);
+  using NodeType = std::remove_pointer_t<T>;
 
-  // Helper to extract the real pointer and strip the tag
-  T unpack(uintptr_t val) const {
+  static_assert(
+    std::is_same_v<T, std::remove_reference_t<
+      decltype(std::declval<NodeType>().*MemberPtr)
+    >>,
+    "MemberPtr must point to a field of type T within the node"
+  );
+
+  static T& _link(T node) { return node->*MemberPtr; }
+
+  static constexpr uintptr_t ADDR_MASK = (uintptr_t{1} << 48) - 1;
+  static constexpr uintptr_t TAG_INC   = (uintptr_t{1} << 48);
+
+  T _unpack(uintptr_t val) const {
     return reinterpret_cast<T>(val & ADDR_MASK);
   }
 
-  // Helper to increment the tag and pack a new pointer
-  uintptr_t pack(T ptr, uintptr_t old_val) const {
+  uintptr_t _pack(T ptr, uintptr_t old_val) const {
     uintptr_t next_tag = (old_val & ~ADDR_MASK) + TAG_INC;
     return next_tag | (reinterpret_cast<uintptr_t>(ptr) & ADDR_MASK);
   }
-  
-  // Single 64-bit atomic - guaranteed lock-free on 64-bit systems
-  alignas(TF_CACHELINE_SIZE) std::atomic<uintptr_t> head;
+
+  alignas(TF_CACHELINE_SIZE) std::atomic<uintptr_t> _head;
 
 public:
 
-  AtomicIntrusiveStack() : head(0) {}
+  AtomicIntrusiveStack() : _head(0) {}
 
   bool empty() const {
-    return unpack(head.load(std::memory_order_relaxed)) == nullptr;
+    return _unpack(_head.load(std::memory_order_relaxed)) == nullptr;
   }
 
   void push(T node) {
-    uintptr_t curr = head.load(std::memory_order_relaxed);
-    while (true) {
-      node->next = unpack(curr);
-      uintptr_t next = pack(node, curr);
-
-      if (head.compare_exchange_weak(curr, next,
+    uintptr_t curr = _head.load(std::memory_order_relaxed);
+    while(true) {
+      _link(node) = _unpack(curr);
+      uintptr_t next = _pack(node, curr);
+      if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_relaxed)) {
         break;
@@ -140,25 +259,16 @@ public:
 
   template <typename I>
   void bulk_push(I first, size_t N) {
-
-    if (N == 0) {
-      return;
+    if(N == 0) return;
+    for(size_t i = 0; i < N-1; ++i) {
+      _link(first[i]) = first[i+1];
     }
-
-    // Connect the nodes locally (no atomics needed here)
-    for (size_t i = 0; i < N - 1; ++i) {
-      first[i]->next = first[i + 1];
-    }
-    first[N-1]->next = nullptr;
-
-    uintptr_t curr = head.load(std::memory_order_relaxed);
-    while (true) {
-      // Point the end of the bulk chain to the current head
-      first[N - 1]->next = unpack(curr);
-      // Make the start of the chain the new head
-      uintptr_t next = pack(first[0], curr);
-
-      if (head.compare_exchange_weak(curr, next,
+    _link(first[N-1]) = nullptr;
+    uintptr_t curr = _head.load(std::memory_order_relaxed);
+    while(true) {
+      _link(first[N-1]) = _unpack(curr);
+      uintptr_t next = _pack(first[0], curr);
+      if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_relaxed)) {
         break;
@@ -166,20 +276,16 @@ public:
     }
   }
 
-  T steal() {
-    uintptr_t curr = head.load(std::memory_order_acquire);
-    while (true) {
-      auto curr_ptr = unpack(curr);
-      if (curr_ptr == nullptr) return nullptr;
-
-      // Danger: ABA would happen here if we didn't have tags!
-      auto next_node = curr_ptr->next;
-      uintptr_t next = pack(next_node, curr);
-
-      if (head.compare_exchange_weak(curr, next,
+  T pop() {
+    uintptr_t curr = _head.load(std::memory_order_acquire);
+    while(true) {
+      T curr_ptr = _unpack(curr);
+      if(curr_ptr == nullptr) return nullptr;
+      uintptr_t next = _pack(_link(curr_ptr), curr);
+      if(_head.compare_exchange_weak(curr, next,
                                      std::memory_order_release,
                                      std::memory_order_acquire)) {
-        curr_ptr->next = nullptr;
+        _link(curr_ptr) = nullptr;
         return curr_ptr;
       }
     }

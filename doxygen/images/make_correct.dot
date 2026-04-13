@@ -1,0 +1,59 @@
+digraph BuildGraphCorrect {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.5, ranksep=0.8];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.6, fontname="Helvetica", fontsize=8];
+
+  // sources — regular tasks
+  main_c [label="main.c",  fillcolor="#cce5ff"];
+  util_c [label="util.c",  fillcolor="#cce5ff"];
+  util_h [label="util.h",  fillcolor="#cce5ff"];
+  math_c [label="math.c",  fillcolor="#cce5ff"];
+  math_h [label="math.h",  fillcolor="#cce5ff"];
+
+  // condition tasks (diamond, aquamarine)
+  main_cond [label="main.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+  util_cond [label="util.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+  math_cond [label="math.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+
+  // compile tasks
+  main_cc [label="cc main.o", fillcolor="#fff3cd"];
+  util_cc [label="cc util.o", fillcolor="#fff3cd"];
+  math_cc [label="cc math.o", fillcolor="#fff3cd"];
+
+  // join (auxiliary) tasks — merge skip and rebuild paths
+  main_join [label="main.o\n(join)", fillcolor="#e8e8e8"];
+  util_join [label="util.o\n(join)", fillcolor="#e8e8e8"];
+  math_join [label="math.o\n(join)", fillcolor="#e8e8e8"];
+
+  // app — exactly 3 strong dependencies, race-free
+  app [label="app", fillcolor="#d4edda", penwidth=2.0];
+
+  // strong edges: sources -> condition tasks
+  main_c -> main_cond [color="#555555"];
+  util_h -> main_cond [color="#555555"];
+  math_h -> main_cond [color="#555555"];
+  util_c -> util_cond [color="#555555"];
+  util_h -> util_cond [color="#555555"];
+  math_c -> math_cond [color="#555555"];
+  math_h -> math_cond [color="#555555"];
+
+  // weak edges from condition tasks
+  main_cond -> main_join [style=dashed, label="0 (skip)",    color="#555555", fontcolor="#555555"];
+  main_cond -> main_cc   [style=dashed, label="1 (rebuild)", color="#555555", fontcolor="#555555"];
+  util_cond -> util_join [style=dashed, label="0 (skip)",    color="#555555", fontcolor="#555555"];
+  util_cond -> util_cc   [style=dashed, label="1 (rebuild)", color="#555555", fontcolor="#555555"];
+  math_cond -> math_join [style=dashed, label="0 (skip)",    color="#555555", fontcolor="#555555"];
+  math_cond -> math_cc   [style=dashed, label="1 (rebuild)", color="#555555", fontcolor="#555555"];
+
+  // strong edges: compile -> join (satisfies join's strong dep count)
+  main_cc -> main_join [color="#555555"];
+  util_cc -> util_join [color="#555555"];
+  math_cc -> math_join [color="#555555"];
+
+  // strong edges: join -> app (app has exactly 3 strong deps)
+  main_join -> app [color="#555555"];
+  util_join -> app [color="#555555"];
+  math_join -> app [color="#555555"];
+}

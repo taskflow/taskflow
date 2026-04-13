@@ -1,11 +1,11 @@
 var Cookbook =
 [
     [ "Project Motivation", "ProjectMotivation.html", [
-      [ "The Era of Multicore", "ProjectMotivation.html#TheEraOfMulticore", null ],
-      [ "Heterogeneous Computing", "ProjectMotivation.html#C0HeterogeneousComputing", null ],
-      [ "Loop-level Parallelism", "ProjectMotivation.html#LoopLevelParallelism", null ],
+      [ "The Parallel Programming Challenge", "ProjectMotivation.html#TheParallelProgrammingChallenge", null ],
+      [ "Heterogeneous Computing", "ProjectMotivation.html#HeterogeneousComputing", null ],
+      [ "From Loops to Task Graphs", "ProjectMotivation.html#LoopVsTaskParallelism", null ],
       [ "Task-based Parallelism", "ProjectMotivation.html#TaskBasedParallelism", null ],
-      [ "The Project Mantra", "ProjectMotivation.html#TheProjectMantra", null ]
+      [ "What Taskflow Does Differently", "ProjectMotivation.html#TheProjectMantra", null ]
     ] ],
     [ "Static Tasking", "StaticTasking.html", [
       [ "Create a Task Dependency Graph", "StaticTasking.html#CreateATaskDependencyGraph", null ],
@@ -39,7 +39,11 @@ var Cookbook =
       [ "Understand our Task-level Scheduling", "ConditionalTasking.html#TaskSchedulingPolicy", [
         [ "Example", "ConditionalTasking.html#TaskLevelSchedulingExample", null ]
       ] ],
-      [ "Avoid Common Pitfalls", "ConditionalTasking.html#AvoidCommonPitfalls", null ],
+      [ "Avoid Common Pitfalls", "ConditionalTasking.html#AvoidCommonPitfalls", [
+        [ "Pitfall 1: No Source Task", "ConditionalTasking.html#PitfallNoSourceTask", null ],
+        [ "Pitfall 2: Task Race", "ConditionalTasking.html#PitfallTaskRace", null ],
+        [ "Pitfall 3: Deadlock from Strong Back-edge", "ConditionalTasking.html#PitfallDeadlock", null ]
+      ] ],
       [ "Implement Control-flow Graphs", "ConditionalTasking.html#ImplementControlFlowGraphs", [
         [ "Implement If-Else Control Flow", "ConditionalTasking.html#ImplementIfElseControlFlow", null ],
         [ "Implement Switch Control Flow", "ConditionalTasking.html#ImplementSwitchControlFlow", null ],
@@ -51,25 +55,31 @@ var Cookbook =
     [ "Composable Tasking", "ComposableTasking.html", [
       [ "Compose a Taskflow", "ComposableTasking.html#ComposeATaskflow", null ],
       [ "Create a Module Task from a Taskflow", "ComposableTasking.html#CreateAModuleTaskFromATaskflow", null ],
-      [ "Create a Custom Composable Graph", "ComposableTasking.html#CreateACustomComposableGraph", null ]
+      [ "Create a Custom Composable Graph", "ComposableTasking.html#CreateACustomComposableGraph", null ],
+      [ "Create an Adopted Module Task", "ComposableTasking.html#CreateAnAdoptedModuleTask", null ]
     ] ],
     [ "Asynchronous Tasking", "AsyncTasking.html", [
-      [ "Launch Asynchronous Tasks from an Executor", "AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor", null ],
-      [ "Launch Asynchronous Tasks from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksFromARuntime", null ],
-      [ "Launch Asynchronous Tasks Recursively from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime", null ]
+      [ "What is an Async Task?", "AsyncTasking.html#WhatIsAnAsyncTask", null ],
+      [ "Launch Async Tasks from an Executor", "AsyncTasking.html#LaunchAsynchronousTasksFromAnExecutor", null ],
+      [ "Launch Async Tasks from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksFromARuntime", null ],
+      [ "Launch Async Tasks Recursively from a Runtime", "AsyncTasking.html#LaunchAsynchronousTasksRecursivelyFromARuntime", null ]
     ] ],
     [ "Asynchronous Tasking with Dependencies", "DependentAsyncTasking.html", [
-      [ "Create a Dynamic Task Graph", "DependentAsyncTasking.html#CreateADynamicTaskGraph", null ],
-      [ "Specify a Range of Dependent Async Tasks", "DependentAsyncTasking.html#SpecifyARagneOfDependentAsyncTasks", null ],
-      [ "Understand the Lifetime of a Dependent-async Task", "DependentAsyncTasking.html#UnderstandTheLifeTimeOfADependentAsyncTask", null ],
-      [ "Create a Dynamic Task Graph by Multiple Threads", "DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads", null ],
-      [ "Query the Completion Status of Dependent Async Tasks", "DependentAsyncTasking.html#QueryTheComppletionStatusOfDependentAsyncTasks", null ]
+      [ "When Static Task Graphs Are Not Enough", "DependentAsyncTasking.html#WhenStaticTaskGraphsAreNotEnough", null ],
+      [ "Create a Dynamic Task Graph from an Executor", "DependentAsyncTasking.html#CreateADynamicTaskGraph", null ],
+      [ "Specify a Range of Dependencies", "DependentAsyncTasking.html#SpecifyARangeOfDependencies", null ],
+      [ "Create a Dynamic Task Graph from a Runtime", "DependentAsyncTasking.html#CreateADynamicTaskGraphFromARuntime", null ],
+      [ "Create a Dynamic Task Graph from Multiple Threads", "DependentAsyncTasking.html#CreateADynamicTaskGraphByMultipleThreads", null ],
+      [ "Understand the Lifetime of a Dependent-Async Task", "DependentAsyncTasking.html#UnderstandTheLifetimeOfADependentAsyncTask", null ],
+      [ "Query Completion Status with Cooperative Execution", "DependentAsyncTasking.html#QueryTheCompletionStatusOfDependentAsyncTasks", null ]
     ] ],
     [ "Runtime Tasking", "RuntimeTasking.html", [
-      [ "Create a Runtime Task", "RuntimeTasking.html#CreateARuntimeTask", null ],
-      [ "Create Asynchronous Tasks from a Runtime Task", "RuntimeTasking.html#CreateAsynchronousTasksFromARuntimeTask", null ],
-      [ "Synchronize with Cooperative Execution", "RuntimeTasking.html#SynchronizeWithCooperativeExecution", null ],
-      [ "Create Recursive Asynchronous Tasks from a Runtime Task", "RuntimeTasking.html#CreateRecursiveAsynchronousTasksFromARuntimeTask", null ]
+      [ "What is a Runtime Task?", "RuntimeTasking.html#WhatIsARuntimeTask", null ],
+      [ "Spawn Tasks from a Runtime", "RuntimeTasking.html#SpawnTasksFromARuntime", [
+        [ "Async Tasks", "RuntimeTasking.html#SpawnAsyncTasksFromARuntime", null ],
+        [ "Dependent Async Tasks", "RuntimeTasking.html#SpawnDependentAsyncTasksFromARuntime", null ]
+      ] ],
+      [ "Issue Cooperative Execution", "RuntimeTasking.html#IssueCooperativeExecution", null ]
     ] ],
     [ "Task Group", "TaskGroup.html", [
       [ "Create a Task Group", "TaskGroup.html#CreateATaskGroup", null ],
@@ -78,18 +88,19 @@ var Cookbook =
       [ "Implement Recursive Task Parallelism", "TaskGroup.html#ImplementRecursiveTaskParallelismUsingTaskGroup", null ]
     ] ],
     [ "Exception Handling", "ExceptionHandling.html", [
-      [ "Understand the Logic of Exception Handling in Taskflow", "ExceptionHandling.html#UnderstandTheLogicOfExceptionHandlingInTaskflow", [
-        [ "Scenario 1: Synchronous Exception Propagation", "ExceptionHandling.html#Secnario1SynchronousExceptionPropagation", null ],
-        [ "Scenario 2: Asynchronous Exception Propagation", "ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation", null ],
-        [ "Scenario 3: Contextual Exception Propagation", "ExceptionHandling.html#Scenario3ContextualExceptionPropagation", null ],
-        [ "Algorithm Flow of Exception Handling", "ExceptionHandling.html#ExceptionHandlingAlgorithmFlow", null ]
+      [ "Why Parallel Exception Handling is Hard", "ExceptionHandling.html#ExceptionHandlingWhyHard", null ],
+      [ "How Taskflow Handles Exceptions", "ExceptionHandling.html#ExceptionHandlingLogic", [
+        [ "Scenario 1: Synchronous Propagation", "ExceptionHandling.html#Scenario1SynchronousExceptionPropagation", null ],
+        [ "Scenario 2: Asynchronous Propagation", "ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation", null ],
+        [ "Scenario 3: Contextual Propagation", "ExceptionHandling.html#Scenario3ContextualExceptionPropagation", null ],
+        [ "Algorithm Flow", "ExceptionHandling.html#ExceptionHandlingAlgorithmFlow", null ]
       ] ],
-      [ "Example: Catch an Exception from a Running Taskflow", "ExceptionHandling.html#CatchAnExceptionFromARunningTaskflow", null ],
-      [ "Example: Catch an Exception from a Subflow", "ExceptionHandling.html#CatchAnExceptionFromASubflow", null ],
-      [ "Example: Catch an Exception from an Async Task", "ExceptionHandling.html#CatchAnExceptionFromAnAsyncTask", null ],
-      [ "Example: Catch an Exception from a Corun Loop", "ExceptionHandling.html#CatchAnExceptionFromACorunLoop", null ],
+      [ "Catch an Exception from a Running Taskflow", "ExceptionHandling.html#ExceptionHandlingRunningTaskflow", null ],
+      [ "Catch an Exception from a Subflow", "ExceptionHandling.html#ExceptionHandlingSubflow", null ],
+      [ "Catch an Exception from an Async Task", "ExceptionHandling.html#ExceptionHandlingAsyncTask", null ],
+      [ "Catch an Exception from a Corun Loop", "ExceptionHandling.html#ExceptionHandlingCorun", null ],
       [ "Retrieve the Exception Pointer of a Task", "ExceptionHandling.html#RetrieveTheExceptionPointerOfATask", null ],
-      [ "Turn off Exception Handling", "ExceptionHandling.html#TurnOffExceptionHandling", null ]
+      [ "Disable Exception Handling at Compile Time", "ExceptionHandling.html#DisableExceptionHandling", null ]
     ] ],
     [ "Limit the Maximum Concurrency", "LimitTheMaximumConcurrency.html", [
       [ "Define a Semaphore", "LimitTheMaximumConcurrency.html#DefineASemaphore", null ],

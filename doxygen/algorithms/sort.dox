@@ -2,8 +2,8 @@ namespace tf {
 
 /** @page ParallelSort Parallel Sort
 
-%Taskflow provides template functions for constructing tasks
-to sort ranges of items in parallel.
+%Taskflow provides template functions for constructing tasks to sort ranges
+of items in parallel.
 
 @tableofcontents
 
@@ -16,13 +16,23 @@ for creating a parallel-sort task.
 #include <taskflow/algorithm/sort.hpp>
 @endcode
 
-@section SortARangeOfItems Sort a Range of Items
+@section ParallelSortCreate Sort a Range of Items
 
-The task created by tf::Taskflow::sort(B first, E last) 
-performs parallel sort to rank a range of elements specified by 
-<tt>[first, last)</tt> in increasing order.
-The given iterators must be @em random-accessible.
-The following example creates a task to sort a data vector in increasing order.
+The task created by tf::Taskflow::sort(B first, E last)
+sorts the range <tt>[first, last)</tt> in ascending order using
+a parallel divide-and-conquer algorithm built on top of introductory sort
+(introsort). %Taskflow recursively splits the range into sub-ranges, sorts
+each sub-range in parallel across available workers, and merges the sorted
+sub-ranges back into a fully sorted result.
+The following diagram illustrates this process on eight elements:
+
+@dotfile images/parallel_sort.dot
+
+The dashed edges show the recursive splitting phase; the green edges show
+per-subrange sequential sort at the base case; the orange edges show the
+parallel merge phase that reconstructs the fully sorted sequence.
+To correctly use tf::Taskflow::sort, the given iterators must be @em random-accessible.
+The following example creates a task that sorts a vector in ascending order:
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -37,41 +47,18 @@ executor.run(taskflow).wait();
 assert(std::is_sorted(data.begin(), data.end()));
 @endcode
 
-@attention
-Elements are compared using the operator @c <.
+By default, elements are compared using the operator "<" during the sorting process.
 
-@section SortARangeOfItemsWithACustomComparator Sort a Range of Items with a Custom Comparator
+@note
+tf::Taskflow::sort is @em not a stable sorter. Elements that compare equal may appear
+in any order in the sorted output.
 
-tf::Taskflow::sort(B first, E last, C cmp) is an overload of 
-parallel sort that allows users to specify a custom comparator.
-The following example sorts a data vector in decreasing order.
+@subsection ParallelSortCaptureIteratorsByReference Capture Iterators by Reference
 
-@code{.cpp}
-tf::Taskflow taskflow;
-tf::Executor executor;
-
-std::vector<int> data = {1, 4, 9, 2, 3, 11, -8};
-
-tf::Task sort = taskflow.sort(data.begin(), data.end(), 
-  [](int a, int b) { return a > b; }
-);
-
-executor.run(taskflow).wait();
-
-assert(std::is_sorted(data.begin(), data.end(), std::greater<int>{}));
-@endcode
-
-@attention
-tf::Taskflow::sort is not stable. That is, two or more objects with equal keys
-may not appear in the same order before sorting.
-
-@section ParallelSortEnableStatefulDataPassing Enable Stateful Data Passing
-
-The iterators taken by tf::Taskflow::sort are templated.
-You can use std::reference_wrapper to enable stateful data passing
-between the sort task and others.
-The following example creates a task @c init to initialize the data vector
-and a task @c sort to sort the data in parallel after @c init finishes.
+You can pass iterators by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the range is not known at task-graph construction time
+but is initialized by an upstream task.
 
 @code{.cpp}
 tf::Taskflow taskflow;
@@ -80,14 +67,17 @@ tf::Executor executor;
 std::vector<int> data;
 std::vector<int>::iterator first, last;
 
-tf::Task init = taskflow.emplace([&](){ 
-  data  = {1, 4, 9, 2, 3, 11, -8}; 
+tf::Task init = taskflow.emplace([&]() {
+  data  = {1, 4, 9, 2, 3, 11, -8};
   first = data.begin();
   last  = data.end();
 });
-tf::Task sort = taskflow.sort(
-  std::ref(first), std::ref(last), [] (int l, int r) { return l < r; }
-);
+
+tf::Task sort = taskflow.sort(std::ref(first), std::ref(last));
+
+// wrong! first and last are captured by copy at construction time
+// tf::Task sort = taskflow.sort(first, last);
+
 init.precede(sort);
 
 executor.run(taskflow).wait();
@@ -95,8 +85,69 @@ executor.run(taskflow).wait();
 assert(std::is_sorted(data.begin(), data.end()));
 @endcode
 
+When @c init finishes, @c first and @c last point to the initialized data
+range of @c data, and the sort task performs parallel sort over all elements.
+
+@section ParallelSortCustomComparator Sort with a Custom Comparator
+
+tf::Taskflow::sort(B first, E last, C cmp) is an overload of parallel sort
+that accepts a custom comparator @c cmp.
+The following example sorts a vector of integers in @em descending order:
+
+@code{.cpp}
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::vector<int> data = {1, 4, 9, 2, 3, 11, -8};
+
+tf::Task sort = taskflow.sort(data.begin(), data.end(),
+  [](int a, int b) { return a > b; }
+);
+
+executor.run(taskflow).wait();
+
+assert(std::is_sorted(data.begin(), data.end(), std::greater<int>{}));
+@endcode
+
+A custom comparator is especially useful when sorting a range of objects
+whose natural ordering is not defined by the operator "<".
+For example, user-defined structs or classes that must be ordered by a specific field.
+The following example defines a @c Student struct and sorts a vector of
+students by GPA in descending order:
+
+@code{.cpp}
+struct Student {
+  std::string name;
+  double gpa;
+};
+
+tf::Taskflow taskflow;
+tf::Executor executor;
+
+std::vector<Student> students = {
+  {"Alice",   3.8},
+  {"Bob",     3.5},
+  {"Charlie", 3.9},
+  {"Diana",   3.7}
+};
+
+taskflow.sort(students.begin(), students.end(),
+  [](const Student& a, const Student& b) {
+    return a.gpa > b.gpa;  // descending GPA
+  }
+);
+
+executor.run(taskflow).wait();
+
+// students are now ordered by descending GPA: Charlie, Alice, Diana, Bob
+assert(students[0].name == "Charlie");
+assert(students[1].name == "Alice");
+assert(std::is_sorted(students.begin(), students.end(),
+  [](const Student& a, const Student& b) { return a.gpa > b.gpa; }
+));
+@endcode
+
 */
 
 }
-
 

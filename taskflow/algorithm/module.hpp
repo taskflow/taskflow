@@ -11,7 +11,7 @@ namespace tf {
 
 // ----------------------------------------------------------------------------
 
-template <typename T>
+template <HasGraph T>
 auto Algorithm::make_module_task(T& target) {
   return [&graph=retrieve_graph(target)](tf::Runtime& rt){
     if(graph.empty()) {
@@ -26,8 +26,8 @@ auto Algorithm::make_module_task(T& target) {
 /**
 @brief creates a module task using the given graph
 
-@tparam T type of the graph object, which must define the method `tf::Graph& graph()`
-@param graph the graph object used to create the module task
+@tparam T type satisfying tf::HasGraph
+@param target the target object used to create the module task
 @return a module task that can be used by %Taskflow or asynchronous tasking
 
 This example demonstrates how to create and launch multiple taskflows in parallel 
@@ -70,9 +70,12 @@ tf::Task m1 = taskflow1.emplace(tf::make_module_task(taskflow2));
 Users are responsible for ensuring that the given target remains valid throughout its execution. 
 The executor does not assume ownership of the target object.
 */
-template <typename T>
-auto make_module_task(T& graph) {
-  return Algorithm::make_module_task(graph);
+template <HasGraph T>
+auto make_module_task(T& target) {
+  return Algorithm::make_module_task(target);
 }
 
 }  // end of namespact tf -----------------------------------------------------
+
+
+

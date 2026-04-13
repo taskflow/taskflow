@@ -23,7 +23,7 @@ tf::Executor executor1;     // create an executor with the number of workers
 tf::Executor executor2(4);  // create an executor of 4 worker threads
 @endcode
 
-@attention
+@note
 Creating a tf::Executor has non-negligible overhead. 
 Unless your application requires multiple executors, we recommend creating a single tf::Executor 
 and reusing it to run multiple taskflows.
@@ -282,7 +282,7 @@ taskflow.emplace([&](){
 });
 @endcode
 
-@attention
+@note
 You must call tf::Executor::corun_until and tf::Executor::corun
 from a worker of the calling executor or an exception will be thrown.
 
@@ -551,7 +551,7 @@ for(size_t n=0; n<num_workers; n++) {
 }
 @endcode
 
-@attention
+@note
 tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epilogue
 are invoked by each worker simultaneously.
 It is your responsibility to ensure that no data race can occur during their invocation.

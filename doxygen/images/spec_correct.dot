@@ -1,0 +1,25 @@
+digraph SpecCorrect {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.6, ranksep=0.9];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.6, fontname="Helvetica", fontsize=8];
+
+  prepare  [label="prepare",       fillcolor="#cce5ff"];
+  speculate [label="speculate",    shape=diamond, style=filled,
+             fillcolor=aquamarine, color=black];
+  fast     [label="fast_handler",  shape=diamond, style=filled,
+             fillcolor=aquamarine, color=black];
+  slow     [label="slow_fallback", shape=diamond, style=filled,
+             fillcolor=aquamarine, color=black];
+  merge    [label="merge",         shape=diamond, style=filled,
+             fillcolor=aquamarine, color=black];
+  done     [label="done",          fillcolor="#d4edda", penwidth=2.0];
+
+  prepare  -> speculate [color="#555555"];
+  speculate -> fast [style=dashed, label="0 (hit)",  color="#555555", fontcolor="#555555"];
+  speculate -> slow [style=dashed, label="1 (miss)", color="#555555", fontcolor="#555555"];
+  fast  -> merge    [style=dashed, label="0",        color="#555555", fontcolor="#555555"];
+  slow  -> merge    [style=dashed, label="0",        color="#555555", fontcolor="#555555"];
+  merge -> done     [style=dashed, label="0",        color="#555555", fontcolor="#555555"];
+}

@@ -1,0 +1,29 @@
+digraph TaskflowPERT {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.5, ranksep=0.65];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.55, color="#555555"];
+
+  // mirrors pert_dag.dot but uses task names as Taskflow would dump them
+  A  [label="A",  fillcolor="#cce5ff"];
+  B  [label="B",  fillcolor="#d4edda"];
+  C  [label="C",  fillcolor="#d4edda"];
+  D  [label="D",  fillcolor="#fff3cd"];
+  E  [label="E",  fillcolor="#fff3cd"];
+  F  [label="F",  fillcolor="#fff3cd"];
+  G  [label="G",  fillcolor="#fde8d0"];
+  H  [label="H",  fillcolor="#fde8d0"];
+  I  [label="I",  fillcolor="#f8d7da"];
+
+  A -> B;
+  A -> C;
+  B -> D;
+  B -> F;
+  C -> E;
+  D -> G;
+  E -> G;
+  F -> G;
+  G -> H;
+  H -> I;
+}

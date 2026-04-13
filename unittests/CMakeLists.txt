@@ -4,6 +4,7 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 list(APPEND TF_UNITTESTS 
   test_utility 
+  test_iterators
   test_wsq
   test_spsc
   test_basics 
@@ -32,6 +33,7 @@ list(APPEND TF_UNITTESTS
   test_pipelines
   test_scalable_pipelines
   test_data_pipelines
+  test_atomic_intrusive_stack
 )
 
 # we only do exception tests if sanitizer is not enabled

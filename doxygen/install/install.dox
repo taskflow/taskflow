@@ -153,7 +153,7 @@ To our best knowledge,
 %Taskflow is one of the very few parallel programming libraries
 that are free from data race.
 
-@attention
+@note
 Some sanitizers are supported by certain computing architectures.
 You can find the information about architecture support of each sanitizer at 
 [Clang Documentation](https://clang.llvm.org/docs/index.html) and
@@ -197,7 +197,15 @@ with the provided configuration file:
 @endcode
 
 You can find the documentation output in @c taskflow/docs.
-Open @c taskflow/docs/index.html in your browser to view it.
+Open @c taskflow/docs/index.html in your browser to view it. 
+Or launch a local http server to view the documentation:
+
+@code{.bash}
+# Python 3
+cd /path/to/doxygen/html/output
+python3 -m http.server 8080
+# then open http://localhost:8080 in your browser
+@endcode
 
 */
 

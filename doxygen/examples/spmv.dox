@@ -1,0 +1,244 @@
+namespace tf {
+
+/** @page ExamplesSpMV Sparse Matrix-Vector Multiplication
+
+We implement a parallel sparse matrix-vector multiplication (SpMV) using
+tf::Taskflow::for_each_by_index.
+This example highlights why irregular workloads like SpMV require careful
+partitioner selection and demonstrates how different partitioners affect
+load balance across workers.
+
+@tableofcontents
+
+@section SpMVIntroduction What is Sparse Matrix-Vector Multiplication?
+
+Many scientific and engineering problems involve matrices where the vast
+majority of entries are zero.
+Examples include finite element stiffness matrices, graph adjacency matrices,
+network flow problems, and PageRank computations.
+Storing and operating on all `N*N` entries of such a matrix is wasteful;
+instead, only the non-zero entries are stored and processed.
+
+SpMV computes the product `y=A*x`,
+where @c A is a sparse matrix, @c x is a dense input vector, and @c y is
+a dense output vector.
+For each row @c i of @c A, the result is the dot product of that row with
+@c x:
+
+@code
+  y[i] = sum of A[i][j] * x[j] for all non-zero j in row i
+@endcode
+
+SpMV is one of the most important kernels in scientific computing.
+It appears in iterative linear solvers (conjugate gradient, GMRES),
+graph analytics (PageRank, label propagation), and machine learning
+(sparse neural networks, graph neural networks).
+Making SpMV fast on multi-core CPUs is therefore broadly valuable.
+
+@section SpMVCSR The CSR Storage Format
+
+The most widely used sparse matrix format is Compressed Sparse Row (CSR).
+CSR stores only the non-zero values and their column positions, organized
+row by row.
+It uses three arrays:
+
+  + @c values: the non-zero values in row-major order
+  + @c col_idx: the column index of each non-zero value
+  + @c row_ptr: the starting position in @c values and @c col_idx for each row
+
+The number of non-zeros in row @c i is `row_ptr[i+1] - row_ptr[i]`,
+and the non-zeros themselves are at positions `row_ptr[i]` through
+`row_ptr[i+1]-1` in @c values and @c col_idx.
+To make this concrete, consider the following 5x5 sparse matrix:
+
+@code
+  A = [ 3  0  0  1  0 ]   row 0: two non-zeros at columns 0 and 3
+      [ 0  2  0  0  5 ]   row 1: two non-zeros at columns 1 and 4
+      [ 1  0  4  0  0 ]   row 2: two non-zeros at columns 0 and 2
+      [ 0  0  0  7  0 ]   row 3: one non-zero  at column  3
+      [ 0  6  0  0  2 ]   row 4: two non-zeros at columns 1 and 4
+@endcode
+
+Its CSR representation is:
+
+@code
+  values  = [ 3, 1, 2, 5, 1, 4, 7, 6, 2 ]   // all non-zeros, row by row
+  col_idx = [ 0, 3, 1, 4, 0, 2, 3, 1, 4 ]   // column index of each non-zero
+  row_ptr = [ 0, 2, 4, 6, 7, 9 ]            // row_ptr[i] = start of row i
+                                            // row_ptr[5] = total non-zeros
+@endcode
+
+To compute `y[2]` for example, the non-zeros in row 2 start at
+`row_ptr[2]=4` and end before `row_ptr[3]=6`.
+So `y[2] = values[4]*x[col_idx[4]] + values[5]*x[col_idx[5]] = 1*x[0] + 4*x[2]`.
+This format is efficient for SpMV because each row can be processed
+independently: row @c i reads from @c x at the column positions it needs
+and writes a single scalar to `y[i]`.
+There are no write conflicts between rows, making all rows safe to process
+in parallel.
+
+@section SpMVWhyPartitionerMatters Why Partitioner Choice Matters
+
+The key challenge of parallelizing SpMV is that rows have different numbers
+of non-zeros.
+In real sparse matrices this variation can be extreme: a web graph has a
+few hub pages with millions of links and millions of ordinary pages with
+just a handful.
+A matrix from an adaptive mesh may have a few boundary rows with many
+neighbours and many interior rows with just six.
+
+  + With tf::StaticPartitioner, each worker receives a fixed contiguous block
+of rows determined before execution begins.
+If one block happens to contain all the heavy rows, that worker does
+significantly more work than the others while they sit idle, and this load
+imbalance directly limits parallel speedup.
+
+  + With tf::GuidedPartitioner or tf::DynamicPartitioner, chunk sizes are
+determined at runtime.
+Workers that finish their current chunk quickly pick up new chunks from
+a shared pool, naturally redistributing work away from threads that got
+lighter rows toward threads that are free.
+
+For matrices with uniform row lengths (banded matrices, regular meshes),
+static partitioning is perfectly fine and has lower overhead.
+For matrices with highly variable row lengths, guided or dynamic
+partitioning is the better choice.
+
+@section SpMVImplementation Implementation
+
+The complete self-contained example below constructs a small CSR matrix
+by hand, runs SpMV in parallel with three different partitioners, and
+verifies that all three produce the same result:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+int main() {
+
+  // ── CSR matrix ────────────────────────────────────────────────────────────
+  //
+  //   A = [ 3  0  0  1  0 ]
+  //       [ 0  2  0  0  5 ]
+  //       [ 1  0  4  0  0 ]
+  //       [ 0  0  0  7  0 ]
+  //       [ 0  6  0  0  2 ]
+  //
+  const int num_rows = 5;
+
+  std::vector<float> values  = { 3, 1, 2, 5, 1, 4, 7, 6, 2 };
+  std::vector<int>   col_idx = { 0, 3, 1, 4, 0, 2, 3, 1, 4 };
+  std::vector<int>   row_ptr = { 0, 2, 4, 6, 7, 9 };
+
+  // ── input and output vectors ──────────────────────────────────────────────
+  std::vector<float> x = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+  std::vector<float> y(num_rows, 0.0f);
+
+  // ── SpMV kernel ───────────────────────────────────────────────────────────
+  // Each sub-range covers a contiguous slice of rows. Within each slice the
+  // kernel iterates the CSR non-zeros and accumulates the dot product into y[i].
+  // Rows never share output elements, so y requires no synchronization.
+  auto spmv_kernel = [&](const tf::IndexRange<int>& sub) {
+    for(int i = sub.begin(); i < sub.end(); i += sub.step_size()) {
+      float sum = 0.0f;
+      for(int k = row_ptr[i]; k < row_ptr[i + 1]; k++) {
+        sum += values[k] * x[col_idx[k]];
+      }
+      y[i] = sum;
+    }
+  };
+
+  tf::IndexRange<int> range(0, num_rows, 1);
+  tf::Executor executor;
+
+  // ── Version 1: StaticPartitioner ─────────────────────────────────────────
+  // Divides the row range into equal-sized chunks assigned to workers up
+  // front. Optimal for uniform row lengths; may suffer from load imbalance
+  // when row lengths vary significantly.
+  {
+    tf::Taskflow taskflow;
+    std::fill(y.begin(), y.end(), 0.0f);
+    taskflow.for_each_by_index(range, spmv_kernel, tf::StaticPartitioner());
+    executor.run(taskflow).wait();
+    printf("StaticPartitioner:  y = [");
+    for(int i = 0; i < num_rows; i++) printf(" %.1f", y[i]);
+    printf(" ]\n");
+  }
+
+  // ── Version 2: GuidedPartitioner ─────────────────────────────────────────
+  // Starts with large chunks and progressively shrinks them as work is
+  // consumed, naturally balancing load when rows have unequal lengths.
+  // Recommended default for SpMV on irregular sparse matrices.
+  {
+    tf::Taskflow taskflow;
+    std::fill(y.begin(), y.end(), 0.0f);
+    taskflow.for_each_by_index(range, spmv_kernel, tf::GuidedPartitioner());
+    executor.run(taskflow).wait();
+    printf("GuidedPartitioner:  y = [");
+    for(int i = 0; i < num_rows; i++) printf(" %.1f", y[i]);
+    printf(" ]\n");
+  }
+
+  // ── Version 3: DynamicPartitioner ────────────────────────────────────────
+  // Assigns one fixed-size chunk at a time to each worker dynamically.
+  // Provides fine-grained load balancing at the cost of higher scheduling
+  // overhead; most useful when row costs vary unpredictably.
+  {
+    tf::Taskflow taskflow;
+    std::fill(y.begin(), y.end(), 0.0f);
+    taskflow.for_each_by_index(range, spmv_kernel, tf::DynamicPartitioner());
+    executor.run(taskflow).wait();
+    printf("DynamicPartitioner: y = [");
+    for(int i = 0; i < num_rows; i++) printf(" %.1f", y[i]);
+    printf(" ]\n");
+  }
+
+  return 0;
+}
+@endcode
+
+The expected output for `x = {1, 2, 3, 4, 5}` is:
+
+@code{.bash}
+StaticPartitioner:  y = [ 7.0 12.0 13.0 28.0 22.0 ]
+GuidedPartitioner:  y = [ 7.0 12.0 13.0 28.0 22.0 ]
+DynamicPartitioner: y = [ 7.0 12.0 13.0 28.0 22.0 ]
+@endcode
+
+All three partitioners produce identical results; the partitioner only
+affects how rows are distributed among workers, not the computation itself.
+You can verify the first row manually: `y[0] = 3*x[0] + 1*x[3]
+= 3*1 + 1*4 = 7`.
+
+@section SpMVDesignPoints Design Points
+
+There are a few important design points worth noting for this example, which also apply generally to parallel sparse linear algebra algorithms:
+
+  + No write conflicts between rows: Each row @c i writes exclusively to `y[i]`.
+Because two rows never write to the same output element, no atomic
+operations or locks are needed on @c y, regardless of which rows are
+processed simultaneously.
+
+  + Read-only shared access to @c x: Multiple workers read from @c x concurrently but never write to it during
+the sweep.
+Concurrent reads from a @c std::vector are safe without synchronization.
+
+  + %Partitioner recommendation: For matrices with uniform sparsity (regular grids, banded systems),
+tf::StaticPartitioner has the lowest overhead and is the right choice.
+For matrices with highly variable row lengths (power-law graphs, adaptive
+meshes, unstructured finite element problems), tf::GuidedPartitioner
+delivers better load balance with modest overhead.
+tf::DynamicPartitioner provides the finest-grained balancing but incurs
+more scheduling overhead per chunk; it is most useful when individual row
+costs vary unpredictably and the guided heuristic undershoots.
+
+@note
+The CSR format stores non-zeros in row-major order, so the inner loop
+over @c k accesses @c values and @c col_idx sequentially, which is
+cache-friendly within a single row.
+However, the gather access `x[col_idx[k]]` is irregular since column
+indices can point anywhere in @c x, and this is typically the memory
+bandwidth bottleneck of SpMV on large sparse matrices.
+
+*/
+
+}
