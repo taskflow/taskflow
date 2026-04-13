@@ -2,6 +2,8 @@
 
 #include "task.hpp"
 #include "../algorithm/partitioner.hpp"
+#include <iterator>
+#include <type_traits>
 
 /**
 @file flow_builder.hpp
@@ -1328,6 +1330,14 @@ requires Partitioner<std::decay_t<P>>
             typename O, typename C, typename P = DefaultPartitioner>
 requires (!Partitioner<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
+
+  template<typename F, typename V = std::iter_value_t<F>, typename P = DefaultPartitioner>
+requires Partitioner<std::decay_t<P>> && std::forward_iterator<F> 
+  Task fill(F first, F last, V value, P part = P());
+
+    template<typename F, typename C, typename V = std::iter_value_t<F>, typename P = DefaultPartitioner>
+requires Partitioner<std::decay_t<P>> && std::forward_iterator<F> 
+  Task fill_n(F first, C count, V value, P part = P());
   
   protected:
 
