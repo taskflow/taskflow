@@ -1,6 +1,13 @@
 var NAVTREEINDEX4 =
 {
-"matrix_multiplication.html#MatrixMultiplicationProblem":[5,17,0],
+"kmeans.html":[5,19],
+"kmeans.html#KMeansBenchmarking":[5,19,2],
+"kmeans.html#KMeansProblemFormulation":[5,19,0],
+"kmeans.html#ParallelKMeansUsingCPUs":[5,19,1],
+"matrix_multiplication.html":[5,18],
+"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[5,18,2],
+"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[5,18,1],
+"matrix_multiplication.html#MatrixMultiplicationProblem":[5,18,0],
 "namespacemembers.html":[11,0],
 "namespacemembers_enum.html":[11,4],
 "namespacemembers_func.html":[11,1],
@@ -242,12 +249,5 @@ var NAVTREEINDEX4 =
 "release-roadmap.html":[1,0],
 "release-roadmap.html#MilestoneSummary":[1,0,0],
 "rules.html":[8,0],
-"rules.html#ChangingTheRules":[8,0,6],
-"rules.html#CommunityPartners":[8,0,5],
-"rules.html#FinancialDecisions":[8,0,4],
-"rules.html#JoiningCoreMembers":[8,0,1],
-"rules.html#RulesForRoles":[8,0,2],
-"rules.html#SoftwareDecisions":[8,0,3],
-"rules.html#TheProjectOverview":[8,0,0],
-"structhash.html":[13,0,1]
+"rules.html#ChangingTheRules":[8,0,6]
 };

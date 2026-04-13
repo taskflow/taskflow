@@ -1,5 +1,12 @@
 var NAVTREEINDEX5 =
 {
+"rules.html#CommunityPartners":[8,0,5],
+"rules.html#FinancialDecisions":[8,0,4],
+"rules.html#JoiningCoreMembers":[8,0,1],
+"rules.html#RulesForRoles":[8,0,2],
+"rules.html#SoftwareDecisions":[8,0,3],
+"rules.html#TheProjectOverview":[8,0,0],
+"structhash.html":[13,0,1],
 "team.html":[8,1],
 "team.html#Alumni":[8,1,1],
 "team.html#CoreMembers":[8,1,0],

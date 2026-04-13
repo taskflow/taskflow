@@ -42,6 +42,14 @@ var Examples =
       [ "Implementation", "ExamplesMakeGraph.html#MakeGraphImplementation", null ],
       [ "Design Points", "ExamplesMakeGraph.html#MakeGraphDesignPoints", null ]
     ] ],
+    [ "Speculative Execution", "ExamplesSpeculativeExecution.html", [
+      [ "Motivation", "ExamplesSpeculativeExecution.html#SpecMotivation", null ],
+      [ "The Problem: Bloom Filter Lookup", "ExamplesSpeculativeExecution.html#SpecProblem", null ],
+      [ "Per-Item Graph Structure", "ExamplesSpeculativeExecution.html#SpecSingleItem", null ],
+      [ "Batch Graph: N Keys in Parallel", "ExamplesSpeculativeExecution.html#SpecBatchGraph", null ],
+      [ "Implementation", "ExamplesSpeculativeExecution.html#SpecImplementation", null ],
+      [ "Design Points", "ExamplesSpeculativeExecution.html#SpecDesignPoints", null ]
+    ] ],
     [ "Fibonacci Number", "ExamplesFibonacciNumber.html", [
       [ "Problem Formulation", "ExamplesFibonacciNumber.html#FibonacciNumberProblem", null ],
       [ "Recursive Fibonacci with Runtime Tasking", "ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking", [

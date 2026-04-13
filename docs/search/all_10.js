@@ -29,14 +29,15 @@ var searchData=
   ['graph_20processing_20pipeline_26',['Graph Processing Pipeline',['../GraphProcessingPipeline.html',1,'Examples']]],
   ['graph_20program_27',['Compile a CUDA Graph Program',['../GPUTasking.html#CompileACUDAGraphProgram',1,'']]],
   ['graph_20representation_28',['Graph Representation',['../graphtraversal.html#GraphTraversalGraphRepresentation',1,'']]],
-  ['graph_20structure_29',['Task Graph Structure',['../ExamplesCholesky.html#CholeskyTaskGraph',1,'']]],
+  ['graph_20structure_29',['Graph Structure',['../ExamplesSpeculativeExecution.html#SpecSingleItem',1,'Per-Item Graph Structure'],['../ExamplesCholesky.html#CholeskyTaskGraph',1,'Task Graph Structure']]],
   ['graph_20task_30',['Graph Task',['../MatrixMultiplicationWithCUDAGPU.html#DefineACUDAGraphForMatrixMultiplication',1,'CUDA Graph Task'],['../KMeansWithCUDAGPU.html#DefineTheKMeansCUDAGraph',1,'CUDA Graph Task']]],
   ['graph_20traversal_31',['Graph Traversal',['../graphtraversal.html',1,'Examples']]],
   ['graph_20what_20s_20wrong_32',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['graphs_33',['Graphs',['../index.html#QuickStartComposeTaskGraphs',1,'Compose Task Graphs'],['../ProjectMotivation.html#LoopVsTaskParallelism',1,'From Loops to Task Graphs'],['../ConditionalTasking.html#ImplementControlFlowGraphs',1,'Implement Control-flow Graphs'],['../index.html#QuickStartVisualizeATaskflow',1,'Visualize Taskflow Graphs']]],
-  ['graphs_20are_20not_20enough_34',['When Static Task Graphs Are Not Enough',['../DependentAsyncTasking.html#WhenStaticTaskGraphsAreNotEnough',1,'']]],
-  ['group_35',['Group',['../TaskGroup.html#CancelATaskGroup',1,'Cancel a Task Group'],['../TaskGroup.html#CreateATaskGroup',1,'Create a Task Group'],['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'Recursive Fibonacci with Task Group'],['../TaskGroup.html',1,'Task Group']]],
-  ['guided_20partitioner_36',['Define a Guided Partitioner',['../PartitioningAlgorithm.html#DefineAGuidedPartitioner',1,'']]],
-  ['guidedpartitioner_37',['GuidedPartitioner',['../classtf_1_1GuidedPartitioner.html',1,'tf::GuidedPartitioner&lt; C &gt;'],['../classtf_1_1GuidedPartitioner.html#ad922cf64fc355513c756247d4e2b69d3',1,'tf::GuidedPartitioner::GuidedPartitioner()=default'],['../classtf_1_1GuidedPartitioner.html#ab5540d5761ed6dbaf037cd431367b9f2',1,'tf::GuidedPartitioner::GuidedPartitioner(size_t sz)'],['../classtf_1_1GuidedPartitioner.html#a6a42cf5071fc665671345fefde2c5ec0',1,'tf::GuidedPartitioner::GuidedPartitioner(size_t sz, C &amp;&amp;closure)']]],
-  ['guidelines_38',['Guidelines',['../guidelines.html',1,'Contributing']]]
+  ['graph_3a_20n_20keys_20in_20parallel_33',['Batch Graph: N Keys in Parallel',['../ExamplesSpeculativeExecution.html#SpecBatchGraph',1,'']]],
+  ['graphs_34',['Graphs',['../index.html#QuickStartComposeTaskGraphs',1,'Compose Task Graphs'],['../ProjectMotivation.html#LoopVsTaskParallelism',1,'From Loops to Task Graphs'],['../ConditionalTasking.html#ImplementControlFlowGraphs',1,'Implement Control-flow Graphs'],['../index.html#QuickStartVisualizeATaskflow',1,'Visualize Taskflow Graphs']]],
+  ['graphs_20are_20not_20enough_35',['When Static Task Graphs Are Not Enough',['../DependentAsyncTasking.html#WhenStaticTaskGraphsAreNotEnough',1,'']]],
+  ['group_36',['Group',['../TaskGroup.html#CancelATaskGroup',1,'Cancel a Task Group'],['../TaskGroup.html#CreateATaskGroup',1,'Create a Task Group'],['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingTaskGroup',1,'Recursive Fibonacci with Task Group'],['../TaskGroup.html',1,'Task Group']]],
+  ['guided_20partitioner_37',['Define a Guided Partitioner',['../PartitioningAlgorithm.html#DefineAGuidedPartitioner',1,'']]],
+  ['guidedpartitioner_38',['GuidedPartitioner',['../classtf_1_1GuidedPartitioner.html',1,'tf::GuidedPartitioner&lt; C &gt;'],['../classtf_1_1GuidedPartitioner.html#ad922cf64fc355513c756247d4e2b69d3',1,'tf::GuidedPartitioner::GuidedPartitioner()=default'],['../classtf_1_1GuidedPartitioner.html#ab5540d5761ed6dbaf037cd431367b9f2',1,'tf::GuidedPartitioner::GuidedPartitioner(size_t sz)'],['../classtf_1_1GuidedPartitioner.html#a6a42cf5071fc665671345fefde2c5ec0',1,'tf::GuidedPartitioner::GuidedPartitioner(size_t sz, C &amp;&amp;closure)']]],
+  ['guidelines_39',['Guidelines',['../guidelines.html',1,'Contributing']]]
 ];

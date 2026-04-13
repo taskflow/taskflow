@@ -24,8 +24,9 @@ var searchData=
   ['link_20objects_20using_20nvcc_21',['Link Objects Using nvcc',['../CompileTaskflowWithCUDA.html#CompileTaskflowWithCUDANaiveLinking',1,'']]],
   ['linkers_22',['Link Objects Using Different Linkers',['../CompileTaskflowWithCUDA.html#CompileTaskflowWithCUDADifferentLinkers',1,'']]],
   ['look_20around_23',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
-  ['loop_24',['Catch an Exception from a Corun Loop',['../ExceptionHandling.html#ExceptionHandlingCorun',1,'']]],
-  ['loop_20as_20a_20condition_20task_25',['Encoding the Loop as a Condition Task',['../ExamplesBFS.html#BFSConditionTask',1,'']]],
-  ['loop_20control_20flow_26',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
-  ['loops_20to_20task_20graphs_27',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]]
+  ['lookup_24',['The Problem: Bloom Filter Lookup',['../ExamplesSpeculativeExecution.html#SpecProblem',1,'']]],
+  ['loop_25',['Catch an Exception from a Corun Loop',['../ExceptionHandling.html#ExceptionHandlingCorun',1,'']]],
+  ['loop_20as_20a_20condition_20task_26',['Encoding the Loop as a Condition Task',['../ExamplesBFS.html#BFSConditionTask',1,'']]],
+  ['loop_20control_20flow_27',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
+  ['loops_20to_20task_20graphs_28',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]]
 ];

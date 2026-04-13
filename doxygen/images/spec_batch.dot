@@ -1,0 +1,61 @@
+digraph SpecBatch {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.4, ranksep=0.85];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.55, fontname="Helvetica", fontsize=8, color="#555555"];
+
+  // item 0
+  subgraph cluster_0 {
+    style=invis;
+    sp0 [label="speculate₀", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    fh0 [label="fast₀",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    sl0 [label="slow₀",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    mg0 [label="merge₀",     shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    dn0 [label="done₀",      fillcolor="#d4edda"];
+    sp0 -> fh0 [style=dashed, label="0"];
+    sp0 -> sl0 [style=dashed, label="1"];
+    fh0 -> mg0 [style=dashed, label="0"];
+    sl0 -> mg0 [style=dashed, label="0"];
+    mg0 -> dn0 [style=dashed, label="0"];
+  }
+
+  // item 1
+  subgraph cluster_1 {
+    style=invis;
+    sp1 [label="speculate₁", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    fh1 [label="fast₁",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    sl1 [label="slow₁",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    mg1 [label="merge₁",     shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    dn1 [label="done₁",      fillcolor="#d4edda"];
+    sp1 -> fh1 [style=dashed, label="0"];
+    sp1 -> sl1 [style=dashed, label="1"];
+    fh1 -> mg1 [style=dashed, label="0"];
+    sl1 -> mg1 [style=dashed, label="0"];
+    mg1 -> dn1 [style=dashed, label="0"];
+  }
+
+  // ellipsis row
+  dots [label="⋮", shape=plaintext, fontsize=16];
+
+  // item N-1
+  subgraph cluster_n {
+    style=invis;
+    spn [label="speculateₙ", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    fhn [label="fastₙ",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    sln [label="slowₙ",      shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    mgn [label="mergeₙ",     shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+    dnn [label="doneₙ",      fillcolor="#d4edda"];
+    spn -> fhn [style=dashed, label="0"];
+    spn -> sln [style=dashed, label="1"];
+    fhn -> mgn [style=dashed, label="0"];
+    sln -> mgn [style=dashed, label="0"];
+    mgn -> dnn [style=dashed, label="0"];
+  }
+
+  // collect: N strong deps from all done tasks
+  collect [label="collect", fillcolor="#cce5ff", penwidth=2.0];
+  dn0 -> collect [label="strong"];
+  dn1 -> collect [label="strong"];
+  dnn -> collect [label="strong"];
+}

@@ -7,10 +7,11 @@ var searchData=
   ['search_4',['Parallel Breadth-First Search',['../ExamplesBFS.html',1,'Examples']]],
   ['sort_5',['Parallel Sort',['../ParallelSort.html',1,'Algorithms']]],
   ['sparse_20matrix_20vector_20multiplication_6',['Sparse Matrix-Vector Multiplication',['../ExamplesSpMV.html',1,'Examples']]],
-  ['standard_20cell_20placement_7',['Standard Cell Placement',['../dreamplace.html',1,'usecases']]],
-  ['static_20tasking_8',['Static Tasking',['../StaticTasking.html',1,'Cookbook']]],
-  ['static_20timing_20analysis_9',['Static Timing Analysis',['../opentimer.html',1,'usecases']]],
-  ['stencil_20computation_10',['3D Stencil Computation',['../ExamplesStencil3D.html',1,'Examples']]],
-  ['subflow_20tasking_11',['Subflow Tasking',['../SubflowTasking.html',1,'Cookbook']]],
-  ['system_12',['A General-purpose Task-parallel Programming System',['../index.html',1,'']]]
+  ['speculative_20execution_7',['Speculative Execution',['../ExamplesSpeculativeExecution.html',1,'Examples']]],
+  ['standard_20cell_20placement_8',['Standard Cell Placement',['../dreamplace.html',1,'usecases']]],
+  ['static_20tasking_9',['Static Tasking',['../StaticTasking.html',1,'Cookbook']]],
+  ['static_20timing_20analysis_10',['Static Timing Analysis',['../opentimer.html',1,'usecases']]],
+  ['stencil_20computation_11',['3D Stencil Computation',['../ExamplesStencil3D.html',1,'Examples']]],
+  ['subflow_20tasking_12',['Subflow Tasking',['../SubflowTasking.html',1,'Cookbook']]],
+  ['system_13',['A General-purpose Task-parallel Programming System',['../index.html',1,'']]]
 ];

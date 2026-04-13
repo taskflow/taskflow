@@ -97,11 +97,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "Algorithms.html",
-"ParallelReduction.html#ParallelReductionCaptureIteratorsByReference",
-"classtf_1_1Graph.html#a55cb9bcb9a1152943b7bcb2a7549fe81",
-"classtf_1_1UnboundedWSQ.html",
-"matrix_multiplication.html#MatrixMultiplicationProblem",
-"team.html"
+"ParallelIterations.html#ParallelIterationsIndexRangeBased",
+"classtf_1_1Future.html#ae6c5f935a2062f58054b067d39f5e78a",
+"classtf_1_1Taskflow.html#aa4957a41e63e1d1a6f77c540d70d04fa",
+"kmeans.html",
+"rules.html#CommunityPartners"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

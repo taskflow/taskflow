@@ -41,7 +41,7 @@ var searchData=
   ['module_20task_38',['Module Task',['../DataParallelPipeline.html#CreateADataPipelineModuleTask',1,'Create a Data Pipeline Module Task'],['../ScalableTaskParallelPipeline.html#CreateAScalablePipelineModuleTask',1,'Create a Scalable Pipeline Module Task'],['../TaskParallelPipeline.html#CreateATaskParallelPipelineModuleTask',1,'Create a Task-parallel Pipeline Module Task'],['../ComposableTasking.html#CreateAnAdoptedModuleTask',1,'Create an Adopted Module Task'],['../ModuleAlgorithm.html#WhatIsAModuleTask',1,'What is a Module Task']]],
   ['module_20task_20from_20a_20taskflow_39',['Create a Module Task from a Taskflow',['../ComposableTasking.html#CreateAModuleTaskFromATaskflow',1,'']]],
   ['module_20task_20over_20a_20custom_20graph_40',['Create a Module Task over a Custom Graph',['../ModuleAlgorithm.html#CreateAModuleTaskOverACustomGraph',1,'']]],
-  ['motivation_41',['Motivation',['../ExamplesCholesky.html#CholeskyMotivation',1,'Motivation'],['../ProjectMotivation.html',1,'Project Motivation']]],
+  ['motivation_41',['Motivation',['../ExamplesCholesky.html#CholeskyMotivation',1,'Motivation'],['../ExamplesSpeculativeExecution.html#SpecMotivation',1,'Motivation'],['../ProjectMotivation.html',1,'Project Motivation']]],
   ['move_20a_20taskflow_42',['Move a Taskflow',['../StaticTasking.html#MoveATaskflow',1,'']]],
   ['multi_20condition_20task_43',['Create a Multi-condition Task',['../ConditionalTasking.html#CreateAMultiConditionTask',1,'']]],
   ['multi_20dimensional_20indexrange_44',['Multi-dimensional IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRangeMD',1,'']]],

@@ -163,7 +163,7 @@ When Static Task Graphs Are Not Enough</h1>
 <p>In large graphs, constructing every task node can itself take non-trivial time — allocating buffers, loading metadata, resolving file paths. With construct-then-run, all of that setup must complete before a single task begins executing. With dynamic task graph programming, a task can begin executing the moment its dependencies are satisfied, even while downstream tasks are still being constructed. This <em>overlap</em> between graph creation and task execution can significantly reduce end-to-end latency.</p>
 <p>The figure below illustrates this difference on a four-task graph. In the static model, the entire taskflow is constructed before any task runs. In the dynamic model, execution of early tasks overlaps with the construction of later tasks:</p>
 <div class="image">
-<img src="dependent_async_execution_diagram.png" alt=""/>
+<object type="image/svg+xml" data="dependent_async_execution_diagram.svg" style="pointer-events: none;"></object>
 </div>
 <p>Taskflow's dependent-async API, <a class="el" href="classtf_1_1Executor.html#a3278e2611e43b80b65ef10a3391ddcc3" title="runs the given function asynchronously when the given predecessors finish">tf::Executor::dependent_async</a> and <a class="el" href="classtf_1_1Executor.html#a0af0918b7179f9e42945fb407e0bad65" title="runs the given function asynchronously when the given predecessors finish">tf::Executor::silent_dependent_async</a>, is designed precisely for these scenarios. Each task is submitted individually with an explicit list of predecessor tasks, and the executor begins running it as soon as all predecessors complete, without waiting for the rest of the graph to be defined.</p>
 <h1><a class="anchor" id="CreateADynamicTaskGraph"></a>

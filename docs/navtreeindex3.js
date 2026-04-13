@@ -1,5 +1,12 @@
 var NAVTREEINDEX3 =
 {
+"classtf_1_1Taskflow.html#aa4957a41e63e1d1a6f77c540d70d04fa":[13,0,0,44,13],
+"classtf_1_1Taskflow.html#aa966a69493ecc8ecb9131ef3c5354b8e":[13,0,0,44,3],
+"classtf_1_1Taskflow.html#ac433018262e44b12c4cc9f0c4748d758":[13,0,0,44,6],
+"classtf_1_1Taskflow.html#ad5706e5819aa01a63c4aa2e3485546b9":[13,0,0,44,11],
+"classtf_1_1Taskflow.html#ade7fc641d136a3f8c96682c08040626a":[13,0,0,44,1],
+"classtf_1_1Taskflow.html#af4f03bca084deb5c2228ac8936d33649":[13,0,0,44,12],
+"classtf_1_1Taskflow.html#afd790de6db6d16ddf4729967c1edebb5":[13,0,0,44,2],
 "classtf_1_1UnboundedWSQ.html":[13,0,0,48],
 "classtf_1_1UnboundedWSQ.html#a005abeb0ab8c65d4c98f7eafec46bd9e":[13,0,0,48,5],
 "classtf_1_1UnboundedWSQ.html#a02e2447359cc9d84f59028b236e3a0e7":[13,0,0,48,6],
@@ -242,12 +249,5 @@ var NAVTREEINDEX3 =
 "install.html#BAIBuildExamplesAndUnitTests":[2,2],
 "install.html#BAIBuildSanitizers":[2,4],
 "install.html#BAIIntegrateTaskflowToYourProject":[2,1],
-"install.html#BAISupportedCompilers":[2,0],
-"kmeans.html":[5,18],
-"kmeans.html#KMeansBenchmarking":[5,18,2],
-"kmeans.html#KMeansProblemFormulation":[5,18,0],
-"kmeans.html#ParallelKMeansUsingCPUs":[5,18,1],
-"matrix_multiplication.html":[5,17],
-"matrix_multiplication.html#MatrixMultiplicationBenchmarking":[5,17,2],
-"matrix_multiplication.html#MatrixMultiplicationParallelPattern":[5,17,1]
+"install.html#BAISupportedCompilers":[2,0]
 };
