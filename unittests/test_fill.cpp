@@ -1,0 +1,195 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+
+#include <doctest.h>
+#include <taskflow/algorithm/fill.hpp>
+#include <taskflow/taskflow.hpp>
+
+template <typename T> void fill_sync(size_t W, size_t N, T val) {
+  std::vector<T> a(N);
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  taskflow.fill(a.begin(), a.end(), val);
+  executor.run(taskflow).wait();
+
+  std::vector<T> std_a(N);
+  std::fill(std_a.begin(), std_a.end(), val);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelFill.int.1.10000" * doctest::timeout(300)){
+  fill_sync<int>(1, 10000, 12);
+}
+
+TEST_CASE("ParallelFill.int.2.10000" * doctest::timeout(300)){
+  fill_sync<int>(2, 10000, 12);
+}
+
+TEST_CASE("ParallelFill.int.3.10000" * doctest::timeout(300)){
+  fill_sync<int>(3, 10000, 12);
+}
+
+TEST_CASE("ParallelFill.int.4.10000" * doctest::timeout(300)){
+  fill_sync<int>(4, 10000, 12);
+}
+
+TEST_CASE("ParallelFill.ldouble.1.10000" * doctest::timeout(300)){
+  fill_sync<long double>(1, 10000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.2.10000" * doctest::timeout(300)){
+  fill_sync<long double>(2, 10000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.3.10000" * doctest::timeout(300)){
+  fill_sync<long double>(3, 10000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.4.10000" * doctest::timeout(300)){
+  fill_sync<long double>(4, 10000, 12.);
+}
+
+template <typename T> void fill_async(size_t W, size_t N, T val) {
+  std::vector<T> a(N);
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  executor.async(tf::make_fill_task(a.begin(), a.end(), val));
+
+  executor.wait_for_all();
+
+  std::vector<T> std_a(N);
+  std::fill(std_a.begin(), std_a.end(), val);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelFillAsync.int.1.10000" * doctest::timeout(300)){
+  fill_async<int>(1, 10000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.2.10000" * doctest::timeout(300)){
+  fill_async<int>(2, 10000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.3.10000" * doctest::timeout(300)){
+  fill_async<int>(3, 10000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.4.10000" * doctest::timeout(300)){
+  fill_async<int>(4, 10000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.1.10000" * doctest::timeout(300)){
+  fill_async<long double>(1, 10000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.2.10000" * doctest::timeout(300)){
+  fill_async<long double>(2, 10000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.3.10000" * doctest::timeout(300)){
+  fill_async<long double>(3, 10000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.4.10000" * doctest::timeout(300)){
+  fill_async<long double>(4, 10000, 12.);
+}
+
+template <typename T> void fill_n_sync(size_t W, size_t N, size_t C, T val) {
+  std::vector<T> a(N, T(0));
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  taskflow.fill_n(a.begin(), C, val);
+  executor.run(taskflow).wait();
+
+  std::vector<T> std_a(N, T(0));
+  std::fill_n(std_a.begin(), C, val);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelFill.int.1.10000" * doctest::timeout(300)){
+  fill_n_sync<int>(1, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFill.int.2.10000" * doctest::timeout(300)){
+  fill_n_sync<int>(2, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFill.int.3.10000" * doctest::timeout(300)){
+  fill_n_sync<int>(3, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFill.int.4.10000" * doctest::timeout(300)){
+  fill_n_sync<int>(4, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFill.ldouble.1.10000" * doctest::timeout(300)){
+  fill_n_sync<long double>(1, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.2.10000" * doctest::timeout(300)){
+  fill_n_sync<long double>(2, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.3.10000" * doctest::timeout(300)){
+  fill_n_sync<long double>(3, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFill.ldouble.4.10000" * doctest::timeout(300)){
+  fill_n_sync<long double>(4, 10000, 5000, 12.);
+}
+
+template <typename T> void fill_n_async(size_t W, size_t N, size_t C, T val) {
+  std::vector<T> a(N, T(0));
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  executor.async(tf::make_fill_n_task(a.begin(), C, val));
+
+  executor.wait_for_all();
+
+  std::vector<T> std_a(N, T(0));
+  std::fill_n(std_a.begin(), C, val);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelFillAsync.int.1.10000" * doctest::timeout(300)){
+  fill_n_async<int>(1, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.2.10000" * doctest::timeout(300)){
+  fill_n_async<int>(2, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.3.10000" * doctest::timeout(300)){
+  fill_n_async<int>(3, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.int.4.10000" * doctest::timeout(300)){
+  fill_n_async<int>(4, 10000, 5000, 12);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.1.10000" * doctest::timeout(300)){
+  fill_n_async<long double>(1, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.2.10000" * doctest::timeout(300)){
+  fill_n_async<long double>(2, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.3.10000" * doctest::timeout(300)){
+  fill_n_async<long double>(3, 10000, 5000, 12.);
+}
+
+TEST_CASE("ParallelFillAsync.ldouble.4.10000" * doctest::timeout(300)){
+  fill_n_async<long double>(4, 10000, 5000, 12.);
+}

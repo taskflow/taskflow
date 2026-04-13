@@ -6,9 +6,8 @@
 #include <type_traits>
 
 namespace tf {
-template <typename F, typename V = std::iter_value_t<F>,
-          typename P = DefaultPartitioner>
-auto make_fill_task(F first, F last, V value, P part = P()) {
+template <typename F, typename G, typename P = DefaultPartitioner>
+auto make_generate_task(F first, F last, G gen, P part = P()) {
   using F_t = std::decay_t<std::unwrap_ref_decay_t<F>>;
   return [=](Runtime &rt) mutable {
     F_t beg = first;
@@ -19,7 +18,7 @@ auto make_fill_task(F first, F last, V value, P part = P()) {
 
     // the workload should be sequential
     if (W <= 1 || N <= part.chunk_size()) {
-      part([=]() mutable { std::fill(beg, end, value); })();
+      part([=]() mutable { std::generate(beg, end, gen); })();
       return;
     }
 
@@ -38,7 +37,7 @@ auto make_fill_task(F first, F last, V value, P part = P()) {
               [=, prev_e = size_t{0}](size_t part_b, size_t part_e) mutable {
                 std::advance(beg, part_b - prev_e);
                 for (size_t x = part_b; x < part_e; x++) {
-                  *beg++ = value;
+                  *beg++ = gen();
                 }
                 prev_e = part_e;
               });
@@ -57,7 +56,7 @@ auto make_fill_task(F first, F last, V value, P part = P()) {
               [=, prev_e = size_t{0}](size_t part_b, size_t part_e) mutable {
                 std::advance(beg, part_b - prev_e);
                 for (size_t x = part_b; x < part_e; x++) {
-                  *beg++ = value;
+                  *beg++ = gen();
                 }
                 prev_e = part_e;
               });
@@ -68,24 +67,23 @@ auto make_fill_task(F first, F last, V value, P part = P()) {
   };
 }
 
-template <typename F, typename C, typename V = std::iter_value_t<F>,
-          typename P = DefaultPartitioner>
-auto make_fill_n_task(F first, C count, V value, P part = P()) {
+template <typename F, typename C, typename G, typename P = DefaultPartitioner>
+auto make_generate_n_task(F first, C count, G gen, P part = P()) {
   F last = first;
   std::advance(last, count);
-  return make_fill_task(first, last, value, part);
+  return make_generate_task(first, last, gen, part);
 }
 
-template <typename F, typename V, typename P>
+template <typename F, typename G, typename P>
   requires Partitioner<std::decay_t<P>> && std::forward_iterator<F>
-Task FlowBuilder::fill(F first, F last, V value, P part) {
-  return emplace(make_fill_task(first, last, value, part));
+Task FlowBuilder::generate(F first, F last, G gen, P part) {
+  return emplace(make_generate_task(first, last, gen, part));
 }
 
-template <typename F, typename C, typename V, typename P>
+template <typename F, typename C, typename G, typename P>
   requires(Partitioner<std::decay_t<P>> && std::forward_iterator<F> &&
            std::integral<C>)
-Task FlowBuilder::fill_n(F first, C count, V value, P part) {
-  return emplace(make_fill_n_task(first, count, value, part));
+Task FlowBuilder::generate_n(F first, C count, G gen, P part) {
+  return emplace(make_generate_n_task(first, count, gen, part));
 }
 } // namespace tf
