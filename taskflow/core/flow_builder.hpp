@@ -1415,7 +1415,8 @@ class FlowBuilder {
   /**
   @brief fills a range with a given value in parallel
 
-  @tparam F iterator type
+  @tparam B iterator type
+  @tparam E iterator type
   @tparam V value type
   @tparam P partitioner type
 
@@ -1436,14 +1437,14 @@ class FlowBuilder {
   tf::Task task = taskflow.fill(vec.begin(), vec.end(), 42);
   @endcode
   */
-  template<typename F, typename V = std::iter_value_t<F>, typename P = DefaultPartitioner>
-  requires Partitioner<std::decay_t<P>> && std::forward_iterator<F> 
-  Task fill(F first, F last, V value, P part = P());
+  template<typename B, typename E, typename V, typename P = DefaultPartitioner>
+  requires Partitioner<std::decay_t<P>> 
+  Task fill(B first, E last, V value, P part = P());
 
   /**
   @brief fills N elements with a given value in parallel
 
-  @tparam F iterator type
+  @tparam B iterator type
   @tparam C count type (integral)
   @tparam V value type
   @tparam P partitioner type
@@ -1465,17 +1466,17 @@ class FlowBuilder {
   tf::Task task = taskflow.fill_n(vec.begin(), 500, 42);
   @endcode
   */
-  template<typename F, typename C, typename V = std::iter_value_t<F>, 
+  template<typename B, typename C, typename V, 
             typename P = DefaultPartitioner>
-  requires (Partitioner<std::decay_t<P>> 
-          && std::forward_iterator<F> 
+  requires (Partitioner<std::decay_t<P>>
           && std::integral<C>) 
-  Task fill_n(F first, C count, V value, P part = P());
+  Task fill_n(B first, C count, V value, P part = P());
   
   /**
   @brief generates values into a range in parallel using a callable
 
-  @tparam F iterator type
+  @tparam B iterator type
+  @tparam E iterator type
   @tparam G generator callable type
   @tparam P partitioner type
 
@@ -1498,14 +1499,14 @@ class FlowBuilder {
                                     [&counter]() { return 42; });
   @endcode
   */
-  template <typename F, typename G, typename P= DefaultPartitioner>
-  requires Partitioner<std::decay_t<P>> && std::forward_iterator<F>
-  Task generate(F first, F last, G gen, P part = P());
+  template <typename B, typename E, typename G, typename P= DefaultPartitioner>
+  requires Partitioner<std::decay_t<P>>
+  Task generate(B first, E last, G gen, P part = P());
 
   /**
   @brief generates N values into a range in parallel using a callable
 
-  @tparam F iterator type
+  @tparam B iterator type
   @tparam C count type (integral)
   @tparam G generator callable type
   @tparam P partitioner type
@@ -1529,11 +1530,11 @@ class FlowBuilder {
                                       [&counter]() { return 42; });
   @endcode
   */
-  template <typename F, typename C, typename G, typename P= DefaultPartitioner>
-  requires (Partitioner<std::decay_t<P>> 
-          && std::forward_iterator<F>
+  template <typename B, typename C, typename G, 
+  typename P= DefaultPartitioner>
+  requires (Partitioner<std::decay_t<P>>
           && std::integral<C>)
-  Task generate_n(F first, C count, G gen, P part = P());
+  Task generate_n(B first, C count, G gen, P part = P());
   protected:
   
   /**

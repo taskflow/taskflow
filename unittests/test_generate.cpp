@@ -205,3 +205,79 @@ TEST_CASE("ParallelGenerateAsync.ldouble.3.10000" * doctest::timeout(300)){
 TEST_CASE("ParallelGenerateAsync.ldouble.4.10000" * doctest::timeout(300)){
   generate_n_async<long double>(4, 10000, 5000, 12.);
 }
+
+TEST_CASE("ParallelGenerateStateful.4" * doctest::timeout(300)) {
+  auto gen = [](){
+    return 12;
+  };
+  std::vector<int> a;
+
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+
+  std::vector<int>::iterator beg;
+  std::vector<int>::iterator end;
+  auto init = taskflow.emplace([&]() {
+    a.resize(10000, 0);
+    beg = a.begin();
+    end = a.end();
+  });
+  auto generate_task = taskflow.generate(std::ref(beg), std::ref(end), gen);
+  init.precede(generate_task);
+
+  executor.run(taskflow).wait();
+
+  std::vector<int> std_a(10000, 0);
+  std::generate(std_a.begin(), std_a.end(), gen);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelGenerateStatefulMixed.4" * doctest::timeout(300)) {
+  auto gen = [](){
+    return 12;
+  };
+  std::vector<int> a(10000, 0);
+
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+
+  std::vector<int>::iterator beg;
+  auto init = taskflow.emplace([&]() {
+    beg = a.begin();
+  });
+  auto generate_task = taskflow.generate(std::ref(beg), a.end(), gen);
+  init.precede(generate_task);
+
+  executor.run(taskflow).wait();
+
+  std::vector<int> std_a(10000, 0);
+  std::generate(std_a.begin(), std_a.end(), gen);
+
+  REQUIRE(a == std_a);
+}
+
+TEST_CASE("ParallelGenerateNStateful.1" * doctest::timeout(300)) {
+  auto gen = [](){
+    return 12;
+  };
+  std::vector<int> a;
+
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+
+  std::vector<int>::iterator beg;
+  auto init = taskflow.emplace([&]() {
+    a.resize(10000, 0);
+    beg = a.begin();
+  });
+  auto generate_task = taskflow.generate_n(std::ref(beg), 5000, gen);
+  init.precede(generate_task);
+
+  executor.run(taskflow).wait();
+
+  std::vector<int> std_a(10000, 0);
+  std::generate_n(std_a.begin(), 5000, gen);
+
+  REQUIRE(a == std_a);
+}
