@@ -1494,9 +1494,8 @@ class FlowBuilder {
 
   @code{.cpp}
   std::vector<int> vec(1000);
-  int counter = 0;
   tf::Task task = taskflow.generate(vec.begin(), vec.end(), 
-                                    [&counter]() { return counter++; });
+                                    [&counter]() { return 42; });
   @endcode
   */
   template <typename F, typename G, typename P= DefaultPartitioner>
@@ -1526,9 +1525,8 @@ class FlowBuilder {
 
   @code{.cpp}
   std::vector<int> vec(1000);
-  int counter = 0;
   tf::Task task = taskflow.generate_n(vec.begin(), 500, 
-                                      [&counter]() { return counter++; });
+                                      [&counter]() { return 42; });
   @endcode
   */
   template <typename F, typename C, typename G, typename P= DefaultPartitioner>
