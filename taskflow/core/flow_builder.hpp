@@ -1411,7 +1411,130 @@ class FlowBuilder {
             typename O, typename C, Partitioner P = DefaultPartitioner>
   requires (!Partitioner<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
+
+  /**
+  @brief fills a range with a given value in parallel
+
+  @tparam B iterator type
+  @tparam E iterator type
+  @tparam V value type
+  @tparam P partitioner type
+
+  @param first iterator to the beginning of the range (inclusive)
+  @param last iterator to the end of the range (exclusive)
+  @param value the value to fill the range with
+  @param part partitioning algorithm (default tf::DefaultPartitioner)
+
+  @return a tf::Task handle
+
+  The task spawns asynchronous tasks to fill the given range
+  <tt>[first, last)</tt> with the given value in parallel.
+  This is equivalent to calling <tt>std::fill(first, last, value)</tt>
+  but in parallel.
+
+  @code{.cpp}
+  std::vector<int> vec(1000);
+  tf::Task task = taskflow.fill(vec.begin(), vec.end(), 42);
+  @endcode
+  */
+  template<typename B, typename E, typename V, typename P = DefaultPartitioner>
+  requires Partitioner<std::decay_t<P>> 
+  Task fill(B first, E last, V value, P part = P());
+
+  /**
+  @brief fills N elements with a given value in parallel
+
+  @tparam B iterator type
+  @tparam C count type (integral)
+  @tparam V value type
+  @tparam P partitioner type
+
+  @param first iterator to the beginning of the range (inclusive)
+  @param count number of elements to fill
+  @param value the value to fill the range with
+  @param part partitioning algorithm (default tf::DefaultPartitioner)
+
+  @return a tf::Task handle
+
+  The task spawns asynchronous tasks to fill N elements starting from 
+  @c first with the given value in parallel.
+  This is equivalent to calling <tt>std::fill_n(first, count, value)</tt>
+  but in parallel.
+
+  @code{.cpp}
+  std::vector<int> vec(1000);
+  tf::Task task = taskflow.fill_n(vec.begin(), 500, 42);
+  @endcode
+  */
+  template<typename B, typename C, typename V, 
+            typename P = DefaultPartitioner>
+  requires (Partitioner<std::decay_t<P>>
+          && std::integral<C>) 
+  Task fill_n(B first, C count, V value, P part = P());
   
+  /**
+  @brief generates values into a range in parallel using a callable
+
+  @tparam B iterator type
+  @tparam E iterator type
+  @tparam G generator callable type
+  @tparam P partitioner type
+
+  @param first iterator to the beginning of the range (inclusive)
+  @param last iterator to the end of the range (exclusive)
+  @param gen generator callable that produces values
+  @param part partitioning algorithm (default tf::DefaultPartitioner)
+
+  @return a tf::Task handle
+
+  The task spawns asynchronous tasks to generate and fill the range
+  <tt>[first, last)</tt> with values produced by calling the 
+  generator @c gen in parallel.
+  This is equivalent to calling <tt>std::generate(first, last, gen)</tt>
+  but in parallel.
+
+  @code{.cpp}
+  std::vector<int> vec(1000);
+  tf::Task task = taskflow.generate(vec.begin(), vec.end(), 
+                                    [&counter]() { return 42; });
+  @endcode
+  */
+  template <typename B, typename E, typename G, typename P= DefaultPartitioner>
+  requires Partitioner<std::decay_t<P>>
+  Task generate(B first, E last, G gen, P part = P());
+
+  /**
+  @brief generates N values into a range in parallel using a callable
+
+  @tparam B iterator type
+  @tparam C count type (integral)
+  @tparam G generator callable type
+  @tparam P partitioner type
+
+  @param first iterator to the beginning of the range (inclusive)
+  @param count number of elements to generate
+  @param gen generator callable that produces values
+  @param part partitioning algorithm (default tf::DefaultPartitioner)
+
+  @return a tf::Task handle
+
+  The task spawns asynchronous tasks to generate and fill N elements 
+  starting from @c first with values produced by calling the 
+  generator @c gen in parallel.
+  This is equivalent to calling <tt>std::generate_n(first, count, gen)</tt>
+  but in parallel.
+
+  @code{.cpp}
+  std::vector<int> vec(1000);
+  tf::Task task = taskflow.generate_n(vec.begin(), 500, 
+                                      [&counter]() { return 42; });
+  @endcode
+  */
+  template <typename B, typename C, typename G, 
+  typename P= DefaultPartitioner>
+  requires (Partitioner<std::decay_t<P>>
+          && std::integral<C>)
+  Task generate_n(B first, C count, G gen, P part = P());
   protected:
   
   /**
