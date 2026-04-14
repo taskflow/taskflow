@@ -1,5 +1,7 @@
 #pragma once
 
+#include <taskflow/core/graph.hpp>
+
 namespace tf {
 
 /**
