@@ -60,16 +60,12 @@ TaskD
 for you to profile and visualize taskflow programs
 in an easy-to-use web-based interface.
 
-@image html images/tfprof.png 
+@image html images/tfprof_overview.png 
 
 @code{.bash}
 # run the program with the environment variable TF_ENABLE_PROFILER enabled
-~$ TF_ENABLE_PROFILER=simple.json ./simple
-~$ cat simple.json
-[
-{"executor":"0","data":[{"worker":0,"level":0,"data":[{"span":[172,186],"name":"0_0","type":"static"},{"span":[187,189],"name":"0_1","type":"static"}]},{"worker":2,"level":0,"data":[{"span":[93,164],"name":"2_0","type":"static"},{"span":[170,179],"name":"2_1","type":"static"}]}]}
-]
-# paste the profiling json data to https://taskflow.github.io/tfprof/
+~$ TF_ENABLE_PROFILER=simple.tfp ./simple
+# drag the generated tfp file to https://taskflow.github.io/tfprof/
 @endcode
 
 @htmlonly

@@ -126,7 +126,23 @@ var Cookbook =
     ] ],
     [ "Profile Taskflow Programs", "Profiler.html", [
       [ "Enable Taskflow Profiler", "Profiler.html#ProfilerEnableTFProf", null ],
-      [ "Enable Taskflow Profiler on a HTTP Server", "Profiler.html#ProfilerEnableTFProfServer", null ],
-      [ "Display Profile Summary", "Profiler.html#ProfilerDisplayProfileSummary", null ]
+      [ "The .tfp Binary Format", "Profiler.html#ProfilerTFPFormat", null ],
+      [ "Visualize with the TFProf Web Interface", "Profiler.html#ProfilerWebInterface", [
+        [ "Toolbar", "Profiler.html#ProfilerToolbar", null ],
+        [ "Executor Filter", "Profiler.html#ProfilerExecutorFilter", null ],
+        [ "Execution Timeline", "Profiler.html#ProfilerTimeline", null ],
+        [ "Overview Minimap", "Profiler.html#ProfilerOverview", null ],
+        [ "Task Parallelism vs Active Workers", "Profiler.html#ProfilerParallelism", null ],
+        [ "Critical Tasks", "Profiler.html#ProfilerCriticalTasks", null ],
+        [ "Executor Statistics", "Profiler.html#ProfilerExecutorStats", null ],
+        [ "Task Duration Distribution", "Profiler.html#ProfilerHistogram", null ]
+      ] ],
+      [ "Display Profile Summary to Console", "Profiler.html#ProfilerDisplayProfileSummary", null ],
+      [ "Profiling Tips", "Profiler.html#ProfilerTips", [
+        [ "Large Traces", "Profiler.html#ProfilerTipsLarge", null ],
+        [ "Recursive and Nested Subflows", "Profiler.html#ProfilerTipsRecursive", null ],
+        [ "Multiple Executors", "Profiler.html#ProfilerTipsMultiExecutor", null ],
+        [ "Recommended Workflow", "Profiler.html#ProfilerTipsZoomWorkflow", null ]
+      ] ]
     ] ]
 ];

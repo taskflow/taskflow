@@ -8,5 +8,7 @@ var searchData=
   ['violations_5',['Report Violations',['../codeofconduct.html#ReportViolations',1,'']]],
   ['visualize_20a_20task_20dependency_20graph_6',['Visualize a Task Dependency Graph',['../StaticTasking.html#VisualizeATaskDependencyGraph',1,'']]],
   ['visualize_20taskflow_20graphs_7',['Visualize Taskflow Graphs',['../index.html#QuickStartVisualizeATaskflow',1,'']]],
-  ['voice_20matters_8',['Your Voice Matters!',['../guidelines.html#YourVoiceMatters',1,'']]]
+  ['visualize_20with_20the_20tfprof_20web_20interface_8',['Visualize with the TFProf Web Interface',['../Profiler.html#ProfilerWebInterface',1,'']]],
+  ['voice_20matters_9',['Your Voice Matters!',['../guidelines.html#YourVoiceMatters',1,'']]],
+  ['vs_20active_20workers_10',['Task Parallelism vs Active Workers',['../Profiler.html#ProfilerParallelism',1,'']]]
 ];

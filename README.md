@@ -61,11 +61,11 @@ for you to profile and visualize taskflow programs in an easy-to-use web-based i
 
 ```bash
 # run the program with the environment variable TF_ENABLE_PROFILER enabled
-~$ TF_ENABLE_PROFILER=simple.json ./simple
-# paste the profiling json data to https://taskflow.github.io/tfprof/
+~$ TF_ENABLE_PROFILER=simple.tfp ./simple
+# drag the simple.tfp file to https://taskflow.github.io/tfprof/
 ```
 
-![](doxygen/images/tfprof.png)
+![](doxygen/images/tfprof_overview.png)
 
 ## Create a Subflow Graph
 

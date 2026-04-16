@@ -2,7 +2,6 @@
 
 #include "interface.hpp"
 #include "../utility/os.hpp"
-#include "../utility/serializer.hpp"
 
 /** 
 @file observer/tfprof_observer.hpp
@@ -25,16 +24,6 @@ struct Segment {
 
   observer_stamp_t beg;
   observer_stamp_t end;
-
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(name, type, beg, end);
-  }
-
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(name, type, beg, end);
-  }
 
   Segment() = default;
 
@@ -65,43 +54,7 @@ struct Timeline {
 
   Timeline& operator = (const Timeline& rhs) = delete;
   Timeline& operator = (Timeline&& rhs) = default;
-
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(uid, origin, segments);
-  }
-
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(uid, origin, segments);
-  }
 };  
-
-/**
-@private
- */
-struct ProfileData {
-
-  std::vector<Timeline> timelines;
-
-  ProfileData() = default;
-
-  ProfileData(const ProfileData& rhs) = delete;
-  ProfileData(ProfileData&& rhs) = default;
-
-  ProfileData& operator = (const ProfileData& rhs) = delete;
-  ProfileData& operator = (ProfileData&&) = default;
-  
-  template <typename Archiver>
-  auto save(Archiver& ar) const {
-    return ar(timelines);
-  }
-
-  template <typename Archiver>
-  auto load(Archiver& ar) {
-    return ar(timelines);
-  }
-};
 
 // ----------------------------------------------------------------------------
 // TFProfObserver definition
@@ -229,7 +182,6 @@ class TFProfObserver : public ObserverInterface {
     void dump_overview  (std::ostream&, size_t uid, size_t num_tasks) const;
     void dump_tsum      (std::ostream&) const;
     void dump_wsum      (std::ostream&) const;
-    void dump_histogram (std::ostream&) const;
     void dump           (std::ostream&, size_t uid, size_t num_tasks) const;
   };
 
@@ -239,12 +191,17 @@ class TFProfObserver : public ObserverInterface {
     @brief dumps the timelines into a @TFProf format through 
            an output stream
     */
-    void dump(std::ostream& ostream) const;
 
     /**
     @brief dumps the timelines into a JSON string
     */
-    std::string dump() const;
+
+    /**
+    @brief dumps this executor's data as a self-contained .tfp executor block.
+    Writes its own string table followed by all worker-level segment data.
+    Called by TFProfManager::dump after the file header is written.
+    */
+    void dump(std::ostream& ostream) const;
 
     /**
     @brief shows the summary report through an output stream
@@ -280,6 +237,84 @@ class TFProfObserver : public ObserverInterface {
     inline void set_up(size_t num_workers) override final;
     inline void on_entry(WorkerView, TaskView) override final;
     inline void on_exit(WorkerView, TaskView) override final;
+
+    // -----------------------------------------------------------------------
+    // .tfp binary format helpers
+    // Kept private so they have direct access to _timeline without
+    // any friend declarations or public/protected exposure.
+    // -----------------------------------------------------------------------
+
+    // Portable little-endian write helpers
+    static void _tfp_write_u8 (std::ostream& os, uint8_t  v) {
+      os.put(static_cast<char>(v));
+    }
+    static void _tfp_write_u16(std::ostream& os, uint16_t v) {
+      uint8_t buf[2] = { uint8_t(v), uint8_t(v >> 8) };
+      os.write(reinterpret_cast<const char*>(buf), 2);
+    }
+    static void _tfp_write_u32(std::ostream& os, uint32_t v) {
+      uint8_t buf[4] = {
+        uint8_t(v),       uint8_t(v >> 8),
+        uint8_t(v >> 16), uint8_t(v >> 24)
+      };
+      os.write(reinterpret_cast<const char*>(buf), 4);
+    }
+    static void _tfp_write_u64(std::ostream& os, uint64_t v) {
+      uint8_t buf[8] = {
+        uint8_t(v),       uint8_t(v >> 8),
+        uint8_t(v >> 16), uint8_t(v >> 24),
+        uint8_t(v >> 32), uint8_t(v >> 40),
+        uint8_t(v >> 48), uint8_t(v >> 56)
+      };
+      os.write(reinterpret_cast<const char*>(buf), 8);
+    }
+
+    // Variable-length unsigned integer (varint) — LEB128 encoding.
+    // Values 0-127 encode in 1 byte. Each byte uses 7 bits of data;
+    // the MSB is a continuation flag (1 = more bytes follow).
+    // Typical delta timestamps (1-1000 µs) encode in 1-2 bytes vs 8 bytes fixed.
+    static void _tfp_write_varint(std::ostream& os, uint64_t v) {
+      do {
+        uint8_t byte = v & 0x7F;
+        v >>= 7;
+        if(v) byte |= 0x80;   // set continuation bit
+        os.put(static_cast<char>(byte));
+      } while(v);
+    }
+
+    // TaskType -> uint8 (must match JS TYPE_NAMES array order:
+    //   0=static 1=subflow 2=condition 3=module 4=async)
+    static uint8_t _tfp_type_byte(TaskType t) {
+      switch(t) {
+        case TaskType::STATIC:    return 0;
+        case TaskType::SUBFLOW:   return 1;
+        case TaskType::CONDITION: return 2;
+        case TaskType::MODULE:    return 3;
+        case TaskType::ASYNC:     return 4;
+        default:                  return 0;
+      }
+    }
+
+    // Deduplicating string table builder (used by dump)
+    struct _StringTable {
+      std::vector<char>                         data;
+      std::unordered_map<std::string, uint32_t> idx;
+
+      // Returns {byte_offset, clamped_length}.
+      // Empty name => {0, 0} meaning anonymous; viewer generates "W{w}_{i}".
+      std::pair<uint32_t, uint8_t> intern(const std::string& name) {
+        if(name.empty()) return {0, 0};
+        const uint8_t len = static_cast<uint8_t>(
+          name.size() > 255 ? 255 : name.size()
+        );
+        auto it = idx.find(name);
+        if(it != idx.end()) return { it->second, len };
+        const uint32_t off = static_cast<uint32_t>(data.size());
+        data.insert(data.end(), name.begin(), name.begin() + len);
+        idx.emplace(name, off);
+        return { off, len };
+      }
+    };
 };  
 
 
@@ -469,175 +504,14 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
      << '\n';
 }
 
-// Helper: _dump_one_histogram
-// Draws a single vertical bar chart for one histogram vector.
-//   title    : label printed in the section header
-//   hist     : histogram data (num_bins entries)
-//   num_bins : number of bins (runtime value)
-//   y_max    : the true maximum value (e.g. num_workers or peak task count)
-//   bin_us   : time width of each bin in microseconds
-//   col_w    : display column width per bin
-//   bar_width: num_bins * col_w
-//   wall_us  : total wall clock duration in microseconds
-//
-// Y axis is capped at MAX_Y_ROWS terminal rows regardless of y_max so that
-// large workloads (e.g. millions of tasks) don't flood the terminal.
-// Each display row represents a band of ceil(y_max / MAX_Y_ROWS) units;
-// a bin fills row r if its value >= the row's lower threshold.
-// Y axis labels show the upper bound of each row's band.
-static inline void _dump_one_histogram(
-  std::ostream&              os,
-  const char*                title,
-  const std::vector<size_t>& hist,
-  size_t                     num_bins,
-  size_t                     y_max,
-  size_t                     bin_us,
-  size_t                     col_w,
-  size_t                     bar_width,
-  size_t                     wall_us
-) {
-  static constexpr size_t MAX_Y_ROWS = 20;
-
-  const char* wall_unit;
-  const char* bin_unit;
-  double wall_val = _tf_time_scale(wall_us, wall_unit);
-  double bin_val  = _tf_time_scale(bin_us,  bin_unit);
-
-  os << std::fixed << std::setprecision(2);
-  os << "\n[" << title << "]  bin=" << bin_val << " " << bin_unit
-     << "  (wall: 0.." << wall_val << " " << wall_unit << ","
-     << " " << num_bins << " bins)\n";
-
-  // scale Y: cap at MAX_Y_ROWS display rows, each covering y_step units
-  size_t num_rows = (std::min)(y_max, MAX_Y_ROWS);
-  if(num_rows == 0) num_rows = 1;
-  size_t y_step = (y_max + num_rows - 1) / num_rows;
-  if(y_step == 0) y_step = 1;
-
-  // Y label width driven by y_max so labels never overflow their column
-  size_t y_label_w = (std::max)(std::to_string(y_max).size(), size_t(4));
-  size_t y_prefix  = y_label_w + 2;  // label + " |"
-
-  // pre-build filled and empty column strings.
-  // U+2588 FULL BLOCK encoded as raw UTF-8 bytes \xe2\x96\x88 to avoid
-  // MSVC warning C4566 which triggers when the source code page (1252)
-  // cannot represent the character named by a universal-character-name.
-  std::string filled_col(1, ' ');
-  for(size_t i = 0; i < col_w - 1; ++i) {
-    filled_col += "\xe2\x96\x88";  // UTF-8 encoding of U+2588 FULL BLOCK
-  }
-  std::string empty_col(col_w, ' ');
-
-  // bar rows from top (num_rows) down to 1.
-  // row r represents the band [(r-1)*y_step+1 .. r*y_step].
-  // a bin fills this row if hist[b] >= (r-1)*y_step + 1.
-  // label shows r*y_step (capped at y_max for the top row).
-  for(size_t r = num_rows; r >= 1; --r) {
-    size_t threshold = (r - 1) * y_step + 1;
-    size_t label_val = (std::min)(r * y_step, y_max);
-    os << std::setw(static_cast<int>(y_label_w)) << label_val << " |";
-    for(size_t b = 0; b < num_bins; ++b) {
-      os << (hist[b] >= threshold ? filled_col : empty_col);
-    }
-    os << '\n';
-  }
-
-  // X axis rule, aligned to y_prefix
-  os << std::string(y_prefix - 1, ' ') << '+'
-     << std::string(bar_width, '-') << '\n';
-
-  // tick label row: scale each tick to the bin unit, stamp at b*col_w+1
-  double divisor = 1.0;
-  const char* tick_unit = bin_unit;
-  if     (std::string(bin_unit) == "ms")  divisor = 1e3;
-  else if(std::string(bin_unit) == "s")   divisor = 1e6;
-  else if(std::string(bin_unit) == "min") divisor = 60e6;
-
-  std::string labels(bar_width, ' ');
-  for(size_t b = 0; b < num_bins; ++b) {
-    std::string tick;
-    if(divisor == 1.0) {
-      tick = std::to_string(b * bin_us);
-    } else {
-      std::ostringstream oss;
-      oss << std::fixed << std::setprecision(1)
-          << static_cast<double>(b * bin_us) / divisor;
-      tick = oss.str();
-    }
-    size_t pos   = b * col_w + 1;
-    size_t avail = (pos < bar_width) ? (std::min)(tick.size(), bar_width - pos) : 0;
-    for(size_t i = 0; i < avail; ++i) {
-      labels[pos + i] = tick[i];
-    }
-  }
-  os << std::string(y_prefix, ' ') << labels << "  (" << tick_unit << ")\n";
-}
-
-// Procedure: dump_histogram
-// Emits two bar charts stacked vertically:
-//   1. Worker Concurrency  - Y = distinct workers active per bin (0..num_workers)
-//   2. Task Parallelism    - Y = concurrent tasks per bin
-//
-// num_bins is computed at runtime:
-//   1. Scale wall_us to find the display unit (us/ms/s/min)
-//   2. Format the last tick label in that unit to find col_w (label width + 1 padding)
-//   3. num_bins = (80 - Y_PREFIX) / col_w — fills the available 80-char width
-// This makes the resolution as high as the terminal width allows.
-inline void TFProfObserver::Summary::dump_histogram(std::ostream& os) const {
-
-  if(wall_us == 0 || num_all_workers == 0 || worker_histogram.empty()) return;
-
-  size_t num_bins = worker_histogram.size();  // set during build pass
-
-  size_t bin_us = (wall_us + num_bins - 1) / num_bins;
-  if(bin_us == 0) bin_us = 1;
-
-  // col_w was already chosen when num_bins was computed in summary();
-  // re-derive it here from the last tick width so the two agree exactly.
-  const char* bin_unit;
-  _tf_time_scale(bin_us, bin_unit);
-  double divisor = 1.0;
-  if     (std::string(bin_unit) == "ms")  divisor = 1e3;
-  else if(std::string(bin_unit) == "s")   divisor = 1e6;
-  else if(std::string(bin_unit) == "min") divisor = 60e6;
-
-  std::string last_tick;
-  if(divisor == 1.0) {
-    last_tick = std::to_string((num_bins - 1) * bin_us);
-  } else {
-    std::ostringstream oss;
-    oss << std::fixed << std::setprecision(1)
-        << static_cast<double>((num_bins - 1) * bin_us) / divisor;
-    last_tick = oss.str();
-  }
-
-  size_t col_w     = (std::max)(last_tick.size() + 1, size_t(3));
-  size_t bar_width = num_bins * col_w;
-
-  size_t task_peak = *std::max_element(task_histogram.begin(), task_histogram.end());
-  if(task_peak == 0) task_peak = 1;
-
-  _dump_one_histogram(os,
-    "Worker Concurrency  (Y=active workers)",
-    worker_histogram, num_bins, num_all_workers, bin_us, col_w, bar_width, wall_us
-  );
-
-  _dump_one_histogram(os,
-    "Task Parallelism  (Y=concurrent tasks)",
-    task_histogram, num_bins, task_peak, bin_us, col_w, bar_width, wall_us
-  );
-}
-
 // Procedure: dump
-// Emits all four sections in order: overview header, task type stats,
-// worker utilization table, concurrency histogram.
+// Emits overview header, task type stats, and worker utilization table.
 inline void TFProfObserver::Summary::dump(
   std::ostream& os, size_t uid, size_t num_tasks
 ) const {
   dump_overview  (os, uid, num_tasks);
   dump_tsum      (os);
   dump_wsum      (os);
-  dump_histogram (os);
   os << '\n';
 }
 
@@ -686,83 +560,91 @@ inline void TFProfObserver::clear() {
 }
 
 // Procedure: dump
+// Writes this executor's data as a self-contained block:
+//
+// FILE FORMAT (all integers little-endian):
+//   Executor header (24 bytes):
+//     uid          : u64   — unique executor id
+//     origin_us    : u64   — wall-clock origin (µs since epoch)
+//     str_table_len: u32   — byte length of the string table below
+//     num_wl       : u32   — number of non-empty (worker, level) blocks
+//   String table   : str_table_len bytes of flat UTF-8 task names
+//   Per non-empty (worker, level):
+//     Worker-level header (12 bytes): worker_id(u32) level(u32) num_segs(u32)
+//     Per segment (variable length, delta+varint encoded):
+//       delta_beg  : varint  — beg_us minus previous beg_us (0 for first)
+//       duration   : varint  — (end_us - beg_us), always non-negative
+//       name_off   : u32     — byte offset into this executor's string table
+//       type|nlen  : u8      — upper 3 bits = task type, lower 5 = name length
+//
+// Each executor block is fully self-contained with its own string table,
+// so TFProfManager::dump can simply write the file header and call dump()
+// on each observer with no shared state.
 inline void TFProfObserver::dump(std::ostream& os) const {
-
   using namespace std::chrono;
+  using SegRef = std::pair<uint32_t, uint8_t>;
 
-  size_t first;
-
-  for(first = 0; first<_timeline.segments.size(); ++first) {
-    if(_timeline.segments[first].size() > 0) { 
-      break; 
-    }
-  }
-  
-  // not timeline data to dump
-  if(first == _timeline.segments.size()) {
-    os << "{}\n";
-    return;
-  }
-
-  os << "{\"executor\":\"" << _timeline.uid << "\",\"data\":[";
-
-  bool comma = false;
-
-  for(size_t w=first; w<_timeline.segments.size(); w++) {
-    for(size_t l=0; l<_timeline.segments[w].size(); l++) {
-
-      if(_timeline.segments[w][l].empty()) {
-        continue;
+  // ---- pass 1: build this executor's string table ----
+  _StringTable strtab;
+  const size_t nw = _timeline.segments.size();
+  std::vector<std::vector<std::vector<SegRef>>> segRefs(nw);
+  for(size_t w = 0; w < nw; ++w) {
+    segRefs[w].resize(_timeline.segments[w].size());
+    for(size_t l = 0; l < _timeline.segments[w].size(); ++l) {
+      const auto& segs = _timeline.segments[w][l];
+      segRefs[w][l].resize(segs.size());
+      for(size_t s = 0; s < segs.size(); ++s) {
+        segRefs[w][l][s] = strtab.intern(segs[s].name);
       }
-
-      if(comma) {
-        os << ',';
-      }
-      else {
-        comma = true;
-      }
-
-      os << "{\"worker\":" << w << ",\"level\":" << l << ",\"data\":[";
-      for(size_t i=0; i<_timeline.segments[w][l].size(); ++i) {
-
-        const auto& s = _timeline.segments[w][l][i];
-
-        if(i) os << ',';
-        
-        // span 
-        os << "{\"span\":[" 
-           << duration_cast<microseconds>(s.beg - _timeline.origin).count() 
-           << ","
-           << duration_cast<microseconds>(s.end - _timeline.origin).count() 
-           << "],";
-        
-        // name
-        os << "\"name\":\""; 
-        if(s.name.empty()) {
-          os << w << '_' << i;
-        }
-        else {
-          os << s.name;
-        }
-        os << "\",";
-    
-        // e.g., category "type": "Condition Task"
-        os << "\"type\":\"" << to_string(s.type) << "\"";
-
-        os << "}";
-      }
-      os << "]}";
     }
   }
 
-  os << "]}\n";
-}
+  // ---- count non-empty worker-level blocks ----
+  uint32_t numWL = 0;
+  for(size_t w = 0; w < nw; ++w)
+    for(size_t l = 0; l < _timeline.segments[w].size(); ++l)
+      if(!_timeline.segments[w][l].empty()) ++numWL;
 
-// Function: dump
-inline std::string TFProfObserver::dump() const {
-  std::ostringstream oss;
-  dump(oss);
-  return oss.str();
+  // ---- executor header (24 bytes) ----
+  const int64_t origin_us = duration_cast<microseconds>(
+    _timeline.origin.time_since_epoch()
+  ).count();
+  _tfp_write_u64(os, static_cast<uint64_t>(_timeline.uid));
+  _tfp_write_u64(os, static_cast<uint64_t>(origin_us));
+  _tfp_write_u32(os, static_cast<uint32_t>(strtab.data.size())); // str_table_len
+  _tfp_write_u32(os, numWL);
+
+  // ---- string table ----
+  if(!strtab.data.empty()) {
+    os.write(strtab.data.data(), static_cast<std::streamsize>(strtab.data.size()));
+  }
+
+  // ---- worker-level blocks ----
+  for(size_t w = 0; w < nw; ++w) {
+    for(size_t l = 0; l < _timeline.segments[w].size(); ++l) {
+      const auto& segs = _timeline.segments[w][l];
+      if(segs.empty()) continue;
+
+      _tfp_write_u32(os, static_cast<uint32_t>(w));
+      _tfp_write_u32(os, static_cast<uint32_t>(l));
+      _tfp_write_u32(os, static_cast<uint32_t>(segs.size()));
+
+      int64_t prev_beg = 0;
+      for(size_t s = 0; s < segs.size(); ++s) {
+        const auto& seg  = segs[s];
+        const auto& ref  = segRefs[w][l][s];
+        const int64_t beg_us  = duration_cast<microseconds>(seg.beg - _timeline.origin).count();
+        const int64_t end_us  = duration_cast<microseconds>(seg.end - _timeline.origin).count();
+        _tfp_write_varint(os, static_cast<uint64_t>(beg_us - prev_beg)); // delta_beg
+        _tfp_write_varint(os, static_cast<uint64_t>(end_us - beg_us));   // duration
+        _tfp_write_u32(os, ref.first);                                    // name_off
+        _tfp_write_u8 (os, static_cast<uint8_t>(
+          (_tfp_type_byte(seg.type) << 5) | (ref.second & 0x1F)
+        ));                                                               // type|name_len
+        prev_beg = beg_us;
+      }
+    }
+  }
 }
 
 // Procedure: summary
@@ -994,7 +876,6 @@ class TFProfManager {
 
     static TFProfManager& get();
 
-    void dump(std::ostream& ostream) const;
 
   private:
     
@@ -1006,53 +887,53 @@ class TFProfManager {
     TFProfManager();
 
     void _manage(std::shared_ptr<TFProfObserver> observer);
+
+    // Writes a complete .tfp file covering all observers to 'os'.
+    // Builds a single global string table across all observers (maximises
+    // deduplication), then writes the file header, string table, and each
+    // executor block by calling into TFProfObserver's private helpers.
+    void dump(std::ostream& os) const;
 };
 
-// constructor
+// Constructor
 inline TFProfManager::TFProfManager() :
   _fpath {get_env(TF_ENABLE_PROFILER)} {
-
 }
 
-// Procedure: manage
+// Procedure: _manage
 inline void TFProfManager::_manage(std::shared_ptr<TFProfObserver> observer) {
   std::lock_guard lock(_mutex);
   _observers.push_back(std::move(observer));
 }
 
+// Procedure: dump (JSON, used for streaming / manual calls)
+
+
 // Procedure: dump
+// Writes a complete .tfp file to os.
+// File header (12 bytes): magic(4) version(u16) flags(u16) num_exec(u32)
+// Followed by each executor's self-contained block (see TFProfObserver::dump).
 inline void TFProfManager::dump(std::ostream& os) const {
-  for(size_t i=0; i<_observers.size(); ++i) {
-    if(i) os << ',';
-    _observers[i]->dump(os); 
+  // File header — 12 bytes
+  os.write("TFPX", 4);
+  TFProfObserver::_tfp_write_u16(os, 1);                                        // version
+  TFProfObserver::_tfp_write_u16(os, 0);                                        // flags
+  TFProfObserver::_tfp_write_u32(os, static_cast<uint32_t>(_observers.size())); // num_exec
+
+  // Each observer writes its own self-contained executor block
+  for(size_t i = 0; i < _observers.size(); ++i) {
+    _observers[i]->dump(os);
   }
 }
 
 // Destructor
+// If a file path was given, write the binary .tfp file.
+// Otherwise print a text summary to stderr.
 inline TFProfManager::~TFProfManager() {
-  std::ofstream ofs(_fpath);
+  std::ofstream ofs(_fpath, std::ios::binary);
   if(ofs) {
-    // .tfp
-    if(_fpath.rfind(".tfp") != std::string::npos) {
-      ProfileData data;
-      data.timelines.reserve(_observers.size());
-      for(size_t i=0; i<_observers.size(); ++i) {
-        data.timelines.push_back(std::move(_observers[i]->_timeline));
-      }
-      Serializer<std::ofstream> serializer(ofs); 
-      serializer(data);
-    }
-    // .json
-    else { // if(_fpath.rfind(".json") != std::string::npos) {
-      ofs << "[\n";
-      for(size_t i=0; i<_observers.size(); ++i) {
-        if(i) ofs << ',';
-        _observers[i]->dump(ofs);
-      }
-      ofs << "]\n";
-    }
+    dump(ofs);
   }
-  // do a summary report in stderr for each observer
   else {
     std::ostringstream oss;
     for(size_t i=0; i<_observers.size(); ++i) {

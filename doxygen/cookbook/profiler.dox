@@ -2,199 +2,329 @@ namespace tf {
 
 /** @page Profiler Profile Taskflow Programs
 
-%Taskflow comes with a built-in profiler, @em TFProf, 
-for you to profile and visualize taskflow programs.
+%Taskflow comes with a built-in profiler, @em TFProf,
+for you to profile and visualize the execution of taskflow programs.
+TFProf records every task execution across all worker threads in every executor
+and produces either a compact binary trace file (@c .tfp) for interactive
+visualization, or a concise text summary to standard error.
 
 @tableofcontents
 
-@image html images/tfprof.png width=100%
-
 @section ProfilerEnableTFProf Enable Taskflow Profiler
 
-All taskflow programs come with a lightweight profiling module 
-to observer worker activities in every executor.
-To enable the profiler,
-set the environment variable @c TF_ENABLE_PROFILER to a file name
-in which the profiling result will be stored.
+All taskflow programs include a lightweight, always-available profiling module.
+No recompilation or special build flags are needed.
+To activate it, set the environment variable @c TF_ENABLE_PROFILER to the
+desired output file path before running your program:
 
 @code{.bash}
-~$ TF_ENABLE_PROFILER=result.json ./my_taskflow
-~$ cat result.json
-[
-{"executor":"0","data":[{"worker":12,"level":0,"data":[{"span":[72,117],"name":"12_0","type":"static"},{"span":[121,123],"name":"12_1","type":"static"},{"span":[123,125],"name":"12_2","type":"static"},{"span":[125,127],"name":"12_3","type":"static"}]}]}
-]
+~$ TF_ENABLE_PROFILER=result.tfp ./my_taskflow
 @endcode
 
-When the program finishes, it generates and saves the profiling data to @c result.json
-in JavaScript Object Notation (JSON) format.
-You can then paste the JSON data to our web-based interface, @TFProf,
-to visualize the execution timelines of tasks and workers.
-The web interface supports the following features:
-  + zoom into a selected window
-  + double click to zoom back to the previously selected window
-  + filter workers
-  + mouse over to show the tooltip of the task
-  + rank tasks in decreasing order of criticality (i.e., execution time)
+When the program finishes, it writes the profiling data to @c result.tfp
+in the TFProf binary format (@c .tfp).
+If no file path is given (i.e., the variable is set but empty),
+TFProf prints a concise text summary to standard error instead.
 
-TFProf implements a clustering-based algorithm to efficiently 
-visualize tasks and their execution timelines in a browser.
-Without losing much visual accuracy,
-each @em clustered task indicates a group of adjacent tasks clustered by 
-the algorithm, and you can zoom in to see these tasks.
+@section ProfilerTFPFormat The .tfp Binary Format
 
-@section ProfilerEnableTFProfServer Enable Taskflow Profiler on a HTTP Server
+The @c .tfp file is a compact binary format designed for fast loading and
+efficient compression.
+Each segment record stores:
 
-When profiling large taskflow programs,
-the method in the previous section may not work because of the limitation of processing
-large JSON files.
-For example, a taskflow program of a million tasks can
-produce several GBs of profiling data, and
-the profile may respond to your requests very slowly.
-To solve this problem,
-we have implemented a C++-based http server optimized for our profiling data.
-To compile the server, enable the cmake option
-@c TF_BUILD_PROFILER.
-You may visit @ref install to understand %Taskflow's build environment.
+  - @b delta_beg : the time offset from the previous segment's start,
+    encoded as a variable-length integer (varint).
+    Because segments are time-ordered and adjacent tasks on the same worker
+    tend to start close together, deltas are typically small (1–3 bytes
+    rather than 8 bytes for an absolute timestamp).
+  - @b duration : the task execution time (@c end - @c beg), also varint-encoded.
+  - @b name_off, @b name_len : a reference into a per-executor string table
+    that deduplicates task names.
+  - @b type|name_len : the task type and name length packed into a single byte.
 
-@code{.bash}
-# under the build directory
-~$ cmake ../ -DTF_BUILD_PROFILER=ON
-~$ make
-@endcode
+A file with @c N executors contains one 12-byte file header followed by
+@c N self-contained executor blocks, each with its own string table.
+This design keeps the format simple and allows each executor block to be
+decoded independently.
+In practice, the delta + varint encoding reduces file size by 63–71% compared
+to a naive fixed-width representation — a 50 MB raw trace typically compresses
+to 15 MB or less without any external compression library.
 
-After successfully compiling the server,
-you can find the executable at @c tfprof/server/tfprof.
-Now, generate profiling data from running a taskflow program
-but specify the output file with extension @c .tfp.
+@section ProfilerWebInterface Visualize with the TFProf Web Interface
 
-@code{.bash}
-~$ TF_ENABLE_PROFILER=my_taskflow.tfp ./my_taskflow
-~$ ls
-my_taskflow.tfp    # my_taskflow.tfp is of binary format
-@endcode
+Open the TFProf web interface at
+<a href="https://taskflow.github.io/tfprof/">https://taskflow.github.io/tfprof/</a>
+and drop your @c .tfp file onto the page (or click @b "Open .tfp").
+The interface is a self-contained HTML file with no server, no installation,
+and no network dependency — it runs entirely in your browser.
 
-Launch the server program @c tfprof/server/tfprof and pass
-(1) the directory of @c index.html (default at @c tfprof/)
-via the option @c --mount and
-(2) the @c my_taskflow.tfp via the option @c --input.
+@image html images/tfprof_start.png width=100%
 
-@code{.bash}
-# under the build/ directory
-~$ ./tfprof/server/tfprof --mount ../tfprof/ --input my_taskflow.tfp
-@endcode
+The interface is organized into the following panels from top to bottom:
 
-Now, open your favorite browser at @c localhost:8080
-to visualize and profile your @c my_taskflow program.
+@subsection ProfilerToolbar Toolbar
 
-@image html images/tfprof-local.png
+@image html images/tfprof_toolbar.png width=100%
 
-The compiled profiler is a more powerful version than the pure
-JavaScript-based interface and it is able to more efficiently
-handle large profiling data under different queries.
-We currently support the following two view types:
-  + Cluster: visualize the profiling data using a clustering algorithm with a limit
-  + Criticality: visualize the top-limit tasks in decreasing order of their execution times
+The toolbar at the top shows:
 
+  - @b "Taskflow Profiler" — the application title.
+  - @b "Open .tfp" — opens a file picker to load a trace.
+  - @b "Reset Zoom" — returns to the full time range.
+  - @b "<- Back" — steps back to the previous zoom window.
+  - @b "Taskflow GitHub" — links to the %Taskflow repository.
 
-@section ProfilerDisplayProfileSummary Display Profile Summary
+A statistics bar below the toolbar shows live summary values for the
+currently loaded trace and active zoom window:
+@b Workers, @b Tasks, @b Wall (total wall-clock duration),
+@b Window (current zoom range), and @b Visible (number of segments visible).
 
-You can display a profile summary by specifying the environment variable
-`TF_ENABLE_PROFILER` without any value.
-%Taskflow will print a summary report to standard error for each executor
-created by the program.
+@subsection ProfilerExecutorFilter Executor Filter
+
+@image html images/tfprof_execfilter.png width=30%
+
+The @b "Executors: All N ▾" button opens a searchable popover listing every
+executor in the trace. Each row shows the executor ID alongside live statistics
+(task count, utilization, peak parallelism) drawn from the current zoom window,
+so you can immediately spot which executors are most active or most idle.
+All columns in the popover are sortable by clicking the column header —
+click once to sort descending, again to reverse.
+Selecting or deselecting executors instantly updates every panel below.
+
+@subsection ProfilerTimeline Execution Timeline
+
+@image html images/tfprof_timeline.png width=100%
+
+The execution timeline is the main view.
+Each row represents one worker level (@c E<i>.W<j>.L<k> denotes
+executor @c i, physical worker @c j, nesting level @c k).
+A physical worker that spawns recursive subflows produces multiple levels;
+all levels share the same physical thread and are counted as one active worker.
+
+Each colored segment represents a task execution, color-coded by task type:
+
+  | Color | Type |
+  |-------|------|
+  | Blue | Static task |
+  | Orange | %Subflow task |
+  | Green | Condition task |
+  | Red/Pink | Async task |
+  | Gray | Clustered (multiple tasks merged for display) |
+
+When many tasks are too small to render individually at the current zoom level,
+TFProf merges adjacent tasks into a single @em clustered segment (shown in gray).
+Hover over any segment to see a tooltip with the task type, name, worker,
+duration, and start time.
+For clustered segments, the tooltip shows the task count and invites you to
+zoom in to see individual tasks.
+
+@b Zooming: brush-select any horizontal region to zoom into that window.
+Double-click anywhere on the timeline to step back to the previous zoom level.
+The @b Reset Zoom button returns to the full trace.
+
+The timeline uses virtual scrolling for large traces with thousands of workers —
+only the rows currently in the viewport are rendered, keeping the interface
+responsive regardless of worker count.
+
+@subsection ProfilerOverview Overview Minimap
+
+@image html images/tfprof_overview.png width=100%
+
+The @b Overview panel below the timeline shows the entire trace compressed
+into a single minimap row per worker.
+A blue selection rectangle shows the current zoom window.
+Drag the selection to pan; brush a new region to jump there directly.
+
+@subsection ProfilerParallelism Task Parallelism vs Active Workers
+
+@image html images/tfprof_parallelism.png width=100%
+
+This section contains two stacked panels that share the same time axis:
+
+  - @b %Task (top) — the number of tasks concurrently running at each point in
+    time, drawn as a blue step-line area.
+    This can exceed the physical worker count when subflow nesting produces
+    multiple active tasks on the same thread.
+
+  - @b %Worker (bottom) — the number of distinct physical workers
+    simultaneously executing a task, drawn as a green filled area.
+    Physical worker deduplication is applied: if worker @c W1 is active
+    at nesting levels @c L0, @c L1, and @c L2 simultaneously, it is counted
+    as one active worker.
+
+Both panels zoom together with the main timeline.
+Brush the %Worker panel to zoom, or double-click to step back.
+
+@subsection ProfilerCriticalTasks Critical Tasks
+
+@image html images/tfprof_criticaltasks.png width=100%
+
+The @b "Critical Tasks" bar chart ranks the top-N tasks by duration within
+the current zoom window.
+The default is top 50; adjust the number with the input field.
+Bars are color-coded by task type.
+Hover a bar to see the task details; click it to zoom the timeline to that
+task's time span (with 50% padding on each side, clamped to the trace bounds).
+
+@subsection ProfilerExecutorStats Executor Statistics
+
+@image html images/tfprof_execstats.png width=100%
+
+The @b "Executor Statistics" table reports per-executor metrics computed
+over the current zoom window:
+
+  | Column | Meaning |
+  |--------|---------|
+  | %Executor | %Executor ID |
+  | Workers | Number of distinct physical worker threads |
+  | Tasks | Total task executions in the window |
+  | Wall Time | Length of the zoom window |
+  | Active Time | Union of all task intervals (time at least one worker was busy) |
+  | Idle Time | Wall Time − Active Time |
+  | Utilization | Σ(worker active time) / (Workers × Wall Time) |
+  | Peak | Maximum simultaneously active workers at any instant |
+  | Min Dur | Shortest individual task duration |
+  | Avg Dur | Mean task duration |
+  | Max Dur | Longest individual task duration |
+
+Click any column header to sort ascending or descending (indicated by ▲/▼).
+Utilization is color-coded: green ≥ 80%, amber 50–80%, red < 50%.
+
+All values update live as you zoom or filter executors.
+
+@b Notes printed below the table:
+  - @b Active @b Time is the union of all task intervals (not the sum of
+    individual durations), so overlapping tasks on different workers are
+    not double-counted.
+  - @b Utilization counts time a worker is @em executing a task on any
+    nesting level — if @c W1 runs at @c L0 and @c L1 simultaneously,
+    only one unit of worker time is counted per wall-clock instant.
+
+@subsection ProfilerHistogram Task Duration Distribution
+
+@image html images/tfprof_histogram.png width=100%
+
+The @b "Task Duration Distribution" panel shows the shape of the task duration
+distribution for the active executor selection and zoom window,
+drawn as a cyan step-line area plot.
+
+The x-axis is the task duration and the y-axis is the task count per bin.
+TFProf automatically selects linear or logarithmic binning based on two signals:
+
+  1. @b Range @b ratio — if @c max/min > 50, the span is wide enough that
+     linear bins would crush nearly all tasks into the leftmost few bins.
+  2. @b Skewness @b proxy — if the mean duration is more than 2× the median,
+     the distribution is right-skewed (a few very long tasks dominate).
+
+When both signals are present, log binning is used; otherwise linear binning
+is applied.
+Sub-nanosecond durations (below 1 ns = 0.001 µs) are clamped to the first
+bin; when this occurs the leftmost x-axis tick is labeled @c <1ns.
+
+@section ProfilerDisplayProfileSummary Display Profile Summary to Console
+
+To get a quick overview without opening the browser, set
+@c TF_ENABLE_PROFILER to an empty string.
+TFProf will print a text summary to standard error for each executor:
 
 @code{.bash}
 # enable the profiler without a file path to print summary to stderr
 ~$ TF_ENABLE_PROFILER=  ./my_taskflow_program
+@endcode
 
-# Taskflow profile summary printed to stderr
+A typical summary looks like this:
+
+@code{.text}
 ================================================================================
- Observer 0 | Wall: 33.00 us | Workers: 12 | Tasks: 8 | Avg Utilization: 8.33%
+ Observer 0 | Wall: 203.29 ms | Workers: 12 | Tasks: 45231 | Avg Utilization: 76.4%
 ================================================================================
 
 [Aggregate Task Statistics]
 ------------------------------------------------------------------
      Type  Count   Total(us)     Avg(us)    Min(us)    Max(us)
 ------------------------------------------------------------------
-    async      8          51        6.38          0         33
+   static  44892     1823451       40.62       1.00     285.00
+    async    339       12483       36.82       2.00     197.00
 
 [Worker Utilization]
 ----------------------------------------------------------------------------
   Worker  Tasks   Busy(us)   Idle(us)    Avg(us)   Min(us)   Max(us)   Util%
 ----------------------------------------------------------------------------
-       6      8         33          0       4.12         0        33   100.0%
+       0   4821     155244      48049      32.20       1.0      285.0    76.4%
+       1   3902     148821      54472      38.14       1.0      241.0    73.2%
+       ...
 ----------------------------------------------------------------------------
-   Total      8         33          0                                    8.3% (avg)
-
-[Worker Concurrency  (Y=active workers)]  bin=2.00 us  (wall: 0..33.00 us, 24 bins)
-  12 |
-  11 |
-  10 |
-   9 |
-   8 |
-   7 |
-   6 |
-   5 |
-   4 |
-   3 |
-   2 |
-   1 | ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██
-     +------------------------------------------------------------------------
-       0  2  4  6  8  10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46  (us)
-
-[Task Parallelism  (Y=concurrent tasks)]  bin=2.00 us  (wall: 0..33.00 us, 24 bins)
-   5 |                                  ██ ██
-   4 |                                  ██ ██
-   3 |                      ██ ██       ██ ██
-   2 |                      ██ ██ ██ ██ ██ ██ ██
-   1 | ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██ ██
-     +------------------------------------------------------------------------
-       0  2  4  6  8  10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46  (us)
+   Total  45231    1823451                                              76.4% (avg)
 @endcode
 
-The report consists of four sections: 
+The summary has three sections:
 
-  1. The overview line at the top reports the total wall-clock duration (`Wall`),
-the number of worker threads (`Workers`), the total number of tasks executed (`Tasks`),
-and the average worker utilization (`Avg Utilization`).
-The average utilization is the mean of each worker's busy fraction
-(busy time divided by wall time) across all workers in the executor,
-including those that ran no tasks.
-A value of 100% means every worker was busy for the entire execution;
-a low value indicates that most threads were idle and the workload
-did not fully exploit the available parallelism.
+  1. @b Overview — wall-clock duration, worker count, total task count,
+     and average worker utilization.
+     Utilization is the mean busy fraction across all workers;
+     100% means every worker was busy throughout the entire execution.
 
-  2. The aggregated task statistics section reports execution statistics
-broken down by task type.
-For each type observed, it shows the number of executions (`Count`),
-total execution time (`Total`), average per-task time (`Avg`),
-and the shortest and longest individual task (`Min`, `Max`).
+  2. @b Aggregate @b %Task @b Statistics — execution statistics broken down
+     by task type.
+     Columns report the execution count, total time, average, minimum,
+     and maximum per-task duration.
 
-  3. The worker utilization section reports per-worker statistics.
-For each worker that executed at least one task, it shows the task count,
-total busy time, idle time (wall time minus busy time), average task duration,
-min/max task duration, and per-worker utilization percentage.
-The `Total` row at the bottom aggregates counts and times across all active workers,
-and its `Util%` column shows the same average utilization as the overview line.
-Workers that executed no tasks are omitted from this table.
+  3. @b %Worker @b Utilization — per-worker breakdown listing task count,
+     total busy time, idle time, average/min/max task duration,
+     and per-worker utilization.
+     Workers that ran no tasks are omitted.
+     The @c Total row aggregates counts and times across all active workers.
 
-  4. The concurrency histograms at the bottom visualize how parallelism evolved
-over wall-clock time using two complementary bar charts.
-The  `Worker Concurrency` chart shows how many distinct worker threads were
-simultaneously active in each time bin.
-The `Task Parallelism` chart shows how many tasks were concurrently running
-in each bin, which can exceed the worker count when subflow nesting produces
-multiple active tasks on the same worker.
-The number of bins and the time unit are chosen automatically to fill
-roughly 80 characters of terminal width.
+@section ProfilerTips Profiling Tips
+
+@subsection ProfilerTipsLarge Large Traces
+
+For programs with millions of tasks the @c .tfp file can be tens of megabytes.
+TFProf loads and parses the file entirely in a background browser thread so
+the page remains responsive during loading.
+The execution timeline uses virtual scrolling so even traces with thousands
+of worker rows render smoothly.
+
+@subsection ProfilerTipsRecursive Recursive and Nested Subflows
+
+Recursive taskflow programs (such as divide-and-conquer or Fibonacci-style
+graphs) produce many nesting levels per physical worker.
+The timeline labels these as @c E<i>.W<j>.L<k> where @c L<k> is the nesting
+depth.
+The @b %Worker panel of the parallelism plot and the @b %Executor Statistics
+table both deduplicate physical workers — if @c W1 appears at levels @c L0
+through @c L5 simultaneously, it counts as one active worker thread.
+
+@subsection ProfilerTipsMultiExecutor Multiple Executors
+
+When a program creates more than one @c tf::Executor, TFProf records each
+one as a separate executor block in the @c .tfp file.
+Use the @b %Executor @b Filter to focus on a single executor or compare
+multiple executors side by side.
+The %Executor Statistics table always shows one row per executor, making it
+easy to spot load imbalance across executors.
+
+@subsection ProfilerTipsZoomWorkflow Recommended Workflow
+
+A typical profiling session follows this pattern:
+
+  1. Run your program with @c TF_ENABLE_PROFILER=result.tfp.
+  2. Open <a href="https://taskflow.github.io/tfprof/">https://taskflow.github.io/tfprof/</a>
+     and drop @c result.tfp onto the page.
+  3. Examine the @b %Executor Statistics table to find executors with low
+     utilization or high idle time — these are the first candidates for
+     optimization.
+  4. Use the @b %Executor Filter to isolate a single executor.
+  5. Look at the @b %Task Parallelism panel — sustained low task count
+     indicates sequential bottlenecks; high task count with low worker
+     count indicates scheduling overhead.
+  6. Click a bar in the @b Critical Tasks chart to zoom the timeline to
+     the longest-running task and inspect its neighbors.
+  7. Examine the @b %Task Duration Distribution — a bimodal distribution
+     (two peaks) suggests two qualitatively different task categories that
+     may benefit from being separated into different executors or sized
+     differently.
 
 */
 
 }
-
-
-
-
-
-
-
