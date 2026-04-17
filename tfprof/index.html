@@ -12,7 +12,15 @@
   font-family: 'JetBrains Mono','Fira Code',monospace;
   --bg:#0d1117; --surface:#161b22; --border:#30363d;
   --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
+  --row-even:#161b22; --row-odd:#0d1117; --mini-bg:#161b22;
 }
+html.light {
+  --bg:#ffffff; --surface:#f6f8fa; --border:#d0d7de;
+  --text:#1f2328; --muted:#636c76; --accent:#0969da;
+  --row-even:#f6f8fa; --row-odd:#ffffff; --mini-bg:#eef1f4;
+}
+#theme-btn { background:none; border:none; cursor:pointer; font-size:20px; padding:2px 4px; color:var(--muted); line-height:1; }
+#theme-btn:hover { color:var(--text); }
 body { background:var(--bg); color:var(--text); }
 
 /* toolbar */
@@ -186,6 +194,8 @@ body { background:var(--bg); color:var(--text); }
   <button class="btn" id="btn-open">Open .tfp</button>
   <button class="btn" id="btn-reset" style="display:none">Reset Zoom</button>
   <button class="btn" id="btn-back"  style="display:none">← Back</button>
+  <div class="sep"></div>
+  <button id="theme-btn" title="Toggle light/dark mode">🌙</button>
   <div id="status"><a href="https://github.com/taskflow/taskflow" target="_blank" style="color:var(--muted);text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:15px;">Taskflow GitHub</a></div>
 </div>
 
@@ -830,7 +840,8 @@ function paintTimelineCanvas() {
 
   // Row backgrounds
   for(let ri=firstRow; ri<lastRow; ri++){
-    ctx.fillStyle = ri%2===0 ? '#161b22' : '#0d1117';
+    ctx.fillStyle = ri%2===0 ? getComputedStyle(document.documentElement).getPropertyValue('--row-even').trim()
+                              : getComputedStyle(document.documentElement).getPropertyValue('--row-odd').trim();
     ctx.fillRect(0, canvasY(ri), W, D.rowH);
   }
 
@@ -980,7 +991,7 @@ let mAxisG=null,mBrushG=null,mBrush=null;
 
 function drawMini(){
   const ctx=miniCanvas.getContext('2d'),W=_cW,H=MINI_H;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#161b22';ctx.fillRect(0,0,W,H);
+  ctx.clearRect(0,0,W,H);ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--mini-bg').trim();ctx.fillRect(0,0,W,H);
   const range=D.maxUs-D.minUs;if(!range)return;
   const xM=us=>(us-D.minUs)/range*W;
   const fw = D.filteredWorkers||D.workers;
@@ -1608,6 +1619,21 @@ elDrop.addEventListener('drop',e=>{e.preventDefault();elDrop.classList.remove('o
 elDrop.addEventListener('click',()=>document.getElementById('file-input').click());
 document.getElementById('file-input').addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
 document.getElementById('btn-open').addEventListener('click',()=>document.getElementById('file-input').click());
+// ── Theme toggle ───────────────────────────────────────────────────────────
+const themeBtn = document.getElementById('theme-btn');
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  themeBtn.textContent = light ? '🌙' : '☀️';
+  // Redraw canvases since row/mini background colors changed
+  if(D.beg){ drawTimeline(); drawMini(); }
+}
+// Restore saved preference
+applyTheme(localStorage.getItem('tfprof-theme') === 'light');
+themeBtn.addEventListener('click', () => {
+  const light = !document.documentElement.classList.contains('light');
+  localStorage.setItem('tfprof-theme', light ? 'light' : 'dark');
+  applyTheme(light);
+});
 document.getElementById('btn-reset').addEventListener('click',zoomReset);
 document.getElementById('btn-back').addEventListener('click',zoomBack);
 document.getElementById('rank-n').addEventListener('change',()=>drawRank());

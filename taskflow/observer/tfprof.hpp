@@ -303,9 +303,9 @@ class TFProfObserver : public ObserverInterface {
       // Returns {byte_offset, clamped_length}.
       // Empty name => {0, 0} meaning anonymous; viewer generates "W{w}_{i}".
       std::pair<uint32_t, uint8_t> intern(const std::string& name) {
-        if(name.empty()) return {0, 0};
+        if(name.empty()) return { uint32_t{0}, uint8_t{0} };
         const uint8_t len = static_cast<uint8_t>(
-          name.size() > 255 ? 255 : name.size()
+          name.size() > 31 ? 31 : name.size()
         );
         auto it = idx.find(name);
         if(it != idx.end()) return { it->second, len };
