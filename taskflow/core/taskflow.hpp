@@ -487,6 +487,23 @@ inline void Taskflow::_dump(
   os << ind << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
   else os << node->_name;
+  // for simplicity of code, since we are defaulting to Normal priority and it
+  // is hard to determine when at this dump stage if we intend to run it
+  // with or without priorities respected, we are choosing to omit priting the
+  // normal priority case
+  if (node->_priority != TaskPriority::NORMAL) {
+      os << "\\npriority: ";
+      switch (node->_priority) {
+        case TaskPriority::HIGH:
+          os << "HIGH";
+          break;
+        case TaskPriority::LOW:
+          os << "LOW";
+          break;
+        default:
+          break;
+      }
+  }
   os << "\" ";
 
   // shape of the node
