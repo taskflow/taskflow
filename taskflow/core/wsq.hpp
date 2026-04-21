@@ -176,7 +176,16 @@ class UnboundedWSQ {
 
   alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
   alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
-  std::atomic<Array*> _array;
+  
+  // Owner-private cached upper bound on _top.  Never read by thieves.
+  // Because _top is never decremented, the real occupancy can only be
+  // smaller than what is computed using this cached value, so using it
+  // for the overflow check is always safe.
+  int64_t _cached_top {0};
+
+  // _array on its own cache line: avoids false-sharing with _bottom when
+  // thieves load _array (consume) after reading _bottom (acquire).
+  alignas(TF_CACHELINE_SIZE) std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 
   public:
@@ -470,12 +479,14 @@ template <typename T>
 void UnboundedWSQ<T>::push(T o) {
 
   int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full with one additional item (b-t+1)
-  if (a->capacity() < static_cast<size_t>(b - t + 1)) [[unlikely]] {
-    a = _resize_array(a, b, t);
+  if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+    _cached_top = _top.load(std::memory_order_acquire);
+    if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+      a = _resize_array(a, b, _cached_top);
+    }
   }
 
   a->push(b, o);
@@ -493,12 +504,14 @@ void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
   if(N == 0) return;
 
   int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full with N additional items
-  if ( (b - t + N) > a->capacity() ) [[unlikely]] {
-    a = _resize_array(a, b, t, N);
+  if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+    _cached_top = _top.load(std::memory_order_acquire);
+    if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+      a = _resize_array(a, b, _cached_top, N);
+    }
   }
 
   for(size_t i=0; i<N; ++i) {
