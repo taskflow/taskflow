@@ -156,7 +156,7 @@ class UnboundedWSQ {
     }
 
     Array* resize(int64_t b, int64_t t) {
-      Array* ptr = new Array {2*C};
+      Array* ptr = new Array(2*C);
       for(int64_t i=t; i!=b; ++i) {
         ptr->push(i, pop(i));
       }
@@ -165,7 +165,7 @@ class UnboundedWSQ {
 
     Array* resize(int64_t b, int64_t t, size_t N) {
       // assert(N>0);
-      Array* ptr = new Array {std::bit_ceil(C + N)};
+      Array* ptr = new Array(std::bit_ceil(C + N));
       for(int64_t i=t; i!=b; ++i) {
         ptr->push(i, pop(i));
       }
