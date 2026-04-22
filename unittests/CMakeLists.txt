@@ -2,15 +2,15 @@ enable_testing()
 
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
-list(APPEND TF_UNITTESTS 
-  test_utility 
+list(APPEND TF_UNITTESTS
+  test_utility
   test_iterators
   test_wsq
   test_spsc
-  test_basics 
+  test_basics
   test_notifiers
-  test_work_stealing 
-  #test_serializer 
+  test_work_stealing
+  #test_serializer
   test_workers
   test_asyncs
   test_dependent_asyncs
@@ -36,6 +36,8 @@ list(APPEND TF_UNITTESTS
   test_atomic_intrusive_stack
   test_fill
   test_generate
+  test_graph_priorities
+  test_prioritized_run
 )
 
 # we only do exception tests if sanitizer is not enabled
@@ -54,6 +56,28 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   target_include_directories(${unittest} PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
   doctest_discover_tests(${unittest})
 endforeach()
+
+# Same prioritized_run tests with cross-worker exploit sweep enabled
+add_executable(test_prioritized_run_enforced test_prioritized_run.cpp)
+target_link_libraries(test_prioritized_run_enforced ${PROJECT_NAME} ${ATOMIC_LIBRARY} tf::default_settings)
+target_include_directories(test_prioritized_run_enforced PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+target_compile_definitions(test_prioritized_run_enforced PRIVATE TF_ENFORCE_PRIORITY_EXPLOIT)
+doctest_discover_tests(test_prioritized_run_enforced)
+
+# Same graph_priorities tests with cross-worker exploit sweep enabled
+add_executable(test_graph_priorities_enforced test_graph_priorities.cpp)
+target_link_libraries(test_graph_priorities_enforced ${PROJECT_NAME} ${ATOMIC_LIBRARY} tf::default_settings)
+target_include_directories(test_graph_priorities_enforced PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+target_compile_definitions(test_graph_priorities_enforced PRIVATE TF_ENFORCE_PRIORITY_EXPLOIT)
+doctest_discover_tests(test_graph_priorities_enforced)
+
+# Enforce-only test: verifies cross-worker sweep prioritizes HIGH over LOW.
+# This test FAILS without TF_ENFORCE_PRIORITY_EXPLOIT (workers only drain local queues).
+add_executable(test_prioritized_run_enforced_exclusively test_prioritized_run_enforced_exclusively.cpp)
+target_link_libraries(test_prioritized_run_enforced_exclusively ${PROJECT_NAME} ${ATOMIC_LIBRARY} tf::default_settings)
+target_include_directories(test_prioritized_run_enforced_exclusively PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+target_compile_definitions(test_prioritized_run_enforced_exclusively PRIVATE TF_ENFORCE_PRIORITY_EXPLOIT)
+doctest_discover_tests(test_prioritized_run_enforced_exclusively)
 
 # include C++ module tests
 if(TF_BUILD_MODULES)

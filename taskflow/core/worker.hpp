@@ -39,6 +39,39 @@ See also:
 #endif
 
 // ----------------------------------------------------------------------------
+// Struct Definition: StagingQueue
+// ----------------------------------------------------------------------------
+
+/**
+@private
+
+@brief a fixed-capacity double-ended staging buffer for NORMAL and LOW
+       priority tasks before flushing to the worker's priority WSQs
+
+HIGH priority tasks bypass this buffer entirely and are pushed directly
+to the worker's HIGH priority WSQ for immediate execution. NORMAL tasks
+are pushed from the front and LOW tasks from the back. On flush, all
+accumulated tasks are drained to their respective per-worker priority WSQs.
+*/
+struct StagingQueue {
+
+  static constexpr size_t CAPACITY = size_t{1} << TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE;
+
+  Node* _data[CAPACITY];
+  size_t _front {0};       // HIGH/NORMAL: next write index, grows up from 0
+  size_t _back {CAPACITY}; // LOW: next write index, grows down from CAPACITY
+
+  bool full() const { return _front >= _back; }
+  bool empty() const { return _front == 0 && _back == CAPACITY; }
+  size_t size() const { return _front + (CAPACITY - _back); }
+
+  void push_front(Node* n) { _data[_front++] = n; }
+  void push_back(Node* n) { _data[--_back] = n; }
+  Node* pop_back() { return _data[_back++]; }
+  void clear() { _front = 0; _back = CAPACITY; }
+};
+
+// ----------------------------------------------------------------------------
 // Class Definition: Worker
 // ----------------------------------------------------------------------------
 
@@ -75,12 +108,19 @@ class Worker {
   @brief queries the size of the queue (i.e., number of enqueued tasks to
          run) associated with the worker
   */
-  inline size_t queue_size() const { return _wsq.size(); }
-  
+  inline size_t queue_size() const {
+    size_t n = _wsq.size();
+    for(auto& q : _prio_wsq) n += q.size();
+    return n;
+  }
   /**
   @brief queries the current capacity of the queue
   */
-  inline size_t queue_capacity() const { return static_cast<size_t>(_wsq.capacity()); }
+  inline size_t queue_capacity() const {
+    size_t n = static_cast<size_t>(_wsq.capacity());
+    for(auto& q : _prio_wsq) n += static_cast<size_t>(q.capacity());
+    return n;
+  }
 
   /**
   @brief acquires the associated thread
@@ -97,6 +137,8 @@ class Worker {
   std::thread _thread;
   wsq_type _wsq;
   //std::vector<Node*> _pool;
+  std::array<wsq_type, 3> _prio_wsq;  // one per TaskPriority level
+  StagingQueue _staging;
 };
 
 // ----------------------------------------------------------------------------
@@ -159,12 +201,12 @@ inline size_t WorkerView::id() const {
 
 // Function: queue_size
 inline size_t WorkerView::queue_size() const {
-  return _worker._wsq.size();
+  return _worker.queue_size();
 }
 
 // Function: queue_capacity
 inline size_t WorkerView::queue_capacity() const {
-  return static_cast<size_t>(_worker._wsq.capacity());
+  return _worker.queue_capacity();
 }
 
 // ----------------------------------------------------------------------------

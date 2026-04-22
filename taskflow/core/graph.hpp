@@ -133,6 +133,31 @@ class Graph {
 };
 
 // ----------------------------------------------------------------------------
+// TaskPriority
+// ----------------------------------------------------------------------------
+
+/**
+@enum TaskPriority
+
+@brief enumeration of all task priority levels
+
+A priority level determines the order in which a task is picked up by a worker
+when tasks are ready to execute. Tasks with higher priority (lower numerical value)
+are executed before tasks with lower priority (higher numerical value).
+*/
+enum class TaskPriority : unsigned {
+  /** @brief the highest task priority level (most urgent) */
+  HIGH = 0,
+  /** @brief the normal task priority level */
+  NORMAL = 1,
+  /** @brief the lowest task priority level (least urgent) */
+  LOW = 2,
+};
+
+/** @brief total number of task priority levels */
+constexpr size_t NUM_PRIORITY_LEVELS = static_cast<size_t>(TaskPriority::LOW) + 1;
+
+// ----------------------------------------------------------------------------
 // TaskParams
 // ----------------------------------------------------------------------------
 
@@ -156,6 +181,11 @@ class TaskParams {
   @brief C-styled pointer to user data
   */
   void* data {nullptr};
+
+  /**
+  @brief priority level of the task (default: TaskPriority::NORMAL)
+  */
+  TaskPriority priority {TaskPriority::NORMAL};
 };
 
 /**
@@ -275,6 +305,8 @@ class Topology : public NodeBase {
 
   std::function<bool()> _predicate;
   std::function<void()> _on_finish;
+
+  bool _prioritized {false};
   
   void _carry_out_promise();
 };
@@ -479,12 +511,16 @@ class Node : public NodeBase {
   size_t num_weak_dependencies() const;
 
   const std::string& name() const;
+
+  int priority() const;
   
   private:
   
   std::string _name;
   
   void* _data {nullptr};
+
+  TaskPriority _priority {TaskPriority::NORMAL};
   
   Topology* _topology {nullptr};
 
@@ -605,6 +641,7 @@ Node::Node(
   NodeBase(nstate, estate, parent, join_counter),
   _name     {params.name},
   _data     {params.data},
+  _priority {params.priority},
   _topology {topology},
   _handle   {std::forward<Args>(args)...} {
 }
@@ -742,6 +779,10 @@ inline size_t Node::num_strong_dependencies() const {
 // Function: name
 inline const std::string& Node::name() const {
   return _name;
+}
+
+inline int Node::priority() const {
+  return static_cast<int>(_priority);
 }
 
 // Function: _is_conditioner

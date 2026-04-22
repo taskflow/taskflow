@@ -144,6 +144,20 @@ class Executor {
   tf::Future<void> run(Taskflow&& taskflow);
 
   /**
+  @brief runs a taskflow once with prioritized scheduling
+
+  @param taskflow a tf::Taskflow object
+
+  @return a tf::Future that holds the result of the execution
+
+  This member function executes the given taskflow once using prioritized scheduling
+  and returns a tf::Future object that eventually holds the result of the execution.
+
+  This member function is thread-safe.
+  */
+  tf::Future<void> prioritized_run(Taskflow& taskflow);
+
+  /**
   @brief runs a taskflow once and invoke a callback upon completion
 
   @param taskflow a tf::Taskflow object
@@ -1104,6 +1118,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   struct Buffer {
     std::mutex mutex;
     UnboundedWSQ<Node*> queue;
+    std::array<UnboundedWSQ<Node*>, NUM_PRIORITY_LEVELS> prio_queues;
   };  
   
   std::vector<Worker> _workers;
@@ -1113,6 +1128,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   // or the false sharing can cause serious performance drop
   alignas(TF_CACHELINE_SIZE) DefaultNotifier _notifier;
   alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _num_topologies {0};
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _num_prioritized {0};
   
   std::unordered_map<std::thread::id, Worker*> _t2w;
   std::unordered_set<std::shared_ptr<ObserverInterface>> _observers;
@@ -1123,6 +1139,9 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   void _spawn(size_t, std::shared_ptr<WorkerInterface>);
   void _exploit_task(Worker&, Node*&);
   bool _explore_task(Worker&, Node*&);
+  Node* _prio_explore_task(Worker&);
+  Node* _prio_exploit_task(Worker&);
+  Node* _prio_sweep_task(Worker&, size_t, bool);
   void _schedule(Worker&, Node*);
   void _schedule(Node*);
   void _schedule_graph(Worker&, Graph&, Topology*, NodeBase*);
@@ -1143,6 +1162,12 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   void _process_dependent_async(Node*, tf::AsyncTask&, size_t&);
   void _process_exception(Worker&, Node*);
   void _update_cache(Worker&, Node*&, Node*);
+  void _dispatch_update_cache(Worker&, Node*&, Node*);
+  void _prio_spill(Node*);
+  void _prio_schedule(Worker&, Node*);
+  void _prio_flush(Worker&);
+  Node* _prio_pop_task(Worker&);
+  void _prio_update_cache(Worker&, Node*&, Node*);
   void _corun_graph(Worker&, Graph&, Topology*, NodeBase*);
 
   bool _wait_for_task(Worker&, Node*&);
@@ -1175,6 +1200,16 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   template <size_t N>
   void _bulk_update_cache(Worker&, Node*&, Node*, std::array<Node*, N>&, size_t&);
+
+
+  template <typename I>
+  void _prio_bulk_schedule(Worker&, I, size_t);
+
+  template <typename I>
+  void _prio_bulk_spill(I, size_t);
+
+  template <typename I>
+  void _dispatch_bulk_schedule(Worker&, I, size_t);
 
   template <typename P, typename F>
   auto _async(P&&, F&&, Topology*, NodeBase*);
@@ -1410,6 +1445,33 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
         continue;  // stay on vtm, skip victim switch and num_steals increment
       }
     }
+
+    // Also check this victim's priority queues (HIGH first).
+    // When TF_ENFORCE_PRIORITY_EXPLOIT is set, the full sweep in
+    // _wait_for_task handles priority stealing; skip it here.
+    #ifndef TF_ENFORCE_PRIORITY_EXPLOIT
+    if(_num_prioritized.load(std::memory_order_relaxed) > 0) {
+      if(vtm < _workers.size() && vtm != w._id) {
+        for(size_t p = 0; p < NUM_PRIORITY_LEVELS; ++p) {
+          if(auto pt = _workers[vtm]._prio_wsq[p].steal(); pt) {
+            t = pt;
+            w._sticky_victim = vtm;
+            return true;
+          }
+        }
+      } else if(vtm >= _workers.size()) {
+        size_t b = vtm - _workers.size();
+        for(size_t p = 0; p < NUM_PRIORITY_LEVELS; ++p) {
+          if(auto pt = _buffers[b].prio_queues[p].steal(); pt) {
+            t = pt;
+            w._sticky_victim = vtm;
+            return true;
+          }
+        }
+      }
+    }
+    #endif
+
     // EMPTY or CONTENDED-exhausted: pick a new victim excluding self
     // since our own queue is empty by invariant. map [0, MAX_VICTIM-1)
     // over [0, MAX_VICTIM) \ {w._id} — always safe since MAX_VICTIM >= 2.
@@ -1487,18 +1549,113 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
 }
 */
 
+// Procedure: _prio_sweep_task
+// Level-sweep across all workers and buffers, HIGH -> NORMAL -> LOW.
+// Guarantees no lower-priority task is taken while a higher-priority task
+// exists on any queue. Starts from `start` and wraps around to distribute
+// steal pressure. When `include_self` is true, the worker's own priority
+// queues are included in the sweep (used by exploit). When false, they are
+// skipped (used by explore, since the worker already drained its own queues).
+inline Node* Executor::_prio_sweep_task(Worker& w, size_t start, bool include_self) {
+  const size_t total_queues = _workers.size() + _buffers.size();
+  for(size_t priority = 0; priority < NUM_PRIORITY_LEVELS; ++priority) {
+    for(size_t offset = 0; offset < total_queues; ++offset) {
+      size_t victim = (start + offset) % total_queues;
+      if(victim < _workers.size()) {
+        if(victim == w._id) {
+          if(!include_self) continue;
+          if (auto t = _workers[victim]._prio_wsq[priority].pop(); t) return t;
+        } else {
+          if (auto t = _workers[victim]._prio_wsq[priority].steal(); t) return t;
+        }
+      } else {
+        if (auto t = _buffers[victim - _workers.size()].prio_queues[priority].steal(); t) return t;
+      }
+    }
+  }
+  return nullptr;
+}
+
+// Procedure: _prio_explore_task
+// Single priority-ordered sweep across all workers and buffers.
+// Called once after _explore_task fails to find work, before the 2PC guard.
+// This avoids the cost of sweeping on every random-victim iteration in
+// _explore_task while still guaranteeing global priority ordering.
+inline Node* Executor::_prio_explore_task(Worker& w) {
+  return _prio_sweep_task(w, w._rdgen() % (_workers.size() + _buffers.size()), false);
+}
+
+// Procedure: _prio_exploit_task
+// Like _prio_explore_task but includes the worker's own priority queues.
+// Used in the exploit phase to drain both own queues and steal globally.
+inline Node *Executor::_prio_exploit_task(Worker &w)
+{
+  auto it = std::ranges::find_if(_workers.begin(), _workers.end(), [id = w._id](const Worker &worker)
+                              { return worker._id == id; });
+  // Should not happen since the worker should always find itself in the worker list, 
+  // but just in case, we can fall back to a regular sweep starting from a random victim.
+  if (it == _workers.end()) {
+    return _prio_sweep_task(w, w._rdgen() % (_workers.size() + _buffers.size()), true);
+  }
+  int index = it - _workers.begin();
+  return _prio_sweep_task(w, index, true);
+}
+
+// Function: _prio_pop_task
+// Pop the highest-priority task from this worker's priority queues (HIGH first).
+inline Node* Executor::_prio_pop_task(Worker& w) {
+  for(size_t p = 0; p < NUM_PRIORITY_LEVELS; ++p) {
+    if(auto t = w._prio_wsq[p].pop(); t) return t;
+  }
+  return nullptr;
+}
+
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(Worker& w, Node*& t) {
   while(t) {
     _invoke(w, t);
+    _prio_flush(w);
     t = w._wsq.pop();
   }
+
+  if(_num_prioritized.load(std::memory_order_relaxed) == 0) {
+    return;
+  }
+  #ifdef TF_ENFORCE_PRIORITY_EXPLOIT
+    // Cross-worker sweep: steal highest-priority task globally
+    while((t = _prio_exploit_task(w)) != nullptr) {
+      _invoke(w, t);
+      _prio_flush(w);
+    }
+  #else
+    //    Drain per-worker priority queues, highest priority first.
+    //    After each invoke, re-check from HIGH — a completed task
+    //    may have made a higher-priority successor ready.
+    while((t = _prio_pop_task(w)) != nullptr) {
+      _invoke(w, t);
+      _prio_flush(w);
+    }
+#endif
 }
 
 // Function: _wait_for_task
 inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
 
   explore_task:
+
+
+  // One priority-ordered sweep before entering the expensive 2PC guard.
+  // _explore_task only checked random victims' regular queues; this sweep
+  // checks all priority queues (HIGH->NORMAL->LOW) across all workers and
+  // buffers to find the highest-priority available task.
+  #ifdef TF_ENFORCE_PRIORITY_EXPLOIT
+  if(_num_prioritized.load(std::memory_order_relaxed) > 0) {
+    t = _prio_explore_task(w);
+    if(t) {
+      return true;
+    }
+  }
+  #endif
 
   if(_explore_task(w, t) == false) {
     return false;
@@ -1549,7 +1706,33 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
     }
   }
   
-  // Condition #3: worker should be alive
+  // Condition #3: priority buffer queues should be empty (enforced path)
+  if (_num_prioritized.load(std::memory_order_relaxed) > 0) {
+    for (size_t b = 0; b < _buffers.size(); ++b) {
+      for (size_t p = 0; p < NUM_PRIORITY_LEVELS; ++p) {
+        if (!_buffers[b].prio_queues[p].empty()) {
+            _notifier.cancel_wait(w._id);
+            w._sticky_victim = b + _workers.size();
+            goto explore_task;
+        }
+      }
+    }
+  }
+
+  // Condition #4: per-worker priority queues should be empty (staged path)
+  if (_num_prioritized.load(std::memory_order_relaxed) > 0) {
+    for(size_t k = 0; k < _workers.size(); ++k) {
+      if(k == w._id) continue;
+      for(size_t p = 0; p < NUM_PRIORITY_LEVELS; ++p) {
+        if(!_workers[k]._prio_wsq[p].empty()) {
+          _notifier.cancel_wait(w._id);
+          w._sticky_victim = k;
+          goto explore_task;
+        }
+      }
+    }
+  }
+
   if(w._done.test(std::memory_order_relaxed)) {
     _notifier.cancel_wait(w._id);
     return false;
@@ -1723,6 +1906,134 @@ TF_FORCE_INLINE void Executor::_bulk_update_cache(
   }
   cache = node;
 }
+
+// ----------------------------------------------------------------------------
+// Priority scheduling functions
+// ----------------------------------------------------------------------------
+
+// Procedure: _prio_spill
+inline void Executor::_prio_spill(Node* item) {
+  auto b = (reinterpret_cast<uintptr_t>(item) >> 16) % _buffers.size();
+  auto p = static_cast<size_t>(item->_priority);
+  std::scoped_lock lock(_buffers[b].mutex);
+  _buffers[b].prio_queues[p].push(item);
+}
+
+// Procedure: _prio_bulk_spill
+// No-worker path: spill source tasks directly into priority buffer queues.
+template <typename I>
+void Executor::_prio_bulk_spill(I first, size_t num_nodes) {
+  for(size_t i = 0; i < num_nodes; ++i) {
+    _prio_spill(first[i]);
+  }
+  _notifier.notify_n(num_nodes);
+}
+
+// ----------------------------------------------------------------------------
+// Priority scheduling: staging buffer, flush to per-worker priority WSQs
+// ----------------------------------------------------------------------------
+
+// Procedure: _prio_schedule
+inline void Executor::_prio_schedule(Worker& worker, Node* node) {
+  // HIGH priority tasks bypass the staging queue entirely —
+  // push directly to the HIGH priority WSQ for immediate execution.
+  if(node->_priority == TaskPriority::HIGH) {
+    if(worker._prio_wsq[static_cast<size_t>(TaskPriority::HIGH)].try_push(node) == false) {
+      _prio_spill(node);
+    }
+    return;
+  }
+  // If the staging queue is full or either pointer has reached the array
+  // boundary, push directly to the per-worker priority queue to avoid
+  // out-of-bounds writes (push_front/push_back use raw indices).
+  if(worker._staging.full() ||
+     worker._staging._front >= StagingQueue::CAPACITY ||
+     worker._staging._back == 0) {
+    auto p = static_cast<size_t>(node->_priority);
+    if(worker._prio_wsq[p].try_push(node) == false) {
+      _prio_spill(node);
+    }
+    return;
+  }
+  if(node->_priority == TaskPriority::LOW) {
+    worker._staging.push_back(node);
+  } else {
+    worker._staging.push_front(node);
+  }
+}
+
+// Procedure: _prio_bulk_schedule
+template <typename I>
+void Executor::_prio_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
+  for(size_t i = 0; i < num_nodes; ++i) {
+    _prio_schedule(worker, first[i]);
+  }
+  _notifier.notify_n(num_nodes);
+}
+
+// Procedure: _prio_flush
+inline void Executor::_prio_flush(Worker& worker) {
+  if(_num_prioritized.load(std::memory_order_relaxed) == 0) {
+    return;
+  }
+  auto& sq = worker._staging;
+  if(sq.empty()) return;
+
+  // Compact: move back segment [_back, CAPACITY) right after front segment [0, _front)
+  size_t tail_count = StagingQueue::CAPACITY - sq._back;
+  for(size_t i = 0; i < tail_count; ++i) {
+    sq._data[sq._front + i] = sq._data[sq._back + i];
+  }
+  size_t total = sq._front + tail_count;
+
+  // Flush each task to the appropriate per-worker priority queue
+  for(size_t i = 0; i < total; ++i) {
+    auto p = static_cast<size_t>(sq._data[i]->_priority);
+    if(worker._prio_wsq[p].try_push(sq._data[i]) == false) {
+      _prio_spill(sq._data[i]);
+    }
+  }
+  _notifier.notify_n(total);
+  sq.clear();
+}
+
+// Function: _prio_update_cache
+TF_FORCE_INLINE void Executor::_prio_update_cache(Worker& worker, Node*& cache, Node* node) {
+  if(cache) {
+    if(node->_priority < cache->_priority) {
+      _prio_schedule(worker, cache);
+      cache = node;
+    } else {
+      _prio_schedule(worker, node);
+    }
+  } else {
+    cache = node;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Dispatch wrappers: route to original, priority, or staging based on topology
+// ----------------------------------------------------------------------------
+
+// Function: _dispatch_update_cache
+TF_FORCE_INLINE void Executor::_dispatch_update_cache(Worker& worker, Node*& cache, Node* node) {
+  if(node->_topology && node->_topology->_prioritized) {
+    _prio_update_cache(worker, cache, node);
+  } else {
+    _update_cache(worker, cache, node);
+  }
+}
+
+// Function: _dispatch_bulk_schedule
+template <typename I>
+void Executor::_dispatch_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
+  if(num_nodes == 0) return;
+  if((*first)->_topology && (*first)->_topology->_prioritized) {
+    _prio_bulk_schedule(worker, first, num_nodes);
+  } else {
+    _bulk_schedule(worker, first, num_nodes);
+  }
+}
   
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
@@ -1755,7 +2066,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_acquire.empty()) {
     SmallVector<Node*> waiters;
     if(!node->_acquire_all(waiters)) {
-      _bulk_schedule(worker, waiters.begin(), waiters.size());
+      _dispatch_bulk_schedule(worker, waiters.begin(), waiters.size());
       return;
     }
   }
@@ -1853,7 +2164,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   if(node->_semaphores && !node->_semaphores->to_release.empty()) {
     SmallVector<Node*> waiters;
     node->_release_all(waiters);
-    _bulk_schedule(worker, waiters.begin(), waiters.size());
+    _dispatch_bulk_schedule(worker, waiters.begin(), waiters.size());
   }
 
   // Reset the join counter with strong dependencies to support cycles.
@@ -1878,7 +2189,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
           // zeroing the join counter for invariant
           s->_join_counter.store(0, std::memory_order_relaxed);
           node->_parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-          _update_cache(worker, cache, s);
+          _dispatch_update_cache(worker, cache, s);
         }
       }
     }
@@ -1889,7 +2200,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       for(size_t i=0; i<node->_num_successors; ++i) {
         if(auto s = node->_edges[i]; s->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           node->_parent->_join_counter.fetch_add(1, std::memory_order_relaxed);
-          _update_cache(worker, cache, s);
+          _dispatch_update_cache(worker, cache, s);
         }
       }
     }
@@ -1918,7 +2229,7 @@ inline void Executor::_tear_down_nonasync(Worker& worker, Node* node, Node*& cac
     if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
       // this task is spawned from a preempted parent, so we need to resume it
       if(state & NSTATE::PREEMPTED) {
-        _update_cache(worker, cache, static_cast<Node*>(parent));
+        _dispatch_update_cache(worker, cache, static_cast<Node*>(parent));
       }
     }
   }
@@ -2172,6 +2483,37 @@ inline bool Executor::_invoke_dependent_async_task(Worker& worker, Node* node) {
 // Function: run
 inline tf::Future<void> Executor::run(Taskflow& f) {
   return run_n(f, 1, [](){});
+}
+
+inline tf::Future<void> Executor::prioritized_run(Taskflow& f) {
+
+  // No need to create a real topology but returns a dummy future for invariant.
+  if(f.empty()) {
+    std::promise<void> promise;
+    promise.set_value();
+    return tf::Future<void>(promise.get_future());
+  }
+
+  _increment_topology();
+
+  // create a topology for this run
+  // The predicate must return true on first call (in _tear_down_topology) to run only once.
+  // This mirrors the behavior of run_n(1) where the predicate has already been called once
+  // by run_until before being stored in the topology.
+  auto t = std::make_shared<Topology>(f, [](){ return true; }, [](){});
+
+  // Route tasks through the priority-aware staging path.
+  t->_prioritized = true;
+  _num_prioritized.fetch_add(1, std::memory_order_relaxed);
+  // need to create future before the topology got torn down quickly
+  tf::Future<void> future(t->_promise.get_future(), t);
+
+  // modifying topology needs to be protected under the lock
+  if(f._fetch_enqueue(t) == 0) {
+    _set_up_topology(this_worker(), t.get());
+  }
+
+  return future;
 }
 
 // Function: run
@@ -2444,7 +2786,7 @@ inline void Executor::_schedule_graph(
 ) {
   size_t num_srcs = _set_up_graph(graph, tpg, parent);
   parent->_join_counter.fetch_add(num_srcs, std::memory_order_relaxed);
-  _bulk_schedule(worker, graph.begin(), num_srcs);
+  _dispatch_bulk_schedule(worker, graph.begin(), num_srcs);
 }
 
 // Function: _set_up_topology
@@ -2453,7 +2795,13 @@ inline void Executor::_set_up_topology(Worker* w, Topology* tpg) {
   auto& g = tpg->_taskflow._graph;
   size_t num_srcs = _set_up_graph(g, tpg, tpg);
   tpg->_join_counter.store(num_srcs, std::memory_order_relaxed);
-  w ? _bulk_schedule(*w, g.begin(), num_srcs) : _bulk_schedule(g.begin(), num_srcs);
+  if(w) {
+    _dispatch_bulk_schedule(*w, g.begin(), num_srcs);
+  } else if(tpg->_prioritized) {
+    _prio_bulk_spill(g.begin(), num_srcs);
+  } else {
+    _bulk_schedule(g.begin(), num_srcs);
+  }
 }
 
 // Function: _set_up_graph
@@ -2514,6 +2862,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
+      if(fetched_tpg->_prioritized) {
+        _num_prioritized.fetch_sub(1, std::memory_order_relaxed);
+      }
       fetched_tpg->_carry_out_promise();
 
       // decrement the topology
@@ -2533,6 +2884,9 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
+      if(fetched_tpg->_prioritized) {
+        _num_prioritized.fetch_sub(1, std::memory_order_relaxed);
+      }
       fetched_tpg->_carry_out_promise();
 
       _decrement_topology();
@@ -2543,7 +2897,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
         if(parent->_join_counter.fetch_sub(1, std::memory_order_acq_rel) == 1) {
           // this async is spawned from a preempted parent, so we need to resume it
           //if(state & NSTATE::PREEMPTED) { 
-            _update_cache(worker, cache, static_cast<Node*>(parent));
+            _dispatch_update_cache(worker, cache, static_cast<Node*>(parent));
           //}
         }
       }
