@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"guidelines.html#HowCanILeadAProject":[7,0,6],
 "guidelines.html#HowCanIReportAnIssue":[7,0,3],
 "guidelines.html#HowCanISubmitAPatch":[7,0,5],
 "guidelines.html#Step1LookAround":[7,0,2,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "release-3-9-0.html#release-3-9-0_documentation":[1,5,6],
 "release-3-9-0.html#release-3-9-0_download":[1,5,1],
 "release-3-9-0.html#release-3-9-0_miscellaneous_items":[1,5,7],
-"release-3-9-0.html#release-3-9-0_new_features":[1,5,3],
-"release-3-9-0.html#release-3-9-0_summary":[1,5,0]
+"release-3-9-0.html#release-3-9-0_new_features":[1,5,3]
 };

@@ -91,7 +91,7 @@ inline const char* to_string(TaskType type) {
 A static task is a callable object constructible from std::function<void()>.
 */
 template <typename C>
-concept StaticTask = std::invocable<C> &&
+concept StaticTaskLike = std::invocable<C> &&
                      std::same_as<std::invoke_result_t<C>, void>;
 
 /**
@@ -99,10 +99,10 @@ concept StaticTask = std::invocable<C> &&
 
 @tparam C callable type to check
 
-Equivalent to tf::StaticTask<C>. Provided for backward compatibility.
+Equivalent to tf::StaticTaskLike<C>. Provided for backward compatibility.
 */
 template <typename C>
-constexpr bool is_static_task_v = StaticTask<C>;
+constexpr bool is_static_task_v = StaticTaskLike<C>;
 
 // ----------------------------------------------------------------------------
 // Subflow Task Trait
@@ -114,7 +114,7 @@ constexpr bool is_static_task_v = StaticTask<C>;
 A subflow task is a callable object constructible from std::function<void(tf::Subflow&)>.
 */
 template <typename C>
-concept SubflowTask = std::invocable<C, tf::Subflow&> &&
+concept SubflowTaskLike = std::invocable<C, tf::Subflow&> &&
                       std::same_as<std::invoke_result_t<C, tf::Subflow&>, void>;
 
 /**
@@ -122,10 +122,10 @@ concept SubflowTask = std::invocable<C, tf::Subflow&> &&
 
 @tparam C callable type to check
 
-Equivalent to tf::SubflowTask<C>. Provided for backward compatibility.
+Equivalent to tf::SubflowTaskLike<C>. Provided for backward compatibility.
 */
 template <typename C>
-constexpr bool is_subflow_task_v = SubflowTask<C>;
+constexpr bool is_subflow_task_v = SubflowTaskLike<C>;
 
 // ----------------------------------------------------------------------------
 // Runtime Task Trait
@@ -138,7 +138,7 @@ A runtime task is a callable object constructible from
 std::function<void(tf::Runtime&)> or std::function<void(tf::NonpreemptiveRuntime&)>.
 */
 template <typename C>
-concept RuntimeTask =
+concept RuntimeTaskLike =
   (std::invocable<C, tf::Runtime&> &&
    std::same_as<std::invoke_result_t<C, tf::Runtime&>, void>) ||
   (std::invocable<C, tf::NonpreemptiveRuntime&> &&
@@ -149,10 +149,10 @@ concept RuntimeTask =
 
 @tparam C callable type to check
 
-Equivalent to tf::RuntimeTask<C>. Provided for backward compatibility.
+Equivalent to tf::RuntimeTaskLike<C>. Provided for backward compatibility.
 */
 template <typename C>
-constexpr bool is_runtime_task_v = RuntimeTask<C>;
+constexpr bool is_runtime_task_v = RuntimeTaskLike<C>;
 
 
 // ----------------------------------------------------------------------------
@@ -165,7 +165,7 @@ constexpr bool is_runtime_task_v = RuntimeTask<C>;
 A condition task is a callable object constructible from std::function<int()>.
 */
 template <typename C>
-concept ConditionTask = std::invocable<C> &&
+concept ConditionTaskLike = std::invocable<C> &&
                         std::convertible_to<std::invoke_result_t<C>, int>;
 
 /**
@@ -173,10 +173,10 @@ concept ConditionTask = std::invocable<C> &&
 
 @tparam C callable type to check
 
-Equivalent to tf::ConditionTask<C>. Provided for backward compatibility.
+Equivalent to tf::ConditionTaskLike<C>. Provided for backward compatibility.
 */
 template <typename C>
-constexpr bool is_condition_task_v = ConditionTask<C>;
+constexpr bool is_condition_task_v = ConditionTaskLike<C>;
 
 /**
 @brief determines if a callable is a multi-condition task
@@ -185,7 +185,7 @@ A multi-condition task is a callable object constructible from
 std::function<tf::SmallVector<int>()>.
 */
 template <typename C>
-concept MultiConditionTask = std::invocable<C> &&
+concept MultiConditionTaskLike = std::invocable<C> &&
                              std::same_as<std::invoke_result_t<C>, SmallVector<int>>;
 
 /**
@@ -193,10 +193,10 @@ concept MultiConditionTask = std::invocable<C> &&
 
 @tparam C callable type to check
 
-Equivalent to tf::MultiConditionTask<C>. Provided for backward compatibility.
+Equivalent to tf::MultiConditionTaskLike<C>. Provided for backward compatibility.
 */
 template <typename C>
-constexpr bool is_multi_condition_task_v = MultiConditionTask<C>;
+constexpr bool is_multi_condition_task_v = MultiConditionTaskLike<C>;
 
 
 // ----------------------------------------------------------------------------
@@ -484,7 +484,7 @@ class Task {
   /**
   @brief creates a module task from a taskflow
 
-  @tparam T type satisfying tf::HasGraph
+  @tparam T type satisfying tf::GraphLike
   @param object a custom object that defines @c T::graph() method
 
   @return @c *this
@@ -498,7 +498,7 @@ class Task {
   To understand how %Taskflow schedules a module task including how to create a schedulable graph,
   pleas refer to @ref CreateACustomComposableGraph.
   */
-  template <HasGraph T>
+  template <GraphLike T>
   Task& composed_of(T& object);
   
   /**
@@ -980,7 +980,7 @@ Task& Task::remove_successors(Ts&&... tasks) {
 }
 
 // Function: composed_of
-template <HasGraph T>
+template <GraphLike T>
 Task& Task::composed_of(T& target) {
   _node->_handle.emplace<Node::Module>(retrieve_graph(target));
   return *this;

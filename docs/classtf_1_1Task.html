@@ -154,7 +154,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2f6f4cec42d016e5eb89390f362ffe99"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2f6f4cec42d016e5eb89390f362ffe99">work</a> (C &amp;&amp;callable)</td></tr>
 <tr class="memdesc:a2f6f4cec42d016e5eb89390f362ffe99"><td class="mdescLeft">&#160;</td><td class="mdescRight">assigns a callable  <br /></td></tr>
 <tr class="separator:a2f6f4cec42d016e5eb89390f362ffe99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab38be520fe700cb4ca1f312308a95585" id="r_ab38be520fe700cb4ca1f312308a95585"><td class="memTemplParams" colspan="2">template&lt;HasGraph T&gt; </td></tr>
+<tr class="memitem:ab38be520fe700cb4ca1f312308a95585" id="r_ab38be520fe700cb4ca1f312308a95585"><td class="memTemplParams" colspan="2">template&lt;GraphLike T&gt; </td></tr>
 <tr class="memitem:ab38be520fe700cb4ca1f312308a95585"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ab38be520fe700cb4ca1f312308a95585">composed_of</a> (T &amp;object)</td></tr>
 <tr class="memdesc:ab38be520fe700cb4ca1f312308a95585"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a module task from a taskflow  <br /></td></tr>
 <tr class="separator:ab38be520fe700cb4ca1f312308a95585"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -285,7 +285,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <div class="line">  tf::Task stask2 = sf.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div>
 <div class="line">}).<a class="code hl_function" href="#a08ada0425b490997b6ff7f310107e5e3">name</a>(<span class="stringliteral">&quot;subflow task&quot;</span>);</div>
 <div class="line">tf::Task task5 = taskflow.<a class="code hl_function" href="#ab38be520fe700cb4ca1f312308a95585">composed_of</a>(taskflow2).<a class="code hl_function" href="#a08ada0425b490997b6ff7f310107e5e3">name</a>(<span class="stringliteral">&quot;module task&quot;</span>);</div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1558</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1551</div></div>
 <div class="ttc" id="aclasstf_1_1Runtime_html"><div class="ttname"><a href="classtf_1_1Runtime.html">tf::Runtime</a></div><div class="ttdoc">class to create a runtime task</div><div class="ttdef"><b>Definition</b> runtime.hpp:47</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:263</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_ab38be520fe700cb4ca1f312308a95585"><div class="ttname"><a href="#ab38be520fe700cb4ca1f312308a95585">tf::Task::composed_of</a></div><div class="ttdeci">Task &amp; composed_of(T &amp;object)</div><div class="ttdoc">creates a module task from a taskflow</div><div class="ttdef"><b>Definition</b> task.hpp:984</div></div>
@@ -295,7 +295,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <div class="line">  <a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> stask1 = sf.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> stask2 = sf.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div>
 <div class="line">}).<a class="code hl_function" href="#a08ada0425b490997b6ff7f310107e5e3">name</a>(<span class="stringliteral">&quot;subflow task&quot;</span>);</div>
-<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1722</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1715</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a2f6f4cec42d016e5eb89390f362ffe99"><div class="ttname"><a href="#a2f6f4cec42d016e5eb89390f362ffe99">tf::Task::work</a></div><div class="ttdeci">Task &amp; work(C &amp;&amp;callable)</div><div class="ttdoc">assigns a callable</div><div class="ttdef"><b>Definition</b> task.hpp:1185</div></div>
 </div><!-- fragment --><dl class="section attention"><dt>Attention</dt><dd><a class="el" href="classtf_1_1Task.html" title="class to create a task handle over a taskflow node">tf::Task</a> does not own the lifetime of the associated node. Accessing the attributes of the associated node after the taskflow has been destroyed can result in undefined behavior. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -457,7 +457,7 @@ template&lt;typename I&gt; </div>
 <div class="line"><a class="code hl_class" href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a>{g}.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>([]{ std::cout &lt;&lt; <span class="stringliteral">&quot;task in adopted graph\n&quot;</span>; });</div>
 <div class="line">taskflow.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">adopt</a>(std::move(g)).<a class="code hl_function" href="#a08ada0425b490997b6ff7f310107e5e3">name</a>(<span class="stringliteral">&quot;adopted&quot;</span>);</div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html"><div class="ttname"><a href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a></div><div class="ttdoc">class to build a task dependency graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:22</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1615</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1608</div></div>
 <div class="ttc" id="aclasstf_1_1Graph_html"><div class="ttname"><a href="classtf_1_1Graph.html">tf::Graph</a></div><div class="ttdoc">class to create a graph object</div><div class="ttdef"><b>Definition</b> graph.hpp:47</div></div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>Please refer to <a class="el" href="ComposableTasking.html">Composable Tasking</a> for details. </dd></dl>
 
@@ -469,7 +469,7 @@ template&lt;typename I&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;HasGraph T&gt; </div>
+template&lt;GraphLike T&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> &amp; tf::Task::composed_of </td>
@@ -483,7 +483,7 @@ template&lt;HasGraph T&gt; </div>
 <p>creates a module task from a taskflow </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>type satisfying <a class="el" href="concepttf_1_1HasGraph.html" title="concept that determines if a type owns or provides access to a tf::Graph">tf::HasGraph</a> </td></tr>
+    <tr><td class="paramname">T</td><td>type satisfying <a class="el" href="concepttf_1_1GraphLike.html" title="concept that determines if a type owns or provides access to a tf::Graph">tf::GraphLike</a> </td></tr>
   </table>
   </dd>
 </dl>

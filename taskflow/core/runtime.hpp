@@ -160,7 +160,7 @@ class Runtime {
   @brief runs the given callable asynchronously
 
   @tparam F callable type
-  @tparam P task parameters type satisfying tf::TaskParameters
+  @tparam P task parameters type satisfying tf::TaskParamsLike
 
   @param params task parameters
   @param f callable
@@ -271,7 +271,7 @@ class Runtime {
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type satisfying tf::TaskParameters
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam Tasks tasks of type tf::AsyncTask
   
@@ -305,7 +305,7 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <TaskParameters P, typename F, typename... Tasks>
+  template <TaskParamsLike P, typename F, typename... Tasks>
   requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
@@ -354,7 +354,7 @@ class Runtime {
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type satisfying tf::TaskParameters
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam I iterator type 
   
@@ -391,7 +391,7 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
   requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
   
@@ -461,7 +461,7 @@ class Runtime {
   executor.wait_for_all();
   @endcode
   */
-  template <TaskParameters P, typename F, typename... Tasks>
+  template <TaskParamsLike P, typename F, typename... Tasks>
   requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
@@ -535,7 +535,7 @@ class Runtime {
   executor.run(taskflow).wait();
   @endcode
   */
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
   requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
 
@@ -714,7 +714,7 @@ tf::AsyncTask Runtime::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
-template <TaskParameters P, typename F, typename... Tasks>
+template <TaskParamsLike P, typename F, typename... Tasks>
 requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Runtime::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
@@ -733,7 +733,7 @@ tf::AsyncTask Runtime::silent_dependent_async(F&& func, I first, I last) {
 }
 
 // Function: silent_dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Runtime::silent_dependent_async(
   P&& params, F&& func, I first, I last
@@ -756,7 +756,7 @@ auto Runtime::dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
-template <TaskParameters P, typename F, typename... Tasks>
+template <TaskParamsLike P, typename F, typename... Tasks>
 requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Runtime::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
@@ -773,7 +773,7 @@ auto Runtime::dependent_async(F&& func, I first, I last) {
 }
 
 // Function: dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Runtime::dependent_async(P&& params, F&& func, I first, I last) {
   _node->_join_counter.fetch_add(1, std::memory_order_relaxed);

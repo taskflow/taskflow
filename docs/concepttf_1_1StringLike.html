@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Taskflow: A General-purpose Task-parallel Programming System: tf::Partitioner Concept Reference</title>
+<title>Taskflow: A General-purpose Task-parallel Programming System: tf::StringLike Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,7 +73,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function(){initNavTree('concepttf_1_1Partitioner.html',''); initResizable(true); });
+$(function(){initNavTree('concepttf_1_1StringLike.html',''); initResizable(true); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -99,28 +99,43 @@ $(function(){initNavTree('concepttf_1_1Partitioner.html',''); initResizable(true
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">tf::Partitioner Concept Reference</div></div>
+  <div class="headertitle"><div class="title">tf::StringLike Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>determines if a type is a partitioner  
+<p>concept that determines if a type is string-like  
 <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="partitioner_8hpp_source.html">taskflow/algorithm/partitioner.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="graph_8hpp_source.html">taskflow/core/graph.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
-<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> P&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1Partitioner.html">tf::Partitioner</a> =  std::derived_from&lt;P, PartitionerBase&lt;typename P::closure_wrapper_type&gt;&gt;</div>
-<div class="ttc" id="aconcepttf_1_1Partitioner_html"><div class="ttname"><a href="concepttf_1_1Partitioner.html">tf::Partitioner</a></div><div class="ttdoc">determines if a type is a partitioner</div><div class="ttdef"><b>Definition</b> partitioner.hpp:913</div></div>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1StringLike.html">tf::StringLike</a> =  std::convertible_to&lt;T, std::string_view&gt;</div>
+<div class="ttc" id="aconcepttf_1_1StringLike_html"><div class="ttname"><a href="concepttf_1_1StringLike.html">tf::StringLike</a></div><div class="ttdoc">concept that determines if a type is string-like</div><div class="ttdef"><b>Definition</b> graph.hpp:162</div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>determines if a type is a partitioner </p>
-<p>A type satisfies <a class="el" href="concepttf_1_1Partitioner.html" title="determines if a type is a partitioner">tf::Partitioner</a> if it is derived from <a class="el" href="classtf_1_1PartitionerBase.html" title="class to derive a partitioner for scheduling parallel algorithms">tf::PartitionerBase</a>. </p>
-</div></div><!-- contents -->
+<div class="textblock"><p>concept that determines if a type is string-like </p>
+<p>A type satisfies <a class="el" href="concepttf_1_1StringLike.html" title="concept that determines if a type is string-like">tf::StringLike</a> if it is convertible to std::string_view, including:</p><ul>
+<li>std::string</li>
+<li>std::string_view</li>
+<li>const char*</li>
+<li>any type that provides an implicit conversion to std::string_view</li>
+</ul>
+<div class="fragment"><div class="line"><span class="keyword">static_assert</span>(<a class="code hl_concept" href="concepttf_1_1StringLike.html">tf::StringLike&lt;std::string&gt;</a>);</div>
+<div class="line"><span class="keyword">static_assert</span>(<a class="code hl_concept" href="concepttf_1_1StringLike.html">tf::StringLike&lt;std::string_view&gt;</a>);</div>
+<div class="line"><span class="keyword">static_assert</span>(<a class="code hl_concept" href="concepttf_1_1StringLike.html">tf::StringLike&lt;const char*&gt;</a>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// custom type with implicit conversion</span></div>
+<div class="line"><span class="keyword">struct </span>MyString {</div>
+<div class="line">  <span class="keyword">operator</span> std::string_view()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _data; }</div>
+<div class="line">  std::string _data;</div>
+<div class="line">};</div>
+<div class="line"><span class="keyword">static_assert</span>(<a class="code hl_concept" href="concepttf_1_1StringLike.html">tf::StringLike&lt;MyString&gt;</a>);</div>
+</div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.13.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1Partitioner.html">Partitioner</a></li>
+    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1StringLike.html">StringLike</a></li>
     <li class="footer">
       Maintained by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>
       &nbsp;&mdash;&nbsp;

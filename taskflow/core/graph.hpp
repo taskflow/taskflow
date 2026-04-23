@@ -137,6 +137,31 @@ class Graph {
 // ----------------------------------------------------------------------------
 
 /**
+@brief concept that determines if a type is string-like
+
+A type satisfies tf::StringLike if it is convertible to std::string_view, including:
+  + std::string
+  + std::string_view
+  + const char*
+  + any type that provides an implicit conversion to std::string_view
+
+@code{.cpp}
+static_assert(tf::StringLike<std::string>);
+static_assert(tf::StringLike<std::string_view>);
+static_assert(tf::StringLike<const char*>);
+
+// custom type with implicit conversion
+struct MyString {
+  operator std::string_view() const { return _data; }
+  std::string _data;
+};
+static_assert(tf::StringLike<MyString>);
+@endcode
+*/
+template <typename T>
+concept StringLike = std::convertible_to<T, std::string_view>;
+
+/**
 @class TaskParams
 
 @brief class to create a task parameter object 
@@ -171,13 +196,13 @@ class DefaultTaskParams {};
 A type satisfies tf::TaskParams if it is one of the following:
   + tf::TaskParams
   + tf::DefaultTaskParams
-  + any type constructible from std::string
+  + tf::StringLike
 */
 template <typename P>
-concept TaskParameters =
+concept TaskParamsLike =
   std::same_as<std::decay_t<P>, TaskParams> ||
   std::same_as<std::decay_t<P>, DefaultTaskParams> ||
-  std::constructible_from<std::string, P>;
+  StringLike<P>;
 
 /**
 @brief determines if a type is a task parameter type (variable template)
@@ -187,7 +212,7 @@ concept TaskParameters =
 Equivalent to tf::TaskParameters<P>. Provided for backward compatibility.
 */
 template <typename P>
-constexpr bool is_task_params_v = TaskParameters<P>;
+constexpr bool is_task_params_v = TaskParamsLike<P>;
 
 // ----------------------------------------------------------------------------
 // NodeBase
@@ -472,6 +497,9 @@ class Node : public NodeBase {
   
   template <typename... Args>
   Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, NodeBase*, size_t, Args&&...);
+  
+  template <StringLike S, typename... Args>
+  Node(nstate_t, estate_t, S&&, Topology*, NodeBase*, size_t, Args&&...);
 
   size_t num_successors() const;
   size_t num_predecessors() const;
@@ -621,6 +649,23 @@ Node::Node(
   Args&&... args
 ) :
   NodeBase(nstate, estate, parent, join_counter),
+  _topology {topology},
+  _handle   {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <StringLike S, typename... Args>
+Node::Node(
+  nstate_t nstate,
+  estate_t estate,
+  S&& name,
+  Topology* topology, 
+  NodeBase* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  NodeBase(nstate, estate, parent, join_counter),
+  _name     {std::forward<S>(name)},
   _topology {topology},
   _handle   {std::forward<Args>(args)...} {
 }
@@ -984,7 +1029,7 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 /**
 @brief concept that determines if a type owns or provides access to a tf::Graph
 
-A type satisfies @c tf::HasGraph if it meets one of the following two criteria:
+A type satisfies @c tf::GraphLike if it meets one of the following two criteria:
   + **Inheritance**: The type is derived from @c tf::Graph.
   + **Composition**: The type provides a @c graph() method that returns a reference convertible to @c tf::Graph&.
 
@@ -994,24 +1039,24 @@ accessed across different taskflow components.
 @code{.cpp}
 // Satisfies via inheritance
 struct CustomGraph1 : public tf::Graph {};
-static_assert(tf::HasGraph<CustomGraph1>);
+static_assert(tf::GraphLike<CustomGraph1>);
 
 // Satisfies via composition
 struct CustomGraph2 {
   tf::Graph& graph() { return _g; }
   tf::Graph _g;
 };
-static_assert(tf::HasGraph<CustomGraph2>);
+static_assert(tf::GraphLike<CustomGraph2>);
 
 // Fails: does not meet inheritance or method requirements
 struct InvalidType {
 void handle() {}
 };
-static_assert(!tf::HasGraph<InvalidType>);
+static_assert(!tf::GraphLike<InvalidType>);
 @endcode
 */
 template <typename T>
-concept HasGraph = std::derived_from<T, Graph> ||
+concept GraphLike = std::derived_from<T, Graph> ||
                    requires(T& t) {
                      { t.graph() } -> std::convertible_to<Graph&>;
                    };
@@ -1023,7 +1068,7 @@ This helper function abstracts the retrieval of a graph reference. It uses
 compile-time introspection to determine if the object provides a @c graph() 
 member function or if it should be treated as a @c tf::Graph directly.
 
-@tparam T type satisfying the @c tf::HasGraph concept
+@tparam T type satisfying the @c tf::GraphLike concept
 @param target object from which to retrieve the graph
 @return a reference to the underlying @c tf::Graph
 
@@ -1049,7 +1094,7 @@ tf::Graph& g2 = tf::retrieve_graph(custom_graph2);
 @note This function is evaluated at compile time via @c if @c constexpr, 
 resulting in zero runtime overhead.
 */
-template <HasGraph T>
+template <GraphLike T>
 Graph& retrieve_graph(T& target) {
   if constexpr (requires { target.graph(); }) {
     return target.graph();

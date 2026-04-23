@@ -11,7 +11,7 @@ class Algorithm {
 
   public:
 
-  template <HasGraph T>
+  template <GraphLike T>
   static auto make_module_task(T&);
 };
 

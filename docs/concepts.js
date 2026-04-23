@@ -4,13 +4,14 @@ var concepts =
       [ "IndexRangeLike", "concepttf_1_1IndexRangeLike.html", null ],
       [ "IndexRange1DLike", "concepttf_1_1IndexRange1DLike.html", null ],
       [ "IndexRangeMDLike", "concepttf_1_1IndexRangeMDLike.html", null ],
-      [ "TaskParameters", "concepttf_1_1TaskParameters.html", null ],
-      [ "HasGraph", "concepttf_1_1HasGraph.html", null ],
-      [ "StaticTask", "concepttf_1_1StaticTask.html", null ],
-      [ "SubflowTask", "concepttf_1_1SubflowTask.html", null ],
-      [ "RuntimeTask", "concepttf_1_1RuntimeTask.html", null ],
-      [ "ConditionTask", "concepttf_1_1ConditionTask.html", null ],
-      [ "MultiConditionTask", "concepttf_1_1MultiConditionTask.html", null ],
-      [ "Partitioner", "concepttf_1_1Partitioner.html", null ]
+      [ "StringLike", "concepttf_1_1StringLike.html", null ],
+      [ "TaskParamsLike", "concepttf_1_1TaskParamsLike.html", null ],
+      [ "GraphLike", "concepttf_1_1GraphLike.html", null ],
+      [ "StaticTaskLike", "concepttf_1_1StaticTaskLike.html", null ],
+      [ "SubflowTaskLike", "concepttf_1_1SubflowTaskLike.html", null ],
+      [ "RuntimeTaskLike", "concepttf_1_1RuntimeTaskLike.html", null ],
+      [ "ConditionTaskLike", "concepttf_1_1ConditionTaskLike.html", null ],
+      [ "MultiConditionTaskLike", "concepttf_1_1MultiConditionTaskLike.html", null ],
+      [ "PartitionerLike", "concepttf_1_1PartitionerLike.html", null ]
     ] ]
 ];

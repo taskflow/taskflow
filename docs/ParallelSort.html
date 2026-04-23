@@ -173,7 +173,7 @@ Capture Iterators by Reference</h2>
 <div class="line">executor.<a class="code hl_function" href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069">run</a>(taskflow).wait();</div>
 <div class="line"> </div>
 <div class="line">assert(std::is_sorted(data.begin(), data.end()));</div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1558</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1551</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a8c78c453295a553c1c016e4062da8588"><div class="ttname"><a href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">tf::Task::precede</a></div><div class="ttdeci">Task &amp; precede(Ts &amp;&amp;... tasks)</div><div class="ttdoc">adds precedence links from this to other tasks</div><div class="ttdef"><b>Definition</b> task.hpp:952</div></div>
 </div><!-- fragment --><p>When <code>init</code> finishes, <code>first</code> and <code>last</code> point to the initialized data range of <code>data</code>, and the sort task performs parallel sort over all elements.</p>
 <h1><a class="anchor" id="ParallelSortCustomComparator"></a>

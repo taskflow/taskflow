@@ -96,5 +96,5 @@ var searchData=
   ['runtime_20conditions_93',['Branching Based on Runtime Conditions',['../ExamplesDynamicDependencyGraph.html#DynamicDependencyGraphBranchingTopology',1,'']]],
   ['runtime_20task_94',['What is a Runtime Task?',['../RuntimeTasking.html#WhatIsARuntimeTask',1,'']]],
   ['runtime_20tasking_95',['Runtime Tasking',['../ExamplesFibonacciNumber.html#RecursiveFibonacciParallelismUsingRuntimeTasking',1,'Recursive Fibonacci with Runtime Tasking'],['../RuntimeTasking.html',1,'Runtime Tasking']]],
-  ['runtimetask_96',['RuntimeTask',['../concepttf_1_1RuntimeTask.html',1,'tf']]]
+  ['runtimetasklike_96',['RuntimeTaskLike',['../concepttf_1_1RuntimeTaskLike.html',1,'tf']]]
 ];

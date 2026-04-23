@@ -93,7 +93,7 @@ var searchData=
   ['conditional_20tasking_90',['Conditional Tasking',['../ConditionalTasking.html',1,'Conditional Tasking'],['../ExamplesNondeterministicControlFlow.html#CoinFlippingBinary',1,'Implementation with Conditional Tasking']]],
   ['conditional_20tasking_91',['Q9: Are there any limits on the branches of conditional tasking?',['../FAQ.html#ProgrammingQuestions9',1,'']]],
   ['conditions_92',['Branching Based on Runtime Conditions',['../ExamplesDynamicDependencyGraph.html#DynamicDependencyGraphBranchingTopology',1,'']]],
-  ['conditiontask_93',['ConditionTask',['../concepttf_1_1ConditionTask.html',1,'tf']]],
+  ['conditiontasklike_93',['ConditionTaskLike',['../concepttf_1_1ConditionTaskLike.html',1,'tf']]],
   ['conduct_94',['Conduct',['../codeofconduct.html',1,'Code of Conduct'],['../codeofconduct.html#TaskflowCodeOfConduct',1,'Taskflow Community Code of Conduct']]],
   ['configure_20a_20partitioner_95',['Configure a Partitioner',['../ParallelIterations.html#ParallelIterationsConfigureAPartitioner',1,'Configure a Partitioner'],['../ParallelTransforms.html#ParallelTransformsConfigureAPartitioner',1,'Configure a Partitioner'],['../ParallelReduction.html#ParallelReductionConfigureAPartitioner',1,'Configure a Partitioner'],['../ParallelFind.html#ParallelFindConfigureAPartitioner',1,'Configure a Partitioner']]],
   ['configure_20run_20options_96',['Configure Run Options',['../BenchmarkTaskflow.html#ConfigureRunOptions',1,'']]],

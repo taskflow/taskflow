@@ -228,7 +228,7 @@ Catch an Exception from a Running Taskflow</h1>
 <div class="line">}</div>
 <div class="ttc" id="aclasstf_1_1Executor_html"><div class="ttname"><a href="classtf_1_1Executor.html">tf::Executor</a></div><div class="ttdoc">class to create an executor</div><div class="ttdef"><b>Definition</b> executor.hpp:62</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html_a519777f5783981d534e9e53b99712069"><div class="ttname"><a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069">tf::Executor::run</a></div><div class="ttdeci">tf::Future&lt; void &gt; run(Taskflow &amp;taskflow)</div><div class="ttdoc">runs a taskflow once</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1558</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1551</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd><a class="el" href="classtf_1_1Future.html" title="class to access the result of an execution">tf::Future</a> is derived from <a href="https://en.cppreference.com/w/cpp/thread/future">std::future</a> and inherits all standard exception-handling behaviours defined by the C++ standard.</dd></dl>
 <p>When a task throws, the executor immediately cancels the rest of the taskflow — all tasks that depend on the throwing task are skipped. The following example shows this with a two-task chain where <code>B</code> depends on <code>A:</code> </p>
@@ -304,7 +304,7 @@ Catch an Exception from a Subflow</h1>
 <div class="line">});</div>
 <div class="line"> </div>
 <div class="line">executor.<a class="code hl_function" href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069">run</a>(taskflow).get();</div>
-<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1722</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1715</div></div>
 <div class="ttc" id="aclasstf_1_1Subflow_html_a59fcac1323e70d920088dd37bd0be245"><div class="ttname"><a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245">tf::Subflow::join</a></div><div class="ttdeci">void join()</div><div class="ttdoc">enables the subflow to join its parent task</div></div>
 </div><!-- fragment --><div class="fragment"><div class="line">Task A</div>
 <div class="line">caught at join: exception on A</div>

@@ -6,7 +6,8 @@
 #include <type_traits>
 
 namespace tf {
-template <typename B, typename E, typename G, typename P = DefaultPartitioner>
+
+template <typename B, typename E, typename G, PartitionerLike P = DefaultPartitioner>
 auto make_generate_task(B first, E last, G gen, P part = P()) {
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
   using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
@@ -68,7 +69,7 @@ auto make_generate_task(B first, E last, G gen, P part = P()) {
   };
 }
 
-template <typename B, typename C, typename G, typename P = DefaultPartitioner>
+template <typename B, std::integral C, typename G, PartitionerLike P = DefaultPartitioner>
 auto make_generate_n_task(B first, C count, G gen, P part = P()) {
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
 
@@ -129,15 +130,15 @@ auto make_generate_n_task(B first, C count, G gen, P part = P()) {
   };
 }
 
-template <typename B, typename E, typename G, typename P>
-  requires Partitioner<std::decay_t<P>>
+template <typename B, typename E, typename G, PartitionerLike P>
 Task FlowBuilder::generate(B first, E last, G gen, P part) {
   return emplace(make_generate_task(first, last, gen, part));
 }
 
-template <typename B, typename C, typename G, typename P>
-  requires(Partitioner<std::decay_t<P>> && std::integral<C>)
+template <typename B, std::integral C, typename G, PartitionerLike P>
 Task FlowBuilder::generate_n(B first, C count, G gen, P part) {
   return emplace(make_generate_n_task(first, count, gen, part));
 }
-} // namespace tf
+
+
+} // namespace tf ---------------------------------------------------------------------------------

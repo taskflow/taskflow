@@ -907,19 +907,19 @@ using DefaultPartitioner = GuidedPartitioner<>;
 /**
 @brief determines if a type is a partitioner
 
-A type satisfies tf::Partitioner if it is derived from tf::PartitionerBase.
+A type satisfies tf::PartitionerLike if it is derived from tf::PartitionerBase.
 */
 template <typename P>
-concept Partitioner = std::derived_from<P, PartitionerBase<typename P::closure_wrapper_type>>;
+concept PartitionerLike = std::derived_from<P, PartitionerBase<typename P::closure_wrapper_type>>;
 
 /**
 @brief determines if a type is a partitioner (variable template)
 
 @tparam P type to check
 
-Equivalent to tf::Partitioner<P>. Provided for backward compatibility.
+Equivalent to tf::PartitionerLike<P>. Provided for backward compatibility.
 */
 template <typename P>
-inline constexpr bool is_partitioner_v = Partitioner<P>;
+inline constexpr bool is_partitioner_v = PartitionerLike<P>;
 
 }  // end of namespace tf -----------------------------------------------------

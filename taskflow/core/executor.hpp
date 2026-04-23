@@ -620,7 +620,7 @@ class Executor {
   /**
   @brief creates a parameterized asynchronous task to run the given function
 
-  @tparam P task parameter type satisfying tf::TaskParameters
+  @tparam P task parameter type satisfying tf::TaskParamsLike
   @tparam F callable type
 
   @param params task parameters
@@ -788,7 +788,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 
   This member function is thread-safe.
   */
-  template <TaskParameters P, typename F, typename... Tasks>
+  template <TaskParamsLike P, typename F, typename... Tasks>
       requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
@@ -862,7 +862,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   This member function is thread-safe.
   */
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
       requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
   
@@ -915,7 +915,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type satisfying tf::TaskParameters
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
   
@@ -952,7 +952,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 
   This member function is thread-safe.
   */
-  template <TaskParameters P, typename F, typename... Tasks>
+  template <TaskParamsLike P, typename F, typename... Tasks>
       requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
@@ -1004,7 +1004,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type satisfying tf::TaskParameters
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam I iterator type 
   
@@ -1044,7 +1044,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   This member function is thread-safe.
   */
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
       requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
 
@@ -1182,11 +1182,11 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   template <typename P, typename F>
   void _silent_async(P&&, F&&, Topology*, NodeBase*);
 
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
   requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto _dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
-  template <TaskParameters P, typename F, typename I>
+  template <TaskParamsLike P, typename F, typename I>
   requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   

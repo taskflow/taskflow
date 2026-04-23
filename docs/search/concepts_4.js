@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['partitioner_0',['Partitioner',['../concepttf_1_1Partitioner.html',1,'tf']]]
+  ['partitionerlike_0',['PartitionerLike',['../concepttf_1_1PartitionerLike.html',1,'tf']]]
 ];

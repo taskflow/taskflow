@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Taskflow: A General-purpose Task-parallel Programming System: tf::StaticTask Concept Reference</title>
+<title>Taskflow: A General-purpose Task-parallel Programming System: tf::TaskParamsLike Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,7 +73,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function(){initNavTree('concepttf_1_1StaticTask.html',''); initResizable(true); });
+$(function(){initNavTree('concepttf_1_1TaskParamsLike.html',''); initResizable(true); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -99,29 +99,38 @@ $(function(){initNavTree('concepttf_1_1StaticTask.html',''); initResizable(true)
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">tf::StaticTask Concept Reference</div></div>
+  <div class="headertitle"><div class="title">tf::TaskParamsLike Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>determines if a callable is a static task  
+<p>determines if a type is a task parameter type  
 <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="task_8hpp_source.html">taskflow/core/task.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="graph_8hpp_source.html">taskflow/core/graph.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
-<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> C&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1StaticTask.html">tf::StaticTask</a> =  std::invocable&lt;C&gt; &amp;&amp;</div>
-<div class="line">                     std::same_as&lt;std::invoke_result_t&lt;C&gt;, <span class="keywordtype">void</span>&gt;</div>
-<div class="ttc" id="aconcepttf_1_1StaticTask_html"><div class="ttname"><a href="concepttf_1_1StaticTask.html">tf::StaticTask</a></div><div class="ttdoc">determines if a callable is a static task</div><div class="ttdef"><b>Definition</b> task.hpp:94</div></div>
+<div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> P&gt;</div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1TaskParamsLike.html">tf::TaskParamsLike</a> = </div>
+<div class="line">  std::same_as&lt;std::decay_t&lt;P&gt;, <a class="code hl_class" href="classtf_1_1TaskParams.html">TaskParams</a>&gt; ||</div>
+<div class="line">  std::same_as&lt;std::decay_t&lt;P&gt;, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>&gt; ||</div>
+<div class="line">  <a class="code hl_concept" href="concepttf_1_1StringLike.html">StringLike&lt;P&gt;</a></div>
+<div class="ttc" id="aclasstf_1_1DefaultTaskParams_html"><div class="ttname"><a href="classtf_1_1DefaultTaskParams.html">tf::DefaultTaskParams</a></div><div class="ttdoc">class to create an empty task parameter for compile-time optimization</div><div class="ttdef"><b>Definition</b> graph.hpp:191</div></div>
+<div class="ttc" id="aclasstf_1_1TaskParams_html"><div class="ttname"><a href="classtf_1_1TaskParams.html">tf::TaskParams</a></div><div class="ttdoc">class to create a task parameter object</div><div class="ttdef"><b>Definition</b> graph.hpp:171</div></div>
+<div class="ttc" id="aconcepttf_1_1StringLike_html"><div class="ttname"><a href="concepttf_1_1StringLike.html">tf::StringLike</a></div><div class="ttdoc">concept that determines if a type is string-like</div><div class="ttdef"><b>Definition</b> graph.hpp:162</div></div>
+<div class="ttc" id="aconcepttf_1_1TaskParamsLike_html"><div class="ttname"><a href="concepttf_1_1TaskParamsLike.html">tf::TaskParamsLike</a></div><div class="ttdoc">determines if a type is a task parameter type</div><div class="ttdef"><b>Definition</b> graph.hpp:202</div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>determines if a callable is a static task </p>
-<p>A static task is a callable object constructible from std::function&lt;void()&gt;. </p>
+<div class="textblock"><p>determines if a type is a task parameter type </p>
+<p>A type satisfies <a class="el" href="classtf_1_1TaskParams.html" title="class to create a task parameter object">tf::TaskParams</a> if it is one of the following:</p><ul>
+<li><a class="el" href="classtf_1_1TaskParams.html" title="class to create a task parameter object">tf::TaskParams</a></li>
+<li><a class="el" href="classtf_1_1DefaultTaskParams.html" title="class to create an empty task parameter for compile-time optimization">tf::DefaultTaskParams</a></li>
+<li><a class="el" href="concepttf_1_1StringLike.html" title="concept that determines if a type is string-like">tf::StringLike</a> </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.13.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1StaticTask.html">StaticTask</a></li>
+    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1TaskParamsLike.html">TaskParamsLike</a></li>
     <li class="footer">
       Maintained by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>
       &nbsp;&mdash;&nbsp;

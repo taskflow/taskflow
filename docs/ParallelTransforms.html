@@ -178,7 +178,7 @@ Capture Iterators by Reference</h2>
 </div><!-- fragment --><p>When <code>init</code> finishes, the parallel-transform task <code>transform</code> will see <code>first</code> pointing to the beginning of <code>src</code> and <code>last</code> pointing to the end of <code>src</code>, and performs parallel transforms over the 1000 items storing results starting at <code>d_first</code>.</p>
 <h1><a class="anchor" id="ParallelTransformsBinary"></a>
 Create a Binary Parallel-Transform Task</h1>
-<p>A binary parallel-transform applies a callable to pairs of elements drawn from two source ranges and writes each result to a destination range. The overload <a class="el" href="classtf_1_1FlowBuilder.html#aff4c2a76d71dc7bebb55ad3797ef55f8" title="constructs a parallel-transform task">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)</a> represents parallel execution of the following loop:</p>
+<p>A binary parallel-transform applies a callable to pairs of elements drawn from two source ranges and writes each result to a destination range. The overload <a class="el" href="classtf_1_1FlowBuilder.html#a18d263a5c043a216380441c9d0c72a60" title="constructs a parallel-transform task">tf::Taskflow::transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part)</a> represents parallel execution of the following loop:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">while</span> (first1 != last1) {</div>
 <div class="line">  *d_first++ = c(*first1++, *first2++);</div>
 <div class="line">}</div>

@@ -55,7 +55,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + optimized the locking cost of topology
 + refactored the codebase with C++20 concept to enhance readability
   + credit goest to the amazing Anthropic Claude
-+ introduced a new profiler to replace the existing tfprof
++ introduced a new profiler to replace the existing [tfprof](https://github.com/taskflow/tfprof)
 
 @subsection release-4-1-0_utilities Utilities
 
@@ -74,6 +74,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 @section release-4-1-0_bug_fixes Bug Fixes 
 
 + fixed the scope bug in creating @c tf::Future<T> from @std_future ([#761](https://github.com/taskflow/taskflow/issues/761))
++ fixed the async bug in taking name as a parameter
 
 @section release-4-1-0_breaking_changes Breaking Changes
 

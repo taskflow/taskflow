@@ -227,7 +227,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <tr class="memitem:a0af0918b7179f9e42945fb407e0bad65"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a0af0918b7179f9e42945fb407e0bad65">silent_dependent_async</a> (F &amp;&amp;func, Tasks &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a0af0918b7179f9e42945fb407e0bad65"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given predecessors finish  <br /></td></tr>
 <tr class="separator:a0af0918b7179f9e42945fb407e0bad65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a3423ee59264b3728297ad8488d69a2" id="r_a3a3423ee59264b3728297ad8488d69a2"><td class="memTemplParams" colspan="2">template&lt;TaskParameters P, typename F, typename... Tasks&gt; <br />
+<tr class="memitem:a3a3423ee59264b3728297ad8488d69a2" id="r_a3a3423ee59264b3728297ad8488d69a2"><td class="memTemplParams" colspan="2">template&lt;TaskParamsLike P, typename F, typename... Tasks&gt; <br />
 requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</td></tr>
 <tr class="memitem:a3a3423ee59264b3728297ad8488d69a2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3a3423ee59264b3728297ad8488d69a2">silent_dependent_async</a> (P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a3a3423ee59264b3728297ad8488d69a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given predecessors finish  <br /></td></tr>
@@ -237,7 +237,7 @@ requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_
 <tr class="memitem:a91c8588046efef802c9c58823920290a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a91c8588046efef802c9c58823920290a">silent_dependent_async</a> (F &amp;&amp;func, I first, I last)</td></tr>
 <tr class="memdesc:a91c8588046efef802c9c58823920290a"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given range of predecessors finish  <br /></td></tr>
 <tr class="separator:a91c8588046efef802c9c58823920290a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a076af259ec55966ef6f2d9927c50dc58" id="r_a076af259ec55966ef6f2d9927c50dc58"><td class="memTemplParams" colspan="2">template&lt;TaskParameters P, typename F, typename I&gt; <br />
+<tr class="memitem:a076af259ec55966ef6f2d9927c50dc58" id="r_a076af259ec55966ef6f2d9927c50dc58"><td class="memTemplParams" colspan="2">template&lt;TaskParamsLike P, typename F, typename I&gt; <br />
 requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</td></tr>
 <tr class="memitem:a076af259ec55966ef6f2d9927c50dc58"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1AsyncTask.html">tf::AsyncTask</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a076af259ec55966ef6f2d9927c50dc58">silent_dependent_async</a> (P &amp;&amp;params, F &amp;&amp;func, I first, I last)</td></tr>
 <tr class="memdesc:a076af259ec55966ef6f2d9927c50dc58"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given range of predecessors finish  <br /></td></tr>
@@ -247,7 +247,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <tr class="memitem:a3278e2611e43b80b65ef10a3391ddcc3"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3278e2611e43b80b65ef10a3391ddcc3">dependent_async</a> (F &amp;&amp;func, Tasks &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:a3278e2611e43b80b65ef10a3391ddcc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given predecessors finish  <br /></td></tr>
 <tr class="separator:a3278e2611e43b80b65ef10a3391ddcc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed70d5099a224a3282a166506196865a" id="r_aed70d5099a224a3282a166506196865a"><td class="memTemplParams" colspan="2">template&lt;TaskParameters P, typename F, typename... Tasks&gt; <br />
+<tr class="memitem:aed70d5099a224a3282a166506196865a" id="r_aed70d5099a224a3282a166506196865a"><td class="memTemplParams" colspan="2">template&lt;TaskParamsLike P, typename F, typename... Tasks&gt; <br />
 requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</td></tr>
 <tr class="memitem:aed70d5099a224a3282a166506196865a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aed70d5099a224a3282a166506196865a">dependent_async</a> (P &amp;&amp;params, F &amp;&amp;func, Tasks &amp;&amp;... tasks)</td></tr>
 <tr class="memdesc:aed70d5099a224a3282a166506196865a"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given predecessors finish  <br /></td></tr>
@@ -257,7 +257,7 @@ requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_
 <tr class="memitem:ac9fc4d707cd28b68b17fa70afb825e9c"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ac9fc4d707cd28b68b17fa70afb825e9c">dependent_async</a> (F &amp;&amp;func, I first, I last)</td></tr>
 <tr class="memdesc:ac9fc4d707cd28b68b17fa70afb825e9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given range of predecessors finish  <br /></td></tr>
 <tr class="separator:ac9fc4d707cd28b68b17fa70afb825e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afca6c37102893c6776f8322f72b5ea5f" id="r_afca6c37102893c6776f8322f72b5ea5f"><td class="memTemplParams" colspan="2">template&lt;TaskParameters P, typename F, typename I&gt; <br />
+<tr class="memitem:afca6c37102893c6776f8322f72b5ea5f" id="r_afca6c37102893c6776f8322f72b5ea5f"><td class="memTemplParams" colspan="2">template&lt;TaskParamsLike P, typename F, typename I&gt; <br />
 requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</td></tr>
 <tr class="memitem:afca6c37102893c6776f8322f72b5ea5f"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#afca6c37102893c6776f8322f72b5ea5f">dependent_async</a> (P &amp;&amp;params, F &amp;&amp;func, I first, I last)</td></tr>
 <tr class="memdesc:afca6c37102893c6776f8322f72b5ea5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">runs the given function asynchronously when the given range of predecessors finish  <br /></td></tr>
@@ -315,7 +315,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>TaskGroup</b></td></
 <div class="ttc" id="aclasstf_1_1Executor_html_a519777f5783981d534e9e53b99712069"><div class="ttname"><a href="#a519777f5783981d534e9e53b99712069">tf::Executor::run</a></div><div class="ttdeci">tf::Future&lt; void &gt; run(Taskflow &amp;taskflow)</div><div class="ttdoc">runs a taskflow once</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html_a6d0617eebc9421f1ba1f82ce6dd02c00"><div class="ttname"><a href="#a6d0617eebc9421f1ba1f82ce6dd02c00">tf::Executor::run_n</a></div><div class="ttdeci">tf::Future&lt; void &gt; run_n(Taskflow &amp;taskflow, size_t N)</div><div class="ttdoc">runs a taskflow for N times</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html_ab9aa252f70e9a40020a1e5a89d485b85"><div class="ttname"><a href="#ab9aa252f70e9a40020a1e5a89d485b85">tf::Executor::wait_for_all</a></div><div class="ttdeci">void wait_for_all()</div><div class="ttdoc">waits for all tasks to complete</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1558</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1551</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:263</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a8c78c453295a553c1c016e4062da8588"><div class="ttname"><a href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">tf::Task::precede</a></div><div class="ttdeci">Task &amp; precede(Ts &amp;&amp;... tasks)</div><div class="ttdoc">adds precedence links from this to other tasks</div><div class="ttdef"><b>Definition</b> task.hpp:952</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
@@ -453,7 +453,7 @@ template&lt;typename P, typename F&gt; </div>
 <p>creates a parameterized asynchronous task to run the given function </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">P</td><td>task parameter type satisfying <a class="el" href="concepttf_1_1TaskParameters.html" title="determines if a type is a task parameter type">tf::TaskParameters</a> </td></tr>
+    <tr><td class="paramname">P</td><td>task parameter type satisfying <a class="el" href="concepttf_1_1TaskParamsLike.html" title="determines if a type is a task parameter type">tf::TaskParamsLike</a> </td></tr>
     <tr><td class="paramname">F</td><td>callable type</td></tr>
   </table>
   </dd>
@@ -696,7 +696,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;TaskParameters P, typename F, typename I&gt; <br />
+template&lt;TaskParamsLike P, typename F, typename I&gt; <br />
 requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
       <table class="memname">
         <tr>
@@ -725,7 +725,7 @@ requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_
 <p>runs the given function asynchronously when the given range of predecessors finish </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">P</td><td>task parameters type satisfying <a class="el" href="concepttf_1_1TaskParameters.html" title="determines if a type is a task parameter type">tf::TaskParameters</a> </td></tr>
+    <tr><td class="paramname">P</td><td>task parameters type satisfying <a class="el" href="concepttf_1_1TaskParamsLike.html" title="determines if a type is a task parameter type">tf::TaskParamsLike</a> </td></tr>
     <tr><td class="paramname">F</td><td>callable type </td></tr>
     <tr><td class="paramname">I</td><td>iterator type</td></tr>
   </table>
@@ -766,7 +766,7 @@ requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;TaskParameters P, typename F, typename... Tasks&gt; <br />
+template&lt;TaskParamsLike P, typename F, typename... Tasks&gt; <br />
 requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
       <table class="memname">
         <tr>
@@ -790,7 +790,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <p>runs the given function asynchronously when the given predecessors finish </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">P</td><td>task parameters type satisfying <a class="el" href="concepttf_1_1TaskParameters.html" title="determines if a type is a task parameter type">tf::TaskParameters</a> </td></tr>
+    <tr><td class="paramname">P</td><td>task parameters type satisfying <a class="el" href="concepttf_1_1TaskParamsLike.html" title="determines if a type is a task parameter type">tf::TaskParamsLike</a> </td></tr>
     <tr><td class="paramname">F</td><td>callable type </td></tr>
     <tr><td class="paramname">Tasks</td><td>task types convertible to <a class="el" href="classtf_1_1AsyncTask.html" title="class to hold a dependent asynchronous task with shared ownership">tf::AsyncTask</a></td></tr>
   </table>
@@ -1636,7 +1636,7 @@ requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;TaskParameters P, typename F, typename I&gt; <br />
+template&lt;TaskParamsLike P, typename F, typename I&gt; <br />
 requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt;)</div>
       <table class="memname">
         <tr>
@@ -1699,7 +1699,7 @@ requires (!std::same_as&lt;std::decay_t&lt;I&gt;, <a class="el" href="classtf_1_
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;TaskParameters P, typename F, typename... Tasks&gt; <br />
+template&lt;TaskParamsLike P, typename F, typename... Tasks&gt; <br />
 requires (std::same_as&lt;std::decay_t&lt;Tasks&gt;, <a class="el" href="classtf_1_1AsyncTask.html">AsyncTask</a>&gt; &amp;&amp; ...)</div>
       <table class="memname">
         <tr>

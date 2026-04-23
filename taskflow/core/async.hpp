@@ -203,7 +203,7 @@ tf::AsyncTask Executor::silent_dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: silent_dependent_async
-template <TaskParameters P, typename F, typename... Tasks>
+template <TaskParamsLike P, typename F, typename... Tasks>
 requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
@@ -222,7 +222,7 @@ tf::AsyncTask Executor::silent_dependent_async(F&& func, I first, I last) {
 }
 
 // Function: silent_dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, I first, I last
@@ -234,7 +234,7 @@ tf::AsyncTask Executor::silent_dependent_async(
 }
 
 // Function: _silent_dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::_silent_dependent_async(
   P&& params, F&& func, I first, I last, Topology* tpg, NodeBase* parent
@@ -258,7 +258,7 @@ auto Executor::dependent_async(F&& func, Tasks&&... tasks) {
 }
 
 // Function: dependent_async
-template <TaskParameters P, typename F, typename... Tasks>
+template <TaskParamsLike P, typename F, typename... Tasks>
 requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
   std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
@@ -275,7 +275,7 @@ auto Executor::dependent_async(F&& func, I first, I last) {
 }
 
 // Function: dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
   _increment_topology();
@@ -283,7 +283,7 @@ auto Executor::dependent_async(P&& params, F&& func, I first, I last) {
 }
 
 // Function: _dependent_async
-template <TaskParameters P, typename F, typename I>
+template <TaskParamsLike P, typename F, typename I>
 requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 auto Executor::_dependent_async(P&& params, F&& func, I first, I last, Topology* tpg, NodeBase* parent) {
     

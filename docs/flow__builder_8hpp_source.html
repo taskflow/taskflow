@@ -119,19 +119,19 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">FlowBuilder</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; graph);</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  <span class="keyword">template</span> &lt;StaticTask C&gt;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  <span class="keyword">template</span> &lt;StaticTaskLike C&gt;</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(C&amp;&amp; callable);</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>  </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  <span class="keyword">template</span> &lt;RuntimeTask C&gt;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  <span class="keyword">template</span> &lt;RuntimeTaskLike C&gt;</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">   73</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(C&amp;&amp; callable);</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <span class="keyword">template</span> &lt;SubflowTask C&gt;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <span class="keyword">template</span> &lt;SubflowTaskLike C&gt;</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">   98</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(C&amp;&amp; callable);</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span></div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  <span class="keyword">template</span> &lt;ConditionTask C&gt;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  <span class="keyword">template</span> &lt;ConditionTaskLike C&gt;</div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">  131</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(C&amp;&amp; callable);</div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span></div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  <span class="keyword">template</span> &lt;MultiConditionTask C&gt;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  <span class="keyword">template</span> &lt;MultiConditionTaskLike C&gt;</div>
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">  165</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(C&amp;&amp; callable);</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span></div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... C&gt; <span class="keyword">requires</span> (<span class="keyword">sizeof</span>...(C) &gt; 1)</div>
@@ -139,7 +139,7 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span></div>
 <div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>  <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909">erase</a>(<a class="code hl_class" href="classtf_1_1Task.html">Task</a> task);</div>
 <div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span></div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>  <span class="keyword">template</span> &lt;HasGraph T&gt;</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>  <span class="keyword">template</span> &lt;GraphLike T&gt;</div>
 <div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a">composed_of</a>(T&amp; <span class="keywordtype">object</span>);</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>  </div>
 <div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">adopt</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;&amp; graph);</div>
@@ -155,16 +155,16 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>  <span class="comment">// parallel iterations</span></div>
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span></div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> C, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> C, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00405" name="l00405"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#aae3edfa278baa75b08414e083c14c836">  405</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#aae3edfa278baa75b08414e083c14c836">for_each</a>(B first, E last, C callable, P part = P());</div>
 <div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>  </div>
-<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> S, <span class="keyword">typename</span> C, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> S, <span class="keyword">typename</span> C, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00447" name="l00447"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a3b132bd902331a11b04b4ad66cf8bf77">  447</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a3b132bd902331a11b04b4ad66cf8bf77">for_each_index</a>(B first, E last, S step, C callable, P part = P());</div>
 <div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span></div>
-<div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span>  <span class="keyword">template</span> &lt;IndexRange1DLike R, <span class="keyword">typename</span> C, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span>  <span class="keyword">template</span> &lt;IndexRange1DLike R, <span class="keyword">typename</span> C, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00486" name="l00486"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">  486</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">for_each_by_index</a>(R range, C callable, P part = P());</div>
 <div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>  </div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>  <span class="keyword">template</span> &lt;IndexRangeMDLike R, <span class="keyword">typename</span> C, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>  <span class="keyword">template</span> &lt;IndexRangeMDLike R, <span class="keyword">typename</span> C, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00557" name="l00557"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">  557</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">for_each_by_index</a>(R range, C callable, P part = P());</div>
 <div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
 <div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
@@ -172,22 +172,22 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span></div>
 <div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> O, <span class="keyword">typename</span> C,</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>            <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>            <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
 <div class="line"><a id="l00599" name="l00599"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a058c250de62b9d1e4305b8ddf03906ee">  599</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a058c250de62b9d1e4305b8ddf03906ee">transform</a>(B first1, E last1, O d_first, C c, P part = P());</div>
 <div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>  </div>
 <div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B1, <span class="keyword">typename</span> E1, <span class="keyword">typename</span> B2, <span class="keyword">typename</span> O, <span class="keyword">typename</span> C,</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>            <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;C&gt;</a>&gt;)</div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#aff4c2a76d71dc7bebb55ad3797ef55f8">  640</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#aff4c2a76d71dc7bebb55ad3797ef55f8">transform</a>(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>            <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike&lt;std::decay_t&lt;C&gt;</a>&gt;)</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a18d263a5c043a216380441c9d0c72a60">  640</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a18d263a5c043a216380441c9d0c72a60">transform</a>(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());</div>
 <div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>  </div>
 <div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>  <span class="comment">// reduction</span></div>
 <div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span></div>
-<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> O, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> O, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00680" name="l00680"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7">  680</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7">reduce</a>(B first, E last, T&amp; init, O bop, P part = P());</div>
 <div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span></div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>  <span class="keyword">template</span> &lt;IndexRangeLike R, <span class="keyword">typename</span> T, <span class="keyword">typename</span> L, <span class="keyword">typename</span> G, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>  <span class="keyword">template</span> &lt;IndexRangeLike R, <span class="keyword">typename</span> T, <span class="keyword">typename</span> L, <span class="keyword">typename</span> G, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l00737" name="l00737"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825">  737</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825">reduce_by_index</a>(R range, T&amp; init, L lop, G gop, P part = P());</div>
 <div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>  </div>
 <div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
@@ -195,14 +195,14 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span></div>
 <div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> BOP, <span class="keyword">typename</span> UOP,</div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
 <div class="line"><a id="l00780" name="l00780"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a5283a732a77ea75446f8ed5d3377f02c">  780</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5283a732a77ea75446f8ed5d3377f02c">transform_reduce</a>(B first, E last, T&amp; init, BOP bop, UOP uop, P part = P());</div>
 <div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span></div>
 <div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span>  </div>
 <div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B1, <span class="keyword">typename</span> E1, <span class="keyword">typename</span> B2, <span class="keyword">typename</span> T,</div>
-<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>            <span class="keyword">typename</span> BOP_R, <span class="keyword">typename</span> BOP_T, <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
-<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;BOP_T&gt;</a>&gt;)</div>
-<div class="line"><a id="l00822" name="l00822"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#ac6ad9cee0f5836c3d38bf0be861fc49b">  822</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#ac6ad9cee0f5836c3d38bf0be861fc49b">transform_reduce</a>(</div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>            <span class="keyword">typename</span> BOP_R, <span class="keyword">typename</span> BOP_T, <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike&lt;std::decay_t&lt;BOP_T&gt;</a>&gt;)</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#ae787dfa29fd54d1ca655a15fea3b98a5">  822</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#ae787dfa29fd54d1ca655a15fea3b98a5">transform_reduce</a>(</div>
 <div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>    B1 first1, E1 last1, B2 first2, T&amp; init, BOP_R bop_r, BOP_T bop_t, P part = P()</div>
 <div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span>  );</div>
 <div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span> </div>
@@ -236,16 +236,16 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>  <span class="comment">// find</span></div>
 <div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span> </div>
-<div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> UOP, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> UOP, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l01149" name="l01149"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a46a96f5889e6ac87b1ff8d6313b5f471"> 1149</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a46a96f5889e6ac87b1ff8d6313b5f471">find_if</a>(B first, E last, T &amp;result, UOP predicate, P part = P());</div>
 <div class="line"><a id="l01150" name="l01150"></a><span class="lineno"> 1150</span></div>
-<div class="line"><a id="l01196" name="l01196"></a><span class="lineno"> 1196</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> UOP, Partitioner P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01196" name="l01196"></a><span class="lineno"> 1196</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> UOP, PartitionerLike P = DefaultPartitioner&gt;</div>
 <div class="line"><a id="l01197" name="l01197"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a95fa2719fa7bbe7d171cf474ddb06726"> 1197</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a95fa2719fa7bbe7d171cf474ddb06726">find_if_not</a>(B first, E last, T &amp;result, UOP predicate, P part = P());</div>
 <div class="line"><a id="l01198" name="l01198"></a><span class="lineno"> 1198</span></div>
-<div class="line"><a id="l01248" name="l01248"></a><span class="lineno"> 1248</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> C, Partitioner P&gt;</div>
+<div class="line"><a id="l01248" name="l01248"></a><span class="lineno"> 1248</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> C, PartitionerLike P&gt;</div>
 <div class="line"><a id="l01249" name="l01249"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a6bf43eeaa81900084a472be1d36d46a6"> 1249</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a6bf43eeaa81900084a472be1d36d46a6">min_element</a>(B first, E last, T&amp; result, C comp, P part);</div>
 <div class="line"><a id="l01250" name="l01250"></a><span class="lineno"> 1250</span>  </div>
-<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> C, Partitioner P&gt;</div>
+<div class="line"><a id="l01300" name="l01300"></a><span class="lineno"> 1300</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> T, <span class="keyword">typename</span> C, PartitionerLike P&gt;</div>
 <div class="line"><a id="l01301" name="l01301"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a6be5d7f053a868647c3b9e0d9cdf6b68"> 1301</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a6be5d7f053a868647c3b9e0d9cdf6b68">max_element</a>(B first, E last, T&amp; result, C comp, P part);</div>
 <div class="line"><a id="l01302" name="l01302"></a><span class="lineno"> 1302</span> </div>
 <div class="line"><a id="l01303" name="l01303"></a><span class="lineno"> 1303</span>  <span class="comment">// ------------------------------------------------------------------------</span></div>
@@ -260,333 +260,326 @@ $(function(){initNavTree('flow__builder_8hpp_source.html',''); initResizable(tru
 <div class="line"><a id="l01350" name="l01350"></a><span class="lineno"> 1350</span></div>
 <div class="line"><a id="l01376" name="l01376"></a><span class="lineno"> 1376</span> </div>
 <div class="line"><a id="l01377" name="l01377"></a><span class="lineno"> 1377</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B1, <span class="keyword">typename</span> E1, <span class="keyword">typename</span> B2, <span class="keyword">typename</span> E2,</div>
-<div class="line"><a id="l01378" name="l01378"></a><span class="lineno"> 1378</span>            <span class="keyword">typename</span> O, <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l01378" name="l01378"></a><span class="lineno"> 1378</span>            <span class="keyword">typename</span> O, <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
 <div class="line"><a id="l01379" name="l01379"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4c50bf4b0ec33178f407048bc97bcca4"> 1379</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4c50bf4b0ec33178f407048bc97bcca4">merge</a>(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());</div>
 <div class="line"><a id="l01380" name="l01380"></a><span class="lineno"> 1380</span></div>
 <div class="line"><a id="l01409" name="l01409"></a><span class="lineno"> 1409</span> </div>
 <div class="line"><a id="l01410" name="l01410"></a><span class="lineno"> 1410</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B1, <span class="keyword">typename</span> E1, <span class="keyword">typename</span> B2, <span class="keyword">typename</span> E2,</div>
-<div class="line"><a id="l01411" name="l01411"></a><span class="lineno"> 1411</span>            <span class="keyword">typename</span> O, <span class="keyword">typename</span> C, <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
-<div class="line"><a id="l01412" name="l01412"></a><span class="lineno"> 1412</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;C&gt;</a>&gt;)</div>
-<div class="line"><a id="l01413" name="l01413"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a993f0779950e82fcc0e9387a0326afba"> 1413</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a993f0779950e82fcc0e9387a0326afba">merge</a>(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());</div>
+<div class="line"><a id="l01411" name="l01411"></a><span class="lineno"> 1411</span>            <span class="keyword">typename</span> O, <span class="keyword">typename</span> C, <a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike</a> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
+<div class="line"><a id="l01412" name="l01412"></a><span class="lineno"> 1412</span>  <span class="keyword">requires</span> (!<a class="code hl_concept" href="concepttf_1_1PartitionerLike.html">PartitionerLike&lt;std::decay_t&lt;C&gt;</a>&gt;)</div>
+<div class="line"><a id="l01413" name="l01413"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a389dda016f10028ffbb5da63c52ff1af"> 1413</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a389dda016f10028ffbb5da63c52ff1af">merge</a>(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());</div>
 <div class="line"><a id="l01414" name="l01414"></a><span class="lineno"> 1414</span></div>
-<div class="line"><a id="l01440" name="l01440"></a><span class="lineno"> 1440</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> V, <span class="keyword">typename</span> P = DefaultPartitioner&gt;</div>
-<div class="line"><a id="l01441" name="l01441"></a><span class="lineno"> 1441</span>  <span class="keyword">requires</span> <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;P&gt;</a>&gt; </div>
-<div class="line"><a id="l01442" name="l01442"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a2714ff1a2455b4e417b13744623061c0"> 1442</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a2714ff1a2455b4e417b13744623061c0">fill</a>(B first, E last, V value, P part = P());</div>
-<div class="line"><a id="l01443" name="l01443"></a><span class="lineno"> 1443</span></div>
-<div class="line"><a id="l01469" name="l01469"></a><span class="lineno"> 1469</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> C, <span class="keyword">typename</span> V, </div>
-<div class="line"><a id="l01470" name="l01470"></a><span class="lineno"> 1470</span>            <span class="keyword">typename</span> P = <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
-<div class="line"><a id="l01471" name="l01471"></a><span class="lineno"> 1471</span>  <span class="keyword">requires</span> (<a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;P&gt;</a>&gt;</div>
-<div class="line"><a id="l01472" name="l01472"></a><span class="lineno"> 1472</span>          &amp;&amp; std::integral&lt;C&gt;) </div>
-<div class="line"><a id="l01473" name="l01473"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#aae09dc18d5fbb8a36233016a9fd0b3ec"> 1473</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#aae09dc18d5fbb8a36233016a9fd0b3ec">fill_n</a>(B first, C count, V value, P part = P());</div>
-<div class="line"><a id="l01474" name="l01474"></a><span class="lineno"> 1474</span>  </div>
-<div class="line"><a id="l01502" name="l01502"></a><span class="lineno"> 1502</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> G, <span class="keyword">typename</span> P= DefaultPartitioner&gt;</div>
-<div class="line"><a id="l01503" name="l01503"></a><span class="lineno"> 1503</span>  <span class="keyword">requires</span> <a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;P&gt;</a>&gt;</div>
-<div class="line"><a id="l01504" name="l01504"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a9c1df224bf71c408eda062a2230faa5b"> 1504</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a9c1df224bf71c408eda062a2230faa5b">generate</a>(B first, E last, G gen, P part = P());</div>
-<div class="line"><a id="l01505" name="l01505"></a><span class="lineno"> 1505</span></div>
-<div class="line"><a id="l01533" name="l01533"></a><span class="lineno"> 1533</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> C, <span class="keyword">typename</span> G, </div>
-<div class="line"><a id="l01534" name="l01534"></a><span class="lineno"> 1534</span>  <span class="keyword">typename</span> P= <a class="code hl_typedef" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">DefaultPartitioner</a>&gt;</div>
-<div class="line"><a id="l01535" name="l01535"></a><span class="lineno"> 1535</span>  <span class="keyword">requires</span> (<a class="code hl_concept" href="concepttf_1_1Partitioner.html">Partitioner&lt;std::decay_t&lt;P&gt;</a>&gt;</div>
-<div class="line"><a id="l01536" name="l01536"></a><span class="lineno"> 1536</span>          &amp;&amp; std::integral&lt;C&gt;)</div>
-<div class="line"><a id="l01537" name="l01537"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a5209319ba1ce4df196f61614a12fdd8e"> 1537</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5209319ba1ce4df196f61614a12fdd8e">generate_n</a>(B first, C count, G gen, P part = P());</div>
-<div class="line"><a id="l01538" name="l01538"></a><span class="lineno"> 1538</span>  <span class="keyword">protected</span>:</div>
-<div class="line"><a id="l01539" name="l01539"></a><span class="lineno"> 1539</span>  </div>
-<div class="line"><a id="l01543" name="l01543"></a><span class="lineno"> 1543</span>  <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; _graph;</div>
-<div class="line"><a id="l01544" name="l01544"></a><span class="lineno"> 1544</span> </div>
-<div class="line"><a id="l01545" name="l01545"></a><span class="lineno"> 1545</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l01546" name="l01546"></a><span class="lineno"> 1546</span> </div>
-<div class="line"><a id="l01547" name="l01547"></a><span class="lineno"> 1547</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> L&gt;</div>
-<div class="line"><a id="l01548" name="l01548"></a><span class="lineno"> 1548</span>  <span class="keywordtype">void</span> _linearize(L&amp;);</div>
-<div class="line"><a id="l01549" name="l01549"></a><span class="lineno"> 1549</span>};</div>
+<div class="line"><a id="l01440" name="l01440"></a><span class="lineno"> 1440</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> V, PartitionerLike P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01441" name="l01441"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a5b9899d132ac8712d7f3c26ce2e7a7c8"> 1441</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5b9899d132ac8712d7f3c26ce2e7a7c8">fill</a>(B first, E last, V value, P part = P());</div>
+<div class="line"><a id="l01442" name="l01442"></a><span class="lineno"> 1442</span></div>
+<div class="line"><a id="l01468" name="l01468"></a><span class="lineno"> 1468</span>  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> B, std::<span class="keywordtype">int</span>egral C, <span class="keyword">typename</span> V, PartitionerLike P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01469" name="l01469"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a6a46a8984f93399522936e3ae7b0b9e3"> 1469</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a6a46a8984f93399522936e3ae7b0b9e3">fill_n</a>(B first, C count, V value, P part = P());</div>
+<div class="line"><a id="l01470" name="l01470"></a><span class="lineno"> 1470</span>  </div>
+<div class="line"><a id="l01498" name="l01498"></a><span class="lineno"> 1498</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, <span class="keyword">typename</span> E, <span class="keyword">typename</span> G, PartitionerLike P= DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01499" name="l01499"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a6c041f68d00d086b8da5cfb53e2a46e0"> 1499</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a6c041f68d00d086b8da5cfb53e2a46e0">generate</a>(B first, E last, G gen, P part = P());</div>
+<div class="line"><a id="l01500" name="l01500"></a><span class="lineno"> 1500</span></div>
+<div class="line"><a id="l01528" name="l01528"></a><span class="lineno"> 1528</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> B, std::<span class="keywordtype">int</span>egral C, <span class="keyword">typename</span> G, PartitionerLike P = DefaultPartitioner&gt;</div>
+<div class="line"><a id="l01529" name="l01529"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a3b0884bbb8f7e142f5cacd6f64e687d5"> 1529</a></span>  <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a3b0884bbb8f7e142f5cacd6f64e687d5">generate_n</a>(B first, C count, G gen, P part = P());</div>
+<div class="line"><a id="l01530" name="l01530"></a><span class="lineno"> 1530</span> </div>
+<div class="line"><a id="l01531" name="l01531"></a><span class="lineno"> 1531</span>  <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l01532" name="l01532"></a><span class="lineno"> 1532</span>  </div>
+<div class="line"><a id="l01536" name="l01536"></a><span class="lineno"> 1536</span>  <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; _graph;</div>
+<div class="line"><a id="l01537" name="l01537"></a><span class="lineno"> 1537</span> </div>
+<div class="line"><a id="l01538" name="l01538"></a><span class="lineno"> 1538</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l01539" name="l01539"></a><span class="lineno"> 1539</span> </div>
+<div class="line"><a id="l01540" name="l01540"></a><span class="lineno"> 1540</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> L&gt;</div>
+<div class="line"><a id="l01541" name="l01541"></a><span class="lineno"> 1541</span>  <span class="keywordtype">void</span> _linearize(L&amp;);</div>
+<div class="line"><a id="l01542" name="l01542"></a><span class="lineno"> 1542</span>};</div>
 </div>
-<div class="line"><a id="l01550" name="l01550"></a><span class="lineno"> 1550</span> </div>
-<div class="line"><a id="l01551" name="l01551"></a><span class="lineno"> 1551</span><span class="comment">// Constructor</span></div>
-<div class="foldopen" id="foldopen01552" data-start="{" data-end="}">
-<div class="line"><a id="l01552" name="l01552"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179"> 1552</a></span><span class="keyword">inline</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">FlowBuilder::FlowBuilder</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; graph) :</div>
-<div class="line"><a id="l01553" name="l01553"></a><span class="lineno"> 1553</span>  _graph {graph} {</div>
-<div class="line"><a id="l01554" name="l01554"></a><span class="lineno"> 1554</span>}</div>
+<div class="line"><a id="l01543" name="l01543"></a><span class="lineno"> 1543</span> </div>
+<div class="line"><a id="l01544" name="l01544"></a><span class="lineno"> 1544</span><span class="comment">// Constructor</span></div>
+<div class="foldopen" id="foldopen01545" data-start="{" data-end="}">
+<div class="line"><a id="l01545" name="l01545"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179"> 1545</a></span><span class="keyword">inline</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">FlowBuilder::FlowBuilder</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; graph) :</div>
+<div class="line"><a id="l01546" name="l01546"></a><span class="lineno"> 1546</span>  _graph {graph} {</div>
+<div class="line"><a id="l01547" name="l01547"></a><span class="lineno"> 1547</span>}</div>
 </div>
-<div class="line"><a id="l01555" name="l01555"></a><span class="lineno"> 1555</span> </div>
-<div class="line"><a id="l01556" name="l01556"></a><span class="lineno"> 1556</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01557" name="l01557"></a><span class="lineno"> 1557</span><span class="keyword">template</span> &lt;StaticTask C&gt;</div>
-<div class="foldopen" id="foldopen01558" data-start="{" data-end="}">
-<div class="line"><a id="l01558" name="l01558"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c"> 1558</a></span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
-<div class="line"><a id="l01559" name="l01559"></a><span class="lineno"> 1559</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01560" name="l01560"></a><span class="lineno"> 1560</span>    std::in_place_type_t&lt;Node::Static&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01561" name="l01561"></a><span class="lineno"> 1561</span>  ));</div>
-<div class="line"><a id="l01562" name="l01562"></a><span class="lineno"> 1562</span>}</div>
+<div class="line"><a id="l01548" name="l01548"></a><span class="lineno"> 1548</span> </div>
+<div class="line"><a id="l01549" name="l01549"></a><span class="lineno"> 1549</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01550" name="l01550"></a><span class="lineno"> 1550</span><span class="keyword">template</span> &lt;StaticTaskLike C&gt;</div>
+<div class="foldopen" id="foldopen01551" data-start="{" data-end="}">
+<div class="line"><a id="l01551" name="l01551"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c"> 1551</a></span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
+<div class="line"><a id="l01552" name="l01552"></a><span class="lineno"> 1552</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01553" name="l01553"></a><span class="lineno"> 1553</span>    std::in_place_type_t&lt;Node::Static&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01554" name="l01554"></a><span class="lineno"> 1554</span>  ));</div>
+<div class="line"><a id="l01555" name="l01555"></a><span class="lineno"> 1555</span>}</div>
 </div>
-<div class="line"><a id="l01563" name="l01563"></a><span class="lineno"> 1563</span> </div>
-<div class="line"><a id="l01564" name="l01564"></a><span class="lineno"> 1564</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01565" name="l01565"></a><span class="lineno"> 1565</span><span class="keyword">template</span> &lt;RuntimeTask C&gt;</div>
-<div class="line"><a id="l01566" name="l01566"></a><span class="lineno"> 1566</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
-<div class="line"><a id="l01567" name="l01567"></a><span class="lineno"> 1567</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_invocable_v&lt;C, tf::Runtime&amp;&gt;) {</div>
-<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01569" name="l01569"></a><span class="lineno"> 1569</span>      std::in_place_type_t&lt;Node::Runtime&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01570" name="l01570"></a><span class="lineno"> 1570</span>    ));</div>
-<div class="line"><a id="l01571" name="l01571"></a><span class="lineno"> 1571</span>  }</div>
-<div class="line"><a id="l01572" name="l01572"></a><span class="lineno"> 1572</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_invocable_v&lt;C, tf::NonpreemptiveRuntime&amp;&gt;) {</div>
-<div class="line"><a id="l01573" name="l01573"></a><span class="lineno"> 1573</span>    <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01574" name="l01574"></a><span class="lineno"> 1574</span>      std::in_place_type_t&lt;Node::NonpreemptiveRuntime&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01575" name="l01575"></a><span class="lineno"> 1575</span>    ));</div>
-<div class="line"><a id="l01576" name="l01576"></a><span class="lineno"> 1576</span>  }</div>
-<div class="line"><a id="l01577" name="l01577"></a><span class="lineno"> 1577</span>  <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l01578" name="l01578"></a><span class="lineno"> 1578</span>    <span class="keyword">static_assert</span>(dependent_false_v&lt;C&gt;, <span class="stringliteral">&quot;invalid runtime task callable&quot;</span>);</div>
-<div class="line"><a id="l01579" name="l01579"></a><span class="lineno"> 1579</span>  }</div>
-<div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>}</div>
-<div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span> </div>
-<div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span><span class="keyword">template</span> &lt;SubflowTask C&gt;</div>
-<div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
-<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>    std::in_place_type_t&lt;Node::Subflow&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01587" name="l01587"></a><span class="lineno"> 1587</span>  ));</div>
-<div class="line"><a id="l01588" name="l01588"></a><span class="lineno"> 1588</span>}</div>
-<div class="line"><a id="l01589" name="l01589"></a><span class="lineno"> 1589</span> </div>
-<div class="line"><a id="l01590" name="l01590"></a><span class="lineno"> 1590</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01591" name="l01591"></a><span class="lineno"> 1591</span><span class="keyword">template</span> &lt;ConditionTask C&gt;</div>
-<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
-<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01594" name="l01594"></a><span class="lineno"> 1594</span>    std::in_place_type_t&lt;Node::Condition&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01595" name="l01595"></a><span class="lineno"> 1595</span>  ));</div>
-<div class="line"><a id="l01596" name="l01596"></a><span class="lineno"> 1596</span>}</div>
-<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span> </div>
-<div class="line"><a id="l01598" name="l01598"></a><span class="lineno"> 1598</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01599" name="l01599"></a><span class="lineno"> 1599</span><span class="keyword">template</span> &lt;MultiConditionTask C&gt;</div>
-<div class="line"><a id="l01600" name="l01600"></a><span class="lineno"> 1600</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
-<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"> 1601</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>    std::in_place_type_t&lt;Node::MultiCondition&gt;{}, std::forward&lt;C&gt;(c)</div>
-<div class="line"><a id="l01603" name="l01603"></a><span class="lineno"> 1603</span>  ));</div>
-<div class="line"><a id="l01604" name="l01604"></a><span class="lineno"> 1604</span>}</div>
-<div class="line"><a id="l01605" name="l01605"></a><span class="lineno"> 1605</span> </div>
-<div class="line"><a id="l01606" name="l01606"></a><span class="lineno"> 1606</span><span class="comment">// Function: composed_of</span></div>
-<div class="line"><a id="l01607" name="l01607"></a><span class="lineno"> 1607</span><span class="keyword">template</span> &lt;HasGraph T&gt;</div>
+<div class="line"><a id="l01556" name="l01556"></a><span class="lineno"> 1556</span> </div>
+<div class="line"><a id="l01557" name="l01557"></a><span class="lineno"> 1557</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01558" name="l01558"></a><span class="lineno"> 1558</span><span class="keyword">template</span> &lt;RuntimeTaskLike C&gt;</div>
+<div class="line"><a id="l01559" name="l01559"></a><span class="lineno"> 1559</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
+<div class="line"><a id="l01560" name="l01560"></a><span class="lineno"> 1560</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_invocable_v&lt;C, tf::Runtime&amp;&gt;) {</div>
+<div class="line"><a id="l01561" name="l01561"></a><span class="lineno"> 1561</span>    <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01562" name="l01562"></a><span class="lineno"> 1562</span>      std::in_place_type_t&lt;Node::Runtime&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01563" name="l01563"></a><span class="lineno"> 1563</span>    ));</div>
+<div class="line"><a id="l01564" name="l01564"></a><span class="lineno"> 1564</span>  }</div>
+<div class="line"><a id="l01565" name="l01565"></a><span class="lineno"> 1565</span>  <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_invocable_v&lt;C, tf::NonpreemptiveRuntime&amp;&gt;) {</div>
+<div class="line"><a id="l01566" name="l01566"></a><span class="lineno"> 1566</span>    <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01567" name="l01567"></a><span class="lineno"> 1567</span>      std::in_place_type_t&lt;Node::NonpreemptiveRuntime&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01568" name="l01568"></a><span class="lineno"> 1568</span>    ));</div>
+<div class="line"><a id="l01569" name="l01569"></a><span class="lineno"> 1569</span>  }</div>
+<div class="line"><a id="l01570" name="l01570"></a><span class="lineno"> 1570</span>  <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l01571" name="l01571"></a><span class="lineno"> 1571</span>    <span class="keyword">static_assert</span>(dependent_false_v&lt;C&gt;, <span class="stringliteral">&quot;invalid runtime task callable&quot;</span>);</div>
+<div class="line"><a id="l01572" name="l01572"></a><span class="lineno"> 1572</span>  }</div>
+<div class="line"><a id="l01573" name="l01573"></a><span class="lineno"> 1573</span>}</div>
+<div class="line"><a id="l01574" name="l01574"></a><span class="lineno"> 1574</span> </div>
+<div class="line"><a id="l01575" name="l01575"></a><span class="lineno"> 1575</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01576" name="l01576"></a><span class="lineno"> 1576</span><span class="keyword">template</span> &lt;SubflowTaskLike C&gt;</div>
+<div class="line"><a id="l01577" name="l01577"></a><span class="lineno"> 1577</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
+<div class="line"><a id="l01578" name="l01578"></a><span class="lineno"> 1578</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01579" name="l01579"></a><span class="lineno"> 1579</span>    std::in_place_type_t&lt;Node::Subflow&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>  ));</div>
+<div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span>}</div>
+<div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span> </div>
+<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span><span class="keyword">template</span> &lt;ConditionTaskLike C&gt;</div>
+<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
+<div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01587" name="l01587"></a><span class="lineno"> 1587</span>    std::in_place_type_t&lt;Node::Condition&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01588" name="l01588"></a><span class="lineno"> 1588</span>  ));</div>
+<div class="line"><a id="l01589" name="l01589"></a><span class="lineno"> 1589</span>}</div>
+<div class="line"><a id="l01590" name="l01590"></a><span class="lineno"> 1590</span> </div>
+<div class="line"><a id="l01591" name="l01591"></a><span class="lineno"> 1591</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01592" name="l01592"></a><span class="lineno"> 1592</span><span class="keyword">template</span> &lt;MultiConditionTaskLike C&gt;</div>
+<div class="line"><a id="l01593" name="l01593"></a><span class="lineno"> 1593</span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp; c) {</div>
+<div class="line"><a id="l01594" name="l01594"></a><span class="lineno"> 1594</span>  <span class="keywordflow">return</span> Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01595" name="l01595"></a><span class="lineno"> 1595</span>    std::in_place_type_t&lt;Node::MultiCondition&gt;{}, std::forward&lt;C&gt;(c)</div>
+<div class="line"><a id="l01596" name="l01596"></a><span class="lineno"> 1596</span>  ));</div>
+<div class="line"><a id="l01597" name="l01597"></a><span class="lineno"> 1597</span>}</div>
+<div class="line"><a id="l01598" name="l01598"></a><span class="lineno"> 1598</span> </div>
+<div class="line"><a id="l01599" name="l01599"></a><span class="lineno"> 1599</span><span class="comment">// Function: composed_of</span></div>
+<div class="line"><a id="l01600" name="l01600"></a><span class="lineno"> 1600</span><span class="keyword">template</span> &lt;GraphLike T&gt;</div>
+<div class="foldopen" id="foldopen01601" data-start="{" data-end="}">
+<div class="line"><a id="l01601" name="l01601"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a"> 1601</a></span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a">FlowBuilder::composed_of</a>(T&amp; target) {</div>
+<div class="line"><a id="l01602" name="l01602"></a><span class="lineno"> 1602</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01603" name="l01603"></a><span class="lineno"> 1603</span>    std::in_place_type_t&lt;Node::Module&gt;{}, <a class="code hl_function" href="namespacetf.html#a8dbddc846693290af4f100c558cc71d0">retrieve_graph</a>(target)</div>
+<div class="line"><a id="l01604" name="l01604"></a><span class="lineno"> 1604</span>  ));</div>
+<div class="line"><a id="l01605" name="l01605"></a><span class="lineno"> 1605</span>}</div>
+</div>
+<div class="line"><a id="l01606" name="l01606"></a><span class="lineno"> 1606</span> </div>
+<div class="line"><a id="l01607" name="l01607"></a><span class="lineno"> 1607</span><span class="comment">// Function: adopt</span></div>
 <div class="foldopen" id="foldopen01608" data-start="{" data-end="}">
-<div class="line"><a id="l01608" name="l01608"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a"> 1608</a></span><a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a">FlowBuilder::composed_of</a>(T&amp; target) {</div>
+<div class="line"><a id="l01608" name="l01608"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c"> 1608</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">FlowBuilder::adopt</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;&amp; graph) {</div>
 <div class="line"><a id="l01609" name="l01609"></a><span class="lineno"> 1609</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>    std::in_place_type_t&lt;Node::Module&gt;{}, <a class="code hl_function" href="namespacetf.html#a8dbddc846693290af4f100c558cc71d0">retrieve_graph</a>(target)</div>
+<div class="line"><a id="l01610" name="l01610"></a><span class="lineno"> 1610</span>    std::in_place_type_t&lt;Node::AdoptedModule&gt;{}, std::move(graph)</div>
 <div class="line"><a id="l01611" name="l01611"></a><span class="lineno"> 1611</span>  ));</div>
 <div class="line"><a id="l01612" name="l01612"></a><span class="lineno"> 1612</span>}</div>
 </div>
 <div class="line"><a id="l01613" name="l01613"></a><span class="lineno"> 1613</span> </div>
-<div class="line"><a id="l01614" name="l01614"></a><span class="lineno"> 1614</span><span class="comment">// Function: adopt</span></div>
+<div class="line"><a id="l01614" name="l01614"></a><span class="lineno"> 1614</span><span class="comment">// Function: placeholder</span></div>
 <div class="foldopen" id="foldopen01615" data-start="{" data-end="}">
-<div class="line"><a id="l01615" name="l01615"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c"> 1615</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">FlowBuilder::adopt</a>(<a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;&amp; graph) {</div>
-<div class="line"><a id="l01616" name="l01616"></a><span class="lineno"> 1616</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01617" name="l01617"></a><span class="lineno"> 1617</span>    std::in_place_type_t&lt;Node::AdoptedModule&gt;{}, std::move(graph)</div>
-<div class="line"><a id="l01618" name="l01618"></a><span class="lineno"> 1618</span>  ));</div>
-<div class="line"><a id="l01619" name="l01619"></a><span class="lineno"> 1619</span>}</div>
+<div class="line"><a id="l01615" name="l01615"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf"> 1615</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">FlowBuilder::placeholder</a>() {</div>
+<div class="line"><a id="l01616" name="l01616"></a><span class="lineno"> 1616</span>  <span class="keyword">auto</span> node = _graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
+<div class="line"><a id="l01617" name="l01617"></a><span class="lineno"> 1617</span>    std::in_place_type_t&lt;Node::Placeholder&gt;{}</div>
+<div class="line"><a id="l01618" name="l01618"></a><span class="lineno"> 1618</span>  );</div>
+<div class="line"><a id="l01619" name="l01619"></a><span class="lineno"> 1619</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(node);</div>
+<div class="line"><a id="l01620" name="l01620"></a><span class="lineno"> 1620</span>}</div>
 </div>
-<div class="line"><a id="l01620" name="l01620"></a><span class="lineno"> 1620</span> </div>
-<div class="line"><a id="l01621" name="l01621"></a><span class="lineno"> 1621</span><span class="comment">// Function: placeholder</span></div>
-<div class="foldopen" id="foldopen01622" data-start="{" data-end="}">
-<div class="line"><a id="l01622" name="l01622"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf"> 1622</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">FlowBuilder::placeholder</a>() {</div>
-<div class="line"><a id="l01623" name="l01623"></a><span class="lineno"> 1623</span>  <span class="keyword">auto</span> node = _graph._emplace_back(NSTATE::NONE, ESTATE::NONE, <a class="code hl_class" href="classtf_1_1DefaultTaskParams.html">DefaultTaskParams</a>{}, <span class="keyword">nullptr</span>, <span class="keyword">nullptr</span>, 0,</div>
-<div class="line"><a id="l01624" name="l01624"></a><span class="lineno"> 1624</span>    std::in_place_type_t&lt;Node::Placeholder&gt;{}</div>
-<div class="line"><a id="l01625" name="l01625"></a><span class="lineno"> 1625</span>  );</div>
-<div class="line"><a id="l01626" name="l01626"></a><span class="lineno"> 1626</span>  <span class="keywordflow">return</span> <a class="code hl_class" href="classtf_1_1Task.html">Task</a>(node);</div>
-<div class="line"><a id="l01627" name="l01627"></a><span class="lineno"> 1627</span>}</div>
+<div class="line"><a id="l01621" name="l01621"></a><span class="lineno"> 1621</span> </div>
+<div class="line"><a id="l01622" name="l01622"></a><span class="lineno"> 1622</span><span class="comment">// Function: emplace</span></div>
+<div class="line"><a id="l01623" name="l01623"></a><span class="lineno"> 1623</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... C&gt; <span class="keyword">requires</span> (<span class="keyword">sizeof</span>...(C) &gt; 1)</div>
+<div class="foldopen" id="foldopen01624" data-start="{" data-end="}">
+<div class="line"><a id="l01624" name="l01624"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a32d7fbe419313cbadaafe60e8c7315a6"> 1624</a></span><span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp;... cs) {</div>
+<div class="line"><a id="l01625" name="l01625"></a><span class="lineno"> 1625</span>  <span class="keywordflow">return</span> std::make_tuple(<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(std::forward&lt;C&gt;(cs))...);</div>
+<div class="line"><a id="l01626" name="l01626"></a><span class="lineno"> 1626</span>}</div>
 </div>
-<div class="line"><a id="l01628" name="l01628"></a><span class="lineno"> 1628</span> </div>
-<div class="line"><a id="l01629" name="l01629"></a><span class="lineno"> 1629</span><span class="comment">// Function: emplace</span></div>
-<div class="line"><a id="l01630" name="l01630"></a><span class="lineno"> 1630</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>... C&gt; <span class="keyword">requires</span> (<span class="keyword">sizeof</span>...(C) &gt; 1)</div>
-<div class="foldopen" id="foldopen01631" data-start="{" data-end="}">
-<div class="line"><a id="l01631" name="l01631"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a32d7fbe419313cbadaafe60e8c7315a6"> 1631</a></span><span class="keyword">auto</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">FlowBuilder::emplace</a>(C&amp;&amp;... cs) {</div>
-<div class="line"><a id="l01632" name="l01632"></a><span class="lineno"> 1632</span>  <span class="keywordflow">return</span> std::make_tuple(<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">emplace</a>(std::forward&lt;C&gt;(cs))...);</div>
-<div class="line"><a id="l01633" name="l01633"></a><span class="lineno"> 1633</span>}</div>
-</div>
+<div class="line"><a id="l01627" name="l01627"></a><span class="lineno"> 1627</span> </div>
+<div class="line"><a id="l01628" name="l01628"></a><span class="lineno"> 1628</span><span class="comment">// Function: erase</span></div>
+<div class="foldopen" id="foldopen01629" data-start="{" data-end="}">
+<div class="line"><a id="l01629" name="l01629"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909"> 1629</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909">FlowBuilder::erase</a>(<a class="code hl_class" href="classtf_1_1Task.html">Task</a> task) {</div>
+<div class="line"><a id="l01630" name="l01630"></a><span class="lineno"> 1630</span> </div>
+<div class="line"><a id="l01631" name="l01631"></a><span class="lineno"> 1631</span>  <span class="keywordflow">if</span> (!task._node) {</div>
+<div class="line"><a id="l01632" name="l01632"></a><span class="lineno"> 1632</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01633" name="l01633"></a><span class="lineno"> 1633</span>  }</div>
 <div class="line"><a id="l01634" name="l01634"></a><span class="lineno"> 1634</span> </div>
-<div class="line"><a id="l01635" name="l01635"></a><span class="lineno"> 1635</span><span class="comment">// Function: erase</span></div>
-<div class="foldopen" id="foldopen01636" data-start="{" data-end="}">
-<div class="line"><a id="l01636" name="l01636"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909"> 1636</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909">FlowBuilder::erase</a>(<a class="code hl_class" href="classtf_1_1Task.html">Task</a> task) {</div>
-<div class="line"><a id="l01637" name="l01637"></a><span class="lineno"> 1637</span> </div>
-<div class="line"><a id="l01638" name="l01638"></a><span class="lineno"> 1638</span>  <span class="keywordflow">if</span> (!task._node) {</div>
-<div class="line"><a id="l01639" name="l01639"></a><span class="lineno"> 1639</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01640" name="l01640"></a><span class="lineno"> 1640</span>  }</div>
-<div class="line"><a id="l01641" name="l01641"></a><span class="lineno"> 1641</span> </div>
-<div class="line"><a id="l01642" name="l01642"></a><span class="lineno"> 1642</span>  <span class="comment">// remove task from its successors&#39; predecessor list</span></div>
-<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>  <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=0; i&lt;task._node-&gt;_num_successors; ++i) {</div>
-<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span>    task._node-&gt;_edges[i]-&gt;_remove_predecessors(task._node);</div>
-<div class="line"><a id="l01645" name="l01645"></a><span class="lineno"> 1645</span>  }</div>
-<div class="line"><a id="l01646" name="l01646"></a><span class="lineno"> 1646</span> </div>
-<div class="line"><a id="l01647" name="l01647"></a><span class="lineno"> 1647</span>  <span class="comment">// remove task from its precedessors&#39; successor list</span></div>
-<div class="line"><a id="l01648" name="l01648"></a><span class="lineno"> 1648</span>  <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=task._node-&gt;_num_successors; i&lt;task._node-&gt;_edges.size(); ++i) {</div>
-<div class="line"><a id="l01649" name="l01649"></a><span class="lineno"> 1649</span>    task._node-&gt;_edges[i]-&gt;_remove_successors(task._node);</div>
-<div class="line"><a id="l01650" name="l01650"></a><span class="lineno"> 1650</span>  }</div>
-<div class="line"><a id="l01651" name="l01651"></a><span class="lineno"> 1651</span> </div>
-<div class="line"><a id="l01652" name="l01652"></a><span class="lineno"> 1652</span>  _graph._erase(task._node);</div>
-<div class="line"><a id="l01653" name="l01653"></a><span class="lineno"> 1653</span>}</div>
+<div class="line"><a id="l01635" name="l01635"></a><span class="lineno"> 1635</span>  <span class="comment">// remove task from its successors&#39; predecessor list</span></div>
+<div class="line"><a id="l01636" name="l01636"></a><span class="lineno"> 1636</span>  <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=0; i&lt;task._node-&gt;_num_successors; ++i) {</div>
+<div class="line"><a id="l01637" name="l01637"></a><span class="lineno"> 1637</span>    task._node-&gt;_edges[i]-&gt;_remove_predecessors(task._node);</div>
+<div class="line"><a id="l01638" name="l01638"></a><span class="lineno"> 1638</span>  }</div>
+<div class="line"><a id="l01639" name="l01639"></a><span class="lineno"> 1639</span> </div>
+<div class="line"><a id="l01640" name="l01640"></a><span class="lineno"> 1640</span>  <span class="comment">// remove task from its precedessors&#39; successor list</span></div>
+<div class="line"><a id="l01641" name="l01641"></a><span class="lineno"> 1641</span>  <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=task._node-&gt;_num_successors; i&lt;task._node-&gt;_edges.size(); ++i) {</div>
+<div class="line"><a id="l01642" name="l01642"></a><span class="lineno"> 1642</span>    task._node-&gt;_edges[i]-&gt;_remove_successors(task._node);</div>
+<div class="line"><a id="l01643" name="l01643"></a><span class="lineno"> 1643</span>  }</div>
+<div class="line"><a id="l01644" name="l01644"></a><span class="lineno"> 1644</span> </div>
+<div class="line"><a id="l01645" name="l01645"></a><span class="lineno"> 1645</span>  _graph._erase(task._node);</div>
+<div class="line"><a id="l01646" name="l01646"></a><span class="lineno"> 1646</span>}</div>
 </div>
-<div class="line"><a id="l01654" name="l01654"></a><span class="lineno"> 1654</span> </div>
+<div class="line"><a id="l01647" name="l01647"></a><span class="lineno"> 1647</span> </div>
+<div class="line"><a id="l01648" name="l01648"></a><span class="lineno"> 1648</span> </div>
+<div class="line"><a id="l01649" name="l01649"></a><span class="lineno"> 1649</span><span class="comment">// Procedure: _linearize</span></div>
+<div class="line"><a id="l01650" name="l01650"></a><span class="lineno"> 1650</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> L&gt;</div>
+<div class="line"><a id="l01651" name="l01651"></a><span class="lineno"> 1651</span><span class="keywordtype">void</span> FlowBuilder::_linearize(L&amp; keys) {</div>
+<div class="line"><a id="l01652" name="l01652"></a><span class="lineno"> 1652</span> </div>
+<div class="line"><a id="l01653" name="l01653"></a><span class="lineno"> 1653</span>  <span class="keyword">auto</span> itr = keys.begin();</div>
+<div class="line"><a id="l01654" name="l01654"></a><span class="lineno"> 1654</span>  <span class="keyword">auto</span> end = keys.end();</div>
 <div class="line"><a id="l01655" name="l01655"></a><span class="lineno"> 1655</span> </div>
-<div class="line"><a id="l01656" name="l01656"></a><span class="lineno"> 1656</span><span class="comment">// Procedure: _linearize</span></div>
-<div class="line"><a id="l01657" name="l01657"></a><span class="lineno"> 1657</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> L&gt;</div>
-<div class="line"><a id="l01658" name="l01658"></a><span class="lineno"> 1658</span><span class="keywordtype">void</span> FlowBuilder::_linearize(L&amp; keys) {</div>
+<div class="line"><a id="l01656" name="l01656"></a><span class="lineno"> 1656</span>  <span class="keywordflow">if</span>(itr == end) {</div>
+<div class="line"><a id="l01657" name="l01657"></a><span class="lineno"> 1657</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01658" name="l01658"></a><span class="lineno"> 1658</span>  }</div>
 <div class="line"><a id="l01659" name="l01659"></a><span class="lineno"> 1659</span> </div>
-<div class="line"><a id="l01660" name="l01660"></a><span class="lineno"> 1660</span>  <span class="keyword">auto</span> itr = keys.begin();</div>
-<div class="line"><a id="l01661" name="l01661"></a><span class="lineno"> 1661</span>  <span class="keyword">auto</span> end = keys.end();</div>
-<div class="line"><a id="l01662" name="l01662"></a><span class="lineno"> 1662</span> </div>
-<div class="line"><a id="l01663" name="l01663"></a><span class="lineno"> 1663</span>  <span class="keywordflow">if</span>(itr == end) {</div>
-<div class="line"><a id="l01664" name="l01664"></a><span class="lineno"> 1664</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01665" name="l01665"></a><span class="lineno"> 1665</span>  }</div>
+<div class="line"><a id="l01660" name="l01660"></a><span class="lineno"> 1660</span>  <span class="keyword">auto</span> nxt = itr;</div>
+<div class="line"><a id="l01661" name="l01661"></a><span class="lineno"> 1661</span> </div>
+<div class="line"><a id="l01662" name="l01662"></a><span class="lineno"> 1662</span>  <span class="keywordflow">for</span>(++nxt; nxt != end; ++nxt, ++itr) {</div>
+<div class="line"><a id="l01663" name="l01663"></a><span class="lineno"> 1663</span>    itr-&gt;_node-&gt;_precede(nxt-&gt;_node);</div>
+<div class="line"><a id="l01664" name="l01664"></a><span class="lineno"> 1664</span>  }</div>
+<div class="line"><a id="l01665" name="l01665"></a><span class="lineno"> 1665</span>}</div>
 <div class="line"><a id="l01666" name="l01666"></a><span class="lineno"> 1666</span> </div>
-<div class="line"><a id="l01667" name="l01667"></a><span class="lineno"> 1667</span>  <span class="keyword">auto</span> nxt = itr;</div>
-<div class="line"><a id="l01668" name="l01668"></a><span class="lineno"> 1668</span> </div>
-<div class="line"><a id="l01669" name="l01669"></a><span class="lineno"> 1669</span>  <span class="keywordflow">for</span>(++nxt; nxt != end; ++nxt, ++itr) {</div>
-<div class="line"><a id="l01670" name="l01670"></a><span class="lineno"> 1670</span>    itr-&gt;_node-&gt;_precede(nxt-&gt;_node);</div>
-<div class="line"><a id="l01671" name="l01671"></a><span class="lineno"> 1671</span>  }</div>
-<div class="line"><a id="l01672" name="l01672"></a><span class="lineno"> 1672</span>}</div>
-<div class="line"><a id="l01673" name="l01673"></a><span class="lineno"> 1673</span> </div>
-<div class="line"><a id="l01674" name="l01674"></a><span class="lineno"> 1674</span><span class="comment">// Procedure: linearize</span></div>
-<div class="foldopen" id="foldopen01675" data-start="{" data-end="}">
-<div class="line"><a id="l01675" name="l01675"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d"> 1675</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">FlowBuilder::linearize</a>(std::vector&lt;Task&gt;&amp; keys) {</div>
-<div class="line"><a id="l01676" name="l01676"></a><span class="lineno"> 1676</span>  _linearize(keys);</div>
-<div class="line"><a id="l01677" name="l01677"></a><span class="lineno"> 1677</span>}</div>
+<div class="line"><a id="l01667" name="l01667"></a><span class="lineno"> 1667</span><span class="comment">// Procedure: linearize</span></div>
+<div class="foldopen" id="foldopen01668" data-start="{" data-end="}">
+<div class="line"><a id="l01668" name="l01668"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d"> 1668</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">FlowBuilder::linearize</a>(std::vector&lt;Task&gt;&amp; keys) {</div>
+<div class="line"><a id="l01669" name="l01669"></a><span class="lineno"> 1669</span>  _linearize(keys);</div>
+<div class="line"><a id="l01670" name="l01670"></a><span class="lineno"> 1670</span>}</div>
 </div>
-<div class="line"><a id="l01678" name="l01678"></a><span class="lineno"> 1678</span> </div>
-<div class="line"><a id="l01679" name="l01679"></a><span class="lineno"> 1679</span><span class="comment">// Procedure: linearize</span></div>
-<div class="foldopen" id="foldopen01680" data-start="{" data-end="}">
-<div class="line"><a id="l01680" name="l01680"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16"> 1680</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">FlowBuilder::linearize</a>(std::initializer_list&lt;Task&gt; keys) {</div>
-<div class="line"><a id="l01681" name="l01681"></a><span class="lineno"> 1681</span>  _linearize(keys);</div>
-<div class="line"><a id="l01682" name="l01682"></a><span class="lineno"> 1682</span>}</div>
+<div class="line"><a id="l01671" name="l01671"></a><span class="lineno"> 1671</span> </div>
+<div class="line"><a id="l01672" name="l01672"></a><span class="lineno"> 1672</span><span class="comment">// Procedure: linearize</span></div>
+<div class="foldopen" id="foldopen01673" data-start="{" data-end="}">
+<div class="line"><a id="l01673" name="l01673"></a><span class="lineno"><a class="line" href="classtf_1_1FlowBuilder.html#a4ec89b554d15ad5fb96f4fdb10dbbb16"> 1673</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">FlowBuilder::linearize</a>(std::initializer_list&lt;Task&gt; keys) {</div>
+<div class="line"><a id="l01674" name="l01674"></a><span class="lineno"> 1674</span>  _linearize(keys);</div>
+<div class="line"><a id="l01675" name="l01675"></a><span class="lineno"> 1675</span>}</div>
 </div>
-<div class="line"><a id="l01683" name="l01683"></a><span class="lineno"> 1683</span> </div>
-<div class="line"><a id="l01684" name="l01684"></a><span class="lineno"> 1684</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l01685" name="l01685"></a><span class="lineno"> 1685</span></div>
-<div class="foldopen" id="foldopen01722" data-start="{" data-end="};">
-<div class="line"><a id="l01722" name="l01722"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html"> 1722</a></span><span class="keyword">class </span>Subflow : <span class="keyword">public</span> FlowBuilder {</div>
-<div class="line"><a id="l01723" name="l01723"></a><span class="lineno"> 1723</span> </div>
-<div class="line"><a id="l01724" name="l01724"></a><span class="lineno"> 1724</span>  <span class="keyword">friend</span> <span class="keyword">class </span>Executor;</div>
-<div class="line"><a id="l01725" name="l01725"></a><span class="lineno"> 1725</span>  <span class="keyword">friend</span> <span class="keyword">class </span>FlowBuilder;</div>
-<div class="line"><a id="l01726" name="l01726"></a><span class="lineno"> 1726</span> </div>
-<div class="line"><a id="l01727" name="l01727"></a><span class="lineno"> 1727</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l01728" name="l01728"></a><span class="lineno"> 1728</span>    </div>
-<div class="line"><a id="l01744" name="l01744"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245"> 1744</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245">join</a>();</div>
-<div class="line"><a id="l01745" name="l01745"></a><span class="lineno"> 1745</span></div>
-<div class="line"><a id="l01761" name="l01761"></a><span class="lineno"> 1761</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">joinable</a>() const noexcept;</div>
-<div class="line"><a id="l01762" name="l01762"></a><span class="lineno"> 1762</span></div>
-<div class="line"><a id="l01766" name="l01766"></a><span class="lineno"> 1766</span>    Executor&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">executor</a>() noexcept;</div>
-<div class="line"><a id="l01767" name="l01767"></a><span class="lineno"> 1767</span>    </div>
-<div class="line"><a id="l01771" name="l01771"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2"> 1771</a></span>    <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">graph</a>() { <span class="keywordflow">return</span> _graph; }</div>
-<div class="line"><a id="l01772" name="l01772"></a><span class="lineno"> 1772</span>    </div>
-<div class="line"><a id="l01782" name="l01782"></a><span class="lineno"> 1782</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">retain</a>(<span class="keywordtype">bool</span> flag) <span class="keyword">noexcept</span>;</div>
-<div class="line"><a id="l01783" name="l01783"></a><span class="lineno"> 1783</span></div>
-<div class="line"><a id="l01791" name="l01791"></a><span class="lineno"> 1791</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">retain</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l01792" name="l01792"></a><span class="lineno"> 1792</span> </div>
-<div class="line"><a id="l01793" name="l01793"></a><span class="lineno"> 1793</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l01794" name="l01794"></a><span class="lineno"> 1794</span>    </div>
-<div class="line"><a id="l01795" name="l01795"></a><span class="lineno"> 1795</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<a class="code hl_class" href="classtf_1_1Executor.html">Executor</a>&amp;, <a class="code hl_class" href="classtf_1_1Worker.html">Worker</a>&amp;, Node*, <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;);</div>
-<div class="line"><a id="l01796" name="l01796"></a><span class="lineno"> 1796</span>    </div>
-<div class="line"><a id="l01797" name="l01797"></a><span class="lineno"> 1797</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>() = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l01798" name="l01798"></a><span class="lineno"> 1798</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l01799" name="l01799"></a><span class="lineno"> 1799</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l01800" name="l01800"></a><span class="lineno"> 1800</span> </div>
-<div class="line"><a id="l01801" name="l01801"></a><span class="lineno"> 1801</span>    <a class="code hl_class" href="classtf_1_1Executor.html">Executor</a>&amp; _executor;</div>
-<div class="line"><a id="l01802" name="l01802"></a><span class="lineno"> 1802</span>    <a class="code hl_class" href="classtf_1_1Worker.html">Worker</a>&amp; _worker;</div>
-<div class="line"><a id="l01803" name="l01803"></a><span class="lineno"> 1803</span>    Node* _node;</div>
-<div class="line"><a id="l01804" name="l01804"></a><span class="lineno"> 1804</span>};</div>
+<div class="line"><a id="l01676" name="l01676"></a><span class="lineno"> 1676</span> </div>
+<div class="line"><a id="l01677" name="l01677"></a><span class="lineno"> 1677</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l01678" name="l01678"></a><span class="lineno"> 1678</span></div>
+<div class="foldopen" id="foldopen01715" data-start="{" data-end="};">
+<div class="line"><a id="l01715" name="l01715"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html"> 1715</a></span><span class="keyword">class </span>Subflow : <span class="keyword">public</span> FlowBuilder {</div>
+<div class="line"><a id="l01716" name="l01716"></a><span class="lineno"> 1716</span> </div>
+<div class="line"><a id="l01717" name="l01717"></a><span class="lineno"> 1717</span>  <span class="keyword">friend</span> <span class="keyword">class </span>Executor;</div>
+<div class="line"><a id="l01718" name="l01718"></a><span class="lineno"> 1718</span>  <span class="keyword">friend</span> <span class="keyword">class </span>FlowBuilder;</div>
+<div class="line"><a id="l01719" name="l01719"></a><span class="lineno"> 1719</span> </div>
+<div class="line"><a id="l01720" name="l01720"></a><span class="lineno"> 1720</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l01721" name="l01721"></a><span class="lineno"> 1721</span>    </div>
+<div class="line"><a id="l01737" name="l01737"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245"> 1737</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245">join</a>();</div>
+<div class="line"><a id="l01738" name="l01738"></a><span class="lineno"> 1738</span></div>
+<div class="line"><a id="l01754" name="l01754"></a><span class="lineno"> 1754</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">joinable</a>() const noexcept;</div>
+<div class="line"><a id="l01755" name="l01755"></a><span class="lineno"> 1755</span></div>
+<div class="line"><a id="l01759" name="l01759"></a><span class="lineno"> 1759</span>    Executor&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">executor</a>() noexcept;</div>
+<div class="line"><a id="l01760" name="l01760"></a><span class="lineno"> 1760</span>    </div>
+<div class="line"><a id="l01764" name="l01764"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2"> 1764</a></span>    <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">graph</a>() { <span class="keywordflow">return</span> _graph; }</div>
+<div class="line"><a id="l01765" name="l01765"></a><span class="lineno"> 1765</span>    </div>
+<div class="line"><a id="l01775" name="l01775"></a><span class="lineno"> 1775</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">retain</a>(<span class="keywordtype">bool</span> flag) <span class="keyword">noexcept</span>;</div>
+<div class="line"><a id="l01776" name="l01776"></a><span class="lineno"> 1776</span></div>
+<div class="line"><a id="l01784" name="l01784"></a><span class="lineno"> 1784</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">retain</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l01785" name="l01785"></a><span class="lineno"> 1785</span> </div>
+<div class="line"><a id="l01786" name="l01786"></a><span class="lineno"> 1786</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l01787" name="l01787"></a><span class="lineno"> 1787</span>    </div>
+<div class="line"><a id="l01788" name="l01788"></a><span class="lineno"> 1788</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<a class="code hl_class" href="classtf_1_1Executor.html">Executor</a>&amp;, <a class="code hl_class" href="classtf_1_1Worker.html">Worker</a>&amp;, Node*, <a class="code hl_class" href="classtf_1_1Graph.html">Graph</a>&amp;);</div>
+<div class="line"><a id="l01789" name="l01789"></a><span class="lineno"> 1789</span>    </div>
+<div class="line"><a id="l01790" name="l01790"></a><span class="lineno"> 1790</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>() = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l01791" name="l01791"></a><span class="lineno"> 1791</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l01792" name="l01792"></a><span class="lineno"> 1792</span>    <a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>(<a class="code hl_class" href="classtf_1_1Subflow.html">Subflow</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l01793" name="l01793"></a><span class="lineno"> 1793</span> </div>
+<div class="line"><a id="l01794" name="l01794"></a><span class="lineno"> 1794</span>    <a class="code hl_class" href="classtf_1_1Executor.html">Executor</a>&amp; _executor;</div>
+<div class="line"><a id="l01795" name="l01795"></a><span class="lineno"> 1795</span>    <a class="code hl_class" href="classtf_1_1Worker.html">Worker</a>&amp; _worker;</div>
+<div class="line"><a id="l01796" name="l01796"></a><span class="lineno"> 1796</span>    Node* _node;</div>
+<div class="line"><a id="l01797" name="l01797"></a><span class="lineno"> 1797</span>};</div>
 </div>
-<div class="line"><a id="l01805" name="l01805"></a><span class="lineno"> 1805</span> </div>
-<div class="line"><a id="l01806" name="l01806"></a><span class="lineno"> 1806</span><span class="comment">// Constructor</span></div>
-<div class="line"><a id="l01807" name="l01807"></a><span class="lineno"> 1807</span><span class="keyword">inline</span> Subflow::Subflow(Executor&amp; executor, Worker&amp; worker, Node* node, Graph&amp; graph) :</div>
-<div class="line"><a id="l01808" name="l01808"></a><span class="lineno"> 1808</span>  FlowBuilder {graph}, </div>
-<div class="line"><a id="l01809" name="l01809"></a><span class="lineno"> 1809</span>  _executor   {executor}, </div>
-<div class="line"><a id="l01810" name="l01810"></a><span class="lineno"> 1810</span>  _worker     {worker}, </div>
-<div class="line"><a id="l01811" name="l01811"></a><span class="lineno"> 1811</span>  _node       {node} {</div>
-<div class="line"><a id="l01812" name="l01812"></a><span class="lineno"> 1812</span>  </div>
-<div class="line"><a id="l01813" name="l01813"></a><span class="lineno"> 1813</span>  <span class="comment">// need to reset since there could have iterative control flow</span></div>
-<div class="line"><a id="l01814" name="l01814"></a><span class="lineno"> 1814</span>  _node-&gt;_nstate &amp;= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);</div>
-<div class="line"><a id="l01815" name="l01815"></a><span class="lineno"> 1815</span> </div>
-<div class="line"><a id="l01816" name="l01816"></a><span class="lineno"> 1816</span>  <span class="comment">// clear the graph</span></div>
-<div class="line"><a id="l01817" name="l01817"></a><span class="lineno"> 1817</span>  <a class="code hl_function" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">graph</a>.<a class="code hl_function" href="classtf_1_1Graph.html#a8213e42bf3f7460757db411181d78c4c">clear</a>();</div>
-<div class="line"><a id="l01818" name="l01818"></a><span class="lineno"> 1818</span>}</div>
-<div class="line"><a id="l01819" name="l01819"></a><span class="lineno"> 1819</span> </div>
-<div class="line"><a id="l01820" name="l01820"></a><span class="lineno"> 1820</span><span class="comment">// Function: joinable</span></div>
-<div class="foldopen" id="foldopen01821" data-start="{" data-end="}">
-<div class="line"><a id="l01821" name="l01821"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57"> 1821</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">Subflow::joinable</a>() const noexcept {</div>
-<div class="line"><a id="l01822" name="l01822"></a><span class="lineno"> 1822</span>  <span class="keywordflow">return</span> !(_node-&gt;_nstate &amp; NSTATE::JOINED_SUBFLOW);</div>
-<div class="line"><a id="l01823" name="l01823"></a><span class="lineno"> 1823</span>}</div>
+<div class="line"><a id="l01798" name="l01798"></a><span class="lineno"> 1798</span> </div>
+<div class="line"><a id="l01799" name="l01799"></a><span class="lineno"> 1799</span><span class="comment">// Constructor</span></div>
+<div class="line"><a id="l01800" name="l01800"></a><span class="lineno"> 1800</span><span class="keyword">inline</span> Subflow::Subflow(Executor&amp; executor, Worker&amp; worker, Node* node, Graph&amp; graph) :</div>
+<div class="line"><a id="l01801" name="l01801"></a><span class="lineno"> 1801</span>  FlowBuilder {graph}, </div>
+<div class="line"><a id="l01802" name="l01802"></a><span class="lineno"> 1802</span>  _executor   {executor}, </div>
+<div class="line"><a id="l01803" name="l01803"></a><span class="lineno"> 1803</span>  _worker     {worker}, </div>
+<div class="line"><a id="l01804" name="l01804"></a><span class="lineno"> 1804</span>  _node       {node} {</div>
+<div class="line"><a id="l01805" name="l01805"></a><span class="lineno"> 1805</span>  </div>
+<div class="line"><a id="l01806" name="l01806"></a><span class="lineno"> 1806</span>  <span class="comment">// need to reset since there could have iterative control flow</span></div>
+<div class="line"><a id="l01807" name="l01807"></a><span class="lineno"> 1807</span>  _node-&gt;_nstate &amp;= ~(NSTATE::JOINED_SUBFLOW | NSTATE::RETAIN_SUBFLOW);</div>
+<div class="line"><a id="l01808" name="l01808"></a><span class="lineno"> 1808</span> </div>
+<div class="line"><a id="l01809" name="l01809"></a><span class="lineno"> 1809</span>  <span class="comment">// clear the graph</span></div>
+<div class="line"><a id="l01810" name="l01810"></a><span class="lineno"> 1810</span>  <a class="code hl_function" href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">graph</a>.<a class="code hl_function" href="classtf_1_1Graph.html#a8213e42bf3f7460757db411181d78c4c">clear</a>();</div>
+<div class="line"><a id="l01811" name="l01811"></a><span class="lineno"> 1811</span>}</div>
+<div class="line"><a id="l01812" name="l01812"></a><span class="lineno"> 1812</span> </div>
+<div class="line"><a id="l01813" name="l01813"></a><span class="lineno"> 1813</span><span class="comment">// Function: joinable</span></div>
+<div class="foldopen" id="foldopen01814" data-start="{" data-end="}">
+<div class="line"><a id="l01814" name="l01814"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57"> 1814</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">Subflow::joinable</a>() const noexcept {</div>
+<div class="line"><a id="l01815" name="l01815"></a><span class="lineno"> 1815</span>  <span class="keywordflow">return</span> !(_node-&gt;_nstate &amp; NSTATE::JOINED_SUBFLOW);</div>
+<div class="line"><a id="l01816" name="l01816"></a><span class="lineno"> 1816</span>}</div>
 </div>
-<div class="line"><a id="l01824" name="l01824"></a><span class="lineno"> 1824</span> </div>
-<div class="line"><a id="l01825" name="l01825"></a><span class="lineno"> 1825</span><span class="comment">// Function: executor</span></div>
-<div class="foldopen" id="foldopen01826" data-start="{" data-end="}">
-<div class="line"><a id="l01826" name="l01826"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510"> 1826</a></span><span class="keyword">inline</span> Executor&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">Subflow::executor</a>() noexcept {</div>
-<div class="line"><a id="l01827" name="l01827"></a><span class="lineno"> 1827</span>  <span class="keywordflow">return</span> _executor;</div>
-<div class="line"><a id="l01828" name="l01828"></a><span class="lineno"> 1828</span>}</div>
+<div class="line"><a id="l01817" name="l01817"></a><span class="lineno"> 1817</span> </div>
+<div class="line"><a id="l01818" name="l01818"></a><span class="lineno"> 1818</span><span class="comment">// Function: executor</span></div>
+<div class="foldopen" id="foldopen01819" data-start="{" data-end="}">
+<div class="line"><a id="l01819" name="l01819"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510"> 1819</a></span><span class="keyword">inline</span> Executor&amp; <a class="code hl_function" href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">Subflow::executor</a>() noexcept {</div>
+<div class="line"><a id="l01820" name="l01820"></a><span class="lineno"> 1820</span>  <span class="keywordflow">return</span> _executor;</div>
+<div class="line"><a id="l01821" name="l01821"></a><span class="lineno"> 1821</span>}</div>
 </div>
-<div class="line"><a id="l01829" name="l01829"></a><span class="lineno"> 1829</span> </div>
-<div class="line"><a id="l01830" name="l01830"></a><span class="lineno"> 1830</span><span class="comment">// Function: retain</span></div>
-<div class="foldopen" id="foldopen01831" data-start="{" data-end="}">
-<div class="line"><a id="l01831" name="l01831"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#ac585638d8ca8fb2f34c4826cb0d4f39f"> 1831</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">Subflow::retain</a>(<span class="keywordtype">bool</span> flag) <span class="keyword">noexcept</span> {</div>
-<div class="line"><a id="l01832" name="l01832"></a><span class="lineno"> 1832</span>  <span class="comment">// default value is not to retain </span></div>
-<div class="line"><a id="l01833" name="l01833"></a><span class="lineno"> 1833</span>  <span class="keywordflow">if</span>(flag == <span class="keyword">true</span>) {</div>
-<div class="line"><a id="l01834" name="l01834"></a><span class="lineno"> 1834</span>    _node-&gt;_nstate |= NSTATE::RETAIN_SUBFLOW;</div>
-<div class="line"><a id="l01835" name="l01835"></a><span class="lineno"> 1835</span>  }</div>
-<div class="line"><a id="l01836" name="l01836"></a><span class="lineno"> 1836</span>  <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l01837" name="l01837"></a><span class="lineno"> 1837</span>    _node-&gt;_nstate &amp;= ~NSTATE::RETAIN_SUBFLOW;</div>
-<div class="line"><a id="l01838" name="l01838"></a><span class="lineno"> 1838</span>  }</div>
-<div class="line"><a id="l01839" name="l01839"></a><span class="lineno"> 1839</span> </div>
-<div class="line"><a id="l01840" name="l01840"></a><span class="lineno"> 1840</span>  <span class="comment">//_node-&gt;_nstate = (_node-&gt;_nstate &amp; ~NSTATE::RETAIN_SUBFLOW) | </span></div>
-<div class="line"><a id="l01841" name="l01841"></a><span class="lineno"> 1841</span>  <span class="comment">//                 (-static_cast&lt;int&gt;(flag) &amp; NSTATE::RETAIN_SUBFLOW);</span></div>
-<div class="line"><a id="l01842" name="l01842"></a><span class="lineno"> 1842</span>}</div>
+<div class="line"><a id="l01822" name="l01822"></a><span class="lineno"> 1822</span> </div>
+<div class="line"><a id="l01823" name="l01823"></a><span class="lineno"> 1823</span><span class="comment">// Function: retain</span></div>
+<div class="foldopen" id="foldopen01824" data-start="{" data-end="}">
+<div class="line"><a id="l01824" name="l01824"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#ac585638d8ca8fb2f34c4826cb0d4f39f"> 1824</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">Subflow::retain</a>(<span class="keywordtype">bool</span> flag) <span class="keyword">noexcept</span> {</div>
+<div class="line"><a id="l01825" name="l01825"></a><span class="lineno"> 1825</span>  <span class="comment">// default value is not to retain </span></div>
+<div class="line"><a id="l01826" name="l01826"></a><span class="lineno"> 1826</span>  <span class="keywordflow">if</span>(flag == <span class="keyword">true</span>) {</div>
+<div class="line"><a id="l01827" name="l01827"></a><span class="lineno"> 1827</span>    _node-&gt;_nstate |= NSTATE::RETAIN_SUBFLOW;</div>
+<div class="line"><a id="l01828" name="l01828"></a><span class="lineno"> 1828</span>  }</div>
+<div class="line"><a id="l01829" name="l01829"></a><span class="lineno"> 1829</span>  <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l01830" name="l01830"></a><span class="lineno"> 1830</span>    _node-&gt;_nstate &amp;= ~NSTATE::RETAIN_SUBFLOW;</div>
+<div class="line"><a id="l01831" name="l01831"></a><span class="lineno"> 1831</span>  }</div>
+<div class="line"><a id="l01832" name="l01832"></a><span class="lineno"> 1832</span> </div>
+<div class="line"><a id="l01833" name="l01833"></a><span class="lineno"> 1833</span>  <span class="comment">//_node-&gt;_nstate = (_node-&gt;_nstate &amp; ~NSTATE::RETAIN_SUBFLOW) | </span></div>
+<div class="line"><a id="l01834" name="l01834"></a><span class="lineno"> 1834</span>  <span class="comment">//                 (-static_cast&lt;int&gt;(flag) &amp; NSTATE::RETAIN_SUBFLOW);</span></div>
+<div class="line"><a id="l01835" name="l01835"></a><span class="lineno"> 1835</span>}</div>
 </div>
-<div class="line"><a id="l01843" name="l01843"></a><span class="lineno"> 1843</span> </div>
-<div class="line"><a id="l01844" name="l01844"></a><span class="lineno"> 1844</span><span class="comment">// Function: retain</span></div>
-<div class="foldopen" id="foldopen01845" data-start="{" data-end="}">
-<div class="line"><a id="l01845" name="l01845"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07"> 1845</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">Subflow::retain</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l01846" name="l01846"></a><span class="lineno"> 1846</span>  <span class="keywordflow">return</span> _node-&gt;_nstate &amp; NSTATE::RETAIN_SUBFLOW;</div>
-<div class="line"><a id="l01847" name="l01847"></a><span class="lineno"> 1847</span>}</div>
+<div class="line"><a id="l01836" name="l01836"></a><span class="lineno"> 1836</span> </div>
+<div class="line"><a id="l01837" name="l01837"></a><span class="lineno"> 1837</span><span class="comment">// Function: retain</span></div>
+<div class="foldopen" id="foldopen01838" data-start="{" data-end="}">
+<div class="line"><a id="l01838" name="l01838"></a><span class="lineno"><a class="line" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07"> 1838</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">Subflow::retain</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l01839" name="l01839"></a><span class="lineno"> 1839</span>  <span class="keywordflow">return</span> _node-&gt;_nstate &amp; NSTATE::RETAIN_SUBFLOW;</div>
+<div class="line"><a id="l01840" name="l01840"></a><span class="lineno"> 1840</span>}</div>
 </div>
-<div class="line"><a id="l01848" name="l01848"></a><span class="lineno"> 1848</span> </div>
-<div class="line"><a id="l01849" name="l01849"></a><span class="lineno"> 1849</span>}  <span class="comment">// end of namespace tf. ---------------------------------------------------</span></div>
-<div class="ttc" id="aclasstf_1_1DefaultTaskParams_html"><div class="ttname"><a href="classtf_1_1DefaultTaskParams.html">tf::DefaultTaskParams</a></div><div class="ttdoc">class to create an empty task parameter for compile-time optimization</div><div class="ttdef"><b>Definition</b> graph.hpp:166</div></div>
+<div class="line"><a id="l01841" name="l01841"></a><span class="lineno"> 1841</span> </div>
+<div class="line"><a id="l01842" name="l01842"></a><span class="lineno"> 1842</span>}  <span class="comment">// end of namespace tf. ---------------------------------------------------</span></div>
+<div class="ttc" id="aclasstf_1_1DefaultTaskParams_html"><div class="ttname"><a href="classtf_1_1DefaultTaskParams.html">tf::DefaultTaskParams</a></div><div class="ttdoc">class to create an empty task parameter for compile-time optimization</div><div class="ttdef"><b>Definition</b> graph.hpp:191</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html"><div class="ttname"><a href="classtf_1_1Executor.html">tf::Executor</a></div><div class="ttdoc">class to create an executor</div><div class="ttdef"><b>Definition</b> executor.hpp:62</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a058c250de62b9d1e4305b8ddf03906ee"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a058c250de62b9d1e4305b8ddf03906ee">tf::FlowBuilder::transform</a></div><div class="ttdeci">Task transform(B first1, E last1, O d_first, C c, P part=P())</div><div class="ttdoc">constructs a parallel-transform task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a0b589a5bbf9b18e6484fa9e554d39a39"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a0b589a5bbf9b18e6484fa9e554d39a39">tf::FlowBuilder::inclusive_scan</a></div><div class="ttdeci">Task inclusive_scan(B first, E last, D d_first, BOP bop, T init)</div><div class="ttdoc">creates an STL-styled parallel inclusive-scan task with an initial value</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a18d263a5c043a216380441c9d0c72a60"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a18d263a5c043a216380441c9d0c72a60">tf::FlowBuilder::transform</a></div><div class="ttdeci">Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part=P())</div><div class="ttdoc">constructs a parallel-transform task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a1c2ace9290d83c2a006614a4d66ad588"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a1c2ace9290d83c2a006614a4d66ad588">tf::FlowBuilder::inclusive_scan</a></div><div class="ttdeci">Task inclusive_scan(B first, E last, D d_first, BOP bop)</div><div class="ttdoc">creates an STL-styled parallel inclusive-scan task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2582a216d54dacca2b7022ea7e89452a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">tf::FlowBuilder::for_each_by_index</a></div><div class="ttdeci">Task for_each_by_index(R range, C callable, P part=P())</div><div class="ttdoc">constructs a parallel-for task over a one-dimensional index range</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2714ff1a2455b4e417b13744623061c0"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2714ff1a2455b4e417b13744623061c0">tf::FlowBuilder::fill</a></div><div class="ttdeci">Task fill(B first, E last, V value, P part=P())</div><div class="ttdoc">fills a range with a given value in parallel</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35e180eb63de6c9f28e43185e837a4fa"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a35e180eb63de6c9f28e43185e837a4fa">tf::FlowBuilder::sort</a></div><div class="ttdeci">Task sort(B first, E last, C cmp)</div><div class="ttdoc">constructs a dynamic task to perform STL-styled parallel sort</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1615</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1608</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a389dda016f10028ffbb5da63c52ff1af"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a389dda016f10028ffbb5da63c52ff1af">tf::FlowBuilder::merge</a></div><div class="ttdeci">Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part=P())</div><div class="ttdoc">merges two sorted ranges into a single sorted output using the supplied comparator</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a3b0884bbb8f7e142f5cacd6f64e687d5"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a3b0884bbb8f7e142f5cacd6f64e687d5">tf::FlowBuilder::generate_n</a></div><div class="ttdeci">Task generate_n(B first, C count, G gen, P part=P())</div><div class="ttdoc">generates N values into a range in parallel using a callable</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a3b132bd902331a11b04b4ad66cf8bf77"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a3b132bd902331a11b04b4ad66cf8bf77">tf::FlowBuilder::for_each_index</a></div><div class="ttdeci">Task for_each_index(B first, E last, S step, C callable, P part=P())</div><div class="ttdoc">constructs an index-based parallel-for task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a3ea810696c4b29824d1aaef15342c825"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825">tf::FlowBuilder::reduce_by_index</a></div><div class="ttdeci">Task reduce_by_index(R range, T &amp;init, L lop, G gop, P part=P())</div><div class="ttdoc">constructs an index range-based parallel-reduction task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a46a96f5889e6ac87b1ff8d6313b5f471"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a46a96f5889e6ac87b1ff8d6313b5f471">tf::FlowBuilder::find_if</a></div><div class="ttdeci">Task find_if(B first, E last, T &amp;result, UOP predicate, P part=P())</div><div class="ttdoc">constructs a task to perform STL-styled find-if algorithm</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a49f7e17d02c708035b9134d8c6c89f90"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a49f7e17d02c708035b9134d8c6c89f90">tf::FlowBuilder::transform_inclusive_scan</a></div><div class="ttdeci">Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)</div><div class="ttdoc">creates an STL-styled parallel transform-inclusive scan task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4c50bf4b0ec33178f407048bc97bcca4"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4c50bf4b0ec33178f407048bc97bcca4">tf::FlowBuilder::merge</a></div><div class="ttdeci">Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part=P())</div><div class="ttdoc">merges two sorted ranges into a single sorted output using the std::less comparator</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1558</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1551</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4e0d618d8eb0b3b2e5e00443a10bf512"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4e0d618d8eb0b3b2e5e00443a10bf512">tf::FlowBuilder::exclusive_scan</a></div><div class="ttdeci">Task exclusive_scan(B first, E last, D d_first, T init, BOP bop)</div><div class="ttdoc">creates an STL-styled parallel exclusive-scan task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a5209319ba1ce4df196f61614a12fdd8e"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a5209319ba1ce4df196f61614a12fdd8e">tf::FlowBuilder::generate_n</a></div><div class="ttdeci">Task generate_n(B first, C count, G gen, P part=P())</div><div class="ttdoc">generates N values into a range in parallel using a callable</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a5283a732a77ea75446f8ed5d3377f02c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a5283a732a77ea75446f8ed5d3377f02c">tf::FlowBuilder::transform_reduce</a></div><div class="ttdeci">Task transform_reduce(B first, E last, T &amp;init, BOP bop, UOP uop, P part=P())</div><div class="ttdoc">constructs an STL-styled parallel transform-reduce task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a5627f7962099ac7c4986993cffa7b909"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909">tf::FlowBuilder::erase</a></div><div class="ttdeci">void erase(Task task)</div><div class="ttdoc">removes a task from a taskflow</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1636</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a67d023d5493da1594a1d2eaea89da179"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">tf::FlowBuilder::FlowBuilder</a></div><div class="ttdeci">FlowBuilder(Graph &amp;graph)</div><div class="ttdoc">constructs a flow builder with a graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1552</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a5627f7962099ac7c4986993cffa7b909"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a5627f7962099ac7c4986993cffa7b909">tf::FlowBuilder::erase</a></div><div class="ttdeci">void erase(Task task)</div><div class="ttdoc">removes a task from a taskflow</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1629</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a5b9899d132ac8712d7f3c26ce2e7a7c8"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a5b9899d132ac8712d7f3c26ce2e7a7c8">tf::FlowBuilder::fill</a></div><div class="ttdeci">Task fill(B first, E last, V value, P part=P())</div><div class="ttdoc">fills a range with a given value in parallel</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a67d023d5493da1594a1d2eaea89da179"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a67d023d5493da1594a1d2eaea89da179">tf::FlowBuilder::FlowBuilder</a></div><div class="ttdeci">FlowBuilder(Graph &amp;graph)</div><div class="ttdoc">constructs a flow builder with a graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1545</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a6a46a8984f93399522936e3ae7b0b9e3"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a6a46a8984f93399522936e3ae7b0b9e3">tf::FlowBuilder::fill_n</a></div><div class="ttdeci">Task fill_n(B first, C count, V value, P part=P())</div><div class="ttdoc">fills N elements with a given value in parallel</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a6be5d7f053a868647c3b9e0d9cdf6b68"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a6be5d7f053a868647c3b9e0d9cdf6b68">tf::FlowBuilder::max_element</a></div><div class="ttdeci">Task max_element(B first, E last, T &amp;result, C comp, P part)</div><div class="ttdoc">constructs a task to perform STL-styled max-element algorithm</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a6bf43eeaa81900084a472be1d36d46a6"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a6bf43eeaa81900084a472be1d36d46a6">tf::FlowBuilder::min_element</a></div><div class="ttdeci">Task min_element(B first, E last, T &amp;result, C comp, P part)</div><div class="ttdoc">constructs a task to perform STL-styled min-element algorithm</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a6c041f68d00d086b8da5cfb53e2a46e0"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a6c041f68d00d086b8da5cfb53e2a46e0">tf::FlowBuilder::generate</a></div><div class="ttdeci">Task generate(B first, E last, G gen, P part=P())</div><div class="ttdoc">generates values into a range in parallel using a callable</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a7d844e9856c7c65b26ccdb83ffdab1d6"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a7d844e9856c7c65b26ccdb83ffdab1d6">tf::FlowBuilder::sort</a></div><div class="ttdeci">Task sort(B first, E last)</div><div class="ttdoc">constructs a dynamic task to perform STL-styled parallel sort using the std::less&lt;T&gt; comparator,...</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a82f3c3f49a2d52cd52f6eac07a659e9c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a82f3c3f49a2d52cd52f6eac07a659e9c">tf::FlowBuilder::transform_inclusive_scan</a></div><div class="ttdeci">Task transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)</div><div class="ttdoc">creates an STL-styled parallel transform-inclusive scan task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a8549478ef819699b30f8daf88f04d577"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a8549478ef819699b30f8daf88f04d577">tf::FlowBuilder::transform_exclusive_scan</a></div><div class="ttdeci">Task transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)</div><div class="ttdoc">creates an STL-styled parallel transform-exclusive scan task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a90f3d9b9d6fcf4df8e7d7878dfdd130d"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">tf::FlowBuilder::linearize</a></div><div class="ttdeci">void linearize(std::vector&lt; Task &gt; &amp;tasks)</div><div class="ttdoc">adds adjacent dependency links to a linear list of tasks</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1675</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a90f3d9b9d6fcf4df8e7d7878dfdd130d"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a90f3d9b9d6fcf4df8e7d7878dfdd130d">tf::FlowBuilder::linearize</a></div><div class="ttdeci">void linearize(std::vector&lt; Task &gt; &amp;tasks)</div><div class="ttdoc">adds adjacent dependency links to a linear list of tasks</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1668</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_a95fa2719fa7bbe7d171cf474ddb06726"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a95fa2719fa7bbe7d171cf474ddb06726">tf::FlowBuilder::find_if_not</a></div><div class="ttdeci">Task find_if_not(B first, E last, T &amp;result, UOP predicate, P part=P())</div><div class="ttdoc">constructs a task to perform STL-styled find-if-not algorithm</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a993f0779950e82fcc0e9387a0326afba"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a993f0779950e82fcc0e9387a0326afba">tf::FlowBuilder::merge</a></div><div class="ttdeci">Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part=P())</div><div class="ttdoc">merges two sorted ranges into a single sorted output using the supplied comparator</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a9c1df224bf71c408eda062a2230faa5b"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a9c1df224bf71c408eda062a2230faa5b">tf::FlowBuilder::generate</a></div><div class="ttdeci">Task generate(B first, E last, G gen, P part=P())</div><div class="ttdoc">generates values into a range in parallel using a callable</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_aae09dc18d5fbb8a36233016a9fd0b3ec"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#aae09dc18d5fbb8a36233016a9fd0b3ec">tf::FlowBuilder::fill_n</a></div><div class="ttdeci">Task fill_n(B first, C count, V value, P part=P())</div><div class="ttdoc">fills N elements with a given value in parallel</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_aae3edfa278baa75b08414e083c14c836"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#aae3edfa278baa75b08414e083c14c836">tf::FlowBuilder::for_each</a></div><div class="ttdeci">Task for_each(B first, E last, C callable, P part=P())</div><div class="ttdoc">constructs an STL-styled parallel-for task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ac6ad9cee0f5836c3d38bf0be861fc49b"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#ac6ad9cee0f5836c3d38bf0be861fc49b">tf::FlowBuilder::transform_reduce</a></div><div class="ttdeci">Task transform_reduce(B1 first1, E1 last1, B2 first2, T &amp;init, BOP_R bop_r, BOP_T bop_t, P part=P())</div><div class="ttdoc">constructs an STL-styled parallel transform-reduce task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ac6f22228d4c2ea2e643c4b0d42c0e92a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a">tf::FlowBuilder::composed_of</a></div><div class="ttdeci">Task composed_of(T &amp;object)</div><div class="ttdoc">creates a module task for the target object</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1608</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_acab0b4ac82260f47fdb36a3244ee3aaf"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">tf::FlowBuilder::placeholder</a></div><div class="ttdeci">Task placeholder()</div><div class="ttdoc">creates a placeholder task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1622</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ac6f22228d4c2ea2e643c4b0d42c0e92a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a">tf::FlowBuilder::composed_of</a></div><div class="ttdeci">Task composed_of(T &amp;object)</div><div class="ttdoc">creates a module task for the target object</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1601</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_acab0b4ac82260f47fdb36a3244ee3aaf"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#acab0b4ac82260f47fdb36a3244ee3aaf">tf::FlowBuilder::placeholder</a></div><div class="ttdeci">Task placeholder()</div><div class="ttdoc">creates a placeholder task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1615</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ae787dfa29fd54d1ca655a15fea3b98a5"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#ae787dfa29fd54d1ca655a15fea3b98a5">tf::FlowBuilder::transform_reduce</a></div><div class="ttdeci">Task transform_reduce(B1 first1, E1 last1, B2 first2, T &amp;init, BOP_R bop_r, BOP_T bop_t, P part=P())</div><div class="ttdoc">constructs an STL-styled parallel transform-reduce task</div></div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html_afb24798ebf46e253a40b01bffb1da6a7"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7">tf::FlowBuilder::reduce</a></div><div class="ttdeci">Task reduce(B first, E last, T &amp;init, O bop, P part=P())</div><div class="ttdoc">constructs an STL-styled parallel-reduction task</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_aff4c2a76d71dc7bebb55ad3797ef55f8"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#aff4c2a76d71dc7bebb55ad3797ef55f8">tf::FlowBuilder::transform</a></div><div class="ttdeci">Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part=P())</div><div class="ttdoc">constructs a parallel-transform task</div></div>
 <div class="ttc" id="aclasstf_1_1Graph_html"><div class="ttname"><a href="classtf_1_1Graph.html">tf::Graph</a></div><div class="ttdoc">class to create a graph object</div><div class="ttdef"><b>Definition</b> graph.hpp:47</div></div>
-<div class="ttc" id="aclasstf_1_1Graph_html_a8213e42bf3f7460757db411181d78c4c"><div class="ttname"><a href="classtf_1_1Graph.html#a8213e42bf3f7460757db411181d78c4c">tf::Graph::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">clears the graph</div><div class="ttdef"><b>Definition</b> graph.hpp:915</div></div>
-<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1722</div></div>
-<div class="ttc" id="aclasstf_1_1Subflow_html_a2cc0c8db3ce5e9ef985d61bd5d839510"><div class="ttname"><a href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">tf::Subflow::executor</a></div><div class="ttdeci">Executor &amp; executor() noexcept</div><div class="ttdoc">acquires the associated executor</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1826</div></div>
-<div class="ttc" id="aclasstf_1_1Subflow_html_a587641d0977abc7fca66d144edb19db2"><div class="ttname"><a href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">tf::Subflow::graph</a></div><div class="ttdeci">Graph &amp; graph()</div><div class="ttdoc">acquires the associated graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1771</div></div>
+<div class="ttc" id="aclasstf_1_1Graph_html_a8213e42bf3f7460757db411181d78c4c"><div class="ttname"><a href="classtf_1_1Graph.html#a8213e42bf3f7460757db411181d78c4c">tf::Graph::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">clears the graph</div><div class="ttdef"><b>Definition</b> graph.hpp:960</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1715</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html_a2cc0c8db3ce5e9ef985d61bd5d839510"><div class="ttname"><a href="classtf_1_1Subflow.html#a2cc0c8db3ce5e9ef985d61bd5d839510">tf::Subflow::executor</a></div><div class="ttdeci">Executor &amp; executor() noexcept</div><div class="ttdoc">acquires the associated executor</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1819</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html_a587641d0977abc7fca66d144edb19db2"><div class="ttname"><a href="classtf_1_1Subflow.html#a587641d0977abc7fca66d144edb19db2">tf::Subflow::graph</a></div><div class="ttdeci">Graph &amp; graph()</div><div class="ttdoc">acquires the associated graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1764</div></div>
 <div class="ttc" id="aclasstf_1_1Subflow_html_a59fcac1323e70d920088dd37bd0be245"><div class="ttname"><a href="classtf_1_1Subflow.html#a59fcac1323e70d920088dd37bd0be245">tf::Subflow::join</a></div><div class="ttdeci">void join()</div><div class="ttdoc">enables the subflow to join its parent task</div></div>
-<div class="ttc" id="aclasstf_1_1Subflow_html_ac3805e898b6a55b6e5173c74c5555e57"><div class="ttname"><a href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">tf::Subflow::joinable</a></div><div class="ttdeci">bool joinable() const noexcept</div><div class="ttdoc">queries if the subflow is joinable</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1821</div></div>
-<div class="ttc" id="aclasstf_1_1Subflow_html_af34dc5c5d4da78f9140c33bbaa94fe07"><div class="ttname"><a href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">tf::Subflow::retain</a></div><div class="ttdeci">bool retain() const</div><div class="ttdoc">queries if the subflow will be retained after it is joined</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1845</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html_ac3805e898b6a55b6e5173c74c5555e57"><div class="ttname"><a href="classtf_1_1Subflow.html#ac3805e898b6a55b6e5173c74c5555e57">tf::Subflow::joinable</a></div><div class="ttdeci">bool joinable() const noexcept</div><div class="ttdoc">queries if the subflow is joinable</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1814</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html_af34dc5c5d4da78f9140c33bbaa94fe07"><div class="ttname"><a href="classtf_1_1Subflow.html#af34dc5c5d4da78f9140c33bbaa94fe07">tf::Subflow::retain</a></div><div class="ttdeci">bool retain() const</div><div class="ttdoc">queries if the subflow will be retained after it is joined</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1838</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:263</div></div>
 <div class="ttc" id="aclasstf_1_1Worker_html"><div class="ttname"><a href="classtf_1_1Worker.html">tf::Worker</a></div><div class="ttdoc">class to create a worker in an executor</div><div class="ttdef"><b>Definition</b> worker.hpp:55</div></div>
-<div class="ttc" id="aconcepttf_1_1Partitioner_html"><div class="ttname"><a href="concepttf_1_1Partitioner.html">tf::Partitioner</a></div><div class="ttdoc">determines if a type is a partitioner</div><div class="ttdef"><b>Definition</b> partitioner.hpp:913</div></div>
+<div class="ttc" id="aconcepttf_1_1PartitionerLike_html"><div class="ttname"><a href="concepttf_1_1PartitionerLike.html">tf::PartitionerLike</a></div><div class="ttdoc">determines if a type is a partitioner</div><div class="ttdef"><b>Definition</b> partitioner.hpp:913</div></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
-<div class="ttc" id="anamespacetf_html_a8dbddc846693290af4f100c558cc71d0"><div class="ttname"><a href="namespacetf.html#a8dbddc846693290af4f100c558cc71d0">tf::retrieve_graph</a></div><div class="ttdeci">Graph &amp; retrieve_graph(T &amp;target)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:1053</div></div>
+<div class="ttc" id="anamespacetf_html_a8dbddc846693290af4f100c558cc71d0"><div class="ttname"><a href="namespacetf.html#a8dbddc846693290af4f100c558cc71d0">tf::retrieve_graph</a></div><div class="ttdeci">Graph &amp; retrieve_graph(T &amp;target)</div><div class="ttdoc">retrieves a reference to the underlying tf::Graph from an object</div><div class="ttdef"><b>Definition</b> graph.hpp:1098</div></div>
 <div class="ttc" id="anamespacetf_html_ace2c5adcd5039483eebb6dbdbb6f33e3"><div class="ttname"><a href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3">tf::DefaultPartitioner</a></div><div class="ttdeci">GuidedPartitioner&lt;&gt; DefaultPartitioner</div><div class="ttdoc">default partitioner set to tf::GuidedPartitioner</div><div class="ttdef"><b>Definition</b> partitioner.hpp:905</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -33,7 +33,7 @@ class FlowBuilder {
   /**
   @brief creates a static task
 
-  @tparam C callable type satisfying tf::StaticTask
+  @tparam C callable type satisfying tf::StaticTaskLike
 
   @param callable callable to construct a static task
 
@@ -48,13 +48,13 @@ class FlowBuilder {
   @note
   Please refer to @ref StaticTasking for details.
   */
-  template <StaticTask C>
+  template <StaticTaskLike C>
   Task emplace(C&& callable);
   
   /**
   @brief creates a runtime task
 
-  @tparam C callable type satisfying tf::RuntimeTask
+  @tparam C callable type satisfying tf::RuntimeTaskLike
 
   @param callable callable to construct a runtime task
 
@@ -69,13 +69,13 @@ class FlowBuilder {
   @note
   Please refer to @ref RuntimeTasking for details.
   */
-  template <RuntimeTask C>
+  template <RuntimeTaskLike C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a dynamic task
 
-  @tparam C callable type satisfying tf::SubflowTask
+  @tparam C callable type satisfying tf::SubflowTaskLike
 
   @param callable callable to construct a dynamic task
 
@@ -94,13 +94,13 @@ class FlowBuilder {
   @note
   Please refer to @ref SubflowTasking for details.
   */
-  template <SubflowTask C>
+  template <SubflowTaskLike C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a condition task
 
-  @tparam C callable type satisfying tf::ConditionTask
+  @tparam C callable type satisfying tf::ConditionTaskLike
 
   @param callable callable to construct a condition task
 
@@ -127,13 +127,13 @@ class FlowBuilder {
   @note
   Please refer to @ref ConditionalTasking for details.
   */
-  template <ConditionTask C>
+  template <ConditionTaskLike C>
   Task emplace(C&& callable);
 
   /**
   @brief creates a multi-condition task
 
-  @tparam C callable type satisfying tf::MultiConditionTask
+  @tparam C callable type satisfying tf::MultiConditionTaskLike
 
   @param callable callable to construct a multi-condition task
 
@@ -161,7 +161,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ConditionalTasking for details.
   */
-  template <MultiConditionTask C>
+  template <MultiConditionTaskLike C>
   Task emplace(C&& callable);
 
   /**
@@ -216,7 +216,7 @@ class FlowBuilder {
   /**
   @brief creates a module task for the target object
 
-  @tparam T type satisfying tf::HasGraph
+  @tparam T type satisfying tf::GraphLike
   @param object a custom object that defines the method @c T::graph()
 
   @return a tf::Task handle
@@ -276,7 +276,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ComposableTasking for details.
   */
-  template <HasGraph T>
+  template <GraphLike T>
   Task composed_of(T& object);
   
   /**
@@ -375,7 +375,7 @@ class FlowBuilder {
   @tparam B beginning iterator type
   @tparam E ending iterator type
   @tparam C callable type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -401,7 +401,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename B, typename E, typename C, Partitioner P = DefaultPartitioner>
+  template <typename B, typename E, typename C, PartitionerLike P = DefaultPartitioner>
   Task for_each(B first, E last, C callable, P part = P());
   
   /**
@@ -411,7 +411,7 @@ class FlowBuilder {
   @tparam E ending index type (must be integral)
   @tparam S step type (must be integral)
   @tparam C callable type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first index of the beginning (inclusive)
   @param last index of the end (exclusive)
@@ -443,7 +443,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <typename B, typename E, typename S, typename C, Partitioner P = DefaultPartitioner>
+  template <typename B, typename E, typename S, typename C, PartitionerLike P = DefaultPartitioner>
   Task for_each_index(B first, E last, S step, C callable, P part = P());
 
   /**
@@ -451,7 +451,7 @@ class FlowBuilder {
 
   @tparam R type satisfying tf::IndexRangeLike
   @tparam C callable type that is invocable with a single argument of type R
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param range index range 
   @param callable callable object to apply to each partitioned index range
@@ -482,7 +482,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <IndexRange1DLike R, typename C, Partitioner P = DefaultPartitioner>
+  template <IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartitioner>
   Task for_each_by_index(R range, C callable, P part = P());
   
   /**
@@ -490,7 +490,7 @@ class FlowBuilder {
   
   @tparam R type satisfying tf::IndexRangeMDLike (i.e., tf::IndexRange<T, N> with `N` > 1)
   @tparam C callable type that is invocable with a single argument of type R
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
   
   @param range index range 
   @param callable callable object to apply to each partitioned index range
@@ -553,7 +553,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelIterations for details.
   */
-  template <IndexRangeMDLike R, typename C, Partitioner P = DefaultPartitioner>
+  template <IndexRangeMDLike R, typename C, PartitionerLike P = DefaultPartitioner>
   Task for_each_by_index(R range, C callable, P part = P());
 
   // ------------------------------------------------------------------------
@@ -567,7 +567,7 @@ class FlowBuilder {
   @tparam E ending input iterator type
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first1 iterator to the beginning of the first range
   @param last1 iterator to the end of the first range
@@ -595,7 +595,7 @@ class FlowBuilder {
   Please refer to @ref ParallelTransforms for details.
   */
   template <typename B, typename E, typename O, typename C,
-            Partitioner P = DefaultPartitioner>
+            PartitionerLike P = DefaultPartitioner>
   Task transform(B first1, E last1, O d_first, C c, P part = P());
   
   /**
@@ -606,7 +606,7 @@ class FlowBuilder {
   @tparam B2 beginning input iterator type for the first second range
   @tparam O output iterator type
   @tparam C callable type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first1 iterator to the beginning of the first input range
   @param last1 iterator to the end of the first input range
@@ -635,8 +635,8 @@ class FlowBuilder {
   Please refer to @ref ParallelTransforms for details.
   */
   template <typename B1, typename E1, typename B2, typename O, typename C,
-            Partitioner P = DefaultPartitioner>
-  requires (!Partitioner<std::decay_t<C>>)
+            PartitionerLike P = DefaultPartitioner>
+  requires (!PartitionerLike<std::decay_t<C>>)
   Task transform(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P());
   
   // ------------------------------------------------------------------------
@@ -650,7 +650,7 @@ class FlowBuilder {
   @tparam E ending iterator type
   @tparam T result type
   @tparam O binary reducer type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -676,7 +676,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <typename B, typename E, typename T, typename O, Partitioner P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename O, PartitionerLike P = DefaultPartitioner>
   Task reduce(B first, E last, T& init, O bop, P part = P());
 
   /**
@@ -686,7 +686,7 @@ class FlowBuilder {
   @tparam T result type
   @tparam L local reducer type
   @tparam G global reducer type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param range index range 
   @param init initial value of the reduction and the storage for the reduced result
@@ -733,7 +733,7 @@ class FlowBuilder {
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <IndexRangeLike R, typename T, typename L, typename G, Partitioner P = DefaultPartitioner>
+  template <IndexRangeLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
   Task reduce_by_index(R range, T& init, L lop, G gop, P part = P());
   
   // ------------------------------------------------------------------------
@@ -748,7 +748,7 @@ class FlowBuilder {
   @tparam T result type
   @tparam BOP binary reducer type
   @tparam UOP unary transformation type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning (inclusive)
   @param last iterator to the end (exclusive)
@@ -776,7 +776,7 @@ class FlowBuilder {
   Please refer to @ref ParallelReduction for details.
   */
   template <typename B, typename E, typename T, typename BOP, typename UOP,
-            Partitioner P = DefaultPartitioner>
+            PartitionerLike P = DefaultPartitioner>
   Task transform_reduce(B first, E last, T& init, BOP bop, UOP uop, P part = P());
 
   /**
@@ -787,7 +787,7 @@ class FlowBuilder {
   @tparam T result type
   @tparam BOP_R binary reducer type
   @tparam BOP_T binary transformation type
-  @tparam P type satisfying tf::Partitioner
+  @tparam P type satisfying tf::PartitionerLike
  
   @param first1 iterator to the beginning of the first range (inclusive)
   @param last1 iterator to the end of the first range (exclusive)
@@ -817,8 +817,8 @@ class FlowBuilder {
   */
   
   template <typename B1, typename E1, typename B2, typename T,
-            typename BOP_R, typename BOP_T, Partitioner P = DefaultPartitioner>
-  requires (!Partitioner<std::decay_t<BOP_T>>)
+            typename BOP_R, typename BOP_T, PartitionerLike P = DefaultPartitioner>
+  requires (!PartitionerLike<std::decay_t<BOP_T>>)
   Task transform_reduce(
     B1 first1, E1 last1, B2 first2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
   );
@@ -1145,7 +1145,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename UOP, Partitioner P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename UOP, PartitionerLike P = DefaultPartitioner>
   Task find_if(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
@@ -1193,7 +1193,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename UOP, Partitioner P = DefaultPartitioner>
+  template <typename B, typename E, typename T, typename UOP, PartitionerLike P = DefaultPartitioner>
   Task find_if_not(B first, E last, T &result, UOP predicate, P part = P());
 
   /**
@@ -1245,7 +1245,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename C, Partitioner P>
+  template <typename B, typename E, typename T, typename C, PartitionerLike P>
   Task min_element(B first, E last, T& result, C comp, P part);
   
   /**
@@ -1297,7 +1297,7 @@ class FlowBuilder {
   
   Iterators can be made stateful by using std::reference_wrapper
   */
-  template <typename B, typename E, typename T, typename C, Partitioner P>
+  template <typename B, typename E, typename T, typename C, PartitionerLike P>
   Task max_element(B first, E last, T& result, C comp, P part);
 
   // ------------------------------------------------------------------------
@@ -1357,7 +1357,7 @@ class FlowBuilder {
   @tparam B2 beginning iterator type of the first range 
   @tparam E2 ending iterator type of the first range
   @tparam O destination iterator type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first1 iterator to the beginning of the first range (inclusive)
   @param last1 iterator to the end of the first range (exclusive)
@@ -1375,7 +1375,7 @@ class FlowBuilder {
   */
 
   template <typename B1, typename E1, typename B2, typename E2,
-            typename O, Partitioner P = DefaultPartitioner>
+            typename O, PartitionerLike P = DefaultPartitioner>
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
 
   /**
@@ -1388,7 +1388,7 @@ class FlowBuilder {
   @tparam E2 ending iterator type of the first range
   @tparam O destination iterator type
   @tparam C comparator type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first1 iterator to the beginning of the first range (inclusive)
   @param last1 iterator to the end of the first range (exclusive)
@@ -1408,8 +1408,8 @@ class FlowBuilder {
   */
 
   template <typename B1, typename E1, typename B2, typename E2,
-            typename O, typename C, Partitioner P = DefaultPartitioner>
-  requires (!Partitioner<std::decay_t<C>>)
+            typename O, typename C, PartitionerLike P = DefaultPartitioner>
+  requires (!PartitionerLike<std::decay_t<C>>)
   Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
 
   /**
@@ -1418,7 +1418,7 @@ class FlowBuilder {
   @tparam B iterator type
   @tparam E iterator type
   @tparam V value type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning of the range (inclusive)
   @param last iterator to the end of the range (exclusive)
@@ -1437,8 +1437,7 @@ class FlowBuilder {
   tf::Task task = taskflow.fill(vec.begin(), vec.end(), 42);
   @endcode
   */
-  template<typename B, typename E, typename V, typename P = DefaultPartitioner>
-  requires Partitioner<std::decay_t<P>> 
+  template<typename B, typename E, typename V, PartitionerLike P = DefaultPartitioner>
   Task fill(B first, E last, V value, P part = P());
 
   /**
@@ -1447,7 +1446,7 @@ class FlowBuilder {
   @tparam B iterator type
   @tparam C count type (integral)
   @tparam V value type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning of the range (inclusive)
   @param count number of elements to fill
@@ -1466,10 +1465,7 @@ class FlowBuilder {
   tf::Task task = taskflow.fill_n(vec.begin(), 500, 42);
   @endcode
   */
-  template<typename B, typename C, typename V, 
-            typename P = DefaultPartitioner>
-  requires (Partitioner<std::decay_t<P>>
-          && std::integral<C>) 
+  template<typename B, std::integral C, typename V, PartitionerLike P = DefaultPartitioner>
   Task fill_n(B first, C count, V value, P part = P());
   
   /**
@@ -1478,7 +1474,7 @@ class FlowBuilder {
   @tparam B iterator type
   @tparam E iterator type
   @tparam G generator callable type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning of the range (inclusive)
   @param last iterator to the end of the range (exclusive)
@@ -1499,8 +1495,7 @@ class FlowBuilder {
                                     [&counter]() { return 42; });
   @endcode
   */
-  template <typename B, typename E, typename G, typename P= DefaultPartitioner>
-  requires Partitioner<std::decay_t<P>>
+  template <typename B, typename E, typename G, PartitionerLike P= DefaultPartitioner>
   Task generate(B first, E last, G gen, P part = P());
 
   /**
@@ -1509,7 +1504,7 @@ class FlowBuilder {
   @tparam B iterator type
   @tparam C count type (integral)
   @tparam G generator callable type
-  @tparam P partitioner type
+  @tparam P type satisfying tf::PartitionerLike
 
   @param first iterator to the beginning of the range (inclusive)
   @param count number of elements to generate
@@ -1530,11 +1525,9 @@ class FlowBuilder {
                                       [&counter]() { return 42; });
   @endcode
   */
-  template <typename B, typename C, typename G, 
-  typename P= DefaultPartitioner>
-  requires (Partitioner<std::decay_t<P>>
-          && std::integral<C>)
+  template <typename B, std::integral C, typename G, PartitionerLike P = DefaultPartitioner>
   Task generate_n(B first, C count, G gen, P part = P());
+
   protected:
   
   /**
@@ -1554,7 +1547,7 @@ inline FlowBuilder::FlowBuilder(Graph& graph) :
 }
 
 // Function: emplace
-template <StaticTask C>
+template <StaticTaskLike C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Static>{}, std::forward<C>(c)
@@ -1562,7 +1555,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <RuntimeTask C>
+template <RuntimeTaskLike C>
 Task FlowBuilder::emplace(C&& c) {
   if constexpr (std::is_invocable_v<C, tf::Runtime&>) {
     return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
@@ -1580,7 +1573,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <SubflowTask C>
+template <SubflowTaskLike C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Subflow>{}, std::forward<C>(c)
@@ -1588,7 +1581,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <ConditionTask C>
+template <ConditionTaskLike C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Condition>{}, std::forward<C>(c)
@@ -1596,7 +1589,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: emplace
-template <MultiConditionTask C>
+template <MultiConditionTaskLike C>
 Task FlowBuilder::emplace(C&& c) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::MultiCondition>{}, std::forward<C>(c)
@@ -1604,7 +1597,7 @@ Task FlowBuilder::emplace(C&& c) {
 }
 
 // Function: composed_of
-template <HasGraph T>
+template <GraphLike T>
 Task FlowBuilder::composed_of(T& target) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::Module>{}, retrieve_graph(target)

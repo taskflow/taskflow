@@ -231,8 +231,8 @@ template&lt;typename T, size_t LogSize = TF_DEFAULT_BOUNDED_TASK_QUEUE_LOG_SIZE&
 <p>constructs the queue with a given capacity </p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1BoundedWSQ.html">tf::BoundedWSQ&lt;int, 10&gt;</a> wsq;  </div>
 <div class="line"><span class="keyword">static_assert</span>(wsq.<a class="code hl_function" href="#a797e7244fd4fd9b8c463b72dd80ab7c7">capacity</a>() == 1024);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html"><div class="ttname"><a href="classtf_1_1BoundedWSQ.html">tf::BoundedWSQ</a></div><div class="ttdoc">class to create a lock-free bounded work-stealing queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:656</div></div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a797e7244fd4fd9b8c463b72dd80ab7c7"><div class="ttname"><a href="#a797e7244fd4fd9b8c463b72dd80ab7c7">tf::BoundedWSQ::capacity</a></div><div class="ttdeci">constexpr size_t capacity() const</div><div class="ttdoc">queries the capacity of the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:1061</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html"><div class="ttname"><a href="classtf_1_1BoundedWSQ.html">tf::BoundedWSQ</a></div><div class="ttdoc">class to create a lock-free bounded work-stealing queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:669</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a797e7244fd4fd9b8c463b72dd80ab7c7"><div class="ttname"><a href="#a797e7244fd4fd9b8c463b72dd80ab7c7">tf::BoundedWSQ::capacity</a></div><div class="ttdeci">constexpr size_t capacity() const</div><div class="ttdoc">queries the capacity of the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:1074</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -330,7 +330,7 @@ template&lt;typename T, size_t LogSize&gt; </div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#af964a4e19b8f9791086d97dd805dfdcf">empty</a>() == <span class="keyword">true</span>);</div>
 <div class="line">wsq.push(1);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#af964a4e19b8f9791086d97dd805dfdcf">empty</a>() == <span class="keyword">false</span>);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_af964a4e19b8f9791086d97dd805dfdcf"><div class="ttname"><a href="#af964a4e19b8f9791086d97dd805dfdcf">tf::BoundedWSQ::empty</a></div><div class="ttdeci">bool empty() const noexcept</div><div class="ttdoc">queries if the queue is empty at the time of this call</div><div class="ttdef"><b>Definition</b> wsq.hpp:912</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_af964a4e19b8f9791086d97dd805dfdcf"><div class="ttname"><a href="#af964a4e19b8f9791086d97dd805dfdcf">tf::BoundedWSQ::empty</a></div><div class="ttdeci">bool empty() const noexcept</div><div class="ttdoc">queries if the queue is empty at the time of this call</div><div class="ttdef"><b>Definition</b> wsq.hpp:925</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -393,7 +393,7 @@ template&lt;typename T, size_t LogSize&gt; </div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a0f3fc5d2f38ca7df06b55afa391f26ce">pop</a>().value() = 2);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a0f3fc5d2f38ca7df06b55afa391f26ce">pop</a>().value() = 1);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a0f3fc5d2f38ca7df06b55afa391f26ce">pop</a>() == std::nullopt);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a0f3fc5d2f38ca7df06b55afa391f26ce"><div class="ttname"><a href="#a0f3fc5d2f38ca7df06b55afa391f26ce">tf::BoundedWSQ::pop</a></div><div class="ttdeci">value_type pop()</div><div class="ttdoc">pops out an item from the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:978</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a0f3fc5d2f38ca7df06b55afa391f26ce"><div class="ttname"><a href="#a0f3fc5d2f38ca7df06b55afa391f26ce">tf::BoundedWSQ::pop</a></div><div class="ttdeci">value_type pop()</div><div class="ttdoc">pops out an item from the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:991</div></div>
 </div><!-- fragment --><p>Only the owner thread can pop out an item from the queue. </p>
 
 </div>
@@ -428,7 +428,7 @@ template&lt;typename T, size_t LogSize&gt; </div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a95ca63c53c35d04f3959923dbc3e1576">size</a>() == 0);</div>
 <div class="line">wsq.push(1);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a95ca63c53c35d04f3959923dbc3e1576">size</a>() == 1);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a95ca63c53c35d04f3959923dbc3e1576"><div class="ttname"><a href="#a95ca63c53c35d04f3959923dbc3e1576">tf::BoundedWSQ::size</a></div><div class="ttdeci">size_t size() const noexcept</div><div class="ttdoc">queries the number of items at the time of this call</div><div class="ttdef"><b>Definition</b> wsq.hpp:920</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a95ca63c53c35d04f3959923dbc3e1576"><div class="ttname"><a href="#a95ca63c53c35d04f3959923dbc3e1576">tf::BoundedWSQ::size</a></div><div class="ttdeci">size_t size() const noexcept</div><div class="ttdoc">queries the number of items at the time of this call</div><div class="ttdef"><b>Definition</b> wsq.hpp:933</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -459,7 +459,7 @@ template&lt;typename T, size_t LogSize&gt; </div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a57e08d6415b5b586ee32875c91057f35">steal</a>().value() = 2);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a57e08d6415b5b586ee32875c91057f35">steal</a>().value() = 3);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a57e08d6415b5b586ee32875c91057f35">steal</a>() == std::nullopt);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a57e08d6415b5b586ee32875c91057f35"><div class="ttname"><a href="#a57e08d6415b5b586ee32875c91057f35">tf::BoundedWSQ::steal</a></div><div class="ttdeci">value_type steal()</div><div class="ttdoc">steals an item from the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:1011</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a57e08d6415b5b586ee32875c91057f35"><div class="ttname"><a href="#a57e08d6415b5b586ee32875c91057f35">tf::BoundedWSQ::steal</a></div><div class="ttdeci">value_type steal()</div><div class="ttdoc">steals an item from the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:1024</div></div>
 </div><!-- fragment --><p>Multiple threads can simultaneously steal items from the queue. </p>
 
 </div>
@@ -504,9 +504,9 @@ template&lt;typename T, size_t LogSize&gt; </div>
 <div class="line"><span class="keywordflow">else</span> {</div>
 <div class="line">  <span class="comment">// result is a valid stolen item — use it</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a7494b141326b5288a7ec754038e635e0"><div class="ttname"><a href="#a7494b141326b5288a7ec754038e635e0">tf::BoundedWSQ::steal_with_feedback</a></div><div class="ttdeci">value_type steal_with_feedback()</div><div class="ttdoc">attempts to steal an item from the queue with three-state feedback</div><div class="ttdef"><b>Definition</b> wsq.hpp:1036</div></div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a97bbadef093d7518b88c62bc3de85b47"><div class="ttname"><a href="#a97bbadef093d7518b88c62bc3de85b47">tf::BoundedWSQ::empty_value</a></div><div class="ttdeci">static constexpr auto empty_value()</div><div class="ttdoc">returns the empty sentinel value for the queue element type</div><div class="ttdef"><b>Definition</b> wsq.hpp:895</div></div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_ab63524d7c41175872849305b81642ff4"><div class="ttname"><a href="#ab63524d7c41175872849305b81642ff4">tf::BoundedWSQ::contended_value</a></div><div class="ttdeci">static auto contended_value()</div><div class="ttdoc">returns the contended sentinel value for pointer element types</div><div class="ttdef"><b>Definition</b> wsq.hpp:907</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a7494b141326b5288a7ec754038e635e0"><div class="ttname"><a href="#a7494b141326b5288a7ec754038e635e0">tf::BoundedWSQ::steal_with_feedback</a></div><div class="ttdeci">value_type steal_with_feedback()</div><div class="ttdoc">attempts to steal an item from the queue with three-state feedback</div><div class="ttdef"><b>Definition</b> wsq.hpp:1049</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a97bbadef093d7518b88c62bc3de85b47"><div class="ttname"><a href="#a97bbadef093d7518b88c62bc3de85b47">tf::BoundedWSQ::empty_value</a></div><div class="ttdeci">static constexpr auto empty_value()</div><div class="ttdoc">returns the empty sentinel value for the queue element type</div><div class="ttdef"><b>Definition</b> wsq.hpp:908</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_ab63524d7c41175872849305b81642ff4"><div class="ttname"><a href="#ab63524d7c41175872849305b81642ff4">tf::BoundedWSQ::contended_value</a></div><div class="ttdeci">static auto contended_value()</div><div class="ttdoc">returns the contended sentinel value for pointer element types</div><div class="ttdef"><b>Definition</b> wsq.hpp:920</div></div>
 </div><!-- fragment --><p>Multiple threads can simultaneously call this method. </p>
 
 </div>
@@ -557,7 +557,7 @@ template&lt;typename I&gt; </div>
 <div class="line"><span class="keyword">auto</span> first = vec.begin();</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a10375ce815e0c5c047a4331de787053b">try_bulk_push</a>(first, vec.size()) == wsq.<a class="code hl_function" href="#a797e7244fd4fd9b8c463b72dd80ab7c7">capacity</a>());</div>
 <div class="line">assert(std::distance(vec.begin(), first) == wsq.<a class="code hl_function" href="#a797e7244fd4fd9b8c463b72dd80ab7c7">capacity</a>());</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a10375ce815e0c5c047a4331de787053b"><div class="ttname"><a href="#a10375ce815e0c5c047a4331de787053b">tf::BoundedWSQ::try_bulk_push</a></div><div class="ttdeci">size_t try_bulk_push(I &amp;first, size_t N)</div><div class="ttdoc">tries to insert a batch of items into the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:952</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a10375ce815e0c5c047a4331de787053b"><div class="ttname"><a href="#a10375ce815e0c5c047a4331de787053b">tf::BoundedWSQ::try_bulk_push</a></div><div class="ttdeci">size_t try_bulk_push(I &amp;first, size_t N)</div><div class="ttdoc">tries to insert a batch of items into the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:965</div></div>
 </div><!-- fragment --><p>Only the owner thread can insert items into the queue. </p>
 
 </div>
@@ -603,7 +603,7 @@ template&lt;typename O&gt; </div>
 <div class="line">}</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a95ca63c53c35d04f3959923dbc3e1576">size</a>() == 1024);</div>
 <div class="line">assert(wsq.<a class="code hl_function" href="#a7d7be330e9c1c0e5a2051b7e190bf4c2">try_push</a>(0) == <span class="keyword">false</span>);</div>
-<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a7d7be330e9c1c0e5a2051b7e190bf4c2"><div class="ttname"><a href="#a7d7be330e9c1c0e5a2051b7e190bf4c2">tf::BoundedWSQ::try_push</a></div><div class="ttdeci">bool try_push(O &amp;&amp;item)</div><div class="ttdoc">tries to insert an item to the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:929</div></div>
+<div class="ttc" id="aclasstf_1_1BoundedWSQ_html_a7d7be330e9c1c0e5a2051b7e190bf4c2"><div class="ttname"><a href="#a7d7be330e9c1c0e5a2051b7e190bf4c2">tf::BoundedWSQ::try_push</a></div><div class="ttdeci">bool try_push(O &amp;&amp;item)</div><div class="ttdoc">tries to insert an item to the queue</div><div class="ttdef"><b>Definition</b> wsq.hpp:942</div></div>
 </div><!-- fragment --><p>Only the owner thread can insert an item to the queue. </p>
 
 </div>

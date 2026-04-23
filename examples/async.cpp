@@ -8,12 +8,12 @@ int main() {
 
   // create asynchronous tasks from the executor
   // (using executor as a thread pool)
-  std::future<int> fu1 = executor.async([](){
+  std::future<int> fu1 = executor.async("async1", [](){
     std::cout << "async task returns 1\n";
     return 1;
   });
 
-  executor.silent_async([](){  // silent async task doesn't return any future object
+  executor.silent_async("async2", [](){  // silent async task doesn't return any future object
     std::cout << "silent async does not return\n";
   });
 

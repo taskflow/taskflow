@@ -5,7 +5,7 @@
 namespace tf {
 
 // Function: make_for_each_task
-template <typename B, typename E, typename C, Partitioner P = DefaultPartitioner>
+template <typename B, typename E, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_for_each_task(B b, E e, C c, P part = P()) {
   
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
@@ -72,7 +72,7 @@ auto make_for_each_task(B b, E e, C c, P part = P()) {
 }
 
 // Function: make_for_each_index_task
-template <typename B, typename E, typename S, typename C, Partitioner P = DefaultPartitioner>
+template <typename B, typename E, typename S, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
   
   using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
@@ -142,7 +142,7 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 }
 
 // Function: make_for_each_by_index_task
-template <IndexRange1DLike R, typename C, Partitioner P = DefaultPartitioner>
+template <IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_for_each_by_index_task(R range, C c, P part = P()){
   
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
@@ -198,7 +198,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
 }
 
 // Function: make_for_each_by_index_task
-template <IndexRangeMDLike R, typename C, Partitioner P = DefaultPartitioner>
+template <IndexRangeMDLike R, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_for_each_by_index_task(R range, C c, P part = P()){
   
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
@@ -242,7 +242,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
 // ------------------------------------------------------------------------------------------------
 
 // Function: for_each
-template <typename B, typename E, typename C, Partitioner P>
+template <typename B, typename E, typename C, PartitionerLike P>
 Task FlowBuilder::for_each(B beg, E end, C c, P part) {
   return emplace(
     make_for_each_task(beg, end, c, part)
@@ -254,7 +254,7 @@ Task FlowBuilder::for_each(B beg, E end, C c, P part) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: for_each_index
-template <typename B, typename E, typename S, typename C, Partitioner P>
+template <typename B, typename E, typename S, typename C, PartitionerLike P>
 Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
   return emplace(
     make_for_each_index_task(beg, end, inc, c, part)
@@ -262,7 +262,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
 }
 
 // Function: for_each_by_index
-template <IndexRange1DLike R, typename C, Partitioner P>
+template <IndexRange1DLike R, typename C, PartitionerLike P>
 Task FlowBuilder::for_each_by_index(R range, C c, P part){
   return emplace(
     make_for_each_by_index_task(range, c, part)
@@ -270,7 +270,7 @@ Task FlowBuilder::for_each_by_index(R range, C c, P part){
 }
 
 // Function: for_each_by_index
-template <IndexRangeMDLike R, typename C, Partitioner P>
+template <IndexRangeMDLike R, typename C, PartitionerLike P>
 Task FlowBuilder::for_each_by_index(R range, C c, P part){
   return emplace(
     make_for_each_by_index_task(range, c, part)

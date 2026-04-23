@@ -11,7 +11,7 @@ namespace tf {
 
 // ----------------------------------------------------------------------------
 
-template <HasGraph T>
+template <GraphLike T>
 auto Algorithm::make_module_task(T& target) {
   return [&graph=retrieve_graph(target)](tf::Runtime& rt){
     if(graph.empty()) {
@@ -26,7 +26,7 @@ auto Algorithm::make_module_task(T& target) {
 /**
 @brief creates a module task using the given graph
 
-@tparam T type satisfying tf::HasGraph
+@tparam T type satisfying tf::GraphLike
 @param target the target object used to create the module task
 @return a module task that can be used by %Taskflow or asynchronous tasking
 
@@ -70,7 +70,7 @@ tf::Task m1 = taskflow1.emplace(tf::make_module_task(taskflow2));
 Users are responsible for ensuring that the given target remains valid throughout its execution. 
 The executor does not assume ownership of the target object.
 */
-template <HasGraph T>
+template <GraphLike T>
 auto make_module_task(T& target) {
   return Algorithm::make_module_task(target);
 }

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hasgraph_0',['HasGraph',['../concepttf_1_1HasGraph.html',1,'tf']]]
+  ['graphlike_0',['GraphLike',['../concepttf_1_1GraphLike.html',1,'tf']]]
 ];
