@@ -50,18 +50,18 @@ std::vector<std::tuple<T,T,T>> enumerate_3d(const tf::IndexRange<T, 3>& r) {
   return out;
 }
 
-// Drive consume_chunk over the full flat space of an ND range and collect every
+// Drive slice_ceil over the full flat space of an ND range and collect every
 // element visited.  Returns the multiset of flat indices (encoded as size_t)
 // so the caller can verify exactly-once coverage.
 // Works for any N by having the caller supply a "visit" lambda that converts
 // box -> flat indices and appends them.
 template <typename R, typename VisitFn>
-std::vector<size_t> drain_consume_chunk(const R& range, size_t chunk_size, VisitFn visit) {
+std::vector<size_t> drain_slice_ceil(const R& range, size_t chunk_size, VisitFn visit) {
   size_t N = range.size();
   std::vector<size_t> visited;
   size_t cursor = 0;
   while (cursor < N) {
-    auto [box, consumed] = range.consume_chunk(cursor, chunk_size);
+    auto [box, consumed] = range.slice_ceil(cursor, chunk_size);
     REQUIRE(consumed > 0);          // must make forward progress
     REQUIRE(consumed <= chunk_size + 1); // never wildly over-consume
     REQUIRE(cursor + consumed <= N);
@@ -395,10 +395,10 @@ TEST_CASE("IndexRangeND.coords.exhaustive_2d") {
 }
 
 // ============================================================================
-// Section 7: consume_chunk — documented examples from the header
+// Section 7: slice_ceil — documented examples from the header
 // ============================================================================
 
-TEST_CASE("consume_chunk.documented_examples") {
+TEST_CASE("slice_ceil.documented_examples") {
   // 3D range: 4 x 5 x 10 (from the header docstring)
   tf::IndexRange<int, 3> range(
     tf::IndexRange<int>(0, 4,  1),
@@ -411,7 +411,7 @@ TEST_CASE("consume_chunk.documented_examples") {
   // steps_to_take=1. The box overshoots to the next orthogonal boundary.
   // box is [0,1) x [0,5) x [0,10), consumed=50
   {
-    auto [box, consumed] = range.consume_chunk(0, 30);
+    auto [box, consumed] = range.slice_ceil(0, 30);
     REQUIRE(consumed == 50);
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
     REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 5);
@@ -424,7 +424,7 @@ TEST_CASE("consume_chunk.documented_examples") {
   // grow_dim=1, active=10. steps_left=2, steps_needed=3, steps_to_take=2.
   // box is [0,1) x [3,5) x [0,10), consumed=20 (geometry-constrained, < requested)
   {
-    auto [box, consumed] = range.consume_chunk(30, 30);
+    auto [box, consumed] = range.slice_ceil(30, 30);
     REQUIRE(consumed == 20);
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
     REQUIRE(box.dim(1).begin() == 3); REQUIRE(box.dim(1).end() == 5);
@@ -437,7 +437,7 @@ TEST_CASE("consume_chunk.documented_examples") {
   // grow_dim=2, active=1. steps_left=5, steps_needed=30, steps_to_take=5.
   // box is [1,2) x [0,1) x [5,10), consumed=5 (geometry-constrained, < requested)
   {
-    auto [box, consumed] = range.consume_chunk(55, 30);
+    auto [box, consumed] = range.slice_ceil(55, 30);
     REQUIRE(consumed == 5);
     REQUIRE(box.dim(0).begin() == 1); REQUIRE(box.dim(0).end() == 2);
     REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
@@ -450,7 +450,7 @@ TEST_CASE("consume_chunk.documented_examples") {
   // grow_dim=1, active=10. steps_left=5, steps_needed=1, steps_to_take=1.
   // box is [0,1) x [0,1) x [0,10), consumed=10 (no overshoot needed)
   {
-    auto [box, consumed] = range.consume_chunk(0, 10);
+    auto [box, consumed] = range.slice_ceil(0, 10);
     REQUIRE(consumed == 10);
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
     REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
@@ -460,24 +460,24 @@ TEST_CASE("consume_chunk.documented_examples") {
 }
 
 // ============================================================================
-// Section 8: consume_chunk — zero requested_size
+// Section 8: slice_ceil — zero chunk_size
 // ============================================================================
 
-TEST_CASE("consume_chunk.zero_requested_size") {
+TEST_CASE("slice_ceil.zero_chunk_size") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 4, 1),
     tf::IndexRange<int>(0, 4, 1)
   );
-  auto [box, consumed] = r.consume_chunk(0, 0);
+  auto [box, consumed] = r.slice_ceil(0, 0);
   REQUIRE(consumed == 0);
 }
 
 // ============================================================================
-// Section 9: consume_chunk — forward progress guarantee
+// Section 9: slice_ceil — forward progress guarantee
 // For any chunk size >= 1 and any flat_beg < N, consumed must be >= 1.
 // ============================================================================
 
-TEST_CASE("consume_chunk.forward_progress.2d") {
+TEST_CASE("slice_ceil.forward_progress.2d") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 5, 1),
     tf::IndexRange<int>(0, 7, 1)
@@ -485,14 +485,14 @@ TEST_CASE("consume_chunk.forward_progress.2d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {1, 2, 3, 7, 13, 50}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(flat + consumed <= N);
     }
   }
 }
 
-TEST_CASE("consume_chunk.forward_progress.3d") {
+TEST_CASE("slice_ceil.forward_progress.3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1),
@@ -501,7 +501,7 @@ TEST_CASE("consume_chunk.forward_progress.3d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {1, 2, 5, 20, 60}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(flat + consumed <= N);
     }
@@ -509,11 +509,11 @@ TEST_CASE("consume_chunk.forward_progress.3d") {
 }
 
 // ============================================================================
-// Section 10: consume_chunk — box is an orthogonal sub-box of the original
+// Section 10: slice_ceil — box is an orthogonal sub-box of the original
 // The sub-box must not exceed any dimension's bounds.
 // ============================================================================
 
-TEST_CASE("consume_chunk.box_within_bounds.2d") {
+TEST_CASE("slice_ceil.box_within_bounds.2d") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 6, 2),
     tf::IndexRange<int>(0, 9, 3)
@@ -521,7 +521,7 @@ TEST_CASE("consume_chunk.box_within_bounds.2d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {1, 2, 3, 6}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       for (size_t d = 0; d < 2; d++) {
         REQUIRE(box.dim(d).begin()     >= r.dim(d).begin());
         REQUIRE(box.dim(d).end()       <= r.dim(d).end());
@@ -532,7 +532,7 @@ TEST_CASE("consume_chunk.box_within_bounds.2d") {
   }
 }
 
-TEST_CASE("consume_chunk.box_within_bounds.3d") {
+TEST_CASE("slice_ceil.box_within_bounds.3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 4, 1),
     tf::IndexRange<int>(0, 5, 1),
@@ -541,7 +541,7 @@ TEST_CASE("consume_chunk.box_within_bounds.3d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {1, 5, 10, 30, 120}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       for (size_t d = 0; d < 3; d++) {
         REQUIRE(box.dim(d).begin()     >= r.dim(d).begin());
         REQUIRE(box.dim(d).end()       <= r.dim(d).end());
@@ -553,8 +553,8 @@ TEST_CASE("consume_chunk.box_within_bounds.3d") {
 }
 
 // ============================================================================
-// Section 11: consume_chunk — full coverage (the critical invariant)
-// Draining with consume_chunk must visit every element exactly once.
+// Section 11: slice_ceil — full coverage (the critical invariant)
+// Draining with slice_ceil must visit every element exactly once.
 // ============================================================================
 
 // Helper: collect flat indices from a 2D box
@@ -593,7 +593,7 @@ auto collect_flat_3d(const tf::IndexRange<int, 3>& box,
         out.push_back(pos(i, B0, S0) * (D1 * D2) + pos(j, B1, S1) * D2 + pos(k, B2, S2));
 }
 
-TEST_CASE("consume_chunk.full_coverage.2d") {
+TEST_CASE("slice_ceil.full_coverage.2d") {
   // Sweep multiple chunk sizes and range shapes
   for (int di : {1, 2, 3, 5, 7, 12}) {
     for (int dj : {1, 2, 3, 5, 7, 12}) {
@@ -607,7 +607,7 @@ TEST_CASE("consume_chunk.full_coverage.2d") {
         std::vector<size_t> visited;
         size_t cursor = 0;
         while (cursor < N) {
-          auto [box, consumed] = r.consume_chunk(cursor, cs);
+          auto [box, consumed] = r.slice_ceil(cursor, cs);
           REQUIRE(consumed >= 1);
           collect_flat_2d(box, r, visited);
           cursor += consumed;
@@ -620,7 +620,7 @@ TEST_CASE("consume_chunk.full_coverage.2d") {
   }
 }
 
-TEST_CASE("consume_chunk.full_coverage.3d") {
+TEST_CASE("slice_ceil.full_coverage.3d") {
   for (int di : {1, 3, 5}) {
     for (int dj : {1, 4, 6}) {
       for (int dk : {1, 2, 7}) {
@@ -635,7 +635,7 @@ TEST_CASE("consume_chunk.full_coverage.3d") {
           std::vector<size_t> visited;
           size_t cursor = 0;
           while (cursor < N) {
-            auto [box, consumed] = r.consume_chunk(cursor, cs);
+            auto [box, consumed] = r.slice_ceil(cursor, cs);
             REQUIRE(consumed >= 1);
             collect_flat_3d(box, r, visited);
             cursor += consumed;
@@ -649,7 +649,7 @@ TEST_CASE("consume_chunk.full_coverage.3d") {
   }
 }
 
-TEST_CASE("consume_chunk.full_coverage.non_unit_steps_2d") {
+TEST_CASE("slice_ceil.full_coverage.non_unit_steps_2d") {
   // step sizes > 1 — the flat index is the logical position, not the raw value
   for (int si : {1, 2, 3}) {
     for (int sj : {1, 2, 3}) {
@@ -664,7 +664,7 @@ TEST_CASE("consume_chunk.full_coverage.non_unit_steps_2d") {
             std::vector<size_t> visited;
             size_t cursor = 0;
             while (cursor < N) {
-              auto [box, consumed] = r.consume_chunk(cursor, cs);
+              auto [box, consumed] = r.slice_ceil(cursor, cs);
               REQUIRE(consumed >= 1);
               collect_flat_2d(box, r, visited);
               cursor += consumed;
@@ -679,7 +679,7 @@ TEST_CASE("consume_chunk.full_coverage.non_unit_steps_2d") {
   }
 }
 
-TEST_CASE("consume_chunk.full_coverage.non_unit_steps_3d") {
+TEST_CASE("slice_ceil.full_coverage.non_unit_steps_3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 4*1, 1),
     tf::IndexRange<int>(0, 5*2, 2),
@@ -690,7 +690,7 @@ TEST_CASE("consume_chunk.full_coverage.non_unit_steps_3d") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       collect_flat_3d(box, r, visited);
       cursor += consumed;
@@ -702,52 +702,52 @@ TEST_CASE("consume_chunk.full_coverage.non_unit_steps_3d") {
 }
 
 // ============================================================================
-// Section 12: consume_chunk — chunk_size >= N must consume everything at once
+// Section 12: slice_ceil — chunk_size >= N must consume everything at once
 // ============================================================================
 
-TEST_CASE("consume_chunk.oversized_chunk_2d") {
+TEST_CASE("slice_ceil.oversized_chunk_2d") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1)
   );
   size_t N = r.size();  // 12
-  auto [box, consumed] = r.consume_chunk(0, N * 10);
+  auto [box, consumed] = r.slice_ceil(0, N * 10);
   REQUIRE(consumed == N);
   REQUIRE(box.size() == N);
   REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 3);
   REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 4);
 }
 
-TEST_CASE("consume_chunk.oversized_chunk_3d") {
+TEST_CASE("slice_ceil.oversized_chunk_3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 2, 1),
     tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1)
   );
   size_t N = r.size();  // 24
-  auto [box, consumed] = r.consume_chunk(0, 9999);
+  auto [box, consumed] = r.slice_ceil(0, 9999);
   REQUIRE(consumed == N);
   REQUIRE(box.size() == N);
 }
 
 // ============================================================================
-// Section 13: consume_chunk — chunk_size=1 always produces unit boxes
+// Section 13: slice_ceil — chunk_size=1 always produces unit boxes
 // ============================================================================
 
-TEST_CASE("consume_chunk.unit_chunk_2d") {
+TEST_CASE("slice_ceil.unit_chunk_2d") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 4, 1),
     tf::IndexRange<int>(0, 5, 1)
   );
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
-    auto [box, consumed] = r.consume_chunk(flat, 1);
+    auto [box, consumed] = r.slice_ceil(flat, 1);
     REQUIRE(consumed == 1);
     REQUIRE(box.size() == 1);
   }
 }
 
-TEST_CASE("consume_chunk.unit_chunk_3d") {
+TEST_CASE("slice_ceil.unit_chunk_3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 3, 1),
@@ -755,19 +755,19 @@ TEST_CASE("consume_chunk.unit_chunk_3d") {
   );
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
-    auto [box, consumed] = r.consume_chunk(flat, 1);
+    auto [box, consumed] = r.slice_ceil(flat, 1);
     REQUIRE(consumed == 1);
     REQUIRE(box.size() == 1);
   }
 }
 
 // ============================================================================
-// Section 14: consume_chunk — trailing-zeros rule (orthogonality invariant)
+// Section 14: slice_ceil — trailing-zeros rule (orthogonality invariant)
 // When an inner dimension is not at coordinate 0, grow_dim must be the
 // innermost (N-1), which means outer dimensions are locked.
 // ============================================================================
 
-TEST_CASE("consume_chunk.trailing_zeros.inner_not_at_zero") {
+TEST_CASE("slice_ceil.trailing_zeros.inner_not_at_zero") {
   // 2D: 4x6, unit steps
   // flat_beg=3 -> coords (0, 3): dim1 != 0, so grow_dim must be 1
   // Requesting 10 should be capped to the remaining 3 elements in the row.
@@ -776,7 +776,7 @@ TEST_CASE("consume_chunk.trailing_zeros.inner_not_at_zero") {
     tf::IndexRange<int>(0, 6, 1)
   );
   {
-    auto [box, consumed] = r.consume_chunk(3, 10);
+    auto [box, consumed] = r.slice_ceil(3, 10);
     // coords: (0, 3); must stay on row 0, innermost grows
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
     REQUIRE(box.dim(1).begin() == 3);
@@ -785,14 +785,14 @@ TEST_CASE("consume_chunk.trailing_zeros.inner_not_at_zero") {
 
   // flat_beg=9 -> coords (1, 3): same constraint on row 1
   {
-    auto [box, consumed] = r.consume_chunk(9, 10);
+    auto [box, consumed] = r.slice_ceil(9, 10);
     REQUIRE(box.dim(0).begin() == 1); REQUIRE(box.dim(0).end() == 2);
     REQUIRE(box.dim(1).begin() == 3);
     REQUIRE(consumed == 3);
   }
 }
 
-TEST_CASE("consume_chunk.trailing_zeros.3d_mid_row") {
+TEST_CASE("slice_ceil.trailing_zeros.3d_mid_row") {
   // 3D: 3x4x5; flat_beg at (0,0,3) -> dim2 != 0, outer dims locked
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 3, 1),
@@ -800,7 +800,7 @@ TEST_CASE("consume_chunk.trailing_zeros.3d_mid_row") {
     tf::IndexRange<int>(0, 5, 1)
   );
   size_t flat = 0*20 + 0*5 + 3;   // coords (0,0,3)
-  auto [box, consumed] = r.consume_chunk(flat, 100);
+  auto [box, consumed] = r.slice_ceil(flat, 100);
   // inner row incomplete: only 2 elements left (indices 3,4)
   REQUIRE(consumed == 2);
   REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
@@ -808,7 +808,7 @@ TEST_CASE("consume_chunk.trailing_zeros.3d_mid_row") {
   REQUIRE(box.dim(2).begin() == 3); REQUIRE(box.dim(2).end() == 5);
 }
 
-TEST_CASE("consume_chunk.trailing_zeros.3d_clean_boundary") {
+TEST_CASE("slice_ceil.trailing_zeros.3d_clean_boundary") {
   // When coords are (row, 0, 0), can grow dim 0 if budget allows
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 3, 1),
@@ -816,7 +816,7 @@ TEST_CASE("consume_chunk.trailing_zeros.3d_clean_boundary") {
     tf::IndexRange<int>(0, 5, 1)
   );
   size_t flat = 1*20 + 0*5 + 0;   // coords (1,0,0)
-  auto [box, consumed] = r.consume_chunk(flat, 40);
+  auto [box, consumed] = r.slice_ceil(flat, 40);
   // Budget 40 >= one full row slice (20 elements) -> can grow dim 0
   REQUIRE(consumed == 40);
   REQUIRE(box.dim(0).begin() == 1); REQUIRE(box.dim(0).end() == 3);
@@ -825,10 +825,10 @@ TEST_CASE("consume_chunk.trailing_zeros.3d_clean_boundary") {
 }
 
 // ============================================================================
-// Section 15: consume_chunk — consumed == box.size() always
+// Section 15: slice_ceil — consumed == box.size() always
 // ============================================================================
 
-TEST_CASE("consume_chunk.consumed_equals_box_size.2d") {
+TEST_CASE("slice_ceil.consumed_equals_box_size.2d") {
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(0, 6, 2),
     tf::IndexRange<int>(0, 9, 3)
@@ -836,13 +836,13 @@ TEST_CASE("consume_chunk.consumed_equals_box_size.2d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {1, 2, 3, 6, 18}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed == box.size());
     }
   }
 }
 
-TEST_CASE("consume_chunk.consumed_equals_box_size.3d") {
+TEST_CASE("slice_ceil.consumed_equals_box_size.3d") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0, 4, 1),
     tf::IndexRange<int>(0, 5, 1),
@@ -851,17 +851,17 @@ TEST_CASE("consume_chunk.consumed_equals_box_size.3d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat += 7) {   // stride to keep test fast
     for (size_t cs : {1, 6, 12, 30, 120}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed == box.size());
     }
   }
 }
 
 // ============================================================================
-// Section 16: consume_chunk — 4D sanity check
+// Section 16: slice_ceil — 4D sanity check
 // ============================================================================
 
-TEST_CASE("consume_chunk.full_coverage.4d") {
+TEST_CASE("slice_ceil.full_coverage.4d") {
   tf::IndexRange<int, 4> r(
     tf::IndexRange<int>(0, 2, 1),
     tf::IndexRange<int>(0, 3, 1),
@@ -874,7 +874,7 @@ TEST_CASE("consume_chunk.full_coverage.4d") {
     std::vector<int> visited(N, 0);
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       // Enumerate box elements and mark visited
@@ -887,6 +887,757 @@ TEST_CASE("consume_chunk.full_coverage.4d") {
       cursor += consumed;
     }
     for (int v : visited) REQUIRE(v == 1);
+  }
+}
+
+// ============================================================================
+// Section 17: zero-size dimension behaviour
+//
+// A zero-size dimension collapses the entire ND range to empty — consistent
+// with OpenMP collapse semantics.  All methods must handle this gracefully.
+// ============================================================================
+
+TEST_CASE("IndexRangeND.zero_size.size") {
+  // Any zero-size dimension -> total size() == 0
+
+  // zero in the middle dimension
+  tf::IndexRange<int, 3> r1(
+    tf::IndexRange<int>(0, 100, 1),
+    tf::IndexRange<int>(0,   0, 1),
+    tf::IndexRange<int>(0, 100, 1)
+  );
+  REQUIRE(r1.size() == 0);
+
+  // zero in the outermost dimension
+  tf::IndexRange<int, 3> r2(
+    tf::IndexRange<int>(0,   0, 1),
+    tf::IndexRange<int>(0,  10, 1),
+    tf::IndexRange<int>(0,  10, 1)
+  );
+  REQUIRE(r2.size() == 0);
+
+  // zero in the innermost dimension
+  tf::IndexRange<int, 3> r3(
+    tf::IndexRange<int>(0,  10, 1),
+    tf::IndexRange<int>(0,  10, 1),
+    tf::IndexRange<int>(0,   0, 1)
+  );
+  REQUIRE(r3.size() == 0);
+
+  // all dimensions zero
+  tf::IndexRange<int, 3> r4(
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 0, 1)
+  );
+  REQUIRE(r4.size() == 0);
+
+  // 2D
+  tf::IndexRange<int, 2> r5(
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 0, 1)
+  );
+  REQUIRE(r5.size() == 0);
+}
+
+TEST_CASE("IndexRangeND.zero_size.ceil_floor") {
+  // ceil and floor on a zero-size range should return 0
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 100, 1),
+    tf::IndexRange<int>(0,   0, 1),
+    tf::IndexRange<int>(0, 100, 1)
+  );
+  REQUIRE(r.size() == 0);
+  REQUIRE(r.ceil(1)   == 0);
+  REQUIRE(r.ceil(10)  == 0);
+  REQUIRE(r.ceil(100) == 0);
+  REQUIRE(r.floor(1)   == 0);
+  REQUIRE(r.floor(10)  == 0);
+  REQUIRE(r.floor(100) == 0);
+}
+
+TEST_CASE("IndexRangeND.zero_size.slice_ceil_slice_floor") {
+  // slice_ceil and slice_floor on a zero-size range should return consumed=0
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 100, 1),
+    tf::IndexRange<int>(0,   0, 1),
+    tf::IndexRange<int>(0, 100, 1)
+  );
+  REQUIRE(r.size() == 0);
+  {
+    auto [box, consumed] = r.slice_ceil(0, 10);
+    REQUIRE(consumed == 0);
+  }
+  {
+    auto [box, consumed] = r.slice_floor(0, 10);
+    REQUIRE(consumed == 0);
+  }
+}
+
+TEST_CASE("IndexRangeND.zero_size.openmp_collapse_analogy") {
+  // Confirms the OpenMP collapse analogy: i iterates 100 times, j iterates 0,
+  // k iterates 100.  The collapsed space has 0 total iterations.
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 100, 1),  // i: 100
+    tf::IndexRange<int>(0,   0, 1),  // j: 0  <- collapses everything
+    tf::IndexRange<int>(0, 100, 1)   // k: 100
+  );
+  REQUIRE(r.size()    == 0);
+  REQUIRE(r.ceil(1)   == 0);
+  REQUIRE(r.floor(1)  == 0);
+
+  // A fully non-zero range has the expected product
+  tf::IndexRange<int, 3> full(
+    tf::IndexRange<int>(0, 100, 1),
+    tf::IndexRange<int>(0,   1, 1),  // j: 1 (not zero)
+    tf::IndexRange<int>(0, 100, 1)
+  );
+  REQUIRE(full.size() == 10000);
+}
+
+// ============================================================================
+// Section 18: IndexRange<T,N>::ceil and floor
+//
+// ceil(chunk_size) returns the smallest suffix-product boundary >= chunk_size.
+// floor(chunk_size) returns the largest suffix-product boundary <= chunk_size.
+// Both are lightweight size queries — no box constructed, no flat_beg needed.
+// When chunk_size is already a boundary, ceil == floor == chunk_size.
+// ============================================================================
+
+TEST_CASE("IndexRangeND.ceil.3d_documented_examples") {
+  // 3D range: 4 x 5 x 10  — suffix-product boundaries: 1, 10, 50, 200
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 10, 1)
+  );
+
+  // exact boundaries — ceil returns them unchanged
+  REQUIRE(r.ceil(1)   == 1);
+  REQUIRE(r.ceil(10)  == 10);
+  REQUIRE(r.ceil(50)  == 50);
+  REQUIRE(r.ceil(200) == 200);
+
+  // non-boundaries — ceil rounds up
+  REQUIRE(r.ceil(2)   == 10);   // up to first inner row
+  REQUIRE(r.ceil(7)   == 10);
+  REQUIRE(r.ceil(11)  == 50);   // up to first outer row
+  REQUIRE(r.ceil(30)  == 50);
+  REQUIRE(r.ceil(51)  == 200);  // up to full range
+  REQUIRE(r.ceil(100) == 200);
+  REQUIRE(r.ceil(199) == 200);
+
+  // chunk_size > size() — capped at size()
+  REQUIRE(r.ceil(201) == 200);
+  REQUIRE(r.ceil(999) == 200);
+}
+
+TEST_CASE("IndexRangeND.floor.3d_documented_examples") {
+  // 3D range: 4 x 5 x 10  — suffix-product boundaries: 1, 10, 50, 200
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 10, 1)
+  );
+
+  // exact boundaries — floor returns them unchanged
+  REQUIRE(r.floor(1)   == 1);
+  REQUIRE(r.floor(10)  == 10);
+  REQUIRE(r.floor(50)  == 50);
+  REQUIRE(r.floor(200) == 200);
+
+  // non-boundaries — floor rounds down
+  REQUIRE(r.floor(2)   == 1);    // down to 1
+  REQUIRE(r.floor(7)   == 1);
+  REQUIRE(r.floor(9)   == 1);
+  REQUIRE(r.floor(11)  == 10);   // down to one inner row
+  REQUIRE(r.floor(30)  == 10);
+  REQUIRE(r.floor(49)  == 10);
+  REQUIRE(r.floor(51)  == 50);   // down to one outer row
+  REQUIRE(r.floor(100) == 50);
+  REQUIRE(r.floor(199) == 50);
+
+  // chunk_size >= size() — capped at size()
+  REQUIRE(r.floor(200) == 200);
+  REQUIRE(r.floor(999) == 200);
+}
+
+TEST_CASE("IndexRangeND.ceil_floor.agree_on_boundaries.3d") {
+  // On every natural boundary, ceil == floor == boundary value
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 10, 1)
+  );
+  for (size_t b : {size_t{1}, size_t{10}, size_t{50}, size_t{200}}) {
+    REQUIRE(r.ceil(b)  == b);
+    REQUIRE(r.floor(b) == b);
+    REQUIRE(r.ceil(b)  == r.floor(b));
+  }
+}
+
+TEST_CASE("IndexRangeND.ceil_floor.ordering") {
+  // floor(x) <= x <= ceil(x) for all x, and floor(x) <= ceil(x)
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 6, 1)
+  );
+  size_t N = r.size();
+  for (size_t cs = 1; cs <= N + 10; ++cs) {
+    size_t c = r.ceil(cs);
+    size_t f = r.floor(cs);
+    REQUIRE(f <= cs);
+    REQUIRE(f <= c);
+    // ceil is either >= cs, or capped at N when cs > N
+    if (cs <= N) { REQUIRE(c >= cs); }
+    else          { REQUIRE(c == N); }
+  }
+}
+
+TEST_CASE("IndexRangeND.ceil_floor.2d") {
+  // 2D range: 3 x 4 — suffix-product boundaries: 1, 4, 12
+  tf::IndexRange<int, 2> r(
+    tf::IndexRange<int>(0, 3, 1),
+    tf::IndexRange<int>(0, 4, 1)
+  );
+  REQUIRE(r.ceil(1)  == 1);
+  REQUIRE(r.ceil(2)  == 4);
+  REQUIRE(r.ceil(4)  == 4);
+  REQUIRE(r.ceil(5)  == 12);
+  REQUIRE(r.ceil(12) == 12);
+  REQUIRE(r.ceil(13) == 12);  // capped
+
+  REQUIRE(r.floor(1)  == 1);
+  REQUIRE(r.floor(3)  == 1);
+  REQUIRE(r.floor(4)  == 4);
+  REQUIRE(r.floor(11) == 4);
+  REQUIRE(r.floor(12) == 12);
+  REQUIRE(r.floor(99) == 12);
+}
+
+TEST_CASE("IndexRangeND.ceil_floor.exhaustive_2d") {
+  // For all 2D shapes up to 6x6, verify:
+  //   1. ceil and floor always return a valid suffix-product boundary
+  //   2. floor(x) <= x, ceil(x) >= x (or capped at N)
+  //   3. On boundaries ceil == floor
+  for (int d0 = 1; d0 <= 6; ++d0) {
+    for (int d1 = 1; d1 <= 6; ++d1) {
+      tf::IndexRange<int, 2> r(
+        tf::IndexRange<int>(0, d0, 1),
+        tf::IndexRange<int>(0, d1, 1)
+      );
+      size_t N     = r.size();
+      size_t inner = static_cast<size_t>(d1);
+      // valid suffix-product boundaries for this shape
+      std::vector<size_t> boundaries = {1, inner, N};
+
+      for (size_t cs = 1; cs <= N + 2; ++cs) {
+        size_t c = r.ceil(cs);
+        size_t f = r.floor(cs);
+
+        // both must be valid boundaries
+        REQUIRE(std::find(boundaries.begin(), boundaries.end(), c) != boundaries.end());
+        REQUIRE(std::find(boundaries.begin(), boundaries.end(), f) != boundaries.end());
+
+        // ordering
+        REQUIRE(f <= cs);
+        REQUIRE(f <= c);
+
+        // on a boundary, ceil == floor
+        if (std::find(boundaries.begin(), boundaries.end(), cs) != boundaries.end()) {
+          REQUIRE(c == cs);
+          REQUIRE(f == cs);
+        }
+      }
+    }
+  }
+}
+
+// ============================================================================
+// Section 18: slice_floor — floor variant
+//
+// slice_floor guarantees consumed <= chunk_size, with one
+// irreducible exception: when chunk_size is smaller than a single
+// indivisible inner step, we still return that one step for forward progress.
+//
+// Key behavioral differences from slice_ceil:
+//  - grow_dim is the outermost dim whose per-step volume still fits within budget
+//  - steps_needed uses floor division, not ceil
+//  - no overshoot past chunk_size (except the irreducible minimum case)
+// ============================================================================
+
+// Helper: drain the full flat space using slice_floor and return
+// the list of visited flat indices.  Analogous to drain_slice_ceil above.
+template <typename R, typename VisitFn>
+std::vector<size_t> drain_slice_floor(
+    const R& range, size_t chunk_size, VisitFn visit) {
+  size_t N = range.size();
+  std::vector<size_t> visited;
+  size_t cursor = 0;
+  while (cursor < N) {
+    auto [box, consumed] = range.slice_floor(cursor, chunk_size);
+    REQUIRE(consumed > 0);            // must make forward progress
+    REQUIRE(cursor + consumed <= N);  // must not go past the end
+    visit(box, visited);
+    cursor += consumed;
+  }
+  return visited;
+}
+
+// ---- Basic contract: consumed <= chunk_size (except irreducible min) ----
+
+TEST_CASE("slice_floor.consumed_le_requested.2d") {
+  // 3x7 range. For each starting flat index and various chunk sizes,
+  // verify consumed <= chunk_size.
+  tf::IndexRange<int, 2> r(
+    tf::IndexRange<int>(0, 3, 1),
+    tf::IndexRange<int>(0, 7, 1)
+  );
+  size_t N = r.size();  // 21
+  for (size_t flat = 0; flat < N; flat++) {
+    for (size_t cs : {1, 2, 3, 5, 7, 10, 21}) {
+      auto [box, consumed] = r.slice_floor(flat, cs);
+      REQUIRE(consumed > 0);
+      REQUIRE(consumed <= cs);
+      REQUIRE(consumed == box.size());
+    }
+  }
+}
+
+TEST_CASE("slice_floor.consumed_le_requested.3d") {
+  // 4x5x6 range
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 6, 1)
+  );
+  size_t N = r.size();  // 120
+  for (size_t flat = 0; flat < N; flat += 3) {  // stride to keep test fast
+    for (size_t cs : {1, 6, 7, 12, 30, 60, 120}) {
+      auto [box, consumed] = r.slice_floor(flat, cs);
+      REQUIRE(consumed > 0);
+      REQUIRE(consumed <= cs);
+      REQUIRE(consumed == box.size());
+    }
+  }
+}
+
+// ---- Specific scenarios mirroring the slice_ceil doc examples -------
+
+TEST_CASE("slice_floor.scenarios.3d_4x5x10") {
+  // 3D range: 4x5x10, total=200
+  tf::IndexRange<int, 3> range(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 10, 1)
+  );
+
+  // Scenario A: flat_beg=0, requested=30.
+  // coords (0,0,0). grow into dim2 (inner_vol=1): 10 elements fit.
+  // next try dim1 (next_vol=50 > 30 and inner=10 > 1) -> break.
+  // grow_dim=2, active=1, steps_needed=floor(30/1)=30, steps_left=10 -> 10.
+  // consumed=10 (atmost 30, no overshoot).
+  {
+    auto [box, consumed] = range.slice_floor(0, 30);
+    REQUIRE(consumed == 10);
+    REQUIRE(consumed <= 30);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10);
+  }
+
+  // Scenario B: flat_beg=0, requested=50.
+  // coords (0,0,0). dim2: next_vol=10 <=50 -> commit grow_dim=2, active=1, inner=10.
+  // dim1: next_vol=50 <=50 -> commit grow_dim=1, active=10, inner=50.
+  // dim0: next_vol=200 >50 and inner=50 > 1 -> break.
+  // steps_needed=floor(50/10)=5, steps_left=5 -> 5. consumed=50.
+  {
+    auto [box, consumed] = range.slice_floor(0, 50);
+    REQUIRE(consumed == 50);
+    REQUIRE(consumed <= 50);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);  // locked
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 5);  // full extent
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10); // full extent
+  }
+
+  // Scenario C: flat_beg=0, requested=100.
+  // dim2: next_vol=10 <=100 -> grow_dim=2, active=1, inner=10.
+  // dim1: next_vol=50 <=100 -> grow_dim=1, active=10, inner=50.
+  // dim0: next_vol=200 >100, inner=50 > 1 -> break.
+  // steps_needed=floor(100/10)=10 but steps_left(dim1)=5 -> steps_to_take=5. consumed=50.
+  // (atmost 100, returns 50 — largest full-row slab that fits)
+  {
+    auto [box, consumed] = range.slice_floor(0, 100);
+    REQUIRE(consumed == 50);
+    REQUIRE(consumed <= 100);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 5);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10);
+  }
+
+  // Scenario D: flat_beg=0, requested=200 (full range).
+  // dim2: next_vol=10 -> grow_dim=2. dim1: next_vol=50 -> grow_dim=1, active=10.
+  // dim0: next_vol=200 <=200 -> grow_dim=0, active=50, inner=200.
+  // loop ends (d-- wraps past 0).
+  // steps_needed=floor(200/50)=4, steps_left=4 -> 4. consumed=200.
+  {
+    auto [box, consumed] = range.slice_floor(0, 200);
+    REQUIRE(consumed == 200);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 4);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 5);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10);
+  }
+
+  // Scenario E: flat_beg=30, requested=30.
+  // coords (0,3,0). d=2: coords[3] n/a. next_vol=10<=30 -> grow_dim=2, active=1, inner=10.
+  // d=1: coords[2]=0 ok. next_vol=50>30, inner=10>1 -> break.
+  // grow_dim=2, steps_needed=30, steps_left(dim2)=10-0=10 -> 10. consumed=10.
+  {
+    auto [box, consumed] = range.slice_floor(30, 30);
+    REQUIRE(consumed <= 30);
+    REQUIRE(consumed > 0);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);  // locked row 0
+    REQUIRE(box.dim(1).begin() == 3); REQUIRE(box.dim(1).end() == 4);  // locked col 3
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 10); // full inner
+  }
+}
+
+// ---- Alignment-clean cases: requested is a multiple of inner volume ----------
+
+TEST_CASE("ceil_floor_agree_on_aligned_chunk.2d") {
+  // For a 2D range, the natural boundary sizes are:
+  //   inner_vol = dim1.size()       (one full inner row)
+  //   outer_vol = dim0*dim1.size()  (entire range)
+  //
+  // When chunk_size is exactly one of these boundary values AND flat_beg
+  // itself lands on a hyperplane boundary (coords that are multiples of that
+  // boundary), ceil and floor must return identical boxes and consumed values —
+  // analogous to std::ceil(x) == std::floor(x) when x is an integer.
+  tf::IndexRange<int, 2> r(
+    tf::IndexRange<int>(0, 4, 1),   // dim0: 4 rows
+    tf::IndexRange<int>(0, 6, 1)    // dim1: 6 cols
+  );
+  size_t d1 = r.size(1);  // 6  — one inner row
+  size_t N  = r.size();   // 24 — full range
+
+  // chunk_size == inner row (6): every flat index that is a multiple of 6
+  // is aligned to an inner-row boundary.
+  for (size_t flat = 0; flat < N; flat += d1) {
+    auto [box_c, cons_c] = r.slice_ceil (flat, d1);
+    auto [box_f, cons_f] = r.slice_floor(flat, d1);
+    REQUIRE(cons_c == d1);
+    REQUIRE(cons_f == d1);
+    REQUIRE(cons_c == cons_f);
+    REQUIRE(box_c.dim(0).begin() == box_f.dim(0).begin());
+    REQUIRE(box_c.dim(0).end()   == box_f.dim(0).end());
+    REQUIRE(box_c.dim(1).begin() == box_f.dim(1).begin());
+    REQUIRE(box_c.dim(1).end()   == box_f.dim(1).end());
+  }
+
+  // chunk_size == full range (24): only flat=0 is aligned.
+  {
+    auto [box_c, cons_c] = r.slice_ceil (0, N);
+    auto [box_f, cons_f] = r.slice_floor(0, N);
+    REQUIRE(cons_c == N);
+    REQUIRE(cons_f == N);
+    REQUIRE(cons_c == cons_f);
+    REQUIRE(box_c.dim(0).begin() == box_f.dim(0).begin());
+    REQUIRE(box_c.dim(0).end()   == box_f.dim(0).end());
+    REQUIRE(box_c.dim(1).begin() == box_f.dim(1).begin());
+    REQUIRE(box_c.dim(1).end()   == box_f.dim(1).end());
+  }
+}
+
+TEST_CASE("ceil_floor_agree_on_aligned_chunk.3d") {
+  // 3D range: 3 x 4 x 5, total = 60.
+  // Natural boundary sizes:
+  //   innermost row  : dim2.size()       =  5
+  //   middle slab    : dim1*dim2.size()  = 20
+  //   full range     : dim0*dim1*dim2    = 60
+  //
+  // For each boundary size, sweep every flat index that is a multiple of that
+  // boundary (i.e. aligned starts) and verify ceil == floor for both consumed
+  // and the returned box.
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 3, 1),
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1)
+  );
+  size_t d2      = r.size(2);           //  5
+  size_t d1d2    = r.size(1) * d2;      // 20
+  size_t N       = r.size();            // 60
+
+  auto boxes_equal = [](const auto& a, const auto& b, size_t rank) {
+    for (size_t d = 0; d < rank; ++d) {
+      if (a.dim(d).begin() != b.dim(d).begin()) return false;
+      if (a.dim(d).end()   != b.dim(d).end())   return false;
+    }
+    return true;
+  };
+
+  // Aligned on innermost-row boundary (stride = d2 = 5)
+  for (size_t flat = 0; flat < N; flat += d2) {
+    auto [box_c, cons_c] = r.slice_ceil (flat, d2);
+    auto [box_f, cons_f] = r.slice_floor(flat, d2);
+    REQUIRE(cons_c == cons_f);
+    REQUIRE(cons_c == d2);
+    REQUIRE(boxes_equal(box_c, box_f, 3));
+  }
+
+  // Aligned on middle-slab boundary (stride = d1d2 = 20)
+  for (size_t flat = 0; flat < N; flat += d1d2) {
+    auto [box_c, cons_c] = r.slice_ceil (flat, d1d2);
+    auto [box_f, cons_f] = r.slice_floor(flat, d1d2);
+    REQUIRE(cons_c == cons_f);
+    REQUIRE(cons_c == d1d2);
+    REQUIRE(boxes_equal(box_c, box_f, 3));
+  }
+
+  // Full range (only flat=0 is aligned)
+  {
+    auto [box_c, cons_c] = r.slice_ceil (0, N);
+    auto [box_f, cons_f] = r.slice_floor(0, N);
+    REQUIRE(cons_c == cons_f);
+    REQUIRE(cons_c == N);
+    REQUIRE(boxes_equal(box_c, box_f, 3));
+  }
+}
+
+TEST_CASE("ceil_floor_agree_on_aligned_chunk.exhaustive_2d") {
+  // The ceil==floor contract holds when chunk_size is exactly a natural
+  // per-step volume of the range — i.e. the volume of one step along some
+  // dimension d, which equals the product of all inner dimension sizes.
+  // For a 2D range these are: inner=d1 (one full row) and outer=d0*d1 (full range).
+  // Both are tested at every valid aligned starting flat index (multiples of that volume).
+  for (int d0 = 1; d0 <= 6; ++d0) {
+    for (int d1 = 1; d1 <= 6; ++d1) {
+      tf::IndexRange<int, 2> r(
+        tf::IndexRange<int>(0, d0, 1),
+        tf::IndexRange<int>(0, d1, 1)
+      );
+      size_t N     = r.size();
+      size_t inner = static_cast<size_t>(d1);  // per-step vol at grow_dim=1
+      size_t outer = N;                         // per-step vol at grow_dim=0
+
+      // chunk_size == inner: aligned starts are multiples of inner
+      for (size_t flat = 0; flat < N; flat += inner) {
+        auto [box_c, cons_c] = r.slice_ceil (flat, inner);
+        auto [box_f, cons_f] = r.slice_floor(flat, inner);
+        REQUIRE(cons_c == cons_f);
+        REQUIRE(box_c.dim(0).begin() == box_f.dim(0).begin());
+        REQUIRE(box_c.dim(0).end()   == box_f.dim(0).end());
+        REQUIRE(box_c.dim(1).begin() == box_f.dim(1).begin());
+        REQUIRE(box_c.dim(1).end()   == box_f.dim(1).end());
+      }
+
+      // chunk_size == outer (full range): only flat=0 is aligned
+      {
+        auto [box_c, cons_c] = r.slice_ceil (0, outer);
+        auto [box_f, cons_f] = r.slice_floor(0, outer);
+        REQUIRE(cons_c == cons_f);
+        REQUIRE(box_c.dim(0).begin() == box_f.dim(0).begin());
+        REQUIRE(box_c.dim(0).end()   == box_f.dim(0).end());
+        REQUIRE(box_c.dim(1).begin() == box_f.dim(1).begin());
+        REQUIRE(box_c.dim(1).end()   == box_f.dim(1).end());
+      }
+    }
+  }
+}
+
+// ---- Full coverage: atmost must cover every element exactly once ------------
+
+TEST_CASE("slice_floor.full_coverage.2d") {
+  // Sweep multiple 2D shapes and chunk sizes; verify exactly-once coverage.
+  for (int d0 : {1, 3, 5, 7}) {
+    for (int d1 : {1, 4, 6, 10}) {
+      tf::IndexRange<int, 2> r(
+        tf::IndexRange<int>(0, d0, 1),
+        tf::IndexRange<int>(0, d1, 1)
+      );
+      size_t N = r.size();
+      for (size_t cs : {size_t{1}, size_t{2}, size_t{3}, size_t{5}, size_t(d1), N}) {
+        std::vector<size_t> visited;
+        size_t cursor = 0;
+        while (cursor < N) {
+          auto [box, consumed] = r.slice_floor(cursor, cs);
+          REQUIRE(consumed > 0);
+          REQUIRE(consumed <= cs);
+          REQUIRE(consumed == box.size());
+          for (int i = box.dim(0).begin(); i < box.dim(0).end(); i++)
+            for (int j = box.dim(1).begin(); j < box.dim(1).end(); j++)
+              visited.push_back(static_cast<size_t>(i * d1 + j));
+          cursor += consumed;
+        }
+        REQUIRE(visited.size() == N);
+        std::sort(visited.begin(), visited.end());
+        for (size_t k = 0; k < N; k++) REQUIRE(visited[k] == k);
+      }
+    }
+  }
+}
+
+TEST_CASE("slice_floor.full_coverage.3d") {
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 6, 1)
+  );
+  size_t N = r.size();  // 120
+  size_t D1 = r.size(1), D2 = r.size(2);
+
+  for (size_t cs : {1, 3, 6, 7, 10, 30, 60, 120}) {
+    std::vector<size_t> visited;
+    size_t cursor = 0;
+    while (cursor < N) {
+      auto [box, consumed] = r.slice_floor(cursor, cs);
+      REQUIRE(consumed > 0);
+      REQUIRE(consumed <= cs);
+      REQUIRE(consumed == box.size());
+      for (int i = box.dim(0).begin(); i < box.dim(0).end(); i++)
+        for (int j = box.dim(1).begin(); j < box.dim(1).end(); j++)
+          for (int k = box.dim(2).begin(); k < box.dim(2).end(); k++)
+            visited.push_back(static_cast<size_t>(i*D1*D2 + j*D2 + k));
+      cursor += consumed;
+    }
+    REQUIRE(visited.size() == N);
+    std::sort(visited.begin(), visited.end());
+    for (size_t k = 0; k < N; k++) REQUIRE(visited[k] == k);
+  }
+}
+
+// ---- Trailing-zeros rule: mid-row starting position -------------------------
+
+TEST_CASE("slice_floor.trailing_zeros.mid_row") {
+  // 3x7, starting flat_beg=4 -> coords (0,4): dim1 at pos 4, 3 remain in row.
+  // trailing-zeros fires: can't grow into dim0.
+  // grow_dim stays at N-1=1. active_inner_vol=1, steps_needed=floor(cs/1).
+  tf::IndexRange<int, 2> r(
+    tf::IndexRange<int>(0, 3, 1),
+    tf::IndexRange<int>(0, 7, 1)
+  );
+  // flat=4: coords (0,4). 3 elements remain in row 0 (pos 4,5,6).
+  {
+    auto [box, consumed] = r.slice_floor(4, 10);
+    REQUIRE(consumed == 3);   // min(steps_left=3, floor(10/1)=10) = 3
+    REQUIRE(consumed <= 10);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1); // locked
+    REQUIRE(box.dim(1).begin() == 4); REQUIRE(box.dim(1).end() == 7);
+  }
+  // flat=4, cs=2: only 2 elements consumed even though 3 remain.
+  {
+    auto [box, consumed] = r.slice_floor(4, 2);
+    REQUIRE(consumed == 2);
+    REQUIRE(consumed <= 2);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 4); REQUIRE(box.dim(1).end() == 6);
+  }
+}
+
+// ---- Irreducible minimum: requested < innermost step volume -----------------
+
+TEST_CASE("slice_floor.boundary_rounding.3d") {
+  // Verify floor rounds down to the nearest hyperplane boundary.
+  // 2x3x4 range: natural boundaries are 4 (inner row) and 12 (outer row).
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 2, 1),
+    tf::IndexRange<int>(0, 3, 1),
+    tf::IndexRange<int>(0, 4, 1)
+  );
+
+  // chunk_size=1: grows along dim2, steps_needed=1 -> consumed=1
+  {
+    auto [box, consumed] = r.slice_floor(0, 1);
+    REQUIRE(consumed == 1);
+    REQUIRE(consumed <= 1);
+    REQUIRE(box.size() == 1);
+  }
+  // chunk_size=3: grows along dim2, steps_needed=3 -> consumed=3
+  {
+    auto [box, consumed] = r.slice_floor(0, 3);
+    REQUIRE(consumed == 3);
+    REQUIRE(consumed <= 3);
+  }
+  // chunk_size=4: exactly one inner row -> consumed=4
+  {
+    auto [box, consumed] = r.slice_floor(0, 4);
+    REQUIRE(consumed == 4);
+    REQUIRE(consumed <= 4);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 1);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 4);
+  }
+  // chunk_size=5: not a boundary — floor rounds down to 4 (one inner row)
+  {
+    auto [box, consumed] = r.slice_floor(0, 5);
+    REQUIRE(consumed == 4);
+    REQUIRE(consumed <= 5);
+  }
+  // chunk_size=11: not a boundary — floor rounds down to 4 (one inner row,
+  // since promoting to grow_dim=1 would cost 12 per step which exceeds 11)
+  {
+    auto [box, consumed] = r.slice_floor(0, 11);
+    REQUIRE(consumed == 4);
+    REQUIRE(consumed <= 11);
+  }
+  // chunk_size=12: exactly one outer row -> consumed=12
+  {
+    auto [box, consumed] = r.slice_floor(0, 12);
+    REQUIRE(consumed == 12);
+    REQUIRE(consumed <= 12);
+    REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 3);
+    REQUIRE(box.dim(2).begin() == 0); REQUIRE(box.dim(2).end() == 4);
+  }
+}
+
+// ---- ceil vs atmost: atmost never returns more than ceil --------------------
+
+TEST_CASE("slice_floor.never_exceeds_ceil") {
+  // For any (flat, cs), consumed_floor <= consumed_ceil.
+  // With unit step sizes, consumed_floor <= cs always holds unconditionally.
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 6, 1)
+  );
+  size_t N = r.size();
+  for (size_t flat = 0; flat < N; flat++) {
+    for (size_t cs : {1, 3, 6, 7, 13, 30, 60, 120}) {
+      auto [box_c, cons_c] = r.slice_ceil (flat, cs);
+      auto [box_f, cons_f] = r.slice_floor(flat, cs);
+      REQUIRE(cons_f <= cons_c);      // atmost never returns more than ceil
+      REQUIRE(cons_f == box_f.size());
+      REQUIRE(cons_c == box_c.size());
+    }
+  }
+}
+
+// ---- Exhaustive sweep: atmost covers all elements exactly once --------------
+
+TEST_CASE("slice_floor.exhaustive.2d_all_shapes") {
+  for (int d0 = 1; d0 <= 8; d0++) {
+    for (int d1 = 1; d1 <= 8; d1++) {
+      tf::IndexRange<int, 2> r(
+        tf::IndexRange<int>(0, d0, 1),
+        tf::IndexRange<int>(0, d1, 1)
+      );
+      size_t N = r.size();
+      for (size_t cs : {size_t{1}, size_t{2}, size_t{3}, size_t(d1), N}) {
+        std::vector<int> visited(N, 0);
+        size_t cursor = 0;
+        while (cursor < N) {
+          auto [box, consumed] = r.slice_floor(cursor, cs);
+          REQUIRE(consumed > 0);
+          REQUIRE(consumed <= cs);
+          for (int i = box.dim(0).begin(); i < box.dim(0).end(); i++)
+            for (int j = box.dim(1).begin(); j < box.dim(1).end(); j++)
+              visited[i * d1 + j]++;
+          cursor += consumed;
+        }
+        for (int v : visited) REQUIRE(v == 1);
+      }
+    }
   }
 }
 
@@ -1002,7 +1753,7 @@ TEST_CASE("NegativeStep.2D.both_negative.coords_roundtrip") {
   }
 }
 
-// consume_chunk full-coverage with negative steps
+// slice_ceil full-coverage with negative steps
 TEST_CASE("NegativeStep.2D.dim0_negative.full_coverage") {
   // dim0: 10 down to 0, step -2 (5 elements)
   // dim1: 0 up to 6,   step  1 (6 elements)
@@ -1015,7 +1766,7 @@ TEST_CASE("NegativeStep.2D.dim0_negative.full_coverage") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_2d(box, r, visited);
@@ -1037,7 +1788,7 @@ TEST_CASE("NegativeStep.2D.dim1_negative.full_coverage") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_2d(box, r, visited);
@@ -1059,7 +1810,7 @@ TEST_CASE("NegativeStep.2D.both_negative.full_coverage") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_2d(box, r, visited);
@@ -1095,7 +1846,7 @@ TEST_CASE("NegativeStep.2D.exhaustive_mixed_signs") {
             std::vector<size_t> visited;
             size_t cursor = 0;
             while (cursor < N) {
-              auto [box, consumed] = r.consume_chunk(cursor, cs);
+              auto [box, consumed] = r.slice_ceil(cursor, cs);
               REQUIRE(consumed >= 1);
               REQUIRE(consumed == box.size());
               collect_flat_2d(box, r, visited);
@@ -1154,7 +1905,7 @@ TEST_CASE("NegativeStep.3D.all_negative.full_coverage") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_3d(box, r, visited);
@@ -1178,7 +1929,7 @@ TEST_CASE("NegativeStep.3D.mixed_signs.full_coverage") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_3d(box, r, visited);
@@ -1199,7 +1950,7 @@ TEST_CASE("NegativeStep.forward_progress.2d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
     for (size_t cs : {size_t{1}, size_t{2}, size_t{5}, N}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(flat + consumed <= N);
       REQUIRE(consumed == box.size());
@@ -1216,7 +1967,7 @@ TEST_CASE("NegativeStep.forward_progress.3d") {
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat += 5) {  // stride to keep test fast
     for (size_t cs : {1, 3, 15, 60}) {
-      auto [box, consumed] = r.consume_chunk(flat, cs);
+      auto [box, consumed] = r.slice_ceil(flat, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(flat + consumed <= N);
       REQUIRE(consumed == box.size());
@@ -1457,10 +2208,10 @@ TEST_CASE("NegativeStep.coords.exhaustive_2d_mixed") {
 }
 
 // ============================================================================
-// Section 18c: consume_chunk full coverage — negative step dims
+// Section 18c: slice_ceil full coverage — negative step dims
 // ============================================================================
 
-TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_both_negative") {
+TEST_CASE("NegativeStep.slice_ceil.full_coverage.2d_both_negative") {
   // dim0: 10,8,6,4,2  dim1: 9,6,3  -> 5x3 = 15 elements
   tf::IndexRange<int, 2> r(
     tf::IndexRange<int>(10, 0, -2),
@@ -1473,7 +2224,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_both_negative") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_2d_signed(box, r, visited);
@@ -1485,7 +2236,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_both_negative") {
   }
 }
 
-TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_mixed_steps") {
+TEST_CASE("NegativeStep.slice_ceil.full_coverage.2d_mixed_steps") {
   // dim0: positive 0,1,2,3,4  dim1: negative 10,8,6,4,2,0... wait, end exclusive
   // dim1: beg=10, end=0, step=-2 -> 10,8,6,4,2  (5 elements)
   tf::IndexRange<int, 2> r(
@@ -1499,7 +2250,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_mixed_steps") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_2d_signed(box, r, visited);
@@ -1511,7 +2262,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.2d_mixed_steps") {
   }
 }
 
-TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_all_negative") {
+TEST_CASE("NegativeStep.slice_ceil.full_coverage.3d_all_negative") {
   // 3x4x5 in descending order on all axes
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(3,  0, -1),
@@ -1525,7 +2276,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_all_negative") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_3d_signed(box, r, visited);
@@ -1537,7 +2288,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_all_negative") {
   }
 }
 
-TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_mixed_steps") {
+TEST_CASE("NegativeStep.slice_ceil.full_coverage.3d_mixed_steps") {
   // dim0 positive, dim1 negative, dim2 positive
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0,  4,  1),
@@ -1551,7 +2302,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_mixed_steps") {
     std::vector<size_t> visited;
     size_t cursor = 0;
     while (cursor < N) {
-      auto [box, consumed] = r.consume_chunk(cursor, cs);
+      auto [box, consumed] = r.slice_ceil(cursor, cs);
       REQUIRE(consumed >= 1);
       REQUIRE(consumed == box.size());
       collect_flat_3d_signed(box, r, visited);
@@ -1563,7 +2314,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.3d_mixed_steps") {
   }
 }
 
-TEST_CASE("NegativeStep.consume_chunk.full_coverage.exhaustive_2d") {
+TEST_CASE("NegativeStep.slice_ceil.full_coverage.exhaustive_2d") {
   // Sweep all sign combinations and small dims exhaustively
   for (int s0 : {1, -1, 2, -2}) {
     for (int s1 : {1, -1, 2, -2}) {
@@ -1584,7 +2335,7 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.exhaustive_2d") {
             std::vector<size_t> visited;
             size_t cursor = 0;
             while (cursor < N) {
-              auto [box, consumed] = r.consume_chunk(cursor, cs);
+              auto [box, consumed] = r.slice_ceil(cursor, cs);
               REQUIRE(consumed >= 1);
               REQUIRE(consumed == box.size());
               collect_flat_2d_signed(box, r, visited);
@@ -1601,12 +2352,12 @@ TEST_CASE("NegativeStep.consume_chunk.full_coverage.exhaustive_2d") {
 }
 
 // ============================================================================
-// Section 18d: consume_chunk — trailing-zeros rule with negative steps
+// Section 18d: slice_ceil — trailing-zeros rule with negative steps
 // The orthogonality constraint operates in logical position space and must
 // behave identically regardless of step sign.
 // ============================================================================
 
-TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.inner_mid_row") {
+TEST_CASE("NegativeStep.slice_ceil.trailing_zeros.inner_mid_row") {
   // dim0: 6,4,2  (beg=6, step=-2, size=3)
   // dim1: 9,6,3  (beg=9, step=-3, size=3)
   // flat 1 -> coords (0, 1): dim1 at pos 1 != 0, so outer dim must be locked
@@ -1616,7 +2367,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.inner_mid_row") {
   );
   // flat=1: coords (0,1) -> dim1 at pos 1, 2 elements remain in the row (pos 1 and 2)
   {
-    auto [box, consumed] = r.consume_chunk(1, 10);
+    auto [box, consumed] = r.slice_ceil(1, 10);
     REQUIRE(box.dim(0).begin() == 6); REQUIRE(box.dim(0).end() == 4);  // locked to row 0
     REQUIRE(box.dim(1).begin() == 6);  // col pos 1 -> value 9 + 1*(-3) = 6
     REQUIRE(box.dim(1).end()   == 0);  // runs to end of dim1
@@ -1625,7 +2376,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.inner_mid_row") {
 
   // flat=2: coords (0,2) -> last element in the row, exactly 1 left
   {
-    auto [box, consumed] = r.consume_chunk(2, 10);
+    auto [box, consumed] = r.slice_ceil(2, 10);
     REQUIRE(consumed == 1);
     REQUIRE(box.dim(0).begin() == 6); REQUIRE(box.dim(0).end() == 4);  // locked to row 0
     REQUIRE(box.dim(1).begin() == 3); REQUIRE(box.dim(1).end() == 0);  // col pos 2 -> value 3
@@ -1634,14 +2385,14 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.inner_mid_row") {
   // flat=3: coords (1,0) -> col at 0, can grow into dim0
   // Budget 9 >= 2 full rows (2*3=6), consumes both remaining rows
   {
-    auto [box, consumed] = r.consume_chunk(3, 9);
+    auto [box, consumed] = r.slice_ceil(3, 9);
     REQUIRE(consumed == 6);
     REQUIRE(box.dim(0).begin() == 4); REQUIRE(box.dim(0).end() == 0);  // rows 1 and 2: values 4,2
     REQUIRE(box.dim(1).begin() == 9); REQUIRE(box.dim(1).end() == 0);  // full dim1 extent
   }
 }
 
-TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.3d_mixed") {
+TEST_CASE("NegativeStep.slice_ceil.trailing_zeros.3d_mixed") {
   // dim0 positive, dim1 and dim2 negative
   // dim0: 0,1,2  dim1: 4,2 (beg=4,step=-2,size=2)  dim2: 6,3 (beg=6,step=-3,size=2)
   tf::IndexRange<int, 3> r(
@@ -1654,7 +2405,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.3d_mixed") {
 
   // flat=1 -> coords (0,0,1): dim2 at pos 1, outer dims locked
   {
-    auto [box, consumed] = r.consume_chunk(1, 100);
+    auto [box, consumed] = r.slice_ceil(1, 100);
     REQUIRE(consumed == 1);
     REQUIRE(box.dim(0).begin() == 0); REQUIRE(box.dim(0).end() == 1);
     REQUIRE(box.dim(1).begin() == 4); REQUIRE(box.dim(1).end() == 2);
@@ -1663,7 +2414,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.3d_mixed") {
 
   // flat=2 -> coords (0,1,0): dim2 at 0 but dim1 at 1 != 0, grow_dim = 1
   {
-    auto [box, consumed] = r.consume_chunk(2, 100);
+    auto [box, consumed] = r.slice_ceil(2, 100);
     // dim1 has 1 step left (pos 1 -> value 2), inner vol = dim2.size() = 2
     // budget 100 >> 2 -> takes the remaining 1 step on dim1 = 2 elements
     REQUIRE(consumed == 2);
@@ -1672,7 +2423,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.3d_mixed") {
 
   // flat=4 -> coords (1,0,0): all inner dims at 0, can grow into dim0
   {
-    auto [box, consumed] = r.consume_chunk(4, 100);
+    auto [box, consumed] = r.slice_ceil(4, 100);
     // 2 rows left (rows 1 and 2), each 2*2=4, budget 100 -> takes both = 8
     REQUIRE(consumed == 8);
     REQUIRE(box.dim(0).begin() == 1); REQUIRE(box.dim(0).end() == 3);
@@ -1685,7 +2436,7 @@ TEST_CASE("NegativeStep.consume_chunk.trailing_zeros.3d_mixed") {
 // Section 18e: box step_size must always match the original dim's step_size
 // ============================================================================
 
-TEST_CASE("NegativeStep.consume_chunk.step_size_preserved") {
+TEST_CASE("NegativeStep.slice_ceil.step_size_preserved") {
   tf::IndexRange<int, 3> r(
     tf::IndexRange<int>(0,  4,  1),
     tf::IndexRange<int>(10, 0, -2),
@@ -1693,7 +2444,7 @@ TEST_CASE("NegativeStep.consume_chunk.step_size_preserved") {
   );
   size_t N = r.size();
   for (size_t flat = 0; flat < N; flat++) {
-    auto [box, consumed] = r.consume_chunk(flat, 7);
+    auto [box, consumed] = r.slice_ceil(flat, 7);
     REQUIRE(box.dim(0).step_size() ==  1);
     REQUIRE(box.dim(1).step_size() == -2);
     REQUIRE(box.dim(2).step_size() == -3);

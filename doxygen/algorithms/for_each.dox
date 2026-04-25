@@ -196,6 +196,50 @@ The same pattern applies to any number of dimensions N.
 Each worker receives an N-dimensional orthogonal sub-box and iterates its
 assigned region independently, with no contention on the iteration space.
 
+@subsection ParallelIterationsIndexRangeMDZeroSize Zero-size Dimensions and Empty Ranges
+
+The N-dimensional iteration space is defined as the Cartesian product of all
+per-dimension ranges.
+This means that if @em any dimension has zero size — for example because its
+begin equals its end — the total iteration count is zero and the scheduler
+performs @em no work at all.
+This behaviour is identical to OpenMP's @c collapse clause: collapsing a nest
+of loops where any one loop has zero iterations yields an empty iteration
+space regardless of the sizes of the other loops.
+
+@code{.cpp}
+// The middle dimension has zero iterations (j_begin == j_end).
+// By the collapse / Cartesian-product rule the entire 3D space is empty,
+// so the callable is never invoked — even though the i- and k-loops
+// would each have 100 iterations on their own.
+tf::IndexRange<int, 3> range(
+  tf::IndexRange<int>(0, 100, 1),   // i: 100 iterations
+  tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations  <-- collapses everything
+  tf::IndexRange<int>(0, 100, 1)    // k: 100 iterations
+);
+
+taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
+  // never called
+});
+@endcode
+
+This is equivalent to the following sequential code under OpenMP collapse:
+
+@code{.cpp}
+// #pragma omp parallel for collapse(3)   <-- same semantics
+for(int i = 0; i < 100; ++i) {
+  for(int j = 0; j < 0; ++j) {   // zero iterations: entire collapsed loop is empty
+    for(int k = 0; k < 100; ++k) {
+      process(i, j, k);
+    }
+  }
+}
+@endcode
+
+If you need the outer loop to run independently of whether inner loops are empty, 
+do not use a multi-dimensional range. Instead, consider restructure your loop so a 1D 
+tf::for_each_by_index can handle.
+
 @subsection ParallelIterationsIndexRangeByReference Capture Range by Reference
 
 When the range bounds are not known at task-graph construction time, pass

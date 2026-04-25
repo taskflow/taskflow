@@ -1,5 +1,12 @@
 var NAVTREEINDEX3 =
 {
+"classtf_1_1TaskGroup.html#a3bc117d95d572d68627971c78f3e841a":[13,0,0,45,17],
+"classtf_1_1TaskGroup.html#a43ed0269d8301a11b9d92719ffecdb4a":[13,0,0,45,3],
+"classtf_1_1TaskGroup.html#a562b39da374325de702d4a6b51f591a8":[13,0,0,45,9],
+"classtf_1_1TaskGroup.html#a65915370b458e982e04ebfbd46bb92c6":[13,0,0,45,2],
+"classtf_1_1TaskGroup.html#a74e38c5abc67649aed7230f41116889d":[13,0,0,45,12],
+"classtf_1_1TaskGroup.html#a8d1908f771fd0d5a2a66df1351aeb991":[13,0,0,45,18],
+"classtf_1_1TaskGroup.html#a9d366485715a997dfba3635274e0201c":[13,0,0,45,13],
 "classtf_1_1TaskGroup.html#aa199904b8123c345df37df4360950fa7":[13,0,0,45,11],
 "classtf_1_1TaskGroup.html#aa2c2252cb4c40db3abe4eba954562389":[13,0,0,45,1],
 "classtf_1_1TaskGroup.html#aacc7e66457b4b645db69bf4b9ccf6bf4":[13,0,0,45,7],
@@ -242,12 +249,5 @@ var NAVTREEINDEX3 =
 "functions_z.html":[13,3,0,24],
 "functions_~.html":[13,3,0,25],
 "graphtraversal.html":[5,5],
-"graphtraversal.html#GraphTraversalGraphRepresentation":[5,5,1],
-"graphtraversal.html#GraphTraversalProblemFormulation":[5,5,0],
-"graphtraversal.html#GraphTraversalStaticTraversal":[5,5,2],
-"guidelines.html":[7,0],
-"guidelines.html#HowCanIContribute":[7,0,0],
-"guidelines.html#HowCanIEditTheDocumentation":[7,0,4],
-"guidelines.html#HowCanIGetCredit":[7,0,1],
-"guidelines.html#HowCanIGetStarted":[7,0,2]
+"graphtraversal.html#GraphTraversalGraphRepresentation":[5,5,1]
 };

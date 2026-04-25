@@ -125,6 +125,9 @@ $(function(){initNavTree('ParallelIterations.html',''); initResizable(true); });
         <a href="#ParallelIterationsIndexRangeMD">Multi-dimensional IndexRange</a>
       </li>
       <li class="level2">
+        <a href="#ParallelIterationsIndexRangeMDZeroSize">Zero-size Dimensions and Empty Ranges</a>
+      </li>
+      <li class="level2">
         <a href="#ParallelIterationsIndexRangeByReference">Capture Range by Reference</a>
       </li>
     </ul>
@@ -204,7 +207,7 @@ Create an IndexRange-based Parallel-Iteration Task</h1>
 <div class="line">    <span class="comment">// process index i</span></div>
 <div class="line">  }</div>
 <div class="line">});</div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:139</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:152</div></div>
 </div><!-- fragment --><p>Because the callable sees the full sub-range at once, it can implement cache-friendly block algorithms that would be impossible when receiving a single index at a time. For instance, a worker assigned <code>[32, 64)</code> can prefetch that entire cache line before processing, rather than incurring per-element dispatch overhead.</p>
 <h2><a class="anchor" id="ParallelIterationsIndexRangeMD"></a>
 Multi-dimensional IndexRange</h2>
@@ -229,10 +232,10 @@ Multi-dimensional IndexRange</h2>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">});</div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:190</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:510</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:520</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:515</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:203</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:717</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:727</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:722</div></div>
 </div><!-- fragment --><p>Each sub-box preserves the original step sizes for every dimension, so the inner loops are identical to what you would write for sequential code. The same pattern extends naturally to three dimensions:</p>
 <div class="fragment"><div class="line"><span class="comment">// sequential 3D loop</span></div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = i_begin; i &lt; i_end; i += i_step) {</div>
@@ -258,6 +261,32 @@ Multi-dimensional IndexRange</h2>
 <div class="line">  }</div>
 <div class="line">});</div>
 </div><!-- fragment --><p>The same pattern applies to any number of dimensions N. Each worker receives an N-dimensional orthogonal sub-box and iterates its assigned region independently, with no contention on the iteration space.</p>
+<h2><a class="anchor" id="ParallelIterationsIndexRangeMDZeroSize"></a>
+Zero-size Dimensions and Empty Ranges</h2>
+<p>The N-dimensional iteration space is defined as the Cartesian product of all per-dimension ranges. This means that if <em>any</em> dimension has zero size — for example because its begin equals its end — the total iteration count is zero and the scheduler performs <em>no</em> work at all. This behaviour is identical to OpenMP's <code>collapse</code> clause: collapsing a nest of loops where any one loop has zero iterations yields an empty iteration space regardless of the sizes of the other loops.</p>
+<div class="fragment"><div class="line"><span class="comment">// The middle dimension has zero iterations (j_begin == j_end).</span></div>
+<div class="line"><span class="comment">// By the collapse / Cartesian-product rule the entire 3D space is empty,</span></div>
+<div class="line"><span class="comment">// so the callable is never invoked — even though the i- and k-loops</span></div>
+<div class="line"><span class="comment">// would each have 100 iterations on their own.</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> range(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1),   <span class="comment">// i: 100 iterations</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,   0, 1),   <span class="comment">// j:   0 iterations  &lt;-- collapses everything</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1)    <span class="comment">// k: 100 iterations</span></div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line">taskflow.for_each_by_index(range, [](<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a>&amp; sub) {</div>
+<div class="line">  <span class="comment">// never called</span></div>
+<div class="line">});</div>
+</div><!-- fragment --><p>This is equivalent to the following sequential code under OpenMP collapse:</p>
+<div class="fragment"><div class="line"><span class="comment">// #pragma omp parallel for collapse(3)   &lt;-- same semantics</span></div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 100; ++i) {</div>
+<div class="line">  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = 0; j &lt; 0; ++j) {   <span class="comment">// zero iterations: entire collapsed loop is empty</span></div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> k = 0; k &lt; 100; ++k) {</div>
+<div class="line">      process(i, j, k);</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>If you need the outer loop to run independently of whether inner loops are empty, do not use a multi-dimensional range. Instead, consider restructure your loop so a 1D tf::for_each_by_index can handle.</p>
 <h2><a class="anchor" id="ParallelIterationsIndexRangeByReference"></a>
 Capture Range by Reference</h2>
 <p>When the range bounds are not known at task-graph construction time, pass the range by <a href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</a> so that an upstream task can set the bounds before the parallel loop runs. This works for both 1D and multi-dimensional ranges.</p>
@@ -349,7 +378,7 @@ Configure a Partitioner</h1>
 <div class="line">  [](<span class="keywordtype">int</span> i) { std::cout &lt;&lt; <span class="stringliteral">&quot;guided:  &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&#39;\n&#39;</span>; },</div>
 <div class="line">  guided_partitioner</div>
 <div class="line">);</div>
-<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:402</div></div>
+<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:408</div></div>
 <div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:262</div></div>
 </div><!-- fragment --><p>As a rule of thumb, prefer <a class="el" href="classtf_1_1StaticPartitioner.html" title="class to construct a static partitioner for scheduling parallel algorithms">tf::StaticPartitioner</a> for uniform workloads (e.g., element-wise arithmetic on arrays) and <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a> for irregular workloads (e.g., graph traversal, variable-length processing). <a class="el" href="classtf_1_1DynamicPartitioner.html" title="class to create a dynamic partitioner for scheduling parallel algorithms">tf::DynamicPartitioner</a> is a good choice when chunks must be kept small and strictly equal in size.</p>
 <dl class="section note"><dt>Note</dt><dd>By default, parallel-iteration tasks use <a class="el" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" title="default partitioner set to tf::GuidedPartitioner">tf::DefaultPartitioner</a> (currently <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a>) if no partitioner is specified. </dd></dl>

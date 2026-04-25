@@ -98,10 +98,10 @@ var NAVTREEINDEX =
 [
 "Algorithms.html",
 "ParallelIterations.html#ParallelIterationsIndexRangeBased",
-"classtf_1_1FlowBuilder.html#a6c041f68d00d086b8da5cfb53e2a46e0",
-"classtf_1_1TaskGroup.html#aa199904b8123c345df37df4360950fa7",
-"guidelines.html#HowCanILeadAProject",
-"release-3-9-0.html#release-3-9-0_summary"
+"classtf_1_1FlowBuilder.html#a6bf43eeaa81900084a472be1d36d46a6",
+"classtf_1_1TaskGroup.html#a3bc117d95d572d68627971c78f3e841a",
+"graphtraversal.html#GraphTraversalProblemFormulation",
+"release-3-9-0.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

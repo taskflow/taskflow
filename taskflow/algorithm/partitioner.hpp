@@ -334,22 +334,28 @@ class StaticPartitioner : public PartitionerBase<C> {
   
   /**
   @private
+
+  Static partitioner loop for N-dimensional index ranges.
+
+  Each worker is pre-assigned a flat quota (chunk_size) starting at curr_b,
+  then strides by W*chunk_size to its next partition — mirroring the 1D static
+  strided pattern.  Within each assigned partition, the worker repeatedly calls
+  slice_floor to drain its quota.  slice_floor guarantees
+  consumed <= remaining budget, so curr_b never overshoots curr_e and no
+  elements are double-processed across partition boundaries.
   */
   template <IndexRangeMDLike R, typename F>
-  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
-    //size_t N = range.volume();
-    size_t curr_b = next.load(std::memory_order_relaxed);
-    size_t chunk_size = (this->_chunk_size == 0) ? (N+W-1) / W : this->_chunk_size;
-
+  void loop(R& range, size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func) const {
+    size_t stride = W * chunk_size;
     while (curr_b < N) {
-      // calculates the actual valid sub-box and exact consumed amount
-      auto [box, consumed] = range.consume_chunk(curr_b, chunk_size);
-      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                     std::memory_order_relaxed,
-                                     std::memory_order_relaxed)) {
+      size_t curr_e = (std::min)(curr_b + chunk_size, N);
+      while (curr_b < curr_e) {
+        // floor: guaranteed consumed <= curr_e - curr_b, no overshoot possible
+        auto [box, consumed] = range.slice_floor(curr_b, curr_e - curr_b);
         func(box);
         curr_b += consumed;
       }
+      curr_b += stride - chunk_size;
     }
   }
 
@@ -553,7 +559,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
         requested_chunk_size = (std::max)(static_cast<size_t>(p2*r), chunk_size);
       }
       
-      auto [box, consumed] = range.consume_chunk(curr_b, requested_chunk_size);
+      auto [box, consumed] = range.slice_ceil(curr_b, requested_chunk_size);
       
       if (next.compare_exchange_weak(curr_b, curr_b + consumed,
                                      std::memory_order_relaxed,
@@ -687,7 +693,7 @@ class DynamicPartitioner : public PartitionerBase<C> {
 
     while (curr_b < N) {
       // calculates the actual valid sub-box and exact consumed amount
-      auto [box, consumed] = range.consume_chunk(curr_b, chunk_size);
+      auto [box, consumed] = range.slice_ceil(curr_b, chunk_size);
       if (next.compare_exchange_weak(curr_b, curr_b + consumed,
                                      std::memory_order_relaxed,
                                      std::memory_order_relaxed)) {
@@ -879,7 +885,7 @@ class RandomPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.load(std::memory_order_relaxed);
 
     while (curr_b < N) {
-      auto [box, consumed] = range.consume_chunk(curr_b, dist(engine));
+      auto [box, consumed] = range.slice_ceil(curr_b, dist(engine));
       if (next.compare_exchange_weak(curr_b, curr_b + consumed,
                                      std::memory_order_relaxed,
                                      std::memory_order_relaxed)) {
