@@ -1,0 +1,114 @@
+<svg viewBox="0 0 780 360" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+
+  <rect width="780" height="360" fill="#FAFAFA" rx="8"/>
+
+  <!-- Title -->
+  <text x="390" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">Chunk Boundary Alignment in a 3×4 IndexRange</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#555">flat index space: 0–11,  hyperplane boundary = every 4 elements (one full row)</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  LEFT PANEL: invalid (mid-row) cut   (x: 0..390)      -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <text x="195" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#C0392B">✗  Unaligned cut at flat = 6</text>
+
+  <!-- grid cells: col width=55, row height=52, origin (30,90) -->
+  <!-- Row 0: blue -->
+  <rect x="30"  y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="85"  y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="140" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="195" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <!-- Row 1 left half: blue -->
+  <rect x="30"  y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="85"  y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <!-- Row 1 right half: orange -->
+  <rect x="140" y="142" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+  <rect x="195" y="142" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+  <!-- Row 2: orange -->
+  <rect x="30"  y="194" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+  <rect x="85"  y="194" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+  <rect x="140" y="194" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+  <rect x="195" y="194" width="55" height="52" fill="#FAD7A0" stroke="#E67E22" stroke-width="1.2"/>
+
+  <!-- flat index labels -->
+  <text x="57"  y="121" text-anchor="middle" font-size="12" fill="#1a5276">0</text>
+  <text x="112" y="121" text-anchor="middle" font-size="12" fill="#1a5276">1</text>
+  <text x="167" y="121" text-anchor="middle" font-size="12" fill="#1a5276">2</text>
+  <text x="222" y="121" text-anchor="middle" font-size="12" fill="#1a5276">3</text>
+  <text x="57"  y="173" text-anchor="middle" font-size="12" fill="#1a5276">4</text>
+  <text x="112" y="173" text-anchor="middle" font-size="12" fill="#1a5276">5</text>
+  <text x="167" y="173" text-anchor="middle" font-size="12" fill="#784212">6</text>
+  <text x="222" y="173" text-anchor="middle" font-size="12" fill="#784212">7</text>
+  <text x="57"  y="225" text-anchor="middle" font-size="12" fill="#784212">8</text>
+  <text x="112" y="225" text-anchor="middle" font-size="12" fill="#784212">9</text>
+  <text x="167" y="225" text-anchor="middle" font-size="12" fill="#784212">10</text>
+  <text x="222" y="225" text-anchor="middle" font-size="12" fill="#784212">11</text>
+
+  <!-- row labels -->
+  <text x="14" y="121" text-anchor="middle" font-size="11" fill="#555">i=0</text>
+  <text x="14" y="173" text-anchor="middle" font-size="11" fill="#555">i=1</text>
+  <text x="14" y="225" text-anchor="middle" font-size="11" fill="#555">i=2</text>
+
+  <!-- invalid cut line (dashed red, vertical through row 1) -->
+  <line x1="140" y1="135" x2="140" y2="200" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <text x="140" y="130" text-anchor="middle" font-size="11" fill="#C0392B" font-weight="bold">cut</text>
+
+  <!-- problem label: left panel 0..390, box x=14..376 -->
+  <rect x="14" y="265" width="362" height="56" rx="5" fill="#FADBD8" stroke="#C0392B" stroke-width="1"/>
+  <text x="195" y="281" text-anchor="middle" font-size="11" fill="#922B21">Chunk 1: flat 0–5 → L-shaped region</text>
+  <text x="195" y="297" text-anchor="middle" font-size="11" fill="#922B21">Not a valid hyperrectangle!</text>
+  <text x="195" y="313" text-anchor="middle" font-size="11" fill="#922B21">The scheduler cannot produce this ✗</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--  RIGHT PANEL: valid (row-boundary) cut  (x: 390..780) -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <text x="585" y="78" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E8449">✓  Aligned cut at flat = 8  (row boundary)</text>
+
+  <!-- right grid starts at x=430 (shifted +30 vs left) to center in right panel -->
+  <!-- Row 0+1: blue (chunk 1) -->
+  <rect x="430" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="485" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="540" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="595" y="90"  width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="430" y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="485" y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="540" y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <rect x="595" y="142" width="55" height="52" fill="#AED6F1" stroke="#2E86C1" stroke-width="1.2"/>
+  <!-- Row 2: green (chunk 2) -->
+  <rect x="430" y="194" width="55" height="52" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="485" y="194" width="55" height="52" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="540" y="194" width="55" height="52" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="595" y="194" width="55" height="52" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+
+  <!-- flat labels -->
+  <text x="457" y="121" text-anchor="middle" font-size="12" fill="#1a5276">0</text>
+  <text x="512" y="121" text-anchor="middle" font-size="12" fill="#1a5276">1</text>
+  <text x="567" y="121" text-anchor="middle" font-size="12" fill="#1a5276">2</text>
+  <text x="622" y="121" text-anchor="middle" font-size="12" fill="#1a5276">3</text>
+  <text x="457" y="173" text-anchor="middle" font-size="12" fill="#1a5276">4</text>
+  <text x="512" y="173" text-anchor="middle" font-size="12" fill="#1a5276">5</text>
+  <text x="567" y="173" text-anchor="middle" font-size="12" fill="#1a5276">6</text>
+  <text x="622" y="173" text-anchor="middle" font-size="12" fill="#1a5276">7</text>
+  <text x="457" y="225" text-anchor="middle" font-size="12" fill="#1E5631">8</text>
+  <text x="512" y="225" text-anchor="middle" font-size="12" fill="#1E5631">9</text>
+  <text x="567" y="225" text-anchor="middle" font-size="12" fill="#1E5631">10</text>
+  <text x="622" y="225" text-anchor="middle" font-size="12" fill="#1E5631">11</text>
+
+  <!-- row labels -->
+  <text x="414" y="121" text-anchor="middle" font-size="11" fill="#555">i=0</text>
+  <text x="414" y="173" text-anchor="middle" font-size="11" fill="#555">i=1</text>
+  <text x="414" y="225" text-anchor="middle" font-size="11" fill="#555">i=2</text>
+
+  <!-- valid cut line (solid green, horizontal between row 1 and row 2) -->
+  <line x1="425" y1="194" x2="655" y2="194" stroke="#1E8449" stroke-width="2.5"/>
+  <text x="660" y="198" text-anchor="start" font-size="11" fill="#1E8449" font-weight="bold">cut</text>
+
+  <!-- success label: right panel 390..780, box x=404..766 -->
+  <rect x="404" y="265" width="362" height="56" rx="5" fill="#D5F5E3" stroke="#1E8449" stroke-width="1"/>
+  <text x="585" y="281" text-anchor="middle" font-size="11" fill="#1E5631">Chunk 1: flat 0–7 → rows i=0,1</text>
+  <text x="585" y="297" text-anchor="middle" font-size="11" fill="#1E5631">Chunk 2: flat 8–11 → row i=2</text>
+  <text x="585" y="313" text-anchor="middle" font-size="11" fill="#1E5631">Both are valid hyperrectangles ✓</text>
+
+  <!-- divider -->
+  <line x1="390" y1="65" x2="390" y2="335" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="4,4"/>
+
+</svg>

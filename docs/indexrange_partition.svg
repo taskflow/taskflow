@@ -1,0 +1,82 @@
+<svg viewBox="0 0 580 360" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+
+  <rect width="580" height="360" fill="#FAFAFA" rx="8"/>
+
+  <!-- Title -->
+  <text x="290" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">Static Partitioning of a 3×4 IndexRange across 3 Workers</text>
+  <text x="290" y="44" text-anchor="middle" font-size="12" fill="#555">chunk_size = r.ceil(12/3) = 4  (one aligned row per worker)</text>
+
+  <!-- Grid origin: x=80, y=60, cell=70×58 -->
+
+  <!-- Worker 0: row i=0, blue -->
+  <rect x="80"  y="80"  width="70" height="58" fill="#AED6F1" stroke="#2874A6" stroke-width="1.5"/>
+  <rect x="150" y="80"  width="70" height="58" fill="#AED6F1" stroke="#2874A6" stroke-width="1.5"/>
+  <rect x="220" y="80"  width="70" height="58" fill="#AED6F1" stroke="#2874A6" stroke-width="1.5"/>
+  <rect x="290" y="80"  width="70" height="58" fill="#AED6F1" stroke="#2874A6" stroke-width="1.5"/>
+
+  <!-- Worker 1: row i=1, green -->
+  <rect x="80"  y="138" width="70" height="58" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="150" y="138" width="70" height="58" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="220" y="138" width="70" height="58" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="290" y="138" width="70" height="58" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.5"/>
+
+  <!-- Worker 2: row i=2, orange -->
+  <rect x="80"  y="196" width="70" height="58" fill="#FAD7A0" stroke="#CA6F1E" stroke-width="1.5"/>
+  <rect x="150" y="196" width="70" height="58" fill="#FAD7A0" stroke="#CA6F1E" stroke-width="1.5"/>
+  <rect x="220" y="196" width="70" height="58" fill="#FAD7A0" stroke="#CA6F1E" stroke-width="1.5"/>
+  <rect x="290" y="196" width="70" height="58" fill="#FAD7A0" stroke="#CA6F1E" stroke-width="1.5"/>
+
+  <!-- flat index labels -->
+  <text x="115" y="114"  text-anchor="middle" font-size="13" fill="#1a5276">0</text>
+  <text x="185" y="114"  text-anchor="middle" font-size="13" fill="#1a5276">1</text>
+  <text x="255" y="114"  text-anchor="middle" font-size="13" fill="#1a5276">2</text>
+  <text x="325" y="114"  text-anchor="middle" font-size="13" fill="#1a5276">3</text>
+  <text x="115" y="172" text-anchor="middle" font-size="13" fill="#1E5631">4</text>
+  <text x="185" y="172" text-anchor="middle" font-size="13" fill="#1E5631">5</text>
+  <text x="255" y="172" text-anchor="middle" font-size="13" fill="#1E5631">6</text>
+  <text x="325" y="172" text-anchor="middle" font-size="13" fill="#1E5631">7</text>
+  <text x="115" y="230" text-anchor="middle" font-size="13" fill="#784212">8</text>
+  <text x="185" y="230" text-anchor="middle" font-size="13" fill="#784212">9</text>
+  <text x="255" y="230" text-anchor="middle" font-size="13" fill="#784212">10</text>
+  <text x="325" y="230" text-anchor="middle" font-size="13" fill="#784212">11</text>
+
+  <!-- row labels (left) -->
+  <text x="62" y="114"  text-anchor="middle" font-size="12" fill="#555">i=0</text>
+  <text x="62" y="172" text-anchor="middle" font-size="12" fill="#555">i=1</text>
+  <text x="62" y="230" text-anchor="middle" font-size="12" fill="#555">i=2</text>
+
+  <!-- col labels (top) -->
+  <text x="115" y="74" text-anchor="middle" font-size="12" fill="#555">j=0</text>
+  <text x="185" y="74" text-anchor="middle" font-size="12" fill="#555">j=1</text>
+  <text x="255" y="74" text-anchor="middle" font-size="12" fill="#555">j=2</text>
+  <text x="325" y="74" text-anchor="middle" font-size="12" fill="#555">j=3</text>
+
+  <!-- Worker labels (right side with bracket lines) -->
+  <!-- Worker 0 bracket -->
+  <line x1="368" y1="80"  x2="378" y2="80"  stroke="#2874A6" stroke-width="1.5"/>
+  <line x1="378" y1="80"  x2="378" y2="138" stroke="#2874A6" stroke-width="1.5"/>
+  <line x1="368" y1="138" x2="378" y2="138" stroke="#2874A6" stroke-width="1.5"/>
+  <text x="385" y="114"  text-anchor="start" font-size="13" font-weight="bold" fill="#2874A6">Worker 0</text>
+  <text x="385" y="130" text-anchor="start" font-size="11" fill="#2874A6">flat [0, 4)</text>
+
+  <!-- Worker 1 bracket -->
+  <line x1="368" y1="138" x2="378" y2="138" stroke="#1E8449" stroke-width="1.5"/>
+  <line x1="378" y1="138" x2="378" y2="196" stroke="#1E8449" stroke-width="1.5"/>
+  <line x1="368" y1="196" x2="378" y2="196" stroke="#1E8449" stroke-width="1.5"/>
+  <text x="385" y="172" text-anchor="start" font-size="13" font-weight="bold" fill="#1E8449">Worker 1</text>
+  <text x="385" y="188" text-anchor="start" font-size="11" fill="#1E8449">flat [4, 8)</text>
+
+  <!-- Worker 2 bracket -->
+  <line x1="368" y1="196" x2="378" y2="196" stroke="#CA6F1E" stroke-width="1.5"/>
+  <line x1="378" y1="196" x2="378" y2="254" stroke="#CA6F1E" stroke-width="1.5"/>
+  <line x1="368" y1="254" x2="378" y2="254" stroke="#CA6F1E" stroke-width="1.5"/>
+  <text x="385" y="230" text-anchor="start" font-size="13" font-weight="bold" fill="#CA6F1E">Worker 2</text>
+  <text x="385" y="246" text-anchor="start" font-size="11" fill="#CA6F1E">flat [8, 12)</text>
+
+  <!-- Sub-box description at bottom -->
+  <rect x="30" y="275" width="520" height="68" rx="6" fill="#EBF5FB" stroke="#2874A6" stroke-width="1"/>
+  <text x="290" y="293" text-anchor="middle" font-size="12" fill="#1a5276">Each worker receives one sub-box (a complete row) — a valid hyperrectangle.</text>
+  <text x="290" y="311" text-anchor="middle" font-size="12" fill="#1a5276">Worker 0 → box: dim0=[0,1), dim1=[0,4)   |   Worker 1 → dim0=[1,2), dim1=[0,4)</text>
+  <text x="290" y="329" text-anchor="middle" font-size="12" fill="#1a5276">Worker 2 → box: dim0=[2,3), dim1=[0,4)</text>
+
+</svg>

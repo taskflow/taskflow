@@ -49,9 +49,11 @@ var searchData=
   ['our_20task_20level_20scheduling_46',['Understand our Task-level Scheduling',['../ConditionalTasking.html#TaskSchedulingPolicy',1,'']]],
   ['output_47',['Output',['../TextProcessingPipeline.html#TextPipelineOutput',1,'Sample Output'],['../GraphProcessingPipeline.html#GraphPipelineOutput',1,'Sample Output']]],
   ['output_5ft_48',['output_t',['../classtf_1_1DataPipe.html#a8a99a980f0fa6bc55203cb33f526f007',1,'tf::DataPipe']]],
-  ['over_20a_20custom_20graph_49',['Create a Module Task over a Custom Graph',['../ModuleAlgorithm.html#CreateAModuleTaskOverACustomGraph',1,'']]],
-  ['overhead_20of_20taskflow_50',['Q8: What is the overhead of taskflow?',['../FAQ.html#GeneralQuestion8',1,'']]],
-  ['overview_51',['The Project Overview',['../rules.html#TheProjectOverview',1,'']]],
-  ['overview_20minimap_52',['Overview Minimap',['../Profiler.html#ProfilerOverview',1,'']]],
-  ['ownership_53',['Ownership',['../ExecuteTaskflow.html#ExecuteATaskflowWithTransferredOwnership',1,'Execute a Taskflow with Transferred Ownership'],['../ExecuteTaskflow.html#UnderstandTheOwnership',1,'Understand the Ownership']]]
+  ['over_20a_201d_20indexrange_49',['Create a Parallel-Iteration Task over a 1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]],
+  ['over_20a_20custom_20graph_50',['Create a Module Task over a Custom Graph',['../ModuleAlgorithm.html#CreateAModuleTaskOverACustomGraph',1,'']]],
+  ['over_20a_20multi_20dimensional_20indexrange_51',['Create a Parallel-Iteration Task over a Multi-dimensional IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRangeMD',1,'']]],
+  ['overhead_20of_20taskflow_52',['Q8: What is the overhead of taskflow?',['../FAQ.html#GeneralQuestion8',1,'']]],
+  ['overview_53',['The Project Overview',['../rules.html#TheProjectOverview',1,'']]],
+  ['overview_20minimap_54',['Overview Minimap',['../Profiler.html#ProfilerOverview',1,'']]],
+  ['ownership_55',['Ownership',['../ExecuteTaskflow.html#ExecuteATaskflowWithTransferredOwnership',1,'Execute a Taskflow with Transferred Ownership'],['../ExecuteTaskflow.html#UnderstandTheOwnership',1,'Understand the Ownership']]]
 ];

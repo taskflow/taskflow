@@ -75,6 +75,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 + fixed the scope bug in creating @c tf::Future<T> from @std_future ([#761](https://github.com/taskflow/taskflow/issues/761))
 + fixed the async bug in taking name as a parameter
++ fixed the redundant call when `N` is zero in `for_each_by_index`
 
 @section release-4-1-0_breaking_changes Breaking Changes
 

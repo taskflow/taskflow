@@ -1,0 +1,64 @@
+digraph IndexRange2D {
+  rankdir=TB;
+  node [shape=plaintext, fontname="Arial", fontsize=12];
+  edge [style=invis];
+
+  // Column header
+  col_header [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="4">
+      <TR>
+        <TD WIDTH="60"></TD>
+        <TD WIDTH="60" ALIGN="CENTER"><B>j=0</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER"><B>j=1</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER"><B>j=2</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER"><B>j=3</B></TD>
+        <TD WIDTH="80" ALIGN="LEFT">← dim 1</TD>
+      </TR>
+    </TABLE>
+  >];
+
+  // Grid rows
+  row0 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8" BGCOLOR="#D6EAF8">
+      <TR>
+        <TD WIDTH="60" BGCOLOR="#AED6F1"><B>i=0</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER">(0,0)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(0,1)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(0,2)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(0,3)</TD>
+      </TR>
+    </TABLE>
+  >];
+
+  row1 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8" BGCOLOR="#D6EAF8">
+      <TR>
+        <TD WIDTH="60" BGCOLOR="#AED6F1"><B>i=1</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER">(1,0)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(1,1)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(1,2)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(1,3)</TD>
+      </TR>
+    </TABLE>
+  >];
+
+  row2 [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8" BGCOLOR="#D6EAF8">
+      <TR>
+        <TD WIDTH="60" BGCOLOR="#AED6F1"><B>i=2</B></TD>
+        <TD WIDTH="60" ALIGN="CENTER">(2,0)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(2,1)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(2,2)</TD>
+        <TD WIDTH="60" ALIGN="CENTER">(2,3)</TD>
+      </TR>
+    </TABLE>
+  >];
+
+  dim0_label [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD>↑<BR/>dim 0</TD></TR>
+    </TABLE>
+  >];
+
+  col_header -> row0 -> row1 -> row2 -> dim0_label;
+}

@@ -89,59 +89,97 @@ and @c last as 1000 and performs parallel iterations over the 1000 indices.
 
 While tf::Taskflow::for_each_index gives each worker a single scalar index,
 tf::Taskflow::for_each_by_index gives each worker a contiguous @em sub-range
-of the iteration space.
+(or @em sub-box in multiple dimensions) of the iteration space.
 This distinction is significant: instead of processing one element at a time,
-the callable can operate on an entire block of consecutive indices in a single
-invocation, enabling @em block @em algorithms that exploit data locality,
+the callable operates on an entire block of consecutive indices in a single
+invocation, enabling block algorithms that exploit data locality,
 facilitate SIMD vectorisation, and reduce scheduling overhead.
 
-@subsection ParallelIterationsIndexRange1D 1D IndexRange
+@subsection ParallelIterationsWhatIsIndexRange What is an IndexRange?
 
-A `tf::IndexRange<T>` defines a 1D range <tt>[begin, end)</tt> with a step size.
-Passing it to tf::Taskflow::for_each_by_index creates a task whose callable
-receives a `tf::IndexRange<T>` sub-range per invocation, which represents a slice of the
-original range assigned to that worker.
+A tf::IndexRange describes a typed, half-open index range
+<tt>[begin, end)</tt> with a step size.
+There are two variants:
+
+- `tf::IndexRange<T>` (or equivalently `tf::IndexRange<T, 1>`): A 1D range of
+  integral indices.  It is defined by three parameters: @c begin, @c end, and
+  @c step_size.  The elements are @c begin, @c begin+step, @c begin+2*step, ...
+  up to (but not including) @c end.
+
+@code{.cpp}
+// elements: 2, 5, 8, 11  (step = 3, size = 4)
+tf::IndexRange<int> r(2, 14, 3);
+
+r.begin();      // 2
+r.end();        // 14
+r.step_size();  // 3
+r.size();       // 4
+@endcode
+
+@dotfile images/indexrange_1d.dot
+
+- `tf::IndexRange<T, N>`: An N-dimensional Cartesian product of N independent
+  1D ranges, one per dimension.  Dimension 0 is the outermost (slowest varying)
+  and dimension N-1 is the innermost (fastest varying), matching the natural
+  nesting of C-style for-loops (row-major order).
+
+@code{.cpp}
+// 2D range: i in [0,3), j in [0,4) — a 3x4 grid of 12 index pairs
+tf::IndexRange<int, 2> r(
+  tf::IndexRange<int>(0, 3, 1),   // dim 0: i = 0, 1, 2
+  tf::IndexRange<int>(0, 4, 1)    // dim 1: j = 0, 1, 2, 3
+);
+
+r.size();     // 12  (3 x 4)
+r.size(0);    //  3  (elements along dim 0)
+r.size(1);    //  4  (elements along dim 1)
+r.dim(0);     // IndexRange<int>(0, 3, 1)
+r.dim(1);     // IndexRange<int>(0, 4, 1)
+@endcode
+
+@dotfile images/indexrange_2d.dot
+
+The key advantage of tf::IndexRange<T, N> over a raw scalar index is that the
+callable receives the full sub-range (or sub-box) at once, allowing it to
+implement cache-friendly block algorithms, apply SIMD over contiguous indices,
+or exploit any other block-level optimisation.
+
+@subsection ParallelIterationsIndexRange1D Create a Parallel-Iteration Task over a 1D IndexRange
+
+Passing a 1D @c tf::IndexRange<T> to tf::Taskflow::for_each_by_index creates
+a parallel task whose callable receives one contiguous sub-range of the original
+range per invocation:
 
 @code{.cpp}
 tf::IndexRange<int> range(0, 100, 1);
 
-taskflow.for_each_by_index(range, [](tf::IndexRange<int> subrange) {
-  // subrange is a contiguous slice of [0, 100)
-  // the callable decides how to traverse it — sequentially, with SIMD, etc.
-  for(int i = subrange.begin(); i < subrange.end(); i += subrange.step_size()) {
-    // process index i
+taskflow.for_each_by_index(range, [](tf::IndexRange<int> sub) {
+  // sub is a contiguous slice of [0, 100)
+  for(int i = sub.begin(); i < sub.end(); i += sub.step_size()) {
+    process(i);
   }
 });
 @endcode
 
 Because the callable sees the full sub-range at once, it can implement
 cache-friendly block algorithms that would be impossible when receiving a
-single index at a time. For instance, a worker assigned <tt>[32, 64)</tt>
-can prefetch that entire cache line before processing, rather than incurring
-per-element dispatch overhead.
+single index at a time.
+For instance, a worker assigned <tt>[32, 64)</tt> can prefetch that entire
+cache line before processing, rather than incurring per-element dispatch overhead.
 
-@subsection ParallelIterationsIndexRangeMD Multi-dimensional IndexRange
+@subsection ParallelIterationsIndexRangeMD Create a Parallel-Iteration Task over a Multi-dimensional IndexRange
 
-A `tf::IndexRange<T, N>` extends the 1D concept to an N-dimensional Cartesian
-product of independent 1D ranges.
-Iteration order is row-major, the last dimension varies fastest, matching
-the natural nesting of C-style for-loops.
-The task created by tf::Taskflow::for_each_by_index with an
-`tf::IndexRange<T, N>` argument represents parallel execution of the
-corresponding nested loop.
-For a 2D range, this is:
+Passing an N-dimensional @c tf::IndexRange<T, N> to
+tf::Taskflow::for_each_by_index creates a parallel task whose callable receives
+one orthogonal @em sub-box of the full ND space per invocation.
+A sub-box is a valid hyperrectangle — a contiguous, axis-aligned tile that
+preserves the original step sizes of every dimension.
+The figure below shows a 2x3x4 range decomposed into two sub-boxes (one per
+outer-dimension value), each a 3x4 slice:
 
-@code{.cpp}
-// sequential 2D loop
-for(int i = i_begin; i < i_end; i += i_step) {
-  for(int j = j_begin; j < j_end; j += j_step) {
-    process(i, j);
-  }
-}
-@endcode
+@image html images/indexrange_3d.svg width=90%
 
-The parallel version partitions the 2D space among workers, giving each one
-an orthogonal sub-box, a rectangular tile of the full grid:
+For a 2D range, the parallel task represents:
 
 @code{.cpp}
 tf::IndexRange<int, 2> range(
@@ -161,24 +199,13 @@ taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 2>& tile) {
 
 Each sub-box preserves the original step sizes for every dimension, so the
 inner loops are identical to what you would write for sequential code.
-The same pattern extends naturally to three dimensions:
-
-@code{.cpp}
-// sequential 3D loop
-for(int i = i_begin; i < i_end; i += i_step) {
-  for(int j = j_begin; j < j_end; j += j_step) {
-    for(int k = k_begin; k < k_end; k += k_step) {
-      process(i, j, k);
-    }
-  }
-}
-@endcode
+The same pattern extends naturally to three or more dimensions:
 
 @code{.cpp}
 tf::IndexRange<int, 3> range(
-  tf::IndexRange<int>(0, depth,  1),   // dimension 0
-  tf::IndexRange<int>(0, height, 1),   // dimension 1
-  tf::IndexRange<int>(0, width,  1)    // dimension 2
+  tf::IndexRange<int>(0, depth,  1),
+  tf::IndexRange<int>(0, height, 1),
+  tf::IndexRange<int>(0, width,  1)
 );
 
 taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
@@ -191,10 +218,6 @@ taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
   }
 });
 @endcode
-
-The same pattern applies to any number of dimensions N.
-Each worker receives an N-dimensional orthogonal sub-box and iterates its
-assigned region independently, with no contention on the iteration space.
 
 @subsection ParallelIterationsIndexRangeMDZeroSize Zero-size Dimensions
 
@@ -249,6 +272,61 @@ iteration space as a Cartesian product and yields zero total iterations when
 any dimension is empty.  %Taskflow preserves the sequential semantics of
 nested loops: outer dimensions always execute independently of inner ones.
 
+@subsection ParallelIterationsIndexRangeScheduling Understand the Scheduling Algorithm
+
+%Taskflow schedules parallel iterations over an index range by mapping
+the N-dimensional space to a 1D flat index space and distributing chunks of
+that flat space among workers.
+Specifically, the full ND range is first linearized in row-major order into a flat index space of
+size @c N = @c range.size(). For a 3x4 2D range, this looks like:
+
+@dotfile images/indexrange_flat.dot
+
+Then, workers claim contiguous chunks of the flat index space, either pre-assigned
+(static partitioner) or on demand via an atomic cursor (dynamic partitioners).
+During the assignment, each flat chunk boundary coincides with a @em hyperplane @em boundary, i.e.,
+a suffix product of the dimension sizes (1, `dim[N-1]`, `dim[N-1]` x `dim[N-2]`, ...).
+This is the critical constraint: only boundaries that align to a complete inner
+row (or slice, or hyper-slice) produce a valid rectangular sub-box.
+The figure below illustrates why alignment matters for a 3x4 grid:
+
+@image html images/indexrange_alignment.svg width=90%
+
+A cut at flat index 6 (mid-row) would split row @c i=1 between two workers,
+producing an L-shaped non-rectangular region that cannot be expressed as a
+single @c IndexRange sub-box.
+A cut at flat index 8 (row boundary) produces two clean rectangular sub-boxes.
+%Taskflow enforces this automatically.
+The @c chunk_size hint is always snapped to the nearest hyperplane boundary
+via @c IndexRange::ceil():
+
+@code{.cpp}
+// For a 3x4 range with 3 workers:
+// raw N/W = 12/3 = 4  ->  r.ceil(4) = 4  (already a row boundary)
+// For a 3x5 range with 2 workers:
+// raw N/W = 15/2 = 7  ->  r.ceil(7) = 10  (next row boundary = 2 full rows)
+@endcode
+
+@par Static vs dynamic partitioners
+
+With a static partitioner, each worker's chunk is pre-assigned before
+execution and never changes.
+The figure below shows a 3x4 range evenly split among 3 workers, each
+receiving exactly one aligned row:
+
+@image html images/indexrange_partition.svg width=80%
+
+With a dynamic partitioner, workers pull chunks from a shared
+atomic cursor.
+The chunk may overshoot to the next hyperplane boundary when
+the requested size does not align exactly, but the cursor self-corrects so no
+element is visited twice.
+
+@note
+You do not need to think about alignment explicitly.  %Taskflow handles it
+automatically — the @c chunk_size you pass to the partitioner is a @em hint,
+and the scheduler snaps it to the nearest valid boundary before distributing work.
+
 @subsection ParallelIterationsIndexRangeByReference Capture Range by Reference
 
 When the range bounds are not known at task-graph construction time, pass
@@ -278,14 +356,14 @@ auto pf = taskflow.for_each_by_index(
   }
 );
 
-// The code below is wrong! first and last are captured by copy at construction time
+// The code below is wrong! range is captured by copy at construction time
 // auto pf = taskflow.for_each_by_index(range, callable);
 
 init.precede(pf);
 @endcode
 
 When @c init finishes, @c pf reads the updated range and partitions the
-<tt>rows × cols</tt> space among workers.
+<tt>rows x cols</tt> space among workers.
 
 @section ParallelIterationsIteratorBased Create an Iterator-based Parallel-Iteration Task
 

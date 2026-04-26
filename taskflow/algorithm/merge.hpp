@@ -26,6 +26,10 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first,
 
     size_t W = rt.executor().num_workers();
     size_t N = n + m;
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if (W <= 1 || N <= part.chunk_size()) {

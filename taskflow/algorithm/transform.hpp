@@ -24,6 +24,10 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -95,6 +99,10 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {

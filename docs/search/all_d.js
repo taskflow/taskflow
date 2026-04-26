@@ -43,7 +43,7 @@ var searchData=
   ['different_20tasks_40',['Use Semaphores Across Different Tasks',['../LimitTheMaximumConcurrency.html#UseSemaphoresAcrossDifferentTasks',1,'']]],
   ['differently_41',['What Taskflow Does Differently',['../ProjectMotivation.html#TheProjectMantra',1,'']]],
   ['dim_42',['dim',['../classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1',1,'tf::IndexRange::dim(size_t d) const'],['../classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc',1,'tf::IndexRange::dim(size_t d)']]],
-  ['dimensional_20indexrange_43',['Multi-dimensional IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRangeMD',1,'']]],
+  ['dimensional_20indexrange_43',['Create a Parallel-Iteration Task over a Multi-dimensional IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRangeMD',1,'']]],
   ['dimensions_44',['Zero-size Dimensions',['../ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize',1,'']]],
   ['dims_45',['dims',['../classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f',1,'tf::IndexRange']]],
   ['directly_46',['Compile Source Code Directly',['../CompileTaskflowWithCUDA.html#CompileTaskflowWithCUDADirectly',1,'']]],

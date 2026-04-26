@@ -17,6 +17,10 @@ auto make_fill_task(B first, E last, V value, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // the workload should be sequential
     if (W <= 1 || N <= part.chunk_size()) {
@@ -77,6 +81,10 @@ auto make_fill_n_task(B first, C count, V value, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = count;
+    
+    if(N == 0) {
+      return;
+    }
 
     // the workload should be sequential
     if (W <= 1 || N <= part.chunk_size()) {

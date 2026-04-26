@@ -21,6 +21,10 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -150,6 +154,10 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -281,6 +289,10 @@ auto make_transform_reduce_task(
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -413,6 +425,10 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = r.size();
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {

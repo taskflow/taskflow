@@ -20,5 +20,5 @@ var searchData=
   ['1_3a_20look_20around_17',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
   ['1_3a_20no_20source_20task_18',['Pitfall 1: No Source Task',['../ConditionalTasking.html#PitfallNoSourceTask',1,'']]],
   ['1_3a_20synchronous_20propagation_19',['Scenario 1: Synchronous Propagation',['../ExceptionHandling.html#Scenario1SynchronousExceptionPropagation',1,'']]],
-  ['1d_20indexrange_20',['1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]]
+  ['1d_20indexrange_20',['Create a Parallel-Iteration Task over a 1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]]
 ];

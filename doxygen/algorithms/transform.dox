@@ -188,8 +188,8 @@ std::vector<int> src2 = {5, 4, 3, 2, 1};
 std::vector<int> tgt1(src1.size());
 std::vector<int> tgt2(src1.size());
 
-tf::StaticPartitioner static_partitioner(0);   // chunk size auto-determined
-tf::GuidedPartitioner  guided_partitioner(0);  // minimum chunk size auto-determined
+tf::StaticPartitioner static_partitioner(0);  // chunk size auto-determined
+tf::GuidedPartitioner guided_partitioner(0);  // minimum chunk size auto-determined
 
 // parallel-transform with static partitioner
 taskflow.transform(

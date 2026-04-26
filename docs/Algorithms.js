@@ -13,9 +13,11 @@ var Algorithms =
         [ "Capture Indices by Reference", "ParallelIterations.html#ParallelForEachCaptureIndicesByReference", null ]
       ] ],
       [ "Create an IndexRange-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexRangeBased", [
-        [ "1D IndexRange", "ParallelIterations.html#ParallelIterationsIndexRange1D", null ],
-        [ "Multi-dimensional IndexRange", "ParallelIterations.html#ParallelIterationsIndexRangeMD", null ],
+        [ "What is an IndexRange?", "ParallelIterations.html#ParallelIterationsWhatIsIndexRange", null ],
+        [ "Create a Parallel-Iteration Task over a 1D IndexRange", "ParallelIterations.html#ParallelIterationsIndexRange1D", null ],
+        [ "Create a Parallel-Iteration Task over a Multi-dimensional IndexRange", "ParallelIterations.html#ParallelIterationsIndexRangeMD", null ],
         [ "Zero-size Dimensions", "ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize", null ],
+        [ "Understand the Scheduling Algorithm", "ParallelIterations.html#ParallelIterationsIndexRangeScheduling", null ],
         [ "Capture Range by Reference", "ParallelIterations.html#ParallelIterationsIndexRangeByReference", null ]
       ] ],
       [ "Create an Iterator-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIteratorBased", [
