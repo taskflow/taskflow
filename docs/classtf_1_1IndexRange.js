@@ -10,7 +10,6 @@ var classtf_1_1IndexRange =
     [ "begin", "classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d", null ],
     [ "begin", "classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201", null ],
     [ "ceil", "classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8", null ],
-    [ "coords", "classtf_1_1IndexRange.html#a053a48c1dd6502eb7b9e1d5cbedfc5d8", null ],
     [ "dim", "classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc", null ],
     [ "dim", "classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1", null ],
     [ "dims", "classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f", null ],

@@ -326,76 +326,7 @@ TEST_CASE("IndexRangeND.rank") {
 }
 
 // ============================================================================
-// Section 6: IndexRange<T,N>::coords
-// ============================================================================
-
-TEST_CASE("IndexRangeND.coords.2d_unit_step") {
-  // 3x4 range, unit steps
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(0, 3, 1),
-    tf::IndexRange<int>(0, 4, 1)
-  );
-  // row-major: flat 0 -> (0,0), flat 5 -> (1,1), flat 11 -> (2,3)
-  auto c0  = r.coords(0);  REQUIRE(c0[0] == 0); REQUIRE(c0[1] == 0);
-  auto c5  = r.coords(5);  REQUIRE(c5[0] == 1); REQUIRE(c5[1] == 1);
-  auto c11 = r.coords(11); REQUIRE(c11[0] == 2); REQUIRE(c11[1] == 3);
-}
-
-TEST_CASE("IndexRangeND.coords.2d_non_unit_step") {
-  // dim0: 0,2,4 (size 3); dim1: 1,4 (size 2)
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(0, 6, 2),
-    tf::IndexRange<int>(1, 7, 3)
-  );
-  // flat 0 -> (0,1), flat 1 -> (0,4), flat 2 -> (2,1), flat 5 -> (4,4)
-  auto c0 = r.coords(0); REQUIRE(c0[0] == 0); REQUIRE(c0[1] == 1);
-  auto c1 = r.coords(1); REQUIRE(c1[0] == 0); REQUIRE(c1[1] == 4);
-  auto c2 = r.coords(2); REQUIRE(c2[0] == 2); REQUIRE(c2[1] == 1);
-  auto c5 = r.coords(5); REQUIRE(c5[0] == 4); REQUIRE(c5[1] == 4);
-}
-
-TEST_CASE("IndexRangeND.coords.3d_roundtrip") {
-  // For every flat index, coords() should recover the element that enumerate_3d
-  // produces at that position.
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(0, 3, 1),
-    tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 5, 1)
-  );
-  auto all = enumerate_3d(r);
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == std::get<0>(all[flat]));
-    REQUIRE(c[1] == std::get<1>(all[flat]));
-    REQUIRE(c[2] == std::get<2>(all[flat]));
-  }
-}
-
-TEST_CASE("IndexRangeND.coords.exhaustive_2d") {
-  // All 2D sizes up to 5x5 with steps 1 and 2
-  for (int si = 1; si <= 2; si++) {
-    for (int sj = 1; sj <= 2; sj++) {
-      for (int di = 1; di <= 5; di++) {
-        for (int dj = 1; dj <= 5; dj++) {
-          tf::IndexRange<int, 2> r(
-            tf::IndexRange<int>(0, di * si, si),
-            tf::IndexRange<int>(0, dj * sj, sj)
-          );
-          auto all = enumerate_2d(r);
-          REQUIRE(all.size() == r.size());
-          for (size_t flat = 0; flat < all.size(); flat++) {
-            auto c = r.coords(flat);
-            REQUIRE(c[0] == all[flat].first);
-            REQUIRE(c[1] == all[flat].second);
-          }
-        }
-      }
-    }
-  }
-}
-
-// ============================================================================
-// Section 7: slice_ceil — documented examples from the header
+// Section 6: slice_ceil — documented examples from the header
 // ============================================================================
 
 TEST_CASE("slice_ceil.documented_examples") {
@@ -893,107 +824,396 @@ TEST_CASE("slice_ceil.full_coverage.4d") {
 // ============================================================================
 // Section 17: zero-size dimension behaviour
 //
-// A zero-size dimension collapses the entire ND range to empty — consistent
-// with OpenMP collapse semantics.  All methods must handle this gracefully.
+// A zero-size dimension at position d stops the active flat space there.
+// size() returns the product of dims [0, d), i.e. the outer dims only.
+// Dimensions [d, N) are copied as full extent into sub-boxes.
+// This matches sequential nested loop behaviour — outer loops still execute.
+//
+// Tests cover 2D through 19D with zero at every dimension position.
 // ============================================================================
 
-TEST_CASE("IndexRangeND.zero_size.size") {
-  // Any zero-size dimension -> total size() == 0
+// Helper: compute the expected size given a list of dim sizes,
+// stopping (not including) the first zero.
+static size_t expected_size(std::initializer_list<size_t> dims) {
+  size_t total = 1;
+  for (size_t s : dims) {
+    if (s == 0) return total == 1 ? 0 : total;
+    total *= s;
+  }
+  return total;
+}
 
-  // zero in the middle dimension
-  tf::IndexRange<int, 3> r1(
-    tf::IndexRange<int>(0, 100, 1),
-    tf::IndexRange<int>(0,   0, 1),
-    tf::IndexRange<int>(0, 100, 1)
-  );
-  REQUIRE(r1.size() == 0);
-
-  // zero in the outermost dimension
-  tf::IndexRange<int, 3> r2(
-    tf::IndexRange<int>(0,   0, 1),
-    tf::IndexRange<int>(0,  10, 1),
-    tf::IndexRange<int>(0,  10, 1)
-  );
-  REQUIRE(r2.size() == 0);
-
-  // zero in the innermost dimension
-  tf::IndexRange<int, 3> r3(
-    tf::IndexRange<int>(0,  10, 1),
-    tf::IndexRange<int>(0,  10, 1),
-    tf::IndexRange<int>(0,   0, 1)
-  );
-  REQUIRE(r3.size() == 0);
-
-  // all dimensions zero
-  tf::IndexRange<int, 3> r4(
-    tf::IndexRange<int>(0, 0, 1),
-    tf::IndexRange<int>(0, 0, 1),
-    tf::IndexRange<int>(0, 0, 1)
-  );
-  REQUIRE(r4.size() == 0);
-
+TEST_CASE("IndexRangeND.zero_size.size.low_dimensions") {
   // 2D
-  tf::IndexRange<int, 2> r5(
-    tf::IndexRange<int>(0, 5, 1),
-    tf::IndexRange<int>(0, 0, 1)
-  );
-  REQUIRE(r5.size() == 0);
-}
-
-TEST_CASE("IndexRangeND.zero_size.ceil_floor") {
-  // ceil and floor on a zero-size range should return 0
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(0, 100, 1),
-    tf::IndexRange<int>(0,   0, 1),
-    tf::IndexRange<int>(0, 100, 1)
-  );
-  REQUIRE(r.size() == 0);
-  REQUIRE(r.ceil(1)   == 0);
-  REQUIRE(r.ceil(10)  == 0);
-  REQUIRE(r.ceil(100) == 0);
-  REQUIRE(r.floor(1)   == 0);
-  REQUIRE(r.floor(10)  == 0);
-  REQUIRE(r.floor(100) == 0);
-}
-
-TEST_CASE("IndexRangeND.zero_size.slice_ceil_slice_floor") {
-  // slice_ceil and slice_floor on a zero-size range should return consumed=0
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(0, 100, 1),
-    tf::IndexRange<int>(0,   0, 1),
-    tf::IndexRange<int>(0, 100, 1)
-  );
-  REQUIRE(r.size() == 0);
   {
-    auto [box, consumed] = r.slice_ceil(0, 10);
-    REQUIRE(consumed == 0);
+    // zero in outer
+    tf::IndexRange<int, 2> r(tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,7,1));
+    REQUIRE(r.size() == 0);
   }
   {
-    auto [box, consumed] = r.slice_floor(0, 10);
-    REQUIRE(consumed == 0);
+    // zero in inner
+    tf::IndexRange<int, 2> r(tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,0,1));
+    REQUIRE(r.size() == 5);
+  }
+
+  // 3D — zero at each position
+  {
+    tf::IndexRange<int, 3> r(
+      tf::IndexRange<int>(0, 0,1), tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,6,1));
+    REQUIRE(r.size() == 0);
+  }
+  {
+    tf::IndexRange<int, 3> r(
+      tf::IndexRange<int>(0, 3,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,6,1));
+    REQUIRE(r.size() == 3);
+  }
+  {
+    tf::IndexRange<int, 3> r(
+      tf::IndexRange<int>(0, 3,1), tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,0,1));
+    REQUIRE(r.size() == 12);
+  }
+
+  // 5D — zero at each position
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,5,1));
+    REQUIRE(r.size() == 0);
+  }
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,3,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,5,1));
+    REQUIRE(r.size() == 2);
+  }
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,5,1));
+    REQUIRE(r.size() == 6);
+  }
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,5,1));
+    REQUIRE(r.size() == 24);
+  }
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,0,1));
+    REQUIRE(r.size() == 120);
+  }
+
+  // 7D — zero in first, middle (d=3), and last position
+  {
+    tf::IndexRange<int, 7> r(
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1));
+    REQUIRE(r.size() == 0);
+  }
+  {
+    tf::IndexRange<int, 7> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1));
+    REQUIRE(r.size() == 24);  // 2*3*4
+  }
+  {
+    tf::IndexRange<int, 7> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1), tf::IndexRange<int>(0,7,1),
+      tf::IndexRange<int>(0,0,1));
+    REQUIRE(r.size() == 2*3*4*5*6*7);
+  }
+
+  // 9D — zero at d=4
+  {
+    tf::IndexRange<int, 9> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 16);  // 2^4
   }
 }
 
-TEST_CASE("IndexRangeND.zero_size.openmp_collapse_analogy") {
-  // Confirms the OpenMP collapse analogy: i iterates 100 times, j iterates 0,
-  // k iterates 100.  The collapsed space has 0 total iterations.
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(0, 100, 1),  // i: 100
-    tf::IndexRange<int>(0,   0, 1),  // j: 0  <- collapses everything
-    tf::IndexRange<int>(0, 100, 1)   // k: 100
-  );
-  REQUIRE(r.size()    == 0);
-  REQUIRE(r.ceil(1)   == 0);
-  REQUIRE(r.floor(1)  == 0);
+TEST_CASE("IndexRangeND.zero_size.size.high_dimensions") {
+  // 11D — zero at d=5
+  {
+    tf::IndexRange<int, 11> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 32);  // 2^5
+  }
 
-  // A fully non-zero range has the expected product
-  tf::IndexRange<int, 3> full(
-    tf::IndexRange<int>(0, 100, 1),
-    tf::IndexRange<int>(0,   1, 1),  // j: 1 (not zero)
-    tf::IndexRange<int>(0, 100, 1)
-  );
-  REQUIRE(full.size() == 10000);
+  // 13D — zero at d=0 and d=12
+  {
+    tf::IndexRange<int, 13> r(
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 0);  // outermost zero
+  }
+  {
+    tf::IndexRange<int, 13> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,0,1));
+    REQUIRE(r.size() == 4096);  // 2^12, innermost is zero
+  }
+
+  // 15D — zero at d=7 (middle)
+  {
+    tf::IndexRange<int, 15> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 128);  // 2^7
+  }
+
+  // 17D — zero at d=1
+  {
+    tf::IndexRange<int, 17> r(
+      tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 3);  // only d=0 contributes
+  }
+
+  // 19D — zero at d=9
+  {
+    tf::IndexRange<int, 19> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 512);  // 2^9
+  }
 }
+
+TEST_CASE("IndexRangeND.zero_size.ceil_floor.various_dimensions") {
+  // For each N, verify that ceil/floor only see active suffix products.
+
+  // 5D: 3x4x0x5x6 -> active dims: 3,4 -> size=12, boundaries: 1,4,12
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1));
+    REQUIRE(r.size() == 12);
+    REQUIRE(r.ceil(1)  == 1);
+    REQUIRE(r.ceil(3)  == 4);   // rounds up to dim1 boundary
+    REQUIRE(r.ceil(4)  == 4);
+    REQUIRE(r.ceil(5)  == 12);  // rounds up to full active size
+    REQUIRE(r.ceil(12) == 12);
+    REQUIRE(r.ceil(99) == 12);  // capped
+
+    REQUIRE(r.floor(1)  == 1);
+    REQUIRE(r.floor(3)  == 1);
+    REQUIRE(r.floor(4)  == 4);
+    REQUIRE(r.floor(11) == 4);
+    REQUIRE(r.floor(12) == 12);
+    REQUIRE(r.floor(99) == 12);
+  }
+
+  // 7D: 2x3x4x0x5x6x7 -> active: 2,3,4 -> size=24, boundaries: 1,4,12,24
+  {
+    tf::IndexRange<int, 7> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1));
+    REQUIRE(r.size() == 24);
+    REQUIRE(r.ceil(1)  == 1);
+    REQUIRE(r.ceil(4)  == 4);
+    REQUIRE(r.ceil(5)  == 12);
+    REQUIRE(r.ceil(12) == 12);
+    REQUIRE(r.ceil(13) == 24);
+    REQUIRE(r.ceil(24) == 24);
+
+    REQUIRE(r.floor(3)  == 1);
+    REQUIRE(r.floor(4)  == 4);
+    REQUIRE(r.floor(11) == 4);
+    REQUIRE(r.floor(12) == 12);
+    REQUIRE(r.floor(23) == 12);
+    REQUIRE(r.floor(24) == 24);
+  }
+
+  // 11D: outermost zero -> size=0, ceil/floor return 0
+  {
+    tf::IndexRange<int, 11> r(
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1), tf::IndexRange<int>(0,8,1), tf::IndexRange<int>(0,9,1),
+      tf::IndexRange<int>(0,10,1),tf::IndexRange<int>(0,11,1));
+    REQUIRE(r.size() == 0);
+    REQUIRE(r.ceil(1)  == 0);
+    REQUIRE(r.floor(1) == 0);
+  }
+}
+
+TEST_CASE("IndexRangeND.zero_size.slice_ceil.various_dimensions") {
+  // 5D: 6x0x4x5x3 -> active: 6 -> size=6
+  // slice_ceil partitions [0,6); dims 1..4 are full extent in box.
+  {
+    tf::IndexRange<int, 5> r(
+      tf::IndexRange<int>(0,6,1), tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,3,1));
+    REQUIRE(r.size() == 6);
+
+    auto [box, consumed] = r.slice_ceil(2, 3);
+    REQUIRE(consumed == 3);
+    REQUIRE(box.dim(0).begin() == 2); REQUIRE(box.dim(0).end() == 5);
+    REQUIRE(box.dim(1).size()  == 0);  // zero-size preserved
+    REQUIRE(box.dim(2).size()  == 4);  // full extent
+    REQUIRE(box.dim(3).size()  == 5);  // full extent
+    REQUIRE(box.dim(4).size()  == 3);  // full extent
+  }
+
+  // 9D: 4x3x0x2x2x2x2x2x2 -> active: 4,3 -> size=12
+  {
+    tf::IndexRange<int, 9> r(
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 12);
+
+    // flat=0, chunk=3: takes 3 steps along dim1 (active inner boundary=3)
+    auto [box, consumed] = r.slice_ceil(0, 3);
+    REQUIRE(consumed == 3);
+    REQUIRE(box.dim(0).size() == 1);  // locked at row 0
+    REQUIRE(box.dim(1).begin() == 0); REQUIRE(box.dim(1).end() == 3);  // grow dim
+    REQUIRE(box.dim(2).size() == 0);  // zero-size
+    // dims 3..8: full extent
+    for (size_t d = 3; d < 9; ++d) REQUIRE(box.dim(d).size() == 2);
+  }
+
+  // 13D: 5x0x... -> active: 5 -> size=5, full coverage
+  {
+    tf::IndexRange<int, 13> r(
+      tf::IndexRange<int>(0,5,1),  tf::IndexRange<int>(0,0,1),  tf::IndexRange<int>(0,3,1),
+      tf::IndexRange<int>(0,4,1),  tf::IndexRange<int>(0,5,1),  tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1),  tf::IndexRange<int>(0,8,1),  tf::IndexRange<int>(0,9,1),
+      tf::IndexRange<int>(0,10,1), tf::IndexRange<int>(0,11,1), tf::IndexRange<int>(0,12,1),
+      tf::IndexRange<int>(0,13,1));
+    size_t N = r.size();
+    REQUIRE(N == 5);
+
+    std::vector<int> visited(5, 0);
+    size_t cursor = 0;
+    while (cursor < N) {
+      auto [box, consumed] = r.slice_ceil(cursor, 2);
+      REQUIRE(consumed > 0);
+      REQUIRE(box.dim(1).size() == 0);  // zero-size dim always preserved
+      for (int i = box.dim(0).begin(); i < box.dim(0).end(); ++i) visited[i]++;
+      cursor += consumed;
+    }
+    for (int v : visited) REQUIRE(v == 1);
+  }
+}
+
+TEST_CASE("IndexRangeND.zero_size.slice_floor.various_dimensions") {
+  // 7D: 3x5x0x4x4x4x4 -> active: 3,5 -> size=15
+  {
+    tf::IndexRange<int, 7> r(
+      tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,4,1), tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,4,1));
+    REQUIRE(r.size() == 15);
+
+    // chunk=4: active suffix products are 1, 5, 15.
+    // grow_dim=1 (active_inner_vol=1), steps_needed=floor(4/1)=4, consumed=4 (<= 4)
+    auto [box, consumed] = r.slice_floor(0, 4);
+    REQUIRE(consumed <= 4);
+    REQUIRE(consumed == 4);  // 4 steps along dim1, each costing 1 element
+    REQUIRE(box.dim(2).size() == 0);  // zero-size preserved
+
+    // chunk=5: exactly one inner row
+    auto [box2, consumed2] = r.slice_floor(0, 5);
+    REQUIRE(consumed2 == 5);
+    REQUIRE(consumed2 <= 5);
+    REQUIRE(box2.dim(1).begin() == 0); REQUIRE(box2.dim(1).end() == 5);
+  }
+
+  // 11D: 2x3x4x5x0x... -> active: 2,3,4,5 -> size=120
+  // full coverage with slice_floor
+  {
+    tf::IndexRange<int, 11> r(
+      tf::IndexRange<int>(0,2,1),  tf::IndexRange<int>(0,3,1),  tf::IndexRange<int>(0,4,1),
+      tf::IndexRange<int>(0,5,1),  tf::IndexRange<int>(0,0,1),  tf::IndexRange<int>(0,6,1),
+      tf::IndexRange<int>(0,7,1),  tf::IndexRange<int>(0,8,1),  tf::IndexRange<int>(0,9,1),
+      tf::IndexRange<int>(0,10,1), tf::IndexRange<int>(0,11,1));
+    size_t N = r.size();
+    REQUIRE(N == 120);
+
+    // drain with chunk=10 and verify no element double-visited
+    std::vector<int> visited(N, 0);
+    size_t cursor = 0;
+    while (cursor < N) {
+      auto [box, consumed] = r.slice_floor(cursor, 10);
+      REQUIRE(consumed > 0);
+      REQUIRE(consumed <= 10);
+      REQUIRE(box.dim(4).size() == 0);  // zero-size dim preserved
+      // count outer flat indices covered
+      size_t box_outer = box.dim(0).size() * box.dim(1).size() *
+                         box.dim(2).size() * box.dim(3).size();
+      REQUIRE(box_outer == consumed);
+      for (size_t k = cursor; k < cursor + consumed; ++k) visited[k]++;
+      cursor += consumed;
+    }
+    for (int v : visited) REQUIRE(v == 1);
+  }
+}
+
+TEST_CASE("IndexRangeND.zero_size.sequential_analogy.high_dimensions") {
+  // 19D with zero at d=9: size() = 2^9 = 512 (outer 9 dims contribute)
+  {
+    tf::IndexRange<int, 19> r(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,0,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 512);
+
+    // dims 9..18 are inactive — verify they appear as full extent in a sub-box
+    auto [box, consumed] = r.slice_ceil(0, 8);
+    REQUIRE(consumed > 0);
+    REQUIRE(box.dim(9).size()  == 0);  // zero-size preserved
+    for (size_t d = 10; d < 19; ++d) REQUIRE(box.dim(d).size() == 2);
+  }
+
+  // 15D with zero at d=0: size() = 0
+  {
+    tf::IndexRange<int, 15> r(
+      tf::IndexRange<int>(0,0,1),  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1),  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1),  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1),  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1),  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1));
+    REQUIRE(r.size() == 0);
+
+    auto [box, consumed] = r.slice_ceil(0, 1);
+    REQUIRE(consumed == 0);  // no active work
+  }
+}
+
+
 
 // ============================================================================
 // Section 18: IndexRange<T,N>::ceil and floor
@@ -1724,35 +1944,6 @@ TEST_CASE("NegativeStep.2D.both_negative.size") {
   REQUIRE(r.size() == 9);
 }
 
-TEST_CASE("NegativeStep.2D.coords_roundtrip") {
-  // dim0 negative, dim1 positive
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(10, 0, -2),
-    tf::IndexRange<int>(0,  4,  1)
-  );
-  auto all = enumerate_2d(r);
-  REQUIRE(all.size() == r.size());
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == all[flat].first);
-    REQUIRE(c[1] == all[flat].second);
-  }
-}
-
-TEST_CASE("NegativeStep.2D.both_negative.coords_roundtrip") {
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(6, 0, -2),
-    tf::IndexRange<int>(9, 0, -3)
-  );
-  auto all = enumerate_2d(r);
-  REQUIRE(all.size() == r.size());
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == all[flat].first);
-    REQUIRE(c[1] == all[flat].second);
-  }
-}
-
 // slice_ceil full-coverage with negative steps
 TEST_CASE("NegativeStep.2D.dim0_negative.full_coverage") {
   // dim0: 10 down to 0, step -2 (5 elements)
@@ -1876,22 +2067,6 @@ TEST_CASE("NegativeStep.3D.all_negative.size") {
   REQUIRE(r.size(1) == 5);
   REQUIRE(r.size(2) == 3);
   REQUIRE(r.size()  == 60);
-}
-
-TEST_CASE("NegativeStep.3D.all_negative.coords_roundtrip") {
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(4,  0, -1),
-    tf::IndexRange<int>(10, 0, -2),
-    tf::IndexRange<int>(9,  0, -3)
-  );
-  auto all = enumerate_3d(r);
-  REQUIRE(all.size() == r.size());
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == std::get<0>(all[flat]));
-    REQUIRE(c[1] == std::get<1>(all[flat]));
-    REQUIRE(c[2] == std::get<2>(all[flat]));
-  }
 }
 
 TEST_CASE("NegativeStep.3D.all_negative.full_coverage") {
@@ -2119,92 +2294,6 @@ TEST_CASE("NegativeStep.IndexRange1D.unravel_coverage") {
     }
   }
   for (int v : visited) REQUIRE(v == 1);
-}
-
-// ============================================================================
-// Section 18b: coords() with negative step dimensions
-// ============================================================================
-
-TEST_CASE("NegativeStep.coords.2d_both_negative") {
-  // dim0: 6,4,2 (beg=6, end=0, step=-2, size=3)
-  // dim1: 9,6,3 (beg=9, end=0, step=-3, size=3)
-  // Row-major flat order: (6,9),(6,6),(6,3),(4,9),(4,6),(4,3),(2,9),(2,6),(2,3)
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(6, 0, -2),
-    tf::IndexRange<int>(9, 0, -3)
-  );
-  REQUIRE(r.size() == 9);
-  auto all = enumerate_2d(r);
-  REQUIRE(all.size() == 9);
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == all[flat].first);
-    REQUIRE(c[1] == all[flat].second);
-  }
-}
-
-TEST_CASE("NegativeStep.coords.2d_mixed_steps") {
-  // dim0: positive (0,2,4,6), dim1: negative (10,8,6,4,2)
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(0, 8,  2),
-    tf::IndexRange<int>(10, 0, -2)
-  );
-  REQUIRE(r.size() == 20);
-  auto all = enumerate_2d(r);
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == all[flat].first);
-    REQUIRE(c[1] == all[flat].second);
-  }
-}
-
-TEST_CASE("NegativeStep.coords.3d_all_negative") {
-  tf::IndexRange<int, 3> r(
-    tf::IndexRange<int>(4,  0, -1),
-    tf::IndexRange<int>(6,  0, -2),
-    tf::IndexRange<int>(9,  0, -3)
-  );
-  // sizes: 4, 3, 3  -> 36 elements
-  REQUIRE(r.size() == 36);
-  auto all = enumerate_3d(r);
-  REQUIRE(all.size() == 36);
-  for (size_t flat = 0; flat < all.size(); flat++) {
-    auto c = r.coords(flat);
-    REQUIRE(c[0] == std::get<0>(all[flat]));
-    REQUIRE(c[1] == std::get<1>(all[flat]));
-    REQUIRE(c[2] == std::get<2>(all[flat]));
-  }
-}
-
-TEST_CASE("NegativeStep.coords.exhaustive_2d_mixed") {
-  // Sweep all sign combinations for step, small dims
-  for (int s0 : {1, 2, -1, -2}) {
-    for (int s1 : {1, 2, -1, -2}) {
-      for (int d0 = 1; d0 <= 4; d0++) {
-        for (int d1 = 1; d1 <= 4; d1++) {
-          // construct begin/end so the range is always valid
-          int beg0 = (s0 > 0) ? 0            : d0 * (-s0);
-          int end0 = (s0 > 0) ? d0 * s0      : 0;
-          int beg1 = (s1 > 0) ? 0            : d1 * (-s1);
-          int end1 = (s1 > 0) ? d1 * s1      : 0;
-
-          tf::IndexRange<int, 2> r(
-            tf::IndexRange<int>(beg0, end0, s0),
-            tf::IndexRange<int>(beg1, end1, s1)
-          );
-          REQUIRE(r.size() == static_cast<size_t>(d0 * d1));
-
-          auto all = enumerate_2d(r);
-          REQUIRE(all.size() == r.size());
-          for (size_t flat = 0; flat < all.size(); flat++) {
-            auto c = r.coords(flat);
-            REQUIRE(c[0] == all[flat].first);
-            REQUIRE(c[1] == all[flat].second);
-          }
-        }
-      }
-    }
-  }
 }
 
 // ============================================================================

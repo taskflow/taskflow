@@ -133,19 +133,32 @@ printf("%zu\n", r.size());  // 4*6*8 = 192
 @endcode
 
 @note
-If any dimension has zero size (e.g. an empty range such as @c [0,0)), the total
-@c size() is zero and the range produces no iterations.  This is consistent with
-the behaviour of OpenMP @c collapse — collapsing a nest of loops where any loop
-has zero iterations yields an empty iteration space regardless of the other loops:
+If any dimension has zero size (e.g. an empty range such as @c [0,0)), the
+active iteration space stops at that dimension.  @c size() returns the product
+of all outer dimensions before the first zero, and @c slice_ceil / @c slice_floor
+copy the zero-size dimension and all inner dimensions as full extent into each
+returned sub-box.  This matches the behaviour of sequential nested loops:
 
 @code{.cpp}
-// j-loop has zero iterations -> total size = 100 * 0 * 100 = 0
+// Zero in the middle dimension: outer i-loop still runs, j/k body never executes.
 tf::IndexRange<int, 3> r(
-  tf::IndexRange<int>(0, 100, 1),   // i: 100 iters
-  tf::IndexRange<int>(0,   0, 1),   // j:   0 iters
-  tf::IndexRange<int>(0, 100, 1)    // k: 100 iters
+  tf::IndexRange<int>(0, 100, 1),   // i: 100 iters (active)
+  tf::IndexRange<int>(0,   0, 1),   // j:   0 iters (stops accumulation here)
+  tf::IndexRange<int>(0, 100, 1)    // k: 100 iters (inactive — never reached)
 );
-printf("%zu\n", r.size());  // 0 — no work scheduled
+r.size();  // 100  (only the i-dimension contributes)
+
+// High-dimensional example: 15D with zero at d=7
+// size() = product of dims [0..6] only
+tf::IndexRange<int, 15> r2(
+  tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
+  tf::IndexRange<int>(0,5,1), tf::IndexRange<int>(0,6,1), tf::IndexRange<int>(0,7,1),
+  tf::IndexRange<int>(0,8,1), tf::IndexRange<int>(0,0,1),  // d=7: zero
+  tf::IndexRange<int>(0,9,1), tf::IndexRange<int>(0,10,1), tf::IndexRange<int>(0,11,1),
+  tf::IndexRange<int>(0,12,1),tf::IndexRange<int>(0,13,1), tf::IndexRange<int>(0,14,1),
+  tf::IndexRange<int>(0,15,1)
+);
+r2.size();  // 2*3*4*5*6*7*8 = 40320
 @endcode
 */
 template <std::integral T, size_t N>
@@ -222,56 +235,67 @@ public:
   size_t size(size_t d) const { return _dims[d].size(); }
 
   /**
-  @brief returns the total number of iterations across all dimensions
+  @brief returns the number of active flat iterations
 
-  Equivalent to the product of each dimension's element count.  If any
-  dimension has zero size, the result is zero — consistent with OpenMP
-  @c collapse semantics where a zero-size loop collapses the entire
-  iteration space to empty.
+  Returns the product of dimension sizes from the outermost dimension inward,
+  stopping before the first zero-size dimension.  This matches the behaviour
+  of sequential nested loops: a zero-size dimension prevents its own iterations
+  and those of all deeper dimensions, but outer dimensions are unaffected.
 
   @code{.cpp}
-  tf::IndexRange<int, 3> r(
+  // All non-zero: 4 * 6 * 8 = 192
+  tf::IndexRange<int, 3> r1(
     tf::IndexRange<int>(0, 4, 1),
     tf::IndexRange<int>(0, 6, 1),
     tf::IndexRange<int>(0, 8, 1)
   );
-  printf("%zu\n", r.size());  // 192
+  r1.size();  // 192
 
-  tf::IndexRange<int, 3> empty(
+  // Zero in middle (d=1): outer dim only -> 4
+  tf::IndexRange<int, 3> r2(
     tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 0, 1),   // zero-size dimension
+    tf::IndexRange<int>(0, 0, 1),   // stops accumulation here
     tf::IndexRange<int>(0, 8, 1)
   );
-  printf("%zu\n", empty.size());  // 0
+  r2.size();  // 4
+
+  // Zero in innermost (d=2): outer two dims contribute -> 4*6 = 24
+  tf::IndexRange<int, 3> r3(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 6, 1),
+    tf::IndexRange<int>(0, 0, 1)    // stops accumulation here
+  );
+  r3.size();  // 24
+
+  // Zero in outermost (d=0): no outer work -> 0
+  tf::IndexRange<int, 3> r4(
+    tf::IndexRange<int>(0, 0, 1),   // stops immediately
+    tf::IndexRange<int>(0, 6, 1),
+    tf::IndexRange<int>(0, 8, 1)
+  );
+  r4.size();  // 0
+
+  // High-dimensional example: 19D with zero at d=9
+  // -> product of dims [0..8] = 2^9 = 512
+  tf::IndexRange<int, 19> r5(
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+    tf::IndexRange<int>(0,0,1),  // d=9: zero — dims 10..18 are inactive
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+    tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1)
+  );
+  r5.size();  // 512
   @endcode
   */
   size_t size() const;
-
-  // --------------------------------------------------------------------------
-  // Flat <-> ND coordinate mapping
-  // --------------------------------------------------------------------------
-
-  /**
-  @brief maps a zero-based flat index to its N-D index coordinates (row-major)
-
-  @param flat zero-based flat index in `[0, size())`
-  @return array of N index values, one per dimension
-
-  @code{.cpp}
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(0, 3, 1),   // dim 0: 0, 1, 2
-    tf::IndexRange<int>(0, 4, 1)    // dim 1: 0, 1, 2, 3
-  );
-  auto c = r.coords(5);  // flat 5 -> row 1, col 1 -> {1, 1}
-  @endcode
-  */
-  std::array<T, N> coords(size_t flat) const;
 
   /**
   @brief returns the smallest perfectly-aligned hyperbox reachable from flat_beg,
          rounding up to the next hyperplane boundary when chunk_size is not aligned
 
-  @param flat_beg  starting flat index (row-major) into the ND space
+  @param flat_beg  starting flat index (row-major) into the active ND space
   @param chunk_size  hint for the desired number of elements
 
   @return a pair of (sub-box, consumed) where consumed == sub-box.size()
@@ -280,30 +304,43 @@ public:
   boundary the returned box is exact; otherwise it rounds up to the next clean
   orthogonal boundary, so @c consumed >= @c chunk_size.
 
-  The returned sub-box is always a valid hyperrectangle.  A dimension can only
-  expand if all dimensions inner to it start at coordinate 0 (the
-  "trailing-zeros" rule); when this fires the function returns the best
-  geometry-constrained box reachable from @c flat_beg.
+  Only the active dimensions — those before the first zero-size dimension — are
+  partitioned.  Dimensions from the first zero onward are copied into the returned
+  box as full extent and do not affect the flat index space.
+
+  The trailing-zeros rule applies within the active dimensions: a dimension can
+  only expand if all active dimensions inner to it start at coordinate 0.
+  When this fires the function returns the best geometry-constrained box
+  reachable from @c flat_beg.
 
   Used by dynamic partitioners: the atomic cursor advances by @c consumed and
   any overshoot is self-correcting.
 
   @code{.cpp}
-  // 3D range: 4 x 5 x 10
-  tf::IndexRange<int, 3> r(
+  // 6D range: 3 x 4 x 8 x 0 x 2 x 3
+  // Active dims: d=0(3), d=1(4), d=2(8) -> size()=96
+  // Active suffix products (boundaries): 1, 8, 32, 96
+  // Dims d=3(0), d=4(2), d=5(3) are inactive — copied as full extent
+  tf::IndexRange<int, 6> r(
+    tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 5, 1),
-    tf::IndexRange<int>(0, 10, 1)
+    tf::IndexRange<int>(0, 8, 1),
+    tf::IndexRange<int>(0, 0, 1),   // zero — stops active space here
+    tf::IndexRange<int>(0, 2, 1),
+    tf::IndexRange<int>(0, 3, 1)
   );
 
-  // chunk_size=10 aligns exactly to one inner row -> no overshoot
-  auto [box1, c1] = r.slice_ceil(0, 10);  // consumed=10
+  // chunk_size=8 aligns to one inner row — no overshoot
+  // box: d0=[0,1), d1=[0,1), d2=[0,8), d3=[0,0), d4=[0,2), d5=[0,3)
+  auto [box1, c1] = r.slice_ceil(0, 8);   // consumed=8
 
-  // chunk_size=30 does not align; rounds up to next boundary (one outer row = 50)
-  auto [box2, c2] = r.slice_ceil(0, 30);  // consumed=50
+  // chunk_size=20 does not align; rounds up to next boundary (32)
+  // box: d0=[0,1), d1=[0,4), d2=[0,8), d3=[0,0), d4=[0,2), d5=[0,3)
+  auto [box2, c2] = r.slice_ceil(0, 20);  // consumed=32
 
-  // geometry-constrained: mid-row start forces a smaller box
-  auto [box3, c3] = r.slice_ceil(30, 30); // consumed=20 (<chunk_size)
+  // geometry-constrained: flat=10 -> active coords (0,1,2), d2 not at 0
+  // trailing-zeros fires; grow_dim=2, takes remaining 6 steps in that row
+  auto [box3, c3] = r.slice_ceil(10, 20); // consumed=6 (<chunk_size)
   @endcode
   */
   std::pair<IndexRange<T, N>, size_t> slice_ceil(size_t flat_beg, size_t chunk_size) const;
@@ -313,7 +350,7 @@ public:
          whose size does not exceed chunk_size, rounding down to the previous
          hyperplane boundary when chunk_size is not aligned
 
-  @param flat_beg  starting flat index (row-major) into the ND space
+  @param flat_beg  starting flat index (row-major) into the active ND space
   @param chunk_size  hint for the desired number of elements
 
   @return a pair of (sub-box, consumed) where consumed == sub-box.size()
@@ -323,79 +360,83 @@ public:
   it rounds down to the largest box that does not exceed @c chunk_size, so
   @c consumed <= @c chunk_size.
 
-  The one irreducible exception: when @c chunk_size is smaller than the volume
-  of a single indivisible inner step (which occurs when trailing-zeros forces
-  @c grow_dim to a dimension whose per-step volume exceeds @c chunk_size), the
-  function still returns that one step to guarantee forward progress.  With
-  unit step sizes this exception never fires because the innermost dimension
-  always has per-step volume of 1.
+  Only the active dimensions — those before the first zero-size dimension — are
+  partitioned.  Dimensions from the first zero onward are copied into the returned
+  box as full extent.
 
-  The trailing-zeros rule applies identically to slice_ceil.
+  The trailing-zeros rule applies within the active dimensions identically to
+  @c slice_ceil.
 
   Used by static partitioners: each worker's pre-assigned flat quota is never
   exceeded, so workers do not double-process elements at quota boundaries.
 
   @code{.cpp}
-  // 3D range: 4 x 5 x 10
-  tf::IndexRange<int, 3> r(
+  // 6D range: 3 x 4 x 8 x 0 x 2 x 3
+  // Active dims: d=0(3), d=1(4), d=2(8) -> size()=96
+  // Active suffix products (boundaries): 1, 8, 32, 96
+  // Dims d=3(0), d=4(2), d=5(3) are inactive — copied as full extent
+  tf::IndexRange<int, 6> r(
+    tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 5, 1),
-    tf::IndexRange<int>(0, 10, 1)
+    tf::IndexRange<int>(0, 8, 1),
+    tf::IndexRange<int>(0, 0, 1),   // zero — stops active space here
+    tf::IndexRange<int>(0, 2, 1),
+    tf::IndexRange<int>(0, 3, 1)
   );
 
-  // chunk_size=10 aligns exactly -> same as ceil
-  auto [box1, c1] = r.slice_floor(0, 10);  // consumed=10
+  // chunk_size=8 aligns exactly — same as slice_ceil
+  auto [box1, c1] = r.slice_floor(0, 8);   // consumed=8
 
-  // chunk_size=30 does not align; rounds down to largest fitting box (one inner row = 10)
-  auto [box2, c2] = r.slice_floor(0, 30);  // consumed=10
+  // chunk_size=20 does not align; rounds down to largest boundary <= 20 (which is 8)
+  auto [box2, c2] = r.slice_floor(0, 20);  // consumed=8
 
-  // chunk_size=50 aligns exactly to one outer row -> same as ceil
-  auto [box3, c3] = r.slice_floor(0, 50);  // consumed=50
+  // chunk_size=32 aligns exactly
+  auto [box3, c3] = r.slice_floor(0, 32);  // consumed=32
+
+  // chunk_size=50 does not align; rounds down to 32
+  auto [box4, c4] = r.slice_floor(0, 50);  // consumed=32
   @endcode
   */
   std::pair<IndexRange<T, N>, size_t> slice_floor(size_t flat_beg, size_t chunk_size) const;
 
   /**
   @brief returns the smallest hyperplane-aligned chunk size that is >= chunk_size,
-         capped at size() when chunk_size exceeds the total range size
+         capped at size() when chunk_size exceeds the total active range size
 
   @param chunk_size  hint for the desired number of flat elements
 
-  @return the smallest natural per-step volume of this range that is
-          >= @c chunk_size, or @c size() if @c chunk_size > @c size()
+  @return the smallest natural per-step volume of the active dimensions that is
+          >= @c chunk_size, or @c size() if @c chunk_size > @c size(), or 0 if
+          the outermost dimension is zero-size
 
   Analogous to @c std::ceil but operating on the discrete set of hyperplane
-  boundary sizes of this ND range.  The natural boundary sizes are the suffix
-  products of the dimension sizes: 1, dim[N-1], dim[N-1]*dim[N-2], ...,
-  size().  The returned value is always one of these suffix products.
+  boundary sizes of the active dimensions (those before the first zero-size
+  dimension).  Only active suffix products are considered — inactive inner
+  dimensions do not contribute boundaries.
 
   When @c chunk_size is already a natural boundary size the return equals
   @c chunk_size exactly — just like @c std::ceil of an integer.
 
-  When @c chunk_size > @c size(), the function returns @c size() since no
-  larger aligned boundary exists.  In this case the returned value is less
-  than @c chunk_size.
-
-  This is a lightweight query: no box is constructed and no flat index is
-  needed.  Use this to snap a raw @c N/W estimate to the nearest hyperplane
-  boundary before passing it to the static partitioner loop, so that
-  @c slice_floor always returns one box per worker partition (inner while
-  loop runs exactly once in the common case).
-
   @code{.cpp}
-  // 3D range: 4 x 5 x 10  (boundary sizes: 1, 10, 50, 200)
-  tf::IndexRange<int, 3> r(
+  // 6D range: 3 x 4 x 8 x 0 x 2 x 3
+  // Active dims: d=0(3), d=1(4), d=2(8) -> size()=96
+  // Active boundaries: 1, 8, 32, 96  (inactive dims d=3,4,5 contribute nothing)
+  tf::IndexRange<int, 6> r(
+    tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 5, 1),
-    tf::IndexRange<int>(0, 10, 1)
+    tf::IndexRange<int>(0, 8, 1),
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 2, 1),
+    tf::IndexRange<int>(0, 3, 1)
   );
-  r.ceil(1);   // 1   — already a boundary
-  r.ceil(7);   // 10  — rounds up to next boundary (one inner row)
-  r.ceil(10);  // 10  — already a boundary
-  r.ceil(30);  // 50  — rounds up to next boundary (one outer row)
-  r.ceil(50);  // 50  — already a boundary
-  r.ceil(100); // 200 — rounds up to full range
-  r.ceil(201); // 200 — capped at size() since no larger boundary exists
+  r.ceil(1);   //  1 — already a boundary
+  r.ceil(5);   //  8 — rounds up to next active boundary
+  r.ceil(8);   //  8 — already a boundary
+  r.ceil(9);   // 32 — rounds up
+  r.ceil(32);  // 32 — already a boundary
+  r.ceil(33);  // 96 — rounds up to full active size
+  r.ceil(96);  // 96 — already a boundary (== size())
+  r.ceil(200); // 96 — capped at size()
   @endcode
   */
   size_t ceil(size_t chunk_size) const;
@@ -405,31 +446,38 @@ public:
 
   @param chunk_size  hint for the desired number of flat elements
 
-  @return the largest natural per-step volume of this range that is
-          <= @c chunk_size
+  @return the largest natural per-step volume of the active dimensions that is
+          <= @c chunk_size, or 0 if the outermost dimension is zero-size
 
   Analogous to @c std::floor but operating on the discrete set of hyperplane
-  boundary sizes of this ND range.  The natural boundary sizes are the suffix
-  products of the dimension sizes: 1, dim[N-1], dim[N-1]*dim[N-2], ...,
-  size().  The returned value is always one of these suffix products.
+  boundary sizes of the active dimensions (those before the first zero-size
+  dimension).  Only active suffix products are considered — inactive inner
+  dimensions do not contribute boundaries.
 
   When @c chunk_size is already a natural boundary size the return equals
   @c chunk_size exactly — just like @c std::floor of an integer, and
   identical to @c ceil in that case.
 
   @code{.cpp}
-  // 3D range: 4 x 5 x 10  (boundary sizes: 1, 10, 50, 200)
-  tf::IndexRange<int, 3> r(
+  // 6D range: 3 x 4 x 8 x 0 x 2 x 3
+  // Active dims: d=0(3), d=1(4), d=2(8) -> size()=96
+  // Active boundaries: 1, 8, 32, 96  (inactive dims d=3,4,5 contribute nothing)
+  tf::IndexRange<int, 6> r(
+    tf::IndexRange<int>(0, 3, 1),
     tf::IndexRange<int>(0, 4, 1),
-    tf::IndexRange<int>(0, 5, 1),
-    tf::IndexRange<int>(0, 10, 1)
+    tf::IndexRange<int>(0, 8, 1),
+    tf::IndexRange<int>(0, 0, 1),
+    tf::IndexRange<int>(0, 2, 1),
+    tf::IndexRange<int>(0, 3, 1)
   );
-  r.floor(1);   // 1   — already a boundary
-  r.floor(7);   // 1   — rounds down to previous boundary
-  r.floor(10);  // 10  — already a boundary
-  r.floor(30);  // 10  — rounds down to previous boundary (one inner row)
-  r.floor(50);  // 50  — already a boundary
-  r.floor(100); // 50  — rounds down to previous boundary (one outer row)
+  r.floor(1);   //  1 — already a boundary
+  r.floor(5);   //  1 — rounds down to previous active boundary
+  r.floor(8);   //  8 — already a boundary
+  r.floor(9);   //  8 — rounds down
+  r.floor(32);  // 32 — already a boundary
+  r.floor(33);  // 32 — rounds down
+  r.floor(96);  // 96 — already a boundary (== size())
+  r.floor(200); // 96 — capped at size()
   @endcode
   */
   size_t floor(size_t chunk_size) const;
@@ -449,53 +497,54 @@ IndexRange<T, N>::IndexRange(const std::array<IndexRange<T, 1>, N>& dims) : _dim
 template <std::integral T, size_t N>
 size_t IndexRange<T, N>::size() const {
   size_t total = 1;
-  for (size_t d = 0; d < N; ++d) total *= _dims[d].size();
+  for (size_t d = 0; d < N; ++d) {
+    size_t s = _dims[d].size();
+    if (s == 0) return d == 0 ? 0 : total;  // outermost zero -> 0, inner zero -> outer product
+    total *= s;
+  }
   return total;
 }
 
 template <std::integral T, size_t N>
-std::array<T, N> IndexRange<T, N>::coords(size_t flat) const {
-  std::array<T, N> c;
-  for (size_t d = N; d-- > 0; ) {
-    size_t sz  = _dims[d].size();
-    size_t pos = flat % sz;
-    c[d] = _dims[d].begin() + static_cast<T>(pos) * _dims[d].step_size();
-    flat /= sz;
-  }
-  return c;
-}
-
-template <std::integral T, size_t N>
 size_t IndexRange<T, N>::ceil(size_t chunk_size) const {
-  // The natural boundary sizes are the suffix products walked from innermost
-  // outward: 1, dim[N-1], dim[N-1]*dim[N-2], ..., size().
-  // Return the first suffix product that meets or exceeds chunk_size.
-  // If any dimension is zero, size()==0 and we return 0 (no work).
-  if (size() == 0) return 0;
+  // Pass 1: cache all dim sizes (one .size() call each) and find d_active.
+  size_t dim_sizes[N];
+  size_t d_active = N;
+  for (size_t d = 0; d < N; ++d) {
+    dim_sizes[d] = _dims[d].size();
+    if (dim_sizes[d] == 0) { d_active = d; break; }
+  }
+  if (d_active == 0) return 0;
+
+  // Pass 2: walk suffix products backward within [0, d_active) only.
+  // Return the first suffix product >= chunk_size, capped at size().
   size_t inner_volume = 1;
   if (inner_volume >= chunk_size) return inner_volume;
-  for (size_t d = N; d-- > 0; ) {
-    inner_volume *= _dims[d].size();
-    if (inner_volume >= chunk_size) {
-      return inner_volume;
-    }
+  for (size_t d = d_active; d-- > 0; ) {
+    inner_volume *= dim_sizes[d];
+    if (inner_volume >= chunk_size) return inner_volume;
   }
-  return inner_volume;  // == size(), the largest possible boundary
+  return inner_volume;  // == size() of active dims, capped
 }
 
 template <std::integral T, size_t N>
 size_t IndexRange<T, N>::floor(size_t chunk_size) const {
-  // Walk suffix products outward; commit each one as long as it fits within
-  // chunk_size.  The last committed value is the answer.
-  // If any dimension is zero, size()==0 and we return 0 (no work).
-  if (size() == 0) return 0;
+  // Pass 1: cache all dim sizes (one .size() call each) and find d_active.
+  size_t dim_sizes[N];
+  size_t d_active = N;
+  for (size_t d = 0; d < N; ++d) {
+    dim_sizes[d] = _dims[d].size();
+    if (dim_sizes[d] == 0) { d_active = d; break; }
+  }
+  if (d_active == 0) return 0;
+
+  // Pass 2: walk suffix products backward within [0, d_active) only.
+  // Return the largest suffix product <= chunk_size.
   size_t inner_volume = 1;
   size_t last_fit     = 1;
-  for (size_t d = N; d-- > 0; ) {
-    size_t next = inner_volume * _dims[d].size();
-    if (next > chunk_size) {
-      break;
-    }
+  for (size_t d = d_active; d-- > 0; ) {
+    size_t next = inner_volume * dim_sizes[d];
+    if (next > chunk_size) break;
     inner_volume = next;
     last_fit     = inner_volume;
   }
@@ -510,29 +559,34 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
     return { *this, 0 };
   }
 
-  // Fused pass: cache dim sizes and decode flat_beg to ND coords in one
-  // backward traversal.  Also detects a zero-size dimension early (empty range).
-  // A single backward pass suffices because the coord decode is naturally
-  // innermost-first (temp %= dim_size[d] then /= dim_size[d]).
+  // Find d_active: the index of the first zero-size dimension (or N if none).
+  // Only dimensions [0, d_active) participate in the flat iteration space.
+  // Dimensions [d_active, N) are copied as full extent into the returned box.
   size_t dim_sizes[N];
-  size_t coords[N];
-  size_t temp = flat_beg;
-  for (size_t d = N; d-- > 0; ) {
+  size_t d_active = N;
+  for (size_t d = 0; d < N; ++d) {
     dim_sizes[d] = _dims[d].size();
-    if (dim_sizes[d] == 0) return { *this, 0 };  // empty range
+    if (dim_sizes[d] == 0) { d_active = d; break; }
+  }
+
+  if (d_active == 0) return { *this, 0 };  // outermost dim is zero — no work
+
+  // Decode flat_beg into coords for active dimensions [0, d_active) only.
+  size_t coords[N] = {};
+  size_t temp = flat_beg;
+  for (size_t d = d_active; d-- > 0; ) {
     coords[d] = temp % dim_sizes[d];
     temp     /= dim_sizes[d];
   }
 
-  // Find grow_dim: walk innermost→outermost, record each dim as candidate
-  // BEFORE the budget check (ceil: round up to the next boundary).
-  // Stop when inner_volume meets chunk_size or trailing-zeros fires.
-  size_t grow_dim        = N - 1;
+  // Find grow_dim within [0, d_active): record each dim BEFORE the budget check
+  // (ceil: round up to the next boundary). Stop when budget met or trailing-zeros fires.
+  size_t grow_dim        = d_active - 1;
   size_t inner_volume    = 1;
   size_t active_inner_vol = 1;
 
-  for (size_t d = N; d-- > 0; ) {
-    if (d + 1 < N && coords[d + 1] != 0) break;  // trailing-zeros rule
+  for (size_t d = d_active; d-- > 0; ) {
+    if (d + 1 < d_active && coords[d + 1] != 0) break;  // trailing-zeros rule
 
     grow_dim        = d;
     active_inner_vol = inner_volume;
@@ -547,15 +601,18 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
   size_t steps_needed  = (std::max)(size_t{1}, chunk_size / active_inner_vol);
   size_t steps_to_take = (std::min)(steps_left, steps_needed);
 
-  // Construct the orthogonal sub-box.
+  // Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner
+  // as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).
   std::array<IndexRange<T, 1>, N> box_dims;
   for (size_t d = 0; d < N; ++d) {
     const auto& dim  = _dims[d];
     const T     step = dim.step_size();
     const T     beg  = dim.begin();
-    if (d < grow_dim) {
+    if (d >= d_active) {
+      box_dims[d] = dim;                                           // full extent
+    } else if (d < grow_dim) {
       T b = beg + static_cast<T>(coords[d]) * step;
-      box_dims[d] = IndexRange<T, 1>(b, b + step, step);
+      box_dims[d] = IndexRange<T, 1>(b, b + step, step);          // locked
     } else if (d == grow_dim) {
       box_dims[d] = IndexRange<T, 1>(
         beg + static_cast<T>(coords[d])                 * step,
@@ -563,7 +620,7 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
         step
       );
     } else {
-      box_dims[d] = dim;
+      box_dims[d] = dim;                                           // full inner extent
     }
   }
 
@@ -578,28 +635,34 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
     return { *this, 0 };
   }
 
-  // Fused pass: cache dim sizes and decode flat_beg to ND coords in one
-  // backward traversal.  Also detects a zero-size dimension early (empty range).
+  // Find d_active: the index of the first zero-size dimension (or N if none).
+  // Only dimensions [0, d_active) participate in the flat iteration space.
+  // Dimensions [d_active, N) are copied as full extent into the returned box.
   size_t dim_sizes[N];
-  size_t coords[N];
-  size_t temp = flat_beg;
-  for (size_t d = N; d-- > 0; ) {
+  size_t d_active = N;
+  for (size_t d = 0; d < N; ++d) {
     dim_sizes[d] = _dims[d].size();
-    if (dim_sizes[d] == 0) return { *this, 0 };  // empty range
+    if (dim_sizes[d] == 0) { d_active = d; break; }
+  }
+
+  if (d_active == 0) return { *this, 0 };  // outermost dim is zero — no work
+
+  // Decode flat_beg into coords for active dimensions [0, d_active) only.
+  size_t coords[N] = {};
+  size_t temp = flat_beg;
+  for (size_t d = d_active; d-- > 0; ) {
     coords[d] = temp % dim_sizes[d];
     temp     /= dim_sizes[d];
   }
 
-  // Find grow_dim: walk innermost→outermost, commit each dim AFTER checking
-  // the budget (floor: round down to the previous boundary).
-  // Stop when next_vol would exceed chunk_size (and inner > 1 to ensure
-  // the innermost dim is always committed as the minimum fallback).
-  size_t grow_dim        = N - 1;
+  // Find grow_dim within [0, d_active): commit each dim AFTER the budget check
+  // (floor: round down to the previous boundary).
+  size_t grow_dim        = d_active - 1;
   size_t active_inner_vol = 1;
   size_t inner_volume    = 1;
 
-  for (size_t d = N; d-- > 0; ) {
-    if (d + 1 < N && coords[d + 1] != 0) break;  // trailing-zeros rule
+  for (size_t d = d_active; d-- > 0; ) {
+    if (d + 1 < d_active && coords[d + 1] != 0) break;  // trailing-zeros rule
 
     size_t next_vol = inner_volume * dim_sizes[d];
     if (next_vol > chunk_size && inner_volume > 1) break;
@@ -614,15 +677,18 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
   size_t steps_needed  = (std::max)(size_t{1}, chunk_size / active_inner_vol);
   size_t steps_to_take = (std::min)(steps_left, steps_needed);
 
-  // Construct the orthogonal sub-box.
+  // Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner
+  // as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).
   std::array<IndexRange<T, 1>, N> box_dims;
   for (size_t d = 0; d < N; ++d) {
     const auto& dim  = _dims[d];
     const T     step = dim.step_size();
     const T     beg  = dim.begin();
-    if (d < grow_dim) {
+    if (d >= d_active) {
+      box_dims[d] = dim;                                           // full extent
+    } else if (d < grow_dim) {
       T b = beg + static_cast<T>(coords[d]) * step;
-      box_dims[d] = IndexRange<T, 1>(b, b + step, step);
+      box_dims[d] = IndexRange<T, 1>(b, b + step, step);          // locked
     } else if (d == grow_dim) {
       box_dims[d] = IndexRange<T, 1>(
         beg + static_cast<T>(coords[d])                 * step,
@@ -630,7 +696,7 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
         step
       );
     } else {
-      box_dims[d] = dim;
+      box_dims[d] = dim;                                           // full inner extent
     }
   }
 

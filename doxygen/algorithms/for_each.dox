@@ -196,39 +196,41 @@ The same pattern applies to any number of dimensions N.
 Each worker receives an N-dimensional orthogonal sub-box and iterates its
 assigned region independently, with no contention on the iteration space.
 
-@subsection ParallelIterationsIndexRangeMDZeroSize Zero-size Dimensions and Empty Ranges
+@subsection ParallelIterationsIndexRangeMDZeroSize Zero-size Dimensions
 
-The N-dimensional iteration space is defined as the Cartesian product of all
-per-dimension ranges.
-This means that if @em any dimension has zero size — for example because its
-begin equals its end — the total iteration count is zero and the scheduler
-performs @em no work at all.
-This behaviour is identical to OpenMP's @c collapse clause: collapsing a nest
-of loops where any one loop has zero iterations yields an empty iteration
-space regardless of the sizes of the other loops.
+When a dimension has zero size, it and all dimensions inner to it produce no
+iterations — but outer dimensions are unaffected.
+This matches the behaviour of sequential nested loops: a zero-size inner loop
+simply never executes, while the outer loops still run.
 
 @code{.cpp}
 // The middle dimension has zero iterations (j_begin == j_end).
-// By the collapse / Cartesian-product rule the entire 3D space is empty,
-// so the callable is never invoked — even though the i- and k-loops
-// would each have 100 iterations on their own.
+// The outer i-loop still runs 100 times; the j/k body never executes.
 tf::IndexRange<int, 3> range(
   tf::IndexRange<int>(0, 100, 1),   // i: 100 iterations
-  tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations  <-- collapses everything
-  tf::IndexRange<int>(0, 100, 1)    // k: 100 iterations
+  tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations — body never runs
+  tf::IndexRange<int>(0, 100, 1)    // k: 100 iterations (never reached)
 );
+// range.size() == 100  (outer i-loop only)
 
 taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
-  // never called
+  // called 100 times (once per i-value)
+  // sub.dim(1).size() == 0, so the inner j-loop never executes
+  for(int i = sub.dim(0).begin(); i < sub.dim(0).end(); ++i) {
+    for(int j = sub.dim(1).begin(); j < sub.dim(1).end(); ++j) {  // never entered
+      for(int k = sub.dim(2).begin(); k < sub.dim(2).end(); ++k) {
+        process(i, j, k);
+      }
+    }
+  }
 });
 @endcode
 
-This is equivalent to the following sequential code under OpenMP collapse:
+This is equivalent to the sequential nested loop:
 
 @code{.cpp}
-// #pragma omp parallel for collapse(3)   <-- same semantics
 for(int i = 0; i < 100; ++i) {
-  for(int j = 0; j < 0; ++j) {   // zero iterations: entire collapsed loop is empty
+  for(int j = 0; j < 0; ++j) {   // zero iterations — body skipped
     for(int k = 0; k < 100; ++k) {
       process(i, j, k);
     }
@@ -236,9 +238,11 @@ for(int i = 0; i < 100; ++i) {
 }
 @endcode
 
-If you need the outer loop to run independently of whether inner loops are empty, 
-do not use a multi-dimensional range. Instead, consider restructure your loop so a 1D 
-tf::for_each_by_index can handle.
+@note
+This differs from OpenMP's @c collapse clause, which treats the entire
+iteration space as a Cartesian product and yields zero total iterations when
+any dimension is empty.  %Taskflow preserves the sequential semantics of
+nested loops: outer dimensions always execute independently of inner ones.
 
 @subsection ParallelIterationsIndexRangeByReference Capture Range by Reference
 

@@ -274,7 +274,7 @@ Create a Parallel-Reduce-by-Index Task</h1>
 <div class="line"> </div>
 <div class="line">executor.run(taskflow).wait();</div>
 <div class="line">assert(res == 100001.0);  <span class="comment">// 1.0 (initial) + 100000 * 1.0</span></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:152</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
 </div><!-- fragment --><p>The global reducer combines all partial results with the initial value of <code>res</code> (here <code>1.0</code>), so the final answer is <code>1.0</code> + <code>100000.0</code> = <code>100001.0</code>.</p>
 <h2><a class="anchor" id="ParallelReduceByIndexCaptureByReference"></a>
 Capture IndexRange by Reference</h2>

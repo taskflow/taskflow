@@ -15,7 +15,7 @@ var Algorithms =
       [ "Create an IndexRange-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexRangeBased", [
         [ "1D IndexRange", "ParallelIterations.html#ParallelIterationsIndexRange1D", null ],
         [ "Multi-dimensional IndexRange", "ParallelIterations.html#ParallelIterationsIndexRangeMD", null ],
-        [ "Zero-size Dimensions and Empty Ranges", "ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize", null ],
+        [ "Zero-size Dimensions", "ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize", null ],
         [ "Capture Range by Reference", "ParallelIterations.html#ParallelIterationsIndexRangeByReference", null ]
       ] ],
       [ "Create an Iterator-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIteratorBased", [

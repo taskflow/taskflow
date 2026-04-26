@@ -152,11 +152,8 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> (size_t d)
 <tr class="memdesc:ad40793694fe4b44fd50b5a926063c834"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of iterations along dimension <code>d</code> <br /></td></tr>
 <tr class="separator:ad40793694fe4b44fd50b5a926063c834"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16ac4ffd13ac931ea54de885ab9457b6" id="r_a16ac4ffd13ac931ea54de885ab9457b6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16ac4ffd13ac931ea54de885ab9457b6">size</a> () const</td></tr>
-<tr class="memdesc:a16ac4ffd13ac931ea54de885ab9457b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the total number of iterations across all dimensions  <br /></td></tr>
+<tr class="memdesc:a16ac4ffd13ac931ea54de885ab9457b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of active flat iterations  <br /></td></tr>
 <tr class="separator:a16ac4ffd13ac931ea54de885ab9457b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a053a48c1dd6502eb7b9e1d5cbedfc5d8" id="r_a053a48c1dd6502eb7b9e1d5cbedfc5d8"><td class="memItemLeft" align="right" valign="top">std::array&lt; T, N &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a053a48c1dd6502eb7b9e1d5cbedfc5d8">coords</a> (size_t flat) const</td></tr>
-<tr class="memdesc:a053a48c1dd6502eb7b9e1d5cbedfc5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">maps a zero-based flat index to its N-D index coordinates (row-major)  <br /></td></tr>
-<tr class="separator:a053a48c1dd6502eb7b9e1d5cbedfc5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae96d66a0bdff45a82d46ca149bdbbb00" id="r_ae96d66a0bdff45a82d46ca149bdbbb00"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, N &gt;, size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae96d66a0bdff45a82d46ca149bdbbb00">slice_ceil</a> (size_t flat_beg, size_t chunk_size) const</td></tr>
 <tr class="memdesc:ae96d66a0bdff45a82d46ca149bdbbb00"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the smallest perfectly-aligned hyperbox reachable from flat_beg, rounding up to the next hyperplane boundary when chunk_size is not aligned  <br /></td></tr>
 <tr class="separator:ae96d66a0bdff45a82d46ca149bdbbb00"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -164,7 +161,7 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> (size_t d)
 <tr class="memdesc:a23bcb1dbbdcf62fe1c7989e1ddb01a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the largest perfectly-aligned hyperbox reachable from flat_beg whose size does not exceed chunk_size, rounding down to the previous hyperplane boundary when chunk_size is not aligned  <br /></td></tr>
 <tr class="separator:a23bcb1dbbdcf62fe1c7989e1ddb01a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af79763821764f0a8db523400efc299e8" id="r_af79763821764f0a8db523400efc299e8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af79763821764f0a8db523400efc299e8">ceil</a> (size_t chunk_size) const</td></tr>
-<tr class="memdesc:af79763821764f0a8db523400efc299e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a> when chunk_size exceeds the total range size  <br /></td></tr>
+<tr class="memdesc:af79763821764f0a8db523400efc299e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a> when chunk_size exceeds the total active range size  <br /></td></tr>
 <tr class="separator:af79763821764f0a8db523400efc299e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cd2ccf644cdac1d0401876603948102" id="r_a7cd2ccf644cdac1d0401876603948102"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cd2ccf644cdac1d0401876603948102">floor</a> (size_t chunk_size) const</td></tr>
 <tr class="memdesc:a7cd2ccf644cdac1d0401876603948102"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the largest hyperplane-aligned chunk size that is &lt;= chunk_size  <br /></td></tr>
@@ -195,15 +192,27 @@ class tf::IndexRange&lt; T, N &gt;</div><p>class to create an N-dimensional inde
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1)</div>
 <div class="line">);</div>
 <div class="line">printf(<span class="stringliteral">&quot;%zu\n&quot;</span>, r.size());  <span class="comment">// 4*6*8 = 192</span></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:152</div></div>
-</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If any dimension has zero size (e.g. an empty range such as <code></code>[0,0)), the total <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> is zero and the range produces no iterations. This is consistent with the behaviour of OpenMP <code>collapse</code> — collapsing a nest of loops where any loop has zero iterations yields an empty iteration space regardless of the other loops:</dd></dl>
-<div class="fragment"><div class="line"><span class="comment">// j-loop has zero iterations -&gt; total size = 100 * 0 * 100 = 0</span></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If any dimension has zero size (e.g. an empty range such as <code></code>[0,0)), the active iteration space stops at that dimension. <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> returns the product of all outer dimensions before the first zero, and <code>slice_ceil</code> / <code>slice_floor</code> copy the zero-size dimension and all inner dimensions as full extent into each returned sub-box. This matches the behaviour of sequential nested loops:</dd></dl>
+<div class="fragment"><div class="line"><span class="comment">// Zero in the middle dimension: outer i-loop still runs, j/k body never executes.</span></div>
 <div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1),   <span class="comment">// i: 100 iters</span></div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,   0, 1),   <span class="comment">// j:   0 iters</span></div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1)    <span class="comment">// k: 100 iters</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1),   <span class="comment">// i: 100 iters (active)</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,   0, 1),   <span class="comment">// j:   0 iters (stops accumulation here)</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 100, 1)    <span class="comment">// k: 100 iters (inactive — never reached)</span></div>
 <div class="line">);</div>
-<div class="line">printf(<span class="stringliteral">&quot;%zu\n&quot;</span>, r.size());  <span class="comment">// 0 — no work scheduled</span></div>
+<div class="line">r.size();  <span class="comment">// 100  (only the i-dimension contributes)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// High-dimensional example: 15D with zero at d=7</span></div>
+<div class="line"><span class="comment">// size() = product of dims [0..6] only</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 15&gt;</a> r2(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,3,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,4,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,5,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,6,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,7,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,8,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,0,1),  <span class="comment">// d=7: zero</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,9,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,10,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,11,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,12,1),<a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,13,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,14,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,15,1)</div>
+<div class="line">);</div>
+<div class="line">r2.size();  <span class="comment">// 2*3*4*5*6*7*8 = 40320</span></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a26a796eb3a6b632c2cdd3ca99925ca96" name="a26a796eb3a6b632c2cdd3ca99925ca96"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26a796eb3a6b632c2cdd3ca99925ca96">&#9670;&#160;</a></span>IndexRange()</h2>
@@ -259,64 +268,35 @@ template&lt;std::integral T, size_t N&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a> when chunk_size exceeds the total range size </p>
+<p>returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a> when chunk_size exceeds the total active range size </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">chunk_size</td><td>hint for the desired number of flat elements</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the smallest natural per-step volume of this range that is &gt;= <code>chunk_size</code>, or <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> if <code>chunk_size</code> &gt; <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> </dd></dl>
-<p>Analogous to <code>std::ceil</code> but operating on the discrete set of hyperplane boundary sizes of this ND range. The natural boundary sizes are the suffix products of the dimension sizes: 1, dim[N-1], dim[N-1]*dim[N-2], ..., <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a>. The returned value is always one of these suffix products.</p>
+<dl class="section return"><dt>Returns</dt><dd>the smallest natural per-step volume of the active dimensions that is &gt;= <code>chunk_size</code>, or <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> if <code>chunk_size</code> &gt; <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code>, or 0 if the outermost dimension is zero-size</dd></dl>
+<p>Analogous to <code>std::ceil</code> but operating on the discrete set of hyperplane boundary sizes of the active dimensions (those before the first zero-size dimension). Only active suffix products are considered — inactive inner dimensions do not contribute boundaries.</p>
 <p>When <code>chunk_size</code> is already a natural boundary size the return equals <code>chunk_size</code> exactly — just like <code>std::ceil</code> of an integer.</p>
-<p>When <code>chunk_size</code> &gt; <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code>, the function returns <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> since no larger aligned boundary exists. In this case the returned value is less than <code>chunk_size</code>.</p>
-<p>This is a lightweight query: no box is constructed and no flat index is needed. Use this to snap a raw <code>N/W</code> estimate to the nearest hyperplane boundary before passing it to the static partitioner loop, so that <code>slice_floor</code> always returns one box per worker partition (inner while loop runs exactly once in the common case).</p>
-<div class="fragment"><div class="line"><span class="comment">// 3D range: 4 x 5 x 10  (boundary sizes: 1, 10, 50, 200)</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="fragment"><div class="line"><span class="comment">// 6D range: 3 x 4 x 8 x 0 x 2 x 3</span></div>
+<div class="line"><span class="comment">// Active dims: d=0(3), d=1(4), d=2(8) -&gt; size()=96</span></div>
+<div class="line"><span class="comment">// Active boundaries: 1, 8, 32, 96  (inactive dims d=3,4,5 contribute nothing)</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 6&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 1)</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 2, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1)</div>
 <div class="line">);</div>
-<div class="line">r.ceil(1);   <span class="comment">// 1   — already a boundary</span></div>
-<div class="line">r.ceil(7);   <span class="comment">// 10  — rounds up to next boundary (one inner row)</span></div>
-<div class="line">r.ceil(10);  <span class="comment">// 10  — already a boundary</span></div>
-<div class="line">r.ceil(30);  <span class="comment">// 50  — rounds up to next boundary (one outer row)</span></div>
-<div class="line">r.ceil(50);  <span class="comment">// 50  — already a boundary</span></div>
-<div class="line">r.ceil(100); <span class="comment">// 200 — rounds up to full range</span></div>
-<div class="line">r.ceil(201); <span class="comment">// 200 — capped at size() since no larger boundary exists</span></div>
-</div><!-- fragment --> 
-</div>
-</div>
-<a id="a053a48c1dd6502eb7b9e1d5cbedfc5d8" name="a053a48c1dd6502eb7b9e1d5cbedfc5d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a053a48c1dd6502eb7b9e1d5cbedfc5d8">&#9670;&#160;</a></span>coords()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::integral T, size_t N&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt; T, N &gt; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::coords </td>
-          <td>(</td>
-          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>flat</em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>maps a zero-based flat index to its N-D index coordinates (row-major) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">flat</td><td>zero-based flat index in <code>[0, <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a>)</code> </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>array of N index values, one per dimension</dd></dl>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 2&gt;</a> r(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1),   <span class="comment">// dim 0: 0, 1, 2</span></div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1)    <span class="comment">// dim 1: 0, 1, 2, 3</span></div>
-<div class="line">);</div>
-<div class="line"><span class="keyword">auto</span> c = r.coords(5);  <span class="comment">// flat 5 -&gt; row 1, col 1 -&gt; {1, 1}</span></div>
+<div class="line">r.ceil(1);   <span class="comment">//  1 — already a boundary</span></div>
+<div class="line">r.ceil(5);   <span class="comment">//  8 — rounds up to next active boundary</span></div>
+<div class="line">r.ceil(8);   <span class="comment">//  8 — already a boundary</span></div>
+<div class="line">r.ceil(9);   <span class="comment">// 32 — rounds up</span></div>
+<div class="line">r.ceil(32);  <span class="comment">// 32 — already a boundary</span></div>
+<div class="line">r.ceil(33);  <span class="comment">// 96 — rounds up to full active size</span></div>
+<div class="line">r.ceil(96);  <span class="comment">// 96 — already a boundary (== size())</span></div>
+<div class="line">r.ceil(200); <span class="comment">// 96 — capped at size()</span></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -344,21 +324,28 @@ template&lt;std::integral T, size_t N&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the largest natural per-step volume of this range that is &lt;= <code>chunk_size</code> </dd></dl>
-<p>Analogous to <code>std::floor</code> but operating on the discrete set of hyperplane boundary sizes of this ND range. The natural boundary sizes are the suffix products of the dimension sizes: 1, dim[N-1], dim[N-1]*dim[N-2], ..., <a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a>. The returned value is always one of these suffix products.</p>
+<dl class="section return"><dt>Returns</dt><dd>the largest natural per-step volume of the active dimensions that is &lt;= <code>chunk_size</code>, or 0 if the outermost dimension is zero-size</dd></dl>
+<p>Analogous to <code>std::floor</code> but operating on the discrete set of hyperplane boundary sizes of the active dimensions (those before the first zero-size dimension). Only active suffix products are considered — inactive inner dimensions do not contribute boundaries.</p>
 <p>When <code>chunk_size</code> is already a natural boundary size the return equals <code>chunk_size</code> exactly — just like <code>std::floor</code> of an integer, and identical to <code>ceil</code> in that case.</p>
-<div class="fragment"><div class="line"><span class="comment">// 3D range: 4 x 5 x 10  (boundary sizes: 1, 10, 50, 200)</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="fragment"><div class="line"><span class="comment">// 6D range: 3 x 4 x 8 x 0 x 2 x 3</span></div>
+<div class="line"><span class="comment">// Active dims: d=0(3), d=1(4), d=2(8) -&gt; size()=96</span></div>
+<div class="line"><span class="comment">// Active boundaries: 1, 8, 32, 96  (inactive dims d=3,4,5 contribute nothing)</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 6&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 1)</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 2, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1)</div>
 <div class="line">);</div>
-<div class="line">r.floor(1);   <span class="comment">// 1   — already a boundary</span></div>
-<div class="line">r.floor(7);   <span class="comment">// 1   — rounds down to previous boundary</span></div>
-<div class="line">r.floor(10);  <span class="comment">// 10  — already a boundary</span></div>
-<div class="line">r.floor(30);  <span class="comment">// 10  — rounds down to previous boundary (one inner row)</span></div>
-<div class="line">r.floor(50);  <span class="comment">// 50  — already a boundary</span></div>
-<div class="line">r.floor(100); <span class="comment">// 50  — rounds down to previous boundary (one outer row)</span></div>
+<div class="line">r.floor(1);   <span class="comment">//  1 — already a boundary</span></div>
+<div class="line">r.floor(5);   <span class="comment">//  1 — rounds down to previous active boundary</span></div>
+<div class="line">r.floor(8);   <span class="comment">//  8 — already a boundary</span></div>
+<div class="line">r.floor(9);   <span class="comment">//  8 — rounds down</span></div>
+<div class="line">r.floor(32);  <span class="comment">// 32 — already a boundary</span></div>
+<div class="line">r.floor(33);  <span class="comment">// 32 — rounds down</span></div>
+<div class="line">r.floor(96);  <span class="comment">// 96 — already a boundary (== size())</span></div>
+<div class="line">r.floor(200); <span class="comment">// 96 — capped at size()</span></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -379,21 +366,52 @@ template&lt;std::integral T, size_t N&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>returns the total number of iterations across all dimensions </p>
-<p>Equivalent to the product of each dimension's element count. If any dimension has zero size, the result is zero — consistent with OpenMP <code>collapse</code> semantics where a zero-size loop collapses the entire iteration space to empty.</p>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<p>returns the number of active flat iterations </p>
+<p>Returns the product of dimension sizes from the outermost dimension inward, stopping before the first zero-size dimension. This matches the behaviour of sequential nested loops: a zero-size dimension prevents its own iterations and those of all deeper dimensions, but outer dimensions are unaffected.</p>
+<div class="fragment"><div class="line"><span class="comment">// All non-zero: 4 * 6 * 8 = 192</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r1(</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 6, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1)</div>
 <div class="line">);</div>
-<div class="line">printf(<span class="stringliteral">&quot;%zu\n&quot;</span>, r.size());  <span class="comment">// 192</span></div>
+<div class="line">r1.size();  <span class="comment">// 192</span></div>
 <div class="line"> </div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> empty(</div>
+<div class="line"><span class="comment">// Zero in middle (d=1): outer dim only -&gt; 4</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r2(</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// zero-size dimension</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// stops accumulation here</span></div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1)</div>
 <div class="line">);</div>
-<div class="line">printf(<span class="stringliteral">&quot;%zu\n&quot;</span>, empty.size());  <span class="comment">// 0</span></div>
+<div class="line">r2.size();  <span class="comment">// 4</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Zero in innermost (d=2): outer two dims contribute -&gt; 4*6 = 24</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r3(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 6, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1)    <span class="comment">// stops accumulation here</span></div>
+<div class="line">);</div>
+<div class="line">r3.size();  <span class="comment">// 24</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Zero in outermost (d=0): no outer work -&gt; 0</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r4(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// stops immediately</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 6, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1)</div>
+<div class="line">);</div>
+<div class="line">r4.size();  <span class="comment">// 0</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// High-dimensional example: 19D with zero at d=9</span></div>
+<div class="line"><span class="comment">// -&gt; product of dims [0..8] = 2^9 = 512</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 19&gt;</a> r5(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,0,1),  <span class="comment">// d=9: zero — dims 10..18 are inactive</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1)</div>
+<div class="line">);</div>
+<div class="line">r5.size();  <span class="comment">// 512</span></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -421,30 +439,40 @@ template&lt;std::integral T, size_t N&gt; </div>
 <p>returns the smallest perfectly-aligned hyperbox reachable from flat_beg, rounding up to the next hyperplane boundary when chunk_size is not aligned </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">flat_beg</td><td>starting flat index (row-major) into the ND space </td></tr>
+    <tr><td class="paramname">flat_beg</td><td>starting flat index (row-major) into the active ND space </td></tr>
     <tr><td class="paramname">chunk_size</td><td>hint for the desired number of elements</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pair of (sub-box, consumed) where consumed == sub-box.size()</dd></dl>
 <p>Analogous to <code>std::ceil:</code> if <code>chunk_size</code> already aligns to a hyperplane boundary the returned box is exact; otherwise it rounds up to the next clean orthogonal boundary, so <code>consumed</code> &gt;= <code>chunk_size</code>.</p>
-<p>The returned sub-box is always a valid hyperrectangle. A dimension can only expand if all dimensions inner to it start at coordinate 0 (the "trailing-zeros" rule); when this fires the function returns the best geometry-constrained box reachable from <code>flat_beg</code>.</p>
+<p>Only the active dimensions — those before the first zero-size dimension — are partitioned. Dimensions from the first zero onward are copied into the returned box as full extent and do not affect the flat index space.</p>
+<p>The trailing-zeros rule applies within the active dimensions: a dimension can only expand if all active dimensions inner to it start at coordinate 0. When this fires the function returns the best geometry-constrained box reachable from <code>flat_beg</code>.</p>
 <p>Used by dynamic partitioners: the atomic cursor advances by <code>consumed</code> and any overshoot is self-correcting.</p>
-<div class="fragment"><div class="line"><span class="comment">// 3D range: 4 x 5 x 10</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="fragment"><div class="line"><span class="comment">// 6D range: 3 x 4 x 8 x 0 x 2 x 3</span></div>
+<div class="line"><span class="comment">// Active dims: d=0(3), d=1(4), d=2(8) -&gt; size()=96</span></div>
+<div class="line"><span class="comment">// Active suffix products (boundaries): 1, 8, 32, 96</span></div>
+<div class="line"><span class="comment">// Dims d=3(0), d=4(2), d=5(3) are inactive — copied as full extent</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 6&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 1)</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// zero — stops active space here</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 2, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1)</div>
 <div class="line">);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// chunk_size=10 aligns exactly to one inner row -&gt; no overshoot</span></div>
-<div class="line"><span class="keyword">auto</span> [box1, c1] = r.slice_ceil(0, 10);  <span class="comment">// consumed=10</span></div>
+<div class="line"><span class="comment">// chunk_size=8 aligns to one inner row — no overshoot</span></div>
+<div class="line"><span class="comment">// box: d0=[0,1), d1=[0,1), d2=[0,8), d3=[0,0), d4=[0,2), d5=[0,3)</span></div>
+<div class="line"><span class="keyword">auto</span> [box1, c1] = r.slice_ceil(0, 8);   <span class="comment">// consumed=8</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// chunk_size=30 does not align; rounds up to next boundary (one outer row = 50)</span></div>
-<div class="line"><span class="keyword">auto</span> [box2, c2] = r.slice_ceil(0, 30);  <span class="comment">// consumed=50</span></div>
+<div class="line"><span class="comment">// chunk_size=20 does not align; rounds up to next boundary (32)</span></div>
+<div class="line"><span class="comment">// box: d0=[0,1), d1=[0,4), d2=[0,8), d3=[0,0), d4=[0,2), d5=[0,3)</span></div>
+<div class="line"><span class="keyword">auto</span> [box2, c2] = r.slice_ceil(0, 20);  <span class="comment">// consumed=32</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// geometry-constrained: mid-row start forces a smaller box</span></div>
-<div class="line"><span class="keyword">auto</span> [box3, c3] = r.slice_ceil(30, 30); <span class="comment">// consumed=20 (&lt;chunk_size)</span></div>
+<div class="line"><span class="comment">// geometry-constrained: flat=10 -&gt; active coords (0,1,2), d2 not at 0</span></div>
+<div class="line"><span class="comment">// trailing-zeros fires; grow_dim=2, takes remaining 6 steps in that row</span></div>
+<div class="line"><span class="keyword">auto</span> [box3, c3] = r.slice_ceil(10, 20); <span class="comment">// consumed=6 (&lt;chunk_size)</span></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -472,31 +500,40 @@ template&lt;std::integral T, size_t N&gt; </div>
 <p>returns the largest perfectly-aligned hyperbox reachable from flat_beg whose size does not exceed chunk_size, rounding down to the previous hyperplane boundary when chunk_size is not aligned </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">flat_beg</td><td>starting flat index (row-major) into the ND space </td></tr>
+    <tr><td class="paramname">flat_beg</td><td>starting flat index (row-major) into the active ND space </td></tr>
     <tr><td class="paramname">chunk_size</td><td>hint for the desired number of elements</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pair of (sub-box, consumed) where consumed == sub-box.size()</dd></dl>
 <p>Analogous to <code>std::floor:</code> if <code>chunk_size</code> already aligns to a hyperplane boundary the returned box is exact (identical to slice_ceil); otherwise it rounds down to the largest box that does not exceed <code>chunk_size</code>, so <code>consumed</code> &lt;= <code>chunk_size</code>.</p>
-<p>The one irreducible exception: when <code>chunk_size</code> is smaller than the volume of a single indivisible inner step (which occurs when trailing-zeros forces <code>grow_dim</code> to a dimension whose per-step volume exceeds <code>chunk_size</code>), the function still returns that one step to guarantee forward progress. With unit step sizes this exception never fires because the innermost dimension always has per-step volume of 1.</p>
-<p>The trailing-zeros rule applies identically to slice_ceil.</p>
+<p>Only the active dimensions — those before the first zero-size dimension — are partitioned. Dimensions from the first zero onward are copied into the returned box as full extent.</p>
+<p>The trailing-zeros rule applies within the active dimensions identically to <code>slice_ceil</code>.</p>
 <p>Used by static partitioners: each worker's pre-assigned flat quota is never exceeded, so workers do not double-process elements at quota boundaries.</p>
-<div class="fragment"><div class="line"><span class="comment">// 3D range: 4 x 5 x 10</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="fragment"><div class="line"><span class="comment">// 6D range: 3 x 4 x 8 x 0 x 2 x 3</span></div>
+<div class="line"><span class="comment">// Active dims: d=0(3), d=1(4), d=2(8) -&gt; size()=96</span></div>
+<div class="line"><span class="comment">// Active suffix products (boundaries): 1, 8, 32, 96</span></div>
+<div class="line"><span class="comment">// Dims d=3(0), d=4(2), d=5(3) are inactive — copied as full extent</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 6&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1),</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 1)</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 8, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// zero — stops active space here</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 2, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 3, 1)</div>
 <div class="line">);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// chunk_size=10 aligns exactly -&gt; same as ceil</span></div>
-<div class="line"><span class="keyword">auto</span> [box1, c1] = r.slice_floor(0, 10);  <span class="comment">// consumed=10</span></div>
+<div class="line"><span class="comment">// chunk_size=8 aligns exactly — same as slice_ceil</span></div>
+<div class="line"><span class="keyword">auto</span> [box1, c1] = r.slice_floor(0, 8);   <span class="comment">// consumed=8</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// chunk_size=30 does not align; rounds down to largest fitting box (one inner row = 10)</span></div>
-<div class="line"><span class="keyword">auto</span> [box2, c2] = r.slice_floor(0, 30);  <span class="comment">// consumed=10</span></div>
+<div class="line"><span class="comment">// chunk_size=20 does not align; rounds down to largest boundary &lt;= 20 (which is 8)</span></div>
+<div class="line"><span class="keyword">auto</span> [box2, c2] = r.slice_floor(0, 20);  <span class="comment">// consumed=8</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// chunk_size=50 aligns exactly to one outer row -&gt; same as ceil</span></div>
-<div class="line"><span class="keyword">auto</span> [box3, c3] = r.slice_floor(0, 50);  <span class="comment">// consumed=50</span></div>
+<div class="line"><span class="comment">// chunk_size=32 aligns exactly</span></div>
+<div class="line"><span class="keyword">auto</span> [box3, c3] = r.slice_floor(0, 32);  <span class="comment">// consumed=32</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// chunk_size=50 does not align; rounds down to 32</span></div>
+<div class="line"><span class="keyword">auto</span> [box4, c4] = r.slice_floor(0, 50);  <span class="comment">// consumed=32</span></div>
 </div><!-- fragment --> 
 </div>
 </div>
