@@ -831,18 +831,6 @@ TEST_CASE("slice_ceil.full_coverage.4d") {
 //
 // Tests cover 2D through 19D with zero at every dimension position.
 // ============================================================================
-
-// Helper: compute the expected size given a list of dim sizes,
-// stopping (not including) the first zero.
-static size_t expected_size(std::initializer_list<size_t> dims) {
-  size_t total = 1;
-  for (size_t s : dims) {
-    if (s == 0) return total == 1 ? 0 : total;
-    total *= s;
-  }
-  return total;
-}
-
 TEST_CASE("IndexRangeND.zero_size.size.low_dimensions") {
   // 2D
   {
