@@ -182,17 +182,46 @@ public:
 
   /**
   @brief constructs an N-dimensional index range without initialization
+
+  The per-dimension ranges are left in an indeterminate state.
+  Use this when the bounds will be set later via @c dim(d).reset().
   */
   IndexRange() = default;
 
   /**
   @brief constructs an N-D index range from N 1D IndexRange<T, 1> objects
 
+  @param ranges  exactly N 1D ranges, one per dimension in order from
+                 outermost (dim 0) to innermost (dim N-1)
+
+  Each 1D range defines the @c begin, @c end, and @c step_size for its
+  dimension.  Dimensions are independent — any combination of positive,
+  negative, or zero step sizes is supported, as long as each 1D range is
+  individually valid.
+
   @code{.cpp}
-  tf::IndexRange<int, 2> r(
-    tf::IndexRange<int>(0, 10, 2),   // dim 0: 0,2,4,6,8
-    tf::IndexRange<int>(0,  6, 3)    // dim 1: 0,3
+  // 2D: 4 rows, 5 columns (unit steps)
+  tf::IndexRange<int, 2> r2(
+    tf::IndexRange<int>(0,  4, 1),   // dim 0 (rows):    0,1,2,3
+    tf::IndexRange<int>(0,  5, 1)    // dim 1 (columns): 0,1,2,3,4
   );
+  r2.size();   // 20
+
+  // 3D: mixed step sizes
+  tf::IndexRange<int, 3> r3(
+    tf::IndexRange<int>(0,  4, 1),   // dim 0: 4 elements
+    tf::IndexRange<int>(0, 10, 2),   // dim 1: 5 elements (0,2,4,6,8)
+    tf::IndexRange<int>(0,  6, 1)    // dim 2: 6 elements
+  );
+  r3.size();   // 120
+
+  // 3D: innermost dim has zero size — outer two dims still active
+  tf::IndexRange<int, 3> r4(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 0, 1)    // zero-size: only dims 0,1 contribute
+  );
+  r4.size();   // 20  (4 * 5, not 0)
   @endcode
   */
   template <typename... Ranges>
@@ -203,6 +232,21 @@ public:
 
   /**
   @brief constructs an N-D index range from an array of 1D ranges
+
+  @param dims  @c std::array of exactly N 1D ranges
+
+  Equivalent to the variadic constructor but takes a pre-built array,
+  which is useful when the ranges are constructed programmatically.
+
+  @code{.cpp}
+  std::array<tf::IndexRange<int, 1>, 3> dims = {
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 5, 1),
+    tf::IndexRange<int>(0, 6, 1)
+  };
+  tf::IndexRange<int, 3> r(dims);
+  r.size();  // 120
+  @endcode
   */
   explicit IndexRange(const std::array<IndexRange<T, 1>, N>& dims);
 
@@ -212,16 +256,101 @@ public:
 
   /**
   @brief returns the 1D range for dimension @c d (read-only)
+
+  @param d zero-based dimension index in @c [0, N)
+
+  @return a const reference to the 1D range for dimension @c d,
+          which exposes @c begin(), @c end(), and @c step_size()
+
+  Use this inside a @c for_each_by_index callable to iterate the indices
+  assigned to each dimension of the delivered sub-box.
+
+  @code{.cpp}
+  // 3D range: i in [0,4), j in [0,10,2) (step 2), k in [0,6)
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0,  4, 1),
+    tf::IndexRange<int>(0, 10, 2),
+    tf::IndexRange<int>(0,  6, 1)
+  );
+
+  r.dim(0).begin();      // 0
+  r.dim(0).end();        // 4
+  r.dim(0).step_size();  // 1
+  r.dim(0).size();       // 4
+
+  r.dim(1).begin();      // 0
+  r.dim(1).end();        // 10
+  r.dim(1).step_size();  // 2
+  r.dim(1).size();       // 5  (values: 0, 2, 4, 6, 8)
+
+  // Typical usage inside a for_each_by_index callable:
+  taskflow.for_each_by_index(r, [](const tf::IndexRange<int, 3>& sub) {
+    for(int i = sub.dim(0).begin(); i < sub.dim(0).end(); i += sub.dim(0).step_size()) {
+      for(int j = sub.dim(1).begin(); j < sub.dim(1).end(); j += sub.dim(1).step_size()) {
+        for(int k = sub.dim(2).begin(); k < sub.dim(2).end(); k += sub.dim(2).step_size()) {
+          // process element at (i, j, k)
+        }
+      }
+    }
+  });
+  @endcode
   */
   const IndexRange<T, 1>& dim(size_t d) const { return _dims[d]; }
 
   /**
   @brief returns the 1D range for dimension @c d (mutable)
+
+  @param d zero-based dimension index in @c [0, N)
+
+  @return a mutable reference to the 1D range for dimension @c d
+
+  Use this to update the bounds of an individual dimension at runtime,
+  for example inside an upstream init task when using stateful ranges.
+
+  @code{.cpp}
+  tf::IndexRange<int, 2> range(
+    tf::IndexRange<int>(0, 0, 1),   // placeholder
+    tf::IndexRange<int>(0, 0, 1)    // placeholder
+  );
+
+  auto init = taskflow.emplace([&]() {
+    range.dim(0).reset(0, rows, 1);  // set row range at runtime
+    range.dim(1).reset(0, cols, 1);  // set col range at runtime
+  });
+
+  auto loop = taskflow.for_each_by_index(std::ref(range), callable);
+  init.precede(loop);
+  @endcode
   */
   IndexRange<T, 1>& dim(size_t d) { return _dims[d]; }
 
   /**
-  @brief returns the underlying array of per-dimension ranges
+  @brief returns the underlying array of all per-dimension 1D ranges
+
+  @return a const reference to the @c std::array of N 1D ranges,
+          one per dimension in order from outermost (0) to innermost (N-1)
+
+  Useful when you need to inspect or iterate over all dimensions
+  without knowing N at the call site, or when passing the full set of
+  dimension ranges to another function.
+
+  @code{.cpp}
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0,  4, 1),
+    tf::IndexRange<int>(0, 10, 2),
+    tf::IndexRange<int>(0,  6, 1)
+  );
+
+  // Print each dimension's bounds and step
+  for(size_t d = 0; d < r.rank; ++d) {
+    const auto& dim = r.dims()[d];
+    printf("dim %zu: [%d, %d) step %d  size=%zu\n",
+           d, dim.begin(), dim.end(), dim.step_size(), dim.size());
+  }
+  // dim 0: [0, 4)  step 1  size=4
+  // dim 1: [0, 10) step 2  size=5
+  // dim 2: [0, 6)  step 1  size=6
+  @endcode
   */
   const std::array<IndexRange<T, 1>, N>& dims() const { return _dims; }
 
@@ -231,6 +360,38 @@ public:
 
   /**
   @brief returns the number of iterations along dimension @c d
+
+  @param d zero-based dimension index in @c [0, N)
+
+  @return the element count of dimension @c d, i.e.
+          @c distance(dim(d).begin(), dim(d).end(), dim(d).step_size())
+
+  This is a per-dimension count, independent of other dimensions and
+  of the zero-size stopping rule that @c size() applies.
+
+  @code{.cpp}
+  tf::IndexRange<int, 3> r(
+    tf::IndexRange<int>(0,  4, 1),   // 4 elements
+    tf::IndexRange<int>(0, 10, 2),   // 5 elements (0,2,4,6,8)
+    tf::IndexRange<int>(0,  6, 1)    // 6 elements
+  );
+
+  r.size(0);  // 4
+  r.size(1);  // 5
+  r.size(2);  // 6
+
+  // Note: size(d) reports the raw dimension count regardless of
+  // zero-size siblings — unlike size() which stops at the first zero.
+  tf::IndexRange<int, 3> r2(
+    tf::IndexRange<int>(0, 4, 1),
+    tf::IndexRange<int>(0, 0, 1),   // zero-size middle dim
+    tf::IndexRange<int>(0, 6, 1)
+  );
+  r2.size(0);  // 4   (unaffected by the zero in dim 1)
+  r2.size(1);  // 0
+  r2.size(2);  // 6   (unaffected by the zero in dim 1)
+  r2.size();   // 4   (stops at dim 1)
+  @endcode
   */
   size_t size(size_t d) const { return _dims[d].size(); }
 

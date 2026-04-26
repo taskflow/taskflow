@@ -55,6 +55,13 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   doctest_discover_tests(${unittest})
 endforeach()
 
+# test_for_each uses high-dimensional IndexRange templates that exceed MSVC's
+# default object file section limit — /bigobj raises it from 2^16 to 2^32.
+if(MSVC)
+  target_compile_options(test_for_each PRIVATE /bigobj)
+  target_compile_options(test_iterators PRIVATE /bigobj)
+endif()
+
 # include C++ module tests
 if(TF_BUILD_MODULES)
   add_subdirectory(${TF_UTEST_DIR}/modules)
@@ -64,12 +71,4 @@ endif()
 if(TF_BUILD_CUDA)
   add_subdirectory(${TF_UTEST_DIR}/cuda)
 endif()
-
-# include SYCL tests
-#if(TF_BUILD_SYCL)
-#  add_subdirectory(${TF_UTEST_DIR}/sycl)
-#endif()
-
-
-
 

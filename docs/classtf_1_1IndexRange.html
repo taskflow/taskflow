@@ -122,34 +122,28 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>index_type</b> = T</
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1f3546744c7dc7c8cf3d3c04c9834555" id="r_a1f3546744c7dc7c8cf3d3c04c9834555"><td class="memItemLeft" align="right" valign="top"><a id="a1f3546744c7dc7c8cf3d3c04c9834555" name="a1f3546744c7dc7c8cf3d3c04c9834555"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>IndexRange</b> ()=default</td></tr>
-<tr class="memdesc:a1f3546744c7dc7c8cf3d3c04c9834555"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an N-dimensional index range without initialization <br /></td></tr>
+<tr class="memitem:a1f3546744c7dc7c8cf3d3c04c9834555" id="r_a1f3546744c7dc7c8cf3d3c04c9834555"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange</a> ()=default</td></tr>
+<tr class="memdesc:a1f3546744c7dc7c8cf3d3c04c9834555"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an N-dimensional index range without initialization  <br /></td></tr>
 <tr class="separator:a1f3546744c7dc7c8cf3d3c04c9834555"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26a796eb3a6b632c2cdd3ca99925ca96" id="r_a26a796eb3a6b632c2cdd3ca99925ca96"><td class="memTemplParams" colspan="2">template&lt;typename... Ranges&gt; <br />
 requires (sizeof...(Ranges) == N) &amp;&amp; (std::same_as&lt;std::remove_cvref_t&lt;Ranges&gt;, <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt;T, 1&gt;&gt; &amp;&amp; ...)</td></tr>
 <tr class="memitem:a26a796eb3a6b632c2cdd3ca99925ca96"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a26a796eb3a6b632c2cdd3ca99925ca96">IndexRange</a> (Ranges &amp;&amp;... ranges)</td></tr>
 <tr class="memdesc:a26a796eb3a6b632c2cdd3ca99925ca96"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an N-D index range from N 1D <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">IndexRange&lt;T, 1&gt;</a> objects  <br /></td></tr>
 <tr class="separator:a26a796eb3a6b632c2cdd3ca99925ca96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0744bf254aa82b2e341eacb2d9610f1d" id="r_a0744bf254aa82b2e341eacb2d9610f1d"><td class="memItemLeft" align="right" valign="top"><a id="a0744bf254aa82b2e341eacb2d9610f1d" name="a0744bf254aa82b2e341eacb2d9610f1d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>IndexRange</b> (const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp;<a class="el" href="#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>)</td></tr>
-<tr class="memdesc:a0744bf254aa82b2e341eacb2d9610f1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an N-D index range from an array of 1D ranges <br /></td></tr>
+<tr class="memitem:a0744bf254aa82b2e341eacb2d9610f1d" id="r_a0744bf254aa82b2e341eacb2d9610f1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0744bf254aa82b2e341eacb2d9610f1d">IndexRange</a> (const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp;<a class="el" href="#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>)</td></tr>
+<tr class="memdesc:a0744bf254aa82b2e341eacb2d9610f1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an N-D index range from an array of 1D ranges  <br /></td></tr>
 <tr class="separator:a0744bf254aa82b2e341eacb2d9610f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c4decf957f5e663b3432314ae54c4c1" id="r_a2c4decf957f5e663b3432314ae54c4c1"><td class="memItemLeft" align="right" valign="top"><a id="a2c4decf957f5e663b3432314ae54c4c1" name="a2c4decf957f5e663b3432314ae54c4c1"></a>
-const <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>dim</b> (size_t d) const</td></tr>
-<tr class="memdesc:a2c4decf957f5e663b3432314ae54c4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 1D range for dimension <code>d</code> (read-only) <br /></td></tr>
+<tr class="memitem:a2c4decf957f5e663b3432314ae54c4c1" id="r_a2c4decf957f5e663b3432314ae54c4c1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a> (size_t d) const</td></tr>
+<tr class="memdesc:a2c4decf957f5e663b3432314ae54c4c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 1D range for dimension <code>d</code> (read-only)  <br /></td></tr>
 <tr class="separator:a2c4decf957f5e663b3432314ae54c4c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af346d8d49331686e3b1aa2b79b9746dc" id="r_af346d8d49331686e3b1aa2b79b9746dc"><td class="memItemLeft" align="right" valign="top"><a id="af346d8d49331686e3b1aa2b79b9746dc" name="af346d8d49331686e3b1aa2b79b9746dc"></a>
-<a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>dim</b> (size_t d)</td></tr>
-<tr class="memdesc:af346d8d49331686e3b1aa2b79b9746dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 1D range for dimension <code>d</code> (mutable) <br /></td></tr>
+<tr class="memitem:af346d8d49331686e3b1aa2b79b9746dc" id="r_af346d8d49331686e3b1aa2b79b9746dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af346d8d49331686e3b1aa2b79b9746dc">dim</a> (size_t d)</td></tr>
+<tr class="memdesc:af346d8d49331686e3b1aa2b79b9746dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 1D range for dimension <code>d</code> (mutable)  <br /></td></tr>
 <tr class="separator:af346d8d49331686e3b1aa2b79b9746dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00cf7c00bca9ffc85dcb16e31e54a31f" id="r_a00cf7c00bca9ffc85dcb16e31e54a31f"><td class="memItemLeft" align="right" valign="top"><a id="a00cf7c00bca9ffc85dcb16e31e54a31f" name="a00cf7c00bca9ffc85dcb16e31e54a31f"></a>
-const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>dims</b> () const</td></tr>
-<tr class="memdesc:a00cf7c00bca9ffc85dcb16e31e54a31f"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the underlying array of per-dimension ranges <br /></td></tr>
+<tr class="memitem:a00cf7c00bca9ffc85dcb16e31e54a31f" id="r_a00cf7c00bca9ffc85dcb16e31e54a31f"><td class="memItemLeft" align="right" valign="top">const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a> () const</td></tr>
+<tr class="memdesc:a00cf7c00bca9ffc85dcb16e31e54a31f"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the underlying array of all per-dimension 1D ranges  <br /></td></tr>
 <tr class="separator:a00cf7c00bca9ffc85dcb16e31e54a31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad40793694fe4b44fd50b5a926063c834" id="r_ad40793694fe4b44fd50b5a926063c834"><td class="memItemLeft" align="right" valign="top"><a id="ad40793694fe4b44fd50b5a926063c834" name="ad40793694fe4b44fd50b5a926063c834"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> (size_t d) const</td></tr>
-<tr class="memdesc:ad40793694fe4b44fd50b5a926063c834"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of iterations along dimension <code>d</code> <br /></td></tr>
+<tr class="memitem:ad40793694fe4b44fd50b5a926063c834" id="r_ad40793694fe4b44fd50b5a926063c834"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad40793694fe4b44fd50b5a926063c834">size</a> (size_t d) const</td></tr>
+<tr class="memdesc:ad40793694fe4b44fd50b5a926063c834"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of iterations along dimension <code>d</code>  <br /></td></tr>
 <tr class="separator:ad40793694fe4b44fd50b5a926063c834"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16ac4ffd13ac931ea54de885ab9457b6" id="r_a16ac4ffd13ac931ea54de885ab9457b6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16ac4ffd13ac931ea54de885ab9457b6">size</a> () const</td></tr>
 <tr class="memdesc:a16ac4ffd13ac931ea54de885ab9457b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of active flat iterations  <br /></td></tr>
@@ -214,8 +208,38 @@ class tf::IndexRange&lt; T, N &gt;</div><p>class to create an N-dimensional inde
 <div class="line">);</div>
 <div class="line">r2.size();  <span class="comment">// 2*3*4*5*6*7*8 = 40320</span></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a1f3546744c7dc7c8cf3d3c04c9834555" name="a1f3546744c7dc7c8cf3d3c04c9834555"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f3546744c7dc7c8cf3d3c04c9834555">&#9670;&#160;</a></span>IndexRange() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::IndexRange </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>constructs an N-dimensional index range without initialization </p>
+<p>The per-dimension ranges are left in an indeterminate state. Use this when the bounds will be set later via <code>dim(d)</code>.reset(). </p>
+
+</div>
+</div>
 <a id="a26a796eb3a6b632c2cdd3ca99925ca96" name="a26a796eb3a6b632c2cdd3ca99925ca96"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26a796eb3a6b632c2cdd3ca99925ca96">&#9670;&#160;</a></span>IndexRange()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a26a796eb3a6b632c2cdd3ca99925ca96">&#9670;&#160;</a></span>IndexRange() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,10 +267,80 @@ requires (sizeof...(Ranges) == N) &amp;&amp; (std::same_as&lt;std::remove_cvref_
 </div><div class="memdoc">
 
 <p>constructs an N-D index range from N 1D <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">IndexRange&lt;T, 1&gt;</a> objects </p>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 2&gt;</a> r(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 2),   <span class="comment">// dim 0: 0,2,4,6,8</span></div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  6, 3)    <span class="comment">// dim 1: 0,3</span></div>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ranges</td><td>exactly N 1D ranges, one per dimension in order from outermost (dim 0) to innermost (dim N-1)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Each 1D range defines the <code>begin</code>, <code>end</code>, and <code>step_size</code> for its dimension. Dimensions are independent — any combination of positive, negative, or zero step sizes is supported, as long as each 1D range is individually valid.</p>
+<div class="fragment"><div class="line"><span class="comment">// 2D: 4 rows, 5 columns (unit steps)</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 2&gt;</a> r2(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  4, 1),   <span class="comment">// dim 0 (rows):    0,1,2,3</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  5, 1)    <span class="comment">// dim 1 (columns): 0,1,2,3,4</span></div>
 <div class="line">);</div>
+<div class="line">r2.size();   <span class="comment">// 20</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 3D: mixed step sizes</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r3(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  4, 1),   <span class="comment">// dim 0: 4 elements</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 2),   <span class="comment">// dim 1: 5 elements (0,2,4,6,8)</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  6, 1)    <span class="comment">// dim 2: 6 elements</span></div>
+<div class="line">);</div>
+<div class="line">r3.size();   <span class="comment">// 120</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 3D: innermost dim has zero size — outer two dims still active</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r4(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1)    <span class="comment">// zero-size: only dims 0,1 contribute</span></div>
+<div class="line">);</div>
+<div class="line">r4.size();   <span class="comment">// 20  (4 * 5, not 0)</span></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a0744bf254aa82b2e341eacb2d9610f1d" name="a0744bf254aa82b2e341eacb2d9610f1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0744bf254aa82b2e341eacb2d9610f1d">&#9670;&#160;</a></span>IndexRange() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::IndexRange </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>dims</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>constructs an N-D index range from an array of 1D ranges </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dims</td><td><code>std::array</code> of exactly N 1D ranges</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Equivalent to the variadic constructor but takes a pre-built array, which is useful when the ranges are constructed programmatically.</p>
+<div class="fragment"><div class="line">std::array&lt;tf::IndexRange&lt;int, 1&gt;, 3&gt; <a class="code hl_function" href="#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a> = {</div>
+<div class="line">  <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
+<div class="line">  <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>(0, 5, 1),</div>
+<div class="line">  <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>(0, 6, 1)</div>
+<div class="line">};</div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(<a class="code hl_function" href="#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>);</div>
+<div class="line">r.size();  <span class="comment">// 120</span></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a00cf7c00bca9ffc85dcb16e31e54a31f"><div class="ttname"><a href="#a00cf7c00bca9ffc85dcb16e31e54a31f">tf::IndexRange::dims</a></div><div class="ttdeci">const std::array&lt; IndexRange&lt; T, 1 &gt;, N &gt; &amp; dims() const</div><div class="ttdoc">returns the underlying array of all per-dimension 1D ranges</div><div class="ttdef"><b>Definition</b> iterator.hpp:355</div></div>
+<div class="ttc" id="anamespacetf_html_ac6e52a96475a1ae2a454f7d7d877b446"><div class="ttname"><a href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange</a></div><div class="ttdeci">IndexRange(T, T, T) -&gt; IndexRange&lt; T, 1 &gt;</div><div class="ttdoc">deduction guide for tf::IndexRange&lt;T, 1&gt;</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -300,6 +394,169 @@ template&lt;std::integral T, size_t N&gt; </div>
 </div><!-- fragment --> 
 </div>
 </div>
+<a id="af346d8d49331686e3b1aa2b79b9746dc" name="af346d8d49331686e3b1aa2b79b9746dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af346d8d49331686e3b1aa2b79b9746dc">&#9670;&#160;</a></span>dim() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::dim </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>d</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the 1D range for dimension <code>d</code> (mutable) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>zero-based dimension index in <code></code>[0, N)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a mutable reference to the 1D range for dimension <code>d</code> </dd></dl>
+<p>Use this to update the bounds of an individual dimension at runtime, for example inside an upstream init task when using stateful ranges.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 2&gt;</a> range(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// placeholder</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1)    <span class="comment">// placeholder</span></div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">auto</span> init = taskflow.emplace([&amp;]() {</div>
+<div class="line">  range.dim(0).reset(0, rows, 1);  <span class="comment">// set row range at runtime</span></div>
+<div class="line">  range.dim(1).reset(0, cols, 1);  <span class="comment">// set col range at runtime</span></div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">auto</span> loop = taskflow.for_each_by_index(std::ref(range), callable);</div>
+<div class="line">init.precede(loop);</div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a2c4decf957f5e663b3432314ae54c4c1" name="a2c4decf957f5e663b3432314ae54c4c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c4decf957f5e663b3432314ae54c4c1">&#9670;&#160;</a></span>dim() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &amp; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::dim </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>d</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the 1D range for dimension <code>d</code> (read-only) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>zero-based dimension index in <code></code>[0, N)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a const reference to the 1D range for dimension <code>d</code>, which exposes <code>begin()</code>, <code>end()</code>, and <code>step_size()</code> </dd></dl>
+<p>Use this inside a <code>for_each_by_index</code> callable to iterate the indices assigned to each dimension of the delivered sub-box.</p>
+<div class="fragment"><div class="line"><span class="comment">// 3D range: i in [0,4), j in [0,10,2) (step 2), k in [0,6)</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 2),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  6, 1)</div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line">r.dim(0).begin();      <span class="comment">// 0</span></div>
+<div class="line">r.dim(0).end();        <span class="comment">// 4</span></div>
+<div class="line">r.dim(0).step_size();  <span class="comment">// 1</span></div>
+<div class="line">r.dim(0).size();       <span class="comment">// 4</span></div>
+<div class="line"> </div>
+<div class="line">r.dim(1).begin();      <span class="comment">// 0</span></div>
+<div class="line">r.dim(1).end();        <span class="comment">// 10</span></div>
+<div class="line">r.dim(1).step_size();  <span class="comment">// 2</span></div>
+<div class="line">r.dim(1).size();       <span class="comment">// 5  (values: 0, 2, 4, 6, 8)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Typical usage inside a for_each_by_index callable:</span></div>
+<div class="line">taskflow.for_each_by_index(r, [](<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a>&amp; sub) {</div>
+<div class="line">  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="#a70a09db095224a162768dd1aea24106d">begin</a>(); i &lt; sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); i += sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="#a70a09db095224a162768dd1aea24106d">begin</a>(); j &lt; sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); j += sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
+<div class="line">      <span class="keywordflow">for</span>(<span class="keywordtype">int</span> k = sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="#a70a09db095224a162768dd1aea24106d">begin</a>(); k &lt; sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); k += sub.<a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
+<div class="line">        <span class="comment">// process element at (i, j, k)</span></div>
+<div class="line">      }</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line">});</div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:298</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:944</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:954</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:949</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a00cf7c00bca9ffc85dcb16e31e54a31f" name="a00cf7c00bca9ffc85dcb16e31e54a31f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00cf7c00bca9ffc85dcb16e31e54a31f">&#9670;&#160;</a></span>dims()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::array&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt;, N &gt; &amp; <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::dims </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the underlying array of all per-dimension 1D ranges </p>
+<dl class="section return"><dt>Returns</dt><dd>a const reference to the <code>std::array</code> of N 1D ranges, one per dimension in order from outermost (0) to innermost (N-1)</dd></dl>
+<p>Useful when you need to inspect or iterate over all dimensions without knowing N at the call site, or when passing the full set of dimension ranges to another function.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 2),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  6, 1)</div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Print each dimension&#39;s bounds and step</span></div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> d = 0; d &lt; r.rank; ++d) {</div>
+<div class="line">  <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a> = r.dims()[d];</div>
+<div class="line">  printf(<span class="stringliteral">&quot;dim %zu: [%d, %d) step %d  size=%zu\n&quot;</span>,</div>
+<div class="line">         d, <a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.begin(), <a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.end(), <a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.step_size(), <a class="code hl_function" href="#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.size());</div>
+<div class="line">}</div>
+<div class="line"><span class="comment">// dim 0: [0, 4)  step 1  size=4</span></div>
+<div class="line"><span class="comment">// dim 1: [0, 10) step 2  size=5</span></div>
+<div class="line"><span class="comment">// dim 2: [0, 6)  step 1  size=6</span></div>
+</div><!-- fragment --> 
+</div>
+</div>
 <a id="a7cd2ccf644cdac1d0401876603948102" name="a7cd2ccf644cdac1d0401876603948102"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7cd2ccf644cdac1d0401876603948102">&#9670;&#160;</a></span>floor()</h2>
 
@@ -350,7 +607,7 @@ template&lt;std::integral T, size_t N&gt; </div>
 </div>
 </div>
 <a id="a16ac4ffd13ac931ea54de885ab9457b6" name="a16ac4ffd13ac931ea54de885ab9457b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a16ac4ffd13ac931ea54de885ab9457b6">&#9670;&#160;</a></span>size()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a16ac4ffd13ac931ea54de885ab9457b6">&#9670;&#160;</a></span>size() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -412,6 +669,64 @@ template&lt;std::integral T, size_t N&gt; </div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1), <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,2,1)</div>
 <div class="line">);</div>
 <div class="line">r5.size();  <span class="comment">// 512</span></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="ad40793694fe4b44fd50b5a926063c834" name="ad40793694fe4b44fd50b5a926063c834"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad40793694fe4b44fd50b5a926063c834">&#9670;&#160;</a></span>size() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T, size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="classtf_1_1IndexRange.html">tf::IndexRange</a>&lt; T, N &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>d</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the number of iterations along dimension <code>d</code> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>zero-based dimension index in <code></code>[0, N)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the element count of dimension <code>d</code>, i.e. <code>distance</code>(dim(d).begin(), dim(d).end(), dim(d).step_size())</dd></dl>
+<p>This is a per-dimension count, independent of other dimensions and of the zero-size stopping rule that <code><a class="el" href="#ad40793694fe4b44fd50b5a926063c834" title="returns the number of iterations along dimension d">size()</a></code> applies.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  4, 1),   <span class="comment">// 4 elements</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 10, 2),   <span class="comment">// 5 elements (0,2,4,6,8)</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0,  6, 1)    <span class="comment">// 6 elements</span></div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line">r.size(0);  <span class="comment">// 4</span></div>
+<div class="line">r.size(1);  <span class="comment">// 5</span></div>
+<div class="line">r.size(2);  <span class="comment">// 6</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Note: size(d) reports the raw dimension count regardless of</span></div>
+<div class="line"><span class="comment">// zero-size siblings — unlike size() which stops at the first zero.</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> r2(</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 4, 1),</div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// zero-size middle dim</span></div>
+<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 6, 1)</div>
+<div class="line">);</div>
+<div class="line">r2.size(0);  <span class="comment">// 4   (unaffected by the zero in dim 1)</span></div>
+<div class="line">r2.size(1);  <span class="comment">// 0</span></div>
+<div class="line">r2.size(2);  <span class="comment">// 6   (unaffected by the zero in dim 1)</span></div>
+<div class="line">r2.size();   <span class="comment">// 4   (stops at dim 1)</span></div>
 </div><!-- fragment --> 
 </div>
 </div>

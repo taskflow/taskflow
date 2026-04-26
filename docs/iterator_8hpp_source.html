@@ -176,405 +176,405 @@ $(function(){initNavTree('iterator_8hpp_source.html',''); initResizable(true); }
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>  <span class="comment">// Construction</span></div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">  186</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span></div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Ranges&gt;</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <span class="keyword">requires</span> (<span class="keyword">sizeof</span>...(Ranges) == N) &amp;&amp;</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>             (std::same_as&lt;std::remove_cvref_t&lt;Ranges&gt;, <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&gt; &amp;&amp; ...)</div>
-<div class="foldopen" id="foldopen00201" data-start="{" data-end="}">
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">  201</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">IndexRange</a>(Ranges&amp;&amp;... ranges)</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    : _dims{ std::forward&lt;Ranges&gt;(ranges)... } {}</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">  189</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span>... Ranges&gt;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="keyword">requires</span> (<span class="keyword">sizeof</span>...(Ranges) == N) &amp;&amp;</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>             (std::same_as&lt;std::remove_cvref_t&lt;Ranges&gt;, <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&gt; &amp;&amp; ...)</div>
+<div class="foldopen" id="foldopen00230" data-start="{" data-end="}">
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">  230</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">IndexRange</a>(Ranges&amp;&amp;... ranges)</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    : _dims{ std::forward&lt;Ranges&gt;(ranges)... } {}</div>
 </div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span></div>
-<div class="foldopen" id="foldopen00207" data-start="{" data-end="}">
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">  207</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">IndexRange</a>(<span class="keyword">const</span> std::array&lt;<a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>);</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>  <span class="comment">// Dimension access</span></div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span></div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">  216</a></span>  <span class="keyword">const</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(<span class="keywordtype">size_t</span> d)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims[d]; }</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span></div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">  221</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">dim</a>(<span class="keywordtype">size_t</span> d) { <span class="keywordflow">return</span> _dims[d]; }</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">  226</a></span>  <span class="keyword">const</span> std::array&lt;IndexRange&lt;T, 1&gt;, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims; }</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>  <span class="comment">// Size queries</span></div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span></div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">  235</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">size</a>(<span class="keywordtype">size_t</span> d)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims[d].size(); }</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span></div>
-<div class="foldopen" id="foldopen00292" data-start="{" data-end="}">
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">  292</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">size</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span></div>
-<div class="foldopen" id="foldopen00346" data-start="{" data-end="}">
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">  346</a></span>  std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt; <a class="code hl_function" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">slice_ceil</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span></div>
-<div class="foldopen" id="foldopen00400" data-start="{" data-end="}">
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">  400</a></span>  std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt; <a class="code hl_function" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">slice_floor</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span></div>
-<div class="foldopen" id="foldopen00442" data-start="{" data-end="}">
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">  442</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">ceil</a>(<span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span></div>
-<div class="foldopen" id="foldopen00483" data-start="{" data-end="}">
-<div class="line"><a id="l00483" name="l00483"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">  483</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">floor</a>(<span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span> </div>
-<div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span> </div>
-<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; _dims;</div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>};</div>
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span> </div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span><span class="comment">// ============================================================================</span></div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span><span class="comment">// Out-of-class definitions — IndexRange&lt;T, N&gt;  (primary template)</span></div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span><span class="comment">// ============================================================================</span></div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span> </div>
-<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00495" name="l00495"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">  495</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, N&gt;::IndexRange</a>(<span class="keyword">const</span> std::array&lt;<a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>) : _dims{<a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>} {}</div>
-<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span> </div>
-<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00498" data-start="{" data-end="}">
-<div class="line"><a id="l00498" name="l00498"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">  498</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">IndexRange&lt;T, N&gt;::size</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span>  <span class="keywordtype">size_t</span> total = 1;</div>
-<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>    <span class="keywordtype">size_t</span> s = _dims[d].size();</div>
-<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>    <span class="keywordflow">if</span> (s == 0) <span class="keywordflow">return</span> d == 0 ? 0 : total;  <span class="comment">// outermost zero -&gt; 0, inner zero -&gt; outer product</span></div>
-<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>    total *= s;</div>
-<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>  }</div>
-<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>  <span class="keywordflow">return</span> total;</div>
-<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>}</div>
-</div>
-<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span> </div>
-<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00509" data-start="{" data-end="}">
-<div class="line"><a id="l00509" name="l00509"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">  509</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">IndexRange&lt;T, N&gt;::ceil</a>(<span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>  <span class="comment">// Pass 1: cache all dim sizes (one .size() call each) and find d_active.</span></div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    dim_sizes[d] = _dims[d].size();</div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>  }</div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span> </div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>  <span class="comment">// Pass 2: walk suffix products backward within [0, d_active) only.</span></div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>  <span class="comment">// Return the first suffix product &gt;= chunk_size, capped at size().</span></div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>  <span class="keywordtype">size_t</span> inner_volume = 1;</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>  <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">return</span> inner_volume;</div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>    inner_volume *= dim_sizes[d];</div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span>    <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">return</span> inner_volume;</div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>  }</div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>  <span class="keywordflow">return</span> inner_volume;  <span class="comment">// == size() of active dims, capped</span></div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>}</div>
-</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span> </div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="foldopen" id="foldopen00531" data-start="{" data-end="}">
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">  531</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">IndexRange&lt;T, N&gt;::floor</a>(<span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>  <span class="comment">// Pass 1: cache all dim sizes (one .size() call each) and find d_active.</span></div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    dim_sizes[d] = _dims[d].size();</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>  }</div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span> </div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>  <span class="comment">// Pass 2: walk suffix products backward within [0, d_active) only.</span></div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>  <span class="comment">// Return the largest suffix product &lt;= chunk_size.</span></div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>  <span class="keywordtype">size_t</span> inner_volume = 1;</div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>  <span class="keywordtype">size_t</span> last_fit     = 1;</div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>    <span class="keywordtype">size_t</span> next = inner_volume * dim_sizes[d];</div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>    <span class="keywordflow">if</span> (next &gt; chunk_size) <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>    inner_volume = next;</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>    last_fit     = inner_volume;</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>  }</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>  <span class="keywordflow">return</span> last_fit;</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>}</div>
-</div>
-</div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span> </div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt;</div>
-<div class="foldopen" id="foldopen00556" data-start="{" data-end="}">
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">  556</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">IndexRange&lt;T, N&gt;::slice_ceil</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span> </div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>  <span class="keywordflow">if</span> (chunk_size == 0) {</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>    <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>  }</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span> </div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>  <span class="comment">// Find d_active: the index of the first zero-size dimension (or N if none).</span></div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>  <span class="comment">// Only dimensions [0, d_active) participate in the flat iteration space.</span></div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>  <span class="comment">// Dimensions [d_active, N) are copied as full extent into the returned box.</span></div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>    dim_sizes[d] = _dims[d].size();</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>  }</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span> </div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };  <span class="comment">// outermost dim is zero — no work</span></div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span> </div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>  <span class="comment">// Decode flat_beg into coords for active dimensions [0, d_active) only.</span></div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>  <span class="keywordtype">size_t</span> coords[N] = {};</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>  <span class="keywordtype">size_t</span> temp = flat_beg;</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>    coords[d] = temp % dim_sizes[d];</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>    temp     /= dim_sizes[d];</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>  }</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span> </div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>  <span class="comment">// Find grow_dim within [0, d_active): record each dim BEFORE the budget check</span></div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>  <span class="comment">// (ceil: round up to the next boundary). Stop when budget met or trailing-zeros fires.</span></div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>  <span class="keywordtype">size_t</span> grow_dim        = d_active - 1;</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>  <span class="keywordtype">size_t</span> inner_volume    = 1;</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>  <span class="keywordtype">size_t</span> active_inner_vol = 1;</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span> </div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>    <span class="keywordflow">if</span> (d + 1 &lt; d_active &amp;&amp; coords[d + 1] != 0) <span class="keywordflow">break</span>;  <span class="comment">// trailing-zeros rule</span></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span> </div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    grow_dim        = d;</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    active_inner_vol = inner_volume;</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span> </div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span> </div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    inner_volume *= dim_sizes[d];</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>  }</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span> </div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>  <span class="comment">// Steps along grow_dim: ceil division, at least 1.</span></div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>  <span class="keywordtype">size_t</span> steps_left    = dim_sizes[grow_dim] - coords[grow_dim];</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>  <span class="keywordtype">size_t</span> steps_needed  = (std::max)(<span class="keywordtype">size_t</span>{1}, chunk_size / active_inner_vol);</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>  <span class="keywordtype">size_t</span> steps_to_take = (std::min)(steps_left, steps_needed);</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span> </div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>  <span class="comment">// Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner</span></div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>  <span class="comment">// as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).</span></div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; box_dims;</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>  = _dims[d];</div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>    <span class="keyword">const</span> T     step = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.step_size();</div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>    <span class="keyword">const</span> T     beg  = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.begin();</div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>    <span class="keywordflow">if</span> (d &gt;= d_active) {</div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full extent</span></div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d &lt; grow_dim) {</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>      T b = beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d]) * step;</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(b, b + step, step);          <span class="comment">// locked</span></div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d == grow_dim) {</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(</div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d])                 * step,</div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d] + steps_to_take) * step,</div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>        step</div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>      );</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full inner extent</span></div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>    }</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>  }</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span> </div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>  <span class="keywordflow">return</span> { <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange&lt;T, N&gt;</a>(box_dims), steps_to_take * active_inner_vol };</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>}</div>
-</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span> </div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt;</div>
-<div class="foldopen" id="foldopen00632" data-start="{" data-end="}">
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">  632</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">IndexRange&lt;T, N&gt;::slice_floor</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span> </div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>  <span class="keywordflow">if</span> (chunk_size == 0) {</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>    <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };</div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>  }</div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span> </div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>  <span class="comment">// Find d_active: the index of the first zero-size dimension (or N if none).</span></div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>  <span class="comment">// Only dimensions [0, d_active) participate in the flat iteration space.</span></div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>  <span class="comment">// Dimensions [d_active, N) are copied as full extent into the returned box.</span></div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>    dim_sizes[d] = _dims[d].size();</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>  }</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span></div>
+<div class="foldopen" id="foldopen00251" data-start="{" data-end="}">
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">  251</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">IndexRange</a>(<span class="keyword">const</span> std::array&lt;<a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>);</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>  <span class="comment">// Dimension access</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span></div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">  298</a></span>  <span class="keyword">const</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(<span class="keywordtype">size_t</span> d)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims[d]; }</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span></div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">  325</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">dim</a>(<span class="keywordtype">size_t</span> d) { <span class="keywordflow">return</span> _dims[d]; }</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span></div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">  355</a></span>  <span class="keyword">const</span> std::array&lt;IndexRange&lt;T, 1&gt;, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims; }</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span> </div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>  <span class="comment">// Size queries</span></div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>  <span class="comment">// --------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span></div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">  396</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">size</a>(<span class="keywordtype">size_t</span> d)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _dims[d].size(); }</div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span></div>
+<div class="foldopen" id="foldopen00453" data-start="{" data-end="}">
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">  453</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span></div>
+<div class="foldopen" id="foldopen00507" data-start="{" data-end="}">
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">  507</a></span>  std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt; <a class="code hl_function" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">slice_ceil</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span></div>
+<div class="foldopen" id="foldopen00561" data-start="{" data-end="}">
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">  561</a></span>  std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt; <a class="code hl_function" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">slice_floor</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span></div>
+<div class="foldopen" id="foldopen00603" data-start="{" data-end="}">
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">  603</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">ceil</a>(<span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span></div>
+<div class="foldopen" id="foldopen00644" data-start="{" data-end="}">
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">  644</a></span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">floor</a>(<span class="keywordtype">size_t</span> chunk_size) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span> </div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>  <span class="keyword">private</span>:</div>
 <div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span> </div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };  <span class="comment">// outermost dim is zero — no work</span></div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span> </div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>  <span class="comment">// Decode flat_beg into coords for active dimensions [0, d_active) only.</span></div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>  <span class="keywordtype">size_t</span> coords[N] = {};</div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>  <span class="keywordtype">size_t</span> temp = flat_beg;</div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    coords[d] = temp % dim_sizes[d];</div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>    temp     /= dim_sizes[d];</div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>  }</div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; _dims;</div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>};</div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span> </div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span><span class="comment">// Out-of-class definitions — IndexRange&lt;T, N&gt;  (primary template)</span></div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span> </div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">  656</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, N&gt;::IndexRange</a>(<span class="keyword">const</span> std::array&lt;<a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>, N&gt;&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>) : _dims{<a class="code hl_function" href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">dims</a>} {}</div>
 <div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span> </div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>  <span class="comment">// Find grow_dim within [0, d_active): commit each dim AFTER the budget check</span></div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>  <span class="comment">// (floor: round down to the previous boundary).</span></div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>  <span class="keywordtype">size_t</span> grow_dim        = d_active - 1;</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>  <span class="keywordtype">size_t</span> active_inner_vol = 1;</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>  <span class="keywordtype">size_t</span> inner_volume    = 1;</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span> </div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>    <span class="keywordflow">if</span> (d + 1 &lt; d_active &amp;&amp; coords[d + 1] != 0) <span class="keywordflow">break</span>;  <span class="comment">// trailing-zeros rule</span></div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span> </div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>    <span class="keywordtype">size_t</span> next_vol = inner_volume * dim_sizes[d];</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>    <span class="keywordflow">if</span> (next_vol &gt; chunk_size &amp;&amp; inner_volume &gt; 1) <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span> </div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>    grow_dim        = d;</div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>    active_inner_vol = inner_volume;</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>    inner_volume    = next_vol;</div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>  }</div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span> </div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>  <span class="comment">// Steps along grow_dim: floor division, at least 1 for forward progress.</span></div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>  <span class="keywordtype">size_t</span> steps_left    = dim_sizes[grow_dim] - coords[grow_dim];</div>
-<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>  <span class="keywordtype">size_t</span> steps_needed  = (std::max)(<span class="keywordtype">size_t</span>{1}, chunk_size / active_inner_vol);</div>
-<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>  <span class="keywordtype">size_t</span> steps_to_take = (std::min)(steps_left, steps_needed);</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="foldopen" id="foldopen00659" data-start="{" data-end="}">
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">  659</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">IndexRange&lt;T, N&gt;::size</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>  <span class="keywordtype">size_t</span> total = 1;</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>    <span class="keywordtype">size_t</span> s = _dims[d].size();</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>    <span class="keywordflow">if</span> (s == 0) <span class="keywordflow">return</span> d == 0 ? 0 : total;  <span class="comment">// outermost zero -&gt; 0, inner zero -&gt; outer product</span></div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>    total *= s;</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>  }</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>  <span class="keywordflow">return</span> total;</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>}</div>
+</div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span> </div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="foldopen" id="foldopen00670" data-start="{" data-end="}">
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">  670</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">IndexRange&lt;T, N&gt;::ceil</a>(<span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>  <span class="comment">// Pass 1: cache all dim sizes (one .size() call each) and find d_active.</span></div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>    dim_sizes[d] = _dims[d].size();</div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
+<div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>  }</div>
+<div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span> </div>
-<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>  <span class="comment">// Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner</span></div>
-<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>  <span class="comment">// as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).</span></div>
-<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; box_dims;</div>
-<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
-<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>  = _dims[d];</div>
-<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>    <span class="keyword">const</span> T     step = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.step_size();</div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>    <span class="keyword">const</span> T     beg  = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.begin();</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>    <span class="keywordflow">if</span> (d &gt;= d_active) {</div>
-<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full extent</span></div>
-<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d &lt; grow_dim) {</div>
-<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>      T b = beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d]) * step;</div>
-<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(b, b + step, step);          <span class="comment">// locked</span></div>
-<div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d == grow_dim) {</div>
-<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(</div>
-<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d])                 * step,</div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d] + steps_to_take) * step,</div>
-<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>        step</div>
-<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>      );</div>
-<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full inner extent</span></div>
-<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>    }</div>
-<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span>  }</div>
-<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span> </div>
-<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>  <span class="keywordflow">return</span> { <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange&lt;T, N&gt;</a>(box_dims), steps_to_take * active_inner_vol };</div>
-<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>}</div>
+<div class="line"><a id="l00680" name="l00680"></a><span class="lineno">  680</span>  <span class="comment">// Pass 2: walk suffix products backward within [0, d_active) only.</span></div>
+<div class="line"><a id="l00681" name="l00681"></a><span class="lineno">  681</span>  <span class="comment">// Return the first suffix product &gt;= chunk_size, capped at size().</span></div>
+<div class="line"><a id="l00682" name="l00682"></a><span class="lineno">  682</span>  <span class="keywordtype">size_t</span> inner_volume = 1;</div>
+<div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>  <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">return</span> inner_volume;</div>
+<div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>    inner_volume *= dim_sizes[d];</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>    <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">return</span> inner_volume;</div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>  }</div>
+<div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span>  <span class="keywordflow">return</span> inner_volume;  <span class="comment">// == size() of active dims, capped</span></div>
+<div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>}</div>
 </div>
-<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span> </div>
-<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span> </div>
-<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span><span class="comment">// ============================================================================</span></div>
-<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span><span class="comment">// Partial specialization: IndexRange&lt;T, 1&gt;  (1D case)</span></div>
-<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span><span class="comment">//</span></div>
-<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span><span class="comment">// This is the original IndexRange&lt;T&gt; class, re-expressed as the N=1</span></div>
-<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span><span class="comment">// specialization so that IndexRange&lt;int, 1&gt; and IndexRange&lt;int&gt; (via the</span></div>
-<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span><span class="comment">// default argument N=1 on the primary template forward declaration above) both</span></div>
-<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span><span class="comment">// refer to the same type.</span></div>
-<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span><span class="comment">// ============================================================================</span></div>
-<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span></div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
-<div class="foldopen" id="foldopen00752" data-start="{" data-end="};">
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html">  752</a></span><span class="keyword">class </span><a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange</a>&lt;T, 1&gt; {</div>
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span> </div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span></div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">  759</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">index_type</a> = T;</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span></div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">  764</a></span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">rank</a> = 1;</div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span></div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">  769</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span></div>
-<div class="foldopen" id="foldopen00777" data-start="{" data-end="}">
-<div class="line"><a id="l00777" name="l00777"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">  777</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">IndexRange</a>(T beg, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>)</div>
-<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>    : _beg{beg}, _end{<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>}, _step_size{<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>} {}</div>
+<div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span> </div>
+<div class="line"><a id="l00691" name="l00691"></a><span class="lineno">  691</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="foldopen" id="foldopen00692" data-start="{" data-end="}">
+<div class="line"><a id="l00692" name="l00692"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">  692</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">IndexRange&lt;T, N&gt;::floor</a>(<span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span>  <span class="comment">// Pass 1: cache all dim sizes (one .size() call each) and find d_active.</span></div>
+<div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
+<div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span>    dim_sizes[d] = _dims[d].size();</div>
+<div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
+<div class="line"><a id="l00699" name="l00699"></a><span class="lineno">  699</span>  }</div>
+<div class="line"><a id="l00700" name="l00700"></a><span class="lineno">  700</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00701" name="l00701"></a><span class="lineno">  701</span> </div>
+<div class="line"><a id="l00702" name="l00702"></a><span class="lineno">  702</span>  <span class="comment">// Pass 2: walk suffix products backward within [0, d_active) only.</span></div>
+<div class="line"><a id="l00703" name="l00703"></a><span class="lineno">  703</span>  <span class="comment">// Return the largest suffix product &lt;= chunk_size.</span></div>
+<div class="line"><a id="l00704" name="l00704"></a><span class="lineno">  704</span>  <span class="keywordtype">size_t</span> inner_volume = 1;</div>
+<div class="line"><a id="l00705" name="l00705"></a><span class="lineno">  705</span>  <span class="keywordtype">size_t</span> last_fit     = 1;</div>
+<div class="line"><a id="l00706" name="l00706"></a><span class="lineno">  706</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00707" name="l00707"></a><span class="lineno">  707</span>    <span class="keywordtype">size_t</span> next = inner_volume * dim_sizes[d];</div>
+<div class="line"><a id="l00708" name="l00708"></a><span class="lineno">  708</span>    <span class="keywordflow">if</span> (next &gt; chunk_size) <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00709" name="l00709"></a><span class="lineno">  709</span>    inner_volume = next;</div>
+<div class="line"><a id="l00710" name="l00710"></a><span class="lineno">  710</span>    last_fit     = inner_volume;</div>
+<div class="line"><a id="l00711" name="l00711"></a><span class="lineno">  711</span>  }</div>
+<div class="line"><a id="l00712" name="l00712"></a><span class="lineno">  712</span>  <span class="keywordflow">return</span> last_fit;</div>
+<div class="line"><a id="l00713" name="l00713"></a><span class="lineno">  713</span>}</div>
 </div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span></div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">  783</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _beg; }</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span></div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">  788</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _end; }</div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span></div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">  793</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _step_size; }</div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span></div>
-<div class="foldopen" id="foldopen00798" data-start="{" data-end="}">
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">  798</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">reset</a>(T <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>) {</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>    _beg = <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>;</div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>    _end = <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>;</div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    _step_size = <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>;</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>  }</div>
 </div>
-<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span></div>
-<div class="line"><a id="l00808" name="l00808"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">  808</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">begin</a>(T new_begin) { _beg = new_begin; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
-<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span></div>
-<div class="line"><a id="l00813" name="l00813"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">  813</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">end</a>(T new_end) { _end = new_end; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
-<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span></div>
-<div class="line"><a id="l00818" name="l00818"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">  818</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">step_size</a>(T new_step_size) { _step_size = new_step_size; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
-<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span></div>
-<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">size</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span></div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>  <a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, 1&gt;</a> unravel(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00714" name="l00714"></a><span class="lineno">  714</span> </div>
+<div class="line"><a id="l00715" name="l00715"></a><span class="lineno">  715</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00716" name="l00716"></a><span class="lineno">  716</span>std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt;</div>
+<div class="foldopen" id="foldopen00717" data-start="{" data-end="}">
+<div class="line"><a id="l00717" name="l00717"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">  717</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">IndexRange&lt;T, N&gt;::slice_ceil</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00718" name="l00718"></a><span class="lineno">  718</span> </div>
+<div class="line"><a id="l00719" name="l00719"></a><span class="lineno">  719</span>  <span class="keywordflow">if</span> (chunk_size == 0) {</div>
+<div class="line"><a id="l00720" name="l00720"></a><span class="lineno">  720</span>    <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };</div>
+<div class="line"><a id="l00721" name="l00721"></a><span class="lineno">  721</span>  }</div>
+<div class="line"><a id="l00722" name="l00722"></a><span class="lineno">  722</span> </div>
+<div class="line"><a id="l00723" name="l00723"></a><span class="lineno">  723</span>  <span class="comment">// Find d_active: the index of the first zero-size dimension (or N if none).</span></div>
+<div class="line"><a id="l00724" name="l00724"></a><span class="lineno">  724</span>  <span class="comment">// Only dimensions [0, d_active) participate in the flat iteration space.</span></div>
+<div class="line"><a id="l00725" name="l00725"></a><span class="lineno">  725</span>  <span class="comment">// Dimensions [d_active, N) are copied as full extent into the returned box.</span></div>
+<div class="line"><a id="l00726" name="l00726"></a><span class="lineno">  726</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
+<div class="line"><a id="l00727" name="l00727"></a><span class="lineno">  727</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
+<div class="line"><a id="l00728" name="l00728"></a><span class="lineno">  728</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00729" name="l00729"></a><span class="lineno">  729</span>    dim_sizes[d] = _dims[d].size();</div>
+<div class="line"><a id="l00730" name="l00730"></a><span class="lineno">  730</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
+<div class="line"><a id="l00731" name="l00731"></a><span class="lineno">  731</span>  }</div>
+<div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span> </div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno">  733</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };  <span class="comment">// outermost dim is zero — no work</span></div>
+<div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span> </div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>  <span class="comment">// Decode flat_beg into coords for active dimensions [0, d_active) only.</span></div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>  <span class="keywordtype">size_t</span> coords[N] = {};</div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>  <span class="keywordtype">size_t</span> temp = flat_beg;</div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>    coords[d] = temp % dim_sizes[d];</div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>    temp     /= dim_sizes[d];</div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>  }</div>
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span> </div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>  <span class="comment">// Find grow_dim within [0, d_active): record each dim BEFORE the budget check</span></div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>  <span class="comment">// (ceil: round up to the next boundary). Stop when budget met or trailing-zeros fires.</span></div>
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>  <span class="keywordtype">size_t</span> grow_dim        = d_active - 1;</div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>  <span class="keywordtype">size_t</span> inner_volume    = 1;</div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>  <span class="keywordtype">size_t</span> active_inner_vol = 1;</div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span> </div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>    <span class="keywordflow">if</span> (d + 1 &lt; d_active &amp;&amp; coords[d + 1] != 0) <span class="keywordflow">break</span>;  <span class="comment">// trailing-zeros rule</span></div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span> </div>
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>    grow_dim        = d;</div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>    active_inner_vol = inner_volume;</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span> </div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>    <span class="keywordflow">if</span> (inner_volume &gt;= chunk_size) <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span> </div>
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>    inner_volume *= dim_sizes[d];</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>  }</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span> </div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>  <span class="comment">// Steps along grow_dim: ceil division, at least 1.</span></div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>  <span class="keywordtype">size_t</span> steps_left    = dim_sizes[grow_dim] - coords[grow_dim];</div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>  <span class="keywordtype">size_t</span> steps_needed  = (std::max)(<span class="keywordtype">size_t</span>{1}, chunk_size / active_inner_vol);</div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>  <span class="keywordtype">size_t</span> steps_to_take = (std::min)(steps_left, steps_needed);</div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span> </div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>  <span class="comment">// Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner</span></div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>  <span class="comment">// as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).</span></div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; box_dims;</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>  = _dims[d];</div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    <span class="keyword">const</span> T     step = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.step_size();</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    <span class="keyword">const</span> T     beg  = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.begin();</div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>    <span class="keywordflow">if</span> (d &gt;= d_active) {</div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full extent</span></div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d &lt; grow_dim) {</div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>      T b = beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d]) * step;</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(b, b + step, step);          <span class="comment">// locked</span></div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d == grow_dim) {</div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(</div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d])                 * step,</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d] + steps_to_take) * step,</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>        step</div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>      );</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full inner extent</span></div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>    }</div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>  }</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span> </div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>  <span class="keywordflow">return</span> { <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange&lt;T, N&gt;</a>(box_dims), steps_to_take * active_inner_vol };</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>}</div>
+</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span> </div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>std::pair&lt;IndexRange&lt;T, N&gt;, <span class="keywordtype">size_t</span>&gt;</div>
+<div class="foldopen" id="foldopen00793" data-start="{" data-end="}">
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">  793</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">IndexRange&lt;T, N&gt;::slice_floor</a>(<span class="keywordtype">size_t</span> flat_beg, <span class="keywordtype">size_t</span> chunk_size)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span> </div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>  <span class="keywordflow">if</span> (chunk_size == 0) {</div>
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>    <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };</div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>  }</div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span> </div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>  <span class="comment">// Find d_active: the index of the first zero-size dimension (or N if none).</span></div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>  <span class="comment">// Only dimensions [0, d_active) participate in the flat iteration space.</span></div>
+<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>  <span class="comment">// Dimensions [d_active, N) are copied as full extent into the returned box.</span></div>
+<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>  <span class="keywordtype">size_t</span> dim_sizes[N];</div>
+<div class="line"><a id="l00803" name="l00803"></a><span class="lineno">  803</span>  <span class="keywordtype">size_t</span> d_active = N;</div>
+<div class="line"><a id="l00804" name="l00804"></a><span class="lineno">  804</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00805" name="l00805"></a><span class="lineno">  805</span>    dim_sizes[d] = _dims[d].size();</div>
+<div class="line"><a id="l00806" name="l00806"></a><span class="lineno">  806</span>    <span class="keywordflow">if</span> (dim_sizes[d] == 0) { d_active = d; <span class="keywordflow">break</span>; }</div>
+<div class="line"><a id="l00807" name="l00807"></a><span class="lineno">  807</span>  }</div>
+<div class="line"><a id="l00808" name="l00808"></a><span class="lineno">  808</span> </div>
+<div class="line"><a id="l00809" name="l00809"></a><span class="lineno">  809</span>  <span class="keywordflow">if</span> (d_active == 0) <span class="keywordflow">return</span> { *<span class="keyword">this</span>, 0 };  <span class="comment">// outermost dim is zero — no work</span></div>
+<div class="line"><a id="l00810" name="l00810"></a><span class="lineno">  810</span> </div>
+<div class="line"><a id="l00811" name="l00811"></a><span class="lineno">  811</span>  <span class="comment">// Decode flat_beg into coords for active dimensions [0, d_active) only.</span></div>
+<div class="line"><a id="l00812" name="l00812"></a><span class="lineno">  812</span>  <span class="keywordtype">size_t</span> coords[N] = {};</div>
+<div class="line"><a id="l00813" name="l00813"></a><span class="lineno">  813</span>  <span class="keywordtype">size_t</span> temp = flat_beg;</div>
+<div class="line"><a id="l00814" name="l00814"></a><span class="lineno">  814</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00815" name="l00815"></a><span class="lineno">  815</span>    coords[d] = temp % dim_sizes[d];</div>
+<div class="line"><a id="l00816" name="l00816"></a><span class="lineno">  816</span>    temp     /= dim_sizes[d];</div>
+<div class="line"><a id="l00817" name="l00817"></a><span class="lineno">  817</span>  }</div>
+<div class="line"><a id="l00818" name="l00818"></a><span class="lineno">  818</span> </div>
+<div class="line"><a id="l00819" name="l00819"></a><span class="lineno">  819</span>  <span class="comment">// Find grow_dim within [0, d_active): commit each dim AFTER the budget check</span></div>
+<div class="line"><a id="l00820" name="l00820"></a><span class="lineno">  820</span>  <span class="comment">// (floor: round down to the previous boundary).</span></div>
+<div class="line"><a id="l00821" name="l00821"></a><span class="lineno">  821</span>  <span class="keywordtype">size_t</span> grow_dim        = d_active - 1;</div>
+<div class="line"><a id="l00822" name="l00822"></a><span class="lineno">  822</span>  <span class="keywordtype">size_t</span> active_inner_vol = 1;</div>
+<div class="line"><a id="l00823" name="l00823"></a><span class="lineno">  823</span>  <span class="keywordtype">size_t</span> inner_volume    = 1;</div>
+<div class="line"><a id="l00824" name="l00824"></a><span class="lineno">  824</span> </div>
+<div class="line"><a id="l00825" name="l00825"></a><span class="lineno">  825</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = d_active; d-- &gt; 0; ) {</div>
+<div class="line"><a id="l00826" name="l00826"></a><span class="lineno">  826</span>    <span class="keywordflow">if</span> (d + 1 &lt; d_active &amp;&amp; coords[d + 1] != 0) <span class="keywordflow">break</span>;  <span class="comment">// trailing-zeros rule</span></div>
+<div class="line"><a id="l00827" name="l00827"></a><span class="lineno">  827</span> </div>
+<div class="line"><a id="l00828" name="l00828"></a><span class="lineno">  828</span>    <span class="keywordtype">size_t</span> next_vol = inner_volume * dim_sizes[d];</div>
+<div class="line"><a id="l00829" name="l00829"></a><span class="lineno">  829</span>    <span class="keywordflow">if</span> (next_vol &gt; chunk_size &amp;&amp; inner_volume &gt; 1) <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00830" name="l00830"></a><span class="lineno">  830</span> </div>
+<div class="line"><a id="l00831" name="l00831"></a><span class="lineno">  831</span>    grow_dim        = d;</div>
+<div class="line"><a id="l00832" name="l00832"></a><span class="lineno">  832</span>    active_inner_vol = inner_volume;</div>
+<div class="line"><a id="l00833" name="l00833"></a><span class="lineno">  833</span>    inner_volume    = next_vol;</div>
+<div class="line"><a id="l00834" name="l00834"></a><span class="lineno">  834</span>  }</div>
+<div class="line"><a id="l00835" name="l00835"></a><span class="lineno">  835</span> </div>
+<div class="line"><a id="l00836" name="l00836"></a><span class="lineno">  836</span>  <span class="comment">// Steps along grow_dim: floor division, at least 1 for forward progress.</span></div>
+<div class="line"><a id="l00837" name="l00837"></a><span class="lineno">  837</span>  <span class="keywordtype">size_t</span> steps_left    = dim_sizes[grow_dim] - coords[grow_dim];</div>
+<div class="line"><a id="l00838" name="l00838"></a><span class="lineno">  838</span>  <span class="keywordtype">size_t</span> steps_needed  = (std::max)(<span class="keywordtype">size_t</span>{1}, chunk_size / active_inner_vol);</div>
+<div class="line"><a id="l00839" name="l00839"></a><span class="lineno">  839</span>  <span class="keywordtype">size_t</span> steps_to_take = (std::min)(steps_left, steps_needed);</div>
+<div class="line"><a id="l00840" name="l00840"></a><span class="lineno">  840</span> </div>
+<div class="line"><a id="l00841" name="l00841"></a><span class="lineno">  841</span>  <span class="comment">// Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner</span></div>
+<div class="line"><a id="l00842" name="l00842"></a><span class="lineno">  842</span>  <span class="comment">// as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).</span></div>
+<div class="line"><a id="l00843" name="l00843"></a><span class="lineno">  843</span>  std::array&lt;IndexRange&lt;T, 1&gt;, N&gt; box_dims;</div>
+<div class="line"><a id="l00844" name="l00844"></a><span class="lineno">  844</span>  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> d = 0; d &lt; N; ++d) {</div>
+<div class="line"><a id="l00845" name="l00845"></a><span class="lineno">  845</span>    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>  = _dims[d];</div>
+<div class="line"><a id="l00846" name="l00846"></a><span class="lineno">  846</span>    <span class="keyword">const</span> T     step = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.step_size();</div>
+<div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>    <span class="keyword">const</span> T     beg  = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>.begin();</div>
+<div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span>    <span class="keywordflow">if</span> (d &gt;= d_active) {</div>
+<div class="line"><a id="l00849" name="l00849"></a><span class="lineno">  849</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full extent</span></div>
+<div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d &lt; grow_dim) {</div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>      T b = beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d]) * step;</div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(b, b + step, step);          <span class="comment">// locked</span></div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (d == grow_dim) {</div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">IndexRange&lt;T, 1&gt;</a>(</div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d])                 * step,</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>        beg + <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(coords[d] + steps_to_take) * step,</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>        step</div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>      );</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>      box_dims[d] = <a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>;                                           <span class="comment">// full inner extent</span></div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    }</div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>  }</div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span> </div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>  <span class="keywordflow">return</span> { <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange&lt;T, N&gt;</a>(box_dims), steps_to_take * active_inner_vol };</div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>}</div>
+</div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span> </div>
 <div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span> </div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span> </div>
-<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>  T _beg;</div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>  T _end;</div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>  T _step_size;</div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span> </div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>};</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span><span class="comment">// Partial specialization: IndexRange&lt;T, 1&gt;  (1D case)</span></div>
+<div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span><span class="comment">//</span></div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span><span class="comment">// This is the original IndexRange&lt;T&gt; class, re-expressed as the N=1</span></div>
+<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span><span class="comment">// specialization so that IndexRange&lt;int, 1&gt; and IndexRange&lt;int&gt; (via the</span></div>
+<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span><span class="comment">// default argument N=1 on the primary template forward declaration above) both</span></div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span><span class="comment">// refer to the same type.</span></div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span><span class="comment">// ============================================================================</span></div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span></div>
+<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
+<div class="foldopen" id="foldopen00913" data-start="{" data-end="};">
+<div class="line"><a id="l00913" name="l00913"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html">  913</a></span><span class="keyword">class </span><a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange</a>&lt;T, 1&gt; {</div>
+<div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span> </div>
+<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span></div>
+<div class="line"><a id="l00920" name="l00920"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">  920</a></span>  <span class="keyword">using </span><a class="code hl_typedef" href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">index_type</a> = T;</div>
+<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span></div>
+<div class="line"><a id="l00925" name="l00925"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">  925</a></span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">size_t</span> <a class="code hl_variable" href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">rank</a> = 1;</div>
+<div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span></div>
+<div class="line"><a id="l00930" name="l00930"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">  930</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span></div>
+<div class="foldopen" id="foldopen00938" data-start="{" data-end="}">
+<div class="line"><a id="l00938" name="l00938"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">  938</a></span>  <span class="keyword">explicit</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">IndexRange</a>(T beg, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>)</div>
+<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>    : _beg{beg}, _end{<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>}, _step_size{<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>} {}</div>
 </div>
-<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span> </div>
-<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
-<div class="foldopen" id="foldopen00877" data-start="{" data-end="}">
-<div class="line"><a id="l00877" name="l00877"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a32783aa72f60af58fe0d092f90c80b78">  877</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">IndexRange&lt;T, 1&gt;::size</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetf.html#a9922bf2ed04b3e630d4e62258d1a4213">distance</a>(_beg, _end, _step_size);</div>
-<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>}</div>
+<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span></div>
+<div class="line"><a id="l00944" name="l00944"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">  944</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _beg; }</div>
+<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span></div>
+<div class="line"><a id="l00949" name="l00949"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">  949</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _end; }</div>
+<div class="line"><a id="l00950" name="l00950"></a><span class="lineno">  950</span></div>
+<div class="line"><a id="l00954" name="l00954"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">  954</a></span>  T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _step_size; }</div>
+<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span></div>
+<div class="foldopen" id="foldopen00959" data-start="{" data-end="}">
+<div class="line"><a id="l00959" name="l00959"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">  959</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">reset</a>(T <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>, T <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>) {</div>
+<div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span>    _beg = <a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>;</div>
+<div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span>    _end = <a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>;</div>
+<div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>    _step_size = <a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>;</div>
+<div class="line"><a id="l00963" name="l00963"></a><span class="lineno">  963</span>    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span>  }</div>
 </div>
-<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span> </div>
-<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
-<div class="foldopen" id="foldopen00882" data-start="{" data-end="}">
-<div class="line"><a id="l00882" name="l00882"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a4e952421491695562fe336ad498469a9">  882</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a> <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;::unravel</a>(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>(</div>
-<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_beg) * _step_size + _beg,</div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_end) * _step_size + _beg,</div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>    _step_size</div>
-<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>  );</div>
-<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>}</div>
-</div>
-<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span> </div>
-<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span><span class="comment">// Deduction guide: IndexRange(beg, end, step) -&gt; IndexRange&lt;T, 1&gt;</span></div>
-<div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span><span class="comment">//</span></div>
-<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span><span class="comment">// Required because IndexRange is now a two-parameter template (T, N).</span></div>
-<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span><span class="comment">// Without this guide, CTAD cannot deduce N from a three-argument constructor</span></div>
-<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span><span class="comment">// call such as `tf::IndexRange range(0, 10, 2)`.</span></div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span></div>
-<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
-<div class="line"><a id="l00918" name="l00918"></a><span class="lineno"><a class="line" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">  918</a></span><a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange</a>(T, T, T) -&gt; <a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, 1&gt;</a>;</div>
-<div class="line"><a id="l00919" name="l00919"></a><span class="lineno">  919</span> </div>
-<div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span><span class="comment">// ==========================================</span></div>
-<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span><span class="comment">// traits</span></div>
-<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span><span class="comment">// ==========================================</span></div>
-<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span></div>
-<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt;</div>
-<div class="line"><a id="l00929" name="l00929"></a><span class="lineno"><a class="line" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">  929</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v</a> = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span></div>
-<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00940" name="l00940"></a><span class="lineno"><a class="line" href="namespacetf.html#af2b2204c5d37a81c8d3084e9f7062e60">  940</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v&lt;IndexRange&lt;T, N&gt;</a>&gt; = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span></div>
-<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
-<div class="line"><a id="l00950" name="l00950"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRangeLike.html">  950</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRangeLike.html">IndexRangeLike</a> = <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
-<div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span></div>
-<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00957" name="l00957"></a><span class="lineno"><a class="line" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">  957</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v</a> = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span></div>
-<div class="line"><a id="l00963" name="l00963"></a><span class="lineno">  963</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00964" name="l00964"></a><span class="lineno"><a class="line" href="namespacetf.html#a49086c014251934964dadc1a280ce35f">  964</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v&lt;IndexRange&lt;T, 1&gt;</a>&gt; = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span></div>
-<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
-<div class="line"><a id="l00977" name="l00977"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRange1DLike.html">  977</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">IndexRange1DLike</a> = <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
-<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span></div>
-<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00984" name="l00984"></a><span class="lineno"><a class="line" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">  984</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v</a> = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span></div>
-<div class="line"><a id="l00991" name="l00991"></a><span class="lineno">  991</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00992" name="l00992"></a><span class="lineno">  992</span><span class="keyword">requires</span> (N &gt; 1)</div>
-<div class="line"><a id="l00993" name="l00993"></a><span class="lineno"><a class="line" href="namespacetf.html#ad3d2bddc6dbdc1bc7b15a2d6a1e80f42">  993</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v</a>&lt;<a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, N&gt;</a>&gt; = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00969" name="l00969"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">  969</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">begin</a>(T new_begin) { _beg = new_begin; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
+<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span></div>
+<div class="line"><a id="l00974" name="l00974"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">  974</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">end</a>(T new_end) { _end = new_end; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
+<div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span></div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">  979</a></span>  <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>&amp; <a class="code hl_function" href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">step_size</a>(T new_step_size) { _step_size = new_step_size; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
+<div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span></div>
+<div class="line"><a id="l00993" name="l00993"></a><span class="lineno">  993</span>  <span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">size</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00994" name="l00994"></a><span class="lineno">  994</span></div>
-<div class="line"><a id="l01006" name="l01006"></a><span class="lineno"> 1006</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
-<div class="line"><a id="l01007" name="l01007"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRangeMDLike.html"> 1007</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRangeMDLike.html">IndexRangeMDLike</a> = <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
-<div class="line"><a id="l01008" name="l01008"></a><span class="lineno"> 1008</span> </div>
-<div class="line"><a id="l01009" name="l01009"></a><span class="lineno"> 1009</span>}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
+<div class="line"><a id="l01027" name="l01027"></a><span class="lineno"> 1027</span>  <a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, 1&gt;</a> unravel(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l01028" name="l01028"></a><span class="lineno"> 1028</span> </div>
+<div class="line"><a id="l01029" name="l01029"></a><span class="lineno"> 1029</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l01030" name="l01030"></a><span class="lineno"> 1030</span> </div>
+<div class="line"><a id="l01031" name="l01031"></a><span class="lineno"> 1031</span>  T _beg;</div>
+<div class="line"><a id="l01032" name="l01032"></a><span class="lineno"> 1032</span>  T _end;</div>
+<div class="line"><a id="l01033" name="l01033"></a><span class="lineno"> 1033</span>  T _step_size;</div>
+<div class="line"><a id="l01034" name="l01034"></a><span class="lineno"> 1034</span> </div>
+<div class="line"><a id="l01035" name="l01035"></a><span class="lineno"> 1035</span>};</div>
+</div>
+<div class="line"><a id="l01036" name="l01036"></a><span class="lineno"> 1036</span> </div>
+<div class="line"><a id="l01037" name="l01037"></a><span class="lineno"> 1037</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
+<div class="foldopen" id="foldopen01038" data-start="{" data-end="}">
+<div class="line"><a id="l01038" name="l01038"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a32783aa72f60af58fe0d092f90c80b78"> 1038</a></span><span class="keywordtype">size_t</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">IndexRange&lt;T, 1&gt;::size</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l01039" name="l01039"></a><span class="lineno"> 1039</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetf.html#a9922bf2ed04b3e630d4e62258d1a4213">distance</a>(_beg, _end, _step_size);</div>
+<div class="line"><a id="l01040" name="l01040"></a><span class="lineno"> 1040</span>}</div>
+</div>
+<div class="line"><a id="l01041" name="l01041"></a><span class="lineno"> 1041</span> </div>
+<div class="line"><a id="l01042" name="l01042"></a><span class="lineno"> 1042</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
+<div class="foldopen" id="foldopen01043" data-start="{" data-end="}">
+<div class="line"><a id="l01043" name="l01043"></a><span class="lineno"><a class="line" href="classtf_1_1IndexRange.html#a4e952421491695562fe336ad498469a9"> 1043</a></span><a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a> <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;::unravel</a>(<span class="keywordtype">size_t</span> part_beg, <span class="keywordtype">size_t</span> part_end)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l01044" name="l01044"></a><span class="lineno"> 1044</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">IndexRange&lt;T, 1&gt;</a>(</div>
+<div class="line"><a id="l01045" name="l01045"></a><span class="lineno"> 1045</span>    <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_beg) * _step_size + _beg,</div>
+<div class="line"><a id="l01046" name="l01046"></a><span class="lineno"> 1046</span>    <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(part_end) * _step_size + _beg,</div>
+<div class="line"><a id="l01047" name="l01047"></a><span class="lineno"> 1047</span>    _step_size</div>
+<div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>  );</div>
+<div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>}</div>
+</div>
+<div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span> </div>
+<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span><span class="comment">// Deduction guide: IndexRange(beg, end, step) -&gt; IndexRange&lt;T, 1&gt;</span></div>
+<div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span><span class="comment">//</span></div>
+<div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span><span class="comment">// Required because IndexRange is now a two-parameter template (T, N).</span></div>
+<div class="line"><a id="l01055" name="l01055"></a><span class="lineno"> 1055</span><span class="comment">// Without this guide, CTAD cannot deduce N from a three-argument constructor</span></div>
+<div class="line"><a id="l01056" name="l01056"></a><span class="lineno"> 1056</span><span class="comment">// call such as `tf::IndexRange range(0, 10, 2)`.</span></div>
+<div class="line"><a id="l01057" name="l01057"></a><span class="lineno"> 1057</span><span class="comment">// ----------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l01058" name="l01058"></a><span class="lineno"> 1058</span></div>
+<div class="line"><a id="l01078" name="l01078"></a><span class="lineno"> 1078</span><span class="keyword">template</span> &lt;std::<span class="keywordtype">int</span>egral T&gt;</div>
+<div class="line"><a id="l01079" name="l01079"></a><span class="lineno"><a class="line" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446"> 1079</a></span><a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange</a>(T, T, T) -&gt; <a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, 1&gt;</a>;</div>
+<div class="line"><a id="l01080" name="l01080"></a><span class="lineno"> 1080</span> </div>
+<div class="line"><a id="l01081" name="l01081"></a><span class="lineno"> 1081</span><span class="comment">// ==========================================</span></div>
+<div class="line"><a id="l01082" name="l01082"></a><span class="lineno"> 1082</span><span class="comment">// traits</span></div>
+<div class="line"><a id="l01083" name="l01083"></a><span class="lineno"> 1083</span><span class="comment">// ==========================================</span></div>
+<div class="line"><a id="l01084" name="l01084"></a><span class="lineno"> 1084</span></div>
+<div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span>&gt;</div>
+<div class="line"><a id="l01090" name="l01090"></a><span class="lineno"><a class="line" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a"> 1090</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l01091" name="l01091"></a><span class="lineno"> 1091</span></div>
+<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l01101" name="l01101"></a><span class="lineno"><a class="line" href="namespacetf.html#af2b2204c5d37a81c8d3084e9f7062e60"> 1101</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v&lt;IndexRange&lt;T, N&gt;</a>&gt; = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span></div>
+<div class="line"><a id="l01110" name="l01110"></a><span class="lineno"> 1110</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
+<div class="line"><a id="l01111" name="l01111"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRangeLike.html"> 1111</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRangeLike.html">IndexRangeLike</a> = <a class="code hl_variable" href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">is_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
+<div class="line"><a id="l01112" name="l01112"></a><span class="lineno"> 1112</span></div>
+<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l01118" name="l01118"></a><span class="lineno"><a class="line" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87"> 1118</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l01119" name="l01119"></a><span class="lineno"> 1119</span></div>
+<div class="line"><a id="l01124" name="l01124"></a><span class="lineno"> 1124</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l01125" name="l01125"></a><span class="lineno"><a class="line" href="namespacetf.html#a49086c014251934964dadc1a280ce35f"> 1125</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v&lt;IndexRange&lt;T, 1&gt;</a>&gt; = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01126" name="l01126"></a><span class="lineno"> 1126</span></div>
+<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
+<div class="line"><a id="l01138" name="l01138"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRange1DLike.html"> 1138</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">IndexRange1DLike</a> = <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
+<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"> 1139</span></div>
+<div class="line"><a id="l01144" name="l01144"></a><span class="lineno"> 1144</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l01145" name="l01145"></a><span class="lineno"><a class="line" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304"> 1145</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l01146" name="l01146"></a><span class="lineno"> 1146</span></div>
+<div class="line"><a id="l01152" name="l01152"></a><span class="lineno"> 1152</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l01153" name="l01153"></a><span class="lineno"> 1153</span><span class="keyword">requires</span> (N &gt; 1)</div>
+<div class="line"><a id="l01154" name="l01154"></a><span class="lineno"><a class="line" href="namespacetf.html#ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"> 1154</a></span><span class="keyword">constexpr</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v</a>&lt;<a class="code hl_class" href="classtf_1_1IndexRange.html">IndexRange&lt;T, N&gt;</a>&gt; = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l01155" name="l01155"></a><span class="lineno"> 1155</span></div>
+<div class="line"><a id="l01167" name="l01167"></a><span class="lineno"> 1167</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> R&gt;</div>
+<div class="line"><a id="l01168" name="l01168"></a><span class="lineno"><a class="line" href="concepttf_1_1IndexRangeMDLike.html"> 1168</a></span><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRangeMDLike.html">IndexRangeMDLike</a> = <a class="code hl_variable" href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;;</div>
+<div class="line"><a id="l01169" name="l01169"></a><span class="lineno"> 1169</span> </div>
+<div class="line"><a id="l01170" name="l01170"></a><span class="lineno"> 1170</span>}  <span class="comment">// end of namespace tf -----------------------------------------------------</span></div>
 </div>
 </div>
 </div>
@@ -582,38 +582,38 @@ $(function(){initNavTree('iterator_8hpp_source.html',''); initResizable(true); }
 </div>
 </div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a00cf7c00bca9ffc85dcb16e31e54a31f"><div class="ttname"><a href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">tf::IndexRange&lt; T, 1 &gt;::dims</a></div><div class="ttdeci">const std::array&lt; IndexRange&lt; T, 1 &gt;, N &gt; &amp; dims() const</div><div class="ttdef"><b>Definition</b> iterator.hpp:226</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a0744bf254aa82b2e341eacb2d9610f1d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange(const std::array&lt; IndexRange&lt; T, 1 &gt;, N &gt; &amp;dims)</div><div class="ttdoc">constructs an N-D index range from an array of 1D ranges</div><div class="ttdef"><b>Definition</b> iterator.hpp:495</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a00cf7c00bca9ffc85dcb16e31e54a31f"><div class="ttname"><a href="classtf_1_1IndexRange.html#a00cf7c00bca9ffc85dcb16e31e54a31f">tf::IndexRange&lt; T, 1 &gt;::dims</a></div><div class="ttdeci">const std::array&lt; IndexRange&lt; T, 1 &gt;, N &gt; &amp; dims() const</div><div class="ttdef"><b>Definition</b> iterator.hpp:355</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a0744bf254aa82b2e341eacb2d9610f1d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a0744bf254aa82b2e341eacb2d9610f1d">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange(const std::array&lt; IndexRange&lt; T, 1 &gt;, N &gt; &amp;dims)</div><div class="ttdoc">constructs an N-D index range from an array of 1D ranges</div><div class="ttdef"><b>Definition</b> iterator.hpp:656</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a0824674a9cd219a11d08bb5dd43003d8"><div class="ttname"><a href="classtf_1_1IndexRange.html#a0824674a9cd219a11d08bb5dd43003d8">tf::IndexRange::index_type</a></div><div class="ttdeci">T index_type</div><div class="ttdoc">alias for the index type</div><div class="ttdef"><b>Definition</b> iterator.hpp:172</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a16ac4ffd13ac931ea54de885ab9457b6"><div class="ttname"><a href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">tf::IndexRange::size</a></div><div class="ttdeci">size_t size() const</div><div class="ttdoc">returns the number of active flat iterations</div><div class="ttdef"><b>Definition</b> iterator.hpp:498</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a16ac4ffd13ac931ea54de885ab9457b6"><div class="ttname"><a href="classtf_1_1IndexRange.html#a16ac4ffd13ac931ea54de885ab9457b6">tf::IndexRange::size</a></div><div class="ttdeci">size_t size() const</div><div class="ttdoc">returns the number of active flat iterations</div><div class="ttdef"><b>Definition</b> iterator.hpp:659</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a1f3546744c7dc7c8cf3d3c04c9834555"><div class="ttname"><a href="classtf_1_1IndexRange.html#a1f3546744c7dc7c8cf3d3c04c9834555">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange()=default</div><div class="ttdoc">constructs an N-dimensional index range without initialization</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a23bcb1dbbdcf62fe1c7989e1ddb01a0d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">tf::IndexRange::slice_floor</a></div><div class="ttdeci">std::pair&lt; IndexRange&lt; T, N &gt;, size_t &gt; slice_floor(size_t flat_beg, size_t chunk_size) const</div><div class="ttdoc">returns the largest perfectly-aligned hyperbox reachable from flat_beg whose size does not exceed chu...</div><div class="ttdef"><b>Definition</b> iterator.hpp:632</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a26a796eb3a6b632c2cdd3ca99925ca96"><div class="ttname"><a href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange(Ranges &amp;&amp;... ranges)</div><div class="ttdoc">constructs an N-D index range from N 1D IndexRange&lt;T, 1&gt; objects</div><div class="ttdef"><b>Definition</b> iterator.hpp:201</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:216</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a310b9e96d4103355eb1f4a19ecc0c7d2"><div class="ttname"><a href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">tf::IndexRange&lt; T, 1 &gt;::rank</a></div><div class="ttdeci">static constexpr size_t rank</div><div class="ttdoc">the number of dimensions (always 1 for this specialization)</div><div class="ttdef"><b>Definition</b> iterator.hpp:764</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a657401e33764001b87e165c7b6083c4b"><div class="ttname"><a href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; step_size(T new_step_size)</div><div class="ttdoc">updates the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:818</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a6b29a75c7f8fca9f001f5a5ae2a6aa5d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; end(T new_end)</div><div class="ttdoc">updates the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:813</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:783</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a23bcb1dbbdcf62fe1c7989e1ddb01a0d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a23bcb1dbbdcf62fe1c7989e1ddb01a0d">tf::IndexRange::slice_floor</a></div><div class="ttdeci">std::pair&lt; IndexRange&lt; T, N &gt;, size_t &gt; slice_floor(size_t flat_beg, size_t chunk_size) const</div><div class="ttdoc">returns the largest perfectly-aligned hyperbox reachable from flat_beg whose size does not exceed chu...</div><div class="ttdef"><b>Definition</b> iterator.hpp:793</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a26a796eb3a6b632c2cdd3ca99925ca96"><div class="ttname"><a href="classtf_1_1IndexRange.html#a26a796eb3a6b632c2cdd3ca99925ca96">tf::IndexRange::IndexRange</a></div><div class="ttdeci">IndexRange(Ranges &amp;&amp;... ranges)</div><div class="ttdoc">constructs an N-D index range from N 1D IndexRange&lt;T, 1&gt; objects</div><div class="ttdef"><b>Definition</b> iterator.hpp:230</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:298</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a310b9e96d4103355eb1f4a19ecc0c7d2"><div class="ttname"><a href="classtf_1_1IndexRange.html#a310b9e96d4103355eb1f4a19ecc0c7d2">tf::IndexRange&lt; T, 1 &gt;::rank</a></div><div class="ttdeci">static constexpr size_t rank</div><div class="ttdoc">the number of dimensions (always 1 for this specialization)</div><div class="ttdef"><b>Definition</b> iterator.hpp:925</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a657401e33764001b87e165c7b6083c4b"><div class="ttname"><a href="classtf_1_1IndexRange.html#a657401e33764001b87e165c7b6083c4b">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; step_size(T new_step_size)</div><div class="ttdoc">updates the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:979</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a6b29a75c7f8fca9f001f5a5ae2a6aa5d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a6b29a75c7f8fca9f001f5a5ae2a6aa5d">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; end(T new_end)</div><div class="ttdoc">updates the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:974</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:944</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_a72e15adcfd4a61bbd8f4acf4e5ddce72"><div class="ttname"><a href="classtf_1_1IndexRange.html#a72e15adcfd4a61bbd8f4acf4e5ddce72">tf::IndexRange&lt; T, 1 &gt;::IndexRange</a></div><div class="ttdeci">IndexRange()=default</div><div class="ttdoc">constructs an index range object without any initialization</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a7cd2ccf644cdac1d0401876603948102"><div class="ttname"><a href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">tf::IndexRange::floor</a></div><div class="ttdeci">size_t floor(size_t chunk_size) const</div><div class="ttdoc">returns the largest hyperplane-aligned chunk size that is &lt;= chunk_size</div><div class="ttdef"><b>Definition</b> iterator.hpp:531</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_a7cd2ccf644cdac1d0401876603948102"><div class="ttname"><a href="classtf_1_1IndexRange.html#a7cd2ccf644cdac1d0401876603948102">tf::IndexRange::floor</a></div><div class="ttdeci">size_t floor(size_t chunk_size) const</div><div class="ttdoc">returns the largest hyperplane-aligned chunk size that is &lt;= chunk_size</div><div class="ttdef"><b>Definition</b> iterator.hpp:692</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRange_html_aa7d09d06ea0e3107b6c2b2f520cd24fe"><div class="ttname"><a href="classtf_1_1IndexRange.html#aa7d09d06ea0e3107b6c2b2f520cd24fe">tf::IndexRange::rank</a></div><div class="ttdeci">static constexpr size_t rank</div><div class="ttdoc">the number of dimensions</div><div class="ttdef"><b>Definition</b> iterator.hpp:177</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:793</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab44296c42e08636a3b606628c0142201"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; begin(T new_begin)</div><div class="ttdoc">updates the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:808</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab78daf6b48dcfa6b3b5fbd46f6d7fc68"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">tf::IndexRange&lt; T, 1 &gt;::index_type</a></div><div class="ttdeci">T index_type</div><div class="ttdoc">alias for the index type used in the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:759</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad40793694fe4b44fd50b5a926063c834"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">tf::IndexRange::size</a></div><div class="ttdeci">size_t size(size_t d) const</div><div class="ttdoc">returns the number of iterations along dimension d</div><div class="ttdef"><b>Definition</b> iterator.hpp:235</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad4f34cf75da8d6738635f95b7eb992ee"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">tf::IndexRange&lt; T, 1 &gt;::IndexRange</a></div><div class="ttdeci">IndexRange(T beg, T end, T step_size)</div><div class="ttdoc">constructs an IndexRange object</div><div class="ttdef"><b>Definition</b> iterator.hpp:777</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:788</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ae96d66a0bdff45a82d46ca149bdbbb00"><div class="ttname"><a href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">tf::IndexRange::slice_ceil</a></div><div class="ttdeci">std::pair&lt; IndexRange&lt; T, N &gt;, size_t &gt; slice_ceil(size_t flat_beg, size_t chunk_size) const</div><div class="ttdoc">returns the smallest perfectly-aligned hyperbox reachable from flat_beg, rounding up to the next hype...</div><div class="ttdef"><b>Definition</b> iterator.hpp:556</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_af346d8d49331686e3b1aa2b79b9746dc"><div class="ttname"><a href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">tf::IndexRange::dim</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; dim(size_t d)</div><div class="ttdoc">returns the 1D range for dimension d (mutable)</div><div class="ttdef"><b>Definition</b> iterator.hpp:221</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_af79763821764f0a8db523400efc299e8"><div class="ttname"><a href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">tf::IndexRange::ceil</a></div><div class="ttdeci">size_t ceil(size_t chunk_size) const</div><div class="ttdoc">returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at size() when chunk...</div><div class="ttdef"><b>Definition</b> iterator.hpp:509</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_afe85723ad901f32d53991359b3d007b2"><div class="ttname"><a href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">tf::IndexRange&lt; T, 1 &gt;::reset</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; reset(T begin, T end, T step_size)</div><div class="ttdoc">updates the range with the new starting index, ending index, and step size</div><div class="ttdef"><b>Definition</b> iterator.hpp:798</div></div>
-<div class="ttc" id="aconcepttf_1_1IndexRange1DLike_html"><div class="ttname"><a href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRange&lt;T, 1&gt;.</div><div class="ttdef"><b>Definition</b> iterator.hpp:977</div></div>
-<div class="ttc" id="aconcepttf_1_1IndexRangeLike_html"><div class="ttname"><a href="concepttf_1_1IndexRangeLike.html">tf::IndexRangeLike</a></div><div class="ttdoc">concept to check if a type an tf::IndexRange, regardless of dimensionality</div><div class="ttdef"><b>Definition</b> iterator.hpp:950</div></div>
-<div class="ttc" id="aconcepttf_1_1IndexRangeMDLike_html"><div class="ttname"><a href="concepttf_1_1IndexRangeMDLike.html">tf::IndexRangeMDLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRange&lt;T, N&gt; with rank &gt; 1</div><div class="ttdef"><b>Definition</b> iterator.hpp:1007</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:954</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ab44296c42e08636a3b606628c0142201"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab44296c42e08636a3b606628c0142201">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; begin(T new_begin)</div><div class="ttdoc">updates the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:969</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ab78daf6b48dcfa6b3b5fbd46f6d7fc68"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab78daf6b48dcfa6b3b5fbd46f6d7fc68">tf::IndexRange&lt; T, 1 &gt;::index_type</a></div><div class="ttdeci">T index_type</div><div class="ttdoc">alias for the index type used in the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:920</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ad40793694fe4b44fd50b5a926063c834"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad40793694fe4b44fd50b5a926063c834">tf::IndexRange::size</a></div><div class="ttdeci">size_t size(size_t d) const</div><div class="ttdoc">returns the number of iterations along dimension d</div><div class="ttdef"><b>Definition</b> iterator.hpp:396</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ad4f34cf75da8d6738635f95b7eb992ee"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad4f34cf75da8d6738635f95b7eb992ee">tf::IndexRange&lt; T, 1 &gt;::IndexRange</a></div><div class="ttdeci">IndexRange(T beg, T end, T step_size)</div><div class="ttdoc">constructs an IndexRange object</div><div class="ttdef"><b>Definition</b> iterator.hpp:938</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:949</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_ae96d66a0bdff45a82d46ca149bdbbb00"><div class="ttname"><a href="classtf_1_1IndexRange.html#ae96d66a0bdff45a82d46ca149bdbbb00">tf::IndexRange::slice_ceil</a></div><div class="ttdeci">std::pair&lt; IndexRange&lt; T, N &gt;, size_t &gt; slice_ceil(size_t flat_beg, size_t chunk_size) const</div><div class="ttdoc">returns the smallest perfectly-aligned hyperbox reachable from flat_beg, rounding up to the next hype...</div><div class="ttdef"><b>Definition</b> iterator.hpp:717</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_af346d8d49331686e3b1aa2b79b9746dc"><div class="ttname"><a href="classtf_1_1IndexRange.html#af346d8d49331686e3b1aa2b79b9746dc">tf::IndexRange::dim</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; dim(size_t d)</div><div class="ttdoc">returns the 1D range for dimension d (mutable)</div><div class="ttdef"><b>Definition</b> iterator.hpp:325</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_af79763821764f0a8db523400efc299e8"><div class="ttname"><a href="classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8">tf::IndexRange::ceil</a></div><div class="ttdeci">size_t ceil(size_t chunk_size) const</div><div class="ttdoc">returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at size() when chunk...</div><div class="ttdef"><b>Definition</b> iterator.hpp:670</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRange_html_afe85723ad901f32d53991359b3d007b2"><div class="ttname"><a href="classtf_1_1IndexRange.html#afe85723ad901f32d53991359b3d007b2">tf::IndexRange&lt; T, 1 &gt;::reset</a></div><div class="ttdeci">IndexRange&lt; T, 1 &gt; &amp; reset(T begin, T end, T step_size)</div><div class="ttdoc">updates the range with the new starting index, ending index, and step size</div><div class="ttdef"><b>Definition</b> iterator.hpp:959</div></div>
+<div class="ttc" id="aconcepttf_1_1IndexRange1DLike_html"><div class="ttname"><a href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRange&lt;T, 1&gt;.</div><div class="ttdef"><b>Definition</b> iterator.hpp:1138</div></div>
+<div class="ttc" id="aconcepttf_1_1IndexRangeLike_html"><div class="ttname"><a href="concepttf_1_1IndexRangeLike.html">tf::IndexRangeLike</a></div><div class="ttdoc">concept to check if a type an tf::IndexRange, regardless of dimensionality</div><div class="ttdef"><b>Definition</b> iterator.hpp:1111</div></div>
+<div class="ttc" id="aconcepttf_1_1IndexRangeMDLike_html"><div class="ttname"><a href="concepttf_1_1IndexRangeMDLike.html">tf::IndexRangeMDLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRange&lt;T, N&gt; with rank &gt; 1</div><div class="ttdef"><b>Definition</b> iterator.hpp:1168</div></div>
 <div class="ttc" id="anamespacetf_html"><div class="ttname"><a href="namespacetf.html">tf</a></div><div class="ttdoc">taskflow namespace</div><div class="ttdef"><b>Definition</b> small_vector.hpp:20</div></div>
-<div class="ttc" id="anamespacetf_html_a01f6a38951a99908710af5db131b6f87"><div class="ttname"><a href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">tf::is_1d_index_range_v</a></div><div class="ttdeci">constexpr bool is_1d_index_range_v</div><div class="ttdoc">base type trait to detect if a type is a 1D IndexRange</div><div class="ttdef"><b>Definition</b> iterator.hpp:957</div></div>
-<div class="ttc" id="anamespacetf_html_a477d4de8f2a49f2bba84392a5ff97304"><div class="ttname"><a href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">tf::is_md_index_range_v</a></div><div class="ttdeci">constexpr bool is_md_index_range_v</div><div class="ttdoc">base type trait to detect if a type is a multi-dimensional IndexRange (rank &gt; 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:984</div></div>
-<div class="ttc" id="anamespacetf_html_a726868d615a52212b56fe36839b27a9a"><div class="ttname"><a href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">tf::is_index_range_v</a></div><div class="ttdeci">constexpr bool is_index_range_v</div><div class="ttdoc">base type trait to detect if a type is an IndexRange</div><div class="ttdef"><b>Definition</b> iterator.hpp:929</div></div>
+<div class="ttc" id="anamespacetf_html_a01f6a38951a99908710af5db131b6f87"><div class="ttname"><a href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">tf::is_1d_index_range_v</a></div><div class="ttdeci">constexpr bool is_1d_index_range_v</div><div class="ttdoc">base type trait to detect if a type is a 1D IndexRange</div><div class="ttdef"><b>Definition</b> iterator.hpp:1118</div></div>
+<div class="ttc" id="anamespacetf_html_a477d4de8f2a49f2bba84392a5ff97304"><div class="ttname"><a href="namespacetf.html#a477d4de8f2a49f2bba84392a5ff97304">tf::is_md_index_range_v</a></div><div class="ttdeci">constexpr bool is_md_index_range_v</div><div class="ttdoc">base type trait to detect if a type is a multi-dimensional IndexRange (rank &gt; 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:1145</div></div>
+<div class="ttc" id="anamespacetf_html_a726868d615a52212b56fe36839b27a9a"><div class="ttname"><a href="namespacetf.html#a726868d615a52212b56fe36839b27a9a">tf::is_index_range_v</a></div><div class="ttdeci">constexpr bool is_index_range_v</div><div class="ttdoc">base type trait to detect if a type is an IndexRange</div><div class="ttdef"><b>Definition</b> iterator.hpp:1090</div></div>
 <div class="ttc" id="anamespacetf_html_a9922bf2ed04b3e630d4e62258d1a4213"><div class="ttname"><a href="namespacetf.html#a9922bf2ed04b3e630d4e62258d1a4213">tf::distance</a></div><div class="ttdeci">constexpr size_t distance(T beg, T end, T step)</div><div class="ttdoc">calculates the number of iterations in the given index range</div><div class="ttdef"><b>Definition</b> iterator.hpp:71</div></div>
 <div class="ttc" id="anamespacetf_html_a9fcd6db9b8e992d9a0921ddd3b349042"><div class="ttname"><a href="namespacetf.html#a9fcd6db9b8e992d9a0921ddd3b349042">tf::is_index_range_invalid</a></div><div class="ttdeci">constexpr bool is_index_range_invalid(T beg, T end, T step)</div><div class="ttdoc">checks if the given index range is invalid</div><div class="ttdef"><b>Definition</b> iterator.hpp:28</div></div>
 <div class="ttc" id="anamespacetf_html_ac6e52a96475a1ae2a454f7d7d877b446"><div class="ttname"><a href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange</a></div><div class="ttdeci">IndexRange(T, T, T) -&gt; IndexRange&lt; T, 1 &gt;</div><div class="ttdoc">deduction guide for tf::IndexRange&lt;T, 1&gt;</div></div>

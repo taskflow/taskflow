@@ -205,7 +205,7 @@ simply never executes, while the outer loops still run.
 
 @code{.cpp}
 // The middle dimension has zero iterations (j_begin == j_end).
-// The outer i-loop still runs 100 times; the j/k body never executes.
+// The outer i-loop still has work; the j/k body never executes.
 tf::IndexRange<int, 3> range(
   tf::IndexRange<int>(0, 100, 1),   // i: 100 iterations
   tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations — body never runs
@@ -214,12 +214,15 @@ tf::IndexRange<int, 3> range(
 // range.size() == 100  (outer i-loop only)
 
 taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
-  // called 100 times (once per i-value)
-  // sub.dim(1).size() == 0, so the inner j-loop never executes
+  // Each sub-box covers a slice of the active i-dimension.
+  // Only process(i) is ever called — the j-loop never executes,
+  // so process(i, j) and process(i, j, k) are never reached.
   for(int i = sub.dim(0).begin(); i < sub.dim(0).end(); ++i) {
+    process(i);                         // <-- called for every i
     for(int j = sub.dim(1).begin(); j < sub.dim(1).end(); ++j) {  // never entered
+      process(i, j);                    // <-- never called
       for(int k = sub.dim(2).begin(); k < sub.dim(2).end(); ++k) {
-        process(i, j, k);
+        process(i, j, k);               // <-- never called
       }
     }
   }
@@ -230,9 +233,11 @@ This is equivalent to the sequential nested loop:
 
 @code{.cpp}
 for(int i = 0; i < 100; ++i) {
-  for(int j = 0; j < 0; ++j) {   // zero iterations — body skipped
+  process(i);                           // <-- called for every i
+  for(int j = 0; j < 0; ++j) {         // zero iterations — body skipped
+    process(i, j);                      // <-- never called
     for(int k = 0; k < 100; ++k) {
-      process(i, j, k);
+      process(i, j, k);                 // <-- never called
     }
   }
 }
