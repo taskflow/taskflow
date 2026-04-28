@@ -1553,3 +1553,99 @@ TEST_CASE("AtomicNotifier.bug2_notify_n_exact_size.15threads" * doctest::timeout
 TEST_CASE("AtomicNotifier.bug3_epoch_field.N2" * doctest::timeout(30)) { notify_n_releases_committed<tf::AtomicNotifier>(2, 1, 20, 99);  }
 TEST_CASE("AtomicNotifier.bug3_epoch_field.N4" * doctest::timeout(30)) { notify_n_releases_committed<tf::AtomicNotifier>(4, 2, 20, 100); }
 TEST_CASE("AtomicNotifier.bug3_epoch_field.N8" * doctest::timeout(30)) { notify_n_releases_committed<tf::AtomicNotifier>(8, 4, 20, 101); }
+
+//template to check not only for 2 workers (func arg) but n workers
+// template <typename T>
+// void test_template(size_t num_workers) {
+
+//   constexpr size_t NUM_RUNS = 10;   // hardcoded runs
+
+//   T notifier(num_workers);
+//   REQUIRE(notifier.size() == num_workers);
+
+//   std::atomic<size_t> round{0};
+//   std::atomic<size_t> prepared{0};
+//   std::atomic<size_t> committed{0};
+//   std::atomic<bool> stop{false};
+
+//   std::vector<std::thread> workers;
+//   workers.reserve(num_workers);
+
+//   // =========================
+//   // Worker threads
+//   // =========================
+
+//   for (size_t i = 0; i < num_workers; ++i) {
+
+//     workers.emplace_back([&, i] {
+
+//       size_t local_round = 0;
+
+//       while (!stop.load(std::memory_order_relaxed)) {
+
+//         while (round.load(std::memory_order_acquire) == local_round) {
+//           if (stop.load(std::memory_order_relaxed)) return;
+//           std::this_thread::yield();
+//         }
+
+//         notifier.prepare_wait(i);
+//         prepared.fetch_add(1, std::memory_order_release);
+
+//         notifier.commit_wait(i);
+//         committed.fetch_add(1, std::memory_order_release);
+
+//         local_round++;
+//       }
+
+//     });
+
+//   }
+
+//   // =========================
+//   // Rounds (fixed)
+//   // =========================
+
+//   for (size_t r = 0; r < NUM_RUNS; ++r) {
+
+//     prepared.store(0);
+//     committed.store(0);
+
+//     round.store(r + 1, std::memory_order_release);
+
+//     while (prepared.load(std::memory_order_acquire) != num_workers) {
+//       std::this_thread::yield();
+//     }
+
+//     notifier.notify_all();
+
+//     while (committed.load(std::memory_order_acquire) != num_workers) {
+//       std::this_thread::yield();
+//     }
+
+//   }
+
+//   stop.store(true);
+//   round.fetch_add(1);
+
+//   notifier.notify_all();
+
+//   for (auto& t : workers) {
+//     if (t.joinable()) t.join();
+//   }
+
+//   REQUIRE(notifier.num_waiters() == 0);
+// }
+
+// static const std::vector<size_t> WORKER_COUNTS = {
+//   1,
+//   2,
+//   3,  
+//   4,
+//   5,   
+//   7,  
+//   8,
+//   9,   
+//   15,
+//   16,
+//   31 
+// };
