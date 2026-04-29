@@ -720,9 +720,9 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
     return { *this, 0 };
   }
 
-  // Find d_active: the index of the first zero-size dimension (or N if none).
-  // Only dimensions [0, d_active) participate in the flat iteration space.
-  // Dimensions [d_active, N) are copied as full extent into the returned box.
+  // Pass 1 (forward): cache dim sizes and find d_active — the first zero-size
+  // dimension.  Only [0, d_active) participates in the flat iteration space;
+  // dims [d_active, N) are copied as full extent into the returned box.
   size_t dim_sizes[N];
   size_t d_active = N;
   for (size_t d = 0; d < N; ++d) {
@@ -730,26 +730,29 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
     if (dim_sizes[d] == 0) { d_active = d; break; }
   }
 
-  if (d_active == 0) return { *this, 0 };  // outermost dim is zero — no work
+  if (d_active == 0) return { *this, 0 };
 
-  // Decode flat_beg into coords for active dimensions [0, d_active) only.
+  // Pass 2a (backward): decode flat_beg into per-dimension coords.
+  // Must complete fully — all coords needed for box construction.
   size_t coords[N] = {};
-  size_t temp = flat_beg;
+  size_t temp      = flat_beg;
   for (size_t d = d_active; d-- > 0; ) {
     coords[d] = temp % dim_sizes[d];
     temp     /= dim_sizes[d];
   }
 
-  // Find grow_dim within [0, d_active): record each dim BEFORE the budget check
-  // (ceil: round up to the next boundary). Stop when budget met or trailing-zeros fires.
-  size_t grow_dim        = d_active - 1;
-  size_t inner_volume    = 1;
+  // Pass 2b (backward, fused with grow_dim search): find grow_dim.
+  // Ceil variant: commit grow_dim BEFORE the budget check (round up).
+  size_t grow_dim         = d_active - 1;
+  size_t inner_volume     = 1;
   size_t active_inner_vol = 1;
 
   for (size_t d = d_active; d-- > 0; ) {
-    if (d + 1 < d_active && coords[d + 1] != 0) break;  // trailing-zeros rule
+    // trailing-zeros rule: inner coord non-zero → can't expand further out
+    if (d + 1 < d_active && coords[d + 1] != 0) break;
 
-    grow_dim        = d;
+    // ceil: commit BEFORE budget check
+    grow_dim         = d;
     active_inner_vol = inner_volume;
 
     if (inner_volume >= chunk_size) break;
@@ -757,32 +760,40 @@ IndexRange<T, N>::slice_ceil(size_t flat_beg, size_t chunk_size) const {
     inner_volume *= dim_sizes[d];
   }
 
-  // Steps along grow_dim: ceil division, at least 1.
+  // Steps along grow_dim: ceil division, at least 1 for forward progress.
   size_t steps_left    = dim_sizes[grow_dim] - coords[grow_dim];
   size_t steps_needed  = (std::max)(size_t{1}, chunk_size / active_inner_vol);
   size_t steps_to_take = (std::min)(steps_left, steps_needed);
 
-  // Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner
-  // as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).
+  // Pass 3: construct the sub-box in three clean segments with no branching
+  // inside each loop:
+  //   [0, grow_dim)      — locked dims (one element each)
+  //   [grow_dim]         — the grow dimension
+  //   [grow_dim+1, N)    — full inner/inactive extent
   std::array<IndexRange<T, 1>, N> box_dims;
-  for (size_t d = 0; d < N; ++d) {
-    const auto& dim  = _dims[d];
-    const T     step = dim.step_size();
-    const T     beg  = dim.begin();
-    if (d >= d_active) {
-      box_dims[d] = dim;                                           // full extent
-    } else if (d < grow_dim) {
-      T b = beg + static_cast<T>(coords[d]) * step;
-      box_dims[d] = IndexRange<T, 1>(b, b + step, step);          // locked
-    } else if (d == grow_dim) {
-      box_dims[d] = IndexRange<T, 1>(
-        beg + static_cast<T>(coords[d])                 * step,
-        beg + static_cast<T>(coords[d] + steps_to_take) * step,
-        step
-      );
-    } else {
-      box_dims[d] = dim;                                           // full inner extent
-    }
+
+  for (size_t d = 0; d < grow_dim; ++d) {
+    const T beg  = _dims[d].begin();
+    const T step = _dims[d].step_size();
+    box_dims[d] = IndexRange<T, 1>(
+      beg + static_cast<T>(coords[d]) * step,
+      beg + static_cast<T>(coords[d] + 1) * step,
+      step
+    );
+  }
+
+  {
+    const T beg  = _dims[grow_dim].begin();
+    const T step = _dims[grow_dim].step_size();
+    box_dims[grow_dim] = IndexRange<T, 1>(
+      beg + static_cast<T>(coords[grow_dim])                 * step,
+      beg + static_cast<T>(coords[grow_dim] + steps_to_take) * step,
+      step
+    );
+  }
+
+  for (size_t d = grow_dim + 1; d < N; ++d) {
+    box_dims[d] = _dims[d];  // full inner or inactive extent
   }
 
   return { IndexRange<T, N>(box_dims), steps_to_take * active_inner_vol };
@@ -796,9 +807,7 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
     return { *this, 0 };
   }
 
-  // Find d_active: the index of the first zero-size dimension (or N if none).
-  // Only dimensions [0, d_active) participate in the flat iteration space.
-  // Dimensions [d_active, N) are copied as full extent into the returned box.
+  // Pass 1 (forward): cache dim sizes and find d_active.
   size_t dim_sizes[N];
   size_t d_active = N;
   for (size_t d = 0; d < N; ++d) {
@@ -806,31 +815,34 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
     if (dim_sizes[d] == 0) { d_active = d; break; }
   }
 
-  if (d_active == 0) return { *this, 0 };  // outermost dim is zero — no work
+  if (d_active == 0) return { *this, 0 };
 
-  // Decode flat_beg into coords for active dimensions [0, d_active) only.
+  // Pass 2a (backward): decode flat_beg into per-dimension coords.
+  // Must complete fully — all coords needed for box construction.
   size_t coords[N] = {};
-  size_t temp = flat_beg;
+  size_t temp      = flat_beg;
   for (size_t d = d_active; d-- > 0; ) {
     coords[d] = temp % dim_sizes[d];
     temp     /= dim_sizes[d];
   }
 
-  // Find grow_dim within [0, d_active): commit each dim AFTER the budget check
-  // (floor: round down to the previous boundary).
-  size_t grow_dim        = d_active - 1;
+  // Pass 2b (backward, fused with grow_dim search): find grow_dim.
+  // Floor variant: commit grow_dim AFTER the budget check (round down).
+  size_t grow_dim         = d_active - 1;
+  size_t inner_volume     = 1;
   size_t active_inner_vol = 1;
-  size_t inner_volume    = 1;
 
   for (size_t d = d_active; d-- > 0; ) {
-    if (d + 1 < d_active && coords[d + 1] != 0) break;  // trailing-zeros rule
+    // trailing-zeros rule
+    if (d + 1 < d_active && coords[d + 1] != 0) break;
 
+    // floor: budget check BEFORE committing
     size_t next_vol = inner_volume * dim_sizes[d];
     if (next_vol > chunk_size && inner_volume > 1) break;
 
-    grow_dim        = d;
+    grow_dim         = d;
     active_inner_vol = inner_volume;
-    inner_volume    = next_vol;
+    inner_volume     = next_vol;
   }
 
   // Steps along grow_dim: floor division, at least 1 for forward progress.
@@ -838,27 +850,31 @@ IndexRange<T, N>::slice_floor(size_t flat_beg, size_t chunk_size) const {
   size_t steps_needed  = (std::max)(size_t{1}, chunk_size / active_inner_vol);
   size_t steps_to_take = (std::min)(steps_left, steps_needed);
 
-  // Construct the sub-box.  Active dims [0, d_active) are locked/grow/inner
-  // as usual; dims [d_active, N) are copied as full extent (zero-size and beyond).
+  // Pass 3: construct the sub-box in three clean segments.
   std::array<IndexRange<T, 1>, N> box_dims;
-  for (size_t d = 0; d < N; ++d) {
-    const auto& dim  = _dims[d];
-    const T     step = dim.step_size();
-    const T     beg  = dim.begin();
-    if (d >= d_active) {
-      box_dims[d] = dim;                                           // full extent
-    } else if (d < grow_dim) {
-      T b = beg + static_cast<T>(coords[d]) * step;
-      box_dims[d] = IndexRange<T, 1>(b, b + step, step);          // locked
-    } else if (d == grow_dim) {
-      box_dims[d] = IndexRange<T, 1>(
-        beg + static_cast<T>(coords[d])                 * step,
-        beg + static_cast<T>(coords[d] + steps_to_take) * step,
-        step
-      );
-    } else {
-      box_dims[d] = dim;                                           // full inner extent
-    }
+
+  for (size_t d = 0; d < grow_dim; ++d) {
+    const T beg  = _dims[d].begin();
+    const T step = _dims[d].step_size();
+    box_dims[d] = IndexRange<T, 1>(
+      beg + static_cast<T>(coords[d]) * step,
+      beg + static_cast<T>(coords[d] + 1) * step,
+      step
+    );
+  }
+
+  {
+    const T beg  = _dims[grow_dim].begin();
+    const T step = _dims[grow_dim].step_size();
+    box_dims[grow_dim] = IndexRange<T, 1>(
+      beg + static_cast<T>(coords[grow_dim])                 * step,
+      beg + static_cast<T>(coords[grow_dim] + steps_to_take) * step,
+      step
+    );
+  }
+
+  for (size_t d = grow_dim + 1; d < N; ++d) {
+    box_dims[d] = _dims[d];  // full inner or inactive extent
   }
 
   return { IndexRange<T, N>(box_dims), steps_to_take * active_inner_vol };

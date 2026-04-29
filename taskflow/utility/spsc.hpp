@@ -236,7 +236,7 @@ class SPSCRing {
 
   alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _tail{0};
   alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _head{0};
-  std::array<T, SIZE> _buf{};
+  alignas(TF_CACHELINE_SIZE) std::array<T, SIZE> _buf{};
 };
 
 } // namespace tf
