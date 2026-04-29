@@ -22,6 +22,11 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
     
+    if(N == 0) {
+      result = end;
+      return;
+    }
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       part([=, &result]() mutable { result = std::find_if(beg, end, predicate); })();
@@ -42,7 +47,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -67,7 +72,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, *next, 
+          part.loop(N, W, *next, 
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -108,6 +113,11 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
     
+    if(N == 0) {
+      result = end;
+      return;
+    }
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       part([=, &result] () mutable { result = std::find_if_not(beg, end, predicate); })();
@@ -127,7 +137,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -152,7 +162,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, *next, 
+          part.loop(N, W, *next, 
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -193,6 +203,11 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
     
+    if(N == 0) {
+      result = end;
+      return;
+    }
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       part([=, &result] () mutable { result = std::min_element(beg, end, comp); })();
@@ -335,6 +350,11 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
     
+    if(N == 0) {
+      result = end;
+      return;
+    }
+
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       part([=, &result] () mutable { result = std::max_element(beg, end, comp); })();

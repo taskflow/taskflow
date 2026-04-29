@@ -39,12 +39,15 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 + added bulk cache update method in executor
 + added more unit tests to `test_notifiers.cpp`
++ added a new unittest `test_partitioners.cpp`  
 + added module support under `taskflow/modules/`
 + added adopted module task to support composable tasking with move semantics
   + tf::Taskflow::adopt
   + tf::Task::adopt
-+ added the parallel-for algorithm over a multi-dimensional index range
++ added a new parallel-for algorithm over a multi-dimensional index range
   + tf::Taskflow::for_each_by_index (see @ref ParallelIterations)
++ added a new parallel-merge algorithm tf::Taskflow::merge
+  + see @ref ParallelMerge
 + improved the dump format with proper indention
 + improved the dump format of `tf::Subflow` with cluster-level edges
 + optimized executor member variable data layout to reduce false sharing
@@ -59,13 +62,13 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 @subsection release-4-1-0_utilities Utilities
 
-+ added tf::HasGraph concept to check if a type has a tf::Graph
-+ added tf::StaticTask concept to check if a type is a static task
-+ added tf::SubflowTask concept to check if a type is a subflow task
-+ added tf::RuntimeTask concept to check if a type is a runtime task
-+ added tf::ConditionTask concept to check if a type is a condition task
-+ added tf::MultiConditionTask concept to check if a type is a multi-condition task
-+ added tf::Partitioner concept to check if a type is a partitioner
++ added tf::GraphLike concept to check if a type has a tf::Graph
++ added tf::StaticTaskLike concept to check if a type is a static task
++ added tf::SubflowTaskLike concept to check if a type is a subflow task
++ added tf::RuntimeTaskLike concept to check if a type is a runtime task
++ added tf::ConditionTaskLike concept to check if a type is a condition task
++ added tf::MultiConditionTaskLike concept to check if a type is a multi-condition task
++ added tf::PartitionerLike concept to check if a type is a partitioner
 + added tf::IndexRangeLike concept to define N-dimensional index ranges
 + added tf::IndexRange to perform parallel iterations over an N-dimensional range
 + removed `floor_log2` due to duplication with C++20 `std::bit_width`
@@ -76,6 +79,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + fixed the scope bug in creating @c tf::Future<T> from @std_future ([#761](https://github.com/taskflow/taskflow/issues/761))
 + fixed the async bug in taking name as a parameter
 + fixed the redundant call when `N` is zero in `for_each_by_index`
++ fixed the bug in `find_if` where `result` is dangling under `N=0`
 
 @section release-4-1-0_breaking_changes Breaking Changes
 
@@ -106,6 +110,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
   + added @ref ExamplesMakeGraph
   + added @ref ExamplesSpeculativeExecution
 + revised @ref Profiler
++ added @ref ParallelMerge
 
 @section release-4-1-0_miscellaneous_items Miscellaneous Items
 

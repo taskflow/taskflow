@@ -55,6 +55,18 @@ var Algorithms =
       ] ],
       [ "Sort with a Custom Comparator", "ParallelSort.html#ParallelSortCustomComparator", null ]
     ] ],
+    [ "Parallel Merge", "ParallelMerge.html", [
+      [ "Include the Header", "ParallelMerge.html#ParallelMergeInclude", null ],
+      [ "Motivation", "ParallelMerge.html#ParallelMergeMotivation", null ],
+      [ "Create a Parallel-Merge Task", "ParallelMerge.html#ParallelMergeCreate", null ],
+      [ "Capture Iterators by Reference", "ParallelMerge.html#ParallelMergeCaptureByReference", null ],
+      [ "Understanding the Parallel Merge Algorithm", "ParallelMerge.html#ParallelMergeAlgorithm", [
+        [ "Step 1: Flat Output Partitioning", "ParallelMerge.html#ParallelMergeAlgorithmOverview", null ],
+        [ "Step 2: Co-rank to Identify Input Subranges", "ParallelMerge.html#ParallelMergeAlgorithmCorank", null ],
+        [ "Step 3: How co_rank works? Binary Search!", "ParallelMerge.html#ParallelMergeAlgorithmBinarySearch", null ],
+        [ "Why parallel merge uses no partitioner", "ParallelMerge.html#ParallelMergeAlgorithmNoPartitioner", null ]
+      ] ]
+    ] ],
     [ "Parallel Scan", "ParallelScan.html", [
       [ "Include the Header", "ParallelScan.html#ParallelScanInclude", null ],
       [ "What is a Scan Operation?", "ParallelScan.html#ParallelScanWhatIsAScan", null ],

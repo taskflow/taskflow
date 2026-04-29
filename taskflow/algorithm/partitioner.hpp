@@ -310,23 +310,12 @@ class StaticPartitioner : public PartitionerBase<C> {
     size_t stride = W * chunk_size;
     while(curr_b < N) {
       size_t curr_e = (std::min)(curr_b + chunk_size, N);
-      func(curr_b, curr_e);
-      curr_b += stride;
-    }
-  }
-  
-  /**
-  @private
-  */
-  template <typename F>
-  void loop_until(
-    size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func
-  ) {
-    size_t stride = W * chunk_size;
-    while(curr_b < N) {
-      size_t curr_e = (std::min)(curr_b + chunk_size, N);
-      if(func(curr_b, curr_e)) {
-        return;
+      if constexpr (std::is_same_v<std::invoke_result_t<F, size_t, size_t>, bool>) {
+        if(func(curr_b, curr_e)) {
+          return;
+        }
+      } else {
+        func(curr_b, curr_e);
       }
       curr_b += stride;
     }
@@ -345,14 +334,19 @@ class StaticPartitioner : public PartitionerBase<C> {
   elements are double-processed across partition boundaries.
   */
   template <IndexRangeMDLike R, typename F>
-  void loop(R& range, size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func) const {
+  void loop(const R& range, size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func) const {
     size_t stride = W * chunk_size;
-    while (curr_b < N) {
+    while(curr_b < N) {
       size_t curr_e = (std::min)(curr_b + chunk_size, N);
-      while (curr_b < curr_e) {
-        // floor: guaranteed consumed <= curr_e - curr_b, no overshoot possible
+      while(curr_b < curr_e) {
         auto [box, consumed] = range.slice_floor(curr_b, curr_e - curr_b);
-        func(box);
+        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+          if(func(box)) {
+            return;
+          }
+        } else {
+          func(box);
+        }
         curr_b += consumed;
       }
       curr_b += stride - chunk_size;
@@ -461,55 +455,12 @@ class GuidedPartitioner : public PartitionerBase<C> {
           if(curr_b >= N) {
             return;
           }
-          func(curr_b, (std::min)(curr_b + chunk_size, N));
-        }
-        break;
-      }
-      // coarse-grained
-      else {
-        size_t q = static_cast<size_t>(p2 * r);
-        if(q < chunk_size) {
-          q = chunk_size;
-        }
-        //size_t curr_e = (q <= r) ? curr_b + q : N;
-        size_t curr_e = (std::min)(curr_b + q, N);
-        if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
-                                                        std::memory_order_relaxed)) {
-          func(curr_b, curr_e);
-          //curr_b = next.load(std::memory_order_relaxed);
-          curr_b = curr_e;
-        }
-      }
-    }
-  }
-  
-  /**
-  @private
-  */
-  template <typename F>
-  void loop_until(
-    size_t N, size_t W, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-
-    size_t p1 = 2 * W * (chunk_size + 1);
-    float  p2 = 0.5f / static_cast<float>(W);
-    size_t curr_b = next.load(std::memory_order_relaxed);
-
-    while(curr_b < N) {
-
-      size_t r = N - curr_b;
-
-      // fine-grained
-      if(r < p1) {
-        while(1) {
-          curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-          if(curr_b >= N) {
-            return;
-          }
-          if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
-            return;
+          if constexpr (std::is_same_v<std::invoke_result_t<F, size_t, size_t>, bool>) {
+            if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
+              return;
+            }
+          } else {
+            func(curr_b, (std::min)(curr_b + chunk_size, N));
           }
         }
         break;
@@ -520,14 +471,16 @@ class GuidedPartitioner : public PartitionerBase<C> {
         if(q < chunk_size) {
           q = chunk_size;
         }
-        //size_t curr_e = (q <= r) ? curr_b + q : N;
         size_t curr_e = (std::min)(curr_b + q, N);
         if(next.compare_exchange_strong(curr_b, curr_e, std::memory_order_relaxed,
                                                         std::memory_order_relaxed)) {
-          if(func(curr_b, curr_e)) {
-            return;
+          if constexpr (std::is_same_v<std::invoke_result_t<F, size_t, size_t>, bool>) {
+            if(func(curr_b, curr_e)) {
+              return;
+            }
+          } else {
+            func(curr_b, curr_e);
           }
-          //curr_b = next.load(std::memory_order_relaxed);
           curr_b = curr_e;
         }
       }
@@ -538,33 +491,28 @@ class GuidedPartitioner : public PartitionerBase<C> {
   @private
   */
   template <IndexRangeMDLike R, typename F>
-  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
+  void loop(const R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
 
     size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-    size_t requested_chunk_size;
     size_t p1 = 2 * W * (chunk_size + 1);
     float  p2 = 0.5f / static_cast<float>(W);
     size_t curr_b = next.load(std::memory_order_relaxed);
 
     while(curr_b < N) {
-
       size_t r = N - curr_b;
-      
-      // find-grained
-      if(r < p1) {
-        requested_chunk_size = chunk_size;
-      }
-      // coarse
-      else {
-        requested_chunk_size = (std::max)(static_cast<size_t>(p2*r), chunk_size);
-      }
-      
-      auto [box, consumed] = range.slice_ceil(curr_b, requested_chunk_size);
-      
-      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                     std::memory_order_relaxed,
-                                     std::memory_order_relaxed)) {
-        func(box);
+      auto [box, consumed] = range.slice_ceil(curr_b,
+        (r < p1) ? chunk_size : (std::max)(static_cast<size_t>(p2 * r), chunk_size)
+      );
+      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                    std::memory_order_relaxed,
+                                    std::memory_order_relaxed)) {
+        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+          if(func(box)) {
+            return;
+          }
+        } else {
+          func(box);
+        }
         curr_b += consumed;
       }
     }
@@ -658,25 +606,12 @@ class DynamicPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      func(curr_b, (std::min)(curr_b + chunk_size, N));
-      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-    }
-  }
-  
-  /**
-  @private
-  */
-  template <typename F>
-  void loop_until(
-    size_t N, size_t, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
-    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-
-    while(curr_b < N) {
-      if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
-        return;
+      if constexpr (std::is_same_v<std::invoke_result_t<F, size_t, size_t>, bool>) {
+        if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
+          return;
+        }
+      } else {
+        func(curr_b, (std::min)(curr_b + chunk_size, N));
       }
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
     }
@@ -686,18 +621,22 @@ class DynamicPartitioner : public PartitionerBase<C> {
   @private
   */
   template <IndexRangeMDLike R, typename F>
-  void loop(R& range, size_t N, size_t, std::atomic<size_t>& next, F&& func) const {
-    //size_t N = range.volume();
+  void loop(const R& range, size_t N, size_t, std::atomic<size_t>& next, F&& func) const {
     size_t curr_b = next.load(std::memory_order_relaxed);
     size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
 
-    while (curr_b < N) {
-      // calculates the actual valid sub-box and exact consumed amount
+    while(curr_b < N) {
       auto [box, consumed] = range.slice_ceil(curr_b, chunk_size);
-      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                     std::memory_order_relaxed,
-                                     std::memory_order_relaxed)) {
-        func(box);
+      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                    std::memory_order_relaxed,
+                                    std::memory_order_relaxed)) {
+        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+          if(func(box)) {
+            return;
+          }
+        } else {
+          func(box);
+        }
         curr_b += consumed;
       }
     }
@@ -840,31 +779,12 @@ class RandomPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
 
     while(curr_b < N) {
-      func(curr_b, (std::min)(curr_b + chunk_size, N));
-      chunk_size = dist(engine);
-      curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-    }
-  }
-
-  /**
-  @private
-  */
-  template <typename F>
-  void loop_until(
-    size_t N, size_t W, std::atomic<size_t>& next, F&& func
-  ) const {
-
-    auto [b1, b2] = chunk_size_range(N, W); 
-    
-    std::default_random_engine engine {std::random_device{}()};
-    std::uniform_int_distribution<size_t> dist(b1, b2);
-    
-    size_t chunk_size = dist(engine);
-    size_t curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
-
-    while(curr_b < N) {
-      if(func(curr_b, (std::min)(curr_b + chunk_size, N))){
-        return;
+      if constexpr (std::is_same_v<std::invoke_result_t<F, size_t, size_t>, bool>) {
+        if(func(curr_b, (std::min)(curr_b + chunk_size, N))) {
+          return;
+        }
+      } else {
+        func(curr_b, (std::min)(curr_b + chunk_size, N));
       }
       chunk_size = dist(engine);
       curr_b = next.fetch_add(chunk_size, std::memory_order_relaxed);
@@ -875,7 +795,7 @@ class RandomPartitioner : public PartitionerBase<C> {
   @private
   */
   template <IndexRangeMDLike R, typename F>
-  void loop(R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
+  void loop(const R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
 
     auto [b1, b2] = chunk_size_range(N, W);
 
@@ -884,15 +804,20 @@ class RandomPartitioner : public PartitionerBase<C> {
 
     size_t curr_b = next.load(std::memory_order_relaxed);
 
-    while (curr_b < N) {
+    while(curr_b < N) {
       auto [box, consumed] = range.slice_ceil(curr_b, dist(engine));
-      if (next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                     std::memory_order_relaxed,
-                                     std::memory_order_relaxed)) {
-        func(box);
+      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
+                                    std::memory_order_relaxed,
+                                    std::memory_order_relaxed)) {
+        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+          if(func(box)) {
+            return;
+          }
+        } else {
+          func(box);
+        }
         curr_b += consumed;
       }
-      // CAS failure reloads curr_b; resample chunk on next iteration naturally
     }
   }
 

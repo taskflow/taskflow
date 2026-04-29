@@ -19,6 +19,7 @@ list(APPEND TF_UNITTESTS
   test_semaphores
   test_movable
   test_cancellation
+  test_partitioners
   test_for_each
   test_reduce
   test_transform

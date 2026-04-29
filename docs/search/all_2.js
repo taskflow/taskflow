@@ -41,9 +41,10 @@ var searchData=
   ['28_38',['Release 2.0.0 (2018/08/28)',['../release-2-0-0.html',1,'Releases']]],
   ['29_39',['Release 3.2.0 (2021/07/29)',['../release-3-2-0.html',1,'Releases']]],
   ['2_3a_20asynchronous_20propagation_40',['Scenario 2: Asynchronous Propagation',['../ExceptionHandling.html#Scenario2AsynchronousExceptionPropagation',1,'']]],
-  ['2_3a_20concatenate_20two_20pipelines_41',['Example 2: Concatenate Two Pipelines',['../TaskParallelPipeline.html#ConcatenateTwoPipelines',1,'']]],
-  ['2_3a_20task_20race_42',['Pitfall 2: Task Race',['../ConditionalTasking.html#PitfallTaskRace',1,'']]],
-  ['2_3a_20write_20a_20taskflow_20program_43',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]],
-  ['2d_20convolution_44',['What is 2D Convolution?',['../ExamplesConv2D.html#Conv2DIntroduction',1,'']]],
-  ['2d_20image_20convolution_45',['2D Image Convolution',['../ExamplesConv2D.html',1,'Examples']]]
+  ['2_3a_20co_20rank_20to_20identify_20input_20subranges_41',['Step 2: Co-rank to Identify Input Subranges',['../ParallelMerge.html#ParallelMergeAlgorithmCorank',1,'']]],
+  ['2_3a_20concatenate_20two_20pipelines_42',['Example 2: Concatenate Two Pipelines',['../TaskParallelPipeline.html#ConcatenateTwoPipelines',1,'']]],
+  ['2_3a_20task_20race_43',['Pitfall 2: Task Race',['../ConditionalTasking.html#PitfallTaskRace',1,'']]],
+  ['2_3a_20write_20a_20taskflow_20program_44',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]],
+  ['2d_20convolution_45',['What is 2D Convolution?',['../ExamplesConv2D.html#Conv2DIntroduction',1,'']]],
+  ['2d_20image_20convolution_46',['2D Image Convolution',['../ExamplesConv2D.html',1,'Examples']]]
 ];

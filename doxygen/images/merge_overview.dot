@@ -1,0 +1,98 @@
+digraph MergeOverview {
+  rankdir=TB;
+  node [shape=plaintext, fontname="Helvetica", fontsize=12];
+  edge [style=invis];
+
+  seq [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="6">
+      <TR><TD ALIGN="CENTER"><B>Sequential  std::merge  —  one thread, O(N) sequential walk</B></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#AED6F1"><B>seq1</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">1</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">3</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">5</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">7</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">9</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#AED6F1">11</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#A9DFBF"><B>seq2</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">2</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">4</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">6</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">8</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">10</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#A9DFBF">12</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#D5D8DC"><B>output</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER">1</TD>
+            <TD WIDTH="38" ALIGN="CENTER">2</TD>
+            <TD WIDTH="38" ALIGN="CENTER">3</TD>
+            <TD WIDTH="38" ALIGN="CENTER">4</TD>
+            <TD WIDTH="38" ALIGN="CENTER">5</TD>
+            <TD WIDTH="38" ALIGN="CENTER">6</TD>
+            <TD WIDTH="38" ALIGN="CENTER">7</TD>
+            <TD WIDTH="38" ALIGN="CENTER">8</TD>
+            <TD WIDTH="38" ALIGN="CENTER">9</TD>
+            <TD WIDTH="38" ALIGN="CENTER">10</TD>
+            <TD WIDTH="38" ALIGN="CENTER">11</TD>
+            <TD WIDTH="38" ALIGN="CENTER">12</TD>
+          </TR>
+        </TABLE>
+      </TD></TR>
+    </TABLE>
+  >];
+
+  par [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="6">
+      <TR><TD ALIGN="CENTER"><B>Parallel merge  (3 workers)  —  O(N/W) per worker</B></TD></TR>
+      <TR><TD>
+        <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7">
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#AED6F1"><B>seq1</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">1</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">3</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">5</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">7</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">9</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">11</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#A9DFBF"><B>seq2</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">2</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">4</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">6</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">8</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">10</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">12</TD>
+          </TR>
+          <TR>
+            <TD WIDTH="50" BGCOLOR="#D5D8DC"><B>output</B></TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">1</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">2</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">3</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FADBD8">4</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">5</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">6</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">7</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#FDEBD0">8</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">9</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">10</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">11</TD>
+            <TD WIDTH="38" ALIGN="CENTER" BGCOLOR="#D5F5E3">12</TD>
+          </TR>
+        </TABLE>
+      </TD></TR>
+      <TR><TD ALIGN="LEFT">
+        <FONT COLOR="#C0392B">&#x25A0;</FONT> Worker 0: output[0..4)&#160;&#160;
+        <FONT COLOR="#E67E22">&#x25A0;</FONT> Worker 1: output[4..8)&#160;&#160;
+        <FONT COLOR="#27AE60">&#x25A0;</FONT> Worker 2: output[8..12)
+      </TD></TR>
+    </TABLE>
+  >];
+
+  seq -> par;
+}

@@ -10,6 +10,6 @@ var searchData=
   ['median_5fof_5fthree_7',['median_of_three',['../namespacetf.html#a0b2dc0c0c931b9b627fc0a148085fa5e',1,'tf']]],
   ['memcpy_8',['memcpy',['../classtf_1_1cudaGraphBase.html#a5e704c7bb669a82f4fe140ecb4576eb0',1,'tf::cudaGraphBase::memcpy()'],['../classtf_1_1cudaGraphExecBase.html#aea367c6ac5b55854b9b695d4e249b17e',1,'tf::cudaGraphExecBase::memcpy()']]],
   ['memset_9',['memset',['../classtf_1_1cudaGraphBase.html#a10196f49de261a4042de328aab2452c8',1,'tf::cudaGraphBase::memset()'],['../classtf_1_1cudaGraphExecBase.html#ae1a9cea343a306e114daeeab9418dd5b',1,'tf::cudaGraphExecBase::memset()']]],
-  ['merge_10',['merge',['../classtf_1_1FlowBuilder.html#a4c50bf4b0ec33178f407048bc97bcca4',1,'tf::FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part=P())'],['../classtf_1_1FlowBuilder.html#a389dda016f10028ffbb5da63c52ff1af',1,'tf::FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part=P())']]],
+  ['merge_10',['merge',['../classtf_1_1FlowBuilder.html#adba094978bb2c038163e0b1b18141efa',1,'tf::FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first)'],['../classtf_1_1FlowBuilder.html#a20b090b2615b5ae827d867a87234ac36',1,'tf::FlowBuilder::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp)']]],
   ['min_5felement_11',['min_element',['../classtf_1_1FlowBuilder.html#a6bf43eeaa81900084a472be1d36d46a6',1,'tf::FlowBuilder']]]
 ];

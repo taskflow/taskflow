@@ -1351,66 +1351,77 @@ class FlowBuilder {
   /**
   @brief merges two sorted ranges into a single sorted output using the
          @c std::less comparator
-  
-  @tparam B1 beginning iterator type of the first range 
+
+  @tparam B1 beginning iterator type of the first range
   @tparam E1 ending iterator type of the first range
-  @tparam B2 beginning iterator type of the first range 
-  @tparam E2 ending iterator type of the first range
-  @tparam O destination iterator type
-  @tparam P type satisfying tf::PartitionerLike
+  @tparam B2 beginning iterator type of the second range
+  @tparam E2 ending iterator type of the second range
+  @tparam O  destination iterator type
 
   @param first1 iterator to the beginning of the first range (inclusive)
-  @param last1 iterator to the end of the first range (exclusive)
+  @param last1  iterator to the end of the first range (exclusive)
   @param first2 iterator to the beginning of the second range (inclusive)
-  @param last2 iterator to the end of the second range (exclusive)
-  @param d_first iterator to the beginning of the output
-  @param part partitioning algorithm (default tf::DefaultPartitioner)
+  @param last2  iterator to the end of the second range (exclusive)
+  @param d_first iterator to the beginning of the output range
 
-  The task spawns asynchronous tasks to parallel merge elements of the 
-  two sorted ranges, <tt>[first1, last1)</tt> and <tt>[first2, last2)</tt>,
-  using the @c std::less comparator.
+  Creates a task that merges two sorted ranges <tt>[first1, last1)</tt> and
+  <tt>[first2, last2)</tt> into a single sorted output range beginning at
+  @c d_first, using @c std::less as the comparator.
 
-  @note Undefiened behavior if the ranges aren't sorted ascendingly.
+  The algorithm partitions the output range into W equal chunks (one per
+  worker thread) and uses the co-rank technique to independently identify
+  each worker's corresponding sub-ranges in seq1 and seq2, then merges them
+  in parallel with no synchronization.
 
+  Unlike @c for_each or @c find, parallel merge does not benefit from dynamic
+  or guided partitioning because @c std::merge always costs O(K) for a chunk
+  of size K regardless of data — there is no load imbalance to adapt to.
+  The algorithm therefore always uses static equal partitioning.
+
+  @note Undefined behavior if either input range is not sorted with respect
+        to @c std::less.
   */
-
-  template <typename B1, typename E1, typename B2, typename E2,
-            typename O, PartitionerLike P = DefaultPartitioner>
-  Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, P part = P());
+  template <typename B1, typename E1, typename B2, typename E2, typename O>
+  Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first);
 
   /**
-  @brief merges two sorted ranges into a single sorted output using the
-         supplied comparator
-  
-  @tparam B1 beginning iterator type of the first range 
+  @brief merges two sorted ranges into a single sorted output using a
+         custom comparator
+
+  @tparam B1 beginning iterator type of the first range
   @tparam E1 ending iterator type of the first range
-  @tparam B2 beginning iterator type of the first range 
-  @tparam E2 ending iterator type of the first range
-  @tparam O destination iterator type
-  @tparam C comparator type
-  @tparam P type satisfying tf::PartitionerLike
+  @tparam B2 beginning iterator type of the second range
+  @tparam E2 ending iterator type of the second range
+  @tparam O  destination iterator type
+  @tparam C  comparator type
 
-  @param first1 iterator to the beginning of the first range (inclusive)
-  @param last1 iterator to the end of the first range (exclusive)
-  @param first2 iterator to the beginning of the second range (inclusive)
-  @param last2 iterator to the end of the second range (exclusive)
-  @param d_first iterator to the beginning of the output
-  @param cmp comparator function 
-  @param part partitioning algorithm (default tf::DefaultPartitioner)
+  @param first1  iterator to the beginning of the first range (inclusive)
+  @param last1   iterator to the end of the first range (exclusive)
+  @param first2  iterator to the beginning of the second range (inclusive)
+  @param last2   iterator to the end of the second range (exclusive)
+  @param d_first iterator to the beginning of the output range
+  @param cmp     comparator function defining the sort order
 
-  The task spawns asynchronous tasks to parallel merge elements of the 
-  two sorted ranges, <tt>[first1, last1)</tt> and <tt>[first2, last2)</tt>,
-  using the cmp comparator.
-  
-  @note Undefiened behavior if the ranges aren't sorted with respect to 
-        the cmp comparator.
+  Creates a task that merges two sorted ranges <tt>[first1, last1)</tt> and
+  <tt>[first2, last2)</tt> into a single sorted output range beginning at
+  @c d_first, using @c cmp as the comparator.
 
+  The algorithm partitions the output range into W equal chunks (one per
+  worker thread) and uses the co-rank technique to independently identify
+  each worker's corresponding sub-ranges in seq1 and seq2, then merges them
+  in parallel with no synchronization.
+
+  Unlike @c for_each or @c find, parallel merge does not benefit from dynamic
+  or guided partitioning because @c std::merge always costs O(K) for a chunk
+  of size K regardless of data — there is no load imbalance to adapt to.
+  The algorithm therefore always uses static equal partitioning.
+
+  @note Undefined behavior if either input range is not sorted with respect
+        to @c cmp.
   */
-
   template <typename B1, typename E1, typename B2, typename E2,
-            typename O, typename C, PartitionerLike P = DefaultPartitioner>
-  requires (!PartitionerLike<std::decay_t<C>>)
-  Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp, P part = P());
+            typename O, typename C>
+  Task merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first, C cmp);
 
   /**
   @brief fills a range with a given value in parallel

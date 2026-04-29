@@ -16,9 +16,10 @@ var searchData=
   ['14_2017_13',['Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?',['../FAQ.html#GeneralQuestion6',1,'']]],
   ['15_14',['15',['../release-2-1-0.html',1,'Release 2.1.0 (2019/02/15)'],['../release-2-2-0.html',1,'Release 2.2.0 (2019/06/15)']]],
   ['17_15',['Q6: Does Taskflow have backward compatibility with C++03/98/11/14/17?',['../FAQ.html#GeneralQuestion6',1,'']]],
-  ['1_3a_20iterate_20a_20pipeline_16',['Example 1: Iterate a Pipeline',['../TaskParallelPipeline.html#IterateAPipeline',1,'']]],
-  ['1_3a_20look_20around_17',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
-  ['1_3a_20no_20source_20task_18',['Pitfall 1: No Source Task',['../ConditionalTasking.html#PitfallNoSourceTask',1,'']]],
-  ['1_3a_20synchronous_20propagation_19',['Scenario 1: Synchronous Propagation',['../ExceptionHandling.html#Scenario1SynchronousExceptionPropagation',1,'']]],
-  ['1d_20indexrange_20',['Create a Parallel-Iteration Task over a 1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]]
+  ['1_3a_20flat_20output_20partitioning_16',['Step 1: Flat Output Partitioning',['../ParallelMerge.html#ParallelMergeAlgorithmOverview',1,'']]],
+  ['1_3a_20iterate_20a_20pipeline_17',['Example 1: Iterate a Pipeline',['../TaskParallelPipeline.html#IterateAPipeline',1,'']]],
+  ['1_3a_20look_20around_18',['Step 1: Look around',['../guidelines.html#Step1LookAround',1,'']]],
+  ['1_3a_20no_20source_20task_19',['Pitfall 1: No Source Task',['../ConditionalTasking.html#PitfallNoSourceTask',1,'']]],
+  ['1_3a_20synchronous_20propagation_20',['Scenario 1: Synchronous Propagation',['../ExceptionHandling.html#Scenario1SynchronousExceptionPropagation',1,'']]],
+  ['1d_20indexrange_21',['Create a Parallel-Iteration Task over a 1D IndexRange',['../ParallelIterations.html#ParallelIterationsIndexRange1D',1,'']]]
 ];

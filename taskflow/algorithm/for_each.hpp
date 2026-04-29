@@ -222,7 +222,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
     range_type r = range;
     
     // TODO:
-    // nothing to be done if the range is invalid
+    // throw if the range is invalid?
     //if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
     //  return;
     //}

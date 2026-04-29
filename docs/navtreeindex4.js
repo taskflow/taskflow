@@ -1,8 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"graphtraversal.html#GraphTraversalProblemFormulation":[5,5,0],
-"graphtraversal.html#GraphTraversalStaticTraversal":[5,5,2],
-"guidelines.html":[7,0],
 "guidelines.html#HowCanIContribute":[7,0,0],
 "guidelines.html#HowCanIEditTheDocumentation":[7,0,4],
 "guidelines.html#HowCanIGetCredit":[7,0,1],
@@ -249,5 +246,8 @@ var NAVTREEINDEX4 =
 "release-3-8-0.html#release-3-8-0_summary":[1,6,0],
 "release-3-8-0.html#release-3-8-0_system_requirements":[1,6,2],
 "release-3-8-0.html#release-3-8-0_taskflow_core":[1,6,3,0],
-"release-3-8-0.html#release-3-8-0_utilities":[1,6,3,1]
+"release-3-8-0.html#release-3-8-0_utilities":[1,6,3,1],
+"release-3-9-0.html":[1,5],
+"release-3-9-0.html#release-3-9-0_breaking_changes":[1,5,5],
+"release-3-9-0.html#release-3-9-0_bug_fixes":[1,5,4]
 };

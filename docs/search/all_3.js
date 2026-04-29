@@ -19,5 +19,6 @@ var searchData=
   ['3_3a_20deadlock_20from_20strong_20back_20edge_16',['Pitfall 3: Deadlock from Strong Back-edge',['../ConditionalTasking.html#PitfallDeadlock',1,'']]],
   ['3_3a_20define_20multiple_20parallel_20pipelines_17',['Example 3: Define Multiple Parallel Pipelines',['../TaskParallelPipeline.html#DefineMultipleTaskParallelPipelines',1,'']]],
   ['3_3a_20dive_20in_18',['Step 3: Dive in',['../guidelines.html#Step3WriteATaskflowProgram',1,'']]],
-  ['3d_20stencil_20computation_19',['3D Stencil Computation',['../ExamplesStencil3D.html',1,'Examples']]]
+  ['3_3a_20how_20co_5frank_20works_20binary_20search_19',['Step 3: How co_rank works? Binary Search!',['../ParallelMerge.html#ParallelMergeAlgorithmBinarySearch',1,'']]],
+  ['3d_20stencil_20computation_20',['3D Stencil Computation',['../ExamplesStencil3D.html',1,'Examples']]]
 ];

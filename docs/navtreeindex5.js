@@ -1,8 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"release-3-9-0.html":[1,5],
-"release-3-9-0.html#release-3-9-0_breaking_changes":[1,5,5],
-"release-3-9-0.html#release-3-9-0_bug_fixes":[1,5,4],
 "release-3-9-0.html#release-3-9-0_documentation":[1,5,6],
 "release-3-9-0.html#release-3-9-0_download":[1,5,1],
 "release-3-9-0.html#release-3-9-0_miscellaneous_items":[1,5,7],

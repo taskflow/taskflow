@@ -11,7 +11,7 @@ void test_find_if(unsigned W) {
   tf::Taskflow taskflow;
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
     for(size_t c : {0, 1, 3, 7, 99}) {
 
       taskflow.clear();
@@ -30,7 +30,12 @@ void test_find_if(unsigned W) {
       
       REQUIRE(res2 == input.end());
 
-      std::vector<int>::iterator itr1, itr2, beg2, end2;
+      // initialize to a sentinel that can never equal a valid result unless
+      // explicitly assigned by the task — detects missing assignment on all platforms
+      std::vector<int> _sentinel(1);
+      std::vector<int>::iterator itr1 = _sentinel.begin();
+      std::vector<int>::iterator itr2 = _sentinel.begin();
+      std::vector<int>::iterator beg2, end2;
 
       taskflow.find_if(input.begin(), input.end(), itr1, P1, P(c));
       
@@ -163,7 +168,7 @@ void test_find_if_not(unsigned W) {
   tf::Taskflow taskflow;
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
     for(size_t c : {0, 1, 3, 7, 99}) {
 
       taskflow.clear();
@@ -185,7 +190,12 @@ void test_find_if_not(unsigned W) {
       auto res1 = std::find_if_not(input.begin(), input.end(), P1);
       auto res2 = std::find_if_not(input.begin(), input.end(), P2);
       
-      std::vector<int>::iterator itr1, itr2, beg2, end2;
+      // initialize to a sentinel that can never equal a valid result unless
+      // explicitly assigned by the task — detects missing assignment on all platforms
+      std::vector<int> _sentinel(1);
+      std::vector<int>::iterator itr1 = _sentinel.begin();
+      std::vector<int>::iterator itr2 = _sentinel.begin();
+      std::vector<int>::iterator beg2, end2;
 
       taskflow.find_if_not(input.begin(), input.end(), itr1, P1, P(c));
       
@@ -318,7 +328,7 @@ void test_min_element(unsigned W) {
   tf::Taskflow taskflow;
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
     for(size_t c : {0, 1, 3, 7, 99}) {
 
       taskflow.clear();
@@ -477,7 +487,7 @@ void test_max_element(unsigned W) {
   tf::Taskflow taskflow;
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
     for(size_t c : {0, 1, 3, 7, 99}) {
 
       taskflow.clear();
@@ -882,7 +892,7 @@ void silent_async(unsigned W) {
   tf::Executor executor(W);
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
 
     input.resize(n);
 
@@ -898,7 +908,11 @@ void silent_async(unsigned W) {
     
     REQUIRE(res2 == input.end());
 
-    std::vector<int>::iterator itr1, itr2;
+    // initialize to a sentinel that can never equal a valid result unless
+    // explicitly assigned by the task — detects missing assignment on all platforms
+    std::vector<int> _sentinel(1);
+    std::vector<int>::iterator itr1 = _sentinel.begin();
+    std::vector<int>::iterator itr2 = _sentinel.begin();
 
     executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
     executor.silent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
@@ -951,7 +965,7 @@ void silent_dependent_async(unsigned W) {
   tf::Executor executor(W);
   std::vector<int> input;
   
-  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : n=2*n+1) {
+  for(size_t n = 0; n <= 65536; n <= 256 ? n++ : (n=2*n+1)) {
 
     input.resize(n);
 
@@ -967,7 +981,11 @@ void silent_dependent_async(unsigned W) {
     
     REQUIRE(res2 == input.end());
 
-    std::vector<int>::iterator itr1, itr2;
+    // initialize to a sentinel that can never equal a valid result unless
+    // explicitly assigned by the task — detects missing assignment on all platforms
+    std::vector<int> _sentinel(1);
+    std::vector<int>::iterator itr1 = _sentinel.begin();
+    std::vector<int>::iterator itr2 = _sentinel.begin();
 
     executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr1, P1));
     executor.silent_dependent_async(tf::make_find_if_task(input.begin(), input.end(), itr2, P2));
@@ -1010,4 +1028,3 @@ TEST_CASE("FindIf.SilentAsync.7threads" * doctest::timeout(300)) {
 TEST_CASE("FindIf.SilentAsync.8threads" * doctest::timeout(300)) {
   silent_dependent_async(8);
 }
-
