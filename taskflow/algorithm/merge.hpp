@@ -130,7 +130,9 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first)
     //
     // Guard: when j==0, skip the seq2[j-1] dereference (would be seq2[-1])
     // and always increase low — if seq2 contributes nothing, i must grow.
-    auto co_rank = [&](size_t rank) -> std::pair<size_t, size_t> {
+    //
+    // Captured by value so the lambda is safe to copy into async tasks.
+    auto co_rank = [=](size_t rank) -> std::pair<size_t, size_t> {
       size_t low  = (rank > m) ? rank - m : 0;
       size_t high = (std::min)(n, rank);
 
@@ -149,9 +151,10 @@ auto make_merge_task(B1 first1, E1 last1, B2 first2, E2 last2, C cmp, O d_first)
 
     // merge_chunk: given an output range [part_b, part_e), use co_rank to
     // find the corresponding input sub-ranges and merge them independently.
-    // d_beg is captured by value (= d_first), so each worker positions its
-    // output pointer as d_first + part_b with no shared mutable state.
-    auto merge_chunk = [&](size_t part_b, size_t part_e) {
+    // Captured by value so it is safe to copy into rt.silent_async tasks —
+    // all iterators and the co_rank callable are value-copied, no dangling
+    // references to the outer stack frame.
+    auto merge_chunk = [=](size_t part_b, size_t part_e) {
       auto [i_beg, j_beg] = co_rank(part_b);
       auto [i_end, j_end] = co_rank(part_e);
       std::merge(
