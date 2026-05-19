@@ -33,7 +33,13 @@ AsyncTask Executor::_schedule_dependent_async_task(I first, I last, size_t num_p
   AsyncTask task(animate(std::forward<ArgsT>(args)...));
 
   for(; first != last; first++) {
-    _process_dependent_async(task._node, *first, num_predecessors);
+    auto&& x = *first;
+
+    if constexpr (std::is_pointer_v<std::remove_reference_t<decltype(x)>>) {
+      _process_dependent_async(task._node, *x, num_predecessors);
+    } else {
+      _process_dependent_async(task._node, x, num_predecessors);
+    }
   }
   
   if(num_predecessors == 0) {
@@ -208,7 +214,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 tf::AsyncTask Executor::silent_dependent_async(
   P&& params, F&& func, Tasks&&... tasks 
 ){
-  std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
+  std::array<AsyncTask*, sizeof...(Tasks)> array{ (&tasks)... };
   return silent_dependent_async(
     std::forward<P>(params), std::forward<F>(func), array.begin(), array.end()
   );
@@ -261,7 +267,7 @@ auto Executor::dependent_async(F&& func, Tasks&&... tasks) {
 template <TaskParamsLike P, typename F, typename... Tasks>
 requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 auto Executor::dependent_async(P&& params, F&& func, Tasks&&... tasks) {
-  std::array<AsyncTask, sizeof...(Tasks)> array = { std::forward<Tasks>(tasks)... };
+  std::array<AsyncTask*, sizeof...(Tasks)> array{ (&tasks)... };
   return dependent_async(
     std::forward<P>(params), std::forward<F>(func), array.begin(), array.end()
   );
