@@ -1041,6 +1041,16 @@ class IndexRange<T, 1> {
   [0, @c size()), i.e., @c part_end <= size().
   */
   IndexRange<T, 1> unravel(size_t part_beg, size_t part_end) const;
+  
+  /**
+  @brief returns the 1D range for dimension @c d (read-only)
+  */
+  const IndexRange<T, 1>& dim(size_t) const { return *this; }
+
+  /**
+  @brief returns the 1D range for dimension @c d (mutable)
+  */
+  IndexRange<T, 1>& dim(size_t) { return *this; }
 
   private:
 

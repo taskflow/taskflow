@@ -159,6 +159,22 @@ constexpr void unroll(F&& f) {
   }(std::make_index_sequence<(end - beg + step - 1) / step>{});
 }
 
+// stops at the first true; returns true if any f(i) was true   (||-fold)
+template<auto beg, auto end, auto step, typename F>
+constexpr auto unroll_until(F&& f) {
+  return [&]<auto... Is>(std::index_sequence<Is...>) {
+    return (f(beg + Is * step) || ...);
+  }(std::make_index_sequence<(end - beg + step - 1) / step>{});
+}
+
+// stops at the first false; returns true if every f(i) was true (&&-fold)
+template<auto beg, auto end, auto step, typename F>
+constexpr auto unroll_while(F&& f) {
+  return [&]<auto... Is>(std::index_sequence<Is...>) {
+    return (f(beg + Is * step) && ...);
+  }(std::make_index_sequence<(end - beg + step - 1) / step>{});
+}
+
 // ----------------------------------------------------------------------------
 // make types of variant unique
 // ----------------------------------------------------------------------------
