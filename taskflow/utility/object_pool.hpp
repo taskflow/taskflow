@@ -9,11 +9,6 @@
 #include <utility>
 #include "os.hpp"
 
-/**
-@file object_pool.hpp
-@brief object pool include file
-*/
-
 namespace tf {
 
 // ----------------------------------------------------------------------------
@@ -37,8 +32,40 @@ the block pointer from a bare @c T pointer in @c from_object.
 template <typename T>
 struct ObjectBlock {
 
-  uint16_t     pool_id;
-  ObjectBlock* next_free {nullptr};         // intrusive free list link
+  uint16_t pool_id;
+
+  // Intrusive free-list link. Must be atomic to avoid a formal data race
+  // between push_free writing next_free and a concurrent pop_free reading it.
+  //
+  // The race is not immediately obvious because push_free only writes
+  // next_free before linking `b` into the list via CAS — so `b` is not yet
+  // reachable by pop_free at the time of the write. The race arises from a
+  // *stale pointer* held by a thread that loses a CAS:
+  //
+  //   Free list: [b -> null],  _free_head = {b, 5}
+  //
+  //   Thread A (pop_free): loads _free_head = {b, 5}  <-- cur.ptr = b
+  //   Thread B (pop_free): also loads {b, 5}, wins CAS first,
+  //                        pops b, returns it to caller
+  //   Thread C (push_free): caller recycles b;
+  //                         C writes b->next_free      <-- non-atomic WRITE
+  //   Thread A (pop_free):  reads cur.ptr->next_free   <-- non-atomic READ
+  //                         (cur.ptr is the stale b!)
+  //
+  // Thread A holds a stale pointer to b (b was removed from the list by B).
+  // Thread C writes b->next_free before its CAS; Thread A reads it using
+  // its stale cur.ptr, with no ordering relation between the two accesses.
+  // Thread A's CAS will ultimately fail (tag changed), so there is no
+  // algorithmic corruption -- but the concurrent non-atomic read + write on
+  // the same memory location is a formal data race and undefined behavior.
+  //
+  // Making next_free atomic eliminates the race by definition: two concurrent
+  // atomic accesses to the same location are never a data race regardless of
+  // ordering. C++20 [atomics.types.generic.general] guarantees std::atomic<T>
+  // is standard-layout, so offsetof(ObjectBlock, storage) in from_object()
+  // remains well-defined.
+  std::atomic<ObjectBlock*> next_free {nullptr};
+
   alignas(T) std::byte storage[sizeof(T)]; // raw storage for T
 
   T* object() noexcept {
@@ -115,23 +142,24 @@ long-lived member of the object that owns the task graph.
 template <typename T, size_t LogSize = 5>
 class ObjectPool {
 
-  static_assert(LogSize >= 1 && LogSize <= 15, "LogSize must be in [1, 15]");
+  static_assert(LogSize >= 1 && LogSize <= 15,
+    "LogSize must be in [1, 15]");
 
   using Block = ObjectBlock<T>;
 
   static constexpr size_t NumPools = 1u << LogSize;
 
   // Pairs a free-list head pointer with a version counter to defeat ABA.
+  // TaggedHead is 16 bytes. _free_head is the first member of an
+  // alignas(TF_CACHELINE_SIZE) Shard, so it is at least 64-byte aligned,
+  // satisfying the 16-byte alignment required for CMPXCHG16B on x86-64.
+  // On platforms without 128-bit CAS (e.g. RISC-V, baseline ARMv8.0),
+  // std::atomic<TaggedHead> falls back to a lock-based implementation —
+  // still correct, but the hot path is no longer lock-free.
   struct TaggedHead {
     Block*    ptr {nullptr};
     uintptr_t tag {0};
   };
-
-  //static_assert(
-  //  std::atomic<TaggedHead>::is_always_lock_free,
-  //  "std::atomic<TaggedHead> is not lock-free on this platform — "
-  //  "check alignment and compiler support for 128-bit CAS"
-  //);
 
   struct alignas(TF_CACHELINE_SIZE) Shard {
 
@@ -144,7 +172,7 @@ class ObjectPool {
     // Cold path: backing allocator for fresh block memory.
     // alignas forces _backing to start on the next cache line boundary,
     // separating it from the hot _free_head above.
-    std::pmr::synchronized_pool_resource _backing {
+    alignas(TF_CACHELINE_SIZE) std::pmr::synchronized_pool_resource _backing {
       std::pmr::pool_options {
         .max_blocks_per_chunk        = 1024,
         .largest_required_pool_block = sizeof(Block)
@@ -155,8 +183,12 @@ class ObjectPool {
       TaggedHead cur = _free_head.load(std::memory_order_relaxed);
       TaggedHead next;
       do {
-        b->next_free = cur.ptr;
-        next         = {b, cur.tag + 1};
+        // relaxed is sufficient: the release CAS below establishes the
+        // happens-before with pop_free's acquire load of _free_head, making
+        // this store visible to any thread that subsequently observes b at
+        // the head of the list.
+        b->next_free.store(cur.ptr, std::memory_order_relaxed);
+        next = {b, cur.tag + 1};
       } while (!_free_head.compare_exchange_weak(
         cur, next,
         std::memory_order_release,
@@ -168,7 +200,12 @@ class ObjectPool {
       TaggedHead cur = _free_head.load(std::memory_order_acquire);
       TaggedHead next;
       while (cur.ptr) {
-        next = {cur.ptr->next_free, cur.tag + 1};
+        // relaxed is sufficient: the acquire on _free_head (either the load
+        // above or the acquire failure of a prior CAS iteration) synchronises-
+        // with the release CAS in push_free, so the next_free store that
+        // preceded that release is already visible to this thread.
+        Block* nx = cur.ptr->next_free.load(std::memory_order_relaxed);
+        next = {nx, cur.tag + 1};
         if (_free_head.compare_exchange_weak(
           cur, next,
           std::memory_order_acquire,
