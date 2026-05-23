@@ -91,34 +91,74 @@
 #define TF_OS_UNIX 1
 #endif
 
-//-----------------------------------------------------------------------------
-// Cache line alignment
-//-----------------------------------------------------------------------------
-#if defined(__i386__) || defined(__x86_64__)
+// ----------------------------------------------------------------------------
+// Cache line size detection.
+//
+// Underestimating causes false sharing (hurts performance).
+// Overestimating wastes memory.
+// 64B is correct for the vast majority of modern server/desktop CPUs.
+// ----------------------------------------------------------------------------
+
+#if defined(__i386__) || defined(__x86_64__) || \
+    defined(_M_IX86)  || defined(_M_AMD64)
+  // All modern x86/x86_64 CPUs (Intel, AMD) since Pentium 4.
   #define TF_CACHELINE_SIZE 64
-#elif defined(__powerpc64__)
-  // This is the L1 D-cache line size of our Power7 machines.
-  // Need to check if this is appropriate for other PowerPC64 systems.
-  #define TF_CACHELINE_SIZE 128
-#elif defined(__arm__)
-  // Cache line sizes for ARM: These values are not strictly correct since
-  // cache line sizes depend on implementations, not architectures.
-  // There are even implementations with cache line sizes configurable
-  // at boot time.
-  #if defined(__ARM_ARCH_5T__)
+
+#elif defined(__aarch64__) || defined(__arm64__) || defined(_M_ARM64)
+  // 64-bit ARM: Apple Silicon (M1/M2/M3), AWS Graviton, Qualcomm Oryon, etc.
+  #define TF_CACHELINE_SIZE 64
+
+#elif defined(__arm__) || defined(_M_ARM)
+  // 32-bit ARM — cache line size depends on the ARM architecture revision.
+  #if defined(__ARM_ARCH_5T__)  || \
+      defined(__ARM_ARCH_5TE__) || \
+      defined(__ARM_ARCH_6__)
     #define TF_CACHELINE_SIZE 32
-  #elif defined(__ARM_ARCH_7A__)
+  #else
+    // ARMv7-A (Cortex-A5/A7/A8/A9/A15) and later 32-bit ARM.
     #define TF_CACHELINE_SIZE 64
   #endif
+
+#elif defined(__powerpc64__) || defined(__ppc64__)
+  // IBM POWER7/8/9/10 and PowerPC64 (e.g., original Xbox 360-era G5).
+  #define TF_CACHELINE_SIZE 128
+
+#elif defined(__powerpc__) || defined(__ppc__)
+  // Older 32-bit PowerPC (G3/G4 era embedded systems).
+  #define TF_CACHELINE_SIZE 32
+
+#elif defined(__s390x__) || defined(__zarch__)
+  // IBM Z (z13 and later). Unusually large at 256B.
+  #define TF_CACHELINE_SIZE 256
+
+#elif defined(__riscv)
+  // RISC-V: SiFive U74, Alibaba T-Head, etc.
+  #define TF_CACHELINE_SIZE 64
+
+#elif defined(__mips__) || defined(__mips64)
+  // MIPS32/MIPS64 (embedded and networking SoCs).
+  #define TF_CACHELINE_SIZE 64
+
+#elif defined(__sparc__) || defined(__sparc64__)
+  // Oracle/Fujitsu SPARC.
+  #define TF_CACHELINE_SIZE 64
+
+#elif defined(__loongarch64)
+  // LoongArch (Loongson 3A5000 and later).
+  #define TF_CACHELINE_SIZE 64
+
+#elif defined(__alpha__)
+  // DEC/Compaq Alpha.
+  #define TF_CACHELINE_SIZE 64
+
 #endif
 
 #ifndef TF_CACHELINE_SIZE
-// A reasonable default guess.  Note that overestimates tend to waste more
-// space, while underestimates tend to waste more time.
+  // Conservative fallback. If we land here, the architecture is unknown.
+  // 64B is correct for virtually all modern CPUs. Overestimating wastes
+  // a small amount of space; underestimating causes false sharing.
   #define TF_CACHELINE_SIZE 64
 #endif
-
-
 
 namespace tf {
 

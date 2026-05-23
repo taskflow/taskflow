@@ -6,6 +6,7 @@
 
 #ifdef TF_ENABLE_TASK_POOL
 #include "freelist.hpp"
+#include "../utility/object_pool.hpp"
 #endif
 
 #include "../utility/os.hpp"
@@ -872,7 +873,7 @@ class ExplicitAnchorGuard {
 @private
 */
 #ifdef TF_ENABLE_TASK_POOL
-class NodePool {
+/*class NodePool {
 
   private:
 
@@ -907,7 +908,10 @@ class NodePool {
     //     ::operator delete(static_cast<Node*>(n));
     //   }
     // }
-};
+};*/
+
+using NodePool = ObjectPool<Node>;
+
 inline NodePool _node_pool;
 #endif
 

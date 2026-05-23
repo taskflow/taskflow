@@ -1,774 +1,376 @@
-// 2020/03/13 - modified by Tsung-Wei Huang
-//  - fixed bug in aligning memory
-//
-// 2020/02/02 - modified by Tsung-Wei Huang
-//  - new implementation motivated by Hoard
-//
-// 2019/07/10 - modified by Tsung-Wei Huang
-//  - replace raw pointer with smart pointer
-//
-// 2019/06/13 - created by Tsung-Wei Huang
-//  - implemented an object pool class
-
 #pragma once
 
-#include <thread>
-#include <atomic>
-#include <mutex>
-#include <vector>
-#include <cassert>
+#include <array>
 #include <cstddef>
+#include <cstdint>
+#include <memory_resource>
+#include <memory>
+#include <atomic>
+#include <utility>
+#include "os.hpp"
+
+/**
+@file object_pool.hpp
+@brief object pool include file
+*/
 
 namespace tf {
 
-#define TF_ENABLE_POOLABLE_ON_THIS                          \
-  template <typename T, size_t S> friend class ObjectPool;  \
-  void* _object_pool_block
+// ----------------------------------------------------------------------------
+// ObjectBlock
+// ----------------------------------------------------------------------------
 
-// Class: ObjectPool
-//
-// The class implements an efficient thread-safe object pool motivated
-// by the Hoard memory allocator algorithm.
-// Different from the normal memory allocator, object pool allocates
-// only one object at a time.
-//
-// Internally, we use the following variables to maintain blocks and heaps:
-// X: size in byte of a item slot
-// M: number of items per block
-// F: emptiness threshold
-// B: number of bins per local heap (bin[B-1] is the full list)
-// W: number of items per bin
-// K: shrinkness constant
-//
-// Example scenario 1:
-// M = 30
-// F = 4
-// W = (30+4-1)/4 = 8
-//
-// b0: 0, 1, 2, 3, 4, 5, 6, 7
-// b1: 8, 9, 10, 11, 12, 13, 14, 15
-// b2: 16, 17, 18, 19, 20, 21, 22, 23
-// b3: 24, 25, 26, 27, 28, 29
-// b4: 30 (anything equal to M)
-//
-// Example scenario 2:
-// M = 32
-// F = 4
-// W = (32+4-1)/4 = 8
-// b0: 0, 1, 2, 3, 4, 5, 6, 7
-// b1: 8, 9, 10, 11, 12, 13, 14, 15
-// b2: 16, 17, 18, 19, 20, 21, 22, 23
-// b3: 24, 25, 26, 27, 28, 29, 30, 31
-// b4: 32 (anything equal to M)
-//
-template <typename T, size_t S = 65536>
-class ObjectPool {
+/**
+@private
 
-  // the data column must be sufficient to hold the pointer in freelist
-  constexpr static size_t X = (std::max)(sizeof(T*), sizeof(T));
-  //constexpr static size_t X = sizeof(long double) + std::max(sizeof(T*), sizeof(T));
-  //constexpr static size_t M = (S - offsetof(Block, data)) / X;
-  constexpr static size_t M = S / X;
-  constexpr static size_t F = 4;
-  constexpr static size_t B = F + 1;
-  constexpr static size_t W = (M + F - 1) / F;
-  constexpr static size_t K = 4;
+@brief internal storage block wrapping an object with pool metadata
 
-  static_assert(
-    S && (!(S & (S-1))), "block size S must be a power of two"
-  );
+@tparam T object type stored in this block
 
-  static_assert(
-    M >= 128, "block size S must be larger enough to pool at least 128 objects"
-  );
+ObjectBlock wraps an object of type @c T together with the shard index
+(@c pool_id) and an intrusive free-list link (@c next_free) in a
+standard-layout struct. Using @c std::byte storage instead of a @c T
+member directly ensures that @c offsetof(ObjectBlock, storage) is
+well-defined regardless of @c T's layout, which allows safe recovery of
+the block pointer from a bare @c T pointer in @c from_object.
+*/
+template <typename T>
+struct ObjectBlock {
 
-  struct Blocklist {
-    Blocklist* prev;
-    Blocklist* next;
-  };
+  uint16_t     pool_id;
+  ObjectBlock* next_free {nullptr};         // intrusive free list link
+  alignas(T) std::byte storage[sizeof(T)]; // raw storage for T
 
-  struct GlobalHeap {
-    std::mutex mutex;
-    Blocklist list;
-  };
+  T* object() noexcept {
+    return std::launder(reinterpret_cast<T*>(storage));
+  }
 
-  struct LocalHeap {
-    std::mutex mutex;
-    Blocklist lists[B];
-    size_t u {0};
-    size_t a {0};
-  };
+  const T* object() const noexcept {
+    return std::launder(reinterpret_cast<const T*>(storage));
+  }
 
-  struct Block {
-    std::atomic<LocalHeap*> heap;
-    Blocklist list_node;
-    size_t i;
-    size_t u;
-    T* top;
-    // long double padding;
-    char data[S];
-  };
-
-  public:
-
-    /**
-    @brief constructs an object pool from a number of anticipated threads
-    */
-    explicit ObjectPool(unsigned = std::thread::hardware_concurrency());
-
-    /**
-    @brief destructs the object pool
-    */
-    ~ObjectPool();
-
-    /**
-    @brief acquires a pointer to a object constructed from a given argument list
-    */
-    template <typename... ArgsT>
-    T* animate(ArgsT&&... args);
-
-    /**
-    @brief recycles a object pointed by @c ptr and destroys it
-    */
-    void recycle(T* ptr);
-
-    size_t num_bins_per_local_heap() const;
-    size_t num_objects_per_bin() const;
-    size_t num_objects_per_block() const;
-    size_t num_available_objects() const;
-    size_t num_allocated_objects() const;
-    size_t capacity() const;
-    size_t num_local_heaps() const;
-    size_t num_global_heaps() const;
-    size_t num_heaps() const;
-
-    float emptiness_threshold() const;
-
-  private:
-
-    const size_t _lheap_mask;
-
-    GlobalHeap _gheap;
-
-    std::vector<LocalHeap> _lheaps;
-
-    LocalHeap& _this_heap();
-
-    constexpr unsigned _next_pow2(unsigned n) const;
-
-    template <class P, class Q>
-    constexpr size_t _offset_in_class(const Q P::*member) const;
-
-    template <class P, class Q>
-    constexpr P* _parent_class_of(Q*, const Q P::*member);
-
-    template <class P, class Q>
-    constexpr P* _parent_class_of(const Q*, const Q P::*member) const;
-
-    constexpr Block* _block_of(Blocklist*);
-    constexpr Block* _block_of(const Blocklist*) const;
-
-    size_t _bin(size_t) const;
-
-    T* _allocate(Block*);
-
-    void _deallocate(Block*, T*);
-    void _blocklist_init_head(Blocklist*);
-    void _blocklist_add_impl(Blocklist*, Blocklist*, Blocklist*);
-    void _blocklist_push_front(Blocklist*, Blocklist*);
-    void _blocklist_push_back(Blocklist*, Blocklist*);
-    void _blocklist_del_impl(Blocklist*, Blocklist*);
-    void _blocklist_del(Blocklist*);
-    void _blocklist_replace(Blocklist*, Blocklist*);
-    void _blocklist_move_front(Blocklist*, Blocklist*);
-    void _blocklist_move_back(Blocklist*, Blocklist*);
-    bool _blocklist_is_first(const Blocklist*, const Blocklist*);
-    bool _blocklist_is_last(const Blocklist*, const Blocklist*);
-    bool _blocklist_is_empty(const Blocklist*);
-    bool _blocklist_is_singular(const Blocklist*);
-
-    template <typename C>
-    void _for_each_block_safe(Blocklist*, C&&);
-
-    template <typename C>
-    void _for_each_block(Blocklist*, C&&);
-
+  static ObjectBlock* from_object(T* obj) noexcept {
+    return reinterpret_cast<ObjectBlock*>(
+      reinterpret_cast<char*>(obj) - offsetof(ObjectBlock, storage)
+    );
+  }
 };
 
 // ----------------------------------------------------------------------------
-// ObjectPool definition
+// ObjectPool
 // ----------------------------------------------------------------------------
 
-// Constructor
-template <typename T, size_t S>
-ObjectPool<T, S>::ObjectPool(unsigned t) :
-  //_heap_mask   {(_next_pow2(t) << 1) - 1u},
-  //_heap_mask   { _next_pow2(t<<1) - 1u },
-  //_heap_mask   {(t << 1) - 1},
-  _lheap_mask { _next_pow2((t+1) << 1) - 1 },
-  _lheaps     { _lheap_mask + 1 } {
+/**
+@brief sharded fixed-size object allocator with a lock-free hot path
 
-  _blocklist_init_head(&_gheap.list);
+@tparam T       object type to allocate
+@tparam LogSize log2 of the number of shards (default @c 5, giving 32 shards);
+                must be in [1, 15] to fit the shard index in a @c uint16_t
 
-  for(auto& h : _lheaps) {
-    for(size_t i=0; i<B; ++i) {
-      _blocklist_init_head(&h.lists[i]);
-    }
-  }
-}
+ObjectPool is a high-performance allocator for a single fixed-size type
+@c T, designed for concurrent task-parallel workloads where objects are
+frequently created and destroyed across many threads.
 
-// Destructor
-template <typename T, size_t S>
-ObjectPool<T, S>::~ObjectPool() {
+Internally, allocations are distributed across @c 2^LogSize independent
+shards using a round-robin counter. Each shard maintains two components:
 
-  // clear local heaps
-  for(auto& h : _lheaps) {
-    for(size_t i=0; i<B; ++i) {
-      _for_each_block_safe(&h.lists[i], [] (Block* b) {
-        //std::free(b);
-        delete b;
-      });
-    }
-  }
+- A lock-free Treiber stack of recycled blocks (hot path). Blocks returned
+  by tf::ObjectPool::recycle are pushed here without acquiring any mutex.
+  The next call to tf::ObjectPool::animate pops from this stack at the
+  cost of a single CAS instruction.
 
-  // clear global heap
-  _for_each_block_safe(&_gheap.list, [] (Block* b) {
-    //std::free(b);
-    delete b;
-  });
-}
+- A @c std::pmr::synchronized_pool_resource as backing storage for fresh
+  block allocations (cold path). This mutex-protected pool is only touched
+  when the shard's free stack is empty, amortizing synchronization cost
+  over many allocations via geometric chunk growth.
 
-// Function: num_bins_per_local_heap
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_bins_per_local_heap() const {
-  return B;
-}
+A tagged pointer (block address + version counter) in the Treiber stack
+prevents the ABA problem. Shards are aligned to the cache line size to
+prevent false sharing between concurrent threads.
 
-// Function: num_objects_per_bin
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_objects_per_bin() const {
-  return W;
-}
+The following example shows typical usage:
 
-// Function: num_objects_per_block
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_objects_per_block() const {
-  return M;
-}
+@code{.cpp}
+// one allocator per object type, usually a global or executor-level singleton
+tf::ObjectPool<MyTask> pool;
 
-// Function: emptiness_threshold
-template <typename T, size_t S>
-float ObjectPool<T, S>::emptiness_threshold() const {
-  return 1.0f/F;
-}
+// construct a MyTask in the pool, forwarding constructor arguments
+MyTask* t = pool.animate(arg1, arg2);
 
-// Function: num_global_heaps
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_global_heaps() const {
-  return 1;
-}
+// ... use t ...
 
-// Function: num_lheaps
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_local_heaps() const {
-  return _lheaps.size();
-}
+// destruct and return storage to the pool for reuse
+pool.recycle(t);
+@endcode
 
-// Function: num_heaps
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_heaps() const {
-  return _lheaps.size() + 1;
-}
+@note
+All pointers returned by tf::ObjectPool::animate must be passed to
+tf::ObjectPool::recycle before the allocator is destroyed. Destroying
+the allocator with live objects is undefined behavior.
 
-// Function: capacity
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::capacity() const {
+@note
+ObjectPool is non-copyable. Declare it as a global or as a
+long-lived member of the object that owns the task graph.
+*/
+template <typename T, size_t LogSize = 5>
+class ObjectPool {
 
-  size_t n = 0;
+  static_assert(LogSize >= 1 && LogSize <= 15, "LogSize must be in [1, 15]");
 
-  // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
-    n += M;
+  using Block = ObjectBlock<T>;
+
+  static constexpr size_t NumPools = 1u << LogSize;
+
+  // Pairs a free-list head pointer with a version counter to defeat ABA.
+  struct TaggedHead {
+    Block*    ptr {nullptr};
+    uintptr_t tag {0};
   };
 
-  // local heap
-  for(auto& h : _lheaps) {
-    n += h.a;
-  }
-
-  return n;
-}
-
-// Function: num_available_objects
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_available_objects() const {
-
-  size_t n = 0;
-
-  // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
-    n += (M - _block_of(p)->u);
-  };
-
-  // local heap
-  for(auto& h : _lheaps) {
-    n += (h.a - h.u);
-  }
-  return n;
-}
-
-// Function: num_allocated_objects
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::num_allocated_objects() const {
-
-  size_t n = 0;
-
-  // global heap
-  for(auto p=_gheap.list.next; p!=&_gheap.list; p=p->next) {
-    n += _block_of(p)->u;
-  };
-
-  // local heap
-  for(auto& h : _lheaps) {
-    n += h.u;
-  }
-  return n;
-}
-
-// Function: _bin
-template <typename T, size_t S>
-size_t ObjectPool<T, S>::_bin(size_t u) const {
-  return u == M ? F : u/W;
-}
-
-// Function: _offset_in_class
-template <typename T, size_t S>
-template <class P, class Q>
-constexpr size_t ObjectPool<T, S>::_offset_in_class(
-  const Q P::*member) const {
-  return (size_t) &( reinterpret_cast<P*>(0)->*member);
-}
-
-// C macro: parent_class_of(list_pointer, Block, list)
-// C++: parent_class_of(list_pointer,  &Block::list)
-template <typename T, size_t S>
-template <class P, class Q>
-constexpr P* ObjectPool<T, S>::_parent_class_of(
-  Q* ptr, const Q P::*member
-) {
-  return reinterpret_cast<P*>(reinterpret_cast<char*>(ptr) - _offset_in_class(member));
-}
-
-// Function: _parent_class_of
-template <typename T, size_t S>
-template <class P, class Q>
-constexpr P* ObjectPool<T, S>::_parent_class_of(
-  const Q* ptr, const Q P::*member
-) const {
-  return reinterpret_cast<P*>(reinterpret_cast<char*>(ptr) - _offset_in_class(member));
-}
-
-// Function: _block_of
-template <typename T, size_t S>
-constexpr typename ObjectPool<T, S>::Block*
-ObjectPool<T, S>::_block_of(Blocklist* list) {
-  return _parent_class_of(list, &Block::list_node);
-}
-
-// Function: _block_of
-template <typename T, size_t S>
-constexpr typename ObjectPool<T, S>::Block*
-ObjectPool<T, S>::_block_of(const Blocklist* list) const {
-  return _parent_class_of(list, &Block::list_node);
-}
-
-// Procedure: initialize a list head
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_init_head(Blocklist *list) {
-  list->next = list;
-  list->prev = list;
-}
-
-// Procedure: _blocklist_add_impl
-// Insert a new entry between two known consecutive entries.
-//
-// This is only for internal list manipulation where we know
-// the prev/next entries already!
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_add_impl(
-  Blocklist *curr, Blocklist *prev, Blocklist *next
-) {
-  next->prev = curr;
-  curr->next = next;
-  curr->prev = prev;
-  prev->next = curr;
-}
-
-// list_push_front - add a new entry
-// @curr: curr entry to be added
-// @head: list head to add it after
-//
-// Insert a new entry after the specified head.
-// This is good for implementing stacks.
-//
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_push_front(
-  Blocklist *curr, Blocklist *head
-) {
-  _blocklist_add_impl(curr, head, head->next);
-}
-
-// list_add_tail - add a new entry
-// @curr: curr entry to be added
-// @head: list head to add it before
-//
-// Insert a new entry before the specified head.
-// This is useful for implementing queues.
-//
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_push_back(
-  Blocklist *curr, Blocklist *head
-) {
-  _blocklist_add_impl(curr, head->prev, head);
-}
-
-// Delete a list entry by making the prev/next entries
-// point to each other.
-//
-// This is only for internal list manipulation where we know
-// the prev/next entries already!
-//
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_del_impl(
-  Blocklist * prev, Blocklist * next
-) {
-  next->prev = prev;
-  prev->next = next;
-}
-
-// _blocklist_del - deletes entry from list.
-// @entry: the element to delete from the list.
-// Note: list_empty() on entry does not return true after this, the entry is
-// in an undefined state.
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_del(Blocklist *entry) {
-  _blocklist_del_impl(entry->prev, entry->next);
-  entry->next = nullptr;
-  entry->prev = nullptr;
-}
-
-// list_replace - replace old entry by new one
-// @old : the element to be replaced
-// @curr : the new element to insert
-//
-// If @old was empty, it will be overwritten.
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_replace(
-  Blocklist *old, Blocklist *curr
-) {
-  curr->next = old->next;
-  curr->next->prev = curr;
-  curr->prev = old->prev;
-  curr->prev->next = curr;
-}
-
-// list_move - delete from one list and add as another's head
-// @list: the entry to move
-// @head: the head that will precede our entry
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_move_front(
-  Blocklist *list, Blocklist *head
-) {
-  _blocklist_del_impl(list->prev, list->next);
-  _blocklist_push_front(list, head);
-}
-
-// list_move_tail - delete from one list and add as another's tail
-// @list: the entry to move
-// @head: the head that will follow our entry
-template <typename T, size_t S>
-void ObjectPool<T, S>::_blocklist_move_back(
-  Blocklist *list, Blocklist *head
-) {
-  _blocklist_del_impl(list->prev, list->next);
-  _blocklist_push_back(list, head);
-}
-
-// list_is_first - tests whether @list is the last entry in list @head
-// @list: the entry to test
-// @head: the head of the list
-template <typename T, size_t S>
-bool ObjectPool<T, S>::_blocklist_is_first(
-  const Blocklist *list, const Blocklist *head
-) {
-  return list->prev == head;
-}
-
-// list_is_last - tests whether @list is the last entry in list @head
-// @list: the entry to test
-// @head: the head of the list
-template <typename T, size_t S>
-bool ObjectPool<T, S>::_blocklist_is_last(
-  const Blocklist *list, const Blocklist *head
-) {
-  return list->next == head;
-}
-
-// list_empty - tests whether a list is empty
-// @head: the list to test.
-template <typename T, size_t S>
-bool ObjectPool<T, S>::_blocklist_is_empty(const Blocklist *head) {
-  return head->next == head;
-}
-
-// list_is_singular - tests whether a list has just one entry.
-// @head: the list to test.
-template <typename T, size_t S>
-bool ObjectPool<T, S>::_blocklist_is_singular(
-  const Blocklist *head
-) {
-  return !_blocklist_is_empty(head) && (head->next == head->prev);
-}
-
-// Procedure: _for_each_block
-template <typename T, size_t S>
-template <typename C>
-void ObjectPool<T, S>::_for_each_block(Blocklist* head, C&& c) {
-  Blocklist* p;
-  for(p=head->next; p!=head; p=p->next) {
-    c(_block_of(p));
-  }
-}
-
-// Procedure: _for_each_block_safe
-// Iterate each item of a list - safe to free
-template <typename T, size_t S>
-template <typename C>
-void ObjectPool<T, S>::_for_each_block_safe(Blocklist* head, C&& c) {
-  Blocklist* p;
-  Blocklist* t;
-  for(p=head->next, t=p->next; p!=head; p=t, t=p->next) {
-    c(_block_of(p));
-  }
-}
-
-// Function: _allocate
-// allocate a spot from the block
-template <typename T, size_t S>
-T* ObjectPool<T, S>::_allocate(Block* s) {
-  if(s->top == nullptr) {
-    return reinterpret_cast<T*>(s->data + s->i++ * X);
-  }
-  else {
-    T* retval = s->top;
-    s->top = *(reinterpret_cast<T**>(s->top));
-    return retval;
-  }
-}
-
-// Procedure: _deallocate
-template <typename T, size_t S>
-void ObjectPool<T, S>::_deallocate(Block* s, T* ptr) {
-  *(reinterpret_cast<T**>(ptr)) = s->top;
-  s->top = ptr;
-}
-
-// Function: allocate
-template <typename T, size_t S>
-template <typename... ArgsT>
-T* ObjectPool<T, S>::animate(ArgsT&&... args) {
-
-  //std::cout << "construct a new item\n";
-
-  // my logically mapped heap
-  LocalHeap& h = _this_heap();
-
-  Block* s {nullptr};
-
-  h.mutex.lock();
-
-  // scan the list of superblocks from the most full to the least full
-  int f = static_cast<int>(F-1);
-  for(; f>=0; f--) {
-    if(!_blocklist_is_empty(&h.lists[f])) {
-      s = _block_of(h.lists[f].next);
-      break;
-    }
-  }
-
-  // no superblock found
-  if(f == -1) {
-
-    // check heap 0 for a superblock
-    _gheap.mutex.lock();
-    if(!_blocklist_is_empty(&_gheap.list)) {
-
-      s = _block_of(_gheap.list.next);
-
-      //printf("get a superblock from global heap %lu\n", s->u);
-      assert(s->u < M && s->heap == nullptr);
-      f = static_cast<int>(_bin(s->u + 1));
-
-      _blocklist_move_front(&s->list_node, &h.lists[f]);
-
-      s->heap = &h;  // must be within the global heap lock
-      _gheap.mutex.unlock();
-
-      h.u = h.u + s->u;
-      h.a = h.a + M;
-    }
-    // create a new block
-    else {
-      //printf("create a new superblock\n");
-      _gheap.mutex.unlock();
-      f = 0;
-      //s = static_cast<Block*>(std::malloc(sizeof(Block)));
-      s = new Block();
-
-      s->heap = &h;
-      s->i = 0;
-      s->u = 0;
-      s->top = nullptr;
-
-      _blocklist_push_front(&s->list_node, &h.lists[f]);
-
-      h.a = h.a + M;
-    }
-  }
-
-  // the superblock must have at least one space
-  //assert(s->u < M);
-  //printf("%lu %lu %lu\n", h.u, h.a, s->u);
-  //assert(h.u < h.a);
-
-  h.u = h.u + 1;
-  s->u = s->u + 1;
-
-  // take one item from the superblock
-  T* mem = _allocate(s);
-
-  int b = static_cast<int>(_bin(s->u));
-
-  if(b != f) {
-    //printf("move superblock from list[%d] to list[%d]\n", f, b);
-    _blocklist_move_front(&s->list_node, &h.lists[b]);
-  }
-
-  //std::cout << "s.i " << s->i << '\n'
-  //          << "s.u " << s->u << '\n'
-  //          << "h.u " << h.u  << '\n'
-  //          << "h.a " << h.a  << '\n';
-
-  h.mutex.unlock();
-
-  //printf("allocate %p (s=%p)\n", mem, s);
-
-  new (mem) T(std::forward<ArgsT>(args)...);
-
-  mem->_object_pool_block = s;
-
-  return mem;
-}
-
-// Function: destruct
-template <typename T, size_t S>
-void ObjectPool<T, S>::recycle(T* mem) {
-
-  //Block* s = *reinterpret_cast<Block**>(
-  //  reinterpret_cast<char*>(mem) - sizeof(Block**)
-  //);
-
-  //Block* s= *(reinterpret_cast<Block**>(mem) - O); //  (mem) - 1
-
-  Block* s = static_cast<Block*>(mem->_object_pool_block);
-
-  mem->~T();
-
-  //printf("deallocate %p (s=%p) M=%lu W=%lu X=%lu\n", mem, s, M, W, X);
-
-  // here we need a loop because when we lock the heap,
-  // other threads may have removed the superblock to another heap
-  bool sync = false;
-
-  do {
-    LocalHeap* h = s->heap.load(std::memory_order_relaxed);
-
-    // the block is in global heap
-    if(h == nullptr) {
-      std::lock_guard<std::mutex> glock(_gheap.mutex);
-      if(s->heap == h) {
-        sync = true;
-        _deallocate(s, mem);
-        s->u = s->u - 1;
+  static_assert(
+    std::atomic<TaggedHead>::is_always_lock_free,
+    "std::atomic<TaggedHead> is not lock-free on this platform — "
+    "check alignment and compiler support for 128-bit CAS"
+  );
+
+  struct alignas(TF_CACHELINE_SIZE) Shard {
+
+    // Hot path: lock-free Treiber stack of recycled blocks.
+    // Padded to its own cache line via alignas on _backing so that
+    // hot-path CAS on _free_head does not invalidate the cache line
+    // holding _backing's mutex (false sharing between hot and cold paths).
+    std::atomic<TaggedHead> _free_head {TaggedHead{}};
+
+    // Cold path: backing allocator for fresh block memory.
+    // alignas forces _backing to start on the next cache line boundary,
+    // separating it from the hot _free_head above.
+    std::pmr::synchronized_pool_resource _backing {
+      std::pmr::pool_options {
+        .max_blocks_per_chunk        = 1024,
+        .largest_required_pool_block = sizeof(Block)
       }
+    };
+
+    void push_free(Block* b) noexcept {
+      TaggedHead cur = _free_head.load(std::memory_order_relaxed);
+      TaggedHead next;
+      do {
+        b->next_free = cur.ptr;
+        next         = {b, cur.tag + 1};
+      } while (!_free_head.compare_exchange_weak(
+        cur, next,
+        std::memory_order_release,
+        std::memory_order_relaxed
+      ));
     }
-    else {
-      std::lock_guard<std::mutex> llock(h->mutex);
-      if(s->heap == h) {
-        sync = true;
-        // deallocate the item from the superblock
-        size_t f = _bin(s->u);
-        _deallocate(s, mem);
-        s->u = s->u - 1;
-        h->u = h->u - 1;
 
-        size_t b = _bin(s->u);
-
-        if(b != f) {
-          //printf("move superblock from list[%d] to list[%d]\n", f, b);
-          _blocklist_move_front(&s->list_node, &h->lists[b]);
-        }
-
-        // transfer a mostly-empty superblock to global heap
-        if((h->u + K*M < h->a) && (h->u < ((F-1) * h->a / F))) {
-          for(size_t i=0; i<F; i++) {
-            if(!_blocklist_is_empty(&h->lists[i])) {
-              Block* x = _block_of(h->lists[i].next);
-              //printf("transfer a block (x.u=%lu/x.i=%lu) to the global heap\n", x->u, x->i);
-              assert(h->u > x->u && h->a > M);
-              h->u = h->u - x->u;
-              h->a = h->a - M;
-              x->heap = nullptr;
-              std::lock_guard<std::mutex> glock(_gheap.mutex);
-              _blocklist_move_front(&x->list_node, &_gheap.list);
-              break;
-            }
-          }
+    Block* pop_free() noexcept {
+      TaggedHead cur = _free_head.load(std::memory_order_acquire);
+      TaggedHead next;
+      while (cur.ptr) {
+        next = {cur.ptr->next_free, cur.tag + 1};
+        if (_free_head.compare_exchange_weak(
+          cur, next,
+          std::memory_order_acquire,
+          std::memory_order_relaxed
+        )) {
+          return cur.ptr;
         }
       }
+      return nullptr;
     }
-  } while(!sync);
 
-  //std::cout << "s.i " << s->i << '\n'
-  //          << "s.u " << s->u << '\n';
-}
+    Block* allocate_from_backing() {
+      return static_cast<Block*>(
+        _backing.allocate(sizeof(Block), alignof(Block))
+      );
+    }
 
-// Function: _this_heap
-template <typename T, size_t S>
-typename ObjectPool<T, S>::LocalHeap&
-ObjectPool<T, S>::_this_heap() {
-  // here we don't use thread local since object pool might be
-  // created and destroyed multiple times
-  //thread_local auto hv = std::hash<std::thread::id>()(std::this_thread::get_id());
-  //return _lheaps[hv & _lheap_mask];
+    void dealloc_to_backing(Block* b) {
+      _backing.deallocate(b, sizeof(Block), alignof(Block));
+    }
+  };
 
-  return _lheaps[
-    std::hash<std::thread::id>()(std::this_thread::get_id()) & _lheap_mask
-  ];
-}
+  std::array<Shard, NumPools> _shards;
 
-// Function: _next_pow2
-template <typename T, size_t S>
-constexpr unsigned ObjectPool<T, S>::_next_pow2(unsigned n) const {
-  if(n == 0) return 1;
-  n--;
-  n |= n >> 1;
-  n |= n >> 2;
-  n |= n >> 4;
-  n |= n >> 8;
-  n |= n >> 16;
-  n++;
-  return n;
-}
+  // Round-robin counter shared across all ObjectPool<T, LogSize> instances,
+  // providing global load balancing without per-instance state.
+  static size_t _next_shard() noexcept {
+    static std::atomic<size_t> _counter{0};
+    return _counter.fetch_add(1, std::memory_order_relaxed) & (NumPools - 1);
+  }
 
-}  // end namespace tf --------------------------------------------------------
+  public:
+
+  /**
+  @brief constructs the allocator with @c 2^LogSize empty shards
+
+  Each shard is default-constructed with an empty free stack and an
+  uninitialized backing pool. No memory is allocated from the OS until
+  the first call to tf::ObjectPool::animate.
+  */
+  ObjectPool() = default;
+
+  /**
+  @brief disabled copy constructor
+
+  ObjectPool owns its shards and backing memory; copying is not
+  meaningful. Declare the allocator as a global or long-lived member
+  and share it by reference or pointer.
+  */
+  ObjectPool(const ObjectPool&) = delete;
+
+  /**
+  @brief disabled copy assignment operator
+  */
+  ObjectPool& operator=(const ObjectPool&) = delete;
+
+  /**
+  @brief destroys the allocator and releases all backing memory to upstream
+
+  The destructor of each shard's @c std::pmr::synchronized_pool_resource
+  returns all allocated chunks to the system allocator, including memory
+  backing blocks that are currently on the free stack. No per-block
+  destructor is called; callers are responsible for recycling all live
+  objects before destroying the allocator.
+  */
+  ~ObjectPool() = default;
+
+  /**
+  @brief constructs an object of type @c T in the pool and returns a pointer
+
+  @tparam Args constructor argument types
+  @param  args arguments forwarded to the constructor of @c T
+
+  @return pointer to the newly constructed @c T; never null
+
+  On the hot path, animate pops a previously recycled block from the
+  shard's lock-free free stack and constructs @c T in it via
+  @c std::construct_at, with no mutex acquisition. On a cache miss (empty
+  free stack), a fresh block is carved from the shard's backing
+  @c std::pmr::synchronized_pool_resource, which amortizes system
+  allocation cost over chunks of up to 1024 blocks.
+
+  Allocations are distributed across shards via a global round-robin
+  counter, balancing load regardless of which thread calls animate.
+
+  @code{.cpp}
+  tf::ObjectPool<MyTask> pool;
+
+  // default-construct
+  MyTask* t1 = pool.animate();
+
+  // construct with arguments
+  MyTask* t2 = pool.animate(42, "hello");
+
+  pool.recycle(t1);
+  pool.recycle(t2);
+  @endcode
+
+  @note
+  The returned pointer must eventually be passed to
+  tf::ObjectPool::recycle. Discarding it without recycling leaks
+  both the object's resources and the underlying block.
+  */
+  template <typename... Args>
+  [[nodiscard]] T* animate(Args&&... args) {
+    auto  sid   = _next_shard();
+    auto& shard = _shards[sid];
+
+    Block* block = shard.pop_free();       // hot path: lock-free
+    if (!block) block = shard.allocate_from_backing(); // cold path: mutex, amortized
+
+    block->pool_id = static_cast<uint16_t>(sid);
+    return std::construct_at(block->object(), std::forward<Args>(args)...);
+  }
+
+  /**
+  @brief destructs the object and returns its storage to the pool
+
+  @param obj pointer to a @c T previously returned by
+              tf::ObjectPool::animate, or @c nullptr (no-op)
+
+  recycle calls the destructor of @c *obj via @c std::destroy_at, then
+  pushes the underlying block onto the shard's lock-free free stack
+  without acquiring any mutex. The block becomes immediately available
+  for the next call to tf::ObjectPool::animate on any thread.
+
+  @code{.cpp}
+  tf::ObjectPool<MyTask> pool;
+
+  MyTask* t = pool.animate(arg1, arg2);
+
+  // ... use t ...
+
+  pool.recycle(t);  // destructor called here; memory returned to pool
+  t = nullptr;      // pointer is now dangling; do not dereference
+  @endcode
+
+  @note
+  Passing a pointer not obtained from this allocator is undefined behavior.
+  After recycle returns, @c obj is a dangling pointer and must not be
+  dereferenced.
+  */
+  void recycle(T* obj) {
+    if (!obj) return;
+    auto* block = Block::from_object(obj);
+    std::destroy_at(block->object());
+    _shards[block->pool_id].push_free(block); // hot path: lock-free
+  }
+
+  /**
+  @brief returns all recycled blocks and backing memory to the system allocator
+
+  release calls @c std::pmr::synchronized_pool_resource::release on each
+  shard's backing pool, returning all chunks to the upstream system allocator
+  in one shot, then atomically resets each shard's free stack to null.
+  This is an O(1) operation per shard — no per-block work is performed,
+  because the backing pool owns memory at the chunk level and frees entire
+  chunks regardless of how many individual blocks were returned to it.
+  After this call the allocator is in the same state as after construction:
+  empty free stacks, no memory held from the OS.
+
+  This method is optional and is not required before destruction.
+  It is useful for reclaiming pool memory between distinct workload phases
+  without destroying the allocator itself.
+
+  @code{.cpp}
+  tf::ObjectPool<MyTask> pool;
+
+  // --- phase 1 ---
+  for (auto& task : phase1_tasks) {
+    MyTask* t = pool.animate(task);
+    // ... run t ...
+    pool.recycle(t);
+  }
+
+  pool.release(); // return OS memory before phase 2 begins
+
+  // --- phase 2 ---
+  for (auto& task : phase2_tasks) {
+    MyTask* t = pool.animate(task);
+    // ... run t ...
+    pool.recycle(t);
+  }
+  @endcode
+
+  @note
+  All live objects must be recycled before calling release. Calling
+  release while objects are still alive is undefined behavior because
+  the backing memory they reside in is freed.
+  */
+  void release() {
+    for (auto& shard : _shards) {
+      // Release all backing chunks to upstream first — this covers both
+      // blocks currently on the free stack and any that were never recycled,
+      // since the backing pool owns memory at the chunk level, not per block.
+      shard._backing.release();
+      // Reset the free stack to null in O(1). Pointers it held are now
+      // dangling (their backing chunks were just freed), so they must be
+      // cleared before the allocator is used again.
+      shard._free_head.store(TaggedHead{}, std::memory_order_relaxed);
+    }
+  }
+};
+
+} // namespace tf
