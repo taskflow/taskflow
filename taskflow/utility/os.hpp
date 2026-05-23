@@ -91,13 +91,44 @@
 #define TF_OS_UNIX 1
 #endif
 
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+// Number of bits used by the OS for user-space virtual addresses
+// Used as the default PtrBits for TaggedHead64 to leave the remaining
+// high bits free for the ABA version counter.
+// ------------------------------------------------------------------------------------------------
+//
+// No standard C++ mechanism exposes the VA width; we derive it from
+// architecture-specific predefined macros. Override by defining
+// TF_POINTER_BITS before including this header if your environment
+// differs (e.g. x86-64 with LA57 5-level paging uses 57 bits).
+
+#if defined(TF_POINTER_BITS)
+  // user-defined override — accepted as-is
+
+#elif defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64)
+  // 4-level paging: 48 bits. If your kernel enables LA57 (5-level paging,
+  // 57-bit VA), compile with -DTF_POINTER_BITS=57. Note that only 7 bits
+  // remain for the ABA tag in that case; TaggedHead128 is a better choice.
+  #define TF_POINTER_BITS 48
+
+#elif defined(__aarch64__) || defined(_M_ARM64)
+  #define TF_POINTER_BITS 48   // ARMv8 48-bit VA (TTBR0 range)
+
+#elif defined(__riscv) && __riscv_xlen == 64
+  #define TF_POINTER_BITS 48   // SV48 worst case; SV39 gives 25 free bits
+
+#else
+  #define TF_POINTER_BITS (sizeof(void*) * CHAR_BIT)  // 32-bit or unknown
+#endif
+
+
+// ------------------------------------------------------------------------------------------------
 // Cache line size detection.
 //
 // Underestimating causes false sharing (hurts performance).
 // Overestimating wastes memory.
 // 64B is correct for the vast majority of modern server/desktop CPUs.
-// ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 
 #if defined(__i386__) || defined(__x86_64__) || \
     defined(_M_IX86)  || defined(_M_AMD64)

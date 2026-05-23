@@ -3,12 +3,6 @@
 #include <doctest.h>
 #include <taskflow/utility/object_pool.hpp>
 
-#include <atomic>
-#include <mutex>
-#include <numeric>
-#include <string>
-#include <thread>
-#include <vector>
 
 // ============================================================================
 // TestObj
@@ -40,16 +34,17 @@ struct TestObj {
 };
 
 // ============================================================================
-// op_animate_recycle
+// op_animate_recycle<H>
 //
 // Each of W threads animates N objects with distinct values and labels,
 // verifies that constructor arguments are forwarded correctly, then recycles
 // all objects. Tests basic correctness of animate/recycle under concurrency.
 // ============================================================================
 
+template <typename H>
 void op_animate_recycle(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int N = 1024;
 
@@ -81,16 +76,17 @@ void op_animate_recycle(unsigned W) {
 }
 
 // ============================================================================
-// op_destructor
+// op_destructor<H>
 //
 // Verifies that recycle invokes the destructor of T exactly once per object.
 // W threads each animate N objects sharing a single atomic dtor_count.
 // After all threads finish, the counter must equal W * N.
 // ============================================================================
 
+template <typename H>
 void op_destructor(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int        N = 2048;
   std::atomic<int> dtor_count{0};
@@ -119,15 +115,16 @@ void op_destructor(unsigned W) {
 }
 
 // ============================================================================
-// op_nullptr
+// op_nullptr<H>
 //
 // Verifies that recycle(nullptr) is a safe no-op. W threads each call
 // recycle(nullptr) repeatedly; no crash or undefined behavior should occur.
 // ============================================================================
 
+template <typename H>
 void op_nullptr(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int N = 1024;
 
@@ -146,7 +143,7 @@ void op_nullptr(unsigned W) {
 }
 
 // ============================================================================
-// op_cross_thread
+// op_cross_thread<H>
 //
 // Verifies correctness when animate and recycle occur on different threads,
 // which is the common pattern in Taskflow: the calling thread creates a node
@@ -156,9 +153,10 @@ void op_nullptr(unsigned W) {
 // dequeue and recycle them. dtor_count must equal W*N after all workers join.
 // ============================================================================
 
+template <typename H>
 void op_cross_thread(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int        N     = 1024;
   const int        total = static_cast<int>(W) * N;
@@ -192,16 +190,17 @@ void op_cross_thread(unsigned W) {
 }
 
 // ============================================================================
-// op_release
+// op_release<H>
 //
 // Verifies that release() correctly resets the pool so it can be reused.
 // Animates N objects, recycles all, calls release(), then animates N objects
 // again. Total dtor_count must equal 2*N (both batches fully destructed).
 // ============================================================================
 
+template <typename H>
 void op_release(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int        N = 2048;
   std::atomic<int> dtor_count{0};
@@ -259,7 +258,7 @@ void op_release(unsigned W) {
 }
 
 // ============================================================================
-// op_stress
+// op_stress<H>
 //
 // High-frequency concurrent stress test. W threads each run a tight loop of
 // animate-verify-recycle for a large number of iterations. Exercises the
@@ -267,9 +266,10 @@ void op_release(unsigned W) {
 // constructed object is properly destructed.
 // ============================================================================
 
+template <typename H>
 void op_stress(unsigned W) {
 
-  tf::ObjectPool<TestObj> pool;
+  tf::ObjectPool<TestObj, H, 5> pool;
 
   const int        N = 65536;
   std::atomic<int> dtor_count{0};
@@ -295,55 +295,165 @@ void op_stress(unsigned W) {
 }
 
 // ============================================================================
-// TEST CASES: animate and recycle with constructor forwarding
+// TEST CASES — TaggedHead128
 // ============================================================================
 
-TEST_CASE("ObjectPool.animate_recycle.1thread"  * doctest::timeout(300)) { op_animate_recycle(1);  }
-TEST_CASE("ObjectPool.animate_recycle.2threads" * doctest::timeout(300)) { op_animate_recycle(2);  }
-TEST_CASE("ObjectPool.animate_recycle.4threads" * doctest::timeout(300)) { op_animate_recycle(4);  }
-TEST_CASE("ObjectPool.animate_recycle.8threads" * doctest::timeout(300)) { op_animate_recycle(8);  }
+TEST_CASE("ObjectPool.H128.animate_recycle.1thread" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.animate_recycle.2threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.animate_recycle.4threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.animate_recycle.8threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead128>(8);
+}
+
+TEST_CASE("ObjectPool.H128.destructor.1thread" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.destructor.2threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.destructor.4threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.destructor.8threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead128>(8);
+}
+
+TEST_CASE("ObjectPool.H128.nullptr.1thread" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.nullptr.2threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.nullptr.4threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.nullptr.8threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead128>(8);
+}
+
+TEST_CASE("ObjectPool.H128.cross_thread.1thread" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.cross_thread.2threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.cross_thread.4threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.cross_thread.8threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead128>(8);
+}
+
+TEST_CASE("ObjectPool.H128.release.1thread" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.release.2threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.release.4threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.release.8threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead128>(8);
+}
+
+TEST_CASE("ObjectPool.H128.stress.1thread" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead128>(1);
+}
+TEST_CASE("ObjectPool.H128.stress.2threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead128>(2);
+}
+TEST_CASE("ObjectPool.H128.stress.4threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead128>(4);
+}
+TEST_CASE("ObjectPool.H128.stress.8threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead128>(8);
+}
 
 // ============================================================================
-// TEST CASES: destructor called exactly once per recycle
+// TEST CASES — TaggedHead64<> (default PtrBits = TF_POINTER_BITS)
 // ============================================================================
 
-TEST_CASE("ObjectPool.destructor.1thread"  * doctest::timeout(300)) { op_destructor(1); }
-TEST_CASE("ObjectPool.destructor.2threads" * doctest::timeout(300)) { op_destructor(2); }
-TEST_CASE("ObjectPool.destructor.4threads" * doctest::timeout(300)) { op_destructor(4); }
-TEST_CASE("ObjectPool.destructor.8threads" * doctest::timeout(300)) { op_destructor(8); }
+TEST_CASE("ObjectPool.H64.animate_recycle.1thread" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.animate_recycle.2threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.animate_recycle.4threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.animate_recycle.8threads" * doctest::timeout(300)) {
+  op_animate_recycle<tf::TaggedHead64<>>(8);
+}
 
-// ============================================================================
-// TEST CASES: recycle(nullptr) is a safe no-op
-// ============================================================================
+TEST_CASE("ObjectPool.H64.destructor.1thread" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.destructor.2threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.destructor.4threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.destructor.8threads" * doctest::timeout(300)) {
+  op_destructor<tf::TaggedHead64<>>(8);
+}
 
-TEST_CASE("ObjectPool.nullptr.1thread"  * doctest::timeout(300)) { op_nullptr(1); }
-TEST_CASE("ObjectPool.nullptr.2threads" * doctest::timeout(300)) { op_nullptr(2); }
-TEST_CASE("ObjectPool.nullptr.4threads" * doctest::timeout(300)) { op_nullptr(4); }
-TEST_CASE("ObjectPool.nullptr.8threads" * doctest::timeout(300)) { op_nullptr(8); }
+TEST_CASE("ObjectPool.H64.nullptr.1thread" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.nullptr.2threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.nullptr.4threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.nullptr.8threads" * doctest::timeout(300)) {
+  op_nullptr<tf::TaggedHead64<>>(8);
+}
 
-// ============================================================================
-// TEST CASES: cross-thread animate/recycle
-// ============================================================================
+TEST_CASE("ObjectPool.H64.cross_thread.1thread" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.cross_thread.2threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.cross_thread.4threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.cross_thread.8threads" * doctest::timeout(300)) {
+  op_cross_thread<tf::TaggedHead64<>>(8);
+}
 
-TEST_CASE("ObjectPool.cross_thread.1thread"  * doctest::timeout(300)) { op_cross_thread(1); }
-TEST_CASE("ObjectPool.cross_thread.2threads" * doctest::timeout(300)) { op_cross_thread(2); }
-TEST_CASE("ObjectPool.cross_thread.4threads" * doctest::timeout(300)) { op_cross_thread(4); }
-TEST_CASE("ObjectPool.cross_thread.8threads" * doctest::timeout(300)) { op_cross_thread(8); }
+TEST_CASE("ObjectPool.H64.release.1thread" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.release.2threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.release.4threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.release.8threads" * doctest::timeout(300)) {
+  op_release<tf::TaggedHead64<>>(8);
+}
 
-// ============================================================================
-// TEST CASES: release resets pool for reuse
-// ============================================================================
-
-TEST_CASE("ObjectPool.release.1thread"  * doctest::timeout(300)) { op_release(1); }
-TEST_CASE("ObjectPool.release.2threads" * doctest::timeout(300)) { op_release(2); }
-TEST_CASE("ObjectPool.release.4threads" * doctest::timeout(300)) { op_release(4); }
-TEST_CASE("ObjectPool.release.8threads" * doctest::timeout(300)) { op_release(8); }
-
-// ============================================================================
-// TEST CASES: high-frequency stress under sustained concurrency
-// ============================================================================
-
-TEST_CASE("ObjectPool.stress.1thread"  * doctest::timeout(300)) { op_stress(1); }
-TEST_CASE("ObjectPool.stress.2threads" * doctest::timeout(300)) { op_stress(2); }
-TEST_CASE("ObjectPool.stress.4threads" * doctest::timeout(300)) { op_stress(4); }
-TEST_CASE("ObjectPool.stress.8threads" * doctest::timeout(300)) { op_stress(8); }
+TEST_CASE("ObjectPool.H64.stress.1thread" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead64<>>(1);
+}
+TEST_CASE("ObjectPool.H64.stress.2threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead64<>>(2);
+}
+TEST_CASE("ObjectPool.H64.stress.4threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead64<>>(4);
+}
+TEST_CASE("ObjectPool.H64.stress.8threads" * doctest::timeout(300)) {
+  op_stress<tf::TaggedHead64<>>(8);
+}

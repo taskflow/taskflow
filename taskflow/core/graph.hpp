@@ -910,7 +910,11 @@ class ExplicitAnchorGuard {
     // }
 };*/
 
-using NodePool = ObjectPool<Node>;
+using NodePool = std::conditional_t
+  std::atomic<tf::TaggedHead128>::is_always_lock_free,
+  ObjectPool<Node, tf::TaggedHead128>,
+  ObjectPool<Node, tf::TaggedHead64<>>
+>;
 
 inline NodePool _node_pool;
 #endif
