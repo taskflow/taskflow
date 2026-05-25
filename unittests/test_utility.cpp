@@ -993,3 +993,363 @@ TEST_CASE("NaryOperatorLike.EdgeCases" * doctest::timeout(300)) {
   }
 }
 
+
+// ------------------------------------------------------------------------------------------------
+// unroll
+// ------------------------------------------------------------------------------------------------
+
+TEST_CASE("Unroll" * doctest::timeout(300)) {
+
+  // ── empty range ───────────────────────────────────────────────────
+  {
+    int count = 0;
+    tf::unroll<0,  0, 1>([&](int){ count++; });
+    tf::unroll<5,  5, 1>([&](int){ count++; });
+    tf::unroll<5,  5, 3>([&](int){ count++; });
+    tf::unroll<100,100,7>([&](int){ count++; });
+    REQUIRE(count == 0);
+  }
+
+  // ── single iteration ──────────────────────────────────────────────
+  {
+    int seen = -1;
+    tf::unroll<7, 8, 1>([&](int i){ seen = i; });
+    REQUIRE(seen == 7);
+
+    // step larger than the range → exactly one call at beg
+    seen = -1;
+    tf::unroll<3, 5, 99>([&](int i){ seen = i; });
+    REQUIRE(seen == 3);
+  }
+
+  // ── exact indices, step = 1 ───────────────────────────────────────
+  {
+    std::vector<int> got;
+    tf::unroll<0, 5, 1>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,1,2,3,4});
+
+    got.clear();
+    tf::unroll<10, 20, 1>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{10,11,12,13,14,15,16,17,18,19});
+  }
+
+  // ── step > 1, evenly divisible ────────────────────────────────────
+  {
+    std::vector<int> got;
+    tf::unroll<0, 10, 2>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,2,4,6,8});
+
+    got.clear();
+    tf::unroll<0, 9, 3>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,3,6});
+  }
+
+  // ── step > 1, NOT divisible (ceil semantics) ──────────────────────
+  // count = ceil((end - beg) / step); last visited index can be < end - 1
+  {
+    std::vector<int> got;
+    tf::unroll<0, 10, 3>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,3,6,9});         // 9 < 10
+
+    got.clear();
+    tf::unroll<0, 11, 3>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,3,6,9});         // 12 would overshoot
+
+    got.clear();
+    tf::unroll<0, 13, 3>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0,3,6,9,12});
+
+    got.clear();
+    tf::unroll<10, 20, 3>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{10,13,16,19});
+
+    got.clear();
+    tf::unroll<10, 20, 2>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{10,12,14,16,18});
+  }
+
+  // ── step >= range ─────────────────────────────────────────────────
+  {
+    std::vector<int> got;
+    tf::unroll<0, 5, 5>  ([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0});
+
+    got.clear();
+    tf::unroll<0, 5, 100>([&](int i){ got.push_back(i); });
+    REQUIRE(got == std::vector<int>{0});
+  }
+
+  // ── left-to-right execution order ─────────────────────────────────
+  {
+    std::vector<int> order;
+    tf::unroll<0, 8, 1>([&](int i){ order.push_back(i); });
+    for (int k = 0; k < (int)order.size(); ++k) REQUIRE(order[k] == k);
+
+    order.clear();
+    tf::unroll<3, 9, 2>([&](int i){ order.push_back(i * 10); });
+    REQUIRE(order == std::vector<int>{30, 50, 70});
+  }
+
+  // ── value-category of the index passed to f ───────────────────────
+  // f receives a prvalue, so both by-value and by-const-ref must work.
+  {
+    int s1 = 0, s2 = 0;
+    tf::unroll<0, 5, 1>([&](int i)         { s1 += i; });
+    tf::unroll<0, 5, 1>([&](const int& i)  { s2 += i; });
+    REQUIRE(s1 == 10);
+    REQUIRE(s2 == 10);
+  }
+
+  // ── return value of f is discarded ────────────────────────────────
+  {
+    int hits = 0;
+    tf::unroll<0, 4, 1>([&](int i) -> int { ++hits; return i + 1; });
+    REQUIRE(hits == 4);
+  }
+
+  // ── different index types ─────────────────────────────────────────
+  {
+    std::vector<std::size_t> got;
+    tf::unroll<std::size_t{0}, std::size_t{4}, std::size_t{1}>(
+      [&](std::size_t i){ got.push_back(i); }
+    );
+    REQUIRE(got == std::vector<std::size_t>{0,1,2,3});
+  }
+
+  // ── nesting (the common HPC register-tile pattern) ────────────────
+  {
+    std::vector<std::pair<int,int>> got;
+    tf::unroll<0, 3, 1>([&](int i){
+      tf::unroll<0, 2, 1>([&](int j){
+        got.emplace_back(i, j);
+      });
+    });
+    REQUIRE(got == std::vector<std::pair<int,int>>{
+      {0,0},{0,1},{1,0},{1,1},{2,0},{2,1}
+    });
+  }
+
+  // ── constexpr / compile-time evaluation ───────────────────────────
+  {
+    constexpr auto sum_0_to_9 = []{
+      int s = 0;
+      tf::unroll<0, 10, 1>([&](int i){ s += i; });
+      return s;
+    }();
+    static_assert(sum_0_to_9 == 45);
+    REQUIRE(sum_0_to_9 == 45);
+
+    constexpr auto count_step3 = []{
+      int n = 0;
+      tf::unroll<0, 13, 3>([&](int){ ++n; });
+      return n;
+    }();
+    static_assert(count_step3 == 5);  // 0,3,6,9,12
+  }
+
+  // ── original cumulative baseline (preserved verbatim) ─────────────
+  {
+    int count = 0;
+    tf::unroll<0,  0, 1>([&](int){ count++; }); REQUIRE(count == 0);
+    tf::unroll<0,  1, 1>([&](int){ count++; }); REQUIRE(count == 1);
+    tf::unroll<0,  3, 1>([&](int){ count++; }); REQUIRE(count == 4);
+    tf::unroll<10,20, 1>([&](int){ count++; }); REQUIRE(count == 14);
+    tf::unroll<10,20, 2>([&](int){ count++; }); REQUIRE(count == 19);
+  }
+}
+
+TEST_CASE("UnrollUntil" * doctest::timeout(300)) {
+
+  // ---- empty range: f never called, fold-over-empty-|| == false
+  {
+    int count = 0;
+    bool r1 = tf::unroll_until<0, 0, 1>([&](int){ count++; return true;  });
+    bool r2 = tf::unroll_until<5, 5, 1>([&](int){ count++; return true;  });
+    bool r3 = tf::unroll_until<5, 5, 3>([&](int){ count++; return false; });
+    bool r4 = tf::unroll_until<7, 7, 9>([&](int){ count++; return true;  });
+    REQUIRE(count == 0);
+    REQUIRE(r1 == false);
+    REQUIRE(r2 == false);
+    REQUIRE(r3 == false);
+    REQUIRE(r4 == false);
+  }
+
+  // ---- single iteration, predicate false → visited once, returns false
+  {
+    int count = 0, seen = -1;
+    bool r = tf::unroll_until<7, 8, 1>(
+      [&](int i){ count++; seen = i; return false; }
+    );
+    REQUIRE(count == 1);
+    REQUIRE(seen  == 7);
+    REQUIRE(r == false);
+  }
+
+  // ---- single iteration, predicate true → visited once, returns true
+  {
+    int count = 0, seen = -1;
+    bool r = tf::unroll_until<7, 8, 1>(
+      [&](int i){ count++; seen = i; return true; }
+    );
+    REQUIRE(count == 1);
+    REQUIRE(seen  == 7);
+    REQUIRE(r == true);
+  }
+
+  // ---- predicate always false → all visited, returns false
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 5, 1>(
+      [&](int i){ got.push_back(i); return false; }
+    );
+    REQUIRE(got == std::vector<int>{0,1,2,3,4});
+    REQUIRE(r == false);
+  }
+
+  // ---- short-circuit on the first iteration → only beg visited
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 5, 1>(
+      [&](int i){ got.push_back(i); return i == 0; }
+    );
+    REQUIRE(got == std::vector<int>{0});
+    REQUIRE(r == true);
+  }
+
+  // ---- short-circuit in the middle → indices up to and including trigger
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 6, 1>(
+      [&](int i){ got.push_back(i); return i == 3; }
+    );
+    REQUIRE(got == std::vector<int>{0,1,2,3});
+    REQUIRE(r == true);
+  }
+
+  // ---- short-circuit on the last iteration → all visited, returns true
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 4, 1>(
+      [&](int i){ got.push_back(i); return i == 3; }
+    );
+    REQUIRE(got == std::vector<int>{0,1,2,3});
+    REQUIRE(r == true);
+  }
+
+  // ---- step > 1, short-circuit honors step
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 10, 2>(
+      [&](int i){ got.push_back(i); return i == 4; }
+    );
+    REQUIRE(got == std::vector<int>{0, 2, 4});
+    REQUIRE(r == true);
+  }
+
+  // ---- step > 1, predicate never true → ceil-many visits, returns false
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<0, 10, 3>(
+      [&](int i){ got.push_back(i); return false; }
+    );
+    REQUIRE(got == std::vector<int>{0, 3, 6, 9});
+    REQUIRE(r == false);
+  }
+
+  // ---- nonzero start + step, short-circuit
+  {
+    std::vector<int> got;
+    bool r = tf::unroll_until<10, 20, 2>(
+      [&](int i){ got.push_back(i); return i == 16; }
+    );
+    REQUIRE(got == std::vector<int>{10, 12, 14, 16});
+    REQUIRE(r == true);
+  }
+
+  // ---- sanity: nothing past the trigger is ever touched
+  {
+    int after_trigger = 0;
+    bool r = tf::unroll_until<0, 8, 1>([&](int i){
+      if (i > 2) ++after_trigger;
+      return i == 2;
+    });
+    REQUIRE(after_trigger == 0);
+    REQUIRE(r == true);
+  }
+
+  // ---- f can take i by value or by const-ref
+  {
+    int last_v = -1, last_r = -1;
+    bool rv = tf::unroll_until<0, 5, 1>([&](int i)        { last_v = i; return false; });
+    bool rr = tf::unroll_until<0, 5, 1>([&](const int& i) { last_r = i; return false; });
+    REQUIRE(last_v == 4);
+    REQUIRE(last_r == 4);
+    REQUIRE(rv == false);
+    REQUIRE(rr == false);
+  }
+
+  // ---- non-bool but bool-convertible return (contextual conversion via ||)
+  // int return: 0 → false-y, nonzero → true-y, so triggers on i == 1
+  {
+    int hits = 0;
+    bool r = tf::unroll_until<0, 5, 1>([&](int i){ ++hits; return i; });
+    REQUIRE(hits == 2);   // visited 0, then 1 (stopped)
+    REQUIRE(r == true);
+  }
+
+  // ---- size_t bounds
+  {
+    std::vector<std::size_t> got;
+    bool r = tf::unroll_until<std::size_t{0}, std::size_t{5}, std::size_t{1}>(
+      [&](std::size_t i){ got.push_back(i); return i == 2; }
+    );
+    REQUIRE(got == std::vector<std::size_t>{0, 1, 2});
+    REQUIRE(r == true);
+  }
+
+  // ---- nesting: outer stops as soon as inner finds a match
+  {
+    std::vector<std::pair<int,int>> got;
+    bool r = tf::unroll_until<0, 4, 1>([&](int i){
+      return tf::unroll_until<0, 3, 1>([&](int j){
+        got.emplace_back(i, j);
+        return (i == 1 && j == 2);
+      });
+    });
+    REQUIRE(r == true);
+    REQUIRE(got == std::vector<std::pair<int,int>>{
+      {0,0},{0,1},{0,2},   // i=0: inner runs to completion, returns false
+      {1,0},{1,1},{1,2}    // i=1: inner matches at j=2; outer stops here
+    });
+  }
+
+  // ---- constexpr / compile-time evaluation
+  {
+    constexpr bool found_3 = tf::unroll_until<0, 5, 1>(
+      [](int i){ return i == 3; }
+    );
+    static_assert(found_3 == true);
+
+    constexpr bool found_99 = tf::unroll_until<0, 5, 1>(
+      [](int i){ return i == 99; }
+    );
+    static_assert(found_99 == false);
+
+    // confirm short-circuit fires at compile time
+    constexpr int visits_until_2 = []{
+      int n = 0;
+      tf::unroll_until<0, 5, 1>([&](int i){ ++n; return i == 2; });
+      return n;
+    }();
+    static_assert(visits_until_2 == 3);   // visits 0, 1, 2
+    REQUIRE(visits_until_2 == 3);
+  }
+}
+
+
+
+
+
+
+
+
