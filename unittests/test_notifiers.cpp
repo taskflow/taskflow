@@ -859,13 +859,25 @@ void stress_test_notifier(size_t N, size_t k, size_t rounds) {
 
       while (!stop.load(std::memory_order_relaxed)) {
 
-        while (round.load(std::memory_order_acquire) == local_round) {
-          if (stop.load(std::memory_order_relaxed)) return;
+        // Include !stop in the condition so the inner spin exits cleanly
+        // when the main sets stop=true (not only when round advances).
+        while (round.load(std::memory_order_acquire) == local_round &&
+               !stop.load(std::memory_order_relaxed)) {
           std::this_thread::yield();
         }
+        if (stop.load(std::memory_order_relaxed)) return;
 
         notifier.prepare_wait(i);
         prepared_count.fetch_add(1, std::memory_order_release);
+
+        // Two-phase stop check: prepare_wait's seq_cst fence guarantees
+        // that stop=true is visible here if main stored it before notify_all().
+        // Without this, notify_all() could fire before prepare_wait and the
+        // worker would block in commit_wait with no future wakeup.
+        if (stop.load(std::memory_order_relaxed)) {
+          notifier.cancel_wait(i);
+          return;
+        }
 
         notifier.commit_wait(i);
         wake_count.fetch_add(1, std::memory_order_release);
@@ -1137,6 +1149,34 @@ static void num_waiters_counts_only_committed() {
   REQUIRE(notifier.num_waiters() == 0);
 }
 
+// Many sequential prepare+cancel cycles; verify the notifier is still usable afterwards.
+// For NonblockingNotifier, cancels advance the EPOCH counter — this stresses 32-bit overflow.
+// For AtomicNotifier,  cancels adjust the waiter count — this stresses count accuracy.
+template <typename T>
+void rapid_cancel_integrity(size_t cycles) {
+  T notifier(2);
+
+  for (size_t i = 0; i < cycles; ++i) {
+    notifier.prepare_wait(0);
+    notifier.cancel_wait(0);
+  }
+  REQUIRE(notifier.num_waiters() == 0);
+
+  std::atomic<size_t> committed{0};
+  std::thread t([&] {
+    notifier.prepare_wait(0);
+    notifier.commit_wait(0);
+    committed.fetch_add(1, std::memory_order_release);
+  });
+
+  while (notifier.num_waiters() < 1) std::this_thread::yield();
+  notifier.notify_all();
+  t.join();
+
+  REQUIRE(committed.load() == 1);
+  REQUIRE(notifier.num_waiters() == 0);
+}
+
 // Many sequential prepare+cancel cycles to exercise 32-bit epoch wraparound.
 static void rapid_cancel_epoch_integrity(size_t cycles) {
   tf::NonblockingNotifier notifier(2);
@@ -1165,8 +1205,11 @@ static void rapid_cancel_epoch_integrity(size_t cycles) {
 }
 
 // notify_one() fires in the pre-waiter window (after prepare_wait, before commit_wait).
-static void notify_one_at_prewaiter_window(size_t rounds) {
-  tf::NonblockingNotifier notifier(1);
+// Works for both NonblockingNotifier (num_waiters stays 0 during pre-wait) and
+// AtomicNotifier (num_waiters == 1 immediately after prepare_wait).
+template <typename T>
+void notify_one_at_prewaiter_window(size_t rounds) {
+  T notifier(1);
 
   for (size_t r = 0; r < rounds; ++r) {
     std::atomic<bool> prepared{false};
@@ -1430,15 +1473,17 @@ TEST_CASE("NonblockingNotifier.notify_n_no_over_release.N8.k3"   * doctest::time
 TEST_CASE("NonblockingNotifier.notify_n_no_over_release.N15.k7"  * doctest::timeout(120)) { notify_n_does_not_over_release<tf::NonblockingNotifier>(15,  7,  60); }
 TEST_CASE("NonblockingNotifier.notify_n_no_over_release.N31.k15" * doctest::timeout(120)) { notify_n_does_not_over_release<tf::NonblockingNotifier>(31, 15,  40); }
 
-// --- rapid_cancel_epoch_integrity ---
+// --- rapid_cancel_integrity (generic) and rapid_cancel_epoch_integrity (epoch-overflow) ---
 
+TEST_CASE("NonblockingNotifier.rapid_cancel_integrity.1k_cycles"   * doctest::timeout(30)) { rapid_cancel_integrity<tf::NonblockingNotifier>(1000);   }
+TEST_CASE("NonblockingNotifier.rapid_cancel_integrity.100k_cycles" * doctest::timeout(60)) { rapid_cancel_integrity<tf::NonblockingNotifier>(100000); }
 TEST_CASE("NonblockingNotifier.rapid_cancel_epoch_integrity.1k_cycles"   * doctest::timeout(30)) { rapid_cancel_epoch_integrity(1000);   }
 TEST_CASE("NonblockingNotifier.rapid_cancel_epoch_integrity.100k_cycles" * doctest::timeout(60)) { rapid_cancel_epoch_integrity(100000); }
 
 // --- notify_one fires in pre-waiter window ---
 
-TEST_CASE("NonblockingNotifier.notify_one_at_prewaiter_window.50rounds"  * doctest::timeout(60)) { notify_one_at_prewaiter_window(50);  }
-TEST_CASE("NonblockingNotifier.notify_one_at_prewaiter_window.200rounds" * doctest::timeout(60)) { notify_one_at_prewaiter_window(200); }
+TEST_CASE("NonblockingNotifier.notify_one_at_prewaiter_window.50rounds"  * doctest::timeout(60)) { notify_one_at_prewaiter_window<tf::NonblockingNotifier>(50);  }
+TEST_CASE("NonblockingNotifier.notify_one_at_prewaiter_window.200rounds" * doctest::timeout(60)) { notify_one_at_prewaiter_window<tf::NonblockingNotifier>(200); }
 
 
 // ============================================================================
@@ -1554,98 +1599,21 @@ TEST_CASE("AtomicNotifier.bug3_epoch_field.N2" * doctest::timeout(30)) { notify_
 TEST_CASE("AtomicNotifier.bug3_epoch_field.N4" * doctest::timeout(30)) { notify_n_releases_committed<tf::AtomicNotifier>(4, 2, 20, 100); }
 TEST_CASE("AtomicNotifier.bug3_epoch_field.N8" * doctest::timeout(30)) { notify_n_releases_committed<tf::AtomicNotifier>(8, 4, 20, 101); }
 
-//template to check not only for 2 workers (func arg) but n workers
-// template <typename T>
-// void test_template(size_t num_workers) {
+// --- notify_n(0) is a strict noop ---
 
-//   constexpr size_t NUM_RUNS = 10;   // hardcoded runs
+TEST_CASE("AtomicNotifier.notify_n_zero_is_noop.4threads" * doctest::timeout(60)) { notify_n_zero_is_noop<tf::AtomicNotifier>(4); }
+TEST_CASE("AtomicNotifier.notify_n_zero_is_noop.8threads" * doctest::timeout(60)) { notify_n_zero_is_noop<tf::AtomicNotifier>(8); }
 
-//   T notifier(num_workers);
-//   REQUIRE(notifier.size() == num_workers);
+// --- notify_one fires in pre-waiter window ---
+// For AtomicNotifier, num_waiters() increments immediately at prepare_wait (unlike
+// NonblockingNotifier where it only counts committed/parked threads).
 
-//   std::atomic<size_t> round{0};
-//   std::atomic<size_t> prepared{0};
-//   std::atomic<size_t> committed{0};
-//   std::atomic<bool> stop{false};
+TEST_CASE("AtomicNotifier.notify_one_at_prewaiter_window.50rounds"  * doctest::timeout(60)) { notify_one_at_prewaiter_window<tf::AtomicNotifier>(50);  }
+TEST_CASE("AtomicNotifier.notify_one_at_prewaiter_window.200rounds" * doctest::timeout(60)) { notify_one_at_prewaiter_window<tf::AtomicNotifier>(200); }
 
-//   std::vector<std::thread> workers;
-//   workers.reserve(num_workers);
+// --- rapid_cancel_integrity ---
+// Stresses that many prepare+cancel cycles keep the waiter count accurate and
+// leave the notifier fully functional.
 
-//   // =========================
-//   // Worker threads
-//   // =========================
-
-//   for (size_t i = 0; i < num_workers; ++i) {
-
-//     workers.emplace_back([&, i] {
-
-//       size_t local_round = 0;
-
-//       while (!stop.load(std::memory_order_relaxed)) {
-
-//         while (round.load(std::memory_order_acquire) == local_round) {
-//           if (stop.load(std::memory_order_relaxed)) return;
-//           std::this_thread::yield();
-//         }
-
-//         notifier.prepare_wait(i);
-//         prepared.fetch_add(1, std::memory_order_release);
-
-//         notifier.commit_wait(i);
-//         committed.fetch_add(1, std::memory_order_release);
-
-//         local_round++;
-//       }
-
-//     });
-
-//   }
-
-//   // =========================
-//   // Rounds (fixed)
-//   // =========================
-
-//   for (size_t r = 0; r < NUM_RUNS; ++r) {
-
-//     prepared.store(0);
-//     committed.store(0);
-
-//     round.store(r + 1, std::memory_order_release);
-
-//     while (prepared.load(std::memory_order_acquire) != num_workers) {
-//       std::this_thread::yield();
-//     }
-
-//     notifier.notify_all();
-
-//     while (committed.load(std::memory_order_acquire) != num_workers) {
-//       std::this_thread::yield();
-//     }
-
-//   }
-
-//   stop.store(true);
-//   round.fetch_add(1);
-
-//   notifier.notify_all();
-
-//   for (auto& t : workers) {
-//     if (t.joinable()) t.join();
-//   }
-
-//   REQUIRE(notifier.num_waiters() == 0);
-// }
-
-// static const std::vector<size_t> WORKER_COUNTS = {
-//   1,
-//   2,
-//   3,  
-//   4,
-//   5,   
-//   7,  
-//   8,
-//   9,   
-//   15,
-//   16,
-//   31 
-// };
+TEST_CASE("AtomicNotifier.rapid_cancel_integrity.1k_cycles"   * doctest::timeout(30)) { rapid_cancel_integrity<tf::AtomicNotifier>(1000);   }
+TEST_CASE("AtomicNotifier.rapid_cancel_integrity.100k_cycles" * doctest::timeout(60)) { rapid_cancel_integrity<tf::AtomicNotifier>(100000); }
