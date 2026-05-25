@@ -5,6 +5,7 @@ include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 list(APPEND TF_UNITTESTS 
   test_utility 
   test_iterators
+  test_object_pool
   test_wsq
   test_spsc
   test_basics 

@@ -37,59 +37,36 @@ namespace tf {
 // ----------------------------------------------------------------------------
 // Work-stealing queue steal protocol sentinels
 //
-// These free functions define the two sentinel values used by steal operations
+// These free functions define the sentinel value used by steal operations
 // across all work-stealing queue types (BoundedWSQ, UnboundedWSQ). They encode
 // the result of a steal attempt into the return value itself, avoiding any
 // out-parameter or separate status type.
 //
 // For pointer types T:
-//   wsq_empty_value<T>()     = nullptr  — queue was genuinely empty
-//   wsq_contended_value<T>() = 0x1      — queue had work but CAS was lost to
-//                                         another thief; caller should retry
+//   wsq_empty_value<T>() = nullptr  — queue was empty (or CAS was lost)
 //
-// The sentinel 0x1 is safe because any real object pointer is aligned to at
-// least alignof(T) >= 1, and the OS never maps address 0x1. For void* there
-// is no pointee alignment to check, but the same reasoning applies — no
-// allocator ever returns address 0x1.
+// The sentinel nullptr is returned whenever steal() cannot deliver a task,
+// whether due to the queue being genuinely empty or losing a concurrent CAS
+// race to another thief.
 //
-// For non-pointer types T, both return std::nullopt since sentinel encoding
-// is not possible without a dedicated out-of-band value.
+// For non-pointer types T, std::nullopt is returned to indicate the absence
+// of a value.
 //
-// Both queue classes expose these as static member functions (empty_value,
-// contended_value) that delegate here, so callers can use either form.
+// Queue classes expose this as a static member function (empty_value) that
+// delegates here, so callers can use either form.
 // ----------------------------------------------------------------------------
 
 /**
 @brief returns the empty sentinel for work-stealing steal operations
 
 For pointer types @c T, returns @c nullptr. For non-pointer types, returns
-@c std::nullopt. A steal operation returning this value means the queue was
-genuinely empty at the time of the attempt.
+@c std::nullopt. A steal operation returning this value means no task could
+be stolen (either the queue was empty or the CAS was lost to another thief).
 */
 template <typename T>
 constexpr auto wsq_empty_value() {
   if constexpr (std::is_pointer_v<T>) {
     return T{nullptr};
-  } else {
-    return std::optional<T>{std::nullopt};
-  }
-}
-
-/**
-@brief returns the contended sentinel for work-stealing steal operations
-
-For pointer types @c T, returns @c reinterpret_cast<T>(uintptr_t{1}), i.e.,
-the pointer address @c 0x1. A steal operation returning this value means the
-queue was non-empty but the CAS was lost to another concurrent thief — the
-caller should retry the same victim since work is known to exist.
-
-For non-pointer types, returns @c std::nullopt (same as @c wsq_empty_value)
-since sentinel encoding is not possible without a dedicated out-of-band value.
-*/
-template <typename T>
-auto wsq_contended_value() {
-  if constexpr (std::is_pointer_v<T>) {
-    return reinterpret_cast<T>(uintptr_t{1});
   } else {
     return std::optional<T>{std::nullopt};
   }
@@ -344,9 +321,9 @@ class UnboundedWSQ {
   Any threads can try to steal an item from the queue.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -359,54 +336,6 @@ class UnboundedWSQ {
   Multiple threads can simultaneously steal items from the queue.
   */
   value_type steal();
-
-  /**
-  @brief attempts to steal an item from the queue with three-state feedback
-
-  @return one of three sentinel-encoded values (for pointer types @c T):
-    - a valid pointer: item successfully stolen (CAS succeeded, queue was non-empty)
-    - @c contended_value(): queue was non-empty but the CAS was lost to another
-                            concurrent thief; the caller should retry the same
-                            victim immediately since work is known to exist
-    - @c empty_value() (nullptr): queue was genuinely empty; the caller should
-                                  move on to a different victim
-
-  For non-pointer types @c T, the return is `std::optional<T>` and only two
-  states are possible (value present or @c std::nullopt); contention cannot
-  be distinguished from emptiness and the method behaves identically to @c steal.
-
-  @par Sentinel safety for pointer types
-
-  The contended sentinel is `reinterpret_cast<T>(uintptr_t{1})`, i.e., the
-  pointer value @c 0x1. This is guaranteed never to be a valid object pointer
-  because the C++ standard and every major platform ABI require that any live
-  object is aligned to at least @c alignof(T) bytes. For pointer element types
-  used with this queue (e.g., @c Node*), @c alignof(Node) is at least 8 (and
-  in Taskflow's case 64, due to @c alignas(TF_CACHELINE_SIZE) on @c Node
-  members). Therefore the low bits of any real pointer are always zero, making
-  @c 0x1 an impossible address. For @c void* there is no pointee type to check,
-  but the same reasoning applies — no allocator ever returns address @c 0x1.
-
-  @par Caller usage pattern
-
-  @code{.cpp}
-  tf::UnboundedWSQ<Node*> wsq;
-  Node* result = wsq.steal_with_feedback();
-
-  if(result == wsq.empty_value()) {
-    // queue was empty — move on to another victim
-  }
-  else if(result == wsq.contended_value()) {
-    // lost CAS race — queue has work, retry this victim
-  }
-  else {
-    // result is a valid stolen item — use it
-  }
-  @endcode
-
-  Multiple threads can simultaneously call this method.
-  */
-  value_type steal_with_feedback();
   
   /**
   @brief returns the empty sentinel value for the queue element type
@@ -421,18 +350,6 @@ class UnboundedWSQ {
   @return an empty `value_type` representing the absence of an element.
   */
   static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
-
-  /**
-  @brief returns the contended sentinel value for pointer element types
-
-  When @c steal_with_feedback returns this value, the queue was non-empty
-  but the CAS was lost to another concurrent thief. The caller should retry
-  the same victim immediately since work is known to exist.
-
-  Delegates to @c wsq_contended_value<T>(). See that function for a full
-  explanation of the sentinel value and its safety guarantees.
-  */
-  static auto contended_value()           { return wsq_contended_value<T>(); }
 
   private:
 
@@ -582,33 +499,6 @@ UnboundedWSQ<T>::steal() {
   return item;
 }
 
-// Function: steal_with_feedback
-// Returns a stolen item, contended_value(), or empty_value() — see declaration.
-template <typename T>
-typename UnboundedWSQ<T>::value_type
-UnboundedWSQ<T>::steal_with_feedback() {
-
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
-
-  if(t < b) {
-    // queue is non-empty: load the candidate item and attempt the CAS
-    Array* a = _array.load(std::memory_order_consume);
-    auto item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      // CAS lost to another thief — queue had work but we didn't get it.
-      // Return contended_value() so the caller knows to retry this victim.
-      return contended_value();
-    }
-    return item;
-  }
-
-  // bottom <= top: queue is genuinely empty
-  return empty_value();
-}
 
 // Function: capacity
 template <typename T>
@@ -845,79 +735,20 @@ class BoundedWSQ {
   */
   value_type steal();
 
-  /**
-  @brief attempts to steal an item from the queue with three-state feedback
-
-  @return one of three sentinel-encoded values (for pointer types @c T):
-    - a valid pointer: item successfully stolen (CAS succeeded, queue was non-empty)
-    - @c contended_value(): queue was non-empty but the CAS was lost to another
-                            concurrent thief; the caller should retry the same
-                            victim immediately since work is known to exist
-    - @c empty_value() (nullptr): queue was genuinely empty; the caller should
-                                  move on to a different victim
-
-  For non-pointer types @c T, the return is `std::optional<T>` and only two
-  states are possible (value present or @c std::nullopt); contention cannot
-  be distinguished from emptiness and the method behaves identically to @c steal.
-
-  @par Sentinel safety for pointer types
-
-  The contended sentinel is `reinterpret_cast<T>(uintptr_t{1})`, i.e., the
-  pointer value @c 0x1. This is guaranteed never to be a valid object pointer
-  because the C++ standard and every major platform ABI require that any live
-  object is aligned to at least @c alignof(T) bytes. For pointer element types
-  used with this queue (e.g., @c Node*), @c alignof(Node) is at least 8 (and
-  in Taskflow's case 64, due to @c alignas(TF_CACHELINE_SIZE) on @c Node
-  members). Therefore the low bits of any real pointer are always zero, making
-  @c 0x1 an impossible address. For @c void* there is no pointee type to check,
-  but the same reasoning applies — no allocator ever returns address @c 0x1.
-
-  @par Caller usage pattern
-
-  @code{.cpp}
-  tf::BoundedWSQ<Node*> wsq;
-  Node* result = wsq.steal_with_feedback();
-
-  if(result == wsq.empty_value()) {
-    // queue was empty — move on to another victim
-  }
-  else if(result == wsq.contended_value()) {
-    // lost CAS race — queue has work, retry this victim
-  }
-  else {
-    // result is a valid stolen item — use it
-  }
-  @endcode
-
-  Multiple threads can simultaneously call this method.
-  */
-  value_type steal_with_feedback();
 
   /**
   @brief returns the empty sentinel value for the queue element type
-  
+
   This function provides a type-appropriate empty value used to indicate
   that a pop or steal operation failed. For pointer types, the empty value
   is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
-  
+
   The function is implemented as a `constexpr` helper to avoid additional
   storage, runtime overhead, or code duplication across queue operations.
-  
+
   @return an empty `value_type` representing the absence of an element.
   */
   static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
-
-  /**
-  @brief returns the contended sentinel value for pointer element types
-
-  When @c steal_with_feedback returns this value, the queue was non-empty
-  but the CAS was lost to another concurrent thief. The caller should retry
-  the same victim immediately since work is known to exist.
-
-  Delegates to @c wsq_contended_value<T>(). See that function for a full
-  explanation of the sentinel value and its safety guarantees.
-  */
-  static auto contended_value()           { return wsq_contended_value<T>(); }
 };
 
 // Function: empty
@@ -1042,32 +873,6 @@ BoundedWSQ<T, LogSize>::steal() {
   return item;
 }
 
-// Function: steal_with_feedback
-// Returns a stolen item, contended_value(), or empty_value() — see declaration.
-template <typename T, size_t LogSize>
-typename BoundedWSQ<T, LogSize>::value_type
-BoundedWSQ<T, LogSize>::steal_with_feedback() {
-
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
-
-  if(t < b) {
-    // queue is non-empty: load the candidate item and attempt the CAS
-    auto item = _buffer[t & BufferMask].load(std::memory_order_relaxed);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      // CAS lost to another thief — queue had work but we didn't get it.
-      // Return contended_value() so the caller knows to retry this victim.
-      return contended_value();
-    }
-    return item;
-  }
-
-  // bottom <= top: queue is genuinely empty
-  return empty_value();
-}
 
 // Function: capacity
 template <typename T, size_t LogSize>
