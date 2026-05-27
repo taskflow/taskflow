@@ -409,3 +409,101 @@ TEST_CASE("Semaphore.Deadlock.8threads" * doctest::timeout(300)) {
   deadlock(8);
 }
 */
+
+void exception_deadlock(size_t semaphore_size) {
+
+  tf::Executor executor(semaphore_size * 4);
+  tf::Taskflow taskflow;
+
+  tf::Semaphore semaphore(semaphore_size);
+
+  tf::Task init = taskflow.emplace([]() {});
+  for (size_t i = 0; i < semaphore_size * 4; ++i) {
+    tf::Task A = taskflow.emplace([]() {});
+    tf::Task B = taskflow.emplace([]() {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      throw std::runtime_error("exception");
+    });
+    tf::Task C = taskflow.emplace([]() {});
+    tf::Task D = taskflow.emplace([]() {});
+
+    init.precede(A);
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+
+    A.acquire(semaphore);
+    D.release(semaphore);
+  }
+
+  REQUIRE(semaphore.value() == semaphore_size);
+
+  auto future = executor.run(taskflow);
+
+  // when B throws the exception, D will not run and thus semaphore is not
+  // released
+  auto status = future.wait_for(std::chrono::seconds(2));
+  REQUIRE(status == std::future_status::ready);
+  REQUIRE_THROWS_WITH_AS(future.get(), "exception", std::runtime_error);
+  // No Release tasks ran
+  REQUIRE(semaphore.value() == 0);
+
+  // acquiring a broken semaphore should result in an instant exception
+  auto future_2 = executor.run(taskflow);
+  auto status_2 = future_2.wait_for(std::chrono::seconds(2));
+  REQUIRE(status_2 == std::future_status::ready);
+  REQUIRE_THROWS_AS(future_2.get() ,std::runtime_error);
+  
+  // reseting the semaphore makes it valid  again
+  semaphore.reset();
+  REQUIRE(semaphore.value() == semaphore_size);
+  auto future_3 = executor.run(taskflow);
+  auto status_3 = future_3.wait_for(std::chrono::seconds(2));
+  REQUIRE(status_3 == std::future_status::ready);
+  REQUIRE_THROWS_WITH_AS(future_3.get(), "exception", std::runtime_error);
+}
+
+TEST_CASE("Exception.Exception.Deadlock.4threads" * doctest::timeout(10)) {
+  exception_deadlock(4);
+}
+
+void exception_cyclicgraph(size_t executors) {
+
+  tf::Executor executor(executors);
+  tf::Semaphore sem(1);
+  tf::Taskflow taskflow;
+  tf::Task init = taskflow.emplace([]() {});
+  int counter = 0;
+  for (size_t i = 0; i < executors ; i++) {
+    tf::Task A = taskflow.emplace([&counter]() { counter++; });
+    tf::Task B = taskflow.emplace([&counter]() {
+      if (counter > 0) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    tf::Task C = taskflow.emplace([]() {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      throw std::runtime_error("exception");
+    });
+    init.precede(A);
+    A.precede(B);
+    B.precede(A, C);
+    A.acquire(sem);
+    C.release(sem);
+  }
+
+  auto future = executor.run(taskflow);
+  REQUIRE_THROWS_WITH_AS(future.get(), "exception", std::runtime_error);
+  sem.reset();
+  REQUIRE(sem.value() == 1);
+  auto future_2 = executor.run(taskflow);
+  auto status_2 = future_2.wait_for(std::chrono::seconds(2));
+  REQUIRE(status_2 == std::future_status::ready);
+  REQUIRE_THROWS_WITH_AS(future_2.get(), "exception", std::runtime_error);
+}
+
+TEST_CASE("Semaphore.Exception.CyclicGraph.4threads" * doctest::timeout(10)) {
+  exception_cyclicgraph(4);
+}

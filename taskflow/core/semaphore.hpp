@@ -4,6 +4,8 @@
 
 #include "declarations.hpp"
 #include "../utility/small_vector.hpp"
+#include "declarations.hpp"
+#include "taskflow/core/error.hpp"
 
 /**
 @file semaphore.hpp
@@ -118,12 +120,14 @@ class Semaphore {
     
     size_t _max_value{0};
     size_t _cur_value{0};
+    bool _is_broken{false};
 
     SmallVector<Node*> _waiters;
 
     bool _try_acquire_or_wait(Node*);
 
     void _release(SmallVector<Node*>&);
+    void _break(SmallVector<Node *> &);
 };
 
 inline Semaphore::Semaphore(size_t max_value) :
@@ -133,6 +137,9 @@ inline Semaphore::Semaphore(size_t max_value) :
 
 inline bool Semaphore::_try_acquire_or_wait(Node* me) {
   std::lock_guard<std::mutex> lock(_mtx);
+  if (_is_broken) {
+    TF_THROW("Can't Acquire a Broken Semaphore.");
+  }
   if(_cur_value > 0) {
     --_cur_value;
     return true;
@@ -175,13 +182,30 @@ inline size_t Semaphore::value() const {
 inline void Semaphore::reset() {
   std::lock_guard<std::mutex> lock(_mtx);
   _cur_value = _max_value;
+  _is_broken = false;
   _waiters.clear();
 }
 
 inline void Semaphore::reset(size_t new_max_value) {
   std::lock_guard<std::mutex> lock(_mtx);
   _cur_value = (_max_value = new_max_value);
+  _is_broken = false;
   _waiters.clear();
+}
+
+inline void Semaphore::_break(SmallVector<Node *> &dst) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  if (_is_broken) {
+    return;
+  }
+  _is_broken = true;
+  if (dst.empty()) {
+    dst.swap(_waiters);
+  } else {
+    dst.reserve(dst.size() + _waiters.size());
+    dst.insert(dst.end(), _waiters.begin(), _waiters.end());
+    _waiters.clear();
+  }
 }
 
 }  // end of namespace tf. ---------------------------------------------------
