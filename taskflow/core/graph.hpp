@@ -354,6 +354,7 @@ class Node : public NodeBase {
   friend class ExplicitAnchorGuard;
   friend class TaskGroup;
   friend class Algorithm;
+  friend class Semaphore;
 
   using Placeholder = std::monostate;
 
