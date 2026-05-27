@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_5ftype_0',['value_type',['../classtf_1_1UnboundedWSQ.html#a9c5d09f751f1c71a57d0e6a87c9df348',1,'tf::UnboundedWSQ::value_type'],['../classtf_1_1BoundedWSQ.html#a93634b5dd3eb31cdf654ab208b366f17',1,'tf::BoundedWSQ::value_type']]]
+  ['tag_5ftype_0',['tag_type',['../structtf_1_1TaggedHead128.html#adae5c12850044b9b057d906e66ea1e10',1,'tf::TaggedHead128::tag_type'],['../structtf_1_1TaggedHead64.html#a083245444246fc009cc5a9f0575873fb',1,'tf::TaggedHead64::tag_type']]]
 ];

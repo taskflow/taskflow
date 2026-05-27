@@ -72,58 +72,58 @@ class Semaphore {
 
   public:
 
-    /**
-    @brief constructs a default semaphore
+  /**
+  @brief constructs a default semaphore
 
-    A default semaphore has the value of zero. Users can call tf::Semaphore::reset
-    to reassign a new value to the semaphore.
-    */
-    Semaphore() = default;
+  A default semaphore has the value of zero. Users can call tf::Semaphore::reset
+  to reassign a new value to the semaphore.
+  */
+  Semaphore() = default;
 
-    /**
-    @brief constructs a semaphore with the given value (i.e., counter)
+  /**
+  @brief constructs a semaphore with the given value (i.e., counter)
 
-    A semaphore creates a constraint that limits the maximum concurrency,
-    i.e., the number of workers, in a set of tasks.
+  A semaphore creates a constraint that limits the maximum concurrency,
+  i.e., the number of workers, in a set of tasks.
 
-    @code{.cpp}
-    tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
-    @endcode
-    */
-    explicit Semaphore(size_t max_value);
+  @code{.cpp}
+  tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
+  @endcode
+  */
+  explicit Semaphore(size_t max_value);
 
-    /**
-    @brief queries the current counter value
-    */
-    size_t value() const;
+  /**
+  @brief queries the current counter value
+  */
+  size_t value() const;
 
-    /**
-    @brief queries the maximum allowable value of this semaphore
-    */
-    size_t max_value() const;
+  /**
+  @brief queries the maximum allowable value of this semaphore
+  */
+  size_t max_value() const;
 
-    /**
-    @brief resets the semaphores to a clean state
-    */
-    void reset();
-    
-    /**
-    @brief resets the semaphores to a clean state with the given new maximum value
-    */
-    void reset(size_t new_max_value);
+  /**
+  @brief resets the semaphores to a clean state
+  */
+  void reset();
+  
+  /**
+  @brief resets the semaphores to a clean state with the given new maximum value
+  */
+  void reset(size_t new_max_value);
 
   private:
 
-    mutable std::mutex _mtx;
-    
-    size_t _max_value{0};
-    size_t _cur_value{0};
+  mutable std::mutex _mtx;
+  
+  size_t _max_value{0};
+  size_t _cur_value{0};
 
-    SmallVector<Node*> _waiters;
+  SmallVector<Node*> _waiters;
 
-    bool _try_acquire_or_wait(Node*);
+  bool _try_acquire_or_wait(Node*);
 
-    void _release(SmallVector<Node*>&);
+  void _release(SmallVector<Node*>&);
 };
 
 inline Semaphore::Semaphore(size_t max_value) :

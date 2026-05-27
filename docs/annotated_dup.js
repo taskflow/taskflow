@@ -2,7 +2,6 @@ var annotated_dup =
 [
     [ "tf", "namespacetf.html", [
       [ "AsyncTask", "classtf_1_1AsyncTask.html", "classtf_1_1AsyncTask" ],
-      [ "AtomicIntrusiveStack", "classtf_1_1AtomicIntrusiveStack.html", "classtf_1_1AtomicIntrusiveStack" ],
       [ "BoundedWSQ", "classtf_1_1BoundedWSQ.html", "classtf_1_1BoundedWSQ" ],
       [ "CachelineAligned", "classtf_1_1CachelineAligned.html", "classtf_1_1CachelineAligned" ],
       [ "cudaEventBase", "classtf_1_1cudaEventBase.html", "classtf_1_1cudaEventBase" ],
@@ -30,8 +29,9 @@ var annotated_dup =
       [ "Graph", "classtf_1_1Graph.html", "classtf_1_1Graph" ],
       [ "GuidedPartitioner", "classtf_1_1GuidedPartitioner.html", "classtf_1_1GuidedPartitioner" ],
       [ "IndexRange", "classtf_1_1IndexRange.html", "classtf_1_1IndexRange" ],
-      [ "IndexRange< T, 1 >", "classtf_1_1IndexRange_3_01T_00_011_01_4.html", "classtf_1_1IndexRange_3_01T_00_011_01_4" ],
+      [ "IndexRange< T, 1 >", "classtf_1_1IndexRange.html", "classtf_1_1IndexRange" ],
       [ "NonblockingNotifier", "classtf_1_1NonblockingNotifier.html", "classtf_1_1NonblockingNotifier" ],
+      [ "ObjectPool", "classtf_1_1ObjectPool.html", "classtf_1_1ObjectPool" ],
       [ "ObserverInterface", "classtf_1_1ObserverInterface.html", "classtf_1_1ObserverInterface" ],
       [ "PartitionerBase", "classtf_1_1PartitionerBase.html", "classtf_1_1PartitionerBase" ],
       [ "Pipe", "classtf_1_1Pipe.html", "classtf_1_1Pipe" ],
@@ -44,6 +44,8 @@ var annotated_dup =
       [ "SmallVector", "classtf_1_1SmallVector.html", "classtf_1_1SmallVector" ],
       [ "StaticPartitioner", "classtf_1_1StaticPartitioner.html", "classtf_1_1StaticPartitioner" ],
       [ "Subflow", "classtf_1_1Subflow.html", "classtf_1_1Subflow" ],
+      [ "TaggedHead128", "structtf_1_1TaggedHead128.html", "structtf_1_1TaggedHead128" ],
+      [ "TaggedHead64", "structtf_1_1TaggedHead64.html", "structtf_1_1TaggedHead64" ],
       [ "Task", "classtf_1_1Task.html", "classtf_1_1Task" ],
       [ "Taskflow", "classtf_1_1Taskflow.html", "classtf_1_1Taskflow" ],
       [ "TaskGroup", "classtf_1_1TaskGroup.html", "classtf_1_1TaskGroup" ],

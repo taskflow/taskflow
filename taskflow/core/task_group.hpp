@@ -255,7 +255,7 @@ class TaskGroup {
   @endcode
   */
   template <typename F, typename... Tasks>
-requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -298,7 +298,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   @endcode
   */
   template <TaskParamsLike P, typename F, typename... Tasks>
-      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -340,7 +340,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   @endcode
   */
   template <typename F, typename I>
-requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(F&& func, I first, I last);
   
   /**
@@ -386,7 +386,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   @endcode
   */
   template <TaskParamsLike P, typename F, typename I>
-      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   
@@ -423,7 +423,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   @endcode
   */
   template <typename F, typename... Tasks>
-requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -459,7 +459,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   @endcode
   */
   template <TaskParamsLike P, typename F, typename... Tasks>
-      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**

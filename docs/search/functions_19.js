@@ -6,8 +6,9 @@ var searchData=
   ['_7eexecutor_3',['~Executor',['../classtf_1_1Executor.html#a5a511b0cc23b264826373d3dabcef670',1,'tf::Executor']]],
   ['_7egraph_4',['~Graph',['../classtf_1_1Graph.html#a493acc70cca8c0a09d7c407d28c59ee2',1,'tf::Graph']]],
   ['_7enonblockingnotifier_5',['~NonblockingNotifier',['../classtf_1_1NonblockingNotifier.html#abbc4e00184b6cd86363336bd0a0a83db',1,'tf::NonblockingNotifier']]],
-  ['_7eobserverinterface_6',['~ObserverInterface',['../classtf_1_1ObserverInterface.html#adfd71c3af3ae2ea4f41eed26c1b6f604',1,'tf::ObserverInterface']]],
-  ['_7etaskflow_7',['~Taskflow',['../classtf_1_1Taskflow.html#aa966a69493ecc8ecb9131ef3c5354b8e',1,'tf::Taskflow']]],
-  ['_7eunboundedwsq_8',['~UnboundedWSQ',['../classtf_1_1UnboundedWSQ.html#ac1986b353f71887c197f65dc8eab10db',1,'tf::UnboundedWSQ']]],
-  ['_7eworkerinterface_9',['~WorkerInterface',['../classtf_1_1WorkerInterface.html#a4f086cadaabff4094cf07fd387b2e185',1,'tf::WorkerInterface']]]
+  ['_7eobjectpool_6',['~ObjectPool',['../classtf_1_1ObjectPool.html#ac11366462ad58fae67221152f6a8ff4f',1,'tf::ObjectPool']]],
+  ['_7eobserverinterface_7',['~ObserverInterface',['../classtf_1_1ObserverInterface.html#adfd71c3af3ae2ea4f41eed26c1b6f604',1,'tf::ObserverInterface']]],
+  ['_7etaskflow_8',['~Taskflow',['../classtf_1_1Taskflow.html#aa966a69493ecc8ecb9131ef3c5354b8e',1,'tf::Taskflow']]],
+  ['_7eunboundedwsq_9',['~UnboundedWSQ',['../classtf_1_1UnboundedWSQ.html#ac1986b353f71887c197f65dc8eab10db',1,'tf::UnboundedWSQ']]],
+  ['_7eworkerinterface_10',['~WorkerInterface',['../classtf_1_1WorkerInterface.html#a4f086cadaabff4094cf07fd387b2e185',1,'tf::WorkerInterface']]]
 ];
