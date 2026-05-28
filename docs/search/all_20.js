@@ -75,6 +75,5 @@ var searchData=
   ['wrapper_20for_20a_20partitioner_72',['Define a Closure Wrapper for a Partitioner',['../PartitioningAlgorithm.html#DefineAClosureWrapperForAPartitioner',1,'']]],
   ['write_20a_20taskflow_20program_73',['Step 2: Write a Taskflow program',['../guidelines.html#Step2WriteATaskflowProgram',1,'']]],
   ['wrong_74',['Q5: My program hangs and never returns after dispatching a taskflow graph. What&apos;s wrong?',['../FAQ.html#ProgrammingQuestions5',1,'']]],
-  ['wsq_5fcontended_5fvalue_75',['wsq_contended_value',['../namespacetf.html#aaf8863dc074a1f973e89330a8a71458b',1,'tf']]],
-  ['wsq_5fempty_5fvalue_76',['wsq_empty_value',['../namespacetf.html#a9ab6597dd60690bd8c20cc76590985a6',1,'tf']]]
+  ['wsq_5fempty_5fvalue_75',['wsq_empty_value',['../namespacetf.html#a9ab6597dd60690bd8c20cc76590985a6',1,'tf']]]
 ];

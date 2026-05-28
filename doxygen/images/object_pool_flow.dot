@@ -1,0 +1,44 @@
+digraph ObjectPoolFlow {
+  rankdir = TB;
+  node [shape=box, style=filled, fillcolor=white, color=black];
+
+  // Entry point
+  animate [label="animate()"];
+  getshard [label="Get shard\n(thread-local)"];
+  popfree [label="pop_free()\nLock-free CAS"];
+
+  // Decision
+  found [label="Found in\nfree stack?", shape=diamond];
+
+  // Cold path
+  backup [label="allocate_from_backing()"];
+  construct [label="Construct\nobject"];
+
+  // Converge and use
+  use [label="Use object"];
+
+  // Recycle
+  recycle [label="recycle(obj)"];
+  destroy [label="Destroy\nobject"];
+  pushfree [label="push_free()\nLock-free push"];
+
+  // Edges - main flow
+  animate -> getshard;
+  getshard -> popfree;
+  popfree -> found;
+
+  // Hot path (YES)
+  found -> construct [label="YES"];
+
+  // Cold path (NO)
+  found -> backup [label="NO"];
+  backup -> construct;
+
+  // Merge
+  construct -> use;
+
+  // Recycle flow
+  recycle -> destroy;
+  destroy -> pushfree;
+
+}
