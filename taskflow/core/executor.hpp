@@ -1104,7 +1104,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   struct Buffer {
     std::mutex mutex;
     UnboundedWSQ<Node*> queue;
-  };  
+  };
   
   std::vector<Worker> _workers;
   std::vector<Buffer> _buffers;
@@ -1366,7 +1366,7 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
 
 // Function: _explore_task
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
- 
+
   // Fast path: if no topologies are live, all queues are guaranteed empty
   // by the executor's invariant (num_topologies reaches zero only after all
   // nodes have been scheduled and their queues flushed). Skip the entire
@@ -1376,45 +1376,45 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   if(_num_topologies.load(std::memory_order_relaxed) == 0) {
     return true;
   }
- 
+
   const size_t MAX_VICTIM = num_queues();  // guaranteed >= 2 by constructor
   const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
- 
+
   // local aliases for steal protocol sentinels — these are properties of the
   // steal protocol, not of any specific queue type
   size_t num_steals = 0;
   size_t vtm = w._sticky_victim;
- 
+
   while(true) {
- 
+
     t = (vtm < _workers.size())
       ? _workers[vtm]._wsq.steal()
       : _buffers[vtm - _workers.size()].queue.steal();
- 
+
     if(t) {
       w._sticky_victim = vtm;
       break;
     }
-    
+
     // EMPTY: pick a new victim excluding self since our own queue is likely empty.
     // map [0, MAX_VICTIM-1) over [0, MAX_VICTIM) \ {w._id} — always safe since MAX_VICTIM >= 2.
     vtm = w._rdgen() % (MAX_VICTIM - 1);
     if(vtm >= w._id) vtm++;
- 
+
     if(++num_steals > MAX_STEALS) {
       std::this_thread::yield();
       if(num_steals > 150 + MAX_STEALS) {
         break;
       }
     }
- 
+
     if(w._done.test(std::memory_order_relaxed)) {
       return false;
     }
   }
- 
+
   return true;
-} 
+}
 
 /*
 // Function: _explore_task
@@ -1487,7 +1487,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   if(_explore_task(w, t) == false) {
     return false;
   }
-  
+
   // Go exploit the task if we successfully steal one.
   if(t) {
     return true;
@@ -1510,7 +1510,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
     _notifier.commit_wait(w._id);
     goto explore_task;
   }
-  
+
   // Condition #1: buffers should be empty
   for(size_t b=0; b<_buffers.size(); ++b) {
     if(!_buffers[b].queue.empty()) {
@@ -1519,7 +1519,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
       goto explore_task;
     }
   }
-  
+
   // Condition #2: worker queues should be empty
   // Note: We need to use index-based looping to avoid data race with _spawn
   // which initializes other worker data structure at the same time.
@@ -1532,13 +1532,13 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
       goto explore_task;
     }
   }
-  
+
   // Condition #3: worker should be alive
   if(w._done.test(std::memory_order_relaxed)) {
     _notifier.cancel_wait(w._id);
     return false;
   }
-  
+
   // Now I really need to relinquish myself to others.
   _notifier.commit_wait(w._id);
   goto explore_task;
@@ -1650,13 +1650,19 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     return;
   }
 
-  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
-  // This is because when a node v is inserted into the queue, v can run and finish 
-  // immediately. If v is the last node in the graph, it will tear down the parent task vector
-  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
-  // iterator implementation in std::vector than GCC/Clang.
-  if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
-    _bulk_spill(first, num_nodes - n);
+  auto [n, uniform] = worker._wsq.try_bulk_push(first, num_nodes);
+  if(n != num_nodes) {
+    if(uniform) {
+      for(size_t i = n; i < num_nodes; ++i) {
+        _spill(first[i]);
+      }
+    } else {
+      for(size_t i = 0; i < num_nodes; ++i) {
+        if(!worker._wsq.try_push(first[i])) {
+          _spill(first[i]);
+        }
+      }
+    }
   }
   _notifier.notify_n(num_nodes);
     
@@ -1687,9 +1693,15 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
 // Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
-    _schedule(worker, cache);
+    if(node->_priority_queue() < cache->_priority_queue()) {
+      _schedule(worker, cache);
+      cache = node;
+    } else {
+      _schedule(worker, node);
+    }
+  } else {
+    cache = node;
   }
-  cache = node;
 }
 
 // Function: _bulk_update_cache
@@ -1707,7 +1719,7 @@ TF_FORCE_INLINE void Executor::_bulk_update_cache(
   }
   cache = node;
 }
-  
+
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
@@ -1743,7 +1755,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       return;
     }
   }
-  
+
   invoke_task:
   
   SmallVector<int> conds;
@@ -2438,7 +2450,7 @@ inline size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* par
     auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
-    node->_nstate = NSTATE::NONE;
+    node->_nstate &= NSTATE::PRIORITY_MASK;
     node->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
@@ -2482,7 +2494,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       tpg = f._topologies.front().get();
 
       lock.unlock();
-      
+
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
       fetched_tpg->_carry_out_promise();
@@ -2501,7 +2513,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       f._topologies.pop();
 
       lock.unlock();
-      
+
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
       fetched_tpg->_carry_out_promise();

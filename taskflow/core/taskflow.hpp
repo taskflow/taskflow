@@ -487,6 +487,14 @@ inline void Taskflow::_dump(
   os << ind << 'p' << node << "[label=\"";
   if(node->_name.empty()) os << 'p' << node;
   else os << node->_name;
+
+  switch (node->_priority_queue()) {
+    case 0: break;  // UNSET — no priority label
+    case 1: os << "\\npriority: HIGH";   break;
+    case 2: os << "\\npriority: NORMAL"; break;
+    case 3: os << "\\npriority: LOW";    break;
+    default: break;
+  }
   os << "\" ";
 
   // shape of the node

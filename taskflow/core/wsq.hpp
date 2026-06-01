@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <bit>
 
 #include "../utility/macros.hpp"
@@ -879,6 +880,101 @@ template <typename T, size_t LogSize>
 constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
   return BufferSize;
 }
+
+template <typename Q>
+concept BoundedWSQLike = requires(Q& q, typename Q::value_type v) {
+  { q.steal() };
+  { q.pop() };
+  { q.try_push(v) } -> std::same_as<bool>;
+};
+
+template <BoundedWSQLike Q, size_t MaxPriority>
+class BoundedPriorityWSQ {
+
+  static_assert(MaxPriority >= 1);
+
+  public:
+
+  using value_type = typename Q::value_type;
+
+  /**
+  @brief tries to insert an item into the queue determined by the item's
+         priority (UNSET/HIGH -> queue 0, NORMAL -> queue 1, LOW -> queue 2)
+  */
+  template <typename O>
+  bool try_push(O&& item) {
+    constexpr size_t queue_map[] = {0, 0, 1, 2};
+    return _wsqs[queue_map[item->_priority_queue()]].try_push(std::forward<O>(item));
+  }
+
+  struct BulkPushResult {
+    size_t count;
+    bool uniform;
+  };
+
+  /**
+  tries to insert a batch of items, routing each by its priority
+
+  Fast path: if all items map to the same queue, delegates to the
+  underlying queue's bulk push (single atomic bottom update).
+  Returns {count, true} where items [0, count) are pushed contiguously.
+
+  Mixed priorities: returns {0, false} without pushing anything — the
+  caller should fall back to per-item try_push with its own overflow logic.
+  */
+  template <typename I>
+  BulkPushResult try_bulk_push(I first, size_t N) {
+    constexpr size_t queue_map[] = {0, 0, 1, 2};
+    size_t q0 = queue_map[first[0]->_priority_queue()];
+    for(size_t i = 1; i < N; ++i) {
+      if(queue_map[first[i]->_priority_queue()] != q0) {
+        return {0, false};
+      }
+    }
+    return {_wsqs[q0].try_bulk_push(first, N), true};
+  }
+
+  value_type pop() {
+    value_type result = Q::empty_value();
+    unroll_until<size_t{0}, MaxPriority, size_t{1}>([&](auto i) {
+      result = _wsqs[i].pop();
+      return result != Q::empty_value();
+    });
+    return result;
+  }
+
+  value_type steal() {
+    value_type result = Q::empty_value();
+    unroll_until<size_t{0}, MaxPriority, size_t{1}>([&](auto i) {
+      result = _wsqs[i].steal();
+      return result != Q::empty_value();
+    });
+    return result;
+  }
+
+  bool empty() const noexcept {
+    for(size_t i = 0; i < MaxPriority; ++i) {
+      if(!_wsqs[i].empty()) return false;
+    }
+    return true;
+  }
+
+  size_t size() const noexcept {
+    size_t n = 0;
+    for(size_t i = 0; i < MaxPriority; ++i) {
+      n += _wsqs[i].size();
+    }
+    return n;
+  }
+
+  constexpr size_t capacity() const {
+    return _wsqs[0].capacity() * MaxPriority;
+  }
+
+  private:
+
+  std::array<Q, MaxPriority> _wsqs;
+};
 
 
 }  // end of namespace tf -----------------------------------------------------
