@@ -64,20 +64,20 @@ size_t dist = distance(5, 20, 5);  // Returns 3, the sequence is [5, 10, 15]
 @endcode
  
 @attention
-It is user's responsibility to ensure the given index range is valid.
-For instance, a range from 0 to 10 with a step size of -2 is invalid.
+An invalid index range will return 0.
 */
 template <std::integral T>
 constexpr size_t distance(T beg, T end, T step) {
   if constexpr (std::is_unsigned_v<T>) {
-    // step is always positive for unsigned types — standard ceiling division
-    return static_cast<size_t>((end - beg + step - T{1}) / step);
+    return end > beg
+      ? static_cast<size_t>((end - beg + step - T{1}) / step)
+      : size_t{0};
   } else {
-    // signed: step may be positive or negative
-    return static_cast<size_t>((end - beg + step + (step > T{0} ? T{-1} : T{1})) / step);
+    return static_cast<size_t>(
+      std::max(T{0}, (end - beg + step + (step > T{0} ? T{-1} : T{1})) / step)
+    );
   }
 }
- 
 
 // ----------------------------------------------------------------------------
 // IndexRange<T, N>  (primary template, N > 1)
