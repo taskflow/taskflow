@@ -488,7 +488,7 @@ inline void Taskflow::_dump(
   if(node->_name.empty()) os << 'p' << node;
   else os << node->_name;
 
-  switch (node->_priority_queue()) {
+  switch (node->priority()) {
     case 0: break;  // UNSET — no priority label
     case 1: os << "\\npriority: HIGH";   break;
     case 2: os << "\\npriority: NORMAL"; break;

@@ -1650,19 +1650,13 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
     return;
   }
 
-  auto [n, uniform] = worker._wsq.try_bulk_push(first, num_nodes);
-  if(n != num_nodes) {
-    if(uniform) {
-      for(size_t i = n; i < num_nodes; ++i) {
-        _spill(first[i]);
-      }
-    } else {
-      for(size_t i = 0; i < num_nodes; ++i) {
-        if(!worker._wsq.try_push(first[i])) {
-          _spill(first[i]);
-        }
-      }
-    }
+  // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
+  // This is because when a node v is inserted into the queue, v can run and finish
+  // immediately. If v is the last node in the graph, it will tear down the parent task vector
+  // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
+  // iterator implementation in std::vector than GCC/Clang.
+  if(auto n = worker._wsq.try_bulk_push(first, num_nodes); n != num_nodes) {
+    _bulk_spill(first, num_nodes - n);
   }
   _notifier.notify_n(num_nodes);
     
@@ -1693,12 +1687,10 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
 // Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
   if(cache) {
-    if(node->_priority_queue() < cache->_priority_queue()) {
-      _schedule(worker, cache);
-      cache = node;
-    } else {
-      _schedule(worker, node);
+    if(node->priority() < cache->priority()) {
+      std::swap(cache, node);
     }
+    _schedule(worker, node);
   } else {
     cache = node;
   }

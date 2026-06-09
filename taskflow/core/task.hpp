@@ -1561,7 +1561,7 @@ inline Task& Task::data(void* data) {
 
 // Function: priority
 inline TaskPriority Task::priority() const {
-  auto bits = _node->_priority_queue();
+  auto bits = _node->priority();
   // 0=UNSET→HIGH, 1=HIGH, 2=NORMAL, 3=LOW
   constexpr TaskPriority map[] = {
     TaskPriority::HIGH, TaskPriority::HIGH, TaskPriority::NORMAL, TaskPriority::LOW

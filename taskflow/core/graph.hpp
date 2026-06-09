@@ -264,7 +264,7 @@ class NodeBase {
   
   public:
 
-  size_t _priority_queue() const {
+  size_t priority() const {
     return static_cast<size_t>((_nstate & NSTATE::PRIORITY_MASK) >> NSTATE::PRIORITY_SHIFT);
   }
 
