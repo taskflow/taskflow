@@ -287,10 +287,8 @@ class NodeBase {
     _join_counter {join_counter} {
   }
 
-  // encode TaskPriority (HIGH=0,NORMAL=1,LOW=2) as +1 into bits 26-27 of _nstate,
-  // reserving 00 for UNSET (no priority explicitly assigned)
   void _set_priority(TaskPriority p) {
-    nstate_t encoded = (static_cast<nstate_t>(p) + 1) << NSTATE::PRIORITY_SHIFT;
+    nstate_t encoded = (static_cast<nstate_t>(p)) << NSTATE::PRIORITY_SHIFT;
     _nstate = (_nstate & ~NSTATE::PRIORITY_MASK) | encoded;
   }
   

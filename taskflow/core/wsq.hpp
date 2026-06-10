@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <bit>
 
 #include "../utility/macros.hpp"
@@ -929,7 +928,7 @@ concept BoundedWSQLike = requires(Q& q, typename Q::value_type v) {
 /**
 @brief default priority function for BoundedPriorityWSQ
 
-Calls @c item->_priority_queue() on the element and returns the result as
+Calls `T::priority()` on the element and returns the result as
 a @c size_t. Users may supply a custom priority function in place of this
 default to decouple the queue from any particular element interface.
 */

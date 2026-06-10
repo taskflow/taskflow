@@ -22,11 +22,14 @@ struct NSTATE {
   constexpr static underlying_type JOINED_SUBFLOW      = 0x80000000;
 
   // priority encoding (2 bits): 00=UNSET, 01=HIGH, 10=NORMAL, 11=LOW
-  constexpr static underlying_type PRIORITY_SHIFT           = 26;
-  constexpr static underlying_type PRIORITY_MASK            = 0x0C000000;
+  constexpr static underlying_type PRIORITY_SHIFT      = 26;
+  constexpr static underlying_type PRIORITY_MASK       = 0x0C000000;
 
   // mask to isolate state bits - non-state bits store # strong dependents
   constexpr static underlying_type STRONG_DEPENDENCIES_MASK = 0x03FFFFFF;
+
+  // mask to clear the state while preserving important bits
+  constexpr static underlying_type CLEAR_MASK          = PRIORITY_MASK; 
 };
 
 using nstate_t = NSTATE::underlying_type;

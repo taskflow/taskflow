@@ -2442,7 +2442,7 @@ inline size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* par
     auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
-    node->_nstate &= NSTATE::PRIORITY_MASK;
+    node->_nstate &= NSTATE::CLEAR_MASK;
     node->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
