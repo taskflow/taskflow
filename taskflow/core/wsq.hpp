@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <bit>
 
@@ -294,28 +294,6 @@ class UnboundedWSQ {
   void bulk_push(I& first, size_t N);
 
   /**
-  @brief pops out an item from the queue
-
-  This method pops an item from the queue.
-  If the queue is empty, empty_value() is returned.
-  The elements popped out from the queue follow a last-in-first-out (LIFO) order.
-  
-  @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
-  wsq.push(1);
-  wsq.push(2);
-  wsq.push(3);
-  assert(wsq.pop().value() = 3);
-  assert(wsq.pop().value() = 2);
-  assert(wsq.pop().value() = 1);
-  assert(wsq.pop() == std::nullopt);
-  @endcode
-  
-  Only the owner thread can pop out an item from the queue.
-  */
-  value_type pop();
-
-  /**
   @brief steals an item from the queue
 
   Any threads can try to steal an item from the queue.
@@ -440,46 +418,12 @@ void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
   _bottom.store(b, std::memory_order_release);
 }
 
-// Function: pop
-template <typename T>
-typename UnboundedWSQ<T>::value_type 
-UnboundedWSQ<T>::pop() {
-
-  int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
-  Array* a = _array.load(std::memory_order_relaxed);
-  _bottom.store(b, std::memory_order_relaxed);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t t = _top.load(std::memory_order_relaxed);
-
-  //T item {nullptr};
-  auto item = empty_value();
-
-  if(t <= b) {
-    item = a->pop(b);
-    if(t == b) {
-      // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, std::memory_order_seq_cst,
-                                               std::memory_order_relaxed)) {
-        //item = nullptr;
-        item = empty_value();
-      }
-      _bottom.store(b + 1, std::memory_order_relaxed);
-    }
-  }
-  else {
-    _bottom.store(b + 1, std::memory_order_relaxed);
-  }
-
-  return item;
-}
-
 // Function: steal
 template <typename T>
 typename UnboundedWSQ<T>::value_type 
 UnboundedWSQ<T>::steal() {
   
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
+  int64_t t = _top.load(std::memory_order_relaxed);
   int64_t b = _bottom.load(std::memory_order_acquire);
 
   //T item {nullptr};
@@ -489,7 +433,7 @@ UnboundedWSQ<T>::steal() {
     Array* a = _array.load(std::memory_order_consume);
     item = a->pop(t);
     if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
+                                     std::memory_order_acq_rel,
                                      std::memory_order_relaxed)) {
       //return nullptr;
       return empty_value();
@@ -833,8 +777,8 @@ BoundedWSQ<T, LogSize>::pop() {
     item = _buffer[b & BufferMask].load(std::memory_order_relaxed);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
+      if(!_top.compare_exchange_strong(t, t+1,
+                                       std::memory_order_acq_rel,
                                        std::memory_order_relaxed)) {
         //item = nullptr;
         item = empty_value();
@@ -853,7 +797,7 @@ BoundedWSQ<T, LogSize>::pop() {
 template <typename T, size_t LogSize>
 typename BoundedWSQ<T, LogSize>::value_type 
 BoundedWSQ<T, LogSize>::steal() {
-  int64_t t = _top.load(std::memory_order_acquire);
+  int64_t t = _top.load(std::memory_order_relaxed);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
   
