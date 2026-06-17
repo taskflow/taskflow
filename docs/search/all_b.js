@@ -12,7 +12,7 @@ var searchData=
   ['based_20parallelism_9',['Task-based Parallelism',['../ProjectMotivation.html#TaskBasedParallelism',1,'']]],
   ['batch_20graph_3a_20n_20keys_20in_20parallel_10',['Batch Graph: N Keys in Parallel',['../ExamplesSpeculativeExecution.html#SpecBatchGraph',1,'']]],
   ['before_202018_11',['Release 1.x.x (before 2018)',['../release-1-x-x.html',1,'Releases']]],
-  ['begin_12',['begin',['../classtf_1_1Graph.html#ab142035bb84c99bdfb1567d7f1837ce0',1,'tf::Graph::begin()'],['../classtf_1_1Graph.html#a9f605aa3d6eb845ff60452ed63bc577e',1,'tf::Graph::begin() const']]],
+  ['begin_12',['begin',['../classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6',1,'tf::IndexRanges::begin() const'],['../classtf_1_1IndexRanges.html#ad4cd3132e3c73a591b5396740aa5909d',1,'tf::IndexRanges::begin(T new_begin)'],['../classtf_1_1Graph.html#ab142035bb84c99bdfb1567d7f1837ce0',1,'tf::Graph::begin()'],['../classtf_1_1Graph.html#a9f605aa3d6eb845ff60452ed63bc577e',1,'tf::Graph::begin() const']]],
   ['begin_5fcapture_13',['begin_capture',['../classtf_1_1cudaStreamBase.html#a4ad9778fb045ebc9e9d87ca72c2cc772',1,'tf::cudaStreamBase']]],
   ['benchmark_20taskflow_14',['Benchmark Taskflow',['../BenchmarkTaskflow.html',1,'install']]],
   ['benchmarking_15',['Benchmarking',['../matrix_multiplication.html#MatrixMultiplicationBenchmarking',1,'Benchmarking'],['../MatrixMultiplicationWithCUDAGPU.html#MatrixMultiplicationcudaFlowBenchmarking',1,'Benchmarking'],['../kmeans.html#KMeansBenchmarking',1,'Benchmarking'],['../KMeansWithCUDAGPU.html#KMeansWithGPUBenchmarking',1,'Benchmarking'],['../ExamplesFibonacciNumber.html#FibonacciNumberBenchmarking',1,'Benchmarking'],['../ExamplesDivideAndConquer.html#DivideAndConquerBenchmarking',1,'Benchmarking']]],

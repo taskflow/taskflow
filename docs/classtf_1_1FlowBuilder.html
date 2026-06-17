@@ -175,13 +175,9 @@ requires (sizeof...(C) &gt; 1)</td></tr>
 <tr class="memitem:a3b132bd902331a11b04b4ad66cf8bf77"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3b132bd902331a11b04b4ad66cf8bf77">for_each_index</a> (B first, E last, S step, C callable, P part=P())</td></tr>
 <tr class="memdesc:a3b132bd902331a11b04b4ad66cf8bf77"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an index-based parallel-for task  <br /></td></tr>
 <tr class="separator:a3b132bd902331a11b04b4ad66cf8bf77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2582a216d54dacca2b7022ea7e89452a" id="r_a2582a216d54dacca2b7022ea7e89452a"><td class="memTemplParams" colspan="2">template&lt;IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
+<tr class="memitem:a2582a216d54dacca2b7022ea7e89452a" id="r_a2582a216d54dacca2b7022ea7e89452a"><td class="memTemplParams" colspan="2">template&lt;IndexRangesLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
 <tr class="memitem:a2582a216d54dacca2b7022ea7e89452a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2582a216d54dacca2b7022ea7e89452a">for_each_by_index</a> (R range, C callable, P part=P())</td></tr>
-<tr class="memdesc:a2582a216d54dacca2b7022ea7e89452a"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a parallel-for task over a one-dimensional index range  <br /></td></tr>
-<tr class="separator:a2582a216d54dacca2b7022ea7e89452a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2582a216d54dacca2b7022ea7e89452a" id="r_a2582a216d54dacca2b7022ea7e89452a"><td class="memTemplParams" colspan="2">template&lt;IndexRangeMDLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
-<tr class="memitem:a2582a216d54dacca2b7022ea7e89452a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a2582a216d54dacca2b7022ea7e89452a">for_each_by_index</a> (R range, C callable, P part=P())</td></tr>
-<tr class="memdesc:a2582a216d54dacca2b7022ea7e89452a"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a parallel-for task over a multi-dimensional index range  <br /></td></tr>
+<tr class="memdesc:a2582a216d54dacca2b7022ea7e89452a"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a parallel-for task over a one- or multi-dimensional index range  <br /></td></tr>
 <tr class="separator:a2582a216d54dacca2b7022ea7e89452a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a058c250de62b9d1e4305b8ddf03906ee" id="r_a058c250de62b9d1e4305b8ddf03906ee"><td class="memTemplParams" colspan="2">template&lt;typename B, typename E, typename O, typename C, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
 <tr class="memitem:a058c250de62b9d1e4305b8ddf03906ee"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a058c250de62b9d1e4305b8ddf03906ee">transform</a> (B first1, E last1, O d_first, C c, P part=P())</td></tr>
@@ -196,7 +192,7 @@ requires (!PartitionerLike&lt;std::decay_t&lt;C&gt;&gt;)</td></tr>
 <tr class="memitem:afb24798ebf46e253a40b01bffb1da6a7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#afb24798ebf46e253a40b01bffb1da6a7">reduce</a> (B first, E last, T &amp;init, O bop, P part=P())</td></tr>
 <tr class="memdesc:afb24798ebf46e253a40b01bffb1da6a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an STL-styled parallel-reduction task  <br /></td></tr>
 <tr class="separator:afb24798ebf46e253a40b01bffb1da6a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ea810696c4b29824d1aaef15342c825" id="r_a3ea810696c4b29824d1aaef15342c825"><td class="memTemplParams" colspan="2">template&lt;IndexRangeLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
+<tr class="memitem:a3ea810696c4b29824d1aaef15342c825" id="r_a3ea810696c4b29824d1aaef15342c825"><td class="memTemplParams" colspan="2">template&lt;IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner&gt; </td></tr>
 <tr class="memitem:a3ea810696c4b29824d1aaef15342c825"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Task.html">Task</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a3ea810696c4b29824d1aaef15342c825">reduce_by_index</a> (R range, T &amp;init, L lop, G gop, P part=P())</td></tr>
 <tr class="memdesc:a3ea810696c4b29824d1aaef15342c825"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs an index range-based parallel-reduction task  <br /></td></tr>
 <tr class="separator:a3ea810696c4b29824d1aaef15342c825"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,8 +325,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Executor</b></td></t
 <div class="line"><a class="code hl_class" href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a>{g}.<a class="code hl_function" href="#a4d52a7fe2814b264846a2085e931652c">emplace</a>([]{ std::cout &lt;&lt; <span class="stringliteral">&quot;task in adopted graph\n&quot;</span>; });</div>
 <div class="line">taskflow.<a class="code hl_function" href="#a35f6503341d7066ef642e6b1a9d81c2c">adopt</a>(std::move(g)).<a class="code hl_function" href="classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3">name</a>(<span class="stringliteral">&quot;adopted&quot;</span>);</div>
 <div class="ttc" id="aclasstf_1_1FlowBuilder_html"><div class="ttname"><a href="classtf_1_1FlowBuilder.html">tf::FlowBuilder</a></div><div class="ttdoc">class to build a task dependency graph</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:22</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1619</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1562</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a35f6503341d7066ef642e6b1a9d81c2c"><div class="ttname"><a href="#a35f6503341d7066ef642e6b1a9d81c2c">tf::FlowBuilder::adopt</a></div><div class="ttdeci">Task adopt(Graph &amp;&amp;graph)</div><div class="ttdoc">creates a module task from a graph by taking over its ownership</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1628</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1571</div></div>
 <div class="ttc" id="aclasstf_1_1Graph_html"><div class="ttname"><a href="classtf_1_1Graph.html">tf::Graph</a></div><div class="ttdoc">class to create a graph object</div><div class="ttdef"><b>Definition</b> graph.hpp:47</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a08ada0425b490997b6ff7f310107e5e3"><div class="ttname"><a href="classtf_1_1Task.html#a08ada0425b490997b6ff7f310107e5e3">tf::Task::name</a></div><div class="ttdeci">const std::string &amp; name() const</div><div class="ttdoc">queries the name of the task</div><div class="ttdef"><b>Definition</b> task.hpp:1388</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
@@ -377,7 +373,7 @@ template&lt;GraphLike T&gt; </div>
 <div class="line"><a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> comp = t2.<a class="code hl_function" href="#ac6f22228d4c2ea2e643c4b0d42c0e92a">composed_of</a>(t1);</div>
 <div class="line"><a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> init = t2.<a class="code hl_function" href="#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){ std::cout &lt;&lt; <span class="stringliteral">&quot;t2&quot;</span>; });</div>
 <div class="line">init.<a class="code hl_function" href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">precede</a>(comp);</div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ac6f22228d4c2ea2e643c4b0d42c0e92a"><div class="ttname"><a href="#ac6f22228d4c2ea2e643c4b0d42c0e92a">tf::FlowBuilder::composed_of</a></div><div class="ttdeci">Task composed_of(T &amp;object)</div><div class="ttdoc">creates a module task for the target object</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1612</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_ac6f22228d4c2ea2e643c4b0d42c0e92a"><div class="ttname"><a href="#ac6f22228d4c2ea2e643c4b0d42c0e92a">tf::FlowBuilder::composed_of</a></div><div class="ttdeci">Task composed_of(T &amp;object)</div><div class="ttdoc">creates a module task for the target object</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1621</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html"><div class="ttname"><a href="classtf_1_1Task.html">tf::Task</a></div><div class="ttdoc">class to create a task handle over a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:569</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a8c78c453295a553c1c016e4062da8588"><div class="ttname"><a href="classtf_1_1Task.html#a8c78c453295a553c1c016e4062da8588">tf::Task::precede</a></div><div class="ttdeci">Task &amp; precede(Ts &amp;&amp;... tasks)</div><div class="ttdoc">adds precedence links from this to other tasks</div><div class="ttdef"><b>Definition</b> task.hpp:1258</div></div>
 </div><!-- fragment --><p>The taskflow object <code>t2</code> is composed of another taskflow object <code>t1</code>, preceded by another static task <code>init</code>. When taskflow <code>t2</code> is submitted to an executor, <code>init</code> will run first and then <code>comp</code> which spawns its definition in taskflow <code>t1</code>.</p>
@@ -561,7 +557,7 @@ template&lt;SubflowTaskLike C&gt; </div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> static_task1 = sf.<a class="code hl_function" href="#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div>
 <div class="line">  <a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> static_task2 = sf.<a class="code hl_function" href="#a4d52a7fe2814b264846a2085e931652c">emplace</a>([](){});</div>
 <div class="line">});</div>
-<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1726</div></div>
+<div class="ttc" id="aclasstf_1_1Subflow_html"><div class="ttname"><a href="classtf_1_1Subflow.html">tf::Subflow</a></div><div class="ttdoc">class to construct a subflow graph from the execution of a dynamic task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1735</div></div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>Please refer to <a class="el" href="SubflowTasking.html">Subflow Tasking</a> for details. </dd></dl>
 
 </div>
@@ -1110,12 +1106,12 @@ template&lt;typename B, typename E, typename C, PartitionerLike P = DefaultParti
 </div>
 </div>
 <a id="a2582a216d54dacca2b7022ea7e89452a" name="a2582a216d54dacca2b7022ea7e89452a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2582a216d54dacca2b7022ea7e89452a">&#9670;&#160;</a></span>for_each_by_index() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2582a216d54dacca2b7022ea7e89452a">&#9670;&#160;</a></span>for_each_by_index()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </div>
+template&lt;IndexRangesLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::for_each_by_index </td>
@@ -1135,10 +1131,10 @@ template&lt;IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartition
       </table>
 </div><div class="memdoc">
 
-<p>constructs a parallel-for task over a one-dimensional index range </p>
+<p>constructs a parallel-for task over a one- or multi-dimensional index range </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">R</td><td>type satisfying <a class="el" href="concepttf_1_1IndexRangeLike.html" title="concept to check if a type an tf::IndexRange, regardless of dimensionality">tf::IndexRangeLike</a> </td></tr>
+    <tr><td class="paramname">R</td><td>type satisfying <a class="el" href="concepttf_1_1IndexRangesLike.html" title="concept to check if a type is a tf::IndexRanges, regardless of dimensionality">tf::IndexRangesLike</a> (i.e., tf::IndexRanges&lt;T, N&gt;); for <code>N</code> == 1 (equivalently, <code>R</code> is <a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a>) the engine uses the 1D unraveling fast path described below, and for <code>N</code> &gt; 1 it partitions the Cartesian product as described further down </td></tr>
     <tr><td class="paramname">C</td><td>callable type that is invocable with a single argument of type R </td></tr>
     <tr><td class="paramname">P</td><td>type satisfying <a class="el" href="concepttf_1_1PartitionerLike.html" title="determines if a type is a partitioner">tf::PartitionerLike</a></td></tr>
   </table>
@@ -1153,100 +1149,65 @@ template&lt;IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartition
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="class to create a task handle over a taskflow node">tf::Task</a> handle</dd></dl>
-<p>The task spawns asynchronous tasks that applies the callable object to in the range <code>[first, last)</code> with the step size.</p>
-<div class="fragment"><div class="line"><span class="comment">// [0, 17) with a step size of 2 using tf::IndexRange</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a> range(0, 17, 2);</div>
+<p>The task spawns asynchronous tasks that partition <code>range</code> and invoke <code>callable</code> once per partition, where each partition is itself a (sub-)range of the same type <code>R</code>.</p>
+<dl class="section user"><dt>One-dimensional range (<code>N</code> == 1)</dt><dd></dd></dl>
+<p>For a 1D range <code><a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a></code>, the task applies <code>callable</code> to each index subrange of <code>[first, last)</code> with the given step size. This is equivalent to the parallel execution of the following loop:</p>
+<div class="fragment"><div class="line"><span class="comment">// case 1: step size is positive</span></div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&lt;last; i+=step) {</div>
+<div class="line">  callable(i);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// case 2: step size is negative</span></div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> i=first; i&gt;last; i+=step) {</div>
+<div class="line">  callable(i);</div>
+<div class="line">}</div>
+</div><!-- fragment --><div class="fragment"><div class="line"><span class="comment">// [0, 17) with a step size of 2 using tf::IndexRange</span></div>
+<div class="line"><a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a> range(0, 17, 2);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// parallelize the sequence [0, 2, 4, 6, 8, 10, 12, 14, 16]</span></div>
-<div class="line">taskflow.for_each_by_index(range, [](<a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a> range) {</div>
+<div class="line">taskflow.for_each_by_index(range, [](<a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a> subrange) {</div>
 <div class="line">  <span class="comment">// iterate each index in the subrange</span></div>
-<div class="line">  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=range.begin(); i&lt;range.end(); i+=range.step_size()) {</div>
+<div class="line">  <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">begin</a>(); i&lt;subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a253e15e199f974ee26b2e33a5e2b3cf1">end</a>(); i+=subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">step_size</a>()) {</div>
 <div class="line">    printf(<span class="stringliteral">&quot;iterate %d\n&quot;</span>, i);</div>
 <div class="line">  }</div>
 <div class="line">});</div>
 <div class="line"> </div>
 <div class="line">executor.run(taskflow).wait();</div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
-</div><!-- fragment --><p>The callable needs to take a single argument of type <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRange</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>Please refer to <a class="el" href="ParallelIterations.html">Parallel Iterations</a> for details. </dd></dl>
-
-</div>
-</div>
-<a id="a2582a216d54dacca2b7022ea7e89452a" name="a2582a216d54dacca2b7022ea7e89452a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2582a216d54dacca2b7022ea7e89452a">&#9670;&#160;</a></span>for_each_by_index() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;IndexRangeMDLike R, typename C, PartitionerLike P = DefaultPartitioner&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::for_each_by_index </td>
-          <td>(</td>
-          <td class="paramtype">R</td>          <td class="paramname"><span class="paramname"><em>range</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">C</td>          <td class="paramname"><span class="paramname"><em>callable</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">P</td>          <td class="paramname"><span class="paramname"><em>part</em></span><span class="paramdefsep"> = </span><span class="paramdefval">P()</span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>constructs a parallel-for task over a multi-dimensional index range </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">R</td><td>type satisfying <a class="el" href="concepttf_1_1IndexRangeMDLike.html" title="concept to check if a type is a tf::IndexRange&lt;T, N&gt; with rank &gt; 1">tf::IndexRangeMDLike</a> (i.e., tf::IndexRange&lt;T, N&gt; with <code>N</code> &gt; 1) </td></tr>
-    <tr><td class="paramname">C</td><td>callable type that is invocable with a single argument of type R </td></tr>
-    <tr><td class="paramname">P</td><td>type satisfying <a class="el" href="concepttf_1_1PartitionerLike.html" title="determines if a type is a partitioner">tf::PartitionerLike</a></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">range</td><td>index range </td></tr>
-    <tr><td class="paramname">callable</td><td>callable object to apply to each partitioned index range </td></tr>
-    <tr><td class="paramname">part</td><td>partitioning algorithm to schedule parallel iterations</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>a <a class="el" href="classtf_1_1Task.html" title="class to create a task handle over a taskflow node">tf::Task</a> handle</dd></dl>
-<p>The function parallelises iteration over the Cartesian product of <code>N</code> independent 1D ranges. The total iteration space is linearized in row-major order (last dimension varies fastest) and divided among workers according to <code>part</code>. Each worker receives one or more orthogonal sub-boxes and invokes <code>callable</code> once per sub-box.</p>
-<p>Each sub-box is guaranteed to be a valid hyper-rectangle: every dimension of the sub-box lies entirely within the corresponding dimension of <code>range</code> and preserves its original step size, including negative strides. The callable must iterate the sub-box using the step sizes reported by each dimension:</p>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_a253e15e199f974ee26b2e33a5e2b3cf1"><div class="ttname"><a href="classtf_1_1IndexRanges.html#a253e15e199f974ee26b2e33a5e2b3cf1">tf::IndexRanges::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:358</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_ae37261f0d2f326449c469233561a3da6"><div class="ttname"><a href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">tf::IndexRanges::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:346</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_afcb30e2b9567ad685e702201d2265880"><div class="ttname"><a href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">tf::IndexRanges::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:370</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
+</div><!-- fragment --><dl class="section user"><dt>Multi-dimensional ranges (<code>N</code> &gt; 1)</dt><dd></dd></dl>
+<p>For <code>N</code> &gt; 1, the function parallelises iteration over the Cartesian product of <code>N</code> independent 1D ranges. The total iteration space is linearized in row-major order (last dimension varies fastest) and divided among workers according to <code>part</code>. Each worker receives one or more orthogonal sub-boxes and invokes <code>callable</code> once per sub-box.</p>
+<p>Each sub-box is guaranteed to be a valid hyper-rectangle: every dimension of the sub-box lies entirely within the corresponding dimension of <code>range</code> and preserves its original step size, including negative strides. Each dimension of a <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a> is a <code>std::tuple&lt;T, T, T&gt;</code> of (begin, end, step) accessible through <code>dim(d)</code>, so the callable typically destructures it via structured bindings and must iterate the sub-box using the step sizes reported by each dimension:</p>
 <div class="fragment"><div class="line"><span class="comment">// 3D range: depth x height x width</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a> range(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, D, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, H, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, W, 1)</div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 3&gt;</a> range(</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, D, 1),</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, H, 1),</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, W, 1)</div>
 <div class="line">);</div>
 <div class="line"> </div>
-<div class="line">taskflow.for_each_by_index(range, [](<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 3&gt;</a>&amp; sub) {</div>
-<div class="line">  <span class="keywordflow">for</span>(<span class="keyword">auto</span> d = sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>(); d &lt; sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); d += sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
-<div class="line">    <span class="keywordflow">for</span>(<span class="keyword">auto</span> h = sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>(); h &lt; sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); h += sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
-<div class="line">      <span class="keywordflow">for</span>(<span class="keyword">auto</span> w = sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>(); w &lt; sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); w += sub.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(2).<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
+<div class="line">taskflow.for_each_by_index(range, [](<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 3&gt;</a>&amp; sub) {</div>
+<div class="line">  <span class="keyword">auto</span> [d0, d1, ds] = sub.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(0);</div>
+<div class="line">  <span class="keyword">auto</span> [h0, h1, hs] = sub.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(1);</div>
+<div class="line">  <span class="keyword">auto</span> [w0, w1, ws] = sub.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(2);</div>
+<div class="line">  <span class="keywordflow">for</span>(<span class="keyword">auto</span> d = d0; d &lt; d1; d += ds) {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keyword">auto</span> h = h0; h &lt; h1; h += hs) {</div>
+<div class="line">      <span class="keywordflow">for</span>(<span class="keyword">auto</span> w = w0; w &lt; w1; w += ws) {</div>
 <div class="line">        <span class="comment">// process element (d, h, w)</span></div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">});</div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:298</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:960</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:970</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:965</div></div>
-</div><!-- fragment --><p>When the range bounds are not known at task-graph construction time, pass the range by <code>std::ref</code>. An upstream task must set the bounds before this task runs:</p>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int, 2&gt;</a> range(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;int&gt;</a>(0, 0, 1)</div>
-<div class="line">);</div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html"><div class="ttname"><a href="classtf_1_1IndexRanges.html">tf::IndexRanges</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:188</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_a4e0162b872edd6176e9d6a308b295427"><div class="ttname"><a href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">tf::IndexRanges::dim</a></div><div class="ttdeci">const std::tuple&lt; T, T, T &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the (begin, end, step) tuple for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:297</div></div>
+</div><!-- fragment --><p><b>Stateful ranges</b></p>
+<p>Ranges of any rank can be made stateful by passing them through <code>std::reference_wrapper</code> (via <code>std::ref</code>). This is useful when the range bounds are not known at task-graph construction time. An upstream task must set the bounds before this task runs:</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 2&gt;</a> range;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> init = taskflow.emplace([&amp;](){</div>
-<div class="line">  range.dim(0).reset(0, rows, 1);</div>
-<div class="line">  range.dim(1).reset(0, cols, 1);</div>
+<div class="line">  range.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(0) = {0, rows, 1};</div>
+<div class="line">  range.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(1) = {0, cols, 1};</div>
 <div class="line">});</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> loop = taskflow.for_each_by_index(std::ref(range), callable);</div>
@@ -1993,7 +1954,7 @@ template&lt;typename B, typename E, typename T, typename C, PartitionerLike P&gt
 <div class="line"><span class="comment">// assign the task handle to the placeholder task</span></div>
 <div class="line">task = <a class="code hl_function" href="#acab0b4ac82260f47fdb36a3244ee3aaf">placeholder</a>;</div>
 <div class="line">assert(task.<a class="code hl_function" href="classtf_1_1Task.html#a8149edcf9ec2bfac18dd171f7a55ce06">empty</a>() == <span class="keyword">false</span> &amp;&amp; task.<a class="code hl_function" href="classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5">has_work</a>() == <span class="keyword">false</span>);</div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_acab0b4ac82260f47fdb36a3244ee3aaf"><div class="ttname"><a href="#acab0b4ac82260f47fdb36a3244ee3aaf">tf::FlowBuilder::placeholder</a></div><div class="ttdeci">Task placeholder()</div><div class="ttdoc">creates a placeholder task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1626</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_acab0b4ac82260f47fdb36a3244ee3aaf"><div class="ttname"><a href="#acab0b4ac82260f47fdb36a3244ee3aaf">tf::FlowBuilder::placeholder</a></div><div class="ttdeci">Task placeholder()</div><div class="ttdoc">creates a placeholder task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1635</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_a8149edcf9ec2bfac18dd171f7a55ce06"><div class="ttname"><a href="classtf_1_1Task.html#a8149edcf9ec2bfac18dd171f7a55ce06">tf::Task::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdoc">queries if the task handle is associated with a taskflow node</div><div class="ttdef"><b>Definition</b> task.hpp:1413</div></div>
 <div class="ttc" id="aclasstf_1_1Task_html_afc4ecb89dd4e4645b3ec3fb7c1bb0ec5"><div class="ttname"><a href="classtf_1_1Task.html#afc4ecb89dd4e4645b3ec3fb7c1bb0ec5">tf::Task::has_work</a></div><div class="ttdeci">bool has_work() const</div><div class="ttdoc">queries if the task has a work assigned</div><div class="ttdef"><b>Definition</b> task.hpp:1418</div></div>
 </div><!-- fragment --> 
@@ -2072,7 +2033,7 @@ template&lt;typename B, typename E, typename T, typename O, PartitionerLike P = 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;IndexRangeLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner&gt; </div>
+template&lt;IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtf_1_1Task.html">Task</a> tf::FlowBuilder::reduce_by_index </td>
@@ -2105,7 +2066,7 @@ template&lt;IndexRangeLike R, typename T, typename L, typename G, PartitionerLik
 <p>constructs an index range-based parallel-reduction task </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">R</td><td>type satisfying <a class="el" href="concepttf_1_1IndexRangeLike.html" title="concept to check if a type an tf::IndexRange, regardless of dimensionality">tf::IndexRangeLike</a> </td></tr>
+    <tr><td class="paramname">R</td><td>type satisfying <a class="el" href="concepttf_1_1IndexRanges1DLike.html" title="concept to check if a type is a tf::IndexRanges&lt;T, 1&gt; (i.e., tf::IndexRange&lt;T&gt;)">tf::IndexRanges1DLike</a> </td></tr>
     <tr><td class="paramname">T</td><td>result type </td></tr>
     <tr><td class="paramname">L</td><td>local reducer type </td></tr>
     <tr><td class="paramname">G</td><td>global reducer type </td></tr>
@@ -2130,13 +2091,13 @@ template&lt;IndexRangeLike R, typename T, typename L, typename G, PartitionerLik
 <div class="line"><span class="keywordtype">int</span> res = 1;               <span class="comment">// res will participate in the reduction</span></div>
 <div class="line"> </div>
 <div class="line">taskflow.reduce_by_index(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a>(0, N, 1),</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a>(0, N, 1),</div>
 <div class="line">  <span class="comment">// final result</span></div>
 <div class="line">  res,</div>
 <div class="line">  <span class="comment">// local reducer</span></div>
-<div class="line">  [&amp;](<a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;int&gt; running_total) -&gt; <span class="keywordtype">int</span> {</div>
+<div class="line">  [&amp;](<a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;int&gt; running_total) -&gt; <span class="keywordtype">int</span> {</div>
 <div class="line">    <span class="keywordtype">int</span> residual = running_total ? *running_total : 0.0;</div>
-<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=subrange.begin(); i&lt;subrange.end(); i+=subrange.step_size()) {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i=subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">begin</a>(); i&lt;subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a253e15e199f974ee26b2e33a5e2b3cf1">end</a>(); i+=subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">step_size</a>()) {</div>
 <div class="line">      data[i] = 1.0;</div>
 <div class="line">      residual += data[i];</div>
 <div class="line">    }</div>

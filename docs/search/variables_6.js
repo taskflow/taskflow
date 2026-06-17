@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rank_0',['rank',['../classtf_1_1IndexRange.html#aa7d09d06ea0e3107b6c2b2f520cd24fe',1,'tf::IndexRange']]]
+  ['rank_0',['rank',['../classtf_1_1IndexRanges.html#a85eb931928d4c71b02fc5ddc3f573b06',1,'tf::IndexRanges']]]
 ];

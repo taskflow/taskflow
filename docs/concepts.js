@@ -1,9 +1,9 @@
 var concepts =
 [
     [ "tf", "namespacetf.html", [
-      [ "IndexRangeLike", "concepttf_1_1IndexRangeLike.html", null ],
-      [ "IndexRange1DLike", "concepttf_1_1IndexRange1DLike.html", null ],
-      [ "IndexRangeMDLike", "concepttf_1_1IndexRangeMDLike.html", null ],
+      [ "IndexRangesLike", "concepttf_1_1IndexRangesLike.html", null ],
+      [ "IndexRanges1DLike", "concepttf_1_1IndexRanges1DLike.html", null ],
+      [ "IndexRangesMDLike", "concepttf_1_1IndexRangesMDLike.html", null ],
       [ "StringLike", "concepttf_1_1StringLike.html", null ],
       [ "TaskParamsLike", "concepttf_1_1TaskParamsLike.html", null ],
       [ "GraphLike", "concepttf_1_1GraphLike.html", null ],

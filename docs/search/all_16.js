@@ -7,7 +7,7 @@ var searchData=
   ['make_5fobserver_4',['make_observer',['../classtf_1_1Executor.html#aff77def96ae740d648dd84e571237c83',1,'tf::Executor']]],
   ['make_5fworker_5finterface_5',['make_worker_interface',['../namespacetf.html#a277bf0914351f67a59f54d6b1fa0b08f',1,'tf']]],
   ['many_20tasks_20can_20taskflow_20handle_6',['Q4: How many tasks can Taskflow handle?',['../FAQ.html#GeneralQuestion4',1,'']]],
-  ['maps_20perfectly_20to_20indexrange_7',['Why it Maps Perfectly to IndexRange?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
+  ['maps_20perfectly_20to_20indexranges_7',['Why it Maps Perfectly to IndexRanges?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
   ['master_8',['Release 4.1.0 (Master)',['../release-4-1-0.html',1,'Releases']]],
   ['master_20thread_20involved_20in_20running_20tasks_9',['Q8: Is the program master thread involved in running tasks?',['../FAQ.html#ProgrammingQuestions8',1,'']]],
   ['matrix_20multiplication_10',['Matrix Multiplication',['../matrix_multiplication.html',1,'Examples']]],

@@ -174,7 +174,7 @@ var searchData=
   ['to_20console_171',['Display Profile Summary to Console',['../Profiler.html#ProfilerDisplayProfileSummary',1,'']]],
   ['to_20existing_20task_20programming_20systems_172',['Q9: How does it compare to existing task programming systems?',['../FAQ.html#GeneralQuestion9',1,'']]],
   ['to_20identify_20input_20subranges_173',['Step 2: Co-rank to Identify Input Subranges',['../ParallelMerge.html#ParallelMergeAlgorithmCorank',1,'']]],
-  ['to_20indexrange_174',['Why it Maps Perfectly to IndexRange?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
+  ['to_20indexranges_174',['Why it Maps Perfectly to IndexRanges?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
   ['to_20simplify_20the_20gpu_20kernel_20programming_175',['Q10: Do you try to simplify the GPU kernel programming?',['../FAQ.html#GeneralQuestion10',1,'']]],
   ['to_20task_20graphs_176',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]],
   ['to_20ternary_20coins_177',['Extension to Ternary Coins',['../ExamplesNondeterministicControlFlow.html#CoinFlippingTernary',1,'']]],

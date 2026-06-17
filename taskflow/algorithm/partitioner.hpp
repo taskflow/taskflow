@@ -324,30 +324,45 @@ class StaticPartitioner : public PartitionerBase<C> {
   /**
   @private
 
-  Static partitioner loop for N-dimensional index ranges.
+  Static partitioner loop for index ranges of any rank.
 
   Each worker is pre-assigned a flat quota (chunk_size) starting at curr_b,
-  then strides by W*chunk_size to its next partition — mirroring the 1D static
-  strided pattern.  Within each assigned partition, the worker repeatedly calls
-  slice_floor to drain its quota.  slice_floor guarantees
+  then strides by W*chunk_size to its next partition — the classic static
+  strided pattern.  For a 1D range (rank == 1) the quota maps directly to a
+  single subrange via unravel(), since there is no hyperplane alignment to
+  respect.  For an N-D range (rank > 1) the worker repeatedly calls
+  lower_slice to drain its quota in box-shaped pieces; lower_slice guarantees
   consumed <= remaining budget, so curr_b never overshoots curr_e and no
-  elements are double-processed across partition boundaries.
+  elements are double-processed across partition boundaries.  Either way,
+  curr_b ends up exactly stride past where it started once the quota is
+  drained.
   */
-  template <IndexRangeMDLike R, typename F>
+  template <IndexRangesLike R, typename F>
   void loop(const R& range, size_t N, size_t W, size_t curr_b, size_t chunk_size, F&& func) const {
     size_t stride = W * chunk_size;
     while(curr_b < N) {
       size_t curr_e = (std::min)(curr_b + chunk_size, N);
-      while(curr_b < curr_e) {
-        auto [box, consumed] = range.slice_floor(curr_b, curr_e - curr_b);
+      if constexpr (R::rank == 1) {
         if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
-          if(func(box)) {
+          if(func(range.unravel(curr_b, curr_e))) {
             return;
           }
         } else {
-          func(box);
+          func(range.unravel(curr_b, curr_e));
         }
-        curr_b += consumed;
+        curr_b = curr_e;
+      } else {
+        while(curr_b < curr_e) {
+          auto box = range.lower_slice(curr_b, curr_e - curr_b);
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(box)) {
+              return;
+            }
+          } else {
+            func(box);
+          }
+          curr_b += box.size();
+        }
       }
       curr_b += stride - chunk_size;
     }
@@ -490,7 +505,7 @@ class GuidedPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <IndexRangeMDLike R, typename F>
+  template <IndexRangesLike R, typename F>
   void loop(const R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
 
     size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
@@ -500,20 +515,35 @@ class GuidedPartitioner : public PartitionerBase<C> {
 
     while(curr_b < N) {
       size_t r = N - curr_b;
-      auto [box, consumed] = range.slice_ceil(curr_b,
-        (r < p1) ? chunk_size : (std::max)(static_cast<size_t>(p2 * r), chunk_size)
-      );
-      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                    std::memory_order_relaxed,
-                                    std::memory_order_relaxed)) {
-        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
-          if(func(box)) {
-            return;
+      size_t csize = (r < p1) ? chunk_size : (std::max)(static_cast<size_t>(p2 * r), chunk_size);
+      if constexpr (R::rank == 1) {
+        size_t curr_e = (std::min)(curr_b + csize, N);
+        if(next.compare_exchange_weak(curr_b, curr_e,
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(range.unravel(curr_b, curr_e))) {
+              return;
+            }
+          } else {
+            func(range.unravel(curr_b, curr_e));
           }
-        } else {
-          func(box);
+          curr_b = curr_e;
         }
-        curr_b += consumed;
+      } else {
+        auto box = range.upper_slice(curr_b, csize);
+        if(next.compare_exchange_weak(curr_b, curr_b + box.size(),
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(box)) {
+              return;
+            }
+          } else {
+            func(box);
+          }
+          curr_b += box.size();
+        }
       }
     }
   }
@@ -620,24 +650,40 @@ class DynamicPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <IndexRangeMDLike R, typename F>
+  template <IndexRangesLike R, typename F>
   void loop(const R& range, size_t N, size_t, std::atomic<size_t>& next, F&& func) const {
     size_t curr_b = next.load(std::memory_order_relaxed);
     size_t chunk_size = (this->_chunk_size == 0) ? size_t{1} : this->_chunk_size;
 
     while(curr_b < N) {
-      auto [box, consumed] = range.slice_ceil(curr_b, chunk_size);
-      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                    std::memory_order_relaxed,
-                                    std::memory_order_relaxed)) {
-        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
-          if(func(box)) {
-            return;
+      if constexpr (R::rank == 1) {
+        size_t curr_e = (std::min)(curr_b + chunk_size, N);
+        if(next.compare_exchange_weak(curr_b, curr_e,
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(range.unravel(curr_b, curr_e))) {
+              return;
+            }
+          } else {
+            func(range.unravel(curr_b, curr_e));
           }
-        } else {
-          func(box);
+          curr_b = curr_e;
         }
-        curr_b += consumed;
+      } else {
+        auto box = range.upper_slice(curr_b, chunk_size);
+        if(next.compare_exchange_weak(curr_b, curr_b + box.size(),
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(box)) {
+              return;
+            }
+          } else {
+            func(box);
+          }
+          curr_b += box.size();
+        }
       }
     }
   }
@@ -794,7 +840,7 @@ class RandomPartitioner : public PartitionerBase<C> {
   /**
   @private
   */
-  template <IndexRangeMDLike R, typename F>
+  template <IndexRangesLike R, typename F>
   void loop(const R& range, size_t N, size_t W, std::atomic<size_t>& next, F&& func) const {
 
     auto [b1, b2] = chunk_size_range(N, W);
@@ -805,18 +851,34 @@ class RandomPartitioner : public PartitionerBase<C> {
     size_t curr_b = next.load(std::memory_order_relaxed);
 
     while(curr_b < N) {
-      auto [box, consumed] = range.slice_ceil(curr_b, dist(engine));
-      if(next.compare_exchange_weak(curr_b, curr_b + consumed,
-                                    std::memory_order_relaxed,
-                                    std::memory_order_relaxed)) {
-        if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
-          if(func(box)) {
-            return;
+      if constexpr (R::rank == 1) {
+        size_t curr_e = (std::min)(curr_b + dist(engine), N);
+        if(next.compare_exchange_weak(curr_b, curr_e,
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(range.unravel(curr_b, curr_e))) {
+              return;
+            }
+          } else {
+            func(range.unravel(curr_b, curr_e));
           }
-        } else {
-          func(box);
+          curr_b = curr_e;
         }
-        curr_b += consumed;
+      } else {
+        auto box = range.upper_slice(curr_b, dist(engine));
+        if(next.compare_exchange_weak(curr_b, curr_b + box.size(),
+                                      std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+          if constexpr (std::is_same_v<std::invoke_result_t<F, R>, bool>) {
+            if(func(box)) {
+              return;
+            }
+          } else {
+            func(box);
+          }
+          curr_b += box.size();
+        }
       }
     }
   }

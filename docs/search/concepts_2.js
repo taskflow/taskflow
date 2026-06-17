@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['indexrange1dlike_0',['IndexRange1DLike',['../concepttf_1_1IndexRange1DLike.html',1,'tf']]],
-  ['indexrangelike_1',['IndexRangeLike',['../concepttf_1_1IndexRangeLike.html',1,'tf']]],
-  ['indexrangemdlike_2',['IndexRangeMDLike',['../concepttf_1_1IndexRangeMDLike.html',1,'tf']]]
+  ['indexranges1dlike_0',['IndexRanges1DLike',['../concepttf_1_1IndexRanges1DLike.html',1,'tf']]],
+  ['indexrangeslike_1',['IndexRangesLike',['../concepttf_1_1IndexRangesLike.html',1,'tf']]],
+  ['indexrangesmdlike_2',['IndexRangesMDLike',['../concepttf_1_1IndexRangesMDLike.html',1,'tf']]]
 ];

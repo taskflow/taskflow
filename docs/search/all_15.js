@@ -29,5 +29,6 @@ var searchData=
   ['loop_26',['Catch an Exception from a Corun Loop',['../ExceptionHandling.html#ExceptionHandlingCorun',1,'']]],
   ['loop_20as_20a_20condition_20task_27',['Encoding the Loop as a Condition Task',['../ExamplesBFS.html#BFSConditionTask',1,'']]],
   ['loop_20control_20flow_28',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
-  ['loops_20to_20task_20graphs_29',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]]
+  ['loops_20to_20task_20graphs_29',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]],
+  ['lower_5fslice_30',['lower_slice',['../classtf_1_1IndexRanges.html#a9bb91e591aeb6b89531dc133559ca328',1,'tf::IndexRanges']]]
 ];

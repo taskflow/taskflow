@@ -136,7 +136,7 @@ class tf::Xorshift&lt; T &gt;</div><p>class to create a fast xorshift-based pseu
   </dd>
 </dl>
 <p>This class implements a lightweight xorshift pseudo-random number generator suitable for performance-critical paths such as schedulers, work-stealing victim selection, and randomized backoff. The implementation is branchless on the hot path and has a very small state footprint (one machine word). All operations are integer-only.</p>
-<dl class="section attention"><dt>Attention</dt><dd>The internal state must be seeded with a non-zero value. This class is not thread-safe. Each thread should maintain its own instance. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The internal state must be seeded with a non-zero value. This class is not thread-safe. Each thread should maintain its own instance. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9753af25d9a8262c67c55914f8e82ce5" name="a9753af25d9a8262c67c55914f8e82ce5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9753af25d9a8262c67c55914f8e82ce5">&#9670;&#160;</a></span>Xorshift() <span class="overload">[1/2]</span></h2>
@@ -164,8 +164,12 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>constructs an uninitialized xor-shift generator </p>
-<p>The internal state is not initialized. The user must call <code><a class="el" href="namespacetf.html#a3f8e89aebc29d42259157723c874954d" title="generates a random seed based on the current system clock">seed()</a></code> with a non-zero value before generating numbers. </p>
-
+<p>The internal state is not initialized. The user must call <code><a class="el" href="namespacetf.html#a3f8e89aebc29d42259157723c874954d" title="generates a random seed based on the current system clock">seed()</a></code> with a non-zero value before generating numbers.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1Xorshift.html">tf::Xorshift&lt;uint64_t&gt;</a> rng;</div>
+<div class="line">rng.<a class="code hl_function" href="#a0293e3b3ab3f10d6160830024f065ec4">seed</a>(12345);</div>
+<div class="ttc" id="aclasstf_1_1Xorshift_html"><div class="ttname"><a href="classtf_1_1Xorshift.html">tf::Xorshift</a></div><div class="ttdoc">class to create a fast xorshift-based pseudo-random number generator</div><div class="ttdef"><b>Definition</b> math.hpp:412</div></div>
+<div class="ttc" id="aclasstf_1_1Xorshift_html_a0293e3b3ab3f10d6160830024f065ec4"><div class="ttname"><a href="#a0293e3b3ab3f10d6160830024f065ec4">tf::Xorshift::seed</a></div><div class="ttdeci">void seed(T value)</div><div class="ttdoc">seeds the generator with a new value</div><div class="ttdef"><b>Definition</b> math.hpp:457</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a6eeccbfe1882564147e5509f446536e0" name="a6eeccbfe1882564147e5509f446536e0"></a>
@@ -200,8 +204,10 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
-<p>The seed value must be non-zero. </p>
-
+<p>The seed value must be non-zero.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1Xorshift.html">tf::Xorshift&lt;uint64_t&gt;</a> rng(12345);</div>
+<div class="line"><span class="keyword">auto</span> r = rng();</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -233,7 +239,10 @@ template&lt;typename T&gt; </div>
 <p>generates the next pseudo-random value </p>
 <dl class="section return"><dt>Returns</dt><dd>a pseudo-random value of type <code>T</code></dd></dl>
 <p>For 32-bit state, this function implements the Xorshift32 algorithm. For 64-bit state, this function implements the Xorshift64 algorithm with a multiplicative output transformation to improve distribution.</p>
-<dl class="section warning"><dt>Warning</dt><dd>Calling this function before seeding the generator with a non-zero value results in undefined behavior. </dd></dl>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1Xorshift.html">tf::Xorshift&lt;uint64_t&gt;</a> rng(12345);</div>
+<div class="line">uint64_t r1 = rng();</div>
+<div class="line">uint64_t r2 = rng();</div>
+</div><!-- fragment --><dl class="section warning"><dt>Warning</dt><dd>Calling this function before seeding the generator with a non-zero value results in undefined behavior. </dd></dl>
 
 </div>
 </div>
@@ -269,8 +278,10 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
-<p>The seed value must be non-zero. A zero seed results in a degenerated generator that always returns zero. </p>
-
+<p>The seed value must be non-zero. A zero seed results in a degenerated generator that always returns zero.</p>
+<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1Xorshift.html">tf::Xorshift&lt;uint64_t&gt;</a> rng;</div>
+<div class="line">rng.<a class="code hl_function" href="#a0293e3b3ab3f10d6160830024f065ec4">seed</a>(12345);</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>

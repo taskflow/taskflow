@@ -408,7 +408,7 @@ auto make_transform_reduce_task(
 
 
 // Function: make_reduce_by_index_task
-template <IndexRangeLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
+template <IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
 auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
   
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
@@ -536,7 +536,7 @@ Task FlowBuilder::transform_reduce(
 // ------------------------------------------------------------------------------------------------
 
 // Function: make_index_reduce_task
-template <IndexRangeLike R, typename T, typename L, typename G, PartitionerLike P>
+template <IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P>
 Task FlowBuilder::reduce_by_index(R range, T& init, L lop, G gop, P part) {
   return emplace(make_reduce_by_index_task(range, init, lop, gop, part));
 }

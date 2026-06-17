@@ -121,7 +121,7 @@ $(function(){initNavTree('ExamplesSpMV.html',''); initResizable(true); });
   </li>
 </ul>
 </div>
-<div class="textblock"><p>We implement a parallel sparse matrix-vector multiplication (SpMV) using <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one-dimensional index range">tf::Taskflow::for_each_by_index</a>. This example highlights why irregular workloads like SpMV require careful partitioner selection and demonstrates how different partitioners affect load balance across workers.</p>
+<div class="textblock"><p>We implement a parallel sparse matrix-vector multiplication (SpMV) using <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a>. This example highlights why irregular workloads like SpMV require careful partitioner selection and demonstrates how different partitioners affect load balance across workers.</p>
 <h1><a class="anchor" id="SpMVIntroduction"></a>
 What is Sparse Matrix-Vector Multiplication?</h1>
 <p>Many scientific and engineering problems involve matrices where the vast majority of entries are zero. Examples include finite element stiffness matrices, graph adjacency matrices, network flow problems, and PageRank computations. Storing and operating on all <code>N*N</code> entries of such a matrix is wasteful; instead, only the non-zero entries are stored and processed.</p>
@@ -185,7 +185,7 @@ Implementation</h1>
 <div class="line">  <span class="comment">// Each sub-range covers a contiguous slice of rows. Within each slice the</span></div>
 <div class="line">  <span class="comment">// kernel iterates the CSR non-zeros and accumulates the dot product into y[i].</span></div>
 <div class="line">  <span class="comment">// Rows never share output elements, so y requires no synchronization.</span></div>
-<div class="line">  <span class="keyword">auto</span> spmv_kernel = [&amp;](<span class="keyword">const</span> <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>&amp; sub) {</div>
+<div class="line">  <span class="keyword">auto</span> spmv_kernel = [&amp;](<span class="keyword">const</span> <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>&amp; sub) {</div>
 <div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = sub.begin(); i &lt; sub.end(); i += sub.step_size()) {</div>
 <div class="line">      <span class="keywordtype">float</span> sum = 0.0f;</div>
 <div class="line">      <span class="keywordflow">for</span>(<span class="keywordtype">int</span> k = row_ptr[i]; k &lt; row_ptr[i + 1]; k++) {</div>
@@ -195,7 +195,7 @@ Implementation</h1>
 <div class="line">    }</div>
 <div class="line">  };</div>
 <div class="line"> </div>
-<div class="line">  <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a> range(0, num_rows, 1);</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a> range(0, num_rows, 1);</div>
 <div class="line">  tf::Executor executor;</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// ── Version 1: StaticPartitioner ─────────────────────────────────────────</span></div>
@@ -243,8 +243,8 @@ Implementation</h1>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasstf_1_1Executor_html_a519777f5783981d534e9e53b99712069"><div class="ttname"><a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069">tf::Executor::run</a></div><div class="ttdeci">tf::Future&lt; void &gt; run(Taskflow &amp;taskflow)</div><div class="ttdoc">runs a taskflow once</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2582a216d54dacca2b7022ea7e89452a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">tf::FlowBuilder::for_each_by_index</a></div><div class="ttdeci">Task for_each_by_index(R range, C callable, P part=P())</div><div class="ttdoc">constructs a parallel-for task over a one-dimensional index range</div></div>
-<div class="ttc" id="anamespacetf_html_ac6e52a96475a1ae2a454f7d7d877b446"><div class="ttname"><a href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange</a></div><div class="ttdeci">IndexRange(T, T, T) -&gt; IndexRange&lt; T, 1 &gt;</div><div class="ttdoc">deduction guide for tf::IndexRange&lt;T, 1&gt;</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2582a216d54dacca2b7022ea7e89452a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">tf::FlowBuilder::for_each_by_index</a></div><div class="ttdeci">Task for_each_by_index(R range, C callable, P part=P())</div><div class="ttdoc">constructs a parallel-for task over a one- or multi-dimensional index range</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
 </div><!-- fragment --><p>The expected output for <code>x = {1, 2, 3, 4, 5}</code> is:</p>
 <div class="fragment"><div class="line">StaticPartitioner:  y = [ 7.0 12.0 13.0 28.0 22.0 ]</div>
 <div class="line">GuidedPartitioner:  y = [ 7.0 12.0 13.0 28.0 22.0 ]</div>

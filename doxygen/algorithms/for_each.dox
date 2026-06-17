@@ -101,7 +101,7 @@ A tf::IndexRange describes a typed, half-open index range
 <tt>[begin, end)</tt> with a step size.
 There are two variants:
 
-- `tf::IndexRange<T>` (or equivalently `tf::IndexRange<T, 1>`): A 1D range of
+- `tf::IndexRange<T>` (an alias for `tf::IndexRanges<T, 1>`): A 1D range of
   integral indices.  It is defined by three parameters: @c begin, @c end, and
   @c step_size.  The elements are @c begin, @c begin+step, @c begin+2*step, ...
   up to (but not including) @c end.
@@ -118,14 +118,16 @@ r.size();       // 4
 
 @dotfile images/indexrange_1d.dot
 
-- `tf::IndexRange<T, N>`: An N-dimensional Cartesian product of N independent
+- `tf::IndexRanges<T, N>`: An N-dimensional Cartesian product of N independent
   1D ranges, one per dimension.  Dimension 0 is the outermost (slowest varying)
   and dimension N-1 is the innermost (fastest varying), matching the natural
-  nesting of C-style for-loops (row-major order).
+  nesting of C-style for-loops (row-major order).  Each dimension is stored as
+  a <tt>std::tuple<T, T, T></tt> of (begin, end, step_size), accessible and
+  mutable through @c dim(d).
 
 @code{.cpp}
 // 2D range: i in [0,3), j in [0,4) — a 3x4 grid of 12 index pairs
-tf::IndexRange<int, 2> r(
+tf::IndexRanges<int, 2> r(
   tf::IndexRange<int>(0, 3, 1),   // dim 0: i = 0, 1, 2
   tf::IndexRange<int>(0, 4, 1)    // dim 1: j = 0, 1, 2, 3
 );
@@ -133,13 +135,15 @@ tf::IndexRange<int, 2> r(
 r.size();     // 12  (3 x 4)
 r.size(0);    //  3  (elements along dim 0)
 r.size(1);    //  4  (elements along dim 1)
-r.dim(0);     // IndexRange<int>(0, 3, 1)
-r.dim(1);     // IndexRange<int>(0, 4, 1)
+r.dim(0);     // std::tuple<int,int,int>{0, 3, 1}
+r.dim(1);     // std::tuple<int,int,int>{0, 4, 1}
+
+auto [b0, e0, s0] = r.dim(0);  // structured-binding access: b0=0, e0=3, s0=1
 @endcode
 
 @dotfile images/indexrange_2d.dot
 
-The key advantage of tf::IndexRange<T, N> over a raw scalar index is that the
+The key advantage of tf::IndexRanges<T, N> over a raw scalar index is that the
 callable receives the full sub-range (or sub-box) at once, allowing it to
 implement cache-friendly block algorithms, apply SIMD over contiguous indices,
 or exploit any other block-level optimisation.
@@ -169,7 +173,7 @@ cache line before processing, rather than incurring per-element dispatch overhea
 
 @subsection ParallelIterationsIndexRangeMD Create a Parallel-Iteration Task over a Multi-dimensional IndexRange
 
-Passing an N-dimensional @c tf::IndexRange<T, N> to
+Passing an N-dimensional @c tf::IndexRanges<T, N> to
 tf::Taskflow::for_each_by_index creates a parallel task whose callable receives
 one orthogonal @em sub-box of the full ND space per invocation.
 A sub-box is a valid hyperrectangle — a contiguous, axis-aligned tile that
@@ -182,15 +186,17 @@ outer-dimension value), each a 3x4 slice:
 For a 2D range, the parallel task represents:
 
 @code{.cpp}
-tf::IndexRange<int, 2> range(
+tf::IndexRanges<int, 2> range(
   tf::IndexRange<int>(0, rows, 1),   // dimension 0: rows
   tf::IndexRange<int>(0, cols, 1)    // dimension 1: columns
 );
 
-taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 2>& tile) {
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 2>& tile) {
   // tile is an orthogonal sub-box of the full 2D range
-  for(int i = tile.dim(0).begin(); i < tile.dim(0).end(); i += tile.dim(0).step_size()) {
-    for(int j = tile.dim(1).begin(); j < tile.dim(1).end(); j += tile.dim(1).step_size()) {
+  auto [i0, i1, is] = tile.dim(0);
+  auto [j0, j1, js] = tile.dim(1);
+  for(int i = i0; i < i1; i += is) {
+    for(int j = j0; j < j1; j += js) {
       process(i, j);
     }
   }
@@ -202,16 +208,19 @@ inner loops are identical to what you would write for sequential code.
 The same pattern extends naturally to three or more dimensions:
 
 @code{.cpp}
-tf::IndexRange<int, 3> range(
+tf::IndexRanges<int, 3> range(
   tf::IndexRange<int>(0, depth,  1),
   tf::IndexRange<int>(0, height, 1),
   tf::IndexRange<int>(0, width,  1)
 );
 
-taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
-  for(int i = sub.dim(0).begin(); i < sub.dim(0).end(); i += sub.dim(0).step_size()) {
-    for(int j = sub.dim(1).begin(); j < sub.dim(1).end(); j += sub.dim(1).step_size()) {
-      for(int k = sub.dim(2).begin(); k < sub.dim(2).end(); k += sub.dim(2).step_size()) {
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 3>& sub) {
+  auto [d0, d1, ds] = sub.dim(0);
+  auto [h0, h1, hs] = sub.dim(1);
+  auto [w0, w1, ws] = sub.dim(2);
+  for(int i = d0; i < d1; i += ds) {
+    for(int j = h0; j < h1; j += hs) {
+      for(int k = w0; k < w1; k += ws) {
         process(i, j, k);
       }
     }
@@ -229,22 +238,25 @@ simply never executes, while the outer loops still run.
 @code{.cpp}
 // The middle dimension has zero iterations (j_begin == j_end).
 // The outer i-loop still has work; the j/k body never executes.
-tf::IndexRange<int, 3> range(
+tf::IndexRanges<int, 3> range(
   tf::IndexRange<int>(0, 100, 1),   // i: 100 iterations
   tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations — body never runs
   tf::IndexRange<int>(0, 100, 1)    // k: 100 iterations (never reached)
 );
 // range.size() == 100  (outer i-loop only)
 
-taskflow.for_each_by_index(range, [](const tf::IndexRange<int, 3>& sub) {
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 3>& sub) {
   // Each sub-box covers a slice of the active i-dimension.
   // Only process(i) is ever called — the j-loop never executes,
   // so process(i, j) and process(i, j, k) are never reached.
-  for(int i = sub.dim(0).begin(); i < sub.dim(0).end(); ++i) {
+  auto [i0, i1, is] = sub.dim(0);
+  auto [j0, j1, js] = sub.dim(1);
+  auto [k0, k1, ks] = sub.dim(2);
+  for(int i = i0; i < i1; i += is) {
     process(i);                         // <-- called for every i
-    for(int j = sub.dim(1).begin(); j < sub.dim(1).end(); ++j) {  // never entered
+    for(int j = j0; j < j1; j += js) {  // never entered
       process(i, j);                    // <-- never called
-      for(int k = sub.dim(2).begin(); k < sub.dim(2).end(); ++k) {
+      for(int k = k0; k < k1; k += ks) {
         process(i, j, k);               // <-- never called
       }
     }
@@ -294,11 +306,11 @@ The figure below illustrates why alignment matters for a 3x4 grid:
 
 A cut at flat index 6 (mid-row) would split row @c i=1 between two workers,
 producing an L-shaped non-rectangular region that cannot be expressed as a
-single @c IndexRange sub-box.
+single @c IndexRanges sub-box.
 A cut at flat index 8 (row boundary) produces two clean rectangular sub-boxes.
 %Taskflow enforces this automatically.
 The @c chunk_size hint is always snapped to the nearest hyperplane boundary
-via @c IndexRange::ceil():
+via @c IndexRanges::ceil():
 
 @code{.cpp}
 // For a 3x4 range with 3 workers:
@@ -335,21 +347,23 @@ the parallel loop runs.
 This works for both 1D and multi-dimensional ranges.
 
 @code{.cpp}
-tf::IndexRange<int, 2> range(
+tf::IndexRanges<int, 2> range(
   tf::IndexRange<int>(0, 0, 1),   // placeholder — filled by init
   tf::IndexRange<int>(0, 0, 1)
 );
 
 auto init = taskflow.emplace([&](){
-  range.dim(0).reset(0, rows, 1);
-  range.dim(1).reset(0, cols, 1);
+  range.dim(0) = {0, rows, 1};
+  range.dim(1) = {0, cols, 1};
 });
 
 auto pf = taskflow.for_each_by_index(
   std::ref(range),
-  [](tf::IndexRange<int, 2> tile) {
-    for(int i = tile.dim(0).begin(); i < tile.dim(0).end(); i += tile.dim(0).step_size()) {
-      for(int j = tile.dim(1).begin(); j < tile.dim(1).end(); j += tile.dim(1).step_size()) {
+  [](tf::IndexRanges<int, 2> tile) {
+    auto [i0, i1, is] = tile.dim(0);
+    auto [j0, j1, js] = tile.dim(1);
+    for(int i = i0; i < i1; i += is) {
+      for(int j = j0; j < j1; j += js) {
         process(i, j);
       }
     }

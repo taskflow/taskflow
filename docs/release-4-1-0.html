@@ -161,6 +161,10 @@ New Features</h1>
 <h2><a class="anchor" id="release-4-1-0_taskflow_core"></a>
 Taskflow Core</h2>
 <ul>
+<li>refactored the codebase with C++20 concept to enhance readability<ul>
+<li>credit goest to the amazing Anthropic Claude</li>
+</ul>
+</li>
 <li>added bulk cache update method in executor</li>
 <li>added more unit tests to <code>test_notifiers.cpp</code></li>
 <li>added a new unittest <code>test_partitioners.cpp</code> <br  />
@@ -172,7 +176,7 @@ Taskflow Core</h2>
 </ul>
 </li>
 <li>added a new parallel-for algorithm over a multi-dimensional index range<ul>
-<li><a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one-dimensional index range">tf::Taskflow::for_each_by_index</a> (see <a class="el" href="ParallelIterations.html">Parallel Iterations</a>)</li>
+<li><a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> (see <a class="el" href="ParallelIterations.html">Parallel Iterations</a>)</li>
 </ul>
 </li>
 <li>added a new parallel-merge algorithm <a class="el" href="classtf_1_1FlowBuilder.html#adba094978bb2c038163e0b1b18141efa" title="merges two sorted ranges into a single sorted output using the std::less comparator">tf::Taskflow::merge</a><ul>
@@ -191,10 +195,6 @@ Taskflow Core</h2>
 </ul>
 </li>
 <li>optimized the locking cost of topology</li>
-<li>refactored the codebase with C++20 concept to enhance readability<ul>
-<li>credit goest to the amazing Anthropic Claude</li>
-</ul>
-</li>
 <li>introduced a new profiler to replace the existing <a href="https://github.com/taskflow/tfprof">tfprof</a></li>
 <li>removed extra copy on dependency tasks when creating a dependent-async task</li>
 </ul>
@@ -208,8 +208,8 @@ Utilities</h2>
 <li>added <a class="el" href="concepttf_1_1ConditionTaskLike.html" title="determines if a callable is a condition task">tf::ConditionTaskLike</a> concept to check if a type is a condition task</li>
 <li>added <a class="el" href="concepttf_1_1MultiConditionTaskLike.html" title="determines if a callable is a multi-condition task">tf::MultiConditionTaskLike</a> concept to check if a type is a multi-condition task</li>
 <li>added <a class="el" href="concepttf_1_1PartitionerLike.html" title="determines if a type is a partitioner">tf::PartitionerLike</a> concept to check if a type is a partitioner</li>
-<li>added <a class="el" href="concepttf_1_1IndexRangeLike.html" title="concept to check if a type an tf::IndexRange, regardless of dimensionality">tf::IndexRangeLike</a> concept to define N-dimensional index ranges</li>
-<li>added <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRange</a> to perform parallel iterations over an N-dimensional range</li>
+<li>added <a class="el" href="concepttf_1_1IndexRangesLike.html" title="concept to check if a type is a tf::IndexRanges, regardless of dimensionality">tf::IndexRangesLike</a> concept to define N-dimensional index ranges</li>
+<li>added <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a> to perform parallel iterations over an N-dimensional range</li>
 <li>added tf::unroll_until and tf::unroll_while to unroll loops with stopping conditions</li>
 <li>removed <code>floor_log2</code> due to duplication with C++20 <code>std::bit_width</code></li>
 <li>removed <code>cpu_pause</code> due to platform-dependent implementation</li>
@@ -225,7 +225,7 @@ Bug Fixes</h1>
 <h1><a class="anchor" id="release-4-1-0_breaking_changes"></a>
 Breaking Changes</h1>
 <ul>
-<li>renamed <code>tf::IndexRange::discrete_domain</code> to <code>tf::IndexRange::unravel</code></li>
+<li>renamed <code>tf::IndexRange::discrete_domain</code> to <code><a class="el" href="classtf_1_1IndexRanges.html#a6a4703aec946472c968729f0464d835c">tf::IndexRange::unravel</a></code></li>
 </ul>
 <h1><a class="anchor" id="release-4-1-0_documentation"></a>
 Documentation</h1>

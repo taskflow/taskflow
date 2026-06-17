@@ -221,10 +221,20 @@ endif(TF_BUILD_CUDA)
 add_library(default_settings INTERFACE)
 add_library(tf::default_settings ALIAS default_settings)
 target_link_libraries(
-  default_settings 
-  INTERFACE 
-  tf::error_settings 
+  default_settings
+  INTERFACE
+  tf::error_settings
   $<$<BOOL:${ATOMIC_LIBRARY}>:${ATOMIC_LIBRARY}>
+)
+
+# Use real std headers instead of doctest's own forward-declared stand-ins
+# (e.g. for std::tuple). Newer MSVC toolsets emit C5285 ("specializing this
+# standard library template is forbidden") on doctest's forward declarations,
+# which becomes a hard error under /WX. This sidesteps the issue entirely.
+target_compile_definitions(
+  default_settings
+  INTERFACE
+  DOCTEST_CONFIG_USE_STD_HEADERS
 )
 
 # -----------------------------------------------------------------------------

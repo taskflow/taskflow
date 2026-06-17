@@ -111,7 +111,7 @@ $(function(){initNavTree('ExamplesConv2D.html',''); initResizable(true); });
     <a href="#Conv2DWalkthrough">Concrete Walkthrough</a>
   </li>
   <li class="level1">
-    <a href="#Conv2DParallelism">Why it Maps Perfectly to IndexRange?</a>
+    <a href="#Conv2DParallelism">Why it Maps Perfectly to IndexRanges?</a>
   </li>
   <li class="level1">
     <a href="#Conv2DImplementation">Implementation</a>
@@ -121,7 +121,7 @@ $(function(){initNavTree('ExamplesConv2D.html',''); initResizable(true); });
   </li>
 </ul>
 </div>
-<div class="textblock"><p>We implement a parallel 2D image convolution using <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one-dimensional index range">tf::Taskflow::for_each_by_index</a> with a two-dimensional <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRange</a>. This example demonstrates how a naturally 2D iteration space maps directly onto multidimensional index ranges and why output pixels are unconditionally safe to compute in parallel.</p>
+<div class="textblock"><p>We implement a parallel 2D image convolution using <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> with a two-dimensional <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a>. This example demonstrates how a naturally 2D iteration space maps directly onto multidimensional index ranges and why output pixels are unconditionally safe to compute in parallel.</p>
 <h1><a class="anchor" id="Conv2DIntroduction"></a>
 What is 2D Convolution?</h1>
 <p>Convolution is one of the most fundamental operations in image processing and computer vision. Given an input image and a small matrix called a kernel (or filter), convolution produces an output image where each output pixel is a weighted sum of a small neighbourhood of input pixels, with the weights given by the kernel. Depending on the kernel, convolution can blur an image (Gaussian blur), sharpen it, detect edges (Sobel filter), or emboss it. It is also the core operation inside every convolutional neural network (CNN). To see how it works, consider the following <code>5x5</code> input image and a <code>3x3</code> kernel:</p>
@@ -154,8 +154,8 @@ Concrete Walkthrough</h1>
 <div class="line">         = 2.0</div>
 </div><!-- fragment --><p>For interior pixels the window always fits inside the image. For pixels near the border, the window extends outside the image boundary. A common strategy is boundary clamping: any out-of-bounds row or column index is clamped to the nearest valid index, effectively extending the image edge values outward.</p>
 <h1><a class="anchor" id="Conv2DParallelism"></a>
-Why it Maps Perfectly to IndexRange?</h1>
-<p>The 2D image convolution maps perfectly <code>tf::IndexRange&lt;int,2&gt;</code> because every output pixel <code>(i, j)</code> depends only on a fixed neighbourhood in the input and the kernel. Additionally, since two output pixels write to the same memory location, all output pixels can be computed simultaneously with no synchronization at all. As a result, the iteration space is inherently 2D: output row <code>i</code> ranges over <code>[0, output_rows)</code> and output column <code>j</code> ranges over <code>[0, output_cols)</code>. <code>tf::IndexRange&lt;int, 2&gt;</code> expresses this directly as the Cartesian product of two 1D ranges, and <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one-dimensional index range">tf::Taskflow::for_each_by_index</a> partitions this 2D space into axis-aligned sub-boxes and assigns each sub-box to a worker.</p>
+Why it Maps Perfectly to IndexRanges?</h1>
+<p>The 2D image convolution maps perfectly <code>tf::IndexRanges&lt;int,2&gt;</code> because every output pixel <code>(i, j)</code> depends only on a fixed neighbourhood in the input and the kernel. Additionally, since two output pixels write to the same memory location, all output pixels can be computed simultaneously with no synchronization at all. As a result, the iteration space is inherently 2D: output row <code>i</code> ranges over <code>[0, output_rows)</code> and output column <code>j</code> ranges over <code>[0, output_cols)</code>. <code>tf::IndexRanges&lt;int, 2&gt;</code> expresses this directly as the Cartesian product of two 1D ranges, and <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> partitions this 2D space into axis-aligned sub-boxes and assigns each sub-box to a worker.</p>
 <p>The following figure illustrates how a 6×6 output image is split into four sub-boxes, one per worker:</p>
 <div class="image">
 <object type="image/svg+xml" data="conv_parallel.svg" style="pointer-events: none;"></object>
@@ -196,22 +196,24 @@ Implementation</h1>
 <div class="line">  };</div>
 <div class="line"> </div>
 <div class="line">  <span class="comment">// ── parallel 2D convolution ───────────────────────────────────────────────</span></div>
-<div class="line">  <span class="comment">// IndexRange&lt;int,2&gt; covers the full output pixel space [0,rows) x [0,cols).</span></div>
+<div class="line">  <span class="comment">// IndexRanges&lt;int,2&gt; covers the full output pixel space [0,rows) x [0,cols).</span></div>
 <div class="line">  <span class="comment">// Each sub-box delivered to the kernel is a contiguous 2D tile of output</span></div>
 <div class="line">  <span class="comment">// pixels. Pixels in different tiles never share output locations, so no</span></div>
 <div class="line">  <span class="comment">// synchronization is needed.</span></div>
-<div class="line">  <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int, 2&gt;</a> range(</div>
-<div class="line">    <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>(0, rows, 1),   <span class="comment">// dim 0: output rows</span></div>
-<div class="line">    <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int&gt;</a>(0, cols, 1)    <span class="comment">// dim 1: output columns</span></div>
+<div class="line">  tf::IndexRanges&lt;int, 2&gt; range(</div>
+<div class="line">    <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, rows, 1),   <span class="comment">// dim 0: output rows</span></div>
+<div class="line">    <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, cols, 1)    <span class="comment">// dim 1: output columns</span></div>
 <div class="line">  );</div>
 <div class="line"> </div>
 <div class="line">  tf::Executor executor;</div>
 <div class="line">  tf::Taskflow taskflow;</div>
 <div class="line"> </div>
 <div class="line">  taskflow.<a class="code hl_function" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">for_each_by_index</a>(range,</div>
-<div class="line">    [&amp;](<span class="keyword">const</span> <a class="code hl_function" href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange&lt;int, 2&gt;</a>&amp; box) {</div>
-<div class="line">      <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>(); i &lt; box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); i += box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(0).<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
-<div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">begin</a>(); j &lt; box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">end</a>(); j += box.<a class="code hl_function" href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">dim</a>(1).<a class="code hl_function" href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">step_size</a>()) {</div>
+<div class="line">    [&amp;](<span class="keyword">const</span> tf::IndexRanges&lt;int, 2&gt;&amp; box) {</div>
+<div class="line">      <span class="keyword">auto</span> [i0, i1, is] = box.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(0);</div>
+<div class="line">      <span class="keyword">auto</span> [j0, j1, js] = box.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(1);</div>
+<div class="line">      <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = i0; i &lt; i1; i += is) {</div>
+<div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = j0; j &lt; j1; j += js) {</div>
 <div class="line">          <span class="keywordtype">float</span> sum = 0.0f;</div>
 <div class="line">          <span class="keywordflow">for</span>(<span class="keywordtype">int</span> ki = 0; ki &lt; ksize; ki++) {</div>
 <div class="line">            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> kj = 0; kj &lt; ksize; kj++) {</div>
@@ -241,12 +243,9 @@ Implementation</h1>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="aclasstf_1_1Executor_html_a519777f5783981d534e9e53b99712069"><div class="ttname"><a href="classtf_1_1Executor.html#a519777f5783981d534e9e53b99712069">tf::Executor::run</a></div><div class="ttdeci">tf::Future&lt; void &gt; run(Taskflow &amp;taskflow)</div><div class="ttdoc">runs a taskflow once</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2582a216d54dacca2b7022ea7e89452a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">tf::FlowBuilder::for_each_by_index</a></div><div class="ttdeci">Task for_each_by_index(R range, C callable, P part=P())</div><div class="ttdoc">constructs a parallel-for task over a one-dimensional index range</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a2c4decf957f5e663b3432314ae54c4c1"><div class="ttname"><a href="classtf_1_1IndexRange.html#a2c4decf957f5e663b3432314ae54c4c1">tf::IndexRange::dim</a></div><div class="ttdeci">const IndexRange&lt; T, 1 &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the 1D range for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:298</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_a70a09db095224a162768dd1aea24106d"><div class="ttname"><a href="classtf_1_1IndexRange.html#a70a09db095224a162768dd1aea24106d">tf::IndexRange&lt; T, 1 &gt;::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:960</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ab1a9d8f6e0ad823ab357382d494e9112"><div class="ttname"><a href="classtf_1_1IndexRange.html#ab1a9d8f6e0ad823ab357382d494e9112">tf::IndexRange&lt; T, 1 &gt;::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:970</div></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html_ad842a8a81b82d02f3ab5343b96c5b0ea"><div class="ttname"><a href="classtf_1_1IndexRange.html#ad842a8a81b82d02f3ab5343b96c5b0ea">tf::IndexRange&lt; T, 1 &gt;::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range</div><div class="ttdef"><b>Definition</b> iterator.hpp:965</div></div>
-<div class="ttc" id="anamespacetf_html_ac6e52a96475a1ae2a454f7d7d877b446"><div class="ttname"><a href="namespacetf.html#ac6e52a96475a1ae2a454f7d7d877b446">tf::IndexRange</a></div><div class="ttdeci">IndexRange(T, T, T) -&gt; IndexRange&lt; T, 1 &gt;</div><div class="ttdoc">deduction guide for tf::IndexRange&lt;T, 1&gt;</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a2582a216d54dacca2b7022ea7e89452a"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a">tf::FlowBuilder::for_each_by_index</a></div><div class="ttdeci">Task for_each_by_index(R range, C callable, P part=P())</div><div class="ttdoc">constructs a parallel-for task over a one- or multi-dimensional index range</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_a4e0162b872edd6176e9d6a308b295427"><div class="ttname"><a href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">tf::IndexRanges::dim</a></div><div class="ttdeci">const std::tuple&lt; T, T, T &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the (begin, end, step) tuple for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:297</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
 </div><!-- fragment --><p>The program output for the hand-constructed input is:</p>
 <div class="fragment"><div class="line">Output image (Gaussian blur):</div>
 <div class="line"> 1.44  1.50  1.38  1.50  1.69  1.56</div>
@@ -266,10 +265,10 @@ Design Points</h1>
 <ul>
 <li>Output pixels are unconditionally independent: Each pixel <code>(i, j)</code> writes exclusively to <code>output[i*cols+j]</code>. The input image is read-only during the sweep. No atomic operations or mutexes are needed, and the parallel speedup scales directly with the number of workers up to the image size.</li>
 <li>Boundary clamping inside the kernel: The <code>std::clamp</code> calls handle boundary pixels without any special-casing outside the inner loop. Alternative boundary strategies (zero-padding, mirror, wrap-around) require only changing the two index computations inside the kernel; the parallel structure is identical for all of them.</li>
-<li>2D index range maps naturally to 2D pixel space: Using <code>tf::IndexRange&lt;int,2&gt;</code> instead of a flat 1D range over all pixels preserves the row-column structure of the problem. Each sub-box delivered to the kernel is a geometrically contiguous tile of the output image, which keeps the input window accesses for adjacent output pixels close together in memory and benefits cache reuse across the inner loop over columns.</li>
+<li>2D index range maps naturally to 2D pixel space: Using <code>tf::IndexRanges&lt;int,2&gt;</code> instead of a flat 1D range over all pixels preserves the row-column structure of the problem. Each sub-box delivered to the kernel is a geometrically contiguous tile of the output image, which keeps the input window accesses for adjacent output pixels close together in memory and benefits cache reuse across the inner loop over columns.</li>
 <li>Partitioner choice: Each output pixel performs exactly <code>ksize*ksize</code> multiply-add operations regardless of its position, so the workload is perfectly uniform. <a class="el" href="classtf_1_1StaticPartitioner.html" title="class to construct a static partitioner for scheduling parallel algorithms">tf::StaticPartitioner</a> is the right choice here: it has the lowest scheduling overhead and delivers optimal load balance for uniform workloads. There is no reason to pay for the runtime work-stealing of guided or dynamic partitioners when every tile does the same amount of work.</li>
 </ul>
-<p>For large images or deep filter stacks, cache locality of the input window accesses becomes the dominant performance factor. Tiling the output into cache-sized sub-boxes (so that the corresponding input windows fit in L2 or L3 cache) can significantly improve throughput. <code>tf::IndexRange&lt;int,2&gt;</code> naturally expresses this tiling: simply choose a tile size that fits the relevant input region in cache and let the partitioner handle distribution across workers. </p>
+<p>For large images or deep filter stacks, cache locality of the input window accesses becomes the dominant performance factor. Tiling the output into cache-sized sub-boxes (so that the corresponding input windows fit in L2 or L3 cache) can significantly improve throughput. <code>tf::IndexRanges&lt;int,2&gt;</code> naturally expresses this tiling: simply choose a tile size that fits the relevant input region in cache and let the partitioner handle distribution across workers. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

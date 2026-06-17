@@ -120,7 +120,7 @@ var Examples =
     [ "2D Image Convolution", "ExamplesConv2D.html", [
       [ "What is 2D Convolution?", "ExamplesConv2D.html#Conv2DIntroduction", null ],
       [ "Concrete Walkthrough", "ExamplesConv2D.html#Conv2DWalkthrough", null ],
-      [ "Why it Maps Perfectly to IndexRange?", "ExamplesConv2D.html#Conv2DParallelism", null ],
+      [ "Why it Maps Perfectly to IndexRanges?", "ExamplesConv2D.html#Conv2DParallelism", null ],
       [ "Implementation", "ExamplesConv2D.html#Conv2DImplementation", null ],
       [ "Design Points", "ExamplesConv2D.html#Conv2DDesignPoints", null ]
     ] ],
