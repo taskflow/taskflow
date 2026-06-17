@@ -150,82 +150,22 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
 }
 
 // Function: make_for_each_by_index_task
-template <IndexRange1DLike R, typename C, PartitionerLike P = DefaultPartitioner>
+template <IndexRangesLike R, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_for_each_by_index_task(R range, C c, P part = P()){
-  
+
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
 
   return [=] (Runtime& rt) mutable {
 
     // fetch the iterator values
     range_type r = range;
-    
-    // nothing to be done if the range is invalid
-    if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
-      return;
-    }
 
-    size_t W = rt.executor().num_workers();
-    size_t N = r.size();
-
-    // nothing to do if the range is empty
-    if(N == 0) {
-      return;
-    }
-
-    // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
-      part([=]() mutable { c(r); })();
-      return;
-    }
-
-    if(N < W) {
-      W = N;
-    }
-    
-    // static partitioner
-    if constexpr(part.type() == PartitionerType::STATIC) {
-      for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        auto chunk_size = part.adjusted_chunk_size(N, W, w);
-        auto task = part([=] () mutable {
-          part.loop(N, W, curr_b, chunk_size, [=] (size_t part_b, size_t part_e) {
-            c(r.unravel(part_b, part_e));
-          });
-        });
-        (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
+    if constexpr (range_type::rank == 1) {
+      // nothing to be done if the range is invalid
+      if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
+        return;
       }
     }
-    // dynamic partitioner
-    else {
-      auto next = std::make_shared<std::atomic<size_t>>(0);
-      for(size_t w=0; w<W;) {
-        auto task = part([=] () mutable {
-          part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) {
-            c(r.unravel(part_b, part_e));
-          });
-        });
-        (++w == W) ? task() : rt.silent_async(task);
-      }
-    }
-  };
-}
-
-// Function: make_for_each_by_index_task
-template <IndexRangeMDLike R, typename C, PartitionerLike P = DefaultPartitioner>
-auto make_for_each_by_index_task(R range, C c, P part = P()){
-  
-  using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
-
-  return [=] (Runtime& rt) mutable {
-
-    // fetch the iterator values
-    range_type r = range;
-    
-    // TODO:
-    // throw if the range is invalid?
-    //if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
-    //  return;
-    //}
 
     size_t W = rt.executor().num_workers();
     size_t N = r.size();
@@ -247,15 +187,21 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      // snap chunk_size to the nearest hyperplane boundary so slice_floor
-      // returns one box per inner iteration in the common case
-      size_t chunk_size = r.ceil(
-        part.chunk_size() == 0 ? (N + W - 1) / W : part.chunk_size()
-      );
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        auto task = part([=] () mutable {
-          part.loop(r, N, W, curr_b, chunk_size, c);
-        });
+        // 1D ranges balance the remainder exactly across workers (no hyperplane alignment needed);
+        // N-D ranges need a single chunk size shared by all workers, snapped to the nearest 
+        // hyperplane boundary so lower_slice returns one box per inner iteration in
+        // the common case.
+        size_t chunk_size;
+        if constexpr (range_type::rank == 1) {
+          chunk_size = part.adjusted_chunk_size(N, W, w);
+        }
+        else {
+          chunk_size = r.ceil(
+            part.chunk_size() == 0 ? (N + W - 1) / W : part.chunk_size()
+          );
+        }
+        auto task = part([=] () mutable { part.loop(r, N, W, curr_b, chunk_size, c); });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }
     }
@@ -263,9 +209,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
-        auto task = part([=] () mutable {
-          part.loop(r, N, W, *next, c);
-        });
+        auto task = part([=] () mutable { part.loop(r, N, W, *next, c); });
         (++w == W) ? task() : rt.silent_async(task);
       }
     }
@@ -297,15 +241,7 @@ Task FlowBuilder::for_each_index(B beg, E end, S inc, C c, P part){
 }
 
 // Function: for_each_by_index
-template <IndexRange1DLike R, typename C, PartitionerLike P>
-Task FlowBuilder::for_each_by_index(R range, C c, P part){
-  return emplace(
-    make_for_each_by_index_task(range, c, part)
-  );
-}
-
-// Function: for_each_by_index
-template <IndexRangeMDLike R, typename C, PartitionerLike P>
+template <IndexRangesLike R, typename C, PartitionerLike P>
 Task FlowBuilder::for_each_by_index(R range, C c, P part){
   return emplace(
     make_for_each_by_index_task(range, c, part)

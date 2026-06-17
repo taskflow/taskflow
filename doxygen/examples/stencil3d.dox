@@ -3,7 +3,7 @@ namespace tf {
 /** @page ExamplesStencil3D 3D Stencil Computation
 
 We parallelize a three-dimensional Jacobi stencil over a regular Cartesian
-grid using tf::IndexRang and tf::Taskflow::for_each_by_index.
+grid using tf::IndexRanges and tf::Taskflow::for_each_by_index.
 This example demonstrates how multidimensional index ranges map naturally
 onto volumetric parallel workloads in scientific computing.
 
@@ -48,7 +48,7 @@ same sweep, so all updates can be executed in parallel.
 
 @section Stencil3DImplementation Parallel Implementation
 
-We represent the interior iteration space as a @c tf::IndexRange<int, 3>
+We represent the interior iteration space as a @c tf::IndexRanges<int, 3>
 covering indices `[1, Nx-1) x [1, Ny-1) x [1, Nz-1)` and dispatch
 it with tf::Taskflow::for_each_by_index.
 The executor partitions the flat index space into axis-aligned sub-boxes
@@ -87,7 +87,7 @@ int main() {
   tf::Taskflow taskflow;
 
   // interior-only iteration space: skip the one-cell boundary on each side
-  tf::IndexRange<int, 3> interior(
+  tf::IndexRanges<int, 3> interior(
     tf::IndexRange<int>(1, Nx - 1, 1),   // i: rows
     tf::IndexRange<int>(1, Ny - 1, 1),   // j: columns
     tf::IndexRange<int>(1, Nz - 1, 1)    // k: depth
@@ -95,10 +95,13 @@ int main() {
 
   // one Jacobi sweep
   taskflow.for_each_by_index(interior,
-    [&](const tf::IndexRange<int, 3>& box) {
-      for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-        for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
-          for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+    [&](const tf::IndexRanges<int, 3>& box) {
+      auto [i0, i1, is] = box.dim(0);
+      auto [j0, j1, js] = box.dim(1);
+      auto [k0, k1, ks] = box.dim(2);
+      for(int i = i0; i < i1; i += is) {
+        for(int j = j0; j < j1; j += js) {
+          for(int k = k0; k < k1; k += ks) {
             v[i*Ny*Nz + j*Nz + k] =
               (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
                u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
@@ -128,10 +131,13 @@ reference, swapping the pointers before each @c run is sufficient:
 tf::Taskflow taskflow;
 
 taskflow.for_each_by_index(interior,
-  [&](const tf::IndexRange<int, 3>& box) {
-    for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-      for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
-        for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+  [&](const tf::IndexRanges<int, 3>& box) {
+    auto [i0, i1, is] = box.dim(0);
+    auto [j0, j1, js] = box.dim(1);
+    auto [k0, k1, ks] = box.dim(2);
+    for(int i = i0; i < i1; i += is) {
+      for(int j = j0; j < j1; j += js) {
+        for(int k = k0; k < k1; k += ks) {
           v[i*Ny*Nz + j*Nz + k] =
             (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
              u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
@@ -181,10 +187,13 @@ auto init = taskflow.emplace([&](){
 });
 
 auto stencil = taskflow.for_each_by_index(interior,
-  [&](const tf::IndexRange<int, 3>& box) {
-    for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-      for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
-        for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+  [&](const tf::IndexRanges<int, 3>& box) {
+    auto [i0, i1, is] = box.dim(0);
+    auto [j0, j1, js] = box.dim(1);
+    auto [k0, k1, ks] = box.dim(2);
+    for(int i = i0; i < i1; i += is) {
+      for(int j = j0; j < j1; j += js) {
+        for(int k = k0; k < k1; k += ks) {
           v[i*Ny*Nz + j*Nz + k] =
             (u[(i-1)*Ny*Nz + j*Nz + k] + u[(i+1)*Ny*Nz + j*Nz + k] +
              u[i*Ny*Nz + (j-1)*Nz + k] + u[i*Ny*Nz + (j+1)*Nz + k] +
@@ -232,7 +241,7 @@ which also apply generally to parallel stencil algorithms:
 read-write races between workers. A single-buffer update would require a reduction or synchronization point
 between every pair of updated cells, which eliminates the parallelism.
 
-  + Interior-only range: The @c tf::IndexRange<int, 3> is defined over `[1, N-1)` in each dimension, 
+  + Interior-only range: The @c tf::IndexRanges<int, 3> is defined over `[1, N-1)` in each dimension, 
   not `[0, N)`. This means the boundary halo is never written inside the parallel kernel,
   so there is no need for conditional boundary checks inside the inner loop.
   The boundary conditions are enforced implicitly by never touching those cells.
@@ -241,7 +250,7 @@ between every pair of updated cells, which eliminates the parallelism.
 It assigns each worker a pre-determined contiguous sub-box of the iteration space with no synchronization overhead during execution. For workloads where the per-cell cost varies (adaptive meshes, masked stencils), tf::GuidedPartitioner or tf::DynamicPartitioner may be more appropriate.
 
 @note
-When scheduling a multi-dimensional range like @c tf::IndexRange<int,3>, %Taskflow partitions the flat index space into
+When scheduling a multi-dimensional range like @c tf::IndexRanges<int, 3>, %Taskflow partitions the flat index space into
 axis-aligned sub-boxes rather than arbitrary flat ranges.
 Each sub-box delivered to the kernel is a geometrically contiguous
 region of the grid, which preserves spatial locality and benefits from

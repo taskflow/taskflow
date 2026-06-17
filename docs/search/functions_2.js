@@ -4,7 +4,7 @@ var searchData=
   ['cancel_1',['cancel',['../classtf_1_1TaskGroup.html#a2d32e816db51666b721d8b3d538e4066',1,'tf::TaskGroup::cancel()'],['../classtf_1_1Future.html#a3bf5f104864ab2590b6409712d3a469b',1,'tf::Future::cancel()']]],
   ['cancel_5fwait_2',['cancel_wait',['../classtf_1_1NonblockingNotifier.html#a3f32e0f7adb305de32f34f7ce6d8c222',1,'tf::NonblockingNotifier']]],
   ['capacity_3',['capacity',['../classtf_1_1UnboundedWSQ.html#aa3d26c3c856d04f11ee242b90d71ea14',1,'tf::UnboundedWSQ::capacity()'],['../classtf_1_1BoundedWSQ.html#a797e7244fd4fd9b8c463b72dd80ab7c7',1,'tf::BoundedWSQ::capacity()'],['../classtf_1_1NonblockingNotifier.html#a62357b230d37301f1ee5759138252358',1,'tf::NonblockingNotifier::capacity()']]],
-  ['ceil_4',['ceil',['../classtf_1_1IndexRange.html#af79763821764f0a8db523400efc299e8',1,'tf::IndexRange']]],
+  ['ceil_4',['ceil',['../classtf_1_1IndexRanges.html#a5d99f151421740eb2f2d180c4cd5a8f1',1,'tf::IndexRanges']]],
   ['chunk_5fsize_5',['chunk_size',['../classtf_1_1PartitionerBase.html#afa34299dea355738efa5684024d08215',1,'tf::PartitionerBase::chunk_size() const'],['../classtf_1_1PartitionerBase.html#a481097aeb7ec62dcc23584eaa48cbce4',1,'tf::PartitionerBase::chunk_size(size_t cz)']]],
   ['chunk_5fsize_5frange_6',['chunk_size_range',['../classtf_1_1RandomPartitioner.html#a39b37513a7759cc7bd7d3b3273861162',1,'tf::RandomPartitioner']]],
   ['clear_7',['clear',['../classtf_1_1Graph.html#a8213e42bf3f7460757db411181d78c4c',1,'tf::Graph::clear()'],['../classtf_1_1Taskflow.html#a1f00bbe72a1553c9656ecae4d98bb9af',1,'tf::Taskflow::clear()']]],

@@ -219,35 +219,55 @@ template <typename T>
 class CachelineAligned {
   public:
   /**
-   * @brief The stored object, aligned to twice the cacheline size.
-   */
+  @brief The stored object, aligned to twice the cacheline size.
+  */
   alignas (TF_CACHELINE_SIZE) T data;
 
   /**
-   * @brief accesses the underlying object
-   * 
-   * @return a reference to the underlying object.
-   */
+  @brief accesses the underlying object
+
+  @return a reference to the underlying object.
+
+  Returns a mutable reference to the stored object so it can be read
+  or written directly without copying.
+
+  @code{.cpp}
+  tf::CachelineAligned<int> counter;
+  counter.get() = 1;
+  @endcode
+  */
   T& get() { return data; }
-  
+
   /**
-   * @brief accesses the underlying object as a constant reference
-   * 
-   * @return a constant reference to the underlying object.
-   */
+  @brief accesses the underlying object as a constant reference
+
+  @return a constant reference to the underlying object.
+
+  Returns a read-only reference to the stored object, for use on
+  const-qualified instances of `CachelineAligned`.
+
+  @code{.cpp}
+  const tf::CachelineAligned<int> counter;
+  int v = counter.get();
+  @endcode
+  */
   const T& get() const { return data; }
 };
 
 /**
 @brief retrieves the value of an environment variable
 
-This function fetches the value of an environment variable by name.
-If the variable is not found, it returns an empty string.
-
 @param str The name of the environment variable to retrieve.
 @return The value of the environment variable as a string, or an empty string if not found.
 
-@attention The implementation differs between Windows and POSIX platforms:
+This function fetches the value of an environment variable by name.
+If the variable is not found, it returns an empty string.
+
+@code{.cpp}
+std::string path = tf::get_env("PATH");
+@endcode
+
+@note The implementation differs between Windows and POSIX platforms:
  - On Windows, it uses `_dupenv_s` to fetch the value.
  - On POSIX, it uses `std::getenv`.
 */
@@ -272,12 +292,18 @@ inline std::string get_env(const std::string& str) {
 /**
 @brief checks whether an environment variable is defined
 
-This function determines if a specific environment variable exists in the current environment.
-
 @param str The name of the environment variable to check.
 @return `true` if the environment variable exists, `false` otherwise.
 
-@attention The implementation differs between Windows and POSIX platforms:
+This function determines if a specific environment variable exists in the current environment.
+
+@code{.cpp}
+if(tf::has_env("TF_NUM_THREADS")) {
+  // ...
+}
+@endcode
+
+@note The implementation differs between Windows and POSIX platforms:
  - On Windows, it uses `_dupenv_s` to check for the variable's presence.
  - On POSIX, it uses `std::getenv` to check for the variable's presence.
 */

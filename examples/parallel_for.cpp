@@ -3,15 +3,21 @@
 //   1. STL-iterator-based parallelism    (tf::Taskflow::for_each)
 //   2. Scalar index-based parallelism    (tf::Taskflow::for_each_index)
 //   3. 1D range-based parallelism        (tf::Taskflow::for_each_by_index, IndexRange<T>)
-//   4. Multi-dimensional parallelism     (tf::Taskflow::for_each_by_index, IndexRange<T,N>)
+//   4. Multi-dimensional parallelism     (tf::Taskflow::for_each_by_index, IndexRanges<T,N>)
 //
 // --------------------------------------------------------------------------
-// Background: IndexRange<T, N>
+// Background: IndexRanges<T, N>
 // --------------------------------------------------------------------------
 //
-// tf::IndexRange<T, N> represents the Cartesian product of N independent 1D
-// ranges, each defined by a (begin, end, step_size) triple. Iteration order
-// is row-major (last dimension varies fastest), mirroring nested C-style loops:
+// tf::IndexRanges<T, N> represents the Cartesian product of N independent 1D
+// ranges. Each dimension is stored as a std::tuple<T,T,T> of (begin, end,
+// step_size), accessible and mutable through range.dim(d), e.g. via
+// structured bindings:
+//
+//   auto [beg, end, step] = range.dim(0);
+//
+// Iteration order is row-major (last dimension varies fastest), mirroring
+// nested C-style loops:
 //
 //   for i in dim[0]:          // outermost / slowest
 //     for j in dim[1]:
@@ -20,9 +26,9 @@
 //
 // Flat index 0 corresponds to (beg[0], beg[1], ..., beg[N-1]).
 //
-// When N == 1 (the default), IndexRange<T> is the familiar 1D range.
-// When N > 1  (IndexRangeMDLike), the range represents a hyper-rectangular
-// region of the iteration space.
+// tf::IndexRange<T> is an alias for tf::IndexRanges<T, 1>, the familiar 1D
+// range. When N > 1 (IndexRangesMDLike), the range represents a
+// hyper-rectangular region of the iteration space.
 //
 // --------------------------------------------------------------------------
 // How parallelism works for multi-dimensional ranges
@@ -165,9 +171,9 @@ void demo_for_each_by_index_1d(int N) {
 // 4. Multi-dimensional parallelism with IndexRange<T, N>
 // ============================================================================
 //
-// for_each_by_index with an IndexRangeMDLike argument parallelises over the
+// for_each_by_index with an IndexRangesMDLike argument parallelises over the
 // flat Cartesian product of N 1D ranges.  The callback receives one orthogonal
-// sub-box (itself an IndexRange<T, N>) per call and is responsible for
+// sub-box (itself an IndexRanges<T, N>) per call and is responsible for
 // iterating its contents.
 //
 // The sub-box preserves the original step sizes for every dimension, so
@@ -196,7 +202,7 @@ void demo_2d(int H, int W) {
 
   std::vector<int> data(H * W, 0);
 
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(0, H, 1),   // rows
     tf::IndexRange<int>(0, W, 1)    // columns
   );
@@ -207,18 +213,17 @@ void demo_2d(int H, int W) {
 
   taskflow.for_each_by_index(
     range,
-    [&](tf::IndexRange<int, 2> tile) {
+    [&](tf::IndexRanges<int, 2> tile) {
       // Each invocation owns one rectangular tile of the grid.
       // dim(0) is the row sub-range; dim(1) is the column sub-range.
+      auto [r0, r1, rs] = tile.dim(0);
+      auto [c0, c1, cs] = tile.dim(1);
       int t = tile_count.fetch_add(1, std::memory_order_relaxed);
       printf("  tile %d: rows [%d,%d) cols [%d,%d)  (%zu elements)\n",
-             t,
-             tile.dim(0).begin(), tile.dim(0).end(),
-             tile.dim(1).begin(), tile.dim(1).end(),
-             tile.size());
+             t, r0, r1, c0, c1, tile.size());
 
-      for (int r = tile.dim(0).begin(); r < tile.dim(0).end(); r += tile.dim(0).step_size()) {
-        for (int c = tile.dim(1).begin(); c < tile.dim(1).end(); c += tile.dim(1).step_size()) {
+      for (int r = r0; r < r1; r += rs) {
+        for (int c = c0; c < c1; c += cs) {
           data[r * W + c] = r * W + c;
         }
       }
@@ -250,7 +255,7 @@ void demo_3d(int D, int H, int W) {
 
   std::vector<int> data(D * H * W, 0);
 
-  tf::IndexRange<int, 3> range(
+  tf::IndexRanges<int, 3> range(
     tf::IndexRange<int>(0, D, 1),   // depth
     tf::IndexRange<int>(0, H, 1),   // height
     tf::IndexRange<int>(0, W, 1)    // width
@@ -262,18 +267,17 @@ void demo_3d(int D, int H, int W) {
 
   taskflow.for_each_by_index(
     range,
-    [&](tf::IndexRange<int, 3> vol) {
+    [&](tf::IndexRanges<int, 3> vol) {
+      auto [d0, d1, ds] = vol.dim(0);
+      auto [h0, h1, hs] = vol.dim(1);
+      auto [w0, w1, ws] = vol.dim(2);
       int v = subvol_count.fetch_add(1, std::memory_order_relaxed);
       printf("  sub-volume %d: depth [%d,%d) height [%d,%d) width [%d,%d)  (%zu elements)\n",
-             v,
-             vol.dim(0).begin(), vol.dim(0).end(),
-             vol.dim(1).begin(), vol.dim(1).end(),
-             vol.dim(2).begin(), vol.dim(2).end(),
-             vol.size());
+             v, d0, d1, h0, h1, w0, w1, vol.size());
 
-      for (int d = vol.dim(0).begin(); d < vol.dim(0).end(); d += vol.dim(0).step_size()) {
-        for (int h = vol.dim(1).begin(); h < vol.dim(1).end(); h += vol.dim(1).step_size()) {
-          for (int w = vol.dim(2).begin(); w < vol.dim(2).end(); w += vol.dim(2).step_size()) {
+      for (int d = d0; d < d1; d += ds) {
+        for (int h = h0; h < h1; h += hs) {
+          for (int w = w0; w < w1; w += ws) {
             data[d * H * W + h * W + w] = d * H * W + h * W + w;
           }
         }
@@ -309,7 +313,7 @@ void demo_2d_strided(int H, int W) {
   tf::Taskflow taskflow;
 
   // Only even rows (step 2) and every 3rd column (step 3)
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(0, H, 2),   // rows:    0, 2, 4, ...
     tf::IndexRange<int>(0, W, 3)    // columns: 0, 3, 6, ...
   );
@@ -320,10 +324,12 @@ void demo_2d_strided(int H, int W) {
 
   taskflow.for_each_by_index(
     range,
-    [&](tf::IndexRange<int, 2> tile) {
+    [&](tf::IndexRanges<int, 2> tile) {
+      auto [r0, r1, rs] = tile.dim(0);
+      auto [c0, c1, cs] = tile.dim(1);
       size_t local = 0;
-      for (int r = tile.dim(0).begin(); r < tile.dim(0).end(); r += tile.dim(0).step_size()) {
-        for (int c = tile.dim(1).begin(); c < tile.dim(1).end(); c += tile.dim(1).step_size()) {
+      for (int r = r0; r < r1; r += rs) {
+        for (int c = c0; c < c1; c += cs) {
           (void)r; (void)c;
           local++;
         }
@@ -358,7 +364,7 @@ void demo_2d_negative_steps(int H, int W) {
   tf::Taskflow taskflow;
 
   // Reverse both dimensions
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(H - 1, -1, -1),  // rows:    H-1, H-2, ..., 0
     tf::IndexRange<int>(W - 1, -1, -1)   // columns: W-1, W-2, ..., 0
   );
@@ -370,11 +376,13 @@ void demo_2d_negative_steps(int H, int W) {
 
   taskflow.for_each_by_index(
     range,
-    [&](tf::IndexRange<int, 2> tile) {
+    [&](tf::IndexRanges<int, 2> tile) {
+      auto [r0, r1, rs] = tile.dim(0);
+      auto [c0, c1, cs] = tile.dim(1);
       size_t local = 0;
-      // step_size() is negative, so the loop condition flips to '>'
-      for (int r = tile.dim(0).begin(); r > tile.dim(0).end(); r += tile.dim(0).step_size()) {
-        for (int c = tile.dim(1).begin(); c > tile.dim(1).end(); c += tile.dim(1).step_size()) {
+      // step is negative, so the loop condition flips to '>'
+      for (int r = r0; r > r1; r += rs) {
+        for (int c = c0; c > c1; c += cs) {
           (void)r; (void)c;
           local++;
         }
@@ -405,7 +413,7 @@ void demo_2d_stateful(int H, int W) {
   tf::Taskflow taskflow;
 
   // Placeholder range — will be filled by the init task
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(0, 0, 1),
     tf::IndexRange<int>(0, 0, 1)
   );
@@ -415,17 +423,19 @@ void demo_2d_stateful(int H, int W) {
 
   auto init = taskflow.emplace([&]() {
     // Bounds are only known here, e.g. after reading a file or receiving input
-    range.dim(0).reset(0, H, 1);
-    range.dim(1).reset(0, W, 1);
+    range.dim(0) = {0, H, 1};
+    range.dim(1) = {0, W, 1};
     data.assign(H * W, -1);
     printf("\n[2D stateful] range set to %d x %d\n", H, W);
   });
 
   auto loop = taskflow.for_each_by_index(
     std::ref(range),                    // capture by reference: reads the range at run time
-    [&](tf::IndexRange<int, 2> tile) {
-      for (int r = tile.dim(0).begin(); r < tile.dim(0).end(); r += tile.dim(0).step_size()) {
-        for (int c = tile.dim(1).begin(); c < tile.dim(1).end(); c += tile.dim(1).step_size()) {
+    [&](tf::IndexRanges<int, 2> tile) {
+      auto [r0, r1, rs] = tile.dim(0);
+      auto [c0, c1, cs] = tile.dim(1);
+      for (int r = r0; r < r1; r += rs) {
+        for (int c = c0; c < c1; c += cs) {
           data[r * W + c] = r * W + c;
           total.fetch_add(1, std::memory_order_relaxed);
         }

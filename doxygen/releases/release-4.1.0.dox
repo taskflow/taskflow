@@ -37,6 +37,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 @subsection release-4-1-0_taskflow_core Taskflow Core
 
++ refactored the codebase with C++20 concept to enhance readability
+  + credit goest to the amazing Anthropic Claude
 + added bulk cache update method in executor
 + added more unit tests to `test_notifiers.cpp`
 + added a new unittest `test_partitioners.cpp`  
@@ -56,8 +58,6 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + optimized `tf::Executor::run(Taskflow&&)` with asynchronous tasking
   + removed satellite field from both taskflow and executor classes
 + optimized the locking cost of topology
-+ refactored the codebase with C++20 concept to enhance readability
-  + credit goest to the amazing Anthropic Claude
 + introduced a new profiler to replace the existing [tfprof](https://github.com/taskflow/tfprof)
 + removed extra copy on dependency tasks when creating a dependent-async task
 
@@ -70,8 +70,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + added tf::ConditionTaskLike concept to check if a type is a condition task
 + added tf::MultiConditionTaskLike concept to check if a type is a multi-condition task
 + added tf::PartitionerLike concept to check if a type is a partitioner
-+ added tf::IndexRangeLike concept to define N-dimensional index ranges
-+ added tf::IndexRange to perform parallel iterations over an N-dimensional range
++ added tf::IndexRangesLike concept to define N-dimensional index ranges
++ added tf::IndexRanges to perform parallel iterations over an N-dimensional range
 + added tf::unroll_until and tf::unroll_while to unroll loops with stopping conditions
 + removed `floor_log2` due to duplication with C++20 `std::bit_width`
 + removed `cpu_pause` due to platform-dependent implementation

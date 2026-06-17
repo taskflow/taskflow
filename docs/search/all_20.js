@@ -37,7 +37,7 @@ var searchData=
   ['who_20is_20the_20principal_20investigator_20of_20taskflow_20i_20can_20talk_20to_34',['Q12: Who is the Principal Investigator of Taskflow I can talk to?',['../FAQ.html#GeneralQuestion12',1,'']]],
   ['why_20corun_20instead_20of_20run_35',['Why corun Instead of run',['../TaskflowProcessingPipeline.html#TaskflowPipelineCorun',1,'']]],
   ['why_20does_20taskflow_20program_20gpu_20in_20a_20task_20graph_36',['Q10: Why does Taskflow program GPU in a task graph?',['../FAQ.html#ProgrammingQuestions10',1,'']]],
-  ['why_20it_20maps_20perfectly_20to_20indexrange_37',['Why it Maps Perfectly to IndexRange?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
+  ['why_20it_20maps_20perfectly_20to_20indexranges_37',['Why it Maps Perfectly to IndexRanges?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
   ['why_20parallel_20exception_20handling_20is_20hard_38',['Why Parallel Exception Handling is Hard',['../ExceptionHandling.html#ExceptionHandlingWhyHard',1,'']]],
   ['why_20parallel_20merge_20uses_20no_20partitioner_39',['Why parallel merge uses no partitioner',['../ParallelMerge.html#ParallelMergeAlgorithmNoPartitioner',1,'']]],
   ['why_20parallelize_20it_40',['What is BFS and Why Parallelize It?',['../ExamplesBFS.html#BFSIntroduction',1,'']]],

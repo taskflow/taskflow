@@ -137,7 +137,7 @@ void test_static_loop_nd_2d(size_t W) {
       for(size_t c : {0, 1, 3, 7, 99}) {
 
         P p(c);
-        tf::IndexRange<int, 2> range(
+        tf::IndexRanges<int, 2> range(
           tf::IndexRange<int>(0, static_cast<int>(rows), 1),
           tf::IndexRange<int>(0, static_cast<int>(cols), 1)
         );
@@ -153,9 +153,9 @@ void test_static_loop_nd_2d(size_t W) {
           size_t curr_b = w * chunk_size;
           if(curr_b >= N) break;
           p.loop(range, N, W, curr_b, chunk_size,
-            [&](const tf::IndexRange<int, 2>& box) {
-              for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-                for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+            [&](const tf::IndexRanges<int, 2>& box) {
+              for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+                for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
                   visited[i * static_cast<int>(cols) + j]
                     .fetch_add(1, std::memory_order_relaxed);
                 }
@@ -178,7 +178,7 @@ void test_dynamic_loop_nd_2d(size_t W) {
       for(size_t c : {0, 1, 3, 7, 99}) {
 
         P p(c);
-        tf::IndexRange<int, 2> range(
+        tf::IndexRanges<int, 2> range(
           tf::IndexRange<int>(0, static_cast<int>(rows), 1),
           tf::IndexRange<int>(0, static_cast<int>(cols), 1)
         );
@@ -192,9 +192,9 @@ void test_dynamic_loop_nd_2d(size_t W) {
         for(size_t w = 0; w < W; w++) {
           futures.push_back(std::async(std::launch::async, [&]() {
             p.loop(range, N, W, next,
-              [&](const tf::IndexRange<int, 2>& box) {
-                for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-                  for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+              [&](const tf::IndexRanges<int, 2>& box) {
+                for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+                  for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
                     visited[i * static_cast<int>(cols) + j]
                       .fetch_add(1, std::memory_order_relaxed);
                   }
@@ -224,7 +224,7 @@ void test_dynamic_loop_nd_3d(size_t W) {
         for(size_t c : {0, 1, 3, 7, 99}) {
 
           P p(c);
-          tf::IndexRange<int, 3> range(
+          tf::IndexRanges<int, 3> range(
             tf::IndexRange<int>(0, static_cast<int>(d0), 1),
             tf::IndexRange<int>(0, static_cast<int>(d1), 1),
             tf::IndexRange<int>(0, static_cast<int>(d2), 1)
@@ -239,10 +239,10 @@ void test_dynamic_loop_nd_3d(size_t W) {
           for(size_t w = 0; w < W; w++) {
             futures.push_back(std::async(std::launch::async, [&]() {
               p.loop(range, N, W, next,
-                [&](const tf::IndexRange<int, 3>& box) {
-                  for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-                    for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
-                      for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+                [&](const tf::IndexRanges<int, 3>& box) {
+                  for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+                    for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
+                      for(int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
                         visited[i * static_cast<int>(d1 * d2) +
                                 j * static_cast<int>(d2) + k]
                           .fetch_add(1, std::memory_order_relaxed);
@@ -275,7 +275,7 @@ void test_dynamic_loop_nd_bool(size_t W) {
       for(size_t c : {0, 1, 4}) {
 
         P p(c);
-        tf::IndexRange<int, 2> range(
+        tf::IndexRanges<int, 2> range(
           tf::IndexRange<int>(0, static_cast<int>(rows), 1),
           tf::IndexRange<int>(0, static_cast<int>(cols), 1)
         );
@@ -288,9 +288,9 @@ void test_dynamic_loop_nd_bool(size_t W) {
         for(size_t w = 0; w < W; w++) {
           futures.push_back(std::async(std::launch::async, [&]() {
             p.loop(range, N, W, next,
-              [&](const tf::IndexRange<int, 2>& box) -> bool {
+              [&](const tf::IndexRanges<int, 2>& box) -> bool {
                 // return true (stop) as soon as we see i==1 in the box
-                for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+                for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
                   if(i == 1) {
                     found.fetch_add(1, std::memory_order_relaxed);
                     return true;

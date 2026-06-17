@@ -196,11 +196,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1GuidedPartitioner.html">GuidedPartitioner</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to create a guided partitioner for scheduling parallel algorithms  <a href="classtf_1_1GuidedPartitioner.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1IndexRange.html">IndexRange</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to create an N-dimensional index range of integral indices  <a href="classtf_1_1IndexRange.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1IndexRange.html">IndexRange&lt; T, 1 &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to create a 1D index range of integral indices with a step size  <a href="classtf_1_1IndexRange.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1IndexRanges.html">IndexRanges</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to create an N-dimensional index range of integral indices  <a href="classtf_1_1IndexRanges.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtf_1_1NonblockingNotifier.html">NonblockingNotifier</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class to create a non-blocking notifier  <a href="classtf_1_1NonblockingNotifier.html#details">More...</a><br /></td></tr>
@@ -283,14 +280,14 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRangeLike.html">IndexRangeLike</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type an <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRange</a>, regardless of dimensionality <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRangesLike.html">IndexRangesLike</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type is a <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a>, regardless of dimensionality <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRange1DLike.html">IndexRange1DLike</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type is a <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a>. <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRanges1DLike.html">IndexRanges1DLike</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type is a <a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, 1&gt;</a> (i.e., <a class="el" href="#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a>) <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRangeMDLike.html">IndexRangeMDLike</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type is a tf::IndexRange&lt;T, N&gt; with rank &gt; 1 <br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1IndexRangesMDLike.html">IndexRangesMDLike</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept to check if a type is a tf::IndexRanges&lt;T, N&gt; with rank &gt; 1 <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="concepttf_1_1StringLike.html">StringLike</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">concept that determines if a type is string-like <br /></td></tr>
@@ -322,6 +319,10 @@ Concepts</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a6c928ec9248757ba8276e316ef26846b" id="r_a6c928ec9248757ba8276e316ef26846b"><td class="memTemplParams" colspan="2">template&lt;std::integral T&gt; </td></tr>
+<tr class="memitem:a6c928ec9248757ba8276e316ef26846b"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a6c928ec9248757ba8276e316ef26846b">IndexRange</a> = <a class="el" href="classtf_1_1IndexRanges.html">IndexRanges</a>&lt;T, 1&gt;</td></tr>
+<tr class="memdesc:a6c928ec9248757ba8276e316ef26846b"><td class="mdescLeft">&#160;</td><td class="mdescRight">alias for the common 1D case of <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a>  <br /></td></tr>
+<tr class="separator:a6c928ec9248757ba8276e316ef26846b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40c79b39c91719c39a5bf6172aa6521f" id="r_a40c79b39c91719c39a5bf6172aa6521f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40c79b39c91719c39a5bf6172aa6521f">DefaultNotifier</a> = <a class="el" href="classtf_1_1NonblockingNotifier.html">NonblockingNotifier</a></td></tr>
 <tr class="memdesc:a40c79b39c91719c39a5bf6172aa6521f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the default notifier type used by Taskflow  <br /></td></tr>
 <tr class="separator:a40c79b39c91719c39a5bf6172aa6521f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -378,26 +379,23 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4412b2a9da6ee7793199646a56993969" id="r_a4412b2a9da6ee7793199646a56993969"><td class="memTemplParams" colspan="2"><a id="a4412b2a9da6ee7793199646a56993969" name="a4412b2a9da6ee7793199646a56993969"></a>
-template&lt;typename T&gt; <br />
+<tr class="memitem:a4412b2a9da6ee7793199646a56993969" id="r_a4412b2a9da6ee7793199646a56993969"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
 requires (std::is_unsigned_v&lt;std::decay_t&lt;T&gt;&gt; &amp;&amp; sizeof(T) == 8)</td></tr>
-<tr class="memitem:a4412b2a9da6ee7793199646a56993969"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>next_pow2</b> (T x)</td></tr>
-<tr class="memdesc:a4412b2a9da6ee7793199646a56993969"><td class="mdescLeft">&#160;</td><td class="mdescRight">rounds the given 64-bit unsigned integer to the nearest power of 2 <br /></td></tr>
+<tr class="memitem:a4412b2a9da6ee7793199646a56993969"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a4412b2a9da6ee7793199646a56993969">next_pow2</a> (T x)</td></tr>
+<tr class="memdesc:a4412b2a9da6ee7793199646a56993969"><td class="mdescLeft">&#160;</td><td class="mdescRight">rounds the given 64-bit unsigned integer to the nearest power of 2  <br /></td></tr>
 <tr class="separator:a4412b2a9da6ee7793199646a56993969"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e041e64c08ddcebb5a64ebf4a7c9fef" id="r_a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="memTemplParams" colspan="2"><a id="a7e041e64c08ddcebb5a64ebf4a7c9fef" name="a7e041e64c08ddcebb5a64ebf4a7c9fef"></a>
-template&lt;typename T&gt; <br />
+<tr class="memitem:a7e041e64c08ddcebb5a64ebf4a7c9fef" id="r_a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; <br />
 requires (std::is_unsigned_v&lt;std::decay_t&lt;T&gt;&gt; &amp;&amp; sizeof(T) == 4)</td></tr>
-<tr class="memitem:a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>next_pow2</b> (T y)</td></tr>
-<tr class="memdesc:a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="mdescLeft">&#160;</td><td class="mdescRight">rounds the given 32-bit unsigned integer to the nearest power of 2 <br /></td></tr>
+<tr class="memitem:a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a7e041e64c08ddcebb5a64ebf4a7c9fef">next_pow2</a> (T y)</td></tr>
+<tr class="memdesc:a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="mdescLeft">&#160;</td><td class="mdescRight">rounds the given 32-bit unsigned integer to the nearest power of 2  <br /></td></tr>
 <tr class="separator:a7e041e64c08ddcebb5a64ebf4a7c9fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac712918dd14b3524bb6bcb7182e4d936" id="r_ac712918dd14b3524bb6bcb7182e4d936"><td class="memTemplParams" colspan="2">template&lt;std::integral T&gt; </td></tr>
 <tr class="memitem:ac712918dd14b3524bb6bcb7182e4d936"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ac712918dd14b3524bb6bcb7182e4d936">is_pow2</a> (const T &amp;x)</td></tr>
 <tr class="memdesc:ac712918dd14b3524bb6bcb7182e4d936"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks if the given number is a power of 2  <br /></td></tr>
 <tr class="separator:ac712918dd14b3524bb6bcb7182e4d936"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a908e0f3faf873e897b3e1bafbd4bb876" id="r_a908e0f3faf873e897b3e1bafbd4bb876"><td class="memTemplParams" colspan="2"><a id="a908e0f3faf873e897b3e1bafbd4bb876" name="a908e0f3faf873e897b3e1bafbd4bb876"></a>
-template&lt;size_t N&gt; </td></tr>
-<tr class="memitem:a908e0f3faf873e897b3e1bafbd4bb876"><td class="memTemplItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><b>static_floor_log2</b> ()</td></tr>
-<tr class="memdesc:a908e0f3faf873e897b3e1bafbd4bb876"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the floor of <code>log2(N)</code> at compile time <br /></td></tr>
+<tr class="memitem:a908e0f3faf873e897b3e1bafbd4bb876" id="r_a908e0f3faf873e897b3e1bafbd4bb876"><td class="memTemplParams" colspan="2">template&lt;size_t N&gt; </td></tr>
+<tr class="memitem:a908e0f3faf873e897b3e1bafbd4bb876"><td class="memTemplItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a908e0f3faf873e897b3e1bafbd4bb876">static_floor_log2</a> ()</td></tr>
+<tr class="memdesc:a908e0f3faf873e897b3e1bafbd4bb876"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the floor of <code>log2(N)</code> at compile time  <br /></td></tr>
 <tr class="separator:a908e0f3faf873e897b3e1bafbd4bb876"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b2dc0c0c931b9b627fc0a148085fa5e" id="r_a0b2dc0c0c931b9b627fc0a148085fa5e"><td class="memTemplParams" colspan="2">template&lt;typename RandItr, typename C&gt; </td></tr>
 <tr class="memitem:a0b2dc0c0c931b9b627fc0a148085fa5e"><td class="memTemplItemLeft" align="right" valign="top">RandItr&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a0b2dc0c0c931b9b627fc0a148085fa5e">median_of_three</a> (RandItr l, RandItr m, RandItr r, C cmp)</td></tr>
@@ -452,10 +450,6 @@ template&lt;size_t N&gt; </td></tr>
 <tr class="memitem:a9922bf2ed04b3e630d4e62258d1a4213"><td class="memTemplItemLeft" align="right" valign="top">constexpr size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a9922bf2ed04b3e630d4e62258d1a4213">distance</a> (T beg, T end, T step)</td></tr>
 <tr class="memdesc:a9922bf2ed04b3e630d4e62258d1a4213"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculates the number of iterations in the given index range  <br /></td></tr>
 <tr class="separator:a9922bf2ed04b3e630d4e62258d1a4213"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6e52a96475a1ae2a454f7d7d877b446" id="r_ac6e52a96475a1ae2a454f7d7d877b446"><td class="memTemplParams" colspan="2">template&lt;std::integral T&gt; </td></tr>
-<tr class="memitem:ac6e52a96475a1ae2a454f7d7d877b446"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ac6e52a96475a1ae2a454f7d7d877b446">IndexRange</a> (T, T, T) -&gt; IndexRange&lt; T, 1 &gt;</td></tr>
-<tr class="memdesc:ac6e52a96475a1ae2a454f7d7d877b446"><td class="mdescLeft">&#160;</td><td class="mdescRight">deduction guide for <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a>  <br /></td></tr>
-<tr class="separator:ac6e52a96475a1ae2a454f7d7d877b446"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dbddc846693290af4f100c558cc71d0" id="r_a8dbddc846693290af4f100c558cc71d0"><td class="memTemplParams" colspan="2">template&lt;GraphLike T&gt; </td></tr>
 <tr class="memitem:a8dbddc846693290af4f100c558cc71d0"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classtf_1_1Graph.html">Graph</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a8dbddc846693290af4f100c558cc71d0">retrieve_graph</a> (T &amp;target)</td></tr>
 <tr class="memdesc:a8dbddc846693290af4f100c558cc71d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">retrieves a reference to the underlying <a class="el" href="classtf_1_1Graph.html" title="class to create a graph object">tf::Graph</a> from an object  <br /></td></tr>
@@ -674,30 +668,14 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a726868d615a52212b56fe36839b27a9a" id="r_a726868d615a52212b56fe36839b27a9a"><td class="memTemplParams" colspan="2">template&lt;typename&gt; </td></tr>
-<tr class="memitem:a726868d615a52212b56fe36839b27a9a"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a726868d615a52212b56fe36839b27a9a">is_index_range_v</a> = false</td></tr>
-<tr class="memdesc:a726868d615a52212b56fe36839b27a9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">base type trait to detect if a type is an <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a>  <br /></td></tr>
-<tr class="separator:a726868d615a52212b56fe36839b27a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2b2204c5d37a81c8d3084e9f7062e60" id="r_af2b2204c5d37a81c8d3084e9f7062e60"><td class="memTemplParams" colspan="2">template&lt;typename T, size_t N&gt; </td></tr>
-<tr class="memitem:af2b2204c5d37a81c8d3084e9f7062e60"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#af2b2204c5d37a81c8d3084e9f7062e60">is_index_range_v&lt; IndexRange&lt; T, N &gt; &gt;</a> = true</td></tr>
-<tr class="memdesc:af2b2204c5d37a81c8d3084e9f7062e60"><td class="mdescLeft">&#160;</td><td class="mdescRight">specialization of the detector for tf::IndexRange&lt;T, N&gt;  <br /></td></tr>
-<tr class="separator:af2b2204c5d37a81c8d3084e9f7062e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01f6a38951a99908710af5db131b6f87" id="r_a01f6a38951a99908710af5db131b6f87"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a01f6a38951a99908710af5db131b6f87"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v</a> = false</td></tr>
-<tr class="memdesc:a01f6a38951a99908710af5db131b6f87"><td class="mdescLeft">&#160;</td><td class="mdescRight">base type trait to detect if a type is a 1D <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a>  <br /></td></tr>
-<tr class="separator:a01f6a38951a99908710af5db131b6f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49086c014251934964dadc1a280ce35f" id="r_a49086c014251934964dadc1a280ce35f"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a49086c014251934964dadc1a280ce35f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a49086c014251934964dadc1a280ce35f">is_1d_index_range_v&lt; IndexRange&lt; T, 1 &gt; &gt;</a> = true</td></tr>
-<tr class="memdesc:a49086c014251934964dadc1a280ce35f"><td class="mdescLeft">&#160;</td><td class="mdescRight">specialization of the detector for <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a>  <br /></td></tr>
-<tr class="separator:a49086c014251934964dadc1a280ce35f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a477d4de8f2a49f2bba84392a5ff97304" id="r_a477d4de8f2a49f2bba84392a5ff97304"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a477d4de8f2a49f2bba84392a5ff97304"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a477d4de8f2a49f2bba84392a5ff97304">is_md_index_range_v</a> = false</td></tr>
-<tr class="memdesc:a477d4de8f2a49f2bba84392a5ff97304"><td class="mdescLeft">&#160;</td><td class="mdescRight">base type trait to detect if a type is a multi-dimensional <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a> (rank &gt; 1)  <br /></td></tr>
-<tr class="separator:a477d4de8f2a49f2bba84392a5ff97304"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3d2bddc6dbdc1bc7b15a2d6a1e80f42" id="r_ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"><td class="memTemplParams" colspan="2">template&lt;typename T, size_t N&gt; </td></tr>
-<tr class="memitem:ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad3d2bddc6dbdc1bc7b15a2d6a1e80f42">is_md_index_range_v&lt; IndexRange&lt; T, N &gt; &gt;</a> = true</td></tr>
-<tr class="memdesc:ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">specialization of the detector for tf::IndexRange&lt;T, N&gt; where N &gt; 1  <br /></td></tr>
-<tr class="separator:ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a895eff5d9743f8064921f1f3c09de130" id="r_a895eff5d9743f8064921f1f3c09de130"><td class="memTemplParams" colspan="2">template&lt;typename&gt; </td></tr>
+<tr class="memitem:a895eff5d9743f8064921f1f3c09de130"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a895eff5d9743f8064921f1f3c09de130">is_index_ranges_v</a> = false</td></tr>
+<tr class="memdesc:a895eff5d9743f8064921f1f3c09de130"><td class="mdescLeft">&#160;</td><td class="mdescRight">base type trait to detect if a type is a <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a>  <br /></td></tr>
+<tr class="separator:a895eff5d9743f8064921f1f3c09de130"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a377f1a797649b8a9d81712d43a4b76c1" id="r_a377f1a797649b8a9d81712d43a4b76c1"><td class="memTemplParams" colspan="2">template&lt;typename T, size_t N&gt; </td></tr>
+<tr class="memitem:a377f1a797649b8a9d81712d43a4b76c1"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a377f1a797649b8a9d81712d43a4b76c1">is_index_ranges_v&lt; IndexRanges&lt; T, N &gt; &gt;</a> = true</td></tr>
+<tr class="memdesc:a377f1a797649b8a9d81712d43a4b76c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">specialization of the detector for tf::IndexRanges&lt;T, N&gt;  <br /></td></tr>
+<tr class="separator:a377f1a797649b8a9d81712d43a4b76c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3a41adc2499a9519da3e77dc3e9849c" id="r_ad3a41adc2499a9519da3e77dc3e9849c"><td class="memTemplParams" colspan="2">template&lt;typename P&gt; </td></tr>
 <tr class="memitem:ad3a41adc2499a9519da3e77dc3e9849c"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ad3a41adc2499a9519da3e77dc3e9849c">is_task_params_v</a> = TaskParamsLike&lt;P&gt;</td></tr>
 <tr class="memdesc:ad3a41adc2499a9519da3e77dc3e9849c"><td class="mdescLeft">&#160;</td><td class="mdescRight">determines if a type is a task parameter type (variable template)  <br /></td></tr>
@@ -766,6 +744,34 @@ Variables</h2></td></tr>
 <p>default partitioner set to <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a> </p>
 <p>Guided partitioning algorithm can achieve stable and decent performance for most parallel algorithms. </p>
 
+</div>
+</div>
+<a id="a6c928ec9248757ba8276e316ef26846b" name="a6c928ec9248757ba8276e316ef26846b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c928ec9248757ba8276e316ef26846b">&#9670;&#160;</a></span>IndexRange</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::integral T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a> = <a class="el" href="classtf_1_1IndexRanges.html">IndexRanges</a>&lt;T, 1&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>alias for the common 1D case of <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a> </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the integral type of the indices</td></tr>
+  </table>
+  </dd>
+</dl>
+<p><code><a class="el" href="#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a></code> is equivalent to <code><a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, 1&gt;</a></code>. Class template argument deduction works through the alias, so the three-argument constructor can be used without an explicit template argument:</p>
+<div class="fragment"><div class="line"><a class="code hl_typedef" href="#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a> r(0, 10, 2);          <span class="comment">// deduced as tf::IndexRanges&lt;int, 1&gt;</span></div>
+<div class="line"><a class="code hl_typedef" href="#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a> s(0, 100, 5);    <span class="comment">// same type, written explicitly</span></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -902,7 +908,6 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>updates an atomic variable with the maximum value </p>
-<p>This function atomically updates the provided atomic variable <code>v</code> to hold the maximum of its current value and <code>max_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The type of the atomic variable. Must be trivially copyable and comparable. </td></tr>
@@ -916,7 +921,12 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section attention"><dt>Attention</dt><dd>If multiple threads call this function concurrently, the value of <code>v</code> will be the maximum value seen across all threads. </dd></dl>
+<p>This function atomically updates the provided atomic variable <code>v</code> to hold the maximum of its current value and <code>max_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p>
+<div class="fragment"><div class="line">std::atomic&lt;int&gt; v{5};</div>
+<div class="line"><a class="code hl_function" href="#a5002af34dc323ff28e87ae83203b2c36">tf::atomic_max</a>(v, 10);</div>
+<div class="line"><span class="comment">// v.load() == 10</span></div>
+<div class="ttc" id="anamespacetf_html_a5002af34dc323ff28e87ae83203b2c36"><div class="ttname"><a href="#a5002af34dc323ff28e87ae83203b2c36">tf::atomic_max</a></div><div class="ttdeci">void atomic_max(std::atomic&lt; T &gt; &amp;v, const T &amp;max_v) noexcept</div><div class="ttdoc">updates an atomic variable with the maximum value</div><div class="ttdef"><b>Definition</b> math.hpp:278</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If multiple threads call this function concurrently, the value of <code>v</code> will be the maximum value seen across all threads. </dd></dl>
 
 </div>
 </div>
@@ -950,7 +960,6 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>updates an atomic variable with the minimum value </p>
-<p>This function atomically updates the provided atomic variable <code>v</code> to hold the minimum of its current value and <code>min_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The type of the atomic variable. Must be trivially copyable and comparable. </td></tr>
@@ -964,7 +973,12 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section attention"><dt>Attention</dt><dd>If multiple threads call this function concurrently, the value of <code>v</code> will be the minimum value seen across all threads. </dd></dl>
+<p>This function atomically updates the provided atomic variable <code>v</code> to hold the minimum of its current value and <code>min_v</code>. The update is performed using a relaxed memory ordering for efficiency in non-synchronizing contexts.</p>
+<div class="fragment"><div class="line">std::atomic&lt;int&gt; v{5};</div>
+<div class="line"><a class="code hl_function" href="#a512ffa0d24a237b098f5de656b8bdcb0">tf::atomic_min</a>(v, 2);</div>
+<div class="line"><span class="comment">// v.load() == 2</span></div>
+<div class="ttc" id="anamespacetf_html_a512ffa0d24a237b098f5de656b8bdcb0"><div class="ttname"><a href="#a512ffa0d24a237b098f5de656b8bdcb0">tf::atomic_min</a></div><div class="ttdeci">void atomic_min(std::atomic&lt; T &gt; &amp;v, const T &amp;min_v) noexcept</div><div class="ttdoc">updates an atomic variable with the minimum value</div><div class="ttdef"><b>Definition</b> math.hpp:307</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>If multiple threads call this function concurrently, the value of <code>v</code> will be the minimum value seen across all threads. </dd></dl>
 
 </div>
 </div>
@@ -992,15 +1006,17 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>computes a coprime of a given number </p>
-<p>This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with <code>N</code>. If <code>N</code> is less than 3, it returns 1 as a default coprime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">N</td><td>input number for which a coprime is to be found. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the largest number &lt; <code>N</code> that is coprime to N </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>the largest number &lt; <code>N</code> that is coprime to N</dd></dl>
+<p>This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with <code>N</code>. If <code>N</code> is less than 3, it returns 1 as a default coprime.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#a15c9131faea47635a65e6caf21b6f868">tf::coprime</a>(10);  <span class="comment">// returns 9</span></div>
+<div class="ttc" id="anamespacetf_html_a15c9131faea47635a65e6caf21b6f868"><div class="ttname"><a href="#a15c9131faea47635a65e6caf21b6f868">tf::coprime</a></div><div class="ttdeci">constexpr size_t coprime(size_t N)</div><div class="ttdoc">computes a coprime of a given number</div><div class="ttdef"><b>Definition</b> math.hpp:352</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="ae174a3a49b91ef21554dac16806f0d72" name="ae174a3a49b91ef21554dac16806f0d72"></a>
@@ -1471,7 +1487,7 @@ template&lt;std::integral T&gt; </div>
 <div class="line"><span class="keywordtype">size_t</span> dist = <a class="code hl_function" href="#a9922bf2ed04b3e630d4e62258d1a4213">distance</a>(10, 0, -2);  <span class="comment">// Returns 5, the sequence is [10, 8, 6, 4, 2]</span></div>
 </div><!-- fragment --><p>Example 3: </p><div class="fragment"><div class="line"><span class="comment">// Range: 5 to 20 with step size 5</span></div>
 <div class="line"><span class="keywordtype">size_t</span> dist = <a class="code hl_function" href="#a9922bf2ed04b3e630d4e62258d1a4213">distance</a>(5, 20, 5);  <span class="comment">// Returns 3, the sequence is [5, 10, 15]</span></div>
-</div><!-- fragment --><dl class="section attention"><dt>Attention</dt><dd>It is user's responsibility to ensure the given index range is valid. For instance, a range from 0 to 10 with a step size of -2 is invalid. </dd></dl>
+</div><!-- fragment --><dl class="section attention"><dt>Attention</dt><dd>An invalid index range will return 0. </dd></dl>
 
 </div>
 </div>
@@ -1499,7 +1515,6 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>retrieves the value of an environment variable </p>
-<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">str</td><td>The name of the environment variable to retrieve. </td></tr>
@@ -1507,7 +1522,10 @@ template&lt;std::integral T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the environment variable as a string, or an empty string if not found.</dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>The implementation differs between Windows and POSIX platforms:<ul>
+<p>This function fetches the value of an environment variable by name. If the variable is not found, it returns an empty string.</p>
+<div class="fragment"><div class="line">std::string path = <a class="code hl_function" href="#abbef08f01c467fd4f746c3247af892bc">tf::get_env</a>(<span class="stringliteral">&quot;PATH&quot;</span>);</div>
+<div class="ttc" id="anamespacetf_html_abbef08f01c467fd4f746c3247af892bc"><div class="ttname"><a href="#abbef08f01c467fd4f746c3247af892bc">tf::get_env</a></div><div class="ttdeci">std::string get_env(const std::string &amp;str)</div><div class="ttdoc">retrieves the value of an environment variable</div><div class="ttdef"><b>Definition</b> os.hpp:274</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>The implementation differs between Windows and POSIX platforms:<ul>
 <li>On Windows, it uses <code>_dupenv_s</code> to fetch the value.</li>
 <li>On POSIX, it uses <code>std::getenv</code>. </li>
 </ul>
@@ -1539,7 +1557,6 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>checks whether an environment variable is defined </p>
-<p>This function determines if a specific environment variable exists in the current environment.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">str</td><td>The name of the environment variable to check. </td></tr>
@@ -1547,52 +1564,16 @@ template&lt;std::integral T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the environment variable exists, <code>false</code> otherwise.</dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>The implementation differs between Windows and POSIX platforms:<ul>
+<p>This function determines if a specific environment variable exists in the current environment.</p>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span>(<a class="code hl_function" href="#adc9815b9f96b796675ba939078d25413">tf::has_env</a>(<span class="stringliteral">&quot;TF_NUM_THREADS&quot;</span>)) {</div>
+<div class="line">  <span class="comment">// ...</span></div>
+<div class="line">}</div>
+<div class="ttc" id="anamespacetf_html_adc9815b9f96b796675ba939078d25413"><div class="ttname"><a href="#adc9815b9f96b796675ba939078d25413">tf::has_env</a></div><div class="ttdeci">bool has_env(const std::string &amp;str)</div><div class="ttdoc">checks whether an environment variable is defined</div><div class="ttdef"><b>Definition</b> os.hpp:310</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>The implementation differs between Windows and POSIX platforms:<ul>
 <li>On Windows, it uses <code>_dupenv_s</code> to check for the variable's presence.</li>
 <li>On POSIX, it uses <code>std::getenv</code> to check for the variable's presence. </li>
 </ul>
 </dd></dl>
-
-</div>
-</div>
-<a id="ac6e52a96475a1ae2a454f7d7d877b446" name="ac6e52a96475a1ae2a454f7d7d877b446"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6e52a96475a1ae2a454f7d7d877b446">&#9670;&#160;</a></span>IndexRange()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::integral T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">tf::IndexRange </td>
-          <td>(</td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;) -&gt;  IndexRange&lt; T, 1 &gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>deduction guide for <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a> </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>integral type, deduced from the three constructor arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Allows class template argument deduction (CTAD) from a three-argument constructor call, mapping the common case <code>IndexRange(beg, end, step)</code> to the 1D specialization <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a> without requiring an explicit template argument.</p>
-<div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange</a> r(0, 10, 2);          <span class="comment">// deduced as IndexRange&lt;int, 1&gt;</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange</a> s(0ul, 100ul, 5ul);   <span class="comment">// deduced as IndexRange&lt;size_t, 1&gt;</span></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
-</div><!-- fragment --><p>Without this guide, CTAD cannot resolve <code>N</code> from a three-argument call because <code><a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a></code> is a two-parameter template (<code>T</code> and <code>N</code>). The guide explicitly pins <code>N</code> = 1 for the <code>(beg, end, step)</code> form. </p>
 
 </div>
 </div>
@@ -1680,7 +1661,6 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>checks if the given number is a power of 2 </p>
-<p>This function determines if the given integer is a power of 2.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>integral type of the input </td></tr>
@@ -1694,7 +1674,11 @@ template&lt;std::integral T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if <code>x</code> is a power of 2, otherwise <code>false</code>.</dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>This function is constexpr and can be evaluated at compile time. </dd></dl>
+<p>This function determines if the given integer is a power of 2 by testing that exactly one bit is set, i.e., <code>x &amp; (x - 1) == 0</code>, while also excluding zero.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#ac712918dd14b3524bb6bcb7182e4d936">tf::is_pow2</a>(8);   <span class="comment">// true</span></div>
+<div class="line"><a class="code hl_function" href="#ac712918dd14b3524bb6bcb7182e4d936">tf::is_pow2</a>(10);  <span class="comment">// false</span></div>
+<div class="ttc" id="anamespacetf_html_ac712918dd14b3524bb6bcb7182e4d936"><div class="ttname"><a href="#ac712918dd14b3524bb6bcb7182e4d936">tf::is_pow2</a></div><div class="ttdeci">constexpr bool is_pow2(const T &amp;x)</div><div class="ttdoc">checks if the given number is a power of 2</div><div class="ttdef"><b>Definition</b> math.hpp:92</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>This function is constexpr and can be evaluated at compile time. </dd></dl>
 
 </div>
 </div>
@@ -1724,15 +1708,18 @@ template&lt;size_t N&gt; </div>
 </div><div class="memdoc">
 
 <p>generates a compile-time array of coprimes for numbers from 0 to N-1 </p>
-<p>This function constructs a constexpr array where each element at index <code>i</code> contains a coprime of <code>i</code> (the largest number less than <code>i</code> that is coprime to it).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">N</td><td>the size of the array to generate (should be greater than 0). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>a constexpr array of size <code>N</code> where each index holds a coprime of its value. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>a constexpr array of size <code>N</code> where each index holds a coprime of its value.</dd></dl>
+<p>This function constructs a constexpr array where each element at index <code>i</code> contains a coprime of <code>i</code> (the largest number less than <code>i</code> that is coprime to it).</p>
+<div class="fragment"><div class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> lut = <a class="code hl_function" href="#a5233c743d9f9f17fd27373aef11fa752">tf::make_coprime_lut&lt;8&gt;</a>();</div>
+<div class="line"><span class="comment">// lut[5] holds a coprime of 5</span></div>
+<div class="ttc" id="anamespacetf_html_a5233c743d9f9f17fd27373aef11fa752"><div class="ttname"><a href="#a5233c743d9f9f17fd27373aef11fa752">tf::make_coprime_lut</a></div><div class="ttdeci">constexpr std::array&lt; size_t, N &gt; make_coprime_lut()</div><div class="ttdoc">generates a compile-time array of coprimes for numbers from 0 to N-1</div><div class="ttdef"><b>Definition</b> math.hpp:379</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a8975fa5762088789adb0b60f38208309" name="a8975fa5762088789adb0b60f38208309"></a>
@@ -1841,7 +1828,7 @@ template&lt;GraphLike T&gt; </div>
 <div class="ttc" id="aclasstf_1_1Executor_html"><div class="ttname"><a href="classtf_1_1Executor.html">tf::Executor</a></div><div class="ttdoc">class to create an executor</div><div class="ttdef"><b>Definition</b> executor.hpp:62</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html_ab9aa252f70e9a40020a1e5a89d485b85"><div class="ttname"><a href="classtf_1_1Executor.html#ab9aa252f70e9a40020a1e5a89d485b85">tf::Executor::wait_for_all</a></div><div class="ttdeci">void wait_for_all()</div><div class="ttdoc">waits for all tasks to complete</div></div>
 <div class="ttc" id="aclasstf_1_1Executor_html_af960048056f7c6b5bc71f4f526f05df7"><div class="ttname"><a href="classtf_1_1Executor.html#af960048056f7c6b5bc71f4f526f05df7">tf::Executor::async</a></div><div class="ttdeci">auto async(P &amp;&amp;params, F &amp;&amp;func)</div><div class="ttdoc">creates a parameterized asynchronous task to run the given function</div></div>
-<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1562</div></div>
+<div class="ttc" id="aclasstf_1_1FlowBuilder_html_a4d52a7fe2814b264846a2085e931652c"><div class="ttname"><a href="classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c">tf::FlowBuilder::emplace</a></div><div class="ttdeci">Task emplace(C &amp;&amp;callable)</div><div class="ttdoc">creates a static task</div><div class="ttdef"><b>Definition</b> flow_builder.hpp:1571</div></div>
 <div class="ttc" id="aclasstf_1_1Taskflow_html"><div class="ttname"><a href="classtf_1_1Taskflow.html">tf::Taskflow</a></div><div class="ttdoc">class to create a taskflow object</div><div class="ttdef"><b>Definition</b> taskflow.hpp:64</div></div>
 <div class="ttc" id="anamespacetf_html_a07b2225aa9794364b4c704ce0f449974"><div class="ttname"><a href="#a07b2225aa9794364b4c704ce0f449974">tf::make_module_task</a></div><div class="ttdeci">auto make_module_task(T &amp;target)</div><div class="ttdoc">creates a module task using the given graph</div><div class="ttdef"><b>Definition</b> module.hpp:74</div></div>
 </div><!-- fragment --><p>The module task maker, <a class="el" href="#a07b2225aa9794364b4c704ce0f449974" title="creates a module task using the given graph">tf::make_module_task</a>, is basically the same as <a class="el" href="classtf_1_1FlowBuilder.html#ac6f22228d4c2ea2e643c4b0d42c0e92a" title="creates a module task for the target object">tf::Taskflow::composed_of</a> but provides a more generic interface that can be used beyond Taskflow. For instance, the following two approaches achieve the same functionality.</p>
@@ -1922,7 +1909,6 @@ template&lt;typename RandItr, typename C&gt; </div>
 </div><div class="memdoc">
 
 <p>finds the median of three numbers pointed to by iterators using the given comparator </p>
-<p>This function determines the median value of the elements pointed to by three random-access iterators using the provided comparator.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">RandItr</td><td>The type of the random-access iterator. </td></tr>
@@ -1939,8 +1925,106 @@ template&lt;typename RandItr, typename C&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The iterator pointing to the median value among the three elements. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The iterator pointing to the median value among the three elements.</dd></dl>
+<p>This function determines the median value of the elements pointed to by three random-access iterators using the provided comparator.</p>
+<div class="fragment"><div class="line">std::vector&lt;int&gt; v = {5, 1, 3};</div>
+<div class="line"><span class="keyword">auto</span> it = <a class="code hl_function" href="#a0b2dc0c0c931b9b627fc0a148085fa5e">tf::median_of_three</a>(v.begin(), v.begin()+1, v.begin()+2, std::less&lt;int&gt;{});</div>
+<div class="line"><span class="comment">// *it == 3</span></div>
+<div class="ttc" id="anamespacetf_html_a0b2dc0c0c931b9b627fc0a148085fa5e"><div class="ttname"><a href="#a0b2dc0c0c931b9b627fc0a148085fa5e">tf::median_of_three</a></div><div class="ttdeci">RandItr median_of_three(RandItr l, RandItr m, RandItr r, C cmp)</div><div class="ttdoc">finds the median of three numbers pointed to by iterators using the given comparator</div><div class="ttdef"><b>Definition</b> math.hpp:143</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a4412b2a9da6ee7793199646a56993969" name="a4412b2a9da6ee7793199646a56993969"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4412b2a9da6ee7793199646a56993969">&#9670;&#160;</a></span>next_pow2() <span class="overload">[1/2]</span></h2>
 
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; <br />
+requires (std::is_unsigned_v&lt;std::decay_t&lt;T&gt;&gt; &amp;&amp; sizeof(T) == 8)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T tf::next_pow2 </td>
+          <td>(</td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>x</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>rounds the given 64-bit unsigned integer to the nearest power of 2 </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>64-bit unsigned integral type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the number to round up </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the smallest power of 2 that is greater than or equal to <code>x</code> </dd></dl>
+<p>This overload participates in overload resolution only when <code>T</code> is an 8-byte unsigned integral type. It repeatedly fills in the lower bits of <code>x - 1</code> until all bits below the highest set bit are 1, then adds 1 to obtain the next power of 2.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#a4412b2a9da6ee7793199646a56993969">tf::next_pow2</a>(uint64_t{17});  <span class="comment">// returns 32</span></div>
+<div class="line"><a class="code hl_function" href="#a4412b2a9da6ee7793199646a56993969">tf::next_pow2</a>(uint64_t{32});  <span class="comment">// returns 32</span></div>
+<div class="ttc" id="anamespacetf_html_a4412b2a9da6ee7793199646a56993969"><div class="ttname"><a href="#a4412b2a9da6ee7793199646a56993969">tf::next_pow2</a></div><div class="ttdeci">constexpr T next_pow2(T x)</div><div class="ttdoc">rounds the given 64-bit unsigned integer to the nearest power of 2</div><div class="ttdef"><b>Definition</b> math.hpp:30</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a7e041e64c08ddcebb5a64ebf4a7c9fef" name="a7e041e64c08ddcebb5a64ebf4a7c9fef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e041e64c08ddcebb5a64ebf4a7c9fef">&#9670;&#160;</a></span>next_pow2() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; <br />
+requires (std::is_unsigned_v&lt;std::decay_t&lt;T&gt;&gt; &amp;&amp; sizeof(T) == 4)</div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T tf::next_pow2 </td>
+          <td>(</td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>y</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>rounds the given 32-bit unsigned integer to the nearest power of 2 </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>32-bit unsigned integral type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">y</td><td>the number to round up </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the smallest power of 2 that is greater than or equal to <code>y</code> </dd></dl>
+<p>This overload participates in overload resolution only when <code>T</code> is a 4-byte unsigned integral type. It uses the same bit-filling technique as the 64-bit overload, but only propagates bits up to the 32-bit width.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#a4412b2a9da6ee7793199646a56993969">tf::next_pow2</a>(uint32_t{17});  <span class="comment">// returns 32</span></div>
+<div class="line"><a class="code hl_function" href="#a4412b2a9da6ee7793199646a56993969">tf::next_pow2</a>(uint32_t{32});  <span class="comment">// returns 32</span></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a5f9a989c8de663d3ee010cbc6de13c91" name="a5f9a989c8de663d3ee010cbc6de13c91"></a>
@@ -1970,7 +2054,6 @@ template&lt;typename RandItr, typename C&gt; </div>
 </div><div class="memdoc">
 
 <p>finds the pseudo median of a range of items using a spread of nine numbers </p>
-<p>This function computes an approximate median of a range of items by sampling nine values spread across the range and finding their median. It uses a combination of the <code>median_of_three</code> function to determine the pseudo median.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">RandItr</td><td>The type of the random-access iterator. </td></tr>
@@ -1987,7 +2070,11 @@ template&lt;typename RandItr, typename C&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The iterator pointing to the pseudo median of the range.</dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>The pseudo median is an approximation of the true median and may not be the exact middle value of the range. </dd></dl>
+<p>This function computes an approximate median of a range of items by sampling nine values spread across the range and finding their median. It uses a combination of the <code>median_of_three</code> function to determine the pseudo median.</p>
+<div class="fragment"><div class="line">std::vector&lt;int&gt; v = {9, 4, 1, 7, 3, 8, 2, 6, 5};</div>
+<div class="line"><span class="keyword">auto</span> it = <a class="code hl_function" href="#a5f9a989c8de663d3ee010cbc6de13c91">tf::pseudo_median_of_nine</a>(v.begin(), v.end(), std::less&lt;int&gt;{});</div>
+<div class="ttc" id="anamespacetf_html_a5f9a989c8de663d3ee010cbc6de13c91"><div class="ttname"><a href="#a5f9a989c8de663d3ee010cbc6de13c91">tf::pseudo_median_of_nine</a></div><div class="ttdeci">RandItr pseudo_median_of_nine(RandItr beg, RandItr end, C cmp)</div><div class="ttdoc">finds the pseudo median of a range of items using a spread of nine numbers</div><div class="ttdef"><b>Definition</b> math.hpp:171</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>The pseudo median is an approximation of the true median and may not be the exact middle value of the range. </dd></dl>
 
 </div>
 </div>
@@ -2071,15 +2158,19 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 
 <p>generates a random seed based on the current system clock </p>
-<p>This function returns a seed value derived from the number of clock ticks since the epoch as measured by the system clock. The seed can be used to initialize random number generators.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The type of the returned seed. Must be an integral type. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A seed value based on the system clock. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>A seed value based on the system clock.</dd></dl>
+<p>This function returns a seed value derived from the number of clock ticks since the epoch as measured by the system clock. The seed can be used to initialize random number generators.</p>
+<div class="fragment"><div class="line"><span class="keyword">auto</span> s = <a class="code hl_function" href="#a3f8e89aebc29d42259157723c874954d">tf::seed&lt;size_t&gt;</a>();</div>
+<div class="line"><a class="code hl_class" href="classtf_1_1Xorshift.html">tf::Xorshift&lt;uint64_t&gt;</a> rng(s);</div>
+<div class="ttc" id="aclasstf_1_1Xorshift_html"><div class="ttname"><a href="classtf_1_1Xorshift.html">tf::Xorshift</a></div><div class="ttdoc">class to create a fast xorshift-based pseudo-random number generator</div><div class="ttdef"><b>Definition</b> math.hpp:412</div></div>
+<div class="ttc" id="anamespacetf_html_a3f8e89aebc29d42259157723c874954d"><div class="ttname"><a href="#a3f8e89aebc29d42259157723c874954d">tf::seed</a></div><div class="ttdeci">T seed() noexcept</div><div class="ttdoc">generates a random seed based on the current system clock</div><div class="ttdef"><b>Definition</b> math.hpp:331</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a8d3fa9252b0da87bff1df912d0a591fe" name="a8d3fa9252b0da87bff1df912d0a591fe"></a>
@@ -2109,7 +2200,6 @@ template&lt;typename Iter, typename Compare&gt; </div>
 </div><div class="memdoc">
 
 <p>sorts two elements of dereferenced iterators using the given comparison function </p>
-<p>This function compares two elements pointed to by iterators and swaps them if they are out of order according to the provided comparator.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Iter</td><td>The type of the iterator. </td></tr>
@@ -2121,11 +2211,16 @@ template&lt;typename Iter, typename Compare&gt; </div>
   <table class="params">
     <tr><td class="paramname">a</td><td>Iterator to the first element. </td></tr>
     <tr><td class="paramname">b</td><td>Iterator to the second element. </td></tr>
-    <tr><td class="paramname">comp</td><td>The comparator used to compare the dereferenced iterator values. </td></tr>
+    <tr><td class="paramname">comp</td><td>The comparator used to compare the dereferenced iterator values.</td></tr>
   </table>
   </dd>
 </dl>
-
+<p>This function compares two elements pointed to by iterators and swaps them if they are out of order according to the provided comparator.</p>
+<div class="fragment"><div class="line">std::vector&lt;int&gt; v = {3, 1};</div>
+<div class="line"><a class="code hl_function" href="#a8d3fa9252b0da87bff1df912d0a591fe">tf::sort2</a>(v.begin(), v.begin()+1, std::less&lt;int&gt;{});</div>
+<div class="line"><span class="comment">// v == {1, 3}</span></div>
+<div class="ttc" id="anamespacetf_html_a8d3fa9252b0da87bff1df912d0a591fe"><div class="ttname"><a href="#a8d3fa9252b0da87bff1df912d0a591fe">tf::sort2</a></div><div class="ttdeci">void sort2(Iter a, Iter b, Compare comp)</div><div class="ttdoc">sorts two elements of dereferenced iterators using the given comparison function</div><div class="ttdef"><b>Definition</b> math.hpp:201</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a86489af717270b8c9b657b347215ef0f" name="a86489af717270b8c9b657b347215ef0f"></a>
@@ -2160,7 +2255,6 @@ template&lt;typename Iter, typename Compare&gt; </div>
 </div><div class="memdoc">
 
 <p>Sorts three elements of dereferenced iterators using the given comparison function. </p>
-<p>This function sorts three elements pointed to by iterators in ascending order according to the provided comparator. The sorting is performed using a sequence of calls to the <code>sort2</code> function to ensure the correct order of elements.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Iter</td><td>The type of the iterator. </td></tr>
@@ -2173,11 +2267,56 @@ template&lt;typename Iter, typename Compare&gt; </div>
     <tr><td class="paramname">a</td><td>Iterator to the first element. </td></tr>
     <tr><td class="paramname">b</td><td>Iterator to the second element. </td></tr>
     <tr><td class="paramname">c</td><td>Iterator to the third element. </td></tr>
-    <tr><td class="paramname">comp</td><td>The comparator used to compare the dereferenced iterator values. </td></tr>
+    <tr><td class="paramname">comp</td><td>The comparator used to compare the dereferenced iterator values.</td></tr>
   </table>
   </dd>
 </dl>
+<p>This function sorts three elements pointed to by iterators in ascending order according to the provided comparator. The sorting is performed using a sequence of calls to the <code>sort2</code> function to ensure the correct order of elements.</p>
+<div class="fragment"><div class="line">std::vector&lt;int&gt; v = {3, 1, 2};</div>
+<div class="line"><a class="code hl_function" href="#a86489af717270b8c9b657b347215ef0f">tf::sort3</a>(v.begin(), v.begin()+1, v.begin()+2, std::less&lt;int&gt;{});</div>
+<div class="line"><span class="comment">// v == {1, 2, 3}</span></div>
+<div class="ttc" id="anamespacetf_html_a86489af717270b8c9b657b347215ef0f"><div class="ttname"><a href="#a86489af717270b8c9b657b347215ef0f">tf::sort3</a></div><div class="ttdeci">void sort3(Iter a, Iter b, Iter c, Compare comp)</div><div class="ttdoc">Sorts three elements of dereferenced iterators using the given comparison function.</div><div class="ttdef"><b>Definition</b> math.hpp:226</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a908e0f3faf873e897b3e1bafbd4bb876" name="a908e0f3faf873e897b3e1bafbd4bb876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a908e0f3faf873e897b3e1bafbd4bb876">&#9670;&#160;</a></span>static_floor_log2()</h2>
 
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t tf::static_floor_log2 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the floor of <code>log2(N)</code> at compile time </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">N</td><td>the input value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the largest integer <code>k</code> such that <code>2^k &lt;= N</code></dd></dl>
+<p>This function recursively halves <code>N</code> until it is smaller than 2, counting the number of halving steps performed, which equals the floor of the base-2 logarithm of <code>N</code>.</p>
+<div class="fragment"><div class="line"><a class="code hl_function" href="#a908e0f3faf873e897b3e1bafbd4bb876">tf::static_floor_log2&lt;16&gt;</a>();  <span class="comment">// returns 4</span></div>
+<div class="line"><a class="code hl_function" href="#a908e0f3faf873e897b3e1bafbd4bb876">tf::static_floor_log2&lt;17&gt;</a>();  <span class="comment">// returns 4</span></div>
+<div class="ttc" id="anamespacetf_html_a908e0f3faf873e897b3e1bafbd4bb876"><div class="ttname"><a href="#a908e0f3faf873e897b3e1bafbd4bb876">tf::static_floor_log2</a></div><div class="ttdeci">constexpr size_t static_floor_log2()</div><div class="ttdoc">returns the floor of log2(N) at compile time</div><div class="ttdef"><b>Definition</b> math.hpp:112</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a18c45bc96e6725943e0a4396fa59b524" name="a18c45bc96e6725943e0a4396fa59b524"></a>
@@ -2234,7 +2373,6 @@ template&lt;std::integral T&gt; </div>
 </div><div class="memdoc">
 
 <p>generates a program-wide unique ID of the given type in a thread-safe manner </p>
-<p>This function provides a globally unique identifier of the specified integral type. It uses a static <code>std::atomic</code> counter to ensure thread safety and increments the counter in a relaxed memory ordering for efficiency.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>integral type of the ID to generate </td></tr>
@@ -2242,7 +2380,12 @@ template&lt;std::integral T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A unique ID of type <code>T</code>.</dd></dl>
-<dl class="section attention"><dt>Attention</dt><dd>The uniqueness of the ID is guaranteed only within the program's lifetime. </dd>
+<p>This function provides a globally unique identifier of the specified integral type. It uses a static <code>std::atomic</code> counter to ensure thread safety and increments the counter in a relaxed memory ordering for efficiency.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">size_t</span> id1 = <a class="code hl_function" href="#a0e9ee27be995577606c355258b16ddac">tf::unique_id&lt;size_t&gt;</a>();</div>
+<div class="line"><span class="keywordtype">size_t</span> id2 = <a class="code hl_function" href="#a0e9ee27be995577606c355258b16ddac">tf::unique_id&lt;size_t&gt;</a>();</div>
+<div class="line"><span class="comment">// id1 != id2</span></div>
+<div class="ttc" id="anamespacetf_html_a0e9ee27be995577606c355258b16ddac"><div class="ttname"><a href="#a0e9ee27be995577606c355258b16ddac">tf::unique_id</a></div><div class="ttdeci">T unique_id()</div><div class="ttdoc">generates a program-wide unique ID of the given type in a thread-safe manner</div><div class="ttdef"><b>Definition</b> math.hpp:252</div></div>
+</div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>The uniqueness of the ID is guaranteed only within the program's lifetime. </dd>
 <dd>
 The function does not throw exceptions. </dd></dl>
 
@@ -2307,70 +2450,6 @@ template&lt;typename T&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a01f6a38951a99908710af5db131b6f87" name="a01f6a38951a99908710af5db131b6f87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01f6a38951a99908710af5db131b6f87">&#9670;&#160;</a></span>is_1d_index_range_v</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tf::is_1d_index_range_v = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>base type trait to detect if a type is a 1D <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a> </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type to inspect </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a49086c014251934964dadc1a280ce35f" name="a49086c014251934964dadc1a280ce35f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49086c014251934964dadc1a280ce35f">&#9670;&#160;</a></span>is_1d_index_range_v&lt; IndexRange&lt; T, 1 &gt; &gt;</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="#a01f6a38951a99908710af5db131b6f87">tf::is_1d_index_range_v</a>&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, 1 &gt; &gt; = true</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>specialization of the detector for <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a> </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the underlying coordinate type (e.g., <code>size_t</code>, <code>int</code>) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a00ca2fc2de0e679a7d9b8039340343df" name="a00ca2fc2de0e679a7d9b8039340343df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00ca2fc2de0e679a7d9b8039340343df">&#9670;&#160;</a></span>is_condition_task_v</h2>
 
@@ -2404,8 +2483,8 @@ template&lt;typename C&gt; </div>
 
 </div>
 </div>
-<a id="a726868d615a52212b56fe36839b27a9a" name="a726868d615a52212b56fe36839b27a9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a726868d615a52212b56fe36839b27a9a">&#9670;&#160;</a></span>is_index_range_v</h2>
+<a id="a895eff5d9743f8064921f1f3c09de130" name="a895eff5d9743f8064921f1f3c09de130"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a895eff5d9743f8064921f1f3c09de130">&#9670;&#160;</a></span>is_index_ranges_v</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2416,7 +2495,7 @@ template&lt;typename&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool tf::is_index_range_v = false</td>
+          <td class="memname">bool tf::is_index_ranges_v = false</td>
         </tr>
       </table>
   </td>
@@ -2426,7 +2505,7 @@ template&lt;typename&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>base type trait to detect if a type is an <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a> </p>
+<p>base type trait to detect if a type is a <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a> </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The type to inspect. </td></tr>
@@ -2436,8 +2515,8 @@ template&lt;typename&gt; </div>
 
 </div>
 </div>
-<a id="af2b2204c5d37a81c8d3084e9f7062e60" name="af2b2204c5d37a81c8d3084e9f7062e60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2b2204c5d37a81c8d3084e9f7062e60">&#9670;&#160;</a></span>is_index_range_v&lt; IndexRange&lt; T, N &gt; &gt;</h2>
+<a id="a377f1a797649b8a9d81712d43a4b76c1" name="a377f1a797649b8a9d81712d43a4b76c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a377f1a797649b8a9d81712d43a4b76c1">&#9670;&#160;</a></span>is_index_ranges_v&lt; IndexRanges&lt; T, N &gt; &gt;</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2448,7 +2527,7 @@ template&lt;typename T, size_t N&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="#a726868d615a52212b56fe36839b27a9a">tf::is_index_range_v</a>&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, N &gt; &gt; = true</td>
+          <td class="memname">bool <a class="el" href="#a895eff5d9743f8064921f1f3c09de130">tf::is_index_ranges_v</a>&lt; <a class="el" href="classtf_1_1IndexRanges.html">IndexRanges</a>&lt; T, N &gt; &gt; = true</td>
         </tr>
       </table>
   </td>
@@ -2458,77 +2537,12 @@ template&lt;typename T, size_t N&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>specialization of the detector for tf::IndexRange&lt;T, N&gt; </p>
-<p>Matches an <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a> of ANY dimensionality (1D, 2D, 3D, etc.).</p>
+<p>specialization of the detector for tf::IndexRanges&lt;T, N&gt; </p>
+<p>Matches an <a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">IndexRanges</a> of ANY dimensionality (1D, 2D, 3D, etc.).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>the underlying coordinate type (e.g., size_t, int) </td></tr>
     <tr><td class="paramname">N</td><td>the number of dimensions </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a477d4de8f2a49f2bba84392a5ff97304" name="a477d4de8f2a49f2bba84392a5ff97304"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a477d4de8f2a49f2bba84392a5ff97304">&#9670;&#160;</a></span>is_md_index_range_v</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tf::is_md_index_range_v = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>base type trait to detect if a type is a multi-dimensional <a class="el" href="classtf_1_1IndexRange.html" title="class to create an N-dimensional index range of integral indices">IndexRange</a> (rank &gt; 1) </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the type to inspect </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad3d2bddc6dbdc1bc7b15a2d6a1e80f42" name="ad3d2bddc6dbdc1bc7b15a2d6a1e80f42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3d2bddc6dbdc1bc7b15a2d6a1e80f42">&#9670;&#160;</a></span>is_md_index_range_v&lt; IndexRange&lt; T, N &gt; &gt;</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T, size_t N&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="#a477d4de8f2a49f2bba84392a5ff97304">tf::is_md_index_range_v</a>&lt; <a class="el" href="classtf_1_1IndexRange.html">IndexRange</a>&lt; T, N &gt; &gt; = true</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel constexpr">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>specialization of the detector for tf::IndexRange&lt;T, N&gt; where N &gt; 1 </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>the underlying coordinate type (e.g., <code>size_t</code>, <code>int</code>) </td></tr>
-    <tr><td class="paramname">N</td><td>the number of dimensions (must be &gt; 1) </td></tr>
   </table>
   </dd>
 </dl>

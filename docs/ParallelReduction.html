@@ -257,10 +257,10 @@ Create a Parallel-Reduce-by-Index Task</h1>
 <div class="line"><span class="keywordtype">double</span> res = 1.0;</div>
 <div class="line"> </div>
 <div class="line">taskflow.reduce_by_index(</div>
-<div class="line">  <a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a>(0, data.size(), 1),</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a>(0, data.size(), 1),</div>
 <div class="line">  res,</div>
 <div class="line">  <span class="comment">// local reducer: called once per subrange per worker</span></div>
-<div class="line">  [&amp;](<a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;double&gt; running_total) {</div>
+<div class="line">  [&amp;](<a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;double&gt; running_total) {</div>
 <div class="line">    double partial = running_total ? *running_total : 0.0;</div>
 <div class="line">    for(size_t i = subrange.begin(); i &lt; subrange.end(); i += subrange.step_size()) {</div>
 <div class="line">      data[i] = 1.0;</div>
@@ -274,7 +274,7 @@ Create a Parallel-Reduce-by-Index Task</h1>
 <div class="line"> </div>
 <div class="line">executor.run(taskflow).wait();</div>
 <div class="line">assert(res == 100001.0);  <span class="comment">// 1.0 (initial) + 100000 * 1.0</span></div>
-<div class="ttc" id="aclasstf_1_1IndexRange_html"><div class="ttname"><a href="classtf_1_1IndexRange.html">tf::IndexRange</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:165</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
 </div><!-- fragment --><p>The global reducer combines all partial results with the initial value of <code>res</code> (here <code>1.0</code>), so the final answer is <code>1.0</code> + <code>100000.0</code> = <code>100001.0</code>.</p>
 <h2><a class="anchor" id="ParallelReduceByIndexCaptureByReference"></a>
 Capture IndexRange by Reference</h2>
@@ -282,7 +282,7 @@ Capture IndexRange by Reference</h2>
 <div class="fragment"><div class="line">std::vector&lt;double&gt; data;</div>
 <div class="line"><span class="keywordtype">double</span> res = 0.0;</div>
 <div class="line"> </div>
-<div class="line"><a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a> range(0, 0, 1);  <span class="comment">// placeholder — filled by init</span></div>
+<div class="line"><a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a> range(0, 0, 1);  <span class="comment">// placeholder — filled by init</span></div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> init = taskflow.emplace([&amp;]() {</div>
 <div class="line">  data.assign(100000, 1.0);</div>
@@ -292,9 +292,9 @@ Capture IndexRange by Reference</h2>
 <div class="line"><a class="code hl_class" href="classtf_1_1Task.html">tf::Task</a> task = taskflow.reduce_by_index(</div>
 <div class="line">  std::ref(range),</div>
 <div class="line">  res,</div>
-<div class="line">  [&amp;](<a class="code hl_class" href="classtf_1_1IndexRange.html">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;double&gt; running_total) {</div>
+<div class="line">  [&amp;](<a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;size_t&gt;</a> subrange, std::optional&lt;double&gt; running_total) {</div>
 <div class="line">    <span class="keywordtype">double</span> partial = running_total ? *running_total : 0.0;</div>
-<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = subrange.begin(); i &lt; subrange.end(); i += subrange.step_size()) {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">begin</a>(); i &lt; subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a253e15e199f974ee26b2e33a5e2b3cf1">end</a>(); i += subrange.<a class="code hl_function" href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">step_size</a>()) {</div>
 <div class="line">      partial += data[i];</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">return</span> partial;</div>
@@ -309,6 +309,9 @@ Capture IndexRange by Reference</h2>
 <div class="line"> </div>
 <div class="line">executor.run(taskflow).wait();</div>
 <div class="line">assert(res == 100000.0);</div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_a253e15e199f974ee26b2e33a5e2b3cf1"><div class="ttname"><a href="classtf_1_1IndexRanges.html#a253e15e199f974ee26b2e33a5e2b3cf1">tf::IndexRanges::end</a></div><div class="ttdeci">T end() const</div><div class="ttdoc">queries the ending index of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:358</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_ae37261f0d2f326449c469233561a3da6"><div class="ttname"><a href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">tf::IndexRanges::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:346</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_afcb30e2b9567ad685e702201d2265880"><div class="ttname"><a href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">tf::IndexRanges::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:370</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="ParallelReductionConfigureAPartitioner"></a>
 Configure a Partitioner</h1>
 <p>A partitioner controls how the iteration space is divided among workers. Taskflow provides four partitioners, each suited to different workload characteristics:</p>
@@ -336,7 +339,7 @@ Configure a Partitioner</h1>
 <div class="line">  [](<span class="keywordtype">int</span> l, <span class="keywordtype">int</span> r) { return l + r; },</div>
 <div class="line">  guided_partitioner</div>
 <div class="line">);</div>
-<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:402</div></div>
+<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:417</div></div>
 <div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:262</div></div>
 </div><!-- fragment --><p>As a rule of thumb, prefer <a class="el" href="classtf_1_1StaticPartitioner.html" title="class to construct a static partitioner for scheduling parallel algorithms">tf::StaticPartitioner</a> when every element costs the same to reduce (e.g., summation over a plain array) and <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a> for irregular workloads (e.g., reductions whose cost depends on the element value). <a class="el" href="classtf_1_1DynamicPartitioner.html" title="class to create a dynamic partitioner for scheduling parallel algorithms">tf::DynamicPartitioner</a> is a good choice when chunks must be kept small and strictly equal in size.</p>
 <dl class="section note"><dt>Note</dt><dd>By default, parallel-reduction tasks use <a class="el" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" title="default partitioner set to tf::GuidedPartitioner">tf::DefaultPartitioner</a> (currently <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a>) if no partitioner is specified. </dd></dl>

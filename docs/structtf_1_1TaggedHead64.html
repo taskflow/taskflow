@@ -122,7 +122,7 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>pointer_type</b> = u
 <tr class="separator:a08ce66583ac725f8b04a9c1c8712fe5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a083245444246fc009cc5a9f0575873fb" id="r_a083245444246fc009cc5a9f0575873fb"><td class="memItemLeft" align="right" valign="top"><a id="a083245444246fc009cc5a9f0575873fb" name="a083245444246fc009cc5a9f0575873fb"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>tag_type</b> = uint16_t</td></tr>
-<tr class="memdesc:a083245444246fc009cc5a9f0575873fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">ABA version counter. <br /></td></tr>
+<tr class="memdesc:a083245444246fc009cc5a9f0575873fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">ABA version counter representation. <br /></td></tr>
 <tr class="separator:a083245444246fc009cc5a9f0575873fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -134,20 +134,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a69ff7008fc488088296aa846ac402eec" id="r_a69ff7008fc488088296aa846ac402eec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69ff7008fc488088296aa846ac402eec">TaggedHead64</a> (<a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a> p, <a class="el" href="#a083245444246fc009cc5a9f0575873fb">tag_type</a> t) noexcept</td></tr>
 <tr class="memdesc:a69ff7008fc488088296aa846ac402eec"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructs a head with an explicit block address and version counter  <br /></td></tr>
 <tr class="separator:a69ff7008fc488088296aa846ac402eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ca12190dab9208304fb073021f4059d" id="r_a4ca12190dab9208304fb073021f4059d"><td class="memItemLeft" align="right" valign="top"><a id="a4ca12190dab9208304fb073021f4059d" name="a4ca12190dab9208304fb073021f4059d"></a>
-<a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_ptr</b> () const noexcept</td></tr>
-<tr class="memdesc:a4ca12190dab9208304fb073021f4059d"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the block address <br /></td></tr>
+<tr class="memitem:a4ca12190dab9208304fb073021f4059d" id="r_a4ca12190dab9208304fb073021f4059d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ca12190dab9208304fb073021f4059d">get_ptr</a> () const noexcept</td></tr>
+<tr class="memdesc:a4ca12190dab9208304fb073021f4059d"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the block address  <br /></td></tr>
 <tr class="separator:a4ca12190dab9208304fb073021f4059d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4013057d15d66e9678350a0bf5a521d2" id="r_a4013057d15d66e9678350a0bf5a521d2"><td class="memItemLeft" align="right" valign="top"><a id="a4013057d15d66e9678350a0bf5a521d2" name="a4013057d15d66e9678350a0bf5a521d2"></a>
-<a class="el" href="#a083245444246fc009cc5a9f0575873fb">tag_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_tag</b> () const noexcept</td></tr>
-<tr class="memdesc:a4013057d15d66e9678350a0bf5a521d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 16-bit ABA version counter <br /></td></tr>
+<tr class="memitem:a4013057d15d66e9678350a0bf5a521d2" id="r_a4013057d15d66e9678350a0bf5a521d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a083245444246fc009cc5a9f0575873fb">tag_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4013057d15d66e9678350a0bf5a521d2">get_tag</a> () const noexcept</td></tr>
+<tr class="memdesc:a4013057d15d66e9678350a0bf5a521d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the 16-bit ABA version counter  <br /></td></tr>
 <tr class="separator:a4013057d15d66e9678350a0bf5a521d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8fb8d07cd7124212732221086ef98e79" id="r_a8fb8d07cd7124212732221086ef98e79"><td class="memItemLeft" align="right" valign="top"><a id="a8fb8d07cd7124212732221086ef98e79" name="a8fb8d07cd7124212732221086ef98e79"></a>
 uintptr_t&#160;</td><td class="memItemRight" valign="bottom"><b>bits</b> {0}</td></tr>
-<tr class="memdesc:a8fb8d07cd7124212732221086ef98e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">packed word: high TAG_BITS bits = version tag, low PTR_BITS bits = address <br /></td></tr>
+<tr class="memdesc:a8fb8d07cd7124212732221086ef98e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">packed word: high <code>TAG_BITS</code> bits hold the version tag, low <code>PTR_BITS</code> bits hold the address <br /></td></tr>
 <tr class="separator:a8fb8d07cd7124212732221086ef98e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
@@ -160,8 +158,9 @@ static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><b>PTR_B
 static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><b>TAG_BITS</b> = 64 - PtrBits</td></tr>
 <tr class="memdesc:a9851910bd69e3d77390384dd4482b289"><td class="mdescLeft">&#160;</td><td class="mdescRight">bits reserved for the version counter <br /></td></tr>
 <tr class="separator:a9851910bd69e3d77390384dd4482b289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc9e2d8e364ba340baf79b25b95380f9" id="r_abc9e2d8e364ba340baf79b25b95380f9"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc9e2d8e364ba340baf79b25b95380f9">PTR_MASK</a></td></tr>
-<tr class="memdesc:abc9e2d8e364ba340baf79b25b95380f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">mask isolating the address field  <br /></td></tr>
+<tr class="memitem:abc9e2d8e364ba340baf79b25b95380f9" id="r_abc9e2d8e364ba340baf79b25b95380f9"><td class="memItemLeft" align="right" valign="top"><a id="abc9e2d8e364ba340baf79b25b95380f9" name="abc9e2d8e364ba340baf79b25b95380f9"></a>
+static constexpr <a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>PTR_MASK</b> = (<a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>{1} &lt;&lt; <a class="el" href="#a56b890c93e3d741312f57cceda78c4c9">PTR_BITS</a>) - 1</td></tr>
+<tr class="memdesc:abc9e2d8e364ba340baf79b25b95380f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">mask isolating the address field <br /></td></tr>
 <tr class="separator:abc9e2d8e364ba340baf79b25b95380f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -188,7 +187,7 @@ struct tf::TaggedHead64&lt; PtrBits &gt;</div><p>tagged free-list head packed in
 <div class="line"> </div>
 <div class="line"><span class="comment">// RISC-V SV39: only 39 address bits, 25 bits available for the tag</span></div>
 <div class="line"><a class="code hl_class" href="classtf_1_1ObjectPool.html">tf::ObjectPool&lt;MyTask, 5, tf::TaggedHead64&lt;39&gt;</a>&gt; pool_sv39;</div>
-<div class="ttc" id="aclasstf_1_1ObjectPool_html"><div class="ttname"><a href="classtf_1_1ObjectPool.html">tf::ObjectPool</a></div><div class="ttdoc">sharded fixed-size object allocator with a lock-free hot path</div><div class="ttdef"><b>Definition</b> object_pool.hpp:320</div></div>
+<div class="ttc" id="aclasstf_1_1ObjectPool_html"><div class="ttname"><a href="classtf_1_1ObjectPool.html">tf::ObjectPool</a></div><div class="ttdoc">sharded fixed-size object allocator with a lock-free hot path</div><div class="ttdef"><b>Definition</b> object_pool.hpp:408</div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="structtf_1_1TaggedHead128.html" title="tagged free-list head using a 128-bit (pointer, version) pair">TaggedHead128</a> for a variant with a full 64-bit <a class="el" href="namespacetf.html#a06790e5f6898894392f247309626e1b4" title="queries the version information in a string format major.minor.patch">version</a> counter that may use a lock-based fallback on platforms without 128-bit CAS. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a69ff7008fc488088296aa846ac402eec" name="a69ff7008fc488088296aa846ac402eec"></a>
@@ -224,16 +223,18 @@ template&lt;int PtrBits = TF_POINTER_BITS&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p</td><td>block address as <code>uintptr_t</code>; only the low <code>PtrBits</code> bits are stored </td></tr>
-    <tr><td class="paramname">t</td><td>ABA version counter; only the low <code>TAG_BITS</code> bits are stored </td></tr>
+    <tr><td class="paramname">t</td><td>ABA version counter; only the low <code>TAG_BITS</code> bits are stored</td></tr>
   </table>
   </dd>
 </dl>
-
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64&lt;&gt;</a> head(<span class="keyword">reinterpret_cast&lt;</span>uintptr_t<span class="keyword">&gt;</span>(block), 0);</div>
+<div class="ttc" id="astructtf_1_1TaggedHead64_html"><div class="ttname"><a href="structtf_1_1TaggedHead64.html">tf::TaggedHead64</a></div><div class="ttdoc">tagged free-list head packed into a single 64-bit word</div><div class="ttdef"><b>Definition</b> object_pool.hpp:152</div></div>
+</div><!-- fragment --> 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="abc9e2d8e364ba340baf79b25b95380f9" name="abc9e2d8e364ba340baf79b25b95380f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc9e2d8e364ba340baf79b25b95380f9">&#9670;&#160;</a></span>PTR_MASK</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4ca12190dab9208304fb073021f4059d" name="a4ca12190dab9208304fb073021f4059d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ca12190dab9208304fb073021f4059d">&#9670;&#160;</a></span>get_ptr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -244,22 +245,54 @@ template&lt;int PtrBits = TF_POINTER_BITS&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a> <a class="el" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64</a>&lt; PtrBits &gt;::PTR_MASK</td>
+          <td class="memname"><a class="el" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a> <a class="el" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64</a>&lt; PtrBits &gt;::get_ptr </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    (<a class="code hl_typedef" href="#a08ce66583ac725f8b04a9c1c8712fe5a">pointer_type</a>{1} &lt;&lt; <a class="code hl_variable" href="#a56b890c93e3d741312f57cceda78c4c9">PTR_BITS</a>) - 1</div>
-<div class="ttc" id="astructtf_1_1TaggedHead64_html_a08ce66583ac725f8b04a9c1c8712fe5a"><div class="ttname"><a href="#a08ce66583ac725f8b04a9c1c8712fe5a">tf::TaggedHead64::pointer_type</a></div><div class="ttdeci">uintptr_t pointer_type</div><div class="ttdoc">block address representation</div><div class="ttdef"><b>Definition</b> object_pool.hpp:121</div></div>
-<div class="ttc" id="astructtf_1_1TaggedHead64_html_a56b890c93e3d741312f57cceda78c4c9"><div class="ttname"><a href="#a56b890c93e3d741312f57cceda78c4c9">tf::TaggedHead64::PTR_BITS</a></div><div class="ttdeci">static constexpr int PTR_BITS</div><div class="ttdoc">bits reserved for the block address</div><div class="ttdef"><b>Definition</b> object_pool.hpp:124</div></div>
-</div><!-- fragment -->
-<p>mask isolating the address field </p>
 
+<p>returns the block address </p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64&lt;&gt;</a> head(<span class="keyword">reinterpret_cast&lt;</span>uintptr_t<span class="keyword">&gt;</span>(block), 7);</div>
+<div class="line"><span class="keyword">auto</span> p = head.get_ptr();  <span class="comment">// p == reinterpret_cast&lt;uintptr_t&gt;(block)</span></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a4013057d15d66e9678350a0bf5a521d2" name="a4013057d15d66e9678350a0bf5a521d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4013057d15d66e9678350a0bf5a521d2">&#9670;&#160;</a></span>get_tag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int PtrBits = TF_POINTER_BITS&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a083245444246fc009cc5a9f0575873fb">tag_type</a> <a class="el" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64</a>&lt; PtrBits &gt;::get_tag </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the 16-bit ABA version counter </p>
+<div class="fragment"><div class="line"><a class="code hl_struct" href="structtf_1_1TaggedHead64.html">tf::TaggedHead64&lt;&gt;</a> head(<span class="keyword">reinterpret_cast&lt;</span>uintptr_t<span class="keyword">&gt;</span>(block), 7);</div>
+<div class="line"><span class="keyword">auto</span> t = head.get_tag();  <span class="comment">// t == 7</span></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>

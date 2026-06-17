@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.13.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Taskflow: A General-purpose Task-parallel Programming System: tf::IndexRange1DLike Concept Reference</title>
+<title>Taskflow: A General-purpose Task-parallel Programming System: tf::IndexRanges1DLike Concept Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,7 +73,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(function(){initNavTree('concepttf_1_1IndexRange1DLike.html',''); initResizable(true); });
+$(function(){initNavTree('concepttf_1_1IndexRanges1DLike.html',''); initResizable(true); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -99,37 +99,38 @@ $(function(){initNavTree('concepttf_1_1IndexRange1DLike.html',''); initResizable
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">tf::IndexRange1DLike Concept Reference</div></div>
+  <div class="headertitle"><div class="title">tf::IndexRanges1DLike Concept Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>concept to check if a type is a <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a>.  
+<p>concept to check if a type is a <a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, 1&gt;</a> (i.e., <a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a>)  
 <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="iterator_8hpp_source.html">taskflow/utility/iterator.hpp</a>&gt;</code></p>
 <h2 class="groupheader">Concept definition</h2>
 <div class="fragment"><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> R&gt;</div>
-<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike</a> =  <a class="code hl_variable" href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">is_1d_index_range_v&lt;std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;</a>&gt;&gt;</div>
-<div class="ttc" id="aconcepttf_1_1IndexRange1DLike_html"><div class="ttname"><a href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRange&lt;T, 1&gt;.</div><div class="ttdef"><b>Definition</b> iterator.hpp:1164</div></div>
-<div class="ttc" id="anamespacetf_html_a01f6a38951a99908710af5db131b6f87"><div class="ttname"><a href="namespacetf.html#a01f6a38951a99908710af5db131b6f87">tf::is_1d_index_range_v</a></div><div class="ttdeci">constexpr bool is_1d_index_range_v</div><div class="ttdoc">base type trait to detect if a type is a 1D IndexRange</div><div class="ttdef"><b>Definition</b> iterator.hpp:1144</div></div>
+<div class="line"><span class="keyword">concept </span><a class="code hl_concept" href="concepttf_1_1IndexRanges1DLike.html">tf::IndexRanges1DLike</a> =  <a class="code hl_concept" href="concepttf_1_1IndexRangesLike.html">IndexRangesLike&lt;R&gt;</a> &amp;&amp;</div>
+<div class="line">  (std::decay_t&lt;std::unwrap_ref_decay_t&lt;R&gt;&gt;::rank == 1)</div>
+<div class="ttc" id="aconcepttf_1_1IndexRanges1DLike_html"><div class="ttname"><a href="concepttf_1_1IndexRanges1DLike.html">tf::IndexRanges1DLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRanges&lt;T, 1&gt; (i.e., tf::IndexRange&lt;T&gt;)</div><div class="ttdef"><b>Definition</b> iterator.hpp:1017</div></div>
+<div class="ttc" id="aconcepttf_1_1IndexRangesLike_html"><div class="ttname"><a href="concepttf_1_1IndexRangesLike.html">tf::IndexRangesLike</a></div><div class="ttdoc">concept to check if a type is a tf::IndexRanges, regardless of dimensionality</div><div class="ttdef"><b>Definition</b> iterator.hpp:1004</div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>concept to check if a type is a <a class="el" href="classtf_1_1IndexRange.html" title="class to create a 1D index range of integral indices with a step size">tf::IndexRange&lt;T, 1&gt;</a>. </p>
+<div class="textblock"><p>concept to check if a type is a <a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, 1&gt;</a> (i.e., <a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a>) </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">R</td><td>the range type to evaluate</td></tr>
   </table>
   </dd>
 </dl>
-<div class="fragment"><div class="line"><span class="keyword">static_assert</span>( <a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike&lt;tf::IndexRange&lt;int&gt;</a>&gt;);      <span class="comment">// true</span></div>
-<div class="line"><span class="keyword">static_assert</span>( <a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike&lt;tf::IndexRange&lt;int, 1&gt;</a>&gt;);   <span class="comment">// true</span></div>
-<div class="line"><span class="keyword">static_assert</span>(!<a class="code hl_concept" href="concepttf_1_1IndexRange1DLike.html">tf::IndexRange1DLike&lt;tf::IndexRange&lt;int, 2&gt;</a>&gt;);   <span class="comment">// false</span></div>
+<div class="fragment"><div class="line"><span class="keyword">static_assert</span>( <a class="code hl_concept" href="concepttf_1_1IndexRanges1DLike.html">tf::IndexRanges1DLike&lt;tf::IndexRange&lt;int&gt;</a>&gt;);        <span class="comment">// true</span></div>
+<div class="line"><span class="keyword">static_assert</span>( <a class="code hl_concept" href="concepttf_1_1IndexRanges1DLike.html">tf::IndexRanges1DLike&lt;tf::IndexRanges&lt;int, 1&gt;</a>&gt;);    <span class="comment">// true</span></div>
+<div class="line"><span class="keyword">static_assert</span>(!<a class="code hl_concept" href="concepttf_1_1IndexRanges1DLike.html">tf::IndexRanges1DLike&lt;tf::IndexRanges&lt;int, 2&gt;</a>&gt;);    <span class="comment">// false</span></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.13.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1IndexRange1DLike.html">IndexRange1DLike</a></li>
+    <li class="navelem"><a class="el" href="namespacetf.html">tf</a></li><li class="navelem"><a class="el" href="concepttf_1_1IndexRanges1DLike.html">IndexRanges1DLike</a></li>
     <li class="footer">
       Maintained by <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>
       &nbsp;&mdash;&nbsp;

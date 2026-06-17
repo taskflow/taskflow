@@ -1377,7 +1377,7 @@ TEST_CASE("ParallelFor.Nested.8threads" * doctest::timeout(300)) {
 }
 
 // ----------------------------------------------------------------------------
-// MD range-based for_each_by_index (IndexRangeMDLike)
+// MD range-based for_each_by_index (IndexRangesMDLike)
 // ----------------------------------------------------------------------------
 
 // 2D: verifies every (i, j) sub-box is visited exactly once and covers the
@@ -1393,7 +1393,7 @@ void md_for_each_by_index_2d(unsigned W) {
     for(int dj = 1; dj <= 23; dj++) {
       for(size_t c : {0, 1, 3, 7, 99}) {
 
-        tf::IndexRange<int, 2> range(
+        tf::IndexRanges<int, 2> range(
           tf::IndexRange<int>(0, di, 1),
           tf::IndexRange<int>(0, dj, 1)
         );
@@ -1405,9 +1405,9 @@ void md_for_each_by_index_2d(unsigned W) {
 
         taskflow.clear();
         taskflow.for_each_by_index(range,
-          [&, dj](const tf::IndexRange<int, 2>& box) {
-            for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-              for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+          [&, dj](const tf::IndexRanges<int, 2>& box) {
+            for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+              for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
                 visited[i * dj + j]++;
                 total.fetch_add(1, std::memory_order_relaxed);
               }
@@ -1437,7 +1437,7 @@ void md_for_each_by_index_3d(unsigned W) {
   const int D0 = 4, D1 = 10, D2 = 9;
   const int S0 = 1, S1 = 2, S2 = 3;
 
-  tf::IndexRange<int, 3> range(
+  tf::IndexRanges<int, 3> range(
     tf::IndexRange<int>(0, D0 * S0, S0),
     tf::IndexRange<int>(0, D1 * S1, S1),
     tf::IndexRange<int>(0, D2 * S2, S2)
@@ -1452,10 +1452,10 @@ void md_for_each_by_index_3d(unsigned W) {
 
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int, 3>& box) {
-        for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-          for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
-            for(int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+      [&](const tf::IndexRanges<int, 3>& box) {
+        for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+          for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
+            for(int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
               size_t fi = (i / S0) * (D1 * D2) + (j / S1) * D2 + (k / S2);
               visited[fi]++;
               total.fetch_add(1, std::memory_order_relaxed);
@@ -1482,7 +1482,7 @@ void stateful_md_for_each_by_index_2d(unsigned W) {
   tf::Executor executor(W);
   tf::Taskflow taskflow;
 
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(0, 0, 1),
     tf::IndexRange<int>(0, 0, 1)
   );
@@ -1499,14 +1499,14 @@ void stateful_md_for_each_by_index_2d(unsigned W) {
         taskflow.clear();
 
         auto init = taskflow.emplace([&, di, dj]() {
-          range.dim(0).reset(0, di, 1);
-          range.dim(1).reset(0, dj, 1);
+          range.dim(0) = {0, di, 1};
+          range.dim(1) = {0, dj, 1};
         });
 
         auto loop = taskflow.for_each_by_index(std::ref(range),
-          [&, dj](const tf::IndexRange<int, 2>& box) {
-            for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-              for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+          [&, dj](const tf::IndexRanges<int, 2>& box) {
+            for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+              for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
                 visited[i * dj + j]++;
                 total.fetch_add(1, std::memory_order_relaxed);
               }
@@ -1734,7 +1734,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
 
   // ── 2D: outermost dim zero → size()=0, callback never fires ─────────────
   {
-    tf::IndexRange<int, 2> range(
+    tf::IndexRanges<int, 2> range(
       tf::IndexRange<int>(0, 0, 1),
       tf::IndexRange<int>(0, 7, 1)
     );
@@ -1742,7 +1742,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     std::atomic<int> total{0};
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,2>&) { total.fetch_add(1, std::memory_order_relaxed); },
+      [&](const tf::IndexRanges<int, 2>&) { total.fetch_add(1, std::memory_order_relaxed); },
       P()
     );
     executor.run(taskflow).wait();
@@ -1753,7 +1753,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // 5 x 0: every i in [0,5) must be visited exactly once.
   // The inner j-loop must never execute — verified by REQUIRE(false) inside.
   for (size_t c : {size_t{0}, size_t{1}, size_t{3}}) {
-    tf::IndexRange<int, 2> range(
+    tf::IndexRanges<int, 2> range(
       tf::IndexRange<int>(0, 5, 1),
       tf::IndexRange<int>(0, 0, 1)
     );
@@ -1763,10 +1763,10 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,2>& box) {
-        for (int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+      [&](const tf::IndexRanges<int, 2>& box) {
+        for (int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
           visited[i].fetch_add(1, std::memory_order_relaxed);
-          for (int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+          for (int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
             REQUIRE(false);  // dim1 is zero-size — this body must never execute
           }
         }
@@ -1780,7 +1780,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // 4 x 0 x 6: every i in [0,4) visited exactly once.
   // The j-loop must never execute; k-loop would run but is never reached.
   for (size_t c : {size_t{0}, size_t{1}, size_t{3}}) {
-    tf::IndexRange<int, 3> range(
+    tf::IndexRanges<int, 3> range(
       tf::IndexRange<int>(0, 4, 1),
       tf::IndexRange<int>(0, 0, 1),
       tf::IndexRange<int>(0, 6, 1)
@@ -1791,12 +1791,12 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,3>& box) {
-        for (int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
+      [&](const tf::IndexRanges<int, 3>& box) {
+        for (int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
           visited[i].fetch_add(1, std::memory_order_relaxed);
-          for (int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+          for (int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
             REQUIRE(false);  // dim1 is zero-size — this body must never execute
-            for (int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+            for (int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
               REQUIRE(false);  // unreachable
             }
           }
@@ -1811,7 +1811,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // 3 x 5 x 0: every (i,j) pair visited exactly once. Flat index = i*5+j.
   // The k-loop must never execute — verified by REQUIRE(false) inside.
   for (size_t c : {size_t{0}, size_t{1}, size_t{5}}) {
-    tf::IndexRange<int, 3> range(
+    tf::IndexRanges<int, 3> range(
       tf::IndexRange<int>(0, 3, 1),
       tf::IndexRange<int>(0, 5, 1),
       tf::IndexRange<int>(0, 0, 1)
@@ -1822,11 +1822,11 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,3>& box) {
-        for (int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-          for (int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+      [&](const tf::IndexRanges<int, 3>& box) {
+        for (int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+          for (int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
             visited[i*5+j].fetch_add(1, std::memory_order_relaxed);
-            for (int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+            for (int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
               REQUIRE(false);  // dim2 is zero-size — this body must never execute
             }
           }
@@ -1841,7 +1841,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // 3 x 4 x 0 x 5 x 6: every (i,j) visited once. Flat = i*4+j.
   // The dim2 loop must never execute; dim3 and dim4 are unreachable.
   for (size_t c : {size_t{0}, size_t{1}, size_t{4}}) {
-    tf::IndexRange<int, 5> range(
+    tf::IndexRanges<int, 5> range(
       tf::IndexRange<int>(0, 3, 1),
       tf::IndexRange<int>(0, 4, 1),
       tf::IndexRange<int>(0, 0, 1),
@@ -1854,15 +1854,15 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,5>& box) {
-        for (int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-          for (int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+      [&](const tf::IndexRanges<int, 5>& box) {
+        for (int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+          for (int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
             visited[i*4+j].fetch_add(1, std::memory_order_relaxed);
-            for (int k = box.dim(2).begin(); k < box.dim(2).end(); k += box.dim(2).step_size()) {
+            for (int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
               REQUIRE(false);  // dim2 is zero-size — this body must never execute
-              for (int l = box.dim(3).begin(); l < box.dim(3).end(); l += box.dim(3).step_size()) {
+              for (int l = std::get<0>(box.dim(3)); l < std::get<1>(box.dim(3)); l += std::get<2>(box.dim(3))) {
                 REQUIRE(false);  // unreachable
-                for (int m = box.dim(4).begin(); m < box.dim(4).end(); m += box.dim(4).step_size()) {
+                for (int m = std::get<0>(box.dim(4)); m < std::get<1>(box.dim(4)); m += std::get<2>(box.dim(4))) {
                   REQUIRE(false);  // unreachable
                 }
               }
@@ -1877,7 +1877,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
 
   // ── 5D: outermost dim zero → size()=0, callback never fires ─────────────
   {
-    tf::IndexRange<int, 5> range(
+    tf::IndexRanges<int, 5> range(
       tf::IndexRange<int>(0, 0, 1),
       tf::IndexRange<int>(0, 3, 1),
       tf::IndexRange<int>(0, 4, 1),
@@ -1888,7 +1888,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     std::atomic<int> total{0};
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,5>&) { total.fetch_add(1, std::memory_order_relaxed); },
+      [&](const tf::IndexRanges<int, 5>&) { total.fetch_add(1, std::memory_order_relaxed); },
       P()
     );
     executor.run(taskflow).wait();
@@ -1899,7 +1899,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // 2x2x2x2x0x2x2x2x2: every (a,b,c,d) visited once. Flat = a*8+b*4+c*2+d.
   // The dim4 loop must never execute; dims 5..8 are unreachable.
   for (size_t cs : {size_t{0}, size_t{1}, size_t{4}}) {
-    tf::IndexRange<int, 9> range(
+    tf::IndexRanges<int, 9> range(
       tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
       tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
       tf::IndexRange<int>(0,0,1),
@@ -1912,13 +1912,13 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,9>& box) {
-        for (int a = box.dim(0).begin(); a < box.dim(0).end(); ++a)
-          for (int b = box.dim(1).begin(); b < box.dim(1).end(); ++b)
-            for (int c = box.dim(2).begin(); c < box.dim(2).end(); ++c)
-              for (int d = box.dim(3).begin(); d < box.dim(3).end(); ++d) {
+      [&](const tf::IndexRanges<int, 9>& box) {
+        for (int a = std::get<0>(box.dim(0)); a < std::get<1>(box.dim(0)); ++a)
+          for (int b = std::get<0>(box.dim(1)); b < std::get<1>(box.dim(1)); ++b)
+            for (int c = std::get<0>(box.dim(2)); c < std::get<1>(box.dim(2)); ++c)
+              for (int d = std::get<0>(box.dim(3)); d < std::get<1>(box.dim(3)); ++d) {
                 visited[a*8+b*4+c*2+d].fetch_add(1, std::memory_order_relaxed);
-                for (int e = box.dim(4).begin(); e < box.dim(4).end(); ++e) {
+                for (int e = std::get<0>(box.dim(4)); e < std::get<1>(box.dim(4)); ++e) {
                   REQUIRE(false);  // dim4 is zero-size — must never execute
                 }
               }
@@ -1933,7 +1933,7 @@ void md_for_each_by_index_zero_dim(unsigned W) {
   // First zero at d=3 — the dim3 loop must never execute.
   // (Second zero at d=7 is unreachable since dim3 already blocks execution.)
   for (size_t cs : {size_t{0}, size_t{1}, size_t{4}}) {
-    tf::IndexRange<int, 11> range(
+    tf::IndexRanges<int, 11> range(
       tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
       tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,0,1),
       tf::IndexRange<int>(0,3,1), tf::IndexRange<int>(0,4,1),
@@ -1947,12 +1947,12 @@ void md_for_each_by_index_zero_dim(unsigned W) {
     for (auto& v : visited) v.store(0);
     taskflow.clear();
     taskflow.for_each_by_index(range,
-      [&](const tf::IndexRange<int,11>& box) {
-        for (int i = box.dim(0).begin(); i < box.dim(0).end(); ++i)
-          for (int j = box.dim(1).begin(); j < box.dim(1).end(); ++j)
-            for (int k = box.dim(2).begin(); k < box.dim(2).end(); ++k) {
+      [&](const tf::IndexRanges<int, 11>& box) {
+        for (int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); ++i)
+          for (int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); ++j)
+            for (int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); ++k) {
               visited[i*4+j*2+k].fetch_add(1, std::memory_order_relaxed);
-              for (int l = box.dim(3).begin(); l < box.dim(3).end(); ++l) {
+              for (int l = std::get<0>(box.dim(3)); l < std::get<1>(box.dim(3)); ++l) {
                 REQUIRE(false);  // dim3 is zero-size — must never execute
               }
             }

@@ -3,7 +3,7 @@ namespace tf {
 /** @page ExamplesConv2D 2D Image Convolution
 
 We implement a parallel 2D image convolution using tf::Taskflow::for_each_by_index
-with a two-dimensional tf::IndexRange.
+with a two-dimensional tf::IndexRanges.
 This example demonstrates how a naturally 2D iteration space maps directly
 onto multidimensional index ranges and why output pixels are unconditionally
 safe to compute in parallel.
@@ -84,9 +84,9 @@ A common strategy is boundary clamping: any out-of-bounds row or column
 index is clamped to the nearest valid index, effectively extending the
 image edge values outward.
 
-@section Conv2DParallelism Why it Maps Perfectly to IndexRange?
+@section Conv2DParallelism Why it Maps Perfectly to IndexRanges?
 
-The 2D image convolution maps perfectly <tt>tf::IndexRange<int,2></tt>
+The 2D image convolution maps perfectly <tt>tf::IndexRanges<int,2></tt>
 because every output pixel `(i, j)` depends only on a fixed neighbourhood
 in the input and the kernel.
 Additionally, since two output pixels write to the
@@ -94,7 +94,7 @@ same memory location, all output pixels can be computed simultaneously
 with no synchronization at all.
 As a result, the iteration space is inherently 2D: output row @c i ranges over
 `[0, output_rows)` and output column @c j ranges over `[0, output_cols)`.
-<tt>tf::IndexRange<int, 2></tt> expresses this directly as the Cartesian product
+<tt>tf::IndexRanges<int, 2></tt> expresses this directly as the Cartesian product
 of two 1D ranges, and tf::Taskflow::for_each_by_index partitions this 2D
 space into axis-aligned sub-boxes and assigns each sub-box to a worker.
 
@@ -146,11 +146,11 @@ int main() {
   };
 
   // ── parallel 2D convolution ───────────────────────────────────────────────
-  // IndexRange<int,2> covers the full output pixel space [0,rows) x [0,cols).
+  // IndexRanges<int,2> covers the full output pixel space [0,rows) x [0,cols).
   // Each sub-box delivered to the kernel is a contiguous 2D tile of output
   // pixels. Pixels in different tiles never share output locations, so no
   // synchronization is needed.
-  tf::IndexRange<int, 2> range(
+  tf::IndexRanges<int, 2> range(
     tf::IndexRange<int>(0, rows, 1),   // dim 0: output rows
     tf::IndexRange<int>(0, cols, 1)    // dim 1: output columns
   );
@@ -159,9 +159,11 @@ int main() {
   tf::Taskflow taskflow;
 
   taskflow.for_each_by_index(range,
-    [&](const tf::IndexRange<int, 2>& box) {
-      for(int i = box.dim(0).begin(); i < box.dim(0).end(); i += box.dim(0).step_size()) {
-        for(int j = box.dim(1).begin(); j < box.dim(1).end(); j += box.dim(1).step_size()) {
+    [&](const tf::IndexRanges<int, 2>& box) {
+      auto [i0, i1, is] = box.dim(0);
+      auto [j0, j1, js] = box.dim(1);
+      for(int i = i0; i < i1; i += is) {
+        for(int j = j0; j < j1; j += js) {
           float sum = 0.0f;
           for(int ki = 0; ki < ksize; ki++) {
             for(int kj = 0; kj < ksize; kj++) {
@@ -224,7 +226,7 @@ The input image is read-only during the sweep. No atomic operations or mutexes a
   + Boundary clamping inside the kernel: 
 The @c std::clamp calls handle boundary pixels without any special-casing outside the inner loop. Alternative boundary strategies (zero-padding, mirror, wrap-around) require only changing the two index computations inside the kernel; the parallel structure is identical for all of them.
 
-  + 2D index range maps naturally to 2D pixel space: Using <tt>tf::IndexRange<int,2></tt> instead of a flat 1D range over all pixels preserves the row-column structure of the problem. Each sub-box delivered to the kernel is a geometrically contiguous tile of the output image, which keeps the input window accesses for adjacent output pixels close together in memory and benefits cache reuse across the inner loop over columns.
+  + 2D index range maps naturally to 2D pixel space: Using <tt>tf::IndexRanges<int,2></tt> instead of a flat 1D range over all pixels preserves the row-column structure of the problem. Each sub-box delivered to the kernel is a geometrically contiguous tile of the output image, which keeps the input window accesses for adjacent output pixels close together in memory and benefits cache reuse across the inner loop over columns.
 
   + Partitioner choice: Each output pixel performs exactly @c ksize*ksize multiply-add operations
 regardless of its position, so the workload is perfectly uniform.
@@ -237,7 +239,7 @@ For large images or deep filter stacks, cache locality of the input window
 accesses becomes the dominant performance factor.
 Tiling the output into cache-sized sub-boxes (so that the corresponding
 input windows fit in L2 or L3 cache) can significantly improve throughput.
-<tt>tf::IndexRange<int,2></tt> naturally expresses this tiling: simply choose a
+<tt>tf::IndexRanges<int,2></tt> naturally expresses this tiling: simply choose a
 tile size that fits the relevant input region in cache and let the
 partitioner handle distribution across workers.
 

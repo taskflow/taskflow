@@ -58,7 +58,7 @@ var searchData=
   ['path_20scheduling_55',['Critical Path Scheduling',['../ExamplesPERT.html',1,'Examples']]],
   ['pattern_56',['The Auxiliary Join Task Pattern',['../ExamplesMakeGraph.html#MakeGraphJoinTask',1,'']]],
   ['per_20item_20graph_20structure_57',['Per-Item Graph Structure',['../ExamplesSpeculativeExecution.html#SpecSingleItem',1,'']]],
-  ['perfectly_20to_20indexrange_58',['Why it Maps Perfectly to IndexRange?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
+  ['perfectly_20to_20indexranges_58',['Why it Maps Perfectly to IndexRanges?',['../ExamplesConv2D.html#Conv2DParallelism',1,'']]],
   ['performance_59',['Performance',['../dreamplace.html#UseCasesDreamPlacePerformance',1,'']]],
   ['performance_20improvement_60',['Performance Improvement',['../opentimer.html#UseCaseOpenTimerPerformanceImprovement',1,'']]],
   ['performance_20timing_20analysis_20tool_61',['OpenTimer: A High-performance Timing Analysis Tool',['../opentimer.html#UseCasesOpenTimer',1,'']]],
