@@ -1,4 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+﻿#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
@@ -366,94 +366,94 @@ TEST_CASE("BoundedWSQ.8Consumers.BulkPush" * doctest::timeout(300)) {
 // ============================================================================
 
 TEST_CASE("UnboundedWSQ.Resize") {
-  tf::UnboundedWSQ<void*> queue(1);
-  REQUIRE(queue.capacity() == 2);
+    tf::UnboundedWSQ<void*> queue(1);
+    REQUIRE(queue.capacity() == 2);
 
-  std::vector<void*> data(2048);
+    std::vector<void*> data(2048);
 
-  auto first = data.data();
-  queue.bulk_push(first, 1);
-  REQUIRE(queue.size()     == 1);
-  REQUIRE(queue.capacity() == 2);
+    auto first = data.data();
+    queue.bulk_push(first, 1);
+    REQUIRE(queue.size()     == 1);
+    REQUIRE(queue.capacity() == 2);
 
-  first = data.data();
-  queue.bulk_push(first, 2);
-  REQUIRE(queue.size()     == 3);
-  REQUIRE(queue.capacity() == 4);
+    first = data.data();
+    queue.bulk_push(first, 2);
+    REQUIRE(queue.size()     == 3);
+    REQUIRE(queue.capacity() == 4);
 
-  first = data.data();
-  queue.bulk_push(first, 10);
-  REQUIRE(queue.size()     == 13);
-  REQUIRE(queue.capacity() == 16);
+    first = data.data();
+    queue.bulk_push(first, 10);
+    REQUIRE(queue.size()     == 13);
+    REQUIRE(queue.capacity() == 16);
 
-  first = data.data();
-  queue.bulk_push(first, 1200);
-  REQUIRE(queue.size()     == 1213);
-  REQUIRE(queue.capacity() == 2048);
+    first = data.data();
+    queue.bulk_push(first, 1200);
+    REQUIRE(queue.size()     == 1213);
+    REQUIRE(queue.capacity() == 2048);
 
-  for(size_t i=0; i<1213; ++i) {
-    REQUIRE(queue.size() == 1213 - i);
-    queue.pop();
-  }
-  REQUIRE(queue.empty() == true);
+    for(size_t i=0; i<1213; ++i) {
+        REQUIRE(queue.size() == 1213 - i);
+        queue.pop();
+    }
+    REQUIRE(queue.empty() == true);
 
-  // capacity does not shrink after drain
-  first = data.data();
-  queue.bulk_push(first, 1);
-  REQUIRE(queue.size()     == 1);
-  REQUIRE(queue.capacity() == 2048);
+    // capacity does not shrink after drain
+    first = data.data();
+    queue.bulk_push(first, 1);
+    REQUIRE(queue.size()     == 1);
+    REQUIRE(queue.capacity() == 2048);
 
-  first = data.data();
-  queue.bulk_push(first, 2);
-  REQUIRE(queue.size()     == 3);
-  REQUIRE(queue.capacity() == 2048);
+    first = data.data();
+    queue.bulk_push(first, 2);
+    REQUIRE(queue.size()     == 3);
+    REQUIRE(queue.capacity() == 2048);
 
-  first = data.data();
-  queue.bulk_push(first, 10);
-  REQUIRE(queue.size()     == 13);
-  REQUIRE(queue.capacity() == 2048);
+    first = data.data();
+    queue.bulk_push(first, 10);
+    REQUIRE(queue.size()     == 13);
+    REQUIRE(queue.capacity() == 2048);
 
-  first = data.data();
-  queue.bulk_push(first, 1200);
-  REQUIRE(queue.size()     == 1213);
-  REQUIRE(queue.capacity() == 2048);
+    first = data.data();
+    queue.bulk_push(first, 1200);
+    REQUIRE(queue.size()     == 1213);
+    REQUIRE(queue.capacity() == 2048);
 }
 
 // Procedure: unbounded_wsq_owner
 void unbounded_wsq_owner() {
 
-  tf::UnboundedWSQ<void*> queue;
-  std::vector<void*> gold;
+    tf::UnboundedWSQ<void*> queue;
+    std::vector<void*> gold;
 
-  for(size_t N=1; N<=777777; N=N*2+1) {
+    for(size_t N=1; N<=777777; N=N*2+1) {
 
-    gold.resize(N);
-    REQUIRE(queue.empty());
+        gold.resize(N);
+        REQUIRE(queue.empty());
 
-    for(size_t i=0; i<N; ++i) {
-      gold[i] = gold.data() + i;
-      queue.push(gold[i]);
-    }
-    for(size_t i=0; i<N; ++i) {
-      auto ptr = queue.pop();
-      REQUIRE(ptr != nullptr);
-      REQUIRE(gold[N-i-1] == ptr);
-    }
-    REQUIRE(queue.pop() == nullptr);
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+            queue.push(gold[i]);
+        }
+        for(size_t i=0; i<N; ++i) {
+            auto ptr = queue.pop();
+            REQUIRE(ptr != nullptr);
+            REQUIRE(gold[N-i-1] == ptr);
+        }
+        REQUIRE(queue.pop() == nullptr);
 
-    for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i]);
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold[i]);
+        }
+        for(size_t i=0; i<N; ++i) {
+            auto ptr = queue.steal();
+            REQUIRE(ptr != nullptr);
+            REQUIRE(gold[i] == ptr);
+        }
     }
-    for(size_t i=0; i<N; ++i) {
-      auto ptr = queue.steal();
-      REQUIRE(ptr != nullptr);
-      REQUIRE(gold[i] == ptr);
-    }
-  }
 }
 
 TEST_CASE("UnboundedWSQ.Owner" * doctest::timeout(300)) {
-  unbounded_wsq_owner();
+    unbounded_wsq_owner();
 }
 
 
@@ -464,41 +464,41 @@ TEST_CASE("UnboundedWSQ.Owner" * doctest::timeout(300)) {
 
 TEST_CASE("UnboundedWSQ.ValueType") {
 
-  tf::UnboundedWSQ<void*> Q1;
-  tf::UnboundedWSQ<int>   Q2;
+    tf::UnboundedWSQ<void*> Q1;
+    tf::UnboundedWSQ<int>   Q2;
 
-  auto empty1 = Q1.empty_value();
-  auto empty2 = Q2.empty_value();
+    auto empty1 = Q1.empty_value();
+    auto empty2 = Q2.empty_value();
 
-  static_assert(std::is_same_v<decltype(empty1), void*>);
-  static_assert(std::is_same_v<decltype(empty2), std::optional<int>>);
+    static_assert(std::is_same_v<decltype(empty1), void*>);
+    static_assert(std::is_same_v<decltype(empty2), std::optional<int>>);
 
-  REQUIRE(empty1 == nullptr);
-  REQUIRE(empty2 == std::nullopt);
+    REQUIRE(empty1 == nullptr);
+    REQUIRE(empty2 == std::nullopt);
 
-  auto v = Q2.pop();
-  REQUIRE(v == std::nullopt);
+    auto v = Q2.pop();
+    REQUIRE(v == std::nullopt);
 
-  Q2.push(1);
-  Q2.push(2);
-  Q2.push(3);
-  Q2.push(4);
+    Q2.push(1);
+    Q2.push(2);
+    Q2.push(3);
+    Q2.push(4);
 
-  REQUIRE(Q2.pop()   == 4);
-  REQUIRE(Q2.pop()   == 3);
-  REQUIRE(Q2.pop()   == 2);
-  REQUIRE(Q2.pop()   == 1);
-  REQUIRE(Q2.pop()   == std::nullopt);
+    REQUIRE(Q2.pop()   == 4);
+    REQUIRE(Q2.pop()   == 3);
+    REQUIRE(Q2.pop()   == 2);
+    REQUIRE(Q2.pop()   == 1);
+    REQUIRE(Q2.pop()   == std::nullopt);
 
-  Q2.push(1);
-  Q2.push(2);
-  Q2.push(3);
-  Q2.push(4);
-  REQUIRE(Q2.steal() == 1);
-  REQUIRE(Q2.steal() == 2);
-  REQUIRE(Q2.steal() == 3);
-  REQUIRE(Q2.steal() == 4);
-  REQUIRE(Q2.steal() == std::nullopt);
+    Q2.push(1);
+    Q2.push(2);
+    Q2.push(3);
+    Q2.push(4);
+    REQUIRE(Q2.steal() == 1);
+    REQUIRE(Q2.steal() == 2);
+    REQUIRE(Q2.steal() == 3);
+    REQUIRE(Q2.steal() == 4);
+    REQUIRE(Q2.steal() == std::nullopt);
 }
 
 // ----------------------------------------------------------------------------
@@ -507,119 +507,119 @@ TEST_CASE("UnboundedWSQ.ValueType") {
 
 void unbounded_wsq_n_consumers(size_t M) {
 
-  tf::UnboundedWSQ<void*> queue;
+    tf::UnboundedWSQ<void*> queue;
 
-  std::vector<void*> gold;
-  std::atomic<size_t> consumed;
+    std::vector<void*> gold;
+    std::atomic<size_t> consumed;
 
-  // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
-  for(size_t N=1; N<=265720; N=N*3+1) {
+    // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
+    for(size_t N=1; N<=265720; N=N*3+1) {
 
-    REQUIRE(queue.empty());
+        REQUIRE(queue.empty());
 
-    gold.resize(N);
-    consumed = 0;
+        gold.resize(N);
+        consumed = 0;
 
-    for(size_t i=0; i<N; ++i) {
-      gold[i] = gold.data() + i;
-    }
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+        }
 
-    // master push and pop
-    for(size_t i=0; i<N; ++i) {
-      queue.push(gold.data() + i);
-    }
-    REQUIRE(queue.size() == N);
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(queue.pop() == gold[N - i - 1]);
-    }
-    REQUIRE(queue.empty() == true);
+        // master push and pop
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold.data() + i);
+        }
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.pop() == gold[N - i - 1]);
+        }
+        REQUIRE(queue.empty() == true);
 
-    // master push and steal
-    for(size_t i=0; i<N; ++i) {
-      queue.push(gold.data() + i);
-    }
-    REQUIRE(queue.size() == N);
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(queue.steal() == gold[i]);
-    }
-    REQUIRE(queue.empty() == true);
+        // master push and steal
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold.data() + i);
+        }
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.steal() == gold[i]);
+        }
+        REQUIRE(queue.empty() == true);
 
-    // concurrent
-    std::vector<std::thread> threads;
-    std::vector<std::vector<void*>> stolens(M);
+        // concurrent
+        std::vector<std::thread> threads;
+        std::vector<std::vector<void*>> stolens(M);
 
-    for(size_t i=0; i<M; ++i) {
-      threads.emplace_back([&, i](){
+        for(size_t i=0; i<M; ++i) {
+            threads.emplace_back([&, i](){
+                while(consumed != N) {
+                    auto ptr = queue.steal();
+                    if(ptr != nullptr) {
+                        stolens[i].push_back(ptr);
+                        consumed.fetch_add(1, std::memory_order_relaxed);
+                    }
+                }
+                REQUIRE(queue.steal() == nullptr);
+            });
+        }
+
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold[i]);
+        }
+
+        std::vector<void*> items;
         while(consumed != N) {
-          auto ptr = queue.steal();
-          if(ptr != nullptr) {
-            stolens[i].push_back(ptr);
-            consumed.fetch_add(1, std::memory_order_relaxed);
-          }
+            auto ptr = queue.pop();
+            if(ptr != nullptr) {
+                items.push_back(ptr);
+                consumed.fetch_add(1, std::memory_order_relaxed);
+            }
         }
         REQUIRE(queue.steal() == nullptr);
-      });
+        REQUIRE(queue.pop()   == nullptr);
+        REQUIRE(queue.empty());
+
+        for(auto& thread : threads) thread.join();
+
+        for(size_t i=0; i<M; ++i) {
+            for(auto s : stolens[i]) items.push_back(s);
+        }
+
+        std::sort(items.begin(), items.end());
+        std::sort(gold.begin(),  gold.end());
+        REQUIRE(items.size() == N);
+        REQUIRE(items == gold);
     }
-
-    for(size_t i=0; i<N; ++i) {
-      queue.push(gold[i]);
-    }
-
-    std::vector<void*> items;
-    while(consumed != N) {
-      auto ptr = queue.pop();
-      if(ptr != nullptr) {
-        items.push_back(ptr);
-        consumed.fetch_add(1, std::memory_order_relaxed);
-      }
-    }
-    REQUIRE(queue.steal() == nullptr);
-    REQUIRE(queue.pop()   == nullptr);
-    REQUIRE(queue.empty());
-
-    for(auto& thread : threads) thread.join();
-
-    for(size_t i=0; i<M; ++i) {
-      for(auto s : stolens[i]) items.push_back(s);
-    }
-
-    std::sort(items.begin(), items.end());
-    std::sort(gold.begin(),  gold.end());
-    REQUIRE(items.size() == N);
-    REQUIRE(items == gold);
-  }
 }
 
 TEST_CASE("UnboundedWSQ.1Consumer" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(1);
+    unbounded_wsq_n_consumers(1);
 }
 
 TEST_CASE("UnboundedWSQ.2Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(2);
+    unbounded_wsq_n_consumers(2);
 }
 
 TEST_CASE("UnboundedWSQ.3Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(3);
+    unbounded_wsq_n_consumers(3);
 }
 
 TEST_CASE("UnboundedWSQ.4Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(4);
+    unbounded_wsq_n_consumers(4);
 }
 
 TEST_CASE("UnboundedWSQ.5Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(5);
+    unbounded_wsq_n_consumers(5);
 }
 
 TEST_CASE("UnboundedWSQ.6Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(6);
+    unbounded_wsq_n_consumers(6);
 }
 
 TEST_CASE("UnboundedWSQ.7Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(7);
+    unbounded_wsq_n_consumers(7);
 }
 
 TEST_CASE("UnboundedWSQ.8Consumers" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers(8);
+    unbounded_wsq_n_consumers(8);
 }
 
 // ----------------------------------------------------------------------------
@@ -628,114 +628,450 @@ TEST_CASE("UnboundedWSQ.8Consumers" * doctest::timeout(300)) {
 
 void unbounded_wsq_n_consumers_bulk_push(size_t M) {
 
-  tf::UnboundedWSQ<void*> queue;
+    tf::UnboundedWSQ<void*> queue;
 
-  std::vector<void*> gold;
-  std::atomic<size_t> consumed;
+    std::vector<void*> gold;
+    std::atomic<size_t> consumed;
 
-  // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
-  for(size_t N=1; N<=265720; N=N*3+1) {
+    // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
+    for(size_t N=1; N<=265720; N=N*3+1) {
 
-    REQUIRE(queue.empty());
+        REQUIRE(queue.empty());
 
-    gold.resize(N);
-    consumed = 0;
+        gold.resize(N);
+        consumed = 0;
 
-    for(size_t i=0; i<N; ++i) {
-      gold[i] = gold.data() + i;
-    }
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+        }
 
-    // bulk push and pop
-    auto first = gold.data();
-    queue.bulk_push(first, N);
-    REQUIRE(queue.size() == N);
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(queue.pop() == gold[N - i - 1]);
-    }
-    REQUIRE(queue.empty() == true);
+        // bulk push and pop
+        auto first = gold.data();
+        queue.bulk_push(first, N);
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.pop() == gold[N - i - 1]);
+        }
+        REQUIRE(queue.empty() == true);
 
-    // bulk push and steal
-    first = gold.data();
-    queue.bulk_push(first, N);
-    REQUIRE(queue.size() == N);
-    for(size_t i=0; i<N; i++) {
-      REQUIRE(queue.steal() == gold[i]);
-    }
-    REQUIRE(queue.empty() == true);
+        // bulk push and steal
+        first = gold.data();
+        queue.bulk_push(first, N);
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.steal() == gold[i]);
+        }
+        REQUIRE(queue.empty() == true);
 
-    // concurrent
-    std::vector<std::thread> threads;
-    std::vector<std::vector<void*>> stolens(M);
+        // concurrent
+        std::vector<std::thread> threads;
+        std::vector<std::vector<void*>> stolens(M);
 
-    for(size_t i=0; i<M; ++i) {
-      threads.emplace_back([&, i](){
+        for(size_t i=0; i<M; ++i) {
+            threads.emplace_back([&, i](){
+                while(consumed != N) {
+                    auto ptr = queue.steal();
+                    if(ptr != nullptr) {
+                        stolens[i].push_back(ptr);
+                        consumed.fetch_add(1, std::memory_order_relaxed);
+                    }
+                }
+                REQUIRE(queue.steal() == nullptr);
+            });
+        }
+
+        first = gold.data();
+        queue.bulk_push(first, N);
+
+        std::vector<void*> items;
         while(consumed != N) {
-          auto ptr = queue.steal();
-          if(ptr != nullptr) {
-            stolens[i].push_back(ptr);
-            consumed.fetch_add(1, std::memory_order_relaxed);
-          }
+            auto ptr = queue.pop();
+            if(ptr != nullptr) {
+                items.push_back(ptr);
+                consumed.fetch_add(1, std::memory_order_relaxed);
+            }
         }
         REQUIRE(queue.steal() == nullptr);
-      });
+        REQUIRE(queue.pop()   == nullptr);
+        REQUIRE(queue.empty());
+
+        for(auto& thread : threads) thread.join();
+
+        for(size_t i=0; i<M; ++i) {
+            for(auto s : stolens[i]) items.push_back(s);
+        }
+
+        std::sort(items.begin(), items.end());
+        std::sort(gold.begin(),  gold.end());
+        REQUIRE(items.size() == N);
+        REQUIRE(items == gold);
     }
-
-    first = gold.data();
-    queue.bulk_push(first, N);
-
-    std::vector<void*> items;
-    while(consumed != N) {
-      auto ptr = queue.pop();
-      if(ptr != nullptr) {
-        items.push_back(ptr);
-        consumed.fetch_add(1, std::memory_order_relaxed);
-      }
-    }
-    REQUIRE(queue.steal() == nullptr);
-    REQUIRE(queue.pop()   == nullptr);
-    REQUIRE(queue.empty());
-
-    for(auto& thread : threads) thread.join();
-
-    for(size_t i=0; i<M; ++i) {
-      for(auto s : stolens[i]) items.push_back(s);
-    }
-
-    std::sort(items.begin(), items.end());
-    std::sort(gold.begin(),  gold.end());
-    REQUIRE(items.size() == N);
-    REQUIRE(items == gold);
-  }
 }
 
 TEST_CASE("UnboundedWSQ.1Consumer.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(1);
+    unbounded_wsq_n_consumers_bulk_push(1);
 }
 
 TEST_CASE("UnboundedWSQ.2Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(2);
+    unbounded_wsq_n_consumers_bulk_push(2);
 }
 
 TEST_CASE("UnboundedWSQ.3Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(3);
+    unbounded_wsq_n_consumers_bulk_push(3);
 }
 
 TEST_CASE("UnboundedWSQ.4Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(4);
+    unbounded_wsq_n_consumers_bulk_push(4);
 }
 
 TEST_CASE("UnboundedWSQ.5Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(5);
+    unbounded_wsq_n_consumers_bulk_push(5);
 }
 
 TEST_CASE("UnboundedWSQ.6Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(6);
+    unbounded_wsq_n_consumers_bulk_push(6);
 }
 
 TEST_CASE("UnboundedWSQ.7Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(7);
+    unbounded_wsq_n_consumers_bulk_push(7);
 }
 
 TEST_CASE("UnboundedWSQ.8Consumers.BulkPush" * doctest::timeout(300)) {
-  unbounded_wsq_n_consumers_bulk_push(8);
+    unbounded_wsq_n_consumers_bulk_push(8);
 }
+
+
+
+// ============================================================================
+// OverflowWSQ Tests  (steal-only: pop() has been removed)
+// ============================================================================
+
+TEST_CASE("OverflowWSQ.Resize") {
+    tf::OverflowWSQ<void*> queue(1);
+    REQUIRE(queue.capacity() == 2);
+
+    std::vector<void*> data(2048);
+
+    auto first = data.data();
+    queue.bulk_push(first, 1);
+    REQUIRE(queue.size()     == 1);
+    REQUIRE(queue.capacity() == 2);
+
+    first = data.data();
+    queue.bulk_push(first, 2);
+    REQUIRE(queue.size()     == 3);
+    REQUIRE(queue.capacity() == 4);
+
+    first = data.data();
+    queue.bulk_push(first, 10);
+    REQUIRE(queue.size()     == 13);
+    REQUIRE(queue.capacity() == 16);
+
+    first = data.data();
+    queue.bulk_push(first, 1200);
+    REQUIRE(queue.size()     == 1213);
+    REQUIRE(queue.capacity() == 2048);
+
+    for(size_t i=0; i<1213; ++i) {
+        REQUIRE(queue.size() == 1213 - i);
+        queue.steal();
+    }
+    REQUIRE(queue.empty() == true);
+
+    // capacity does not shrink after drain
+    first = data.data();
+    queue.bulk_push(first, 1);
+    REQUIRE(queue.size()     == 1);
+    REQUIRE(queue.capacity() == 2048);
+
+    first = data.data();
+    queue.bulk_push(first, 2);
+    REQUIRE(queue.size()     == 3);
+    REQUIRE(queue.capacity() == 2048);
+
+    first = data.data();
+    queue.bulk_push(first, 10);
+    REQUIRE(queue.size()     == 13);
+    REQUIRE(queue.capacity() == 2048);
+
+    first = data.data();
+    queue.bulk_push(first, 1200);
+    REQUIRE(queue.size()     == 1213);
+    REQUIRE(queue.capacity() == 2048);
+}
+
+// Procedure: overflow_wsq_owner
+// steal-only: push N then verify FIFO drain via steal.
+void overflow_wsq_owner() {
+
+    tf::OverflowWSQ<void*> queue;
+    std::vector<void*> gold;
+
+    for(size_t N=1; N<=777777; N=N*2+1) {
+
+        gold.resize(N);
+        REQUIRE(queue.empty());
+
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+            queue.push(gold[i]);
+        }
+        for(size_t i=0; i<N; ++i) {
+            auto ptr = queue.steal();
+            REQUIRE(ptr != nullptr);
+            REQUIRE(gold[i] == ptr);
+        }
+        REQUIRE(queue.steal() == nullptr);
+    }
+}
+
+TEST_CASE("OverflowWSQ.Owner" * doctest::timeout(300)) {
+    overflow_wsq_owner();
+}
+
+
+
+// ----------------------------------------------------------------------------
+// OverflowWSQ ValueType test
+// ----------------------------------------------------------------------------
+
+TEST_CASE("OverflowWSQ.ValueType") {
+
+    tf::OverflowWSQ<void*> Q1;
+    tf::OverflowWSQ<int>   Q2;
+
+    auto empty1 = Q1.empty_value();
+    auto empty2 = Q2.empty_value();
+
+    static_assert(std::is_same_v<decltype(empty1), void*>);
+    static_assert(std::is_same_v<decltype(empty2), std::optional<int>>);
+
+    REQUIRE(empty1 == nullptr);
+    REQUIRE(empty2 == std::nullopt);
+
+    auto v = Q2.steal();
+    REQUIRE(v == std::nullopt);
+
+    Q2.push(1);
+    Q2.push(2);
+    Q2.push(3);
+    Q2.push(4);
+    REQUIRE(Q2.steal() == 1);
+    REQUIRE(Q2.steal() == 2);
+    REQUIRE(Q2.steal() == 3);
+    REQUIRE(Q2.steal() == 4);
+    REQUIRE(Q2.steal() == std::nullopt);
+}
+
+// ----------------------------------------------------------------------------
+// OverflowWSQ Multiple Consumers Test (steal-only)
+// ----------------------------------------------------------------------------
+
+void overflow_wsq_n_consumers(size_t M) {
+
+    tf::OverflowWSQ<void*> queue;
+
+    std::vector<void*> gold;
+    std::atomic<size_t> consumed;
+
+    // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
+    for(size_t N=1; N<=265720; N=N*3+1) {
+
+        REQUIRE(queue.empty());
+
+        gold.resize(N);
+        consumed = 0;
+
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+        }
+
+        // master push and steal (single-thread FIFO check)
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold.data() + i);
+        }
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.steal() == gold[i]);
+        }
+        REQUIRE(queue.empty() == true);
+
+        // concurrent: owner only pushes, all consumption done by thieves
+        std::vector<std::thread> threads;
+        std::vector<std::vector<void*>> stolens(M);
+
+        for(size_t i=0; i<M; ++i) {
+            threads.emplace_back([&, i](){
+                while(consumed != N) {
+                    auto ptr = queue.steal();
+                    if(ptr != nullptr) {
+                        stolens[i].push_back(ptr);
+                        consumed.fetch_add(1, std::memory_order_relaxed);
+                    }
+                }
+                REQUIRE(queue.steal() == nullptr);
+            });
+        }
+
+        for(size_t i=0; i<N; ++i) {
+            queue.push(gold[i]);
+        }
+
+        // owner waits for thieves to drain (steal-only: owner cannot pop)
+        while(consumed != N) {
+            std::this_thread::yield();
+        }
+        REQUIRE(queue.steal() == nullptr);
+        REQUIRE(queue.empty());
+
+        for(auto& thread : threads) thread.join();
+
+        std::vector<void*> items;
+        for(size_t i=0; i<M; ++i) {
+            for(auto s : stolens[i]) items.push_back(s);
+        }
+
+        std::sort(items.begin(), items.end());
+        std::sort(gold.begin(),  gold.end());
+        REQUIRE(items.size() == N);
+        REQUIRE(items == gold);
+    }
+}
+
+TEST_CASE("OverflowWSQ.1Consumer" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(1);
+}
+
+TEST_CASE("OverflowWSQ.2Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(2);
+}
+
+TEST_CASE("OverflowWSQ.3Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(3);
+}
+
+TEST_CASE("OverflowWSQ.4Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(4);
+}
+
+TEST_CASE("OverflowWSQ.5Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(5);
+}
+
+TEST_CASE("OverflowWSQ.6Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(6);
+}
+
+TEST_CASE("OverflowWSQ.7Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(7);
+}
+
+TEST_CASE("OverflowWSQ.8Consumers" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers(8);
+}
+
+// ----------------------------------------------------------------------------
+// OverflowWSQ Multiple Consumers BulkPush Test (steal-only)
+// ----------------------------------------------------------------------------
+
+void overflow_wsq_n_consumers_bulk_push(size_t M) {
+
+    tf::OverflowWSQ<void*> queue;
+
+    std::vector<void*> gold;
+    std::atomic<size_t> consumed;
+
+    // 1, 4, 13, 40, 121, 364, 1093, 3280, 9841, 29524, 88573, 265720
+    for(size_t N=1; N<=265720; N=N*3+1) {
+
+        REQUIRE(queue.empty());
+
+        gold.resize(N);
+        consumed = 0;
+
+        for(size_t i=0; i<N; ++i) {
+            gold[i] = gold.data() + i;
+        }
+
+        // bulk push and steal (single-thread FIFO check)
+        auto first = gold.data();
+        queue.bulk_push(first, N);
+        REQUIRE(queue.size() == N);
+        for(size_t i=0; i<N; i++) {
+            REQUIRE(queue.steal() == gold[i]);
+        }
+        REQUIRE(queue.empty() == true);
+
+        // concurrent: owner only bulk-pushes, all consumption done by thieves
+        std::vector<std::thread> threads;
+        std::vector<std::vector<void*>> stolens(M);
+
+        for(size_t i=0; i<M; ++i) {
+            threads.emplace_back([&, i](){
+                while(consumed != N) {
+                    auto ptr = queue.steal();
+                    if(ptr != nullptr) {
+                        stolens[i].push_back(ptr);
+                        consumed.fetch_add(1, std::memory_order_relaxed);
+                    }
+                }
+                REQUIRE(queue.steal() == nullptr);
+            });
+        }
+
+        first = gold.data();
+        queue.bulk_push(first, N);
+
+        // owner waits for thieves to drain (steal-only: owner cannot pop)
+        while(consumed != N) {
+            std::this_thread::yield();
+        }
+        REQUIRE(queue.steal() == nullptr);
+        REQUIRE(queue.empty());
+
+        for(auto& thread : threads) thread.join();
+
+        std::vector<void*> items;
+        for(size_t i=0; i<M; ++i) {
+            for(auto s : stolens[i]) items.push_back(s);
+        }
+
+        std::sort(items.begin(), items.end());
+        std::sort(gold.begin(),  gold.end());
+        REQUIRE(items.size() == N);
+        REQUIRE(items == gold);
+    }
+}
+
+TEST_CASE("OverflowWSQ.1Consumer.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(1);
+}
+
+TEST_CASE("OverflowWSQ.2Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(2);
+}
+
+TEST_CASE("OverflowWSQ.3Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(3);
+}
+
+TEST_CASE("OverflowWSQ.4Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(4);
+}
+
+TEST_CASE("OverflowWSQ.5Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(5);
+}
+
+TEST_CASE("OverflowWSQ.6Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(6);
+}
+
+TEST_CASE("OverflowWSQ.7Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(7);
+}
+
+TEST_CASE("OverflowWSQ.8Consumers.BulkPush" * doctest::timeout(300)) {
+    overflow_wsq_n_consumers_bulk_push(8);
+}
+

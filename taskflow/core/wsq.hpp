@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <bit>
 
@@ -38,7 +38,7 @@ namespace tf {
 // Work-stealing queue steal protocol sentinels
 //
 // These free functions define the sentinel value used by steal operations
-// across all work-stealing queue types (BoundedWSQ, UnboundedWSQ). They encode
+// across all work-stealing queue types (BoundedWSQ, OverflowWSQ). They encode
 // the result of a steal attempt into the return value itself, avoiding any
 // out-parameter or separate status type.
 //
@@ -104,72 +104,72 @@ tasks without a fixed capacity limit.
 template <typename T>
 class UnboundedWSQ {
 
-  struct Array {
+    struct Array {
 
-    size_t C;
-    size_t M;
-    std::atomic<T>* S;
+        size_t C;
+        size_t M;
+        std::atomic<T>* S;
 
-    explicit Array(size_t c) :
-      C {c},
-      M {c-1},
-      S {new std::atomic<T>[C]} {
-    }
+        explicit Array(size_t c) :
+            C {c},
+            M {c-1},
+            S {new std::atomic<T>[C]} {
+        }
 
-    ~Array() {
-      delete [] S;
-    }
+        ~Array() {
+            delete [] S;
+        }
 
-    size_t capacity() const noexcept {
-      return C;
-    }
+        size_t capacity() const noexcept {
+            return C;
+        }
 
-    void push(int64_t i, T o) noexcept {
-      S[i & M].store(o, std::memory_order_relaxed);
-    }
+        void push(int64_t i, T o) noexcept {
+            S[i & M].store(o, std::memory_order_relaxed);
+        }
 
-    T pop(int64_t i) noexcept {
-      return S[i & M].load(std::memory_order_relaxed);
-    }
+        T pop(int64_t i) noexcept {
+            return S[i & M].load(std::memory_order_relaxed);
+        }
 
-    Array* resize(int64_t b, int64_t t) {
-      Array* ptr = new Array(2*C);
-      for(int64_t i=t; i!=b; ++i) {
-        ptr->push(i, pop(i));
-      }
-      return ptr;
-    }
+        Array* resize(int64_t b, int64_t t) {
+            Array* ptr = new Array(2*C);
+            for(int64_t i=t; i!=b; ++i) {
+                ptr->push(i, pop(i));
+            }
+            return ptr;
+        }
 
-    Array* resize(int64_t b, int64_t t, size_t N) {
-      // assert(N>0);
-      Array* ptr = new Array(std::bit_ceil(C + N));
-      for(int64_t i=t; i!=b; ++i) {
-        ptr->push(i, pop(i));
-      }
-      return ptr;
-    }
+        Array* resize(int64_t b, int64_t t, size_t N) {
+            // assert(N>0);
+            Array* ptr = new Array(std::bit_ceil(C + N));
+            for(int64_t i=t; i!=b; ++i) {
+                ptr->push(i, pop(i));
+            }
+            return ptr;
+        }
 
-  };
+    };
 
-  alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
-  alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
-  
-  // Owner-private cached upper bound on _top.  Never read by thieves.
-  // Because _top is never decremented, the real occupancy can only be
-  // smaller than what is computed using this cached value, so using it
-  // for the overflow check is always safe.
-  int64_t _cached_top {0};
+    alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
+    alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
 
-  // _array on its own cache line: avoids false-sharing with _bottom when
-  // thieves load _array (consume) after reading _bottom (acquire).
-  alignas(TF_CACHELINE_SIZE) std::atomic<Array*> _array;
-  std::vector<Array*> _garbage;
+    // Owner-private cached upper bound on _top.  Never read by thieves.
+    // Because _top is never decremented, the real occupancy can only be
+    // smaller than what is computed using this cached value, so using it
+    // for the overflow check is always safe.
+    int64_t _cached_top {0};
 
-  public:
-  
-  /**
+    // _array on its own cache line: avoids false-sharing with _bottom when
+    // thieves load _array (consume) after reading _bottom (acquire).
+    alignas(TF_CACHELINE_SIZE) std::atomic<Array*> _array;
+    std::vector<Array*> _garbage;
+
+public:
+
+    /**
   @brief the return type of queue operations
-  
+
   `value_type` represents the type returned by `pop` and `steal` operations.
   For pointer element types `T`, it is `T` itself and uses `nullptr` to
   indicate an empty result. For non-pointer types, it is `std::optional<T>`,
@@ -179,58 +179,58 @@ class UnboundedWSQ {
   static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
   static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
   @endcode
-  
+
   This design avoids the overhead of `std::optional` for pointer types
   while providing a uniform empty-result semantics.
   */
-  using value_type = std::conditional_t<std::is_pointer_v<T>, T, std::optional<T>>;
+    using value_type = std::conditional_t<std::is_pointer_v<T>, T, std::optional<T>>;
 
-  /**
+    /**
   @brief constructs the queue with the given size in the base-2 logarithm
 
   @param LogSize the base-2 logarithm of the queue size
 
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   @endcode
   */
-  explicit UnboundedWSQ(int64_t LogSize = TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE);
+    explicit UnboundedWSQ(int64_t LogSize = TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE);
 
-  /**
+    /**
   @brief destructs the queue
   */
-  ~UnboundedWSQ();
+    ~UnboundedWSQ();
 
-  /**
+    /**
   @brief queries if the queue is empty at the time of this call
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.empty() == true);
   wsq.push(1);
   assert(wsq.empty() == false);
   @endcode
   */
-  bool empty() const noexcept;
+    bool empty() const noexcept;
 
-  /**
+    /**
   @brief queries the number of items at the time of this call
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.size() == 0);
   wsq.push(1);
   assert(wsq.size() == 1);
   @endcode
   */
-  size_t size() const noexcept;
+    size_t size() const noexcept;
 
-  /**
+    /**
   @brief queries the capacity of the queue
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   for(int i=0; i<1025; i++){  // insert more than 1024 ints to trigger resizing
     wsq.push(i);
@@ -239,18 +239,18 @@ class UnboundedWSQ {
   assert(wsq.size() == 1025);
   @endcode
   */
-  size_t capacity() const noexcept;
-  
-  /**
+    size_t capacity() const noexcept;
+
+    /**
   @brief inserts an item to the queue
 
   @param item the item to push to the queue
-  
+
   This method pushes one item into the queue.
   The operation can trigger the queue to resize its capacity if more space is required.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   for(int i=0; i<1025; i++) {   // insert more than 1024 items to trigger resizing
     wsq.push(i);
@@ -258,50 +258,50 @@ class UnboundedWSQ {
   assert(wsq.capacity() == 2048);
   assert(wsq.size() == 1025);
   @endcode
-  
+
   Only the owner thread can insert an item to the queue.
   */
-  void push(T item);
-  
-  /**
+    void push(T item);
+
+    /**
   @brief tries to insert a batch of items into the queue
 
   @tparam I input iterator type
   @param first iterator to the first item in the batch
   @param N number of items to insert beginning at @p first
 
-  This method pushes up to @p N items from the range `[first, first + N)` into the queue. 
-  The operation can trigger the queue to resize its capacity 
+  This method pushes up to @p N items from the range `[first, first + N)` into the queue.
+  The operation can trigger the queue to resize its capacity
   if more space is required.
   The iterator `first` is updated in place and will point to the next uninserted element after the call.
 
   Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
 
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   assert(wsq.capacity() == 1024);
   std::vector<int> vec(1025, 1);
   auto first = vec.data();
-  wsq.bulk_push(first, vec.size()); 
+  wsq.bulk_push(first, vec.size());
   assert(wsq.capacity() == 2048);
   assert(wsq.size() == vec.size());
   assert(std::distance(vec.begin(), first) == 1025);
   @endcode
-  
+
   Only the owner thread can insert an item to the queue.
   */
-  template <typename I>
-  void bulk_push(I& first, size_t N);
+    template <typename I>
+    void bulk_push(I& first, size_t N);
 
-  /**
+    /**
   @brief pops out an item from the queue
 
   This method pops an item from the queue.
   If the queue is empty, empty_value() is returned.
   The elements popped out from the queue follow a last-in-first-out (LIFO) order.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -310,12 +310,12 @@ class UnboundedWSQ {
   assert(wsq.pop().value() = 1);
   assert(wsq.pop() == std::nullopt);
   @endcode
-  
+
   Only the owner thread can pop out an item from the queue.
   */
-  value_type pop();
+    value_type pop();
 
-  /**
+    /**
   @brief steals an item from the queue
 
   Any threads can try to steal an item from the queue.
@@ -335,82 +335,82 @@ class UnboundedWSQ {
 
   Multiple threads can simultaneously steal items from the queue.
   */
-  value_type steal();
-  
-  /**
+    value_type steal();
+
+    /**
   @brief returns the empty sentinel value for the queue element type
-  
+
   This function provides a type-appropriate empty value used to indicate
   that a pop or steal operation failed. For pointer types, the empty value
   is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
-  
+
   The function is implemented as a `constexpr` helper to avoid additional
   storage, runtime overhead, or code duplication across queue operations.
-  
+
   @return an empty `value_type` representing the absence of an element.
   */
-  static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
+    static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
 
-  private:
+private:
 
-  Array* _resize_array(Array* a, int64_t b, int64_t t);
-  Array* _resize_array(Array* a, int64_t b, int64_t t, size_t N);
+    Array* _resize_array(Array* a, int64_t b, int64_t t);
+    Array* _resize_array(Array* a, int64_t b, int64_t t, size_t N);
 };
 
 // Constructor
 template <typename T>
 UnboundedWSQ<T>::UnboundedWSQ(int64_t LogSize) {
-  _top.store(0, std::memory_order_relaxed);
-  _bottom.store(0, std::memory_order_relaxed);
-  _array.store(new Array{(size_t{1} << LogSize)}, std::memory_order_relaxed);
-  _garbage.reserve(32);
+    _top.store(0, std::memory_order_relaxed);
+    _bottom.store(0, std::memory_order_relaxed);
+    _array.store(new Array{(size_t{1} << LogSize)}, std::memory_order_relaxed);
+    _garbage.reserve(32);
 }
 
 // Destructor
 template <typename T>
 UnboundedWSQ<T>::~UnboundedWSQ() {
-  for(auto a : _garbage) {
-    delete a;
-  }
-  delete _array.load();
+    for(auto a : _garbage) {
+        delete a;
+    }
+    delete _array.load();
 }
 
 // Function: empty
 template <typename T>
 bool UnboundedWSQ<T>::empty() const noexcept {
-  int64_t t = _top.load(std::memory_order_relaxed);
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  return (b <= t);
+    int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    return (b <= t);
 }
 
 // Function: size
 template <typename T>
 size_t UnboundedWSQ<T>::size() const noexcept {
-  int64_t t = _top.load(std::memory_order_relaxed);
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  return static_cast<size_t>(b >= t ? b - t : 0);
+    int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    return static_cast<size_t>(b >= t ? b - t : 0);
 }
 
 // Function: push
 template <typename T>
 void UnboundedWSQ<T>::push(T o) {
 
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  Array* a = _array.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    Array* a = _array.load(std::memory_order_relaxed);
 
-  // queue is full with one additional item (b-t+1)
-  if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
-    _cached_top = _top.load(std::memory_order_acquire);
+    // queue is full with one additional item (b-t+1)
     if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
-      a = _resize_array(a, b, _cached_top);
+        _cached_top = _top.load(std::memory_order_acquire);
+        if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+            a = _resize_array(a, b, _cached_top);
+        }
     }
-  }
 
-  a->push(b, o);
-  std::atomic_thread_fence(std::memory_order_release);
+    a->push(b, o);
+    std::atomic_thread_fence(std::memory_order_release);
 
-  // original paper uses relaxed here but tsa complains
-  _bottom.store(b + 1, std::memory_order_release);
+    // original paper uses relaxed here but tsa complains
+    _bottom.store(b + 1, std::memory_order_release);
 }
 
 // Function: bulk_push
@@ -418,113 +418,114 @@ template <typename T>
 template <typename I>
 void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
 
-  if(N == 0) return;
+    if(N == 0) return;
 
-  int64_t b = _bottom.load(std::memory_order_relaxed);
-  Array* a = _array.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    Array* a = _array.load(std::memory_order_relaxed);
 
-  // queue is full with N additional items
-  if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
-    _cached_top = _top.load(std::memory_order_acquire);
+    // queue is full with N additional items
     if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
-      a = _resize_array(a, b, _cached_top, N);
+        _cached_top = _top.load(std::memory_order_acquire);
+        if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+            a = _resize_array(a, b, _cached_top, N);
+        }
     }
-  }
 
-  for(size_t i=0; i<N; ++i) {
-    a->push(b++, *first++);
-  }
-  std::atomic_thread_fence(std::memory_order_release);
+    for(size_t i=0; i<N; ++i) {
+        a->push(b++, *first++);
+    }
+    std::atomic_thread_fence(std::memory_order_release);
 
-  // original paper uses relaxed here but tsa complains
-  _bottom.store(b, std::memory_order_release);
+    // original paper uses relaxed here but tsa complains
+    _bottom.store(b, std::memory_order_release);
 }
 
 // Function: pop
 template <typename T>
-typename UnboundedWSQ<T>::value_type 
+typename UnboundedWSQ<T>::value_type
 UnboundedWSQ<T>::pop() {
 
-  int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
-  Array* a = _array.load(std::memory_order_relaxed);
-  _bottom.store(b, std::memory_order_relaxed);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed) - 1;
+    Array* a = _array.load(std::memory_order_relaxed);
+    _bottom.store(b, std::memory_order_relaxed);
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    int64_t t = _top.load(std::memory_order_relaxed);
 
-  //T item {nullptr};
-  auto item = empty_value();
+    //T item {nullptr};
+    auto item = empty_value();
 
-  if(t <= b) {
-    item = a->pop(b);
-    if(t == b) {
-      // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, std::memory_order_seq_cst,
-                                               std::memory_order_relaxed)) {
-        //item = nullptr;
-        item = empty_value();
-      }
-      _bottom.store(b + 1, std::memory_order_relaxed);
+    if(t <= b) {
+        item = a->pop(b);
+        if(t == b) {
+            // the last item just got stolen
+            if(!_top.compare_exchange_strong(t, t+1, std::memory_order_acq_rel,
+                                              std::memory_order_relaxed)) {
+                //item = nullptr;
+                item = empty_value();
+            }
+            _bottom.store(b + 1, std::memory_order_relaxed);
+        }
     }
-  }
-  else {
-    _bottom.store(b + 1, std::memory_order_relaxed);
-  }
+    else {
+        _bottom.store(b + 1, std::memory_order_relaxed);
+    }
 
-  return item;
+    return item;
 }
 
 // Function: steal
 template <typename T>
-typename UnboundedWSQ<T>::value_type 
+typename UnboundedWSQ<T>::value_type
 UnboundedWSQ<T>::steal() {
-  
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
 
-  //T item {nullptr};
-  auto item = empty_value();
+    int64_t t = _top.load(std::memory_order_relaxed);
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    int64_t b = _bottom.load(std::memory_order_acquire);
 
-  if(t < b) {
-    Array* a = _array.load(std::memory_order_consume);
-    item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      //return nullptr;
-      return empty_value();
+    //T item {nullptr};
+    auto item = empty_value();
+
+    if(t < b) {
+        Array* a = _array.load(std::memory_order_consume);
+        item = a->pop(t);
+        if(!_top.compare_exchange_strong(t, t+1,
+                                          std::memory_order_seq_cst,
+                                          std::memory_order_relaxed)) {
+            //return nullptr;
+            return empty_value();
+        }
     }
-  }
 
-  return item;
+    return item;
 }
 
 
 // Function: capacity
 template <typename T>
 size_t UnboundedWSQ<T>::capacity() const noexcept {
-  return _array.load(std::memory_order_relaxed)->capacity();
+    return _array.load(std::memory_order_relaxed)->capacity();
 }
 
 template <typename T>
 typename UnboundedWSQ<T>::Array*
 UnboundedWSQ<T>::_resize_array(Array* a, int64_t b, int64_t t) {
-  Array* tmp = a->resize(b, t);
-  _garbage.push_back(a);
-  // Note: the original paper using relaxed causes t-san to complain
-  _array.store(tmp, std::memory_order_release);
-  return tmp;
+    Array* tmp = a->resize(b, t);
+    _garbage.push_back(a);
+    // Note: the original paper using relaxed causes t-san to complain
+    _array.store(tmp, std::memory_order_release);
+    return tmp;
 }
 
 template <typename T>
 typename UnboundedWSQ<T>::Array*
 UnboundedWSQ<T>::_resize_array(Array* a, int64_t b, int64_t t, size_t N) {
-  Array* tmp = a->resize(b, t, N);
-  _garbage.push_back(a);
-  // Note: the original paper using relaxed causes t-san to complain
-  _array.store(tmp, std::memory_order_release);
-  return tmp;
+    Array* tmp = a->resize(b, t, N);
+    _garbage.push_back(a);
+    // Note: the original paper using relaxed causes t-san to complain
+    _array.store(tmp, std::memory_order_release);
+    return tmp;
 }
+
 
 // ----------------------------------------------------------------------------
 // Bounded Work-stealing Queue (WSQ)
@@ -578,8 +579,8 @@ class BoundedWSQ {
   where `std::nullopt` denotes the absence of a value.
   
   @code{.cpp}
-  static_assert(std::is_same_v<tf::UnboundedWSQ<int>::value_type, std::optional<int>>);
-  static_assert(std::is_same_v<tf::UnboundedWSQ<int*>::value_type, nullptr);
+  static_assert(std::is_same_v<tf::OverflowWSQ<int>::value_type, std::optional<int>>);
+  static_assert(std::is_same_v<tf::OverflowWSQ<int*>::value_type, nullptr);
   @endcode
   
   This design avoids the overhead of `std::optional` for pointer types
@@ -833,8 +834,8 @@ BoundedWSQ<T, LogSize>::pop() {
     item = _buffer[b & BufferMask].load(std::memory_order_relaxed);
     if(t == b) {
       // the last item just got stolen
-      if(!_top.compare_exchange_strong(t, t+1, 
-                                       std::memory_order_seq_cst, 
+      if(!_top.compare_exchange_strong(t, t+1,
+                                       std::memory_order_acq_rel,
                                        std::memory_order_relaxed)) {
         //item = nullptr;
         item = empty_value();
@@ -853,7 +854,7 @@ BoundedWSQ<T, LogSize>::pop() {
 template <typename T, size_t LogSize>
 typename BoundedWSQ<T, LogSize>::value_type 
 BoundedWSQ<T, LogSize>::steal() {
-  int64_t t = _top.load(std::memory_order_acquire);
+  int64_t t = _top.load(std::memory_order_relaxed);
   std::atomic_thread_fence(std::memory_order_seq_cst);
   int64_t b = _bottom.load(std::memory_order_acquire);
   
@@ -880,5 +881,402 @@ constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
   return BufferSize;
 }
 
+// ----------------------------------------------------------------------------
+// Overflow Work-stealing Queue (WSQ)
+// ----------------------------------------------------------------------------
+
+
+/**
+@class: OverflowWSQ
+
+@tparam T data type (must be a pointer type)
+
+@brief class to create a lock-free unbounded work-stealing queue
+
+This class implements the work-stealing queue described in the paper,
+<a href="https://www.di.ens.fr/~zappa/readings/ppopp13.pdf">
+Correct and Efficient Work-Stealing for Weak Memory Models</a>.
+
+A work-stealing queue supports a single owner thread that performs push and pop
+operations, while multiple concurrent thief threads may steal tasks
+from the opposite end of the queue. The implementation is designed to
+operate correctly under weak memory models and uses atomic operations
+with carefully chosen memory orderings to ensure correctness and
+scalability.
+
+@dotfile images/unbounded_wsq.dot
+
+Unlike bounded queues, this queue automatically grows its internal
+storage as needed, allowing it to accommodate an arbitrary number of
+tasks without a fixed capacity limit.
+*/
+template <typename T>
+class OverflowWSQ {
+
+    struct Array {
+
+        size_t C;
+        size_t M;
+        std::atomic<T>* S;
+
+        explicit Array(size_t c) :
+            C {c},
+            M {c-1},
+            S {new std::atomic<T>[C]} {
+        }
+
+        ~Array() {
+            delete [] S;
+        }
+
+        size_t capacity() const noexcept {
+            return C;
+        }
+
+        void push(int64_t i, T o) noexcept {
+            S[i & M].store(o, std::memory_order_relaxed);
+        }
+
+        T pop(int64_t i) noexcept {
+            return S[i & M].load(std::memory_order_relaxed);
+        }
+
+        Array* resize(int64_t b, int64_t t) {
+            Array* ptr = new Array(2*C);
+            for(int64_t i=t; i!=b; ++i) {
+                ptr->push(i, pop(i));
+            }
+            return ptr;
+        }
+
+        Array* resize(int64_t b, int64_t t, size_t N) {
+            // assert(N>0);
+            Array* ptr = new Array(std::bit_ceil(C + N));
+            for(int64_t i=t; i!=b; ++i) {
+                ptr->push(i, pop(i));
+            }
+            return ptr;
+        }
+
+    };
+
+    alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
+    alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
+
+    // Owner-private cached upper bound on _top.  Never read by thieves.
+    // Because _top is never decremented, the real occupancy can only be
+    // smaller than what is computed using this cached value, so using it
+    // for the overflow check is always safe.
+    int64_t _cached_top {0};
+
+    // _array on its own cache line: avoids false-sharing with _bottom when
+    // thieves load _array (consume) after reading _bottom (acquire).
+    alignas(TF_CACHELINE_SIZE) std::atomic<Array*> _array;
+    std::vector<Array*> _garbage;
+
+public:
+
+    /**
+  @brief the return type of queue operations
+
+  `value_type` represents the type returned by `pop` and `steal` operations.
+  For pointer element types `T`, it is `T` itself and uses `nullptr` to
+  indicate an empty result. For non-pointer types, it is `std::optional<T>`,
+  where `std::nullopt` denotes the absence of a value.
+
+  @code{.cpp}
+  static_assert(std::is_same_v<tf::OverflowWSQ<int>::value_type, std::optional<int>>);
+  static_assert(std::is_same_v<tf::OverflowWSQ<int*>::value_type, nullptr);
+  @endcode
+
+  This design avoids the overhead of `std::optional` for pointer types
+  while providing a uniform empty-result semantics.
+  */
+    using value_type = std::conditional_t<std::is_pointer_v<T>, T, std::optional<T>>;
+
+    /**
+  @brief constructs the queue with the given size in the base-2 logarithm
+
+  @param LogSize the base-2 logarithm of the queue size
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.capacity() == 1024);
+  @endcode
+  */
+    explicit OverflowWSQ(int64_t LogSize = TF_DEFAULT_UNBOUNDED_TASK_QUEUE_LOG_SIZE);
+
+    /**
+  @brief destructs the queue
+  */
+    ~OverflowWSQ();
+
+    /**
+  @brief queries if the queue is empty at the time of this call
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.empty() == true);
+  wsq.push(1);
+  assert(wsq.empty() == false);
+  @endcode
+  */
+    bool empty() const noexcept;
+
+    /**
+  @brief queries the number of items at the time of this call
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.size() == 0);
+  wsq.push(1);
+  assert(wsq.size() == 1);
+  @endcode
+  */
+    size_t size() const noexcept;
+
+    /**
+  @brief queries the capacity of the queue
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.capacity() == 1024);
+  for(int i=0; i<1025; i++){  // insert more than 1024 ints to trigger resizing
+    wsq.push(i);
+  }
+  assert(wsq.capacity() == 2048);
+  assert(wsq.size() == 1025);
+  @endcode
+  */
+    size_t capacity() const noexcept;
+
+    /**
+  @brief inserts an item to the queue
+
+  @param item the item to push to the queue
+
+  This method pushes one item into the queue.
+  The operation can trigger the queue to resize its capacity if more space is required.
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.capacity() == 1024);
+  for(int i=0; i<1025; i++) {   // insert more than 1024 items to trigger resizing
+    wsq.push(i);
+  }
+  assert(wsq.capacity() == 2048);
+  assert(wsq.size() == 1025);
+  @endcode
+
+  Only the owner thread can insert an item to the queue.
+  */
+    void push(T item);
+
+    /**
+  @brief tries to insert a batch of items into the queue
+
+  @tparam I input iterator type
+  @param first iterator to the first item in the batch
+  @param N number of items to insert beginning at @p first
+
+  This method pushes up to @p N items from the range `[first, first + N)` into the queue.
+  The operation can trigger the queue to resize its capacity
+  if more space is required.
+  The iterator `first` is updated in place and will point to the next uninserted element after the call.
+
+  Bulk insertion is often faster than inserting elements one by one because it requires fewer atomic operations.
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  assert(wsq.capacity() == 1024);
+  std::vector<int> vec(1025, 1);
+  auto first = vec.data();
+  wsq.bulk_push(first, vec.size());
+  assert(wsq.capacity() == 2048);
+  assert(wsq.size() == vec.size());
+  assert(std::distance(vec.begin(), first) == 1025);
+  @endcode
+
+  Only the owner thread can insert an item to the queue.
+  */
+    template <typename I>
+    void bulk_push(I& first, size_t N);
+
+    /**
+  @brief steals an item from the queue
+
+  Any threads can try to steal an item from the queue.
+  The return can be an empty_value() if this operation failed.
+  The elements stolen from the queue follow a first-in-first-out (FIFO) order.
+
+  @code{.cpp}
+  tf::OverflowWSQ<int> wsq(10);
+  wsq.push(1);
+  wsq.push(2);
+  wsq.push(3);
+  assert(wsq.steal().value() = 1);
+  assert(wsq.steal().value() = 2);
+  assert(wsq.steal().value() = 3);
+  assert(wsq.steal() == std::nullopt);
+  @endcode
+
+  Multiple threads can simultaneously steal items from the queue.
+  */
+    value_type steal();
+
+    /**
+  @brief returns the empty sentinel value for the queue element type
+
+  This function provides a type-appropriate empty value used to indicate
+  that a pop or steal operation failed. For pointer types, the empty value
+  is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
+
+  The function is implemented as a `constexpr` helper to avoid additional
+  storage, runtime overhead, or code duplication across queue operations.
+
+  @return an empty `value_type` representing the absence of an element.
+  */
+    static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
+
+private:
+
+    Array* _resize_array(Array* a, int64_t b, int64_t t);
+    Array* _resize_array(Array* a, int64_t b, int64_t t, size_t N);
+};
+
+// Constructor
+template <typename T>
+OverflowWSQ<T>::OverflowWSQ(int64_t LogSize) {
+    _top.store(0, std::memory_order_relaxed);
+    _bottom.store(0, std::memory_order_relaxed);
+    _array.store(new Array{(size_t{1} << LogSize)}, std::memory_order_relaxed);
+    _garbage.reserve(32);
+}
+
+// Destructor
+template <typename T>
+OverflowWSQ<T>::~OverflowWSQ() {
+    for(auto a : _garbage) {
+        delete a;
+    }
+    delete _array.load();
+}
+
+// Function: empty
+template <typename T>
+bool OverflowWSQ<T>::empty() const noexcept {
+    int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    return (b <= t);
+}
+
+// Function: size
+template <typename T>
+size_t OverflowWSQ<T>::size() const noexcept {
+    int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    return static_cast<size_t>(b >= t ? b - t : 0);
+}
+
+// Function: push
+template <typename T>
+void OverflowWSQ<T>::push(T o) {
+
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    Array* a = _array.load(std::memory_order_relaxed);
+
+    // queue is full with one additional item (b-t+1)
+    if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+        _cached_top = _top.load(std::memory_order_acquire);
+        if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+            a = _resize_array(a, b, _cached_top);
+        }
+    }
+
+    a->push(b, o);
+    std::atomic_thread_fence(std::memory_order_release);
+
+    // original paper uses relaxed here but tsa complains
+    _bottom.store(b + 1, std::memory_order_release);
+}
+
+// Function: bulk_push
+template <typename T>
+template <typename I>
+void OverflowWSQ<T>::bulk_push(I& first, size_t N) {
+
+    if(N == 0) return;
+
+    int64_t b = _bottom.load(std::memory_order_relaxed);
+    Array* a = _array.load(std::memory_order_relaxed);
+
+    // queue is full with N additional items
+    if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+        _cached_top = _top.load(std::memory_order_acquire);
+        if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+            a = _resize_array(a, b, _cached_top, N);
+        }
+    }
+
+    for(size_t i=0; i<N; ++i) {
+        a->push(b++, *first++);
+    }
+    std::atomic_thread_fence(std::memory_order_release);
+
+    // original paper uses relaxed here but tsa complains
+    _bottom.store(b, std::memory_order_release);
+}
+
+// Function: steal
+template <typename T>
+typename OverflowWSQ<T>::value_type
+OverflowWSQ<T>::steal() {
+
+    int64_t t = _top.load(std::memory_order_relaxed);
+    int64_t b = _bottom.load(std::memory_order_acquire);
+
+    //T item {nullptr};
+    auto item = empty_value();
+
+    if(t < b) {
+        Array* a = _array.load(std::memory_order_consume);
+        item = a->pop(t);
+        if(!_top.compare_exchange_strong(t, t+1,
+                                          std::memory_order_acq_rel,
+                                          std::memory_order_relaxed)) {
+            //return nullptr;
+            return empty_value();
+        }
+    }
+
+    return item;
+}
+
+
+// Function: capacity
+template <typename T>
+size_t OverflowWSQ<T>::capacity() const noexcept {
+    return _array.load(std::memory_order_relaxed)->capacity();
+}
+
+template <typename T>
+typename OverflowWSQ<T>::Array*
+OverflowWSQ<T>::_resize_array(Array* a, int64_t b, int64_t t) {
+    Array* tmp = a->resize(b, t);
+    _garbage.push_back(a);
+    // Note: the original paper using relaxed causes t-san to complain
+    _array.store(tmp, std::memory_order_release);
+    return tmp;
+}
+
+template <typename T>
+typename OverflowWSQ<T>::Array*
+OverflowWSQ<T>::_resize_array(Array* a, int64_t b, int64_t t, size_t N) {
+    Array* tmp = a->resize(b, t, N);
+    _garbage.push_back(a);
+    // Note: the original paper using relaxed causes t-san to complain
+    _array.store(tmp, std::memory_order_release);
+    return tmp;
+}
 
 }  // end of namespace tf -----------------------------------------------------

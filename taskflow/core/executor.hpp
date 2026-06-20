@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../observer/tfprof.hpp"
 #include "taskflow.hpp"
@@ -1103,7 +1103,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   
   struct Buffer {
     std::mutex mutex;
-    UnboundedWSQ<Node*> queue;
+    OverflowWSQ<Node*> queue;
   };  
   
   std::vector<Worker> _workers;
