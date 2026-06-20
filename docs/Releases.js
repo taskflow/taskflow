@@ -3,7 +3,20 @@ var Releases =
     [ "Release Roadmap", "release-roadmap.html", [
       [ "Milestone Summary", "release-roadmap.html#MilestoneSummary", null ]
     ] ],
-    [ "Release 4.1.0 (Master)", "release-4-1-0.html", [
+    [ "Release 4.2.0 (Master)", "release-4-2-0.html", [
+      [ "Release Summary", "release-4-2-0.html#release-4-2-0_summary", null ],
+      [ "Download", "release-4-2-0.html#release-4-2-0_download", null ],
+      [ "System Requirements", "release-4-2-0.html#release-4-2-0_system_requirements", null ],
+      [ "New Features", "release-4-2-0.html#release-4-2-0_new_features", [
+        [ "Taskflow Core", "release-4-2-0.html#release-4-2-0_taskflow_core", null ],
+        [ "Utilities", "release-4-2-0.html#release-4-2-0_utilities", null ]
+      ] ],
+      [ "Bug Fixes", "release-4-2-0.html#release-4-2-0_bug_fixes", null ],
+      [ "Breaking Changes", "release-4-2-0.html#release-4-2-0_breaking_changes", null ],
+      [ "Documentation", "release-4-2-0.html#release-4-2-0_documentation", null ],
+      [ "Miscellaneous Items", "release-4-2-0.html#release-4-2-0_miscellaneous_items", null ]
+    ] ],
+    [ "Release 4.1.0 (2026/06/19)", "release-4-1-0.html", [
       [ "Release Summary", "release-4-1-0.html#release-4-1-0_summary", null ],
       [ "Download", "release-4-1-0.html#release-4-1-0_download", null ],
       [ "System Requirements", "release-4-1-0.html#release-4-1-0_system_requirements", null ],

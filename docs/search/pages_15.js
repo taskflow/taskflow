@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['master_0',['Release 4.1.0 (Master)',['../release-4-1-0.html',1,'Releases']]],
+  ['master_0',['Release 4.2.0 (Master)',['../release-4-2-0.html',1,'Releases']]],
   ['matrix_20multiplication_1',['Matrix Multiplication',['../matrix_multiplication.html',1,'Examples']]],
   ['matrix_20multiplication_20with_20cuda_20gpu_2',['Matrix Multiplication with CUDA GPU',['../MatrixMultiplicationWithCUDAGPU.html',1,'Examples']]],
   ['matrix_20vector_20multiplication_3',['Sparse Matrix-Vector Multiplication',['../ExamplesSpMV.html',1,'Examples']]],

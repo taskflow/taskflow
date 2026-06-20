@@ -26,11 +26,12 @@ var searchData=
   ['release_203_208_200_202024_2010_2002_23',['Release 3.8.0 (2024/10/02)',['../release-3-8-0.html',1,'Releases']]],
   ['release_203_209_200_202025_2001_2002_24',['Release 3.9.0 (2025/01/02)',['../release-3-9-0.html',1,'Releases']]],
   ['release_204_200_200_202026_2001_2001_25',['Release 4.0.0 (2026/01/01)',['../release-4-0-0.html',1,'Releases']]],
-  ['release_204_201_200_20master_26',['Release 4.1.0 (Master)',['../release-4-1-0.html',1,'Releases']]],
-  ['release_20notes_27',['Release Notes',['../Releases.html',1,'']]],
-  ['release_20roadmap_28',['Release Roadmap',['../release-roadmap.html',1,'Releases']]],
-  ['request_20cancellation_29',['Request Cancellation',['../RequestCancellation.html',1,'Cookbook']]],
-  ['roadmap_30',['Release Roadmap',['../release-roadmap.html',1,'Releases']]],
-  ['rules_31',['Rules',['../rules.html',1,'Governance']]],
-  ['runtime_20tasking_32',['Runtime Tasking',['../RuntimeTasking.html',1,'Cookbook']]]
+  ['release_204_201_200_202026_2006_2019_26',['Release 4.1.0 (2026/06/19)',['../release-4-1-0.html',1,'Releases']]],
+  ['release_204_202_200_20master_27',['Release 4.2.0 (Master)',['../release-4-2-0.html',1,'Releases']]],
+  ['release_20notes_28',['Release Notes',['../Releases.html',1,'']]],
+  ['release_20roadmap_29',['Release Roadmap',['../release-roadmap.html',1,'Releases']]],
+  ['request_20cancellation_30',['Request Cancellation',['../RequestCancellation.html',1,'Cookbook']]],
+  ['roadmap_31',['Release Roadmap',['../release-roadmap.html',1,'Releases']]],
+  ['rules_32',['Rules',['../rules.html',1,'Governance']]],
+  ['runtime_20tasking_33',['Runtime Tasking',['../RuntimeTasking.html',1,'Cookbook']]]
 ];
