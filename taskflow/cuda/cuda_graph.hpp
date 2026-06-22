@@ -389,6 +389,18 @@ class cudaTask {
     */
     void dump(std::ostream& os) const;
 
+  /**
+   @brief creates a wrapper-task from a cuda native graph node handle.
+
+   @param node native graph-node
+   */
+  explicit cudaTask(cudaGraphNode_t node) : cudaTask([node] () {
+      cudaGraph_t graph{};
+      TF_CHECK_CUDA(cudaGraphChildGraphNodeGetGraph(node, &graph),
+        "Failed to extract the node's embedded graph");
+      return graph;
+    }(), node) {}
+
   private:
 
     cudaTask(cudaGraph_t, cudaGraphNode_t);
@@ -846,6 +858,25 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
   cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
 
+  /**
+   @brief  Add a native CUDA graph as a subgraph to this graph
+
+   @param graph graph to be added.
+
+   @return task representing the subgraph
+   */
+  cudaTask sub_graph(cudaGraph_t graph);
+
+  /**
+   @brief Convenience function to add a managed cudaGraph as a subgraph.
+
+   @param graph graph to be added.
+
+   @return task representing the subgraph
+   */
+  template <typename C2, typename D2>
+  cudaTask sub_graph(cudaGraphBase<C2, D2> const& graph);
+
   private:
 
   cudaGraphBase(const cudaGraphBase&) = delete;
@@ -1115,6 +1146,19 @@ cudaTask cudaGraphBase<Creator, Deleter>::memcpy(void* tgt, const void* src, siz
   return cudaTask(this->get(), node);
 }
 
+template<typename Creator, typename Deleter>
+cudaTask cudaGraphBase<Creator, Deleter>::sub_graph(cudaGraph_t sub_graph) {
+  cudaGraphNode_t resulting_node{};
+  TF_CHECK_CUDA(cudaGraphAddChildGraphNode(&resulting_node, this->get(), nullptr, 0u, sub_graph),
+    "failed to create a subgraph task");
+  return cudaTask(this->get(), resulting_node);
+}
+
+template<typename Creator, typename Deleter>
+template <typename C2, typename D2>
+cudaTask cudaGraphBase<Creator, Deleter>::sub_graph(cudaGraphBase<C2, D2> const& child_graph) {
+  return sub_graph(child_graph.get());
+}
 
 
 
