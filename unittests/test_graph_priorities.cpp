@@ -56,51 +56,66 @@ TEST_CASE("GraphPriority.LinearChain" * doctest::timeout(300)) {
 
 // ============================================================================
 // Test: Diamond pattern with priorities
-//        A(HIGH)
-//       / \
-//    B(LOW) C(HIGH)
-//       \ /
-//        D(NORMAL)
+//          A
+//    / / / / \ \ \ \
+//  H0 H1 H2 H3 L0 L1 L2 L3
+//    \ \ \ \ / / / /
+//          D
+// With 2 threads and 8 HIGH + 8 LOW tasks, the first few may be LOW
+// (both threads can grab simultaneously), but the 5th and 6th must be HIGH.
 // ============================================================================
 TEST_CASE("GraphPriority.Diamond" * doctest::timeout(300)) {
   tf::Executor executor(2);
   tf::Taskflow taskflow;
 
+  constexpr int NH = 8, NL = 8;
+
   std::atomic<int> counter{0};
-  std::atomic<int> b_order{-1}, c_order{-1};
+  std::array<std::atomic<int>, NH> h_order;
+  std::array<std::atomic<int>, NL> l_order;
+  for(int i = 0; i < NH; ++i) h_order[i].store(-1);
+  for(int i = 0; i < NL; ++i) l_order[i].store(-1);
 
-  auto A = taskflow.emplace([&]() {
-    counter++;
-  }).name("A");
+  auto A = taskflow.emplace([]() {}).name("A");
+  auto D = taskflow.emplace([]() {}).name("D");
 
-  auto B = taskflow.emplace([&]() {
-    b_order.store(counter.fetch_add(1));
-  }).name("B");
+  for(int i = 0; i < NH; ++i) {
+    auto t = taskflow.emplace([&, i]() {
+      h_order[i].store(counter.fetch_add(1));
+    });
+    t.priority(tf::TaskPriority::HIGH);
+    A.precede(t);
+    t.precede(D);
+  }
 
-  auto C = taskflow.emplace([&]() {
-    c_order.store(counter.fetch_add(1));
-  }).name("C");
-
-  auto D = taskflow.emplace([&]() {
-    counter++;
-  }).name("D");
-
-  A.precede(B, C);
-  B.precede(D);
-  C.precede(D);
-
-  A.priority(tf::TaskPriority::HIGH);
-  B.priority(tf::TaskPriority::LOW);
-  C.priority(tf::TaskPriority::HIGH);
-  D.priority(tf::TaskPriority::NORMAL);
+  for(int i = 0; i < NL; ++i) {
+    auto t = taskflow.emplace([&, i]() {
+      l_order[i].store(counter.fetch_add(1));
+    });
+    t.priority(tf::TaskPriority::LOW);
+    A.precede(t);
+    t.precede(D);
+  }
 
   executor.run(taskflow).wait();
 
-  REQUIRE(counter.load() == 4);
-  // C (HIGH) should execute before B (LOW)
-  REQUIRE(c_order.load() < b_order.load());
-  REQUIRE(b_order.load() >= 0);
-  REQUIRE(c_order.load() >= 0);
+  REQUIRE(counter.load() == NH + NL);
+
+  // collect execution orders
+  std::vector<std::pair<int,bool>> orders; // {order, is_high}
+  for(int i = 0; i < NH; ++i) {
+    REQUIRE(h_order[i].load() >= 0);
+    orders.push_back({h_order[i].load(), true});
+  }
+  for(int i = 0; i < NL; ++i) {
+    REQUIRE(l_order[i].load() >= 0);
+    orders.push_back({l_order[i].load(), false});
+  }
+  std::sort(orders.begin(), orders.end());
+
+  // the 5th and 6th tasks executed must be HIGH priority
+  REQUIRE(orders[4].second == true);
+  REQUIRE(orders[5].second == true);
 }
 
 // ============================================================================
