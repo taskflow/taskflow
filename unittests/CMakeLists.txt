@@ -37,6 +37,7 @@ list(APPEND TF_UNITTESTS
   test_data_pipelines
   test_fill
   test_generate
+  test_graph_priorities
 )
 
 # we only do exception tests if sanitizer is not enabled

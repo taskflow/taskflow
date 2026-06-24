@@ -880,5 +880,342 @@ constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
   return BufferSize;
 }
 
+// ----------------------------------------------------------------------------
+// Work-stealing Queue Concept
+// ----------------------------------------------------------------------------
+
+/**
+@brief concept that constrains a type to behave like a bounded work-stealing queue
+
+A type @c Q satisfies @c BoundedWSQLike if it exposes the three core operations
+required by a bounded work-stealing queue: owner-side pop, thief-side steal, and
+a fallible owner-side push.
+
+@par Requirements
+
+- @c Q::value_type must be defined
+- @c q.pop() must be valid
+- @c q.steal() must be valid
+- @c q.try_push(v) must return @c bool
+
+@par Examples
+
+@code{.cpp}
+// BoundedWSQ satisfies BoundedWSQLike
+static_assert(tf::BoundedWSQLike<tf::BoundedWSQ<int*>>);
+
+// Custom queue type that satisfies the concept
+struct MyQueue {
+  using value_type = int*;
+  value_type pop()           { return nullptr; }
+  value_type steal()         { return nullptr; }
+  bool try_push(value_type)  { return true; }
+};
+static_assert(tf::BoundedWSQLike<MyQueue>);
+@endcode
+*/
+template <typename Q>
+concept BoundedWSQLike = requires(Q& q, typename Q::value_type v) {
+  { q.steal() };
+  { q.pop() };
+  { q.try_push(v) } -> std::same_as<bool>;
+};
+
+// ----------------------------------------------------------------------------
+// Bounded Work-stealing Queue with Priority
+// ----------------------------------------------------------------------------
+
+/**
+@brief default priority function for BoundedPriorityWSQ
+
+Calls `T::priority()` on the element and returns the result as
+a @c size_t. Users may supply a custom priority function in place of this
+default to decouple the queue from any particular element interface.
+*/
+struct DefaultPriorityFn {
+  template <typename T>
+  size_t operator()(const T& item) const {
+    if constexpr (std::is_pointer_v<T>) {
+      return static_cast<size_t>(item->priority());
+    } else {
+      return static_cast<size_t>(item.priority());
+    }
+  }
+};
+
+/**
+@class BoundedPriorityWSQ
+
+@brief class to create a lock-free bounded work-stealing queue with priority support
+
+@tparam Q           underlying bounded work-stealing queue type; must satisfy @c BoundedWSQLike
+@tparam MaxPriority number of priority levels (sub-queues); must be at least 1
+@tparam PriorityFn  callable @c (const element&) -> size_t that maps an item to its
+                    priority index; the returned value must be in @c [0, MaxPriority).
+                    Defaults to @c DefaultPriorityFn.
+
+@c BoundedPriorityWSQ wraps an array of @p MaxPriority sub-queues of type @p Q and
+routes each item to the sub-queue that corresponds to its priority.
+Priority levels are numbered from @c 0 to @c MaxPriority-1 in decreasing order
+of urgency: priority @c 0 is the highest and priority @c MaxPriority-1 is the
+lowest. Pop and steal operations always service sub-queues in ascending index
+order, so higher-priority items are consumed before lower-priority ones.
+
+@code{.cpp}
+// 3-level priority queue with a custom priority function
+auto priority_fn = [](tf::Node* n) -> size_t {
+  // map application-level priority to [0, 3)
+  return n->priority();  // must return 0, 1, or 2
+};
+
+tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(priority_fn)> pq(priority_fn);
+
+tf::Node* n = ...;
+pq.try_push(n);
+
+// pop always returns the highest-priority available item
+auto item = pq.pop();
+@endcode
+*/
+template <BoundedWSQLike Q, size_t MaxPriority, typename PriorityFn = DefaultPriorityFn>
+class BoundedPriorityWSQ {
+
+  static_assert(MaxPriority >= 1);
+
+  public:
+
+  /**
+  @brief the return type of pop and steal operations
+
+  Inherits the @c value_type of the underlying queue @p Q.
+  For pointer element types, it is the pointer type itself (using @c nullptr as the
+  empty sentinel); for non-pointer types it is @c std::optional<T>.
+  */
+  using value_type = typename Q::value_type;
+
+  /**
+  @brief constructs the queue with an optional priority function
+
+  @param fn priority function to use; defaults to a default-constructed @p PriorityFn
+  */
+  explicit BoundedPriorityWSQ(PriorityFn fn = {}) : _priority_fn(std::move(fn)) {}
+
+  /**
+  @brief tries to insert an item into the sub-queue determined by its priority
+
+  @tparam O item type (forwarded)
+  @param item the item to insert; @c _priority_fn(item) determines the target sub-queue
+              and must return a value in @c [0, MaxPriority)
+  @return @c true if the item was inserted, @c false if the target sub-queue is full
+
+  @code{.cpp}
+  auto fn = [](tf::Node* n) -> size_t { return n->priority(); };
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(fn)> pq(fn);
+  tf::Node* n = ...;
+  bool ok = pq.try_push(n);
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  template <typename O>
+  bool try_push(O&& item) {
+    return _wsqs[_priority_fn(item)].try_push(std::forward<O>(item));
+  }
+
+  /**
+  @brief tries to insert a batch of items, routing contiguous same-priority runs
+         to the corresponding sub-queue via bulk push
+
+  @tparam I random-access iterator type
+  @param first iterator to the first item; advanced in place by the number of items inserted
+  @param N number of items to insert starting at @p first
+  @return number of items successfully inserted
+
+  Scans @p first for contiguous runs of items that map to the same sub-queue
+  (as determined by @c _priority_fn) and delegates each run to the underlying
+  queue's @c try_bulk_push (a single atomic bottom update per run). Stops
+  immediately if a run is only partially inserted (the target sub-queue became
+  full), leaving @p first pointing at the first uninserted item.
+
+  @code{.cpp}
+  auto fn = [](tf::Node* n) -> size_t { return n->priority(); };
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(fn)> pq(fn);
+
+  // Suppose items have priorities: 0 0 0 1 1 2 1 1 1 1 2 2
+  // Bulk push routes:
+  //   queue[0] <- 3 items (priority 0 run)
+  //   queue[1] <- 2 items (priority 1 run)
+  //   queue[2] <- 1 item  (priority 2 run)
+  //   queue[1] <- up to 4 items (priority 1 run); stops early if queue[1] is full
+  std::vector<tf::Node*> batch = ...;
+  auto it = batch.begin();
+  size_t inserted = pq.try_bulk_push(it, batch.size());
+  // it now points to batch.begin() + inserted
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  template <typename I>
+  size_t try_bulk_push(I& first, size_t N) {
+
+    if(N == 0) return 0;
+
+    size_t remaining = N;
+
+    while(remaining > 0) {
+      size_t q = _priority_fn(first[0]);
+      size_t run_len = 1;
+      while(run_len < remaining && _priority_fn(first[run_len]) == q) {
+        ++run_len;
+      }
+      size_t inserted = _wsqs[q].try_bulk_push(first, run_len);
+      remaining -= inserted;
+      if(inserted < run_len) {
+        break;
+      }
+    }
+
+    return N - remaining;
+  }
+
+  /**
+  @brief pops an item from the highest-priority non-empty sub-queue
+
+  @return the popped item, or @c empty_value() if all sub-queues are empty
+
+  Sub-queues are checked in ascending index order (index 0 is highest priority).
+  The element is removed from the owner (back) end of the selected sub-queue,
+  following last-in-first-out (LIFO) order within each priority level.
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // ... push items of various priorities ...
+  auto item = pq.pop();  // returns highest-priority available item
+  if(item != tf::BoundedWSQ<tf::Node*>::empty_value()) {
+    // process item
+  }
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  value_type pop() {
+    value_type result = Q::empty_value();
+    for(size_t p=0; p<MaxPriority && !(result = _wsqs[p].pop()); ++p);
+    return result;
+  }
+
+  /**
+  @brief steals an item from the highest-priority non-empty sub-queue
+
+  @return the stolen item, or @c empty_value() if all sub-queues are empty
+
+  Sub-queues are checked in ascending index order (index 0 is highest priority).
+  The element is removed from the thief (front) end of the selected sub-queue,
+  following first-in-first-out (FIFO) order within each priority level.
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // ... push items of various priorities ...
+  auto item = pq.steal();  // any thread may steal
+  if(item != tf::BoundedWSQ<tf::Node*>::empty_value()) {
+    // process item
+  }
+  @endcode
+
+  Any thread may call this method concurrently.
+  */
+  value_type steal() {
+    value_type result = Q::empty_value();
+    for(size_t p=0; p<MaxPriority && !(result = _wsqs[p].steal()); ++p);
+    return result;
+  }
+
+  /**
+  @brief queries whether all sub-queues are empty at the time of this call
+
+  @return @c true if every sub-queue is empty, @c false otherwise
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.empty() == true);
+  tf::Node* n = ...;
+  pq.try_push(n);
+  assert(pq.empty() == false);
+  @endcode
+  */
+  bool empty() const noexcept {
+    bool empty = true;
+    for(size_t i = 0; i < MaxPriority && (empty = _wsqs[i].empty()); ++i);
+    return empty;
+  }
+
+  /**
+  @brief queries the total number of items across all sub-queues at the time of this call
+
+  @return sum of sizes of all @p MaxPriority sub-queues
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.size() == 0);
+  tf::Node* n = ...;
+  pq.try_push(n);
+  assert(pq.size() == 1);
+  @endcode
+  */
+  size_t size() const noexcept {
+    size_t n = 0;
+    for(size_t i = 0; i < MaxPriority; ++i) {
+      n += _wsqs[i].size();
+    }
+    return n;
+  }
+
+  /**
+  @brief queries the total capacity across all sub-queues
+
+  @return the capacity of one sub-queue multiplied by @p MaxPriority
+
+  @code{.cpp}
+  // Each BoundedWSQ<Node*, 8> holds 256 items; 3 priority levels -> 768 total
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.capacity() == 256 * 3);
+  @endcode
+  */
+  constexpr size_t capacity() const {
+    return _wsqs[0].capacity() * MaxPriority;
+  }
+
+  /**
+  @brief returns a reference to the sub-queue at the given priority level
+
+  @param priority priority index in @c [0, MaxPriority); @c 0 is the highest priority
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // directly access the high-priority sub-queue
+  auto item = pq[0].pop();
+  assert(pq[0].size() == 0);
+  @endcode
+  */
+  Q& operator[](size_t priority) { return _wsqs[priority]; }
+
+  /**
+  @brief returns a const reference to the sub-queue at the given priority level
+
+  @param priority priority index in @c [0, MaxPriority); @c 0 is the highest priority
+
+  @code{.cpp}
+  const tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq[0].empty() == true);
+  @endcode
+  */
+  const Q& operator[](size_t priority) const { return _wsqs[priority]; }
+
+  private:
+
+  [[no_unique_address]] PriorityFn _priority_fn;
+  std::array<Q, MaxPriority> _wsqs;
+};
+
 
 }  // end of namespace tf -----------------------------------------------------
