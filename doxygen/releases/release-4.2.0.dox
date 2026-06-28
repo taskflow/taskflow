@@ -37,6 +37,10 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 
 @subsection release-4-2-0_taskflow_core Taskflow Core
 
++ added two tf::Taskflow::emplace overloads for module tasks
+  + tf::Taskflow::emplace(tf::GraphLike) equivalent to tf::Taskflow::composed_of
+  + tf::Taskflow::emplace(tf::Graph&&) equivalent to tf::Taskflow::adopt
+
 @subsection release-4-2-0_utilities Utilities
 
 @section release-4-2-0_bug_fixes Bug Fixes 

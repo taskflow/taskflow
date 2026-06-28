@@ -303,6 +303,65 @@ class FlowBuilder {
   Task adopt(Graph&& graph);
 
   /**
+  @brief creates a module task for the target object (convenience overload of tf::FlowBuilder::composed_of)
+
+  @tparam T type satisfying tf::GraphLike
+
+  @param object a custom object that defines the method @c T::graph()
+
+  @return a tf::Task handle
+
+  This overload lets you create a module task through the same @c emplace
+  call you already use for static, runtime, subflow, and condition tasks,
+  instead of reaching for the differently-named @c composed_of.
+  It is equivalent to calling tf::FlowBuilder::composed_of(object) and
+  references the externally-owned graph of @c object, so the caller remains
+  responsible for keeping @c object alive for as long as the resulting task
+  may run.
+
+  @code{.cpp}
+  tf::Taskflow t1, t2;
+  t1.emplace([](){ std::cout << "t1"; });
+
+  // equivalent to: tf::Task comp = t2.composed_of(t1);
+  tf::Task comp = t2.emplace(t1);
+  @endcode
+
+  @note
+  Please refer to @ref ComposableTasking for details.
+  */
+  template <GraphLike T>
+  Task emplace(T& object);
+
+  /**
+  @brief creates a module task from a graph by taking over its ownership
+         (convenience overload of tf::FlowBuilder::adopt)
+
+  @param graph the graph to adopt (moved into the task)
+
+  @return a Task handle to the adopted module task
+
+  This overload lets you create an adopted module task through the same
+  @c emplace call you already use for other task types, instead of reaching
+  for the differently-named @c adopt.
+  It is equivalent to calling tf::FlowBuilder::adopt(std::move(graph)) and
+  transfers ownership of @c graph into the task; the caller has no access
+  to the moved-from graph afterward.
+
+  @code{.cpp}
+  tf::Taskflow taskflow;
+  tf::Graph g;
+  tf::FlowBuilder{g}.emplace([]{ std::cout << "task in adopted graph\n"; });
+
+  // equivalent to: taskflow.adopt(std::move(g)).name("adopted");
+  taskflow.emplace(std::move(g)).name("adopted");
+  @endcode
+
+  @note Please refer to @ref ComposableTasking for details.
+  */
+  Task emplace(Graph&& graph);
+
+  /**
   @brief creates a placeholder task
 
   @return a tf::Task handle
@@ -1629,6 +1688,17 @@ inline Task FlowBuilder::adopt(Graph&& graph) {
   return Task(_graph._emplace_back(NSTATE::NONE, ESTATE::NONE, DefaultTaskParams{}, nullptr, nullptr, 0,
     std::in_place_type_t<Node::AdoptedModule>{}, std::move(graph)
   ));
+}
+
+// Function: emplace (convenience overload of composed_of)
+template <GraphLike T>
+Task FlowBuilder::emplace(T& object) {
+  return composed_of(object);
+}
+
+// Function: emplace (convenience overload of adopt)
+inline Task FlowBuilder::emplace(Graph&& graph) {
+  return adopt(std::move(graph));
 }
 
 // Function: placeholder

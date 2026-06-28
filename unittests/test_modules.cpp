@@ -820,3 +820,184 @@ TEST_CASE("AdoptedModule.7threads" * doctest::timeout(300)) {
 TEST_CASE("AdoptedModule.8threads" * doctest::timeout(300)) {
   adopted_module(8);
 }
+
+// --------------------------------------------------------
+// Testcase: EmplaceModule (emplace as a convenience overload of composed_of)
+// --------------------------------------------------------
+void emplace_module(unsigned W) {
+
+  tf::Executor executor(W);
+
+  tf::Taskflow f0;
+
+  int cnt {0};
+
+  auto A = f0.emplace([&cnt](){ ++cnt; });
+  auto B = f0.emplace([&cnt](){ ++cnt; });
+  auto C = f0.emplace([&cnt](){ ++cnt; });
+  auto D = f0.emplace([&cnt](){ ++cnt; });
+  auto E = f0.emplace([&cnt](){ ++cnt; });
+
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  tf::Taskflow f1;
+
+  // module 1
+  std::tie(A, B, C, D, E) = f1.emplace(
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; }
+  );
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  // emplace(f0) should behave identically to composed_of(f0): f0 is
+  // referenced, not consumed, so it can be composed into f1 multiple times.
+  auto m1_1 = f1.emplace(f0);
+  E.precede(m1_1);
+
+  executor.run(f1).get();
+  REQUIRE(cnt == 10);
+
+  cnt = 0;
+  executor.run_n(f1, 100).get();
+  REQUIRE(cnt == 10 * 100);
+
+  auto m1_2 = f1.emplace(f0);
+  m1_1.precede(m1_2);
+
+  for(int n=0; n<100; n++) {
+    cnt = 0;
+    executor.run_n(f1, n).get();
+    REQUIRE(cnt == 15*n);
+  }
+
+  cnt = 0;
+  for(int n=0; n<100; n++) {
+    executor.run(f1);
+  }
+
+  executor.wait_for_all();
+
+  REQUIRE(cnt == 1500);
+}
+
+TEST_CASE("EmplaceModule.1thread" * doctest::timeout(300)) {
+  emplace_module(1);
+}
+
+TEST_CASE("EmplaceModule.2threads" * doctest::timeout(300)) {
+  emplace_module(2);
+}
+
+TEST_CASE("EmplaceModule.3threads" * doctest::timeout(300)) {
+  emplace_module(3);
+}
+
+TEST_CASE("EmplaceModule.4threads" * doctest::timeout(300)) {
+  emplace_module(4);
+}
+
+TEST_CASE("EmplaceModule.5threads" * doctest::timeout(300)) {
+  emplace_module(5);
+}
+
+TEST_CASE("EmplaceModule.6threads" * doctest::timeout(300)) {
+  emplace_module(6);
+}
+
+TEST_CASE("EmplaceModule.7threads" * doctest::timeout(300)) {
+  emplace_module(7);
+}
+
+TEST_CASE("EmplaceModule.8threads" * doctest::timeout(300)) {
+  emplace_module(8);
+}
+
+// --------------------------------------------------------
+// Testcase: EmplaceAdoptedModule (emplace as a convenience overload of adopt)
+// --------------------------------------------------------
+void emplace_adopted_module(unsigned W) {
+
+  tf::Executor executor(W);
+
+  tf::Taskflow f0;
+
+  int cnt {0};
+
+  auto A = f0.emplace([&cnt](){ ++cnt; });
+  auto B = f0.emplace([&cnt](){ ++cnt; });
+  auto C = f0.emplace([&cnt](){ ++cnt; });
+  auto D = f0.emplace([&cnt](){ ++cnt; });
+  auto E = f0.emplace([&cnt](){ ++cnt; });
+
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  tf::Taskflow f1;
+
+  // module 1
+  std::tie(A, B, C, D, E) = f1.emplace(
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; },
+    [&cnt] () { ++cnt; }
+  );
+  A.precede(B);
+  B.precede(C);
+  C.precede(D);
+  D.precede(E);
+
+  // emplace(std::move(graph)) should behave identically to
+  // adopt(std::move(graph)): ownership of f0's graph transfers into f1,
+  // leaving f0's graph empty.
+  auto m1_1 = f1.emplace(std::move(f0.graph()));
+  E.precede(m1_1);
+
+  REQUIRE(f0.graph().empty());
+
+  executor.run(f1).get();
+  REQUIRE(cnt == 10);
+}
+
+TEST_CASE("EmplaceAdoptedModule.1thread" * doctest::timeout(300)) {
+  emplace_adopted_module(1);
+}
+
+TEST_CASE("EmplaceAdoptedModule.2threads" * doctest::timeout(300)) {
+  emplace_adopted_module(2);
+}
+
+TEST_CASE("EmplaceAdoptedModule.3threads" * doctest::timeout(300)) {
+  emplace_adopted_module(3);
+}
+
+TEST_CASE("EmplaceAdoptedModule.4threads" * doctest::timeout(300)) {
+  emplace_adopted_module(4);
+}
+
+TEST_CASE("EmplaceAdoptedModule.5threads" * doctest::timeout(300)) {
+  emplace_adopted_module(5);
+}
+
+TEST_CASE("EmplaceAdoptedModule.6threads" * doctest::timeout(300)) {
+  emplace_adopted_module(6);
+}
+
+TEST_CASE("EmplaceAdoptedModule.7threads" * doctest::timeout(300)) {
+  emplace_adopted_module(7);
+}
+
+TEST_CASE("EmplaceAdoptedModule.8threads" * doctest::timeout(300)) {
+  emplace_adopted_module(8);
+}
