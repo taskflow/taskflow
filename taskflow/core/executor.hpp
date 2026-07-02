@@ -754,7 +754,7 @@ class Executor {
   This member function is thread-safe.
   */
   template <typename F, typename... Tasks>
-requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -789,7 +789,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   This member function is thread-safe.
   */
   template <TaskParamsLike P, typename F, typename... Tasks>
-      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -824,8 +824,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 
   This member function is thread-safe.
   */
-  template <typename F, typename I>
-requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <typename F, std::input_iterator I>
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
@@ -862,8 +861,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   This member function is thread-safe.
   */
-  template <TaskParamsLike P, typename F, typename I>
-      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
   
   // --------------------------------------------------------------------------
@@ -908,7 +906,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   This member function is thread-safe.
   */
   template <typename F, typename... Tasks>
-requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
@@ -953,7 +951,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   This member function is thread-safe.
   */
   template <TaskParamsLike P, typename F, typename... Tasks>
-      requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
+  requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -996,8 +994,7 @@ requires (std::same_as<std::decay_t<Tasks>, AsyncTask> && ...)
 
   This member function is thread-safe.
   */
-  template <typename F, typename I>
-requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <typename F, std::input_iterator I>
   auto dependent_async(F&& func, I first, I last);
   
   /**
@@ -1044,8 +1041,7 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
 
   This member function is thread-safe.
   */
-  template <TaskParamsLike P, typename F, typename I>
-      requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   // ----------------------------------------------------------------------------------------------
@@ -1161,16 +1157,16 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   template <typename P>
   void _corun_until(Worker&, P&&);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_schedule(Worker&, I, size_t);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_schedule(I, size_t);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_spill(I, size_t);
   
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_spill_round_robin(I, size_t);
 
   template <size_t N>
@@ -1182,18 +1178,16 @@ requires (!std::same_as<std::decay_t<I>, AsyncTask>)
   template <typename P, typename F>
   void _silent_async(P&&, F&&, Topology*, NodeBase*);
 
-  template <TaskParamsLike P, typename F, typename I>
-  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto _dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
-  template <TaskParamsLike P, typename F, typename I>
-  requires (!std::same_as<std::decay_t<I>, AsyncTask>)
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
   template <typename... ArgsT>
   void _schedule_async_task(ArgsT&&...);
   
-  template <typename I, typename... ArgsT>
+  template <std::input_iterator I, typename... ArgsT>
   AsyncTask _schedule_dependent_async_task(I, I, size_t, ArgsT&&...);
 };
 
@@ -1593,7 +1587,7 @@ inline void Executor::_spill(Node* item) {
 // Uses Knuth multiplicative hash on the first pointer to select a buffer,
 // providing better bit diffusion than the shift-based approach, especially
 // when the allocator returns pointers with regular low-bit patterns.
-template <typename I>
+template <std::input_iterator I>
 void Executor::_bulk_spill(I first, size_t N) {
   //assert(N != 0);
   auto b = ((reinterpret_cast<uintptr_t>(*first) * 2654435761ULL) >> 32) % _buffers.size();
@@ -1606,7 +1600,7 @@ void Executor::_bulk_spill(I first, size_t N) {
 // order starting from a hash of the first node's pointer. Each buffer's lock
 // is held only for its chunk, reducing contention compared to sending the
 // entire batch to a single buffer.
-template <typename I>
+template <std::input_iterator I>
 void Executor::_bulk_spill_round_robin(I first, size_t N) {
 
   // assert(N != 0);
@@ -1643,7 +1637,7 @@ inline void Executor::_schedule(Node* node) {
 }
 
 // Procedure: _schedule
-template <typename I>
+template <std::input_iterator I>
 void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
 
   if(num_nodes == 0) {
@@ -1668,7 +1662,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
 }
 
 // Procedure: _schedule
-template <typename I>
+template <std::input_iterator I>
 inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   
   if(num_nodes == 0) {
