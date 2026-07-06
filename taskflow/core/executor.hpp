@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../observer/tfprof.hpp"
 #include "taskflow.hpp"
@@ -1098,7 +1098,7 @@ class Executor {
   
   struct Buffer {
     std::mutex mutex;
-    UnboundedWSQ<Node*> queue;
+    OverflowWSQ<Node*> queue;
   };  
   
   std::vector<Worker> _workers;
