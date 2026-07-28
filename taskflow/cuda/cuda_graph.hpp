@@ -545,8 +545,10 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   Constructs a `cudaGraph` object by passing the given arguments to the executable CUDA graph creator
 
   @param args arguments to pass to the executable CUDA graph creator
+  @note participates in overload resolution only if `Creator` invocable with `ArgsT...` with cudaGraph_t
   */
   template <typename... ArgsT>
+  requires std::is_invocable_r_v<cudaGraph_t, Creator, ArgsT...>
   explicit cudaGraphBase(ArgsT&& ... args) : base_type(
     Creator{}(std::forward<ArgsT>(args)...), Deleter()
   ) {
