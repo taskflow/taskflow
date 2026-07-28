@@ -547,10 +547,11 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   @param args arguments to pass to the executable CUDA graph creator
   */
   template <typename... ArgsT>
+  requires std::invocable<Creator, ArgsT...>
   explicit cudaGraphBase(ArgsT&& ... args) : base_type(
     Creator{}(std::forward<ArgsT>(args)...), Deleter()
   ) {
-  }  
+  }
   
   /**
   @brief constructs a `cudaGraph` from the given rhs using move semantics
