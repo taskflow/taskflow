@@ -42,6 +42,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
   + tf::Taskflow::emplace(tf::Graph&&) equivalent to tf::Taskflow::adopt
 + added task priority support via tf::Task::priority (credit to [#784](https://github.com/taskflow/taskflow/pull/784))
   + must be explicitly enabled through `-DTF_ENABLE_TASK_PRIORITY`
++ added the support for ND-index-range-based reduce
+  + tf::Taskflow::reduce_by_index
 + refactored the core with several new concepts to enhance type safety and readability
   + tf::InputIteratorLike to check if a type is a stateful iterator
   + tf::UnaryOperationLike to check if a unary operation is valid
@@ -50,6 +52,7 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
   + tf::BinaryTransformLike to check if a binary transform is valid
 + fixed missing tf::TaskParamsLike concept usage in async tasking
 + replaced generic template type in dependent async tasks with std::input_iterator
++ improved ND parallel-for scheduling with a local recursive partition
 
 @subsection release-4-2-0_utilities Utilities
 
@@ -58,6 +61,8 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 @section release-4-2-0_breaking_changes Breaking Changes
 
 @section release-4-2-0_documentation Documentation
+
++ revised @ref ParallelReduction
 
 @section release-4-2-0_miscellaneous_items Miscellaneous Items
 

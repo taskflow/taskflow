@@ -173,10 +173,10 @@ const <a class="el" href="classtf_1_1DefaultClosureWrapper.html">DefaultClosureW
 void&#160;</td><td class="memItemRight" valign="bottom"><b>closure_wrapper</b> (F &amp;&amp;fn)</td></tr>
 <tr class="memdesc:a99e23ce7c0faf3a932ab2b7ac51e58f4 inherit pub_methods_classtf_1_1PartitionerBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">modify the closure wrapper object <br /></td></tr>
 <tr class="separator:a99e23ce7c0faf3a932ab2b7ac51e58f4 inherit pub_methods_classtf_1_1PartitionerBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27c56bac76df639c7bf30e6213c47776 inherit pub_methods_classtf_1_1PartitionerBase" id="r_a27c56bac76df639c7bf30e6213c47776"><td class="memItemLeft" align="right" valign="top">
-TF_FORCE_INLINE decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (F &amp;&amp;callable)</td></tr>
-<tr class="memdesc:a27c56bac76df639c7bf30e6213c47776 inherit pub_methods_classtf_1_1PartitionerBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">wraps the given callable with the associated closure wrapper <br /></td></tr>
-<tr class="separator:a27c56bac76df639c7bf30e6213c47776 inherit pub_methods_classtf_1_1PartitionerBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9bfccc1f4abd176476fb6054ff46a2b inherit pub_methods_classtf_1_1PartitionerBase" id="r_af9bfccc1f4abd176476fb6054ff46a2b"><td class="memItemLeft" align="right" valign="top">
+decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (F &amp;&amp;callable)</td></tr>
+<tr class="memdesc:af9bfccc1f4abd176476fb6054ff46a2b inherit pub_methods_classtf_1_1PartitionerBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">wraps the given callable with the associated closure wrapper <br /></td></tr>
+<tr class="separator:af9bfccc1f4abd176476fb6054ff46a2b inherit pub_methods_classtf_1_1PartitionerBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -213,7 +213,7 @@ class tf::StaticPartitioner&lt; C &gt;</div><p>class to construct a static parti
 <div class="line">  data.begin(), data.end(), [](<span class="keywordtype">int</span> i){}, <a class="code hl_class" href="classtf_1_1StaticPartitioner.html">StaticPartitioner</a>(0)</div>
 <div class="line">);</div>
 <div class="line">executor.run(taskflow).run();</div>
-<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:262</div></div>
+<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:476</div></div>
 </div><!-- fragment --><p>In addition to partition size, the application can specify a closure wrapper for a static partitioner. A closure wrapper allows the application to wrap a partitioned task (i.e., closure) with a custom function object that performs additional tasks. For example:</p>
 <div class="fragment"><div class="line">std::atomic&lt;int&gt; count = 0;</div>
 <div class="line"><a class="code hl_class" href="classtf_1_1Taskflow.html">tf::Taskflow</a> taskflow;</div>
@@ -242,10 +242,7 @@ class tf::StaticPartitioner&lt; C &gt;</div><p>class to construct a static parti
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename C = DefaultClosureWrapper&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+template&lt;typename C&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">size_t <a class="el" href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a>&lt; C &gt;::adjusted_chunk_size </td>
@@ -263,11 +260,6 @@ template&lt;typename C = DefaultClosureWrapper&gt; </div>
           <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>w</em></span>&#160;) const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>queries the adjusted chunk size </p>

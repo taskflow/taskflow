@@ -201,6 +201,8 @@ accumulated by that worker so far:
 The global operator @c gop combines the per-worker partial results and the
 initial value of @c result into the final answer.
 
+@par Reduce over a One-dimensional (1D) Index Range
+
 The example below performs a sum-reduction over a large array, initialising
 each element inside the local reducer:
 
@@ -231,7 +233,67 @@ assert(res == 100001.0);  // 1.0 (initial) + 100000 * 1.0
 The global reducer combines all partial results with the initial value of
 @c res (here @c 1.0), so the final answer is @c 1.0 + @c 100000.0 = @c 100001.0.
 
-@subsection ParallelReduceByIndexCaptureByReference Capture IndexRange by Reference
+@par Reduce over a Multi-dimensional Index Range
+
+tf::Taskflow::reduce_by_index also accepts an N-dimensional
+@c tf::IndexRanges<T, N>. The two-phase loop shown above is unchanged — only the type of
+@c subrange passed to @c lop changes: instead of a 1D subrange, @c lop
+receives one orthogonal @em sub-box of the partitioned Cartesian product per
+invocation, exactly like the callable passed to
+tf::Taskflow::for_each_by_index.
+Each dimension of a sub-box is a <tt>std::tuple<T, T, T></tt> of
+(begin, end, step_size) accessible through @c dim(d), so @c lop typically
+destructures it via structured bindings and accumulates over nested loops:
+
+@code{.cpp}
+const int rows = 512, cols = 512;
+std::vector<std::vector<double>> data(rows, std::vector<double>(cols, 1.0));
+double res = 0.0;
+
+tf::IndexRanges<int, 2> range(
+  tf::IndexRange<int>(0, rows, 1),
+  tf::IndexRange<int>(0, cols, 1)
+);
+
+taskflow.reduce_by_index(
+  range,
+  res,
+  // local reducer: called once per sub-box per worker
+  [&](const tf::IndexRanges<int, 2>& sub, std::optional<double> running_total) {
+    double partial = running_total ? *running_total : 0.0;
+    auto [r0, r1, rs] = sub.dim(0);
+    auto [c0, c1, cs] = sub.dim(1);
+    for(int r = r0; r < r1; r += rs) {
+      for(int c = c0; c < c1; c += cs) {
+        partial += data[r][c];
+      }
+    }
+    return partial;
+  },
+  // global reducer: combines partial results into res
+  std::plus<double>()
+);
+
+executor.run(taskflow).wait();
+assert(res == rows * cols);  // 512 * 512 * 1.0
+@endcode
+
+As with the 1D case, @c lop is invoked once per sub-box assigned to a worker,
+its running total resets to @c std::nullopt at the start of each worker, and
+@c gop combines every worker's partial result together with the initial
+value of @c res.
+The same pattern extends to three or more dimensions by adding one more
+@c tf::IndexRange to the constructor of @c tf::IndexRanges and one more
+nested loop (and one more structured binding) inside @c lop.
+
+If a dimension has zero size, it and all dimensions inner to it contribute no
+iterations to any sub-box, following the exact same rules described in
+@ref ParallelIterations for tf::Taskflow::for_each_by_index.
+In particular, if the range is empty overall (<tt>range.size() == 0</tt>),
+tf::Taskflow::reduce_by_index returns without invoking @c lop or @c gop at
+all, leaving @c res unchanged.
+
+@par Capture IndexRange by Reference
 
 You can pass the index range by reference using @std_ref so that an upstream
 task can set the bounds before the parallel-reduce-by-index runs.
@@ -303,7 +365,7 @@ int sum1 = 100, sum2 = 100;
 std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 tf::StaticPartitioner static_partitioner(0);  // chunk size auto-determined
-tf::GuidedPartitioner  guided_partitioner(0); // minimum chunk size auto-determined
+tf::GuidedPartitioner guided_partitioner(0); // minimum chunk size auto-determined
 
 // parallel-reduction with static partitioner
 taskflow.reduce(vec.begin(), vec.end(), sum1,

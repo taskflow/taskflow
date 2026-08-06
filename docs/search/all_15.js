@@ -30,6 +30,5 @@ var searchData=
   ['loop_20as_20a_20condition_20task_27',['Encoding the Loop as a Condition Task',['../ExamplesBFS.html#BFSConditionTask',1,'']]],
   ['loop_20control_20flow_28',['Loop Control Flow',['../ConditionalTasking.html#ImplementDoWhileLoopControlFlow',1,'Implement Do-While-Loop Control Flow'],['../ConditionalTasking.html#ImplementWhileLoopControlFlow',1,'Implement While-Loop Control Flow']]],
   ['loops_20to_20task_20graphs_29',['From Loops to Task Graphs',['../ProjectMotivation.html#LoopVsTaskParallelism',1,'']]],
-  ['low_30',['LOW',['../namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88',1,'tf']]],
-  ['lower_5fslice_31',['lower_slice',['../classtf_1_1IndexRanges.html#a9bb91e591aeb6b89531dc133559ca328',1,'tf::IndexRanges']]]
+  ['low_30',['LOW',['../namespacetf.html#ac9f4add8f716ed323b0bdbbc1d89346fa41bc94cbd8eebea13ce0491b2ac11b88',1,'tf']]]
 ];

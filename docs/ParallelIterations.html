@@ -118,26 +118,6 @@ $(function(){initNavTree('ParallelIterations.html',''); initResizable(true); });
   </li>
   <li class="level1">
     <a href="#ParallelIterationsIndexRangeBased">Create an IndexRange-based Parallel-Iteration Task</a>
-    <ul>
-      <li class="level2">
-        <a href="#ParallelIterationsWhatIsIndexRange">What is an IndexRange?</a>
-      </li>
-      <li class="level2">
-        <a href="#ParallelIterationsIndexRange1D">Create a Parallel-Iteration Task over a 1D IndexRange</a>
-      </li>
-      <li class="level2">
-        <a href="#ParallelIterationsIndexRangeMD">Create a Parallel-Iteration Task over a Multi-dimensional IndexRange</a>
-      </li>
-      <li class="level2">
-        <a href="#ParallelIterationsIndexRangeMDZeroSize">Zero-size Dimensions</a>
-      </li>
-      <li class="level2">
-        <a href="#ParallelIterationsIndexRangeScheduling">Understand the Scheduling Algorithm</a>
-      </li>
-      <li class="level2">
-        <a href="#ParallelIterationsIndexRangeByReference">Capture Range by Reference</a>
-      </li>
-    </ul>
   </li>
   <li class="level1">
     <a href="#ParallelIterationsIteratorBased">Create an Iterator-based Parallel-Iteration Task</a>
@@ -202,8 +182,7 @@ Capture Indices by Reference</h2>
 <h1><a class="anchor" id="ParallelIterationsIndexRangeBased"></a>
 Create an IndexRange-based Parallel-Iteration Task</h1>
 <p>While <a class="el" href="classtf_1_1FlowBuilder.html#a3b132bd902331a11b04b4ad66cf8bf77" title="constructs an index-based parallel-for task">tf::Taskflow::for_each_index</a> gives each worker a single scalar index, <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> gives each worker a contiguous <em>sub-range</em> (or <em>sub-box</em> in multiple dimensions) of the iteration space. This distinction is significant: instead of processing one element at a time, the callable operates on an entire block of consecutive indices in a single invocation, enabling block algorithms that exploit data locality, facilitate SIMD vectorisation, and reduce scheduling overhead.</p>
-<h2><a class="anchor" id="ParallelIterationsWhatIsIndexRange"></a>
-What is an IndexRange?</h2>
+<dl class="section user"><dt>What is an IndexRange?</dt><dd></dd></dl>
 <p>A <a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange</a> describes a typed, half-open index range <code>[begin, end)</code> with a step size. There are two variants:</p>
 <ul>
 <li><code><a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange</a>&lt;T&gt;</code> (an alias for <code><a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a>&lt;T, 1&gt;</code>): A 1D range of integral indices. It is defined by three parameters: <code>begin</code>, <code>end</code>, and <code>step_size</code>. The elements are <code>begin</code>, <code>begin+step</code>, <code>begin+2*step</code>, ... up to (but not including) <code>end</code>.</li>
@@ -215,7 +194,7 @@ What is an IndexRange?</h2>
 <div class="line">r.end();        <span class="comment">// 14</span></div>
 <div class="line">r.step_size();  <span class="comment">// 3</span></div>
 <div class="line">r.size();       <span class="comment">// 4</span></div>
-<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:612</div></div>
 </div><!-- fragment --><div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_indexrange_1d.svg" width="612" height="68"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <ul>
@@ -237,9 +216,8 @@ What is an IndexRange?</h2>
 <div class="ttc" id="aclasstf_1_1IndexRanges_html"><div class="ttname"><a href="classtf_1_1IndexRanges.html">tf::IndexRanges</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:188</div></div>
 </div><!-- fragment --><div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_indexrange_2d.svg" width="576" height="474"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<p>The key advantage of tf::IndexRanges&lt;T, N&gt; over a raw scalar index is that the callable receives the full sub-range (or sub-box) at once, allowing it to implement cache-friendly block algorithms, apply SIMD over contiguous indices, or exploit any other block-level optimisation.</p>
-<h2><a class="anchor" id="ParallelIterationsIndexRange1D"></a>
-Create a Parallel-Iteration Task over a 1D IndexRange</h2>
+<p>The key advantage of <a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, N&gt;</a> over a raw scalar index is that the callable receives the full sub-range (or sub-box) at once, allowing it to implement cache-friendly block algorithms, apply SIMD over contiguous indices, or exploit any other block-level optimisation.</p>
+<dl class="section user"><dt>Create a Parallel-Iteration Task over a 1D IndexRange</dt><dd></dd></dl>
 <p>Passing a 1D <code><a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange&lt;T&gt;</a></code> to <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> creates a parallel task whose callable receives one contiguous sub-range of the original range per invocation:</p>
 <div class="fragment"><div class="line"><a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a> range(0, 100, 1);</div>
 <div class="line"> </div>
@@ -253,9 +231,8 @@ Create a Parallel-Iteration Task over a 1D IndexRange</h2>
 <div class="ttc" id="aclasstf_1_1IndexRanges_html_ae37261f0d2f326449c469233561a3da6"><div class="ttname"><a href="classtf_1_1IndexRanges.html#ae37261f0d2f326449c469233561a3da6">tf::IndexRanges::begin</a></div><div class="ttdeci">T begin() const</div><div class="ttdoc">queries the starting index of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:346</div></div>
 <div class="ttc" id="aclasstf_1_1IndexRanges_html_afcb30e2b9567ad685e702201d2265880"><div class="ttname"><a href="classtf_1_1IndexRanges.html#afcb30e2b9567ad685e702201d2265880">tf::IndexRanges::step_size</a></div><div class="ttdeci">T step_size() const</div><div class="ttdoc">queries the step size of the range (only available when N == 1)</div><div class="ttdef"><b>Definition</b> iterator.hpp:370</div></div>
 </div><!-- fragment --><p>Because the callable sees the full sub-range at once, it can implement cache-friendly block algorithms that would be impossible when receiving a single index at a time. For instance, a worker assigned <code>[32, 64)</code> can prefetch that entire cache line before processing, rather than incurring per-element dispatch overhead.</p>
-<h2><a class="anchor" id="ParallelIterationsIndexRangeMD"></a>
-Create a Parallel-Iteration Task over a Multi-dimensional IndexRange</h2>
-<p>Passing an N-dimensional <code>tf::IndexRanges&lt;T, N&gt;</code> to <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> creates a parallel task whose callable receives one orthogonal <em>sub-box</em> of the full ND space per invocation. A sub-box is a valid hyperrectangle — a contiguous, axis-aligned tile that preserves the original step sizes of every dimension. The figure below shows a 2x3x4 range decomposed into two sub-boxes (one per outer-dimension value), each a 3x4 slice:</p>
+<dl class="section user"><dt>Create a Parallel-Iteration Task over a Multi-dimensional IndexRange</dt><dd></dd></dl>
+<p>Passing an N-dimensional <code><a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, N&gt;</a></code> to <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a> creates a parallel task whose callable receives one orthogonal <em>sub-box</em> of the full ND space per invocation. A sub-box is a valid hyperrectangle — a contiguous, axis-aligned tile that preserves the original step sizes of every dimension. The figure below shows a 2x3x4 range decomposed into two sub-boxes (one per outer-dimension value), each a 3x4 slice:</p>
 <div class="image">
 <object type="image/svg+xml" data="indexrange_3d.svg" width="90%" style="pointer-events: none;"></object>
 </div>
@@ -295,8 +272,7 @@ Create a Parallel-Iteration Task over a Multi-dimensional IndexRange</h2>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">});</div>
-</div><!-- fragment --><h2><a class="anchor" id="ParallelIterationsIndexRangeMDZeroSize"></a>
-Zero-size Dimensions</h2>
+</div><!-- fragment --><dl class="section user"><dt>Zero-size Dimensions</dt><dd></dd></dl>
 <p>When a dimension has zero size, it and all dimensions inner to it produce no iterations — but outer dimensions are unaffected. This matches the behaviour of sequential nested loops: a zero-size inner loop simply never executes, while the outer loops still run.</p>
 <div class="fragment"><div class="line"><span class="comment">// The middle dimension has zero iterations (j_begin == j_end).</span></div>
 <div class="line"><span class="comment">// The outer i-loop still has work; the j/k body never executes.</span></div>
@@ -335,8 +311,7 @@ Zero-size Dimensions</h2>
 <div class="line">  }</div>
 <div class="line">}</div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>This differs from OpenMP's <code>collapse</code> clause, which treats the entire iteration space as a Cartesian product and yields zero total iterations when any dimension is empty. Taskflow preserves the sequential semantics of nested loops: outer dimensions always execute independently of inner ones.</dd></dl>
-<h2><a class="anchor" id="ParallelIterationsIndexRangeScheduling"></a>
-Understand the Scheduling Algorithm</h2>
+<dl class="section user"><dt>Understand the Scheduling Algorithm</dt><dd></dd></dl>
 <p>Taskflow schedules parallel iterations over an index range by mapping the N-dimensional space to a 1D flat index space and distributing chunks of that flat space among workers. Specifically, the full ND range is first linearized in row-major order into a flat index space of size <code>N</code> = <code>range.size()</code>. For a 3x4 2D range, this looks like:</p>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_indexrange_flat.svg" width="474" height="420"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
@@ -344,7 +319,7 @@ Understand the Scheduling Algorithm</h2>
 <div class="image">
 <object type="image/svg+xml" data="indexrange_alignment.svg" width="90%" style="pointer-events: none;"></object>
 </div>
-<p>A cut at flat index 6 (mid-row) would split row <code>i=1</code> between two workers, producing an L-shaped non-rectangular region that cannot be expressed as a single <code><a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">IndexRanges</a></code> sub-box. A cut at flat index 8 (row boundary) produces two clean rectangular sub-boxes. Taskflow enforces this automatically. The <code>chunk_size</code> hint is always snapped to the nearest hyperplane boundary via <code><a class="el" href="classtf_1_1IndexRanges.html#a5d99f151421740eb2f2d180c4cd5a8f1" title="returns the smallest hyperplane-aligned chunk size that is &gt;= chunk_size, capped at size() when chunk...">IndexRanges::ceil()</a></code>:</p>
+<p>A cut at flat index 6 (mid-row) would split row <code>i=1</code> between two workers, producing an L-shaped non-rectangular region that cannot be expressed as a single <code><a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">IndexRanges</a></code> sub-box. A cut at flat index 8 (row boundary) produces two clean rectangular sub-boxes. Taskflow enforces this automatically. The <code>chunk_size</code> hint is always snapped to the nearest hyperplane boundary via <code>IndexRanges::ceil()</code>:</p>
 <div class="fragment"><div class="line"><span class="comment">// For a 3x4 range with 3 workers:</span></div>
 <div class="line"><span class="comment">// raw N/W = 12/3 = 4  -&gt;  r.ceil(4) = 4  (already a row boundary)</span></div>
 <div class="line"><span class="comment">// For a 3x5 range with 2 workers:</span></div>
@@ -356,8 +331,7 @@ Understand the Scheduling Algorithm</h2>
 </div>
 <p>With a dynamic partitioner, workers pull chunks from a shared atomic cursor. The chunk may overshoot to the next hyperplane boundary when the requested size does not align exactly, but the cursor self-corrects so no element is visited twice.</p>
 <dl class="section note"><dt>Note</dt><dd>You do not need to think about alignment explicitly. Taskflow handles it automatically — the <code>chunk_size</code> you pass to the partitioner is a <em>hint</em>, and the scheduler snaps it to the nearest valid boundary before distributing work.</dd></dl>
-<h2><a class="anchor" id="ParallelIterationsIndexRangeByReference"></a>
-Capture Range by Reference</h2>
+<dl class="section user"><dt>Capture Range by Reference</dt><dd></dd></dl>
 <p>When the range bounds are not known at task-graph construction time, pass the range by <a href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</a> so that an upstream task can set the bounds before the parallel loop runs. This works for both 1D and multi-dimensional ranges.</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 2&gt;</a> range(</div>
 <div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, 0, 1),   <span class="comment">// placeholder — filled by init</span></div>
@@ -449,8 +423,8 @@ Configure a Partitioner</h1>
 <div class="line">  [](<span class="keywordtype">int</span> i) { std::cout &lt;&lt; <span class="stringliteral">&quot;guided:  &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&#39;\n&#39;</span>; },</div>
 <div class="line">  guided_partitioner</div>
 <div class="line">);</div>
-<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:417</div></div>
-<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:262</div></div>
+<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:636</div></div>
+<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:476</div></div>
 </div><!-- fragment --><p>As a rule of thumb, prefer <a class="el" href="classtf_1_1StaticPartitioner.html" title="class to construct a static partitioner for scheduling parallel algorithms">tf::StaticPartitioner</a> for uniform workloads (e.g., element-wise arithmetic on arrays) and <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a> for irregular workloads (e.g., graph traversal, variable-length processing). <a class="el" href="classtf_1_1DynamicPartitioner.html" title="class to create a dynamic partitioner for scheduling parallel algorithms">tf::DynamicPartitioner</a> is a good choice when chunks must be kept small and strictly equal in size.</p>
 <dl class="section note"><dt>Note</dt><dd>By default, parallel-iteration tasks use <a class="el" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" title="default partitioner set to tf::GuidedPartitioner">tf::DefaultPartitioner</a> (currently <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a>) if no partitioner is specified. </dd></dl>
 </div></div><!-- contents -->

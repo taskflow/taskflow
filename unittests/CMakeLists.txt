@@ -63,11 +63,13 @@ foreach(unittest IN LISTS TF_UNITTESTS)
   doctest_discover_tests(${unittest})
 endforeach()
 
-# test_for_each uses high-dimensional IndexRange templates that exceed MSVC's
-# default object file section limit — /bigobj raises it from 2^16 to 2^32.
+# test_for_each and test_reduce use high-dimensional IndexRange templates
+# that exceed MSVC's default object file section limit — /bigobj raises it
+# from 2^16 to 2^32.
 if(MSVC)
   target_compile_options(test_for_each PRIVATE /bigobj)
   target_compile_options(test_iterators PRIVATE /bigobj)
+  target_compile_options(test_reduce PRIVATE /bigobj)
 endif()
 
 # include C++ module tests

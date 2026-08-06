@@ -95,7 +95,7 @@ the callable operates on an entire block of consecutive indices in a single
 invocation, enabling block algorithms that exploit data locality,
 facilitate SIMD vectorisation, and reduce scheduling overhead.
 
-@subsection ParallelIterationsWhatIsIndexRange What is an IndexRange?
+@par What is an IndexRange?
 
 A tf::IndexRange describes a typed, half-open index range
 <tt>[begin, end)</tt> with a step size.
@@ -148,7 +148,7 @@ callable receives the full sub-range (or sub-box) at once, allowing it to
 implement cache-friendly block algorithms, apply SIMD over contiguous indices,
 or exploit any other block-level optimisation.
 
-@subsection ParallelIterationsIndexRange1D Create a Parallel-Iteration Task over a 1D IndexRange
+@par Create a Parallel-Iteration Task over a 1D IndexRange
 
 Passing a 1D @c tf::IndexRange<T> to tf::Taskflow::for_each_by_index creates
 a parallel task whose callable receives one contiguous sub-range of the original
@@ -171,7 +171,7 @@ single index at a time.
 For instance, a worker assigned <tt>[32, 64)</tt> can prefetch that entire
 cache line before processing, rather than incurring per-element dispatch overhead.
 
-@subsection ParallelIterationsIndexRangeMD Create a Parallel-Iteration Task over a Multi-dimensional IndexRange
+@par Create a Parallel-Iteration Task over a Multi-dimensional IndexRange
 
 Passing an N-dimensional @c tf::IndexRanges<T, N> to
 tf::Taskflow::for_each_by_index creates a parallel task whose callable receives
@@ -228,7 +228,7 @@ taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 3>& sub) {
 });
 @endcode
 
-@subsection ParallelIterationsIndexRangeMDZeroSize Zero-size Dimensions
+@par Zero-size Dimensions
 
 When a dimension has zero size, it and all dimensions inner to it produce no
 iterations — but outer dimensions are unaffected.
@@ -284,7 +284,7 @@ iteration space as a Cartesian product and yields zero total iterations when
 any dimension is empty.  %Taskflow preserves the sequential semantics of
 nested loops: outer dimensions always execute independently of inner ones.
 
-@subsection ParallelIterationsIndexRangeScheduling Understand the Scheduling Algorithm
+@par Understand the Scheduling Algorithm
 
 %Taskflow schedules parallel iterations over an index range by mapping
 the N-dimensional space to a 1D flat index space and distributing chunks of
@@ -339,7 +339,7 @@ You do not need to think about alignment explicitly.  %Taskflow handles it
 automatically — the @c chunk_size you pass to the partitioner is a @em hint,
 and the scheduler snaps it to the nearest valid boundary before distributing work.
 
-@subsection ParallelIterationsIndexRangeByReference Capture Range by Reference
+@par Capture Range by Reference
 
 When the range bounds are not known at task-graph construction time, pass
 the range by @std_ref so that an upstream task can set the bounds before

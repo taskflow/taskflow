@@ -1,12 +1,6 @@
 var NAVTREEINDEX1 =
 {
-"ParallelIterations.html#ParallelIterationsIndexRangeBased":[4,1,2],
-"ParallelIterations.html#ParallelIterationsIndexRangeByReference":[4,1,2,5],
-"ParallelIterations.html#ParallelIterationsIndexRangeMD":[4,1,2,2],
-"ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize":[4,1,2,3],
-"ParallelIterations.html#ParallelIterationsIndexRangeScheduling":[4,1,2,4],
 "ParallelIterations.html#ParallelIterationsIteratorBased":[4,1,3],
-"ParallelIterations.html#ParallelIterationsWhatIsIndexRange":[4,1,2,0],
 "ParallelMerge.html":[4,5],
 "ParallelMerge.html#ParallelMergeAlgorithm":[4,5,4],
 "ParallelMerge.html#ParallelMergeAlgorithmBinarySearch":[4,5,4,2],
@@ -18,7 +12,6 @@ var NAVTREEINDEX1 =
 "ParallelMerge.html#ParallelMergeInclude":[4,5,0],
 "ParallelMerge.html#ParallelMergeMotivation":[4,5,1],
 "ParallelReduction.html":[4,3],
-"ParallelReduction.html#ParallelReduceByIndexCaptureByReference":[4,3,3,0],
 "ParallelReduction.html#ParallelReduceByIndexCreate":[4,3,3],
 "ParallelReduction.html#ParallelReductionCaptureIteratorsByReference":[4,3,1,0],
 "ParallelReduction.html#ParallelReductionConfigureAPartitioner":[4,3,4],
@@ -249,5 +242,12 @@ var NAVTREEINDEX1 =
 "classtf_1_1FlowBuilder.html#a35f6503341d7066ef642e6b1a9d81c2c":[13,0,0,24,1],
 "classtf_1_1FlowBuilder.html#a3b0884bbb8f7e142f5cacd6f64e687d5":[13,0,0,24,21],
 "classtf_1_1FlowBuilder.html#a3b132bd902331a11b04b4ad66cf8bf77":[13,0,0,24,19],
-"classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825":[13,0,0,24,32]
+"classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825":[13,0,0,24,32],
+"classtf_1_1FlowBuilder.html#a43afba1d3c943ddac2a8c05bd706c10a":[13,0,0,24,41],
+"classtf_1_1FlowBuilder.html#a46a96f5889e6ac87b1ff8d6313b5f471":[13,0,0,24,15],
+"classtf_1_1FlowBuilder.html#a49f7e17d02c708035b9134d8c6c89f90":[13,0,0,24,39],
+"classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c":[13,0,0,24,4],
+"classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c":[13,0,0,24,5],
+"classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c":[13,0,0,24,6],
+"classtf_1_1FlowBuilder.html#a4d52a7fe2814b264846a2085e931652c":[13,0,0,24,7]
 };
